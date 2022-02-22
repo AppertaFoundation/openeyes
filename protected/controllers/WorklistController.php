@@ -122,7 +122,7 @@ class WorklistController extends BaseController
             $sync_interval_value = $sync_interval_settings->getSetting();
             $prescriber_dom_data = $this->prescriberDomData(false);
 
-            $picker_setup = json_encode($this->setupPicker());
+            $picker_setup = $this->setupPicker();
             $path_step_type_ids = json_encode($this->getPathwayStepTypesRequirePicker());
             $this->render(
                 'index',

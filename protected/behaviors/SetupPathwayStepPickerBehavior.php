@@ -55,7 +55,7 @@ class SetupPathwayStepPickerBehavior extends CBehavior
 
         $letter_macros = array_map(
             static function ($item) {
-                return array('id' => $item->id, 'name' => $item->name);
+                return ['id' => $item->id, 'name' => $item->name];
             },
             LetterMacro::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION)
         );
@@ -76,12 +76,12 @@ class SetupPathwayStepPickerBehavior extends CBehavior
         );
 
         // key names need to be consistent to OpenEyes.UI.PathwayStepPicker part of default options
-        return array(
+        return json_encode(array(
             // Can't use the much faster json_encode here because the workflow step list contains a list of active records,
             // which can't be serialised by json_encode.
             'workflows' => CJSON::encode($steps),
             'custom_booking_steps' => $custom_booking_steps,
-            'letter_macros' => json_encode($letter_macros, JSON_THROW_ON_ERROR),
+            'letter_macros' => $letter_macros,
             'vf_test_presets' => $vf_preset_json,
             'vf_test_types' => $vf_test_type_json,
             'vf_test_options' => $vf_test_option_json,
@@ -89,7 +89,7 @@ class SetupPathwayStepPickerBehavior extends CBehavior
             'sites' => $sites,
             'services' => $services,
             'subspecialties' => NewEventDialogHelper::structureAllSubspecialties(),
-        );
+        ), JSON_THROW_ON_ERROR);
     }
 
     public function getPathwayStepTypesRequirePicker(){

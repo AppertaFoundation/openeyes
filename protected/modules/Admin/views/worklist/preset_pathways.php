@@ -85,8 +85,8 @@ use OEModule\OphCiExamination\models\OphCiExamination_ElementSet;
 </script>
 <script type="text/javascript">
     $(document).ready(function() {
-        const path_step_type_ids = <?=$path_step_type_ids?>;
-        const picker_setup = <?=$picker_setup?>;
+        const path_step_type_ids = <?= $path_step_type_ids ?>;
+        const picker_setup = <?= $picker_setup ?>;
         let picker = new OpenEyes.UI.PathwayStepPicker({
             ...path_step_type_ids,
             ...picker_setup,

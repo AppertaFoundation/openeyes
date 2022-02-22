@@ -18,7 +18,7 @@
 <?php
 $pick_behavior = new SetupPathwayStepPickerBehavior();
 $path_step_type_ids = json_encode($pick_behavior->getPathwayStepTypesRequirePicker());
-$picker_setup = json_encode($pick_behavior->setupPicker());
+$picker_setup = $pick_behavior->setupPicker();
 ?>
 <div class="clinic-pathway-btn" id="clinic-pathway-btn">
     <?= ucfirst($pathway->getStatusString()) ?>

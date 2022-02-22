@@ -682,7 +682,7 @@ class WorklistController extends BaseAdminController
         $worklist_js = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.assets.js.worklist') . '/worklist_admin.js', true);
         Yii::app()->clientScript->registerScriptFile($worklist_js, ClientScript::POS_END);
 
-        $picker_setup = json_encode($this->setupPicker());
+        $picker_setup = $this->setupPicker();
         $path_step_type_ids = json_encode($this->getPathwayStepTypesRequirePicker());
         $this->render('preset_pathways', array(
             'pathway_types' => $pathway_types,

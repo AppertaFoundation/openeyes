@@ -649,7 +649,7 @@
                 break;
             case this.options.exam_step_type_id:
                 new OpenEyes.UI.Dialog.NewPathwayStep({
-                    workflow_steps: this.options.workflows,
+                    workflow_steps: JSON.parse(this.options.workflows),
                     current_subspecialty: this.options.current_subspecialty_id,
                     current_firm: this.options.current_firm_id,
                     custom_options: [{
@@ -688,7 +688,7 @@
                     custom_options: [{
                         id: 'macro',
                         name: 'Template',
-                        option_values: this.options.macros,
+                        option_values: this.options.letter_macros,
                     }],
                     title: 'Add letter task',
                     onReturn: function (dialog, long_name, short_name, selected_custom_option) {

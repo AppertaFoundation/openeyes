@@ -21,7 +21,7 @@
 $exam_api = \Yii::app()->moduleAPI->get('OphCiExamination');
 $pick_behavior = new SetupPathwayStepPickerBehavior();
 $path_step_type_ids = json_encode($pick_behavior->getPathwayStepTypesRequirePicker());
-$picker_setup = json_encode($pick_behavior->setupPicker());
+$picker_setup = $pick_behavior->setupPicker();
 ?>
 <div class="clinic-pathway">
     <table class="oec-patients in-event">
