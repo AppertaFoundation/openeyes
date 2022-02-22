@@ -777,7 +777,7 @@ class AdminController extends \ModuleAdminController
                 'model_class' => 'OphCiExamination_Workflow_Rule',
                 'model_list' => models\OphCiExamination_Workflow_Rule::model()->findAll(
                     array(
-                        'condition' => 'institution_id IS NULL OR institution_id = :institution_id',
+                        'condition' => 'workflow_id IN (SELECT id FROM ophciexamination_workflow WHERE institution_id=:institution_id)',
                         'order' => 't.id asc',
                         'params' => [':institution_id' => Yii::app()->session['selected_institution_id']]
                     )
