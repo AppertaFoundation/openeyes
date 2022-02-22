@@ -154,7 +154,7 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
             'is_signed_off' => 'Approved by a clinician',
             'to_subspecialty_id' => 'To Service',
             'to_firm_id' => 'To Consultant',
-            'is_urgent' => 'Urgent',
+            'is_urgent' => 'Mark as Urgent',
             'is_same_condition' => '',
             'site_id' => 'Site',
             'letter_type_id' => 'Letter Type',
@@ -581,11 +581,15 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
         }
         $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(
             Yii::app()->params['display_primary_number_usage_code'],
-            $patient->id, $institution_id, $site_id
+            $patient->id,
+            $institution_id,
+            $site_id
         );
         $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(
             Yii::app()->params['display_secondary_number_usage_code'],
-            $patient->id, $institution_id, $site_id
+            $patient->id,
+            $institution_id,
+            $site_id
         );
         $re = $patient->first_name . ' ' . $patient->last_name;
 
@@ -612,8 +616,10 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
 
             if (!$patient) {
                 // determine if there are any circumstances where this is necessary. Almost certainly very redundant
-                if (!$patient = Patient::model()->with(array('contact' => array('with' => array('address'))))
-                    ->findByPk(@$_GET['patient_id'])) {
+                if (
+                    !$patient = Patient::model()->with(array('contact' => array('with' => array('address'))))
+                    ->findByPk(@$_GET['patient_id'])
+                ) {
                     throw new Exception('Patient not found: ' . @$_GET['patient_id']);
                 }
             }
@@ -697,11 +703,11 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
                 $this->fax = $dl->fax;
             }
 
-            if(Yii::app()->user) {
+            if (Yii::app()->user) {
                 $user = User::model()->findByPk(Yii::app()->user->getId());
                 /** @var User $user */
-                if($user) {
-                    if($signOffUser = $user->signOffUser) {
+                if ($user) {
+                    if ($signOffUser = $user->signOffUser) {
                         $signature_text = $api->getFooterText($signOffUser, $episode->firm);
                         $this->footer = $signOffUser->correspondence_sign_off_text . "{e-signature}" . ($signature_text ? "\n" . nl2br($signature_text) : '');
                     }
@@ -1050,21 +1056,21 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
     public function renderFooter()
     {
         $footer = "<div class=\"flex\">";
-        if($esign_element = $this->event->getElementByClass(Element_OphCoCorrespondence_Esign::class)) {
+        if ($esign_element = $this->event->getElementByClass(Element_OphCoCorrespondence_Esign::class)) {
             /** @var Element_OphCoCorrespondence_Esign $esign_element*/
             $signatures = $esign_element->signatures;
-            if($primary_signature = array_pop($signatures)) {
-                if(strpos($this->footer, "{e-signature}") !== false) {
-                    if(strpos($primary_signature->getPrintout(), "Consultant:") === false && strpos($this->footer, "Consultant:") !== false) {
-                        $footer .= "<div>" . nl2br(trim(explode("{e-signature}",$this->footer)[0])) . "<br/>" . $primary_signature->getPrintout() . "<br/>Consultant:" . nl2br(trim(explode("Consultant:",$this->footer)[1])) . "</div>";
+            if ($primary_signature = array_pop($signatures)) {
+                if (strpos($this->footer, "{e-signature}") !== false) {
+                    if (strpos($primary_signature->getPrintout(), "Consultant:") === false && strpos($this->footer, "Consultant:") !== false) {
+                        $footer .= "<div>" . nl2br(trim(explode("{e-signature}", $this->footer)[0])) . "<br/>" . $primary_signature->getPrintout() . "<br/>Consultant:" . nl2br(trim(explode("Consultant:", $this->footer)[1])) . "</div>";
                     } else {
-                        $footer .= "<div>" . nl2br(trim(explode("{e-signature}",$this->footer)[0])) . "<br/>" . $primary_signature->getPrintout() . "</div>";
+                        $footer .= "<div>" . nl2br(trim(explode("{e-signature}", $this->footer)[0])) . "<br/>" . $primary_signature->getPrintout() . "</div>";
                     }
                 } else {
                     $footer .= "<div>" . nl2br(trim($this->footer)) . "<br/>" . $primary_signature->getPrintout() . "</div>";
                 }
             }
-            if($secondary_signature = array_pop($signatures)) {
+            if ($secondary_signature = array_pop($signatures)) {
                 $sign_off_text = $secondary_signature->signedUser->correspondence_sign_off_text;
                 $footer .= "<div>" . nl2br(trim($sign_off_text)) . "<br/>" . $secondary_signature->getPrintout() . "</div>";
             }
@@ -1201,17 +1207,16 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
             foreach ($this->document_instance as $instance) {
                 foreach ($instance->document_target as $target) {
                     if ($target->ToCc === 'To') {
-                        if (($newlines_setting = SettingMetadata::model()->getSetting('correspondence_address_max_lines'))>=0) {
+                        if (($newlines_setting = SettingMetadata::model()->getSetting('correspondence_address_max_lines')) >= 0) {
                             $addressPart = explode("\n", $target->address);
-                            $address ='';
-                            foreach ($addressPart as $index=>$part) {
+                            $address = '';
+                            foreach ($addressPart as $index => $part) {
                                 if ($index == 0) {
                                     $address = $part;
-                                }
-                                elseif ($index < $newlines_setting) {
-                                    $address = $address."\n".$part;
+                                } elseif ($index < $newlines_setting) {
+                                    $address = $address . "\n" . $part;
                                 } else {
-                                    $address = $address.$part;
+                                    $address = $address . $part;
                                 }
                             }
                             return $target->contact_name . "\n" . $address;

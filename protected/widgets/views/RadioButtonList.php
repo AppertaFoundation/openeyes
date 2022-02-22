@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <?php $fieldset_class = isset($htmlOptions['fieldset-class']) ? $htmlOptions['fieldset-class'] : '';
@@ -24,7 +26,9 @@ $label_class = isset($htmlOptions['label-class']) ? $htmlOptions['label-class'] 
     <?php if (!$no_element) { ?>
     <input type="hidden" value="" name="<?=\CHtml::modelName($element) ?>[<?php echo $field ?>]">
     <?php } ?>
-
+    <?php if (@$htmlOptions['container']) {
+        echo('<' . $htmlOptions['container'] . '>');
+    } ?>
     <?php foreach ($data as $id => $data_value) { ?>
         <?php
         $options = array('value' => $id, 'id' => CHtml::modelName($element) . '_' . $field . '_' . $id);
@@ -43,7 +47,9 @@ $label_class = isset($htmlOptions['label-class']) ? $htmlOptions['label-class'] 
       <span><?=\CHtml::encode($data_value) ?></span>
     </label>
     <?php } ?>
-
+         <?php if (@$htmlOptions['container']) {
+                echo('</' . $htmlOptions['container'] . '>');
+         } ?>
 <?php } else { ?>
   <fieldset id="<?=\CHtml::modelName($element) . '_' . $field ?>"
             class="cols-full flex-layout flex-left<?= $fieldset_class ?> <?php echo $hidden ? 'hidden' : '' ?>">
@@ -60,7 +66,7 @@ $label_class = isset($htmlOptions['label-class']) ? $htmlOptions['label-class'] 
     </label>
       <?php if (!$no_element) { ?>
         <input type="hidden" value="" name="<?=\CHtml::modelName($element) ?>[<?php echo $field ?>]">
-        <?php } ?>
+      <?php } ?>
     <div class="cols-<?php echo $layoutColumns['field']; ?> column">
         <?php $i = 0; ?>
         <?php if ($label_above) { ?>

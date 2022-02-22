@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -14,6 +15,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <?php
@@ -23,9 +25,9 @@
         $is_editable_contact_targets = isset($is_editable_contact_targets) ? $is_editable_contact_targets : true;
     $option_styles = isset($option_styles) ? $option_styles : [];
     $contact_types = isset($contact_types) ? $contact_types : Document::getContactTypes();
-foreach ($address_targets as $key=>$value) {
+foreach ($address_targets as $key => $value) {
     if (strpos($key, 'Gp') !== false) {
-        $contact_types['GP'] = substr($value, strpos($value, '(')+1, -1);
+        $contact_types['GP'] = substr($value, strpos($value, '(') + 1, -1);
         break;
     }
 }
@@ -36,19 +38,19 @@ foreach ($address_targets as $key=>$value) {
         array(
                 'empty' => '- Recipient -',
                 'nowrapper' => true,
-                'class' => 'full-width docman_recipient cols-full',
+                'class' => 'docman_recipient cols-full',
                 'data-rowindex' => $row_index,
                 'data-previous' => $contact_id,
-                'data-name' => 'DocumentTarget['.$row_index.'][attributes][contact_id]',
+                'data-name' => 'DocumentTarget[' . $row_index . '][attributes][contact_id]',
                 'id' => 'docman_recipient_' . $row_index,
                 'disabled' => !$is_editable_contact_targets,
                 'style' => (!$is_editable_contact_targets ? 'background-color: lightgray' : ''),
             )
     );
-        echo CHtml::hiddenField('DocumentTarget['.$row_index.'][attributes][contact_nickname]', (isset($contact_nickname) ? $contact_nickname : ''));
-        echo \CHtml::textField('DocumentTarget['.$row_index.'][attributes][contact_name]', $contact_name, array('readonly' => !$is_editable_contact_name, 'class' => 'cols-full', 'placeholder' => 'Name'));
+        echo CHtml::hiddenField('DocumentTarget[' . $row_index . '][attributes][contact_nickname]', (isset($contact_nickname) ? $contact_nickname : ''));
+        echo \CHtml::textField('DocumentTarget[' . $row_index . '][attributes][contact_name]', $contact_name, array('readonly' => !$is_editable_contact_name, 'class' => 'cols-full increase-text', 'placeholder' => 'Name'));
     echo CHtml::dropDownList(
-        'DocumentTarget['.$row_index.'][attributes][contact_type]',
+        'DocumentTarget[' . $row_index . '][attributes][contact_type]',
         $contact_type,
         $contact_types,
         [       'empty' => '- Type -',
@@ -61,9 +63,6 @@ foreach ($address_targets as $key=>$value) {
     );
 
     if (!$is_editable) {
-        echo CHtml::hiddenField('DocumentTarget['.$row_index.'][attributes][contact_type]', $contact_type, array(
-            'id' => 'yDocumentTarget_'.$row_index.'_attributes_contact_type'));
+        echo CHtml::hiddenField('DocumentTarget[' . $row_index . '][attributes][contact_type]', $contact_type, array(
+            'id' => 'yDocumentTarget_' . $row_index . '_attributes_contact_type'));
     }
-
-
-

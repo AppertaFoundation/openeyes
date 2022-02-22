@@ -49,257 +49,256 @@ $footer_array = explode("{e-signature}", $element["footer"]);
     <input type="hidden" id="re_default"
            value="<?= $element->calculateRe() ?>"/>
 <?php endif; ?>
-<div class="element-fields full-width flex-layout flex-top col-gap">
-    <div class="cols-3">
-        <div class="data-group">
-          <table class="cols-full">
-            <colgroup>
-              <col class="cols-3">
-              <col class="cols-7">
-            </colgroup>
-            <tbody>
-            <?php
-            $correspondeceApp = Yii::app()->params['ask_correspondence_approval'];
-            if ($correspondeceApp === 'on') { ?>
-            <tr>
-              <td>
-                  <?php echo $element->getAttributeLabel('is_signed_off') ?>:
-              </td>
-              <td>
-                  <?php echo $form->radioButtons(
-                      $element,
-                      'is_signed_off',
-                      array(
-                        1 => 'Yes',
-                        0 => 'No',
-                      ),
-                      $element->is_signed_off,
-                      false,
-                      false,
-                      false,
-                      false,
-                      array('nowrapper' => true)
-                  ); ?>
-              </td>
-            </tr>
-            <?php } ?>
-            </tbody>
-          </table>
-        </div>
-            <?php if ($element->isInternalReferralEnabled()) : ?>
-              <div class="internal-referrer-wrapper <?php echo $element->isInternalreferral() ? '' : 'hidden'; ?> ">
-                  <?php $this->renderPartial('_internal_referral', array('element' => $element)); ?>
-              </div>
-            <?php endif; ?>
-        <div class="data-group">
-          <table class="cols-full">
-                        <colgroup>
-                            <col class="cols-3">
-                            <col class="cols-7">
-                        </colgroup>
-            <tbody>
-            <tr>
-              <td>
-                Site
-              </td>
-              <td>
-                    <?php echo $form->dropDownList(
+<div class="element-fields full-width ">
+    <div class="flex-t col-gap">
+        <div class="cols-3">
+            <div class="flex">
+                
+                <?php
+                $correspondeceApp = Yii::app()->params['ask_correspondence_approval'];
+                if ($correspondeceApp === 'on') {
+                    echo $element->getAttributeLabel('is_signed_off');
+
+                    echo $form->radioButtons(
                         $element,
-                        'site_id',
-                        Site::model()->getLongListForCurrentInstitution(),
-                        array('empty' => 'Select', 'nowrapper' => true, 'class' => 'cols-full')
-                    ) ?>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                Date
-              </td>
-              <td>
-                    <?php echo $form->datePicker(
-                        $element,
-                        'date',
-                        array('maxDate' => 'today'),
-                        array('nowrapper' => true, 'class' => 'cols-7')
-                    ) ?>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                Letter type
-              </td>
-              <td>
+                        'is_signed_off',
+                        array(
+                            1 => 'Yes',
+                            0 => 'No',
+                        ),
+                        $element->is_signed_off,
+                        false,
+                        false,
+                        false,
+                        false,
+                        array('nowrapper' => true,
+                        'container' => 'fieldset',
+                        'separator' => '', ),
+                    );
+                } ?>
+                
+            </div>
+            <hr class="divider">
+
+            <div class="flex">
+                <div class="cols-5">Letter type</div>
+                <div class="cols-7">
                     <?php echo $form->dropDownList(
                         $element,
                         'letter_type_id',
                         CHtml::listData(LetterType::model()->getActiveLetterTypes(), 'id', 'name'),
-                        array('empty' => 'Select', 'nowrapper' => true, 'class' => 'full-width cols-full')
+                        array('empty' => 'Select', 'nowrapper' => true, 'class' => 'cols-full')
                     ) ?>
-              </td>
-            </tr>
-            <!--                  Clinic Date  -->
-            <tr>
-              <td>
-                Clinic Date
-              </td>
-              <td>
-                    <?php echo $form->datePicker(
-                        $element,
-                        'clinic_date',
-                        array('maxDate' => 'today'),
-                        array('nowrapper' => true, 'null' => true, 'class' => 'cols-7')
-                    ) ?>
-              </td>
-            </tr>
-            <!--                    Direct Line-->
-            <tr>
-              <td>
-                Direct Line
-              </td>
-              <td>
-                    <?php echo $form->textField(
-                        $element,
-                        'direct_line',
-                        array('nowrapper' => true, 'class' => 'cols-full'),
-                        array(),
-                        array_merge($layoutColumns, array('field' => 2))
-                    ) ?>
-              </td>
-            </tr>
-            <!--                    Fax-->
-            <tr>
-              <td>
-                Fax
-              </td>
-              <td>
-                    <?php echo $form->textField(
-                        $element,
-                        'fax',
-                        array('nowrapper' => true, 'class' => 'cols-full'),
-                        array(),
-                        array_merge($layoutColumns, array('field' => 2))
-                    ) ?>
-              </td>
-            </tr>
-            </tbody>
-          </table>
-        </div>
-    </div>
-      <div class="cols-9">
-        <div class="cols-full">
-          <div id="docman_block" class="cols-12">
-                <?php
-                if (!$creating) {
-                    $document_set = DocumentSet::model()->findByAttributes(array('event_id' => $element->event_id));
+                </div>
+            </div>
 
-                    if ($document_set) {
-                        $this->renderPartial('//docman/_update', array(
-                          'row_index' => ($row_index ?? 0),
-                          'document_set' => $document_set,
-                          'macro_id' => $macro_id,
-                          'element' => $element,
-                          'can_send_electronically' => true,
-                        ));
-                    }
-                } else {
-                    $macro_data = array();
-                    if (isset($element->macro) && !isset($_POST['DocumentTarget'])) {
-                        $macro_data = $api->getMacroTargets($patient_id, $macro_id);
-                    }
-                    // set back posted data on error
-                    if (isset($_POST['DocumentTarget'])) {
-                        $i = 0;
-                        foreach ($_POST['DocumentTarget'] as $document_target) {
-                            if (isset($document_target['attributes']['ToCc'])) {
-                                if ($document_target['attributes']['ToCc'] === 'To') {
-                                    $macro_data['to'] = array(
-                                        'contact_type' => $document_target['attributes']['contact_type'],
-                                        'contact_id' => $document_target['attributes']['contact_id'] ?? null,
-                                        'contact_name' => $document_target['attributes']['contact_name'] ?? null,
-                                        'address' => $document_target['attributes']['address'] ?? null,
-                                        'email' => $document_target['attributes']['email'] ?? null,
-                                    );
-                                } elseif ($document_target['attributes']['ToCc'] === 'Cc') {
-                                    $macro_data['cc'][] = array(
-                                        'contact_type' => $document_target['attributes']['contact_type'],
-                                        'contact_id' => $document_target['attributes']['contact_id'] ?? null,
-                                        'contact_name' => $document_target['attributes']['contact_name'] ?? null,
-                                        'address' => $document_target['attributes']['address'] ?? null,
-                                        'email' => $document_target['attributes']['email'] ?? null,
-                                        'is_mandatory' => false,
-                                    );
+            <?php if ($element->isInternalReferralEnabled()) : ?>
+            <div class="internal-referrer-wrapper <?php echo $element->isInternalreferral() ? '' : 'hidden'; ?> ">
+                <?php $this->renderPartial('_internal_referral', array('element' => $element)); ?>
+            </div>
+            <?php endif; ?>
+
+            <hr class="divider">
+            <table class="cols-full">
+                <colgroup>
+                    <col class="cols-5">
+                    <col class="cols-7">
+                </colgroup>
+                <tbody>
+                
+                <tr>
+                <td>
+                    Letter Date
+                </td>
+                <td>
+                        <?php echo $form->datePicker(
+                            $element,
+                            'date',
+                            array('maxDate' => 'today'),
+                            array('nowrapper' => true, 'class' => 'cols-7')
+                        ) ?>
+                </td>
+                </tr>
+                
+                
+                        
+               
+               
+                <!--                  Clinic Date  -->
+                <tr>
+                    <td>
+                        Visit Date
+                    </td>
+                    <td>
+                            <?php echo $form->datePicker(
+                                $element,
+                                'clinic_date',
+                                array('maxDate' => 'today'),
+                                array('nowrapper' => true, 'null' => true, 'class' => 'cols-7')
+                            ) ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Site
+                    </td>
+                    <td>
+                            <?php echo $form->dropDownList(
+                                $element,
+                                'site_id',
+                                Site::model()->getLongListForCurrentInstitution(),
+                                array('empty' => 'Select', 'nowrapper' => true, 'class' => 'cols-full')
+                            ) ?>
+                    </td>
+                </tr>
+                <!--                    Direct Line-->
+                <tr>
+                    <td>
+                        Direct Line
+                    </td>
+                    <td>
+                            <?php echo $form->textField(
+                                $element,
+                                'direct_line',
+                                array('nowrapper' => true, 'class' => 'cols-full'),
+                                array(),
+                                array_merge($layoutColumns, array('field' => 2))
+                            ) ?>
+                    </td>
+                </tr>
+                <!--                    Fax-->
+                <tr>
+                    <td>
+                        Direct Fax
+                    </td>
+                    <td>
+                            <?php echo $form->textField(
+                                $element,
+                                'fax',
+                                array('nowrapper' => true, 'class' => 'cols-full'),
+                                array(),
+                                array_merge($layoutColumns, array('field' => 2))
+                            ) ?>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div id="docman_block" class="cols-9">
+            
+                    <?php
+                    if (!$creating) {
+                        $document_set = DocumentSet::model()->findByAttributes(array('event_id' => $element->event_id));
+
+                        if ($document_set) {
+                            $this->renderPartial('//docman/_update', array(
+                            'row_index' => ($row_index ?? 0),
+                            'document_set' => $document_set,
+                            'macro_id' => $macro_id,
+                            'element' => $element,
+                            'can_send_electronically' => true,
+                            ));
+                        }
+                    } else {
+                        $macro_data = array();
+                        if (isset($element->macro) && !isset($_POST['DocumentTarget'])) {
+                            $macro_data = $api->getMacroTargets($patient_id, $macro_id);
+                        }
+                        // set back posted data on error
+                        if (isset($_POST['DocumentTarget'])) {
+                            $i = 0;
+                            foreach ($_POST['DocumentTarget'] as $document_target) {
+                                if (isset($document_target['attributes']['ToCc'])) {
+                                    if ($document_target['attributes']['ToCc'] === 'To') {
+                                        $macro_data['to'] = array(
+                                            'contact_type' => $document_target['attributes']['contact_type'],
+                                            'contact_id' => $document_target['attributes']['contact_id'] ?? null,
+                                            'contact_name' => $document_target['attributes']['contact_name'] ?? null,
+                                            'address' => $document_target['attributes']['address'] ?? null,
+                                            'email' => $document_target['attributes']['email'] ?? null,
+                                        );
+                                    } elseif ($document_target['attributes']['ToCc'] === 'Cc') {
+                                        $macro_data['cc'][] = array(
+                                            'contact_type' => $document_target['attributes']['contact_type'],
+                                            'contact_id' => $document_target['attributes']['contact_id'] ?? null,
+                                            'contact_name' => $document_target['attributes']['contact_name'] ?? null,
+                                            'address' => $document_target['attributes']['address'] ?? null,
+                                            'email' => $document_target['attributes']['email'] ?? null,
+                                            'is_mandatory' => false,
+                                        );
+                                    }
                                 }
                             }
                         }
-                    }
-                    /**
-                     * @var $gp_address Address|null
-                     */
-                    $gp_address = $patient->gp->contact->correspondAddress ?? $patient->gp->contact->address ?? null;
-                    if (!$gp_address) {
-                        $gp_address = $patient->practice->contact->correspondAddress ?? $patient->practice->contact->address ?? null;
-                    }
+                        /**
+                         * @var $gp_address Address|null
+                         */
+                        $gp_address = $patient->gp->contact->correspondAddress ?? $patient->gp->contact->address ?? null;
+                        if (!$gp_address) {
+                            $gp_address = $patient->practice->contact->correspondAddress ?? $patient->practice->contact->address ?? null;
+                        }
 
-                    if (!$gp_address) {
-                        $gp_address = 'The contact does not have a valid address.';
-                    } else {
-                        $gp_address = implode("\n", $gp_address->getLetterArray());
-                    }
+                        if (!$gp_address) {
+                            $gp_address = 'The contact does not have a valid address.';
+                        } else {
+                            $gp_address = implode("\n", $gp_address->getLetterArray());
+                        }
 
-                    $contact_string = '';
-                    if ($patient->gp) {
-                        $contact_string = 'Gp' . $patient->gp->id;
-                    } elseif ($patient->practice) {
-                        $contact_string = 'Practice' . $patient->practice->id;
-                    }
+                        $contact_string = '';
+                        if ($patient->gp) {
+                            $contact_string = 'Gp' . $patient->gp->id;
+                        } elseif ($patient->practice) {
+                            $contact_string = 'Practice' . $patient->practice->id;
+                        }
 
-                    /**
-                     * @var $patient_address Address|null
-                     */
-                    $patient_address = $patient->contact->correspondAddress ?? $patient->contact->address ?? null;
+                        /**
+                         * @var $patient_address Address|null
+                         */
+                        $patient_address = $patient->contact->correspondAddress ?? $patient->contact->address ?? null;
 
-                    if (!$patient_address) {
-                        $patient_address = 'The contact does not have a valid address.';
-                    } else {
-                        $patient_address = implode("\n", $patient_address->getLetterArray());
-                    }
+                        if (!$patient_address) {
+                            $patient_address = 'The contact does not have a valid address.';
+                        } else {
+                            $patient_address = implode("\n", $patient_address->getLetterArray());
+                        }
 
-                    $address_data = array();
-                    if ($contact_string) {
-                        $address_data = $api->getAddress($patient_id, $contact_string);
-                    }
+                        $address_data = array();
+                        if ($contact_string) {
+                            $address_data = $api->getAddress($patient_id, $contact_string);
+                        }
 
-                    $contact_id = $address_data['contact_id'] ?? null;
-                    $contact_name = $address_data['contact_name'] ?? null;
-                    $contact_nickname = $address_data['contact_nickname'] ?? null;
-                    $address = $address_data['address'] ?? null;
+                        $contact_id = $address_data['contact_id'] ?? null;
+                        $contact_name = $address_data['contact_name'] ?? null;
+                        $contact_nickname = $address_data['contact_nickname'] ?? null;
+                        $address = $address_data['address'] ?? null;
 
-                    $internal_referral = LetterType::model()->findByAttributes(['name' => 'Internal Referral']);
+                        $internal_referral = LetterType::model()->findByAttributes(['name' => 'Internal Referral']);
 
-                    $this->renderPartial('//docman/_create', array(
-                      'row_index' => ($row_index ?? 0),
-                      'macro_data' => $macro_data,
-                      'macro_id' => $macro_id,
-                      'element' => $element,
-                      'can_send_electronically' => true,
-                      'defaults' => array(
-                          'To' => array(
-                              'contact_id' => $contact_id,
-                              'contact_type' => 'GP',
-                              'contact_name' => $contact_name,
-                              'address' => $address,
-                              'contact_nickname' => $contact_nickname,
-                          ),
-                          'Cc' => array(
-                              'contact_id' => $patient->contact->id ?? null,
-                              'contact_name' => isset($patient->contact->id) ? $patient->getCorrespondenceName() : null,
-                              'contact_type' => 'PATIENT',
-                              'address' => $patient_address,
-                          ),
-                      ),
-                    ));
-                } ?>
-          </div>
+                        $this->renderPartial('//docman/_create', array(
+                        'row_index' => ($row_index ?? 0),
+                        'macro_data' => $macro_data,
+                        'macro_id' => $macro_id,
+                        'element' => $element,
+                        'can_send_electronically' => true,
+                        'defaults' => array(
+                            'To' => array(
+                                'contact_id' => $contact_id,
+                                'contact_type' => 'GP',
+                                'contact_name' => $contact_name,
+                                'address' => $address,
+                                'contact_nickname' => $contact_nickname,
+                            ),
+                            'Cc' => array(
+                                'contact_id' => $patient->contact->id ?? null,
+                                'contact_name' => isset($patient->contact->id) ? $patient->getCorrespondenceName() : null,
+                                'contact_type' => 'PATIENT',
+                                'address' => $patient_address,
+                            ),
+                        ),
+                        ));
+                    } ?>
+                </div>
+               
         </div>
     </div>
 </div>

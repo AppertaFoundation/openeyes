@@ -28,9 +28,12 @@ $selected_subspecialty_id = $element->to_subspecialty_id != "" ?
                     $criteria->order = 't.name';
                     $criteria->addCondition('firms.active = 1'); ?>
 
-                    <?= \CHtml::activeDropDownList($element, "to_subspecialty_id",
+                    <?= \CHtml::activeDropDownList(
+                        $element,
+                        "to_subspecialty_id",
                         CHtml::listData(Subspecialty::model()->findAll($criteria), 'id', 'name'),
-                        array('empty' => '- None -', 'class' => 'cols-full')) ?>
+                        array('empty' => '- None -', 'class' => 'cols-full')
+                    ) ?>
                 </td>
             </tr>
             <tr>
@@ -86,7 +89,9 @@ $selected_subspecialty_id = $element->to_subspecialty_id != "" ?
                 </td>
             </tr>
             <tr>
-                <td></td>
+                <td>
+                    Flag
+                </td>
                 <td>
                     <label class="inline">
                         <?= \CHtml::activeCheckBox($element, 'is_urgent'); ?>
@@ -97,5 +102,4 @@ $selected_subspecialty_id = $element->to_subspecialty_id != "" ?
             </tbody>
         </table>
     </div>
-    <hr class="divider"/>
 </div>
