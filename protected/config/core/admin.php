@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -21,7 +22,6 @@ return array(
         'admin_structure' => array(
             'System' => array(
                 'Settings' => '/admin/settings',
-                'System default logos' => array('parameter' => 'letter_logo_upload', 'uri' => '/admin/logo'),
                 'DICOM Log Viewer' => '/DicomLogViewer/list',
             ),
             'Core' => array(
