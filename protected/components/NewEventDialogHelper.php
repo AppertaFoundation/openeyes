@@ -100,45 +100,23 @@ class NewEventDialogHelper
      */
     public static function structureAllSubspecialties()
     {
-        $subspecialties = Yii::app()->cache->get('new-event-subspecialties');
         $current_institution = Yii::app()->session['selected_institution_id'];
-        if ($subspecialties === false) {
-            $subspecialties = array();
-            foreach (Subspecialty::model()->findAll() as $subspecialty) {
-                $related_firms = Firm::model()
-                    ->active()
-                    ->with('serviceSubspecialtyAssignment')
-                    ->findAll(array(
-                        'condition' => 'serviceSubspecialtyAssignment.subspecialty_id = :ssid AND institution_id = :institution_id',
-                        'params' => array(':ssid' => $subspecialty->id, 'institution_id' => $current_institution),
-                        'order' => 't.name asc'
-                    ));
-                if (count($related_firms)) {
-                    $structure = static::structureSubspecialty($subspecialty);
-                    $structure['services'] = array();
-                    $structure['contexts'] = array();
-
-                    foreach ($related_firms as $f) {
-                        $structured_firm = static::structureFirm($f);
-                        if ($f->can_own_an_episode) {
-                            $structure['services'][] = $structured_firm;
-                        }
-                        if ($f->runtime_selectable) {
-                            $structure['contexts'][] = $structured_firm;
-                        }
-                    }
-                    array_push($subspecialties, $structure);
-                }
-            }
-            // create Support Services subspecialty if there are the relevant firms
-            if ($support_service_firms = Firm::model()->findAll(
-                'service_subspecialty_assignment_id is null AND institution_id = :institution_id',
-                array(':institution_id' => $current_institution)
-            )) {
-                $structure = static::$support_services_subspecialty;
+        $subspecialties = array();
+        foreach (Subspecialty::model()->findAll() as $subspecialty) {
+            $related_firms = Firm::model()
+                ->active()
+                ->with('serviceSubspecialtyAssignment')
+                ->findAll(array(
+                    'condition' => 'serviceSubspecialtyAssignment.subspecialty_id = :ssid AND institution_id = :institution_id',
+                    'params' => array(':ssid' => $subspecialty->id, ':institution_id' => $current_institution),
+                    'order' => 't.name asc'
+                ));
+            if (count($related_firms)) {
+                $structure = static::structureSubspecialty($subspecialty);
                 $structure['services'] = array();
                 $structure['contexts'] = array();
-                foreach ($support_service_firms as $f) {
+
+                foreach ($related_firms as $f) {
                     $structured_firm = static::structureFirm($f);
                     if ($f->can_own_an_episode) {
                         $structure['services'][] = $structured_firm;
@@ -147,9 +125,27 @@ class NewEventDialogHelper
                         $structure['contexts'][] = $structured_firm;
                     }
                 }
-                array_push($subspecialties, $structure);
+                $subspecialties[] = $structure;
             }
-            Yii::app()->cache->set('new-event-subspecialties', $subspecialties, 30);
+        }
+        // create Support Services subspecialty if there are the relevant firms
+        if ($support_service_firms = Firm::model()->findAll(
+            'service_subspecialty_assignment_id is null AND institution_id = :institution_id',
+            array(':institution_id' => $current_institution)
+        )) {
+            $structure = static::$support_services_subspecialty;
+            $structure['services'] = array();
+            $structure['contexts'] = array();
+            foreach ($support_service_firms as $f) {
+                $structured_firm = static::structureFirm($f);
+                if ($f->can_own_an_episode) {
+                    $structure['services'][] = $structured_firm;
+                }
+                if ($f->runtime_selectable) {
+                    $structure['contexts'][] = $structured_firm;
+                }
+            }
+            $subspecialties[] = $structure;
         }
 
         return $subspecialties;
