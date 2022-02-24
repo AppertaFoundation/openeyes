@@ -584,24 +584,28 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
      */
     public function getDueLetter()
     {
+        $waiting_list_status = $this->getWaitingListStatus();
+
         $lastletter = $this->getLastLetter();
-        if (!$this->getWaitingListStatus()) { // if getwaitingliststatus returns null, we're white
+        if (!$waiting_list_status) { // if getwaitingliststatus returns null, we're white
             return $lastletter; // no new letter is due, so we should print the last one
         }
-        if ($this->getWaitingListStatus() == self::STATUS_PURPLE) {
-            return self::LETTER_INVITE;
-        } elseif ($this->getWaitingListStatus() == self::STATUS_GREEN1) {
-            return self::LETTER_REMINDER_1;
-        } elseif ($this->getWaitingListStatus() == self::STATUS_GREEN2) {
-            return self::LETTER_REMINDER_2;
-        } elseif ($this->getWaitingListStatus() == self::STATUS_ORANGE) {
-            return self::LETTER_GP;
-        } elseif ($this->getWaitingListStatus() == self::STATUS_RED) {
-            // this used to return null, but now returning GP so that gp letters can be re-printed if necessary
-            return self::LETTER_GP;
-        } else {
-            return; // possibly this should return $lastletter ?
+
+        switch ($waiting_list_status) {
+            case self::STATUS_PURPLE:
+                return self::LETTER_INVITE;
+            case self::STATUS_GREEN1:
+                return self::LETTER_REMINDER_1;
+            case self::STATUS_GREEN2:
+                return self::LETTER_REMINDER_2;
+            case self::STATUS_ORANGE:
+                return self::LETTER_GP;
+            case self::STATUS_RED:
+                // this used to return null, but now returning GP so that gp letters can be re-printed if necessary
+                return self::LETTER_GP;
         }
+
+        return; // possibly this should return $lastletter ?
     }
 
     /**

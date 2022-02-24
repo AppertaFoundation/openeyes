@@ -35,7 +35,7 @@ if (!is_null($controller->module)) {
 $is_visual_impairment = \Yii::app()->request->getParam('is_visual_impairment');
 $print_helper_class .= ($is_visual_impairment ? ' impaired-vision' : '');
 
-$event = $controller->event;
+$event = $controller->event ?? null;
 $deleted_watermark = $event && (int)$event->deleted ? 'void' : null;
 ?>
 <!doctype html>
