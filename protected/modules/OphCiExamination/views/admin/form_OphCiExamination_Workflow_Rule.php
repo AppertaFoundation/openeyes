@@ -45,18 +45,7 @@ $workflows = $restrict_to_current_institution
             </td>
         </tr>
     <?php endif; ?>
-
-    <tr>
-        <td>Institution</td>
-        <td class="cols-full">
-            <?= CHtml::activeDropDownList(
-                $model,
-                'institution_id',
-                Institution::model()->getList($restrict_to_current_institution),
-                ['class' => 'cols-full', 'id' => 'js-institution']
-            ) ?>
-        </td>
-    </tr>
+    
     <tr>
         <td>Context</td>
         <td class="cols-full">
