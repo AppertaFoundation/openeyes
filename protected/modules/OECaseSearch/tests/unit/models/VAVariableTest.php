@@ -131,9 +131,25 @@ class VAVariableTest extends CDbTestCase
         self::assertEquals('VA (LogMAR)', $this->variable->x_label);
         self::assertNotEmpty($this->variable->id_list);
         $variables = array($this->variable);
+        $query = 'SELECT
+                0.3 * FLOOR(va1.LogMAR_value / 0.3) va,
+                COUNT(*) frequency,
+                GROUP_CONCAT(DISTINCT va1.patient_id) patient_id_list
+            FROM v_patient_va_converted va1
+            WHERE va1.patient_id IN (1, 2, 3)
+            AND va1.logMAR_value REGEXP \'[0-9]+\.?[0-9]*\'
+            AND va1.LogMAR_value = (
+                SELECT MAX(va2.LogMAR_value)
+                FROM v_patient_va_converted va2
+                WHERE va2.patient_id = va1.patient_id
+                AND va2.eye = va1.eye
+            )
+            GROUP BY 0.3 * FLOOR(LogMAR_value / 0.3)
+            ORDER BY 1';
+        $expected = Yii::app()->db->createCommand("SELECT COUNT(*) FROM ({$query}) t")->queryScalar();
 
         $results = Yii::app()->searchProvider->getVariableData($variables);
 
-        self::assertCount(0, $results[$this->variable->field_name]);
+        self::assertCount($expected, $results[$this->variable->field_name]);
     }
 }

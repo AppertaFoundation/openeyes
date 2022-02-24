@@ -103,9 +103,15 @@ class RefractionVariableTest extends CDbTestCase
         self::assertEquals('Refraction (mean sph)', $this->variable->x_label);
         self::assertNotEmpty($this->variable->id_list);
         $variables = array($this->variable);
+        $query = 'SELECT FLOOR(value) refraction, COUNT(*) frequency, GROUP_CONCAT(DISTINCT patient_id) patient_id_list
+        FROM v_patient_refraction
+        WHERE patient_id IN (1, 2, 3)
+        GROUP BY FLOOR(value)
+        ORDER BY 1';
+        $expected = Yii::app()->db->createCommand("SELECT COUNT(*) FROM ({$query}) t")->queryScalar();
 
         $results = Yii::app()->searchProvider->getVariableData($variables);
 
-        self::assertCount(1, $results[$this->variable->field_name]);
+        self::assertCount($expected, $results[$this->variable->field_name]);
     }
 }

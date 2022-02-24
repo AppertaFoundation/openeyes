@@ -102,9 +102,14 @@ class CRTVariableTest extends CDbTestCase
         self::assertEquals('CRT (microns)', $this->variable->x_label);
         self::assertNotEmpty($this->variable->id_list);
         $variables = array($this->variable);
+        $expected = Yii::app()->db->createCommand('SELECT COUNT(*) FROM (SELECT 10 * FLOOR(value/10) crt, COUNT(*) frequency, GROUP_CONCAT(DISTINCT patient_id) patient_id_list
+        FROM v_patient_crt
+        WHERE patient_id IN (1, 2, 3)
+        GROUP BY FLOOR(value/10)
+        ORDER BY 1) t')->queryScalar();
 
         $results = Yii::app()->searchProvider->getVariableData($variables);
 
-        self::assertCount(1, $results[$this->variable->field_name]);
+        self::assertCount($expected, $results[$this->variable->field_name]);
     }
 }

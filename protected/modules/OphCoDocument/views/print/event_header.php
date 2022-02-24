@@ -53,7 +53,7 @@ $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::ap
                 <strong><?= PatientIdentifierHelper::getIdentifierValue($primary_identifier) ?></strong>
                 <br/>
                 <?= PatientIdentifierHelper::getIdentifierPrompt($secondary_identifier) ?>
-                <strong><?= PatientIdentifierHelper::getIdentifierValue($secondary_identifier)) ?></strong>
+                <strong><?= PatientIdentifierHelper::getIdentifierValue($secondary_identifier) ?></strong>
                 <br/>
                 DOB: <strong><?= Helper::convertDate2NHS($this->patient->dob) ?> (<?= $this->patient->getAge() ?>
                     )</strong>
