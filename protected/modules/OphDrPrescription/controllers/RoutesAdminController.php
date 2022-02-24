@@ -32,7 +32,7 @@ class RoutesAdminController extends BaseAdminController
             'getIsActiveIcon'
         ));
 
-
+        $admin->setCustomAddURL('/OphDrPrescription/routesAdmin/add');
         $admin->getSearch()->addSearchItem('term');
         $admin->getSearch()->addSearchItem('source_type');
         $admin->getSearch()->addSearchItem('source_subtype');
@@ -52,6 +52,19 @@ class RoutesAdminController extends BaseAdminController
             'source_subtype' => 'Source Subtype',
             'has_laterality' => 'checkbox',
             'is_active' => 'checkbox'
+        ));
+
+        $admin->editModel();
+    }
+
+    public function actionAdd()
+    {
+        $admin = new Admin(MedicationRoute::model(), $this);
+        $admin->setEditFields(array(
+            'term' => 'Term',
+            'source_type' => 'Source Type',
+            'source_subtype' => 'Source Subtype',
+            'has_laterality' => 'checkbox'
         ));
 
         $admin->editModel();
