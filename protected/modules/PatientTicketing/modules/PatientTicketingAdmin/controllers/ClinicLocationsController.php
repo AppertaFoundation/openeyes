@@ -30,9 +30,6 @@ class ClinicLocationsController extends BaseAdminController
             $models = $this->save();
         } else {
             $criteria = new \CDbCriteria();
-            $criteria->with = ['institutions'];
-            $criteria->addCondition('institutions.id = :institution_id');
-            $criteria->params = [':institution_id' => $institution->id];
 
             if ($queueset_id) {
                 $criteria->addCondition('t.queueset_id = :queueset_id');
