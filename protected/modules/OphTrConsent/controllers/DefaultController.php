@@ -47,6 +47,7 @@ class DefaultController extends BaseEventTypeController
         'getDeleteConsentPopupContent' => self::ACTION_TYPE_FORM,
         'uploadFile' => self::ACTION_TYPE_FORM,
         'saveWithdrawal' => self::ACTION_TYPE_FORM,
+        'esignDevicePopup' => self::ACTION_TYPE_FORM,
     );
 
     protected static array $accepted_file_types = [
@@ -77,6 +78,9 @@ class DefaultController extends BaseEventTypeController
             ],
             'postSignRequest' => [
                 'class' => PostSignRequestAction::class,
+            ],
+            'esignDevicePopup' => [
+                'class' => \EsignDevicePopupAction::class
             ],
         ];
     }

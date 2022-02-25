@@ -572,7 +572,12 @@ $config = array(
                 'position' => 92,
                 'restricted' => array('HIE - Admin', 'HIE - Extended', 'HIE - View', 'HIE - Summary'),
                 'options' => ['requires_patient' => true],
-            )
+            ),
+            'esign_device_popup' => array(
+                'title' => 'e-Sign device link',
+                'uri' => 'javascript:eSignDevicePopup();',
+                'position' => 93,
+            ),
         ),
         'admin_menu' => array(),
         'dashboard_items' => array(),

@@ -25,10 +25,25 @@ class SiteController extends BaseController
                 'actions' => array('error', 'login', 'loginFromOverlay', 'getOverlayPrepopulationData', 'debuginfo', 'listSites'),
             ),
             array('allow',
-                'actions' => array('index', 'changeSiteAndFirm', 'search', 'logout', 'deviceready', 'pollSignatureRequests', 'pollCompletedSignature', 'getCurrentTimestamp'),
+                'actions' => array(
+                    'index', 'changeSiteAndFirm', 'search', 'logout', 'deviceready',
+                    'pollSignatureRequests', 'pollCompletedSignature', 'getCurrentTimestamp', 'esignDevicePopup'
+                ),
                 'users' => array('@'),
             ),
         );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function actions()
+    {
+        return [
+            'esignDevicePopup' => [
+                'class' => \EsignDevicePopupAction::class
+            ],
+        ];
     }
 
     /**

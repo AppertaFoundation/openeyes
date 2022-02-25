@@ -916,3 +916,11 @@ function showToolTip(element) {
 
 	$(".oe-tooltip").css({ "top": top + "px" });
 }
+
+function eSignDevicePopup() {
+	const dlg = new OpenEyes.UI.Dialog({
+		title: "e-Sign - link to device",
+		url: "/site/esignDevicePopup",
+	});
+	dlg.open();
+}
