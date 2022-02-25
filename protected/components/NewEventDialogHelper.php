@@ -100,37 +100,34 @@ class NewEventDialogHelper
      */
     public static function structureAllSubspecialties()
     {
-        $subspecialties = Yii::app()->cache->get('new-event-subspecialties');
         $current_institution = Yii::app()->session['selected_institution_id'];
-        if ($subspecialties === false) {
-            $subspecialties = array();
-            foreach (Subspecialty::model()->findAll() as $subspecialty) {
-                $related_firms = Firm::model()
-                    ->active()
-                    ->with('serviceSubspecialtyAssignment')
-                    ->findAll(array(
-                        'condition' => 'serviceSubspecialtyAssignment.subspecialty_id = :ssid AND institution_id = :institution_id',
-                        'params' => array(':ssid' => $subspecialty->id, 'institution_id' => $current_institution),
-                        'order' => 't.name asc'
-                    ));
-                if (count($related_firms)) {
-                    $structure = static::structureSubspecialty($subspecialty);
-                    $structure['services'] = array();
-                    $structure['contexts'] = array();
 
-                    foreach ($related_firms as $f) {
-                        $structured_firm = static::structureFirm($f);
-                        if ($f->can_own_an_episode) {
-                            $structure['services'][] = $structured_firm;
-                        }
-                        if ($f->runtime_selectable) {
-                            $structure['contexts'][] = $structured_firm;
-                        }
+        $subspecialties = array();
+        foreach (Subspecialty::model()->findAll() as $subspecialty) {
+            $related_firms = Firm::model()
+                ->active()
+                ->with('serviceSubspecialtyAssignment')
+                ->findAll(array(
+                    'condition' => 'serviceSubspecialtyAssignment.subspecialty_id = :ssid AND institution_id = :institution_id',
+                    'params' => array(':ssid' => $subspecialty->id, ':institution_id' => $current_institution),
+                    'order' => 't.name asc'
+                ));
+            if (count($related_firms)) {
+                $structure = static::structureSubspecialty($subspecialty);
+                $structure['services'] = array();
+                $structure['contexts'] = array();
+
+                foreach ($related_firms as $f) {
+                    $structured_firm = static::structureFirm($f);
+                    if ($f->can_own_an_episode) {
+                        $structure['services'][] = $structured_firm;
                     }
-                    array_push($subspecialties, $structure);
+                    if ($f->runtime_selectable) {
+                        $structure['contexts'][] = $structured_firm;
+                    }
                 }
+                $subspecialties[] = $structure;
             }
-            Yii::app()->cache->set('new-event-subspecialties', $subspecialties, 30);
         }
 
         return $subspecialties;
