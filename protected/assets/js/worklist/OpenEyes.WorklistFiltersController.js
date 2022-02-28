@@ -95,6 +95,10 @@ var OpenEyes = OpenEyes || {};
         users: [],
         sites: [],
 
+        initial_selected_filter_type: null,
+        initial_selected_filter_id: null,
+        initial_selected_quick_filter: null,
+
         // Defaults for id -> property mappings for filters
         sortByOptions: sortByOptions,
         periodOptions: periodOptions,
@@ -110,6 +114,7 @@ var OpenEyes = OpenEyes || {};
     };
 
     function WorklistFiltersController(options = {}) {
+        const controller = this;
         this.options = $.extend(true, {}, default_options, options);
 
         const panelViewSelector = this.options.worklistFilterPanelSelector;
@@ -137,6 +142,7 @@ var OpenEyes = OpenEyes || {};
         this.recentFilters = [];
 
         this.shownLists = 'all';
+        this.activeFilterIsCombined = false;
 
         this.panelView.setupPanel(this.mappings);
 
@@ -150,14 +156,38 @@ var OpenEyes = OpenEyes || {};
 
         this.panelView.updatePanel(this.mappings, this.filter);
 
-        this.updateActiveFilter();
+        this.retrieveFilters(function() {
+            if (controller.options.initial_selected_filter_type !== null && controller.options.initial_selected_filter_id !== null) {
+                const id = controller.options.initial_selected_filter_id;
 
-        this.retrieveFilters();
+                if (controller.options.initial_selected_filter_type === 'Recent') {
+                    const index = controller.recentFilters.findIndex((filter) => parseInt(filter.id, 10) === id);
 
-        if (this.recentFilters.length > 0) {
-            this.filterIsAltered = false;
-            this.loadRecentFilter(this.recentFilterse.length - 1);
-        }
+                    if (index !== -1) {
+                        controller.loadRecentFilter(index, true);
+                    }
+                } else if (controller.options.initial_selected_filter_type === 'Saved') {
+                    const index = controller.savedFilters.findIndex((filter) => parseInt(filter.id, 10) === id);
+
+                    if (index !== -1) {
+                        controller.loadSavedFilter(index, true);
+                    }
+                }
+
+                controller.activeFilterIsCombined = controller.filter.combined;
+            }
+
+            if (controller.options.initial_selected_quick_filter !== null && controller.quickView !== null) {
+                const initial_quick = JSON.parse(controller.options.initial_selected_quick_filter);
+
+                controller.quickView.setQuickSelection(initial_quick.filter);
+                controller.quickView.setQuickName(initial_quick.patientName);
+
+                if (initial_quick.sortBy) {
+                    controller.quickView.setSortBy(controller.mappings.sortBy, initial_quick.sortBy);
+                }
+            }
+        });
     }
 
     WorklistFiltersController.prototype.constructor = WorklistFiltersController;
@@ -215,37 +245,12 @@ var OpenEyes = OpenEyes || {};
         this.mappings.optional = new Map(optional.concat(this.options.optionalFiltersOptions));
     }
 
-    // The active filter, which contains the representation used in filtering worklist requests
-    WorklistFiltersController.prototype.updateActiveFilter = function () {
-        this.activeFilter = this.filter.clone();
-
-        // Always represent periods as from - to ranges when sending to the server
-        this.activeFilter.period = OpenEyes.WorklistFilter.getDateRange(this.activeFilter.period);
-
-        // Currently quick filters are applied server side
-        this.activeFilter.quick = this.quickProperties;
-
-        this.activeFilterJSON = this.activeFilter.asJSON();
-    }
-
-    WorklistFiltersController.prototype.updateActiveQuickFilter = function (optionalSortBy) {
-        // Currently quick filters are applied server side
-        this.activeFilter.quick = this.quickProperties;
-
-        // Sort by chosen on the quick filters panel overrides the value set on the rhs panel
-        if (optionalSortBy) {
-            this.activeFilter.sortBy = optionalSortBy;
-        }
-
-        this.activeFilterJSON = this.activeFilter.asJSON();
-    }
-
-    WorklistFiltersController.prototype.getFilterJSON = function () {
-        return this.activeFilterJSON;
+    WorklistFiltersController.prototype.updateActiveQuickFilter = function (success) {
+        this.setSessionFilter('Quick', JSON.stringify(this.quickProperties), success);
     }
 
     // Retrieval and storage of filters
-    WorklistFiltersController.prototype.retrieveFilters = function () {
+    WorklistFiltersController.prototype.retrieveFilters = function (success) {
         const controller = this;
 
         $('.spinner').show();
@@ -265,6 +270,8 @@ var OpenEyes = OpenEyes || {};
 
                 controller.panelView.setSavedTabList(controller.mappings, controller.savedFilters);
                 controller.panelView.setRecentTabList(controller.mappings, controller.recentFilters);
+
+                success();
             },
             error: function() {
                 $('.spinner').hide();
@@ -313,7 +320,7 @@ var OpenEyes = OpenEyes || {};
     }
 
     WorklistFiltersController.prototype.applyFilter = function () {
-        this.updateActiveFilter();
+        this.activeFilterIsCombined = this.filter.combined;
 
         if (this.options.applyFilter) {
             this.options.applyFilter(this);
@@ -348,22 +355,59 @@ var OpenEyes = OpenEyes || {};
         this.panelView.setRecentTabList(this.mappings, this.recentFilters);
     }
 
-    WorklistFiltersController.prototype.loadSavedFilter = function (index) {
+    WorklistFiltersController.prototype.loadSavedFilter = function (index, onlyUpdateUI) {
         this.filter = this.savedFilters[index].clone();
         this.filterIsAltered = false;
 
-        this.applyFilter();
+        if (!onlyUpdateUI) {
+            const controller = this;
+
+            this.setSessionFilter('Saved', this.filter.id, function() {
+                if (controller.quickProperties.sortBy !== null) {
+                    controller.quickView.setSortBy(controller.mappings.sortBy, controller.filter.sortBy);
+                    controller.quickSortBy = null; // Remove the quick filter sort by, which will apply the filter too
+                } else {
+                    controller.applyFilter();
+                }
+            });
+        }
 
         this.panelView.updatePanel(this.mappings, this.filter);
     }
 
-    WorklistFiltersController.prototype.loadRecentFilter = function (index) {
+    WorklistFiltersController.prototype.loadRecentFilter = function (index, onlyUpdateUI) {
         this.filter = this.recentFilters[index].clone();
         this.filterIsAltered = false;
 
-        this.applyFilter();
+        if (!onlyUpdateUI) {
+            const controller = this;
+
+            this.setSessionFilter('Recent', this.filter.id, function() {
+                if (controller.quickProperties.sortBy !== null) {
+                    controller.quickView.setSortBy(controller.mappings.sortBy, controller.filter.sortBy);
+                    controller.quickSortBy = null; // Remove the quick filter sort by, which will apply the filter too
+                } else {
+                    controller.applyFilter();
+                }
+            });
+        }
 
         this.panelView.updatePanel(this.mappings, this.filter);
+    }
+
+    WorklistFiltersController.prototype.setSessionFilter = function (type, value, success) {
+        $.ajax({
+            url: '/worklist/setChosenFilter',
+            type: 'POST',
+            data: {
+                YII_CSRF_TOKEN: YII_CSRF_TOKEN,
+                filter_type: type,
+                filter_value: value
+            },
+            success: function() {
+                success();
+            }
+        });
     }
 
     // Panel wide properties (site & context)
@@ -444,8 +488,7 @@ var OpenEyes = OpenEyes || {};
                 this.quickView.setQuickSelection(newQuick);
             }
 
-            this.updateActiveQuickFilter();
-            this.applyFilter();
+            this.updateActiveQuickFilter(this.applyFilter.bind(this));
         }
     });
 
@@ -458,18 +501,20 @@ var OpenEyes = OpenEyes || {};
                 this.quickView.setQuickName(newQuickName);
             }
 
-            this.updateActiveQuickFilter();
-            this.applyFilter();
+            this.updateActiveQuickFilter(this.applyFilter.bind(this));
         }
     });
 
     // Quick filter (Sort by component)
     Object.defineProperty(WorklistFiltersController.prototype, 'quickSortBy', {
         set: function (newSortBy) {
-            this.sortBy = newSortBy;
+            this.quickProperties.sortBy = newSortBy;
 
-            this.updateActiveQuickFilter(newSortBy);
-            this.applyFilter();
+            if (this.quickView && newSortBy !== null) {
+                this.quickView.setSortBy(this.mappings.sortBy, newSortBy);
+            }
+
+            this.updateActiveQuickFilter(this.applyFilter.bind(this));
         }
     });
 
@@ -488,7 +533,7 @@ var OpenEyes = OpenEyes || {};
         this.shownLists = lists;
 
         if (this.options.changeShownLists) {
-            this.options.changeShownLists(this.activeFilter.combined ? 'all' : lists);
+            this.options.changeShownLists(this.activeFilterIsCombined ? 'all' : lists);
         }
     }
 
@@ -496,7 +541,7 @@ var OpenEyes = OpenEyes || {};
     // Called after data has been refreshed
     WorklistFiltersController.prototype.resetShownLists = function () {
         if (this.options.changeShownLists) {
-            this.options.changeShownLists(this.activeFilter.combined ? 'all' : this.shownLists);
+            this.options.changeShownLists(this.activeFilterIsCombined ? 'all' : this.shownLists);
         }
     }
 

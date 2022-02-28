@@ -23,6 +23,10 @@ $pathway_json = json_encode(
     ),
     JSON_THROW_ON_ERROR
 );
+
+
+$session_filter_info = WorklistFilterQuery::getLastUsedFilterFromSession();
+$initial_filter = $session_filter_info['filter'];
 ?>
 <script src="<?= Yii::app()->assetManager->createUrl('../../node_modules/object-hash/dist/object_hash.js')?>"></script>
 <input type="hidden" id="wl_print_selected_worklist" value="" />
@@ -222,9 +226,14 @@ $pathway_json = json_encode(
             'show_undo_step' => true,
         )
     );
-    foreach ($worklists as $worklist) : ?>
-        <?php $this->renderPartial('//worklist/_worklist', array('worklist' => $worklist, 'coreapi' => $coreapi)); ?>
-    <?php endforeach; ?>
+    if ($initial_filter->getCombineWorklistsStatus()) {
+        $this->renderPartial('//worklist/_worklist', array('worklist' => $worklists, 'coreapi' => $coreapi, 'filter' => $initial_filter));
+    } else {
+        foreach ($worklists as $worklist) {
+            $this->renderPartial('//worklist/_worklist', array('worklist' => $worklist, 'coreapi' => $coreapi, 'filter' => $initial_filter));
+        }
+    }
+    ?>
 </main>
 <div class="oe-patient-quick-overview" style="display: none;">
     <div class="close-icon-btn" style="display: none;" onclick="closePatientPop();">
@@ -1213,8 +1222,7 @@ $pathway_json = json_encode(
             {
                 list_id: $("#wl_print_selected_worklist").val().replace("js-worklist-",""),
                 date_from: $("#worklist-date-from").val(),
-                date_to: $("#worklist-date-to").val(),
-                filter: worklistFiltersController ? worklistFiltersController.getFilterJSON() : undefined,
+                date_to: $("#worklist-date-to").val()
             }
         );
     }
@@ -1232,7 +1240,6 @@ $pathway_json = json_encode(
             {
                 date_from: $('#worklist-date-from').val(),
                 date_to: $('#worklist-date-to').val(),
-                filter: worklistFiltersController ? worklistFiltersController.getFilterJSON() : undefined,
             },
             function(resp){
                 if(!resp){
@@ -1341,18 +1348,11 @@ $pathway_json = json_encode(
 
         // Set up client side controller for filters
 
-        // Gather the set of worklist ids and titles from the initial page load,
-        // when no filters have been applied.
-        //
-        // If the circumstances change then the set of worklists may need to be
-        // queried from the DB at this point instead.
-        const extantWorklists = [];
-
-        $('#js-clinic-manager section.oec-group').each(function() {
-            const worklistSection = $(this);
-
-            extantWorklists.push({ id: worklistSection.data('id'), title: worklistSection.data('title') });
-        });
+        // Gather the set of worklist ids and titles, now from the worklists
+        // passed from the controller.
+        const extantWorklists = <?= json_encode(array_map(static function ($worklist) {
+            return ['id' => $worklist->id, 'title' => $worklist->name];
+                                }, $worklists)) ?>;
 
         const usersList = <?= json_encode(array_map(static function ($user) {
             return ['id' => $user->id, 'label' => $user->getFullName() . ' (' . $user->getInitials() .')'];
@@ -1374,6 +1374,10 @@ $pathway_json = json_encode(
             worklists: extantWorklists,
             users: usersList,
             steps: stepsList,
+
+            initial_selected_filter_type: <?= json_encode($session_filter_info['type']) ?>,
+            initial_selected_filter_id: <?= json_encode($session_filter_info['id']) ?>,
+            initial_selected_quick_filter: <?= json_encode($session_filter_info['quick']) ?>,
 
             applyFilter: function() { performSync(); },
 
@@ -1409,8 +1413,6 @@ $pathway_json = json_encode(
         };
 
         worklistFiltersController = new OpenEyes.WorklistFiltersController(controllerOptions);
-
-        <?php $initial_filter = new WorklistFilterQuery(); ?>
 
         worklistFiltersController.updateCounts(
             <?= json_encode($this->getStatusCountsList($initial_filter, $worklists)) ?>,

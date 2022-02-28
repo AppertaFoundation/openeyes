@@ -233,8 +233,8 @@
 </script>
 
 <script type="text/template" id="js-worklist-filter-panel-template-named-filter">
-    <div class="fav" data-index="{{index}}">
-        <div class="details">
+    <div class="fav">
+        <div class="details" data-index="{{index}}">
             <div class="name">{{name}}</div>
             <div class="js-full-details" style="display:none">
                 <div class="site">{{site}}</div>

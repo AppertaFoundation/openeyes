@@ -81,6 +81,7 @@ var OpenEyes = OpenEyes || {};
         switch (key) {
             case 'id':
             case 'name':
+            case 'type':
                 return undefined;
 
             case 'worklists':
@@ -97,6 +98,12 @@ var OpenEyes = OpenEyes || {};
     /* Definition */
     function WorklistFilter()
     {
+        // Type and Id are internal details filtered out when supplying the whole filter
+        // to the server, but may sent instead of the filter when loading a recent/saved filter
+        // or applying a quick filter.
+        this.type = null;
+        this.id = null;
+
         this.site = 1;
         this.context = 'all';
 
@@ -146,6 +153,8 @@ var OpenEyes = OpenEyes || {};
 
         result.site = data.site;
         result.context = data.context;
+
+        result.period = data.period;
 
         result.worklists = decodeWorklists(data.worklists);
         result.sortBy = data.sortBy;

@@ -62,7 +62,7 @@ class WorklistFilterQuery
 
     private $quick;
 
-    public function __construct($filter = null)
+    public function __construct($filter = null, $quick = null)
     {
         if ($filter) {
             $filter = json_decode($filter);
@@ -73,8 +73,15 @@ class WorklistFilterQuery
             $this->worklists = $filter->worklists;
 
             if (isset($filter->period)) {
-                $this->from = $filter->period->from;
-                $this->to = $filter->period->to;
+                if (getType($filter->period) === 'string') {
+                    $range = self::convertPeriodToDateRange($filter->period);
+
+                    $this->from = $range['from'];
+                    $this->to = $range['to'];
+                } else {
+                    $this->from = $filter->period->from;
+                    $this->to = $filter->period->to;
+                }
             } else {
                 $this->from = null;
                 $this->to = null;
@@ -85,7 +92,11 @@ class WorklistFilterQuery
 
             $this->combined = $filter->combined;
 
-            $this->quick = $filter->quick;
+            if (isset($filter->quick)) {
+                $this->quick = $filter->quick;
+            } else {
+                $this->quick = (getType($quick) === 'string') ? json_decode($quick) : $quick;
+            }
         } else {
             $this->site = Yii::app()->session['selected_site_id'];
             $this->context = self::ALL_CONTEXTS;
@@ -99,13 +110,17 @@ class WorklistFilterQuery
 
             $this->combined = false;
 
-            $this->quick = null;
+            $this->quick = $quick;
         }
 
         if ($this->context === self::ALL_CONTEXTS) {
             $this->firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
         } else {
             $this->firm = Firm::model()->findByPk($this->context);
+        }
+
+        if (!empty($this->quick) && !empty($this->quick->sortBy)) {
+            $this->sortBy = $this->quick->sortBy;
         }
 
         // Cache a table of priority values for indexing later
@@ -624,6 +639,82 @@ class WorklistFilterQuery
             $command->join('contact qc', 'qc.id = qp.contact_id');
 
             $conditions[] = ['or', ['like', 'qc.first_name', $likeExpr], ['like', 'qc.last_name', $likeExpr]];
+        }
+    }
+
+    private static function convertPeriodToDateRange($period)
+    {
+        $from = null;
+        $to = null;
+
+        switch ($period) {
+            case 'yesterday':
+                $from = new DateTime('today -1 days');
+                break;
+
+            case 'tomorrow':
+                $from = new DateTime('today +1 days');
+                break;
+
+            case 'this-week':
+                $from = new DateTime('today');
+                $to = new DateTime('today +6 days');
+                break;
+
+            case 'next-week':
+                $from = new DateTime('today +7 days');
+                $to = new DateTime('today +13 days');
+                break;
+
+            case 'next-7-days':
+                $from = new DateTime('today');
+                $to = new DateTime('today +7 days');
+                break;
+
+            case 'today':
+            default:
+                $from = new DateTime('today');
+                break;
+        }
+
+        return array(
+            'from' => $from ? $from->format('Y-m-d') : '',
+            'to' => $to ? $to->format('Y-m-d') : '');
+    }
+
+    public static function getLastUsedFilterFromSession()
+    {
+        $filter = null;
+        $quick = null;
+        $type = 'New';
+        $id = null;
+
+        if (!empty(Yii::app()->session['current_worklist_filter_type']) && !empty(Yii::app()->session['current_worklist_filter_id'])) {
+            $type = Yii::app()->session['current_worklist_filter_type'];
+            $id = Yii::app()->session['current_worklist_filter_id'];
+            $quick = !empty(Yii::app()->session['current_worklist_filter_quick']) ? Yii::app()->session['current_worklist_filter_quick'] : null;
+
+            if ($type === 'Saved') {
+                $filter = \WorklistFilter::model()->findByPk($id);
+            } elseif ($type === 'Recent') {
+                $filter = \WorklistRecentFilter::model()->findByPk($id);
+            }
+        }
+
+        $filter = $filter ? $filter->filter : null;
+
+        return array('filter' => new WorklistFilterQuery($filter, $quick), 'quick' => $quick, 'type' => $type, 'id' => $id);
+    }
+
+    public static function setLatestUsedFilterForSession($type, $value)
+    {
+        if ($value !== null) {
+            if ($type === 'Saved' || $type === 'Recent') {
+                Yii::app()->session['current_worklist_filter_type'] = $type;
+                Yii::app()->session['current_worklist_filter_id'] = (int)$value;
+            } elseif ($type === 'Quick') {
+                Yii::app()->session['current_worklist_filter_quick'] = $value;
+            }
         }
     }
 }

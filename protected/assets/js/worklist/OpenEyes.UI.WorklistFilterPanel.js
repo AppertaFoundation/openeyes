@@ -6,7 +6,7 @@ OpenEyes.UI = OpenEyes.UI || {};
         if (typeof period === 'string') {
             return periodNames.get(period);
         } else {
-            return {period: `${period.from} -- ${period.to}`};
+            return {title: `${period.from} – ${period.to}`};
         }
     }
 

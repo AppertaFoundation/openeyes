@@ -103,7 +103,13 @@ class WorklistController extends BaseController
             $this->redirect(array('/worklist/view?date_from=' . $date_from . '&date_to=' . $date_to));
         }
 
-        $worklists = $this->manager->getCurrentAutomaticWorklistsForUser(null, $date_from ? new DateTime($date_from) : null, $date_to ? new DateTime($date_to) : null);
+        $filter = WorklistFilterQuery::getLastUsedFilterFromSession();
+        $filter = $filter['filter'];
+
+        $date_from = $filter->getFrom() ?? $date_from;
+        $date_to = $filter->getTo() ?? $date_to;
+
+        $worklists = $this->manager->getCurrentAutomaticWorklistsForUser(null, $date_from ? new DateTime($date_from) : null, $date_to ? new DateTime($date_to) : null, $filter);
 
         if (WorklistFilter::model()->countForCurrentUser() !== 0 || WorklistRecentFilter::model()->countForCurrentUser() !== 0) {
             Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/OpenEyes.UI.InputFieldValidation.js'), ClientScript::POS_END);
@@ -637,11 +643,12 @@ class WorklistController extends BaseController
         $this->redirect('/worklist/manual');
     }
 
-    public function actionPrint($date_from = null, $date_to = null, $list_id = null, $filter = null)
+    public function actionPrint($date_from = null, $date_to = null, $list_id = null)
     {
         $this->layout = '//layouts/print';
 
-        $filter = new WorklistFilterQuery($filter);
+        $filter = WorklistFilterQuery::getLastUsedFilterFromSession();
+        $filter = $filter['filter'];
 
         $date_from = $filter->getFrom() ?? $date_from;
         $date_to = $filter->getTo() ?? $date_to;
@@ -1339,7 +1346,8 @@ class WorklistController extends BaseController
         $date_from = Yii::app()->request->getParam('date_from');
         $date_to = Yii::app()->request->getParam('date_to');
 
-        $filter = new WorklistFilterQuery(Yii::app()->request->getParam('filter'));
+        $filter = WorklistFilterQuery::getLastUsedFilterFromSession();
+        $filter = $filter['filter'];
 
         $date_from = $filter->getFrom() ?? $date_from;
         $date_to = $filter->getTo() ?? $date_to;
@@ -1510,8 +1518,9 @@ class WorklistController extends BaseController
     {
         $filter = null;
         $response = array();
+        $is_recent = Yii::app()->request->getParam('is_recent') === 'true';
 
-        if (Yii::app()->request->getParam('is_recent') === 'true') {
+        if ($is_recent) {
             $filter = new WorklistRecentFilter();
         } else {
             $filter_name = Yii::app()->request->getParam('name');
@@ -1529,6 +1538,8 @@ class WorklistController extends BaseController
 
         $response['id'] = $filter->id;
         $response['user'] = $filter->created_user_id;
+
+        WorklistFilterQuery::setLatestUsedFilterForSession($is_recent ? 'Recent' : 'Saved', $filter->id);
 
         $this->renderJSON($response);
     }
@@ -1619,5 +1630,19 @@ class WorklistController extends BaseController
                 'waiting_time_html' => $pathway->getTotalDurationHTML(true),
             ]
         );
+    }
+
+    /*
+     * Store the id of a newly chosen recent/saved filter,
+     * or the JSON representation of the quick filter in the session
+     */
+    public function actionSetChosenFilter()
+    {
+        $type = Yii::app()->request->getPost('filter_type');
+        $value = Yii::app()->request->getPost('filter_value');
+
+        WorklistFilterQuery::setLatestUsedFilterForSession($type, $value);
+
+        $this->renderJSON('ok');
     }
 }
