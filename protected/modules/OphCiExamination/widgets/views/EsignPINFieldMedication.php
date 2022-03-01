@@ -139,6 +139,11 @@ if (!$element->isSigned()) {
                 $('#<?= $el_class ?>_signatures_0_proof').val('');
             }
 
+            let isset_mm_error = document.getElementById("OEModule_OphCiExamination_models_MedicationManagement_element").getElementsByClassName("error")[0];
+            if(typeof isset_mm_error === "undefined"){
+                sessionStorage.setItem('mmesign_change', 'false');
+            }
+
             if (sessionStorage.getItem("mmesign_change") === null) {
                 sessionStorage.setItem('mmesign_change', 'false');
             }
