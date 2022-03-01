@@ -13,7 +13,7 @@
  * @property string $validate_regex
  * @property string $value_display_prefix
  * @property string $value_display_suffix
- * @property string $unique_row_str
+ * @property string $unique_row_string
  * @property string $pad
  * @property string $last_modified_user_id
  * @property string $last_modified_date
@@ -46,7 +46,7 @@ class PatientIdentifierType extends BaseActiveRecordVersioned
     {
         return array(
             array('id, usage_type, short_title, long_title, institution_id, site_id, validate_regex,
-             value_display_prefix, value_display_suffix, unique_row_str,pad, spacing_rule,pas_api',
+             value_display_prefix, value_display_suffix, unique_row_string,pad, spacing_rule,pas_api',
                 'safe'),
             array('short_title, institution_id, validate_regex', 'required'),
             array('usage_type', 'validateUsageType'),
@@ -70,26 +70,6 @@ class PatientIdentifierType extends BaseActiveRecordVersioned
             'patientIdentifierStatuses' => array(self::HAS_MANY, 'PatientIdentifierStatus', 'patient_identifier_type_id'),
         );
     }
-
-    /**
-     * This is necessary to NOT include unique_row_str as it is auto generated
-     *
-     * @param bool $runValidation
-     * @param null $attributes
-     * @param bool $allow_overriding
-     * @return bool
-     * @throws Exception
-     */
-    public function save($runValidation = true, $attributes = null, $allow_overriding = false)
-    {
-        if (!$attributes) {
-            $attributes = array_values(array_filter(array_keys($this->getAttributes()), fn ($m) => $m != 'unique_row_str'));
-        }
-
-        return parent::save($runValidation, $attributes, $allow_overriding);
-    }
-
-
 
     /**
      * Relation added manually as two foreign keys on single column causes Yii to
@@ -128,8 +108,8 @@ class PatientIdentifierType extends BaseActiveRecordVersioned
     public function validateUsageType()
     {
         $existing_identifier = PatientIdentifierType::model()->find([
-            'condition' => 'unique_row_str = :unique_row_str',
-            'params' => [':unique_row_str' => $this->generateUniqueRowStringIdentifier()]
+            'condition' => 'unique_row_string = :unique_row_string',
+            'params' => [':unique_row_string' => $this->generateUniqueRowStringIdentifier()]
         ]);
         if ($existing_identifier && $existing_identifier->id !== $this->id) {
             $this->addError('usage_type', 'There is already a ' . strtolower($this->usage_type) . ' usage type for the chosen site');
@@ -224,6 +204,13 @@ class PatientIdentifierType extends BaseActiveRecordVersioned
      */
     public function beforeSave()
     {
+        $unique_row_string_site_id = $this->site_id;
+
+        if(!isset($this->site_id) || $this->site_id === '') {
+            $unique_row_string_site_id = 0;
+        }
+
+        $this->unique_row_string = $this->usage_type . '-' . $this->institution_id . '-' . $unique_row_string_site_id;
         if ($this->pas_api) {
             if (is_array($this->pas_api)) {
                 $this->pas_api = json_encode($this->pas_api);
@@ -249,4 +236,5 @@ class PatientIdentifierType extends BaseActiveRecordVersioned
         json_decode($string);
         return (json_last_error() == JSON_ERROR_NONE);
     }
+
 }

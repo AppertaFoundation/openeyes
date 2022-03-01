@@ -152,8 +152,6 @@ class PasSearchUpdateObserver extends PasApiObserver
             $identifier_to_update->patient_identifier_type_id = $type->id;
             $identifier_to_update->value = $identifier;
         }
-        // unsetting unique_row_str, because that column is a combination of other columns
-        unset($identifier_to_update['unique_row_str']);
 
         if (!$identifier_to_update->save()) {
             \OELog::log("Patient id: '{$patient->id}' not added to type id {$type->id} ({$type->usage_type}) with value: {$identifier}. " . print_r($identifier_to_update->getErrors(), true));

@@ -197,7 +197,7 @@ class V1Controller extends \CController
         $resource_model = $this->getResourceModel($resource_type);
 
         $body = \Yii::app()->request->rawBody;
-        $patient_identifier_type = \PatientIdentifierType::model()->findByAttributes(['unique_row_str' => $identifier_type]);
+        $patient_identifier_type = \PatientIdentifierType::model()->findByAttributes(['unique_row_string' => $identifier_type]);
         if ($patient_identifier_type) {
             \Yii::app()->session["selected_institution_id"] = $patient_identifier_type->institution_id;
         }
@@ -482,7 +482,7 @@ class V1Controller extends \CController
 
     private function validatePatientResource($resource, $id, $identifier_type)
     {
-        $patient_identifier_type = \PatientIdentifierType::model()->findByAttributes(['unique_row_str' => $identifier_type]);
+        $patient_identifier_type = \PatientIdentifierType::model()->findByAttributes(['unique_row_string' => $identifier_type]);
 
         if (!$patient_identifier_type) {
             $this->sendErrorResponse(404, ['PatientIdentifierType cannot be found based on "identifier-type": ' . $identifier_type]);
