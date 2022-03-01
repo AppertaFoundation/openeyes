@@ -48,7 +48,7 @@ use Yii;
  * @property TicketQueueAssignment current_queue_assignment
  * @property Queue current_queue
  */
-class Ticket extends \BaseActiveRecordVersioned
+class Ticket extends \BaseActiveRecordVersionedSoftDelete
 {
     /**
      * Returns the static model of the specified AR class.
