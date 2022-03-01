@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -104,8 +105,8 @@ class OphTrOperationbookingModule extends BaseEventTypeModule
 
     public function isLACDisabled()
     {
-        $lac_enabled = Yii::app()->params['op_booking_disable_lac_required'];
-        return isset($lac_enabled) && $lac_enabled == 'on';
+        $lac_enabled = Yii::app()->params['op_booking_show_lac_required'];
+        return isset($lac_enabled) && $lac_enabled == 'off';
     }
 }
 
