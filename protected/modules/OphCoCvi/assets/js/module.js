@@ -14,7 +14,7 @@ $(document).ready(function() {
         setTimeout(enableButtons, 2000);
     });
 
-    handleButton($("#et_print_info_sheet"), function (e) {
+    handleButton($("#et_print_info_sheet, #et_print_info_sheet_footer"), function (e) {
         $frame = $("<iframe src='/OphCoCvi/default/printInfoSheet' style='display: none;'></iframe>");
         $frame.appendTo("body");
         $frame.get(0).contentWindow.print();

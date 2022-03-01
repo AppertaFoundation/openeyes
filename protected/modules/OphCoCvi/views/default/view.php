@@ -41,10 +41,6 @@ if ($this->getManager()->isIssued($this->event)) {
 $this->event_actions[] = EventAction::button('Print Information Sheet', null, array('level' => 'secondary'), array('type' => 'button', 'id' => 'et_print_info_sheet', 'class' => 'button small'));
 $selectOptions['et_print_info_sheet'] = 'Print Information Sheet';
 
-// OE-11961 - CVI - "Print Information sheet" functionality is broken
-$this->event_actions[] = EventAction::button('Print Information Sheet', null, array('level' => 'secondary'), array('type' => 'button', 'id' => 'et_print_info_sheet', 'class' => 'button small', 'style' => 'display:none;'));
-$selectOptions['et_print_info_sheet'] = 'Print Information Sheet';
-
 $this->event_actions[] = EventAction::dropdownToButton('', 'select_action', $selectOptions, null);
 
 if ($this->canIssue()) {
