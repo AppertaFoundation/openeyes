@@ -387,11 +387,18 @@ class OEMigration extends CDbMigration
             'display_order' => isset($params['display_order']) ? $params['display_order'] : 1,
             'default' => isset($params['default']) ? $params['default'] : 0,
             'required' => isset($params['required']) ? $params['required'] : 0,
+            'group_title' => isset($params['group_title']) ? $params['group_title'] : '',
         );
 
         if (isset($params['group_name'])) {
             $row['element_group_id'] = $this->getIdOfElementGroupByName($params['group_name'], $event_type_id);
+
+            if (!isset($params['group_title'])){
+                $row['group_title'] = $params['group_name'];
+            }
         }
+
+        
 
         $this->insert('element_type', $row);
 
@@ -479,7 +486,18 @@ class OEMigration extends CDbMigration
             'event_type_id' => $event_type_id,
         );
 
-        $this->insert('element_group', $row);
+        $exists = !empty($this->dbConnection->createCommand("SELECT id 
+                                                            FROM element_group 
+                                                            WHERE `name` = :group_name 
+                                                                AND event_type_id = :event_type_id")->queryScalar([':group_name' => $name, ':event_type_id' => $event_type_id]));
+        // If the element group already exists then just update the display_order
+        // Else insert the new row
+        if ($exists){
+            $this->update('element_group', $row, '`name` = :group_name AND event_type_id = :event_type_id', [':group_name' => $name, ':event_type_id' => $event_type_id]);
+        }
+        else {
+            $this->insert('element_group', $row);
+        }
 
         return $this->dbConnection->lastInsertID;
     }

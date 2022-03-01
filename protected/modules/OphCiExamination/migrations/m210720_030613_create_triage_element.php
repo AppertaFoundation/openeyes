@@ -7,7 +7,7 @@ class m210720_030613_create_triage_element extends OEMigration
         $this->createElementGroupForEventType(
             'Triage',
             'OphCiExamination',
-            210
+            25
         );
 
         $this->createElementType('OphCiExamination', 'Triage', [

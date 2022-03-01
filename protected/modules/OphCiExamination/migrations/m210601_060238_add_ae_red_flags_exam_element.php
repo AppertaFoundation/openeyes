@@ -4,16 +4,16 @@ class m210601_060238_add_ae_red_flags_exam_element extends OEMigration
 {
     public function safeUp()
     {
-        $this->insert('element_group', array(
-            'name' => 'A & E',
-            'event_type_id' => $this->getIdOfEventTypeByClassName('OphCiExamination'),
-            'display_order' => 220,
-        ));
+        $this->createElementGroupForEventType(
+            'Triage',
+            'OphCiExamination',
+            25
+        );
 
         $this->createElementType('OphCiExamination', 'Red Flags', array(
             'class_name' => 'OEModule\OphCiExamination\models\Element_OphCiExamination_AE_RedFlags',
             'display_order' => 540,
-            'group_name' => 'A & E',
+            'group_name' => 'Triage',
             'default' => 0,
             'required' => 0,
         ));
@@ -65,7 +65,7 @@ class m210601_060238_add_ae_red_flags_exam_element extends OEMigration
         $id = $this->getIdOfElementTypeByClassName('OEModule\OphCiExamination\models\Element_OphCiExamination_AE_RedFlags');
         $this->delete('element_type', 'id = ?', [$id]);
 
-        $this->delete('element_group', 'name = ?', ['A & E']);
+        $this->delete('element_group', 'name = ?', ['Triage']);
 
         $this->dropOETable('et_ophciexamination_ae_red_flags', true);
         $this->dropOETable('ophciexamination_ae_red_flags_option', true);
