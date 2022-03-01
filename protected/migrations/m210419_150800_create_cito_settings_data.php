@@ -3,11 +3,11 @@
 class m210419_150800_create_cito_settings_data extends OEMigration
 {
     private $keys = [
-        'cito_access_token_url' => 'Cito access token URL',
-        'cito_otp_url' => 'Cito OTP URL',
-        'cito_sign_url' => 'Cito sign URL',
-        'cito_grant_type' => 'Cito grant type',
-        'cito_client_id' => 'Cito client id',
+        'cito_access_token_url' => 'Civica Cito API access token URL',
+        'cito_otp_url' => 'Civica Cito API OTP URL',
+        'cito_sign_url' => 'Civica Cito API sign URL',
+        'cito_grant_type' => 'Civica Cito API grant type',
+        'cito_client_id' => 'Civica Cito API client id',
     ];
     public function safeUp()
     {

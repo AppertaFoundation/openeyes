@@ -7,28 +7,28 @@ class m210420_071025_addHIEconfigToDatabase extends OEMigration
             'element_type_id' => null,
             'field_type_id' => 'string',
             'key' => 'hie_remote_url',
-            'name' => 'hie remote url',
+            'name' => 'HIE API remote url',
             'default_value' => '',
         ),
         array(
             'element_type_id' => null,
             'field_type_id' => 'string',
             'key' => 'hie_usr_org',
-            'name' => 'hie usr_org',
+            'name' => 'HIE API Organisation value (usr_org)',
             'default_value' => '',
         ),
         array(
             'element_type_id' => null,
             'field_type_id' => 'string',
             'key' => 'hie_usr_fac',
-            'name' => 'hie usr_fac',
+            'name' => 'HIE API FAC value (usr_fac)',
             'default_value' => '',
         ),
         array(
             'element_type_id' => null,
             'field_type_id' => 'string',
             'key' => 'hie_external',
-            'name' => 'hie external',
+            'name' => 'HIE API external value (hie_external)',
             'data' => 'both',
             'default_value' => 'both',
         ),
@@ -36,7 +36,7 @@ class m210420_071025_addHIEconfigToDatabase extends OEMigration
             'element_type_id' => null,
             'field_type_id' => 'string',
             'key' => 'hie_org_user',
-            'name' => 'hie org_user',
+            'name' => 'HIE API org user value (org_user)',
             'default_value' => '',
         ),
     );
@@ -59,7 +59,7 @@ class m210420_071025_addHIEconfigToDatabase extends OEMigration
                     break;
             }
             if (isset($item['data'])) {
-                $item['data'] = is_array($item['data'])? serialize($item['data']) : $item['data'];
+                $item['data'] = is_array($item['data']) ? serialize($item['data']) : $item['data'];
             }
 
             $exists_meta_data = $this->dbConnection->createCommand()->select('id')->from('setting_metadata')->where('`key` = :setting_key', array(':setting_key' => $item['key']))->queryRow();
