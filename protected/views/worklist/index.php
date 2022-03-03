@@ -1378,6 +1378,7 @@ $initial_filter = $session_filter_info['filter'];
             initial_selected_filter_type: <?= json_encode($session_filter_info['type']) ?>,
             initial_selected_filter_id: <?= json_encode($session_filter_info['id']) ?>,
             initial_selected_quick_filter: <?= json_encode($session_filter_info['quick']) ?>,
+            initial_is_combined: <?= json_encode($session_filter_info['filter']->combined) ?>,
 
             applyFilter: function() { performSync(); },
 

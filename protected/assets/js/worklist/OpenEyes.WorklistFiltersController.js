@@ -98,6 +98,7 @@ var OpenEyes = OpenEyes || {};
         initial_selected_filter_type: null,
         initial_selected_filter_id: null,
         initial_selected_quick_filter: null,
+        initial_is_combined: false,
 
         // Defaults for id -> property mappings for filters
         sortByOptions: sortByOptions,
@@ -142,7 +143,7 @@ var OpenEyes = OpenEyes || {};
         this.recentFilters = [];
 
         this.shownLists = 'all';
-        this.activeFilterIsCombined = false;
+        this.activeFilterIsCombined = this.options.initial_is_combined;
 
         this.panelView.setupPanel(this.mappings);
 
@@ -339,20 +340,22 @@ var OpenEyes = OpenEyes || {};
     }
 
     WorklistFiltersController.prototype.pushRecentFilter = function (onSuccess) {
-        if (this.recentFilters.some(this.filter.compare.bind(this.filter))) {
-            return;
+        const existing = this.recentFilters.findIndex(this.filter.compare.bind(this.filter));
+
+        if (existing !== -1) {
+            this.loadRecentFilter(existing, false);
+        } else {
+            if (this.recentFilters.length >= this.maxRecentFilters) {
+                this.recentFilters.shift();
+            }
+
+            this.filterIsAltered = false;
+
+            this.recentFilters.push(this.filter.clone());
+            this.storeFilter(true, onSuccess);
+
+            this.panelView.setRecentTabList(this.mappings, this.recentFilters);
         }
-
-        if (this.recentFilters.length >= this.maxRecentFilters) {
-            this.recentFilters.shift();
-        }
-
-        this.filterIsAltered = false;
-
-        this.recentFilters.push(this.filter.clone());
-        this.storeFilter(true, onSuccess);
-
-        this.panelView.setRecentTabList(this.mappings, this.recentFilters);
     }
 
     WorklistFiltersController.prototype.loadSavedFilter = function (index, onlyUpdateUI) {

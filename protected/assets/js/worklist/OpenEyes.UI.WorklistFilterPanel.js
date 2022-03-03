@@ -204,6 +204,8 @@ OpenEyes.UI = OpenEyes.UI || {};
             into.find('input:checked').prop('checked', false);
             allButton.addClass('selected');
 
+            $.removeCookie('worklists-to-show');
+
             controller.setShownLists('all');
         });
 
@@ -222,8 +224,24 @@ OpenEyes.UI = OpenEyes.UI || {};
 
             allButton.removeClass('selected');
 
+            $.cookie('worklists-to-show', JSON.stringify(shownLists), { secure: true });
+
             controller.setShownLists(shownLists);
         });
+
+        const listsCookie = $.cookie('worklists-to-show');
+
+        if (listsCookie) {
+            let lists = JSON.parse(listsCookie);
+
+            for (let id of lists) {
+                into.find(`input[value="${id}"]`).attr('checked', true);
+            }
+
+            allButton.removeClass('selected');
+
+            controller.setShownLists(lists);
+        }
     }
 
     WorklistFilterPanel.prototype.setupFiltersAdder = function (idMappings) {
