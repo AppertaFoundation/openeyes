@@ -173,7 +173,7 @@ class AuthRules
             return true;
         } else {
             return date('Ymd') < date('Ymd',
-                    strtotime($event->created_date) + (86400 * (Yii::app()->params['event_lock_days'] + 1)));
+                    strtotime($event->created_date) + (86400 * (SettingMetadata::model()->getSetting('event_lock_days') + 1)));
         }
     }
 }
