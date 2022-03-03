@@ -91,6 +91,7 @@ protected/modules/*
 !/protected/modules/PASAPI/
 !/protected/modules/PatientTicketing/
 !/protected/modules/OphDrPGDPSD/
+!/protected/modules/Mirth/
 
 # Tests
 /jm_behat_report.html
