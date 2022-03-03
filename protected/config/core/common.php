@@ -583,7 +583,7 @@ $config = array(
         'dashboard_items' => array(),
         'admin_email' => '',
         'enable_transactions' => true,
-        'event_lock_days' => 0,
+        'event_lock_days' => getenv('OE_EVENT_LOCK_DAYS') ? getenv('OE_EVENT_LOCK_DAYS') : null,
         'event_lock_disable' => false,
         'reports' => array(),
         'html_autocomplete' => getenv('OE_MODE') == "LIVE" ? 'off' : 'on',
