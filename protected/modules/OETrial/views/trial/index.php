@@ -163,7 +163,7 @@
                   let closed = row.data('trial-closed');
 
                   const startInside = (!searchToDate || start <= searchToDate);
-                  let closedInside = true;
+                  let closedInside = false;
 
                   if (closed) {
                     closed = $.datepicker.parseDate('yy-mm-dd', closed);
@@ -171,7 +171,7 @@
                     closedInside = (!searchFromDate || closed >= searchFromDate);
                   }
 
-                  if (startInside && closedInside) {
+                  if (startInside || closedInside) {
                     row.show();
                     row.attr('data-hidden-label', 'show');
                   }
