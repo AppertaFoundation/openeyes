@@ -34,6 +34,10 @@ if ($consentFormType == Element_OphTrConsent_Type::TYPE_UNABLE_TO_CONSENT_ID) {
     $showOnlyForCform4 = 'js-hideOnlyForCform4';
     $toggle_secOp = 'js-toggle_secOp';
 }
+$user_permission_details = User::model()->findByPk(Yii::app()->session['user']->id)->getUserPermissionDetails();
+if (!empty($user_permission_details['label']) && $element->isNewRecord) {
+    $element->name_hp = $user_permission_details['label'];
+}
 ?>
 <div class="element-fields full-width">
     <div class="cols-10">
