@@ -5,16 +5,16 @@ class m210426_124255_add_freehand_drawing_element extends \OEMigration
     public function safeUp()
     {
         $this->insert('element_group', array(
-            'name' => 'Freehand draw',
+            'name' => 'Other',
             'event_type_id' => $this->getIdOfEventTypeByClassName('OphCiExamination'),
             'display_order' => 95,
         ));
 
-        $this->createElementType('OphCiExamination', 'Freehand draw', [
+        $this->createElementType('OphCiExamination', 'Freehand drawing', [
             'class_name' => 'OEModule\OphCiExamination\models\FreehandDraw',
-            'display_order' => 20,
+            'display_order' => 355,
             'event_type_id' => 'OphCiExamination',
-            'group_name' => 'Freehand draw'
+            'group_name' => 'Other'
         ]);
 
         $this->createOETable('et_ophciexamination_freehand_draw', [
