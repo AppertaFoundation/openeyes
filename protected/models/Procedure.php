@@ -62,7 +62,7 @@ class Procedure extends BaseActiveRecordVersioned
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('term, short_format, default_duration, snomed_code, snomed_term, aliases', 'required'),
+            array('term, short_format, default_duration, snomed_code, snomed_term', 'required'),
             array('default_duration', 'numerical', 'integerOnly' => true, 'max' => 65535),
             array('term, short_format, snomed_term, ecds_term', 'length', 'max' => 255),
             array('operationNotes', 'validateOpNotes'),
