@@ -16,8 +16,8 @@
 return array(
     'params' => array(
         'admin_structure' => array(
-            'Mirth' => array(
-                'Mirth Log' => '/Mirth/admin/list',
+            'System' => array(
+                'Mirth Connect Logs' => '/Mirth/admin/list',
             ),
         ),
         'mirth_connectionString' => 'mysql:host='.(getenv('DATABASE_HOST') ? getenv('DATABASE_HOST') : 'db').';port='.(getenv('DATABASE_PORT') ? getenv('DATABASE_PORT') : '3306').';dbname='.(getenv('MIRTH_DB_NAME') ? getenv('MIRTH_DB_NAME') : 'mirthdb'),
