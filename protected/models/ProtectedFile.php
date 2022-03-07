@@ -204,9 +204,17 @@ class ProtectedFile extends BaseActiveRecordVersioned
     {
         if ($this->source_path) {
             if (!file_exists(dirname($this->getPath()))) {
-                mkdir(dirname($this->getPath()), 0774, true);
+                // Note that this relates to /init_scripts/ 50-create-folders.sh in the docker base images - so both must be updated if any permission changes are requied. Otherwise the permissions will conflict and be reset on every startup!
+                mkdir(dirname($this->getPath()), 0777, true);
+                // Try to set the ownsership to apache user. Allow to silently fail, as this may not be possible in some cloud sceanarios
+                @chown(dirname($this->getPath()), 'www-data');
+                @chgrp(dirname($this->getPath()), 'www-data');
             }
             copy($this->source_path, $this->getPath());
+            // Try to set the ownsership to apache user. Allow to silently fail, as this may not be possible in some cloud sceanarios
+            @chown($this->getPath(), 'www-data');
+            @chgrp($this->getPath(), 'www-data');
+            @chmod($this->getPath(), 6777);
             $this->source_path = null;
         } elseif (!file_exists($this->getPath())) {
             throw new Exception('There has been an error with file storage');

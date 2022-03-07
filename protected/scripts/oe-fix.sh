@@ -234,7 +234,7 @@ if [ $noperms = 0 ]; then
             "$WROOT/protected/config/local"
         )
 
-        declare -a folders777=(
+        declare -a folders6777=(
             "$WROOT/cache"
             "$WROOT/assets"
             "$WROOT/protected/cache"
@@ -327,8 +327,8 @@ if [ $noperms = 0 ]; then
         done
 
         # loop through the list of folders to set permission to 777
-        for i in "${folders777[@]}"; do
-            set_perms "$i" -octal=777
+        for i in "${folders6777[@]}"; do
+            set_perms "$i" -octal=6777
         done
 
         # loop through the list of folders to set permission to 777

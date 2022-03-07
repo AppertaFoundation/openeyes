@@ -331,6 +331,8 @@ if [ $nofiles = "0" ]; then
     echo Deleting protected files
     # remove protected/files
     sudo rm -rf "$WROOT"/protected/files/*
+    sudo chown www-data:www-data "$WROOT"/protected/files
+    sudo chmod 6774 "$WROOT"/protected/files
     # remove any docman process files
     sudo rm -rf /tmp/docman
     # remove hscic import history (otherwise hscic import requires --force to run after reset)
@@ -482,7 +484,7 @@ if [ -n "$dmdimport" ]; then
 fi
 
 if [ $nofix -eq 0 ]; then
-    bash "$SCRIPTDIR"/oe-fix.sh --no-migrate --no-warn-migrate --no-composer --no-permissions #--no-compile --no-restart
+    bash "$SCRIPTDIR"/oe-fix.sh --no-migrate --no-warn-migrate --no-composer # --no-permissions --no-compile --no-restart
 fi
 
 if [ $hscic -eq 1 ]; then
