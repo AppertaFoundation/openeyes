@@ -211,16 +211,16 @@ class Queue extends \BaseActiveRecordVersioned
      * Add the given ticket to the Queue for the user and firm.
      *
      * @param Ticket    $ticket
-     * @param \CWebUser $user
+     * @param int       $user_id
      * @param \Firm     $firm
      * @param $data
      */
-    public function addTicket(Ticket $ticket, $user, \Firm $firm, $data)
+    public function addTicket(Ticket $ticket, $user_id, \Firm $firm, $data, $automatically_created = false)
     {
         $assignment = new TicketQueueAssignment();
         $assignment->queue_id = $this->id;
         $assignment->ticket_id = $ticket->id;
-        $assignment->assignment_user_id = $user->id;
+        $assignment->assignment_user_id = $user_id;
         $assignment->assignment_firm_id = $firm->id;
         $assignment->assignment_date = date('Y-m-d H:i:s');
         $assignment->notes = $data[self::$FIELD_PREFIX.'_notes'] ?? null;
@@ -262,8 +262,14 @@ class Queue extends \BaseActiveRecordVersioned
             $assignment->details = json_encode($details);
         }
 
-        // generate the report field on the ticket.
-        $assignment->generateReportText();
+        //If ticket is created from a console command  we cannot generate report text as it requires rendering HTML
+        // which is only possible if we have a controller instantiated
+        if(!$automatically_created) {
+            // generate the report field on the ticket.
+            $assignment->generateReportText();
+        } else {
+            $assignment->notes = "Report unavailable as ticket has been created automatically.";
+        }
 
         if (!$assignment->save()) {
             throw new \Exception('Unable to save queue assignment' . print_r($assignment->getErrors(), true));

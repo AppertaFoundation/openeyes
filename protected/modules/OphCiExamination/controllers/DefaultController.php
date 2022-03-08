@@ -1821,7 +1821,7 @@ class DefaultController extends \BaseEventTypeController
                 $queue = $api->getQueueForUserAndFirm(Yii::app()->user, $this->firm, $data['patientticket_queue']);
                 $queue_data = array_merge($data, $api->extractQueueData($queue, $data));
                 if (!$api->getTicketForEvent($this->event)) {
-                    $api->createTicketForEvent($this->event, $queue, Yii::app()->user, $this->firm, $queue_data);
+                    $api->createTicketForEvent($this->event, $queue, Yii::app()->user->id, $this->firm, $queue_data);
                 } else {
                     $api->updateTicketForEvent($this->event);
                 }

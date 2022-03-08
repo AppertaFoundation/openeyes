@@ -667,7 +667,9 @@ class Element_OphCiExamination_VisualAcuity extends \BaseEventTypeElement implem
 
     protected function letterStringSimple(OphCiExamination_VisualAcuityUnit $va_unit = null)
     {
-        return $this->getApp()->controller->renderPartial(
+        $controller = $this->getApp()->controller;
+
+        return $controller->renderPartial(
             'application.modules.OphCiExamination.views.default.letter.va',
             [
                 'left' => $this->getNamedReadings('left', $va_unit ? $va_unit->id : null),
