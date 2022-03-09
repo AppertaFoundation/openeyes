@@ -38,8 +38,8 @@ The context tab should have the following headers:
 |Code    |String      |String      |String    |Code     |Yes/No         |Yes/No         |Yes/No|
 
 The workflow tab should have the following headers:
-|Workflow Name|Step  |Order |Element|Mandatory|
-|String       |String|Number|String |Yes/No   |
+|Workflow Name|Step  |Position|Order |Element|Mandatory|
+|String       |String|Number  |Number|String |Yes/No   |
 
 The workflow rules tab should have the following headers:
 |Subspecialty|Context   |Episode    |Workflow|
@@ -228,9 +228,10 @@ EOH;
 
             $workflow_name = $row[0];
             $step = $row[1];
-            $order = $row[2];
-            $element = $row[3];
-            $mandatory = $row[4];
+            $position = $row[2];
+            $order = $row[3];
+            $element = $row[4];
+            $mandatory = $row[5];
 
             // Adding workflow
             $workflow_id = null;
@@ -252,6 +253,7 @@ EOH;
                 $element_set = new E\OphCiExamination_ElementSet;
                 $element_set->name = ($step == "Blank") ? null : $step;
                 $element_set->workflow_id = $workflow_id;
+                $element_set->position = $position;
                 $element_set->created_date = date("Y-m-d H:i:s");
                 $element_set->last_modified_date = date("Y-m-d H:i:s");
                 $element_set->save(false);
