@@ -26,6 +26,10 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         apptCtnClass: 'assign-for',
         addMedsBtnCtnClass: 'js-add-meds-ctn',
         rmMedBtnClass: 'js-remove-med',
+        delPresetBtnClass: 'js-delete-preset',
+        revertDelPresetBtnClass: 'js-revert-preset-del',
+        delPresetBtnHtml: `<button class="red hint js-delete-preset js-after-confirm">Delete Preset</button>`,
+        revertDelPresetBtnHtml: `<button class="blue hint js-revert-preset-del">Revert Delete</button>`,
         commentBtnClass: 'js-add-comments',
         commentCtnClass: 'comment-row',
         rmCommentBtnClass: 'js-remove-add-comments',
@@ -67,6 +71,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         });
         this.addMedsBtnsControl();
         this.bindCancelPresetBtn();
+        this.bindDeletePresetBtn();
+        this.bindRevertPresetDeleteBtn();
         this.bindAdministerBtn();
         this.bindRemoveMedBtn();
         this.bindAddComment();
@@ -259,6 +265,49 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             $(this).parents(parent_selector).remove();
             controller.addMedsBtnsControl();
         })
+    }
+
+    /**
+     * Delete preset button displays in edit mode for saved assignments
+     */
+    DrugAdministrationController.prototype.bindDeletePresetBtn = function(){
+        const controller = this;
+        const del_preset_btn_selector = `.${controller.options.delPresetBtnClass}`;
+        controller.options.element.off('click', del_preset_btn_selector).on('click', del_preset_btn_selector, function(e){
+            e.preventDefault();
+            controller.toggleDeleted(this);
+        })
+    }
+    /**
+     * Revert Delete button displays after the Delete preset button is clicked
+     */
+    DrugAdministrationController.prototype.bindRevertPresetDeleteBtn = function(){
+        const controller = this;
+        const revert_del_preset_btn_selector = `.${controller.options.revertDelPresetBtnClass}`;
+        controller.options.element.off('click', revert_del_preset_btn_selector).on('click', revert_del_preset_btn_selector, function(e){
+            e.preventDefault();
+            controller.toggleDeleted(this, false);
+        })
+    }
+    /**
+     * Toggle the section classes, activate and deactivate the button actions
+     * @param {object} btn button object
+     * @param {boolean} for_delete indicate if the action is an delete action. Default to true, revert delete if false
+     */
+    DrugAdministrationController.prototype.toggleDeleted = function(btn, for_delete = true){
+        const btn_to_replace = for_delete ? `${this.options.revertDelPresetBtnHtml}` : `${this.options.delPresetBtnHtml}`;
+        const val = for_delete ? 0 : 1;
+        const parent_selector = `.${this.options.parentClass}`;
+        const administer_btn_selector = `.${this.options.administerBtnClass}`;
+        const del_med_btn_selector = `.${this.options.rmMedBtnClass}`;
+        const $parent = $(btn).parents(parent_selector);
+        const $admin_btns = $parent.find(administer_btn_selector);
+        const $trash_btns = $parent.find(del_med_btn_selector);
+        $parent.find('input[name$="[active]"]').val(val);
+        $parent.toggleClass('status-box red fade');
+        $admin_btns.closest('.toggle-switch').toggleClass('disabled');
+        $trash_btns.toggleClass('disabled');
+        $(btn).replaceWith(btn_to_replace);
     }
     // bind click event on administer all button
     DrugAdministrationController.prototype.bindAdministerAllBtn = function(){
