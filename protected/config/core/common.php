@@ -973,6 +973,7 @@ $modules = array(
         'Admin',
         'Api',
         'eyedraw',
+        'Mirth',
         'OphCiExamination' => array('class' => '\OEModule\OphCiExamination\OphCiExaminationModule'),
         'OphCoCorrespondence',
         'OphCiPhasing',

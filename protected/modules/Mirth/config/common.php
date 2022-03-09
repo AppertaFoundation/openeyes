@@ -13,15 +13,21 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-return array(
-    'params' => array(
-        'admin_structure' => array(
-            'System' => array(
-                'Mirth Connect Logs' => '/Mirth/admin/list',
+$mirth_username = getenv('MIRTH_DB_USER');
+
+if ($mirth_username) {
+    return array(
+        'params' => array(
+            'admin_structure' => array(
+                'System' => array(
+                    'Mirth Connect Logs' => '/Mirth/admin/list',
+                ),
             ),
-        ),
-        'mirth_connectionString' => 'mysql:host='.(getenv('DATABASE_HOST') ? getenv('DATABASE_HOST') : 'db').';port='.(getenv('DATABASE_PORT') ? getenv('DATABASE_PORT') : '3306').';dbname='.(getenv('MIRTH_DB_NAME') ? getenv('MIRTH_DB_NAME') : 'mirthdb'),
-        'mirth_username' => (getenv('MIRTH_DB_USER') ? getenv('MIRTH_DB_USER') : 'mirthconnect'),
-        'mirth_password' => (getenv('MIRTH_DB_PASSWORD') ? getenv('MIRTH_DB_PASSWORD') : 'mirthconnect'),
-    )
-);
+            'mirth_connectionString' => 'mysql:host='.(getenv('MIRTH_DB_HOST') ? getenv('MIRTH_DB_HOST') : getenv('DATABASE_HOST')).';port='.(getenv('MIRTH_DB_PORT') ? getenv('MIRTH_DB_PORT') : getenv('DATABASE_PORT')).';dbname='.(getenv('MIRTH_DB_NAME') ? getenv('MIRTH_DB_NAME') : 'mirthdb'),
+            'mirth_username' => (getenv('MIRTH_DB_USER') ? getenv('MIRTH_DB_USER') : 'mirthconnect'),
+            'mirth_password' => (getenv('MIRTH_DB_PASSWORD') ? getenv('MIRTH_DB_PASSWORD') : 'mirthconnect'),
+        )
+    );
+} else {
+    return array();
+}
