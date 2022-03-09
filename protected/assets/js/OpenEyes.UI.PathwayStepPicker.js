@@ -199,7 +199,7 @@
             },
             type: 'POST',
             success: function (response) {
-                let $pathway = $(`.pathway[data-visit-id="${pathway_id}"]`).closest('td.js-pathway-container');
+                let $pathway = $(`.pathway[data-pathway-id="${pathway_id}"]`).closest('td.js-pathway-container');
                 if (!$pathway.length) {
                     $pathway = $(`tr[data-pathway-type-id="${pathway_id}"]`).find('td.js-pathway-container');
                 }

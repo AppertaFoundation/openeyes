@@ -6,7 +6,7 @@
 $acceptable_wait_time = $pathway->getAcceptableWaitTime();
 ?>
 
-<div class="pathway" data-visit-id="<?= $pathway->worklist_patient_id ?>">
+<div class="pathway" data-visit-id="<?= $pathway->worklist_patient_id ?>" data-pathway-id="<?= $pathway->id ?>">
     <?php
     // It is assumed that the checkin step is always the first step, regardless of its status.
     if ((int)$pathway->status === Pathway::STATUS_LATER) {
