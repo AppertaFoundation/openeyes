@@ -215,7 +215,7 @@ class CorrespondenceEmailManager
         if (isset($email)) {
             $emailTemplate = $this->getEmailTemplateForRecipient($contactType, $institutionId, $siteId);
             if ( isset($emailTemplate) ) {
-                $senderAddress = $this->getSenderAddress($email, $institutionId, $siteId);
+                $senderAddress = SenderEmailAddresses::getSenderAddress($email, $institutionId, $siteId);
 
                 if ( isset($senderAddress) ) {
                     $this->sendEmail($senderAddress, $email, $emailTemplate['subject'], $emailTemplate['body'], $eventId, $documentOutputId, $shouldAppendSubject, $properties);
@@ -227,111 +227,6 @@ class CorrespondenceEmailManager
                 // if email template is not found in the system, then update the document output status to FAILED and add an entry to Audit.
                 $msg = "Email Template for " . $contactType . " does not exist in the system.";
                 $this->log($msg, $this->emailStatuses[2], $documentOutputId, $properties);
-            }
-        }
-    }
-
-    /**
-     * @param $email
-     * @param $institutionId
-     * @param $siteId
-     * @return mixed|null
-     * @throws CException
-     */
-    private function getSenderAddress($email, $institutionId, $siteId) {
-        $command = Yii::app()->db->createCommand();
-        // Algorithm for matching
-
-        // get domain from email.
-        $emailDomain = substr($email, strpos($email, '@'));
-
-        // Get the sender email address for the same institution and site id
-        $query = $command
-            ->select('host, username, password, reply_to_address, port, security')
-            ->from('ophcocorrespondence_sender_email_addresses osea')
-            ->where('osea.institution_id = :institution_id and osea.site_id = :site_id and osea.domain = :domain',
-                array('institution_id' => $institutionId, 'site_id' => $siteId, 'domain' => $emailDomain))
-            ->queryRow();
-        if (!(empty($query))) {
-            return $query;
-        } else {
-            $command->reset();
-            $query = $command
-                ->select('host, username, password, reply_to_address, port, security')
-                ->from('ophcocorrespondence_sender_email_addresses osea')
-                ->where('osea.institution_id = :institution_id and osea.site_id = :site_id and osea.domain = :domain',
-                    array('institution_id' => $institutionId, 'site_id' => $siteId, 'domain' => '*'))
-                ->queryRow();
-            if (!(empty($query))) {
-                return $query;
-            } else {
-                $command->reset();
-                $query = $command
-                    ->select('host, username, password, reply_to_address, port, security')
-                    ->from('ophcocorrespondence_sender_email_addresses osea')
-                    ->where('osea.institution_id IS NULL and osea.site_id = :site_id and osea.domain = :domain',
-                        array('site_id' => $siteId, 'domain' => $emailDomain))
-                    ->queryRow();
-                if (!(empty($query))) {
-                    return $query;
-                } else {
-                    $command->reset();
-                    $query = $command
-                        ->select('host, username, password, reply_to_address, port, security')
-                        ->from('ophcocorrespondence_sender_email_addresses osea')
-                        ->where('osea.institution_id IS NULL and osea.site_id = :site_id and osea.domain = :domain',
-                            array('site_id' => $siteId, 'domain' => '*'))
-                        ->queryRow();
-                    if (!(empty($query))) {
-                        return $query;
-                    } else {
-                        $command->reset();
-                        $query = $command
-                            ->select('host, username, password, reply_to_address, port, security')
-                            ->from('ophcocorrespondence_sender_email_addresses osea')
-                            ->where('osea.institution_id = :institution_id and osea.site_id IS NULL and osea.domain = :domain',
-                                array('institution_id' => $institutionId, 'domain' => $emailDomain))
-                            ->queryRow();
-                        if (!(empty($query))) {
-                            return $query;
-                        } else {
-                            $command->reset();
-                            $query = $command
-                                ->select('host, username, password, reply_to_address, port, security')
-                                ->from('ophcocorrespondence_sender_email_addresses osea')
-                                ->where('osea.institution_id = :institution_id and osea.site_id IS NULL and osea.domain = :domain',
-                                    array('institution_id' => $institutionId, 'domain' => '*'))
-                                ->queryRow();
-                            if (!(empty($query))) {
-                                return $query;
-                            } else {
-                                $command->reset();
-                                $query = $command
-                                    ->select('host, username, password, reply_to_address, port, security')
-                                    ->from('ophcocorrespondence_sender_email_addresses osea')
-                                    ->where('osea.institution_id IS NULL and osea.site_id IS NULL and osea.domain = :domain',
-                                        array('domain' => $emailDomain))
-                                    ->queryRow();
-                                if (!(empty($query))) {
-                                    return $query;
-                                } else {
-                                    $command->reset();
-                                    $query = $command
-                                        ->select('host, username, password, reply_to_address, port, security')
-                                        ->from('ophcocorrespondence_sender_email_addresses osea')
-                                        ->where('osea.institution_id IS NULL and osea.site_id IS NULL and osea.domain = :domain',
-                                            array('domain' => '*'))
-                                        ->queryRow();
-                                    if (!(empty($query))) {
-                                        return $query;
-                                    } else {
-                                        return null;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
             }
         }
     }

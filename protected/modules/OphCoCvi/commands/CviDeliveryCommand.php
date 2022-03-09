@@ -171,12 +171,7 @@ EOH;
             return;
         }
 
-        $from_email = Yii::app()->params['cvidelivery_la_sender_email'];
-        $from_name = Yii::app()->params['cvidelivery_la_sender_name'];
-        $subject = Yii::app()->params['cvidelivery_la_subject'];
-        $body = Yii::app()->params['cvidelivery_la_body'];
-
-        if (!$this->sendEmail($la_email, $file, $from_email, $from_name, $subject, $body)) {
+        if (!$this->sendEmail($la_email, $file, $event->site_id)) {
             $this->log_error("Failed to send email to: $la_email");
             $info->la_delivery_status = Element_OphCoCvi_EventInfo::DELIVERY_STATUS_ERROR;
             $info->save();
@@ -232,16 +227,50 @@ EOH;
         $info->save();
     }
 
-    private function sendEmail($to, $filepath, $from_email, $from_name, $subject, $body)
+    /**
+     * @throws Exception
+     */
+    private function sendEmail(string $to, string $filepath, int $site_id)
     {
-        $message = Yii::app()->mailer->newMessage();
-        $message->setFrom($from_email, $from_name);
-        $message->setTo($to);
-        $message->setSubject($subject);
-        $message->setBody($body);
-        $message->attach(Swift_Attachment::newInstance(file_get_contents($filepath), 'CVI.pdf', 'application/pdf'));
+        $criteria = new \CDbCriteria();
+        $criteria->compare('remote_id', \Yii::app()->params['institution_code']);
 
-        return Yii::app()->mailer->sendMessage($message);
+        $institution_id = Institution::model()->find($criteria)->id;
+        $sender_address = SenderEmailAddresses::getSenderAddress($to, $institution_id, $site_id);
+
+        $subject = \Yii::app()->params['cvidelivery_la_subject'];
+        $body = \Yii::app()->params['cvidelivery_la_body'];
+
+        if ($sender_address) {
+            try {
+                $sender_address->prepareMailer();
+                $attachment = array('filePath' => $filepath, 'fileName' => 'CVI.pdf');
+
+                $result = \Yii::app()->mailer->mail(
+                    [$to],
+                    $subject,
+                    $body,
+                    [$sender_address->username => "OpenEyes CVI"],
+                    $sender_address->reply_to_address,
+                    $attachment,
+                    'text/html'
+                );
+
+                // based on the output we try to figure out the if there is an error or not
+                if (is_string($result)) {
+                    OELog::log($result);
+                    echo "\nError:" . $result . "\n";
+                    return false;
+                }
+
+                return $result == 1;
+            } catch (\Exception $exception) {
+                OELog::log($exception->getMessage());
+                echo "\nError:" . $exception->getMessage() . "\n";
+            }
+        } else {
+            throw new \Exception("No email configuration found for {$to}. (Admin > Correspondence > Sender Email Addresses)");
+        }
     }
 
     /**
