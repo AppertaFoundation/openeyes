@@ -67,6 +67,28 @@
             </div>
         </td>
     </tr>
+    <?php
+    $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
+    $examination_communication_preferences = $exam_api->getLatestElement('OEModule\OphCiExamination\models\Element_OphCiExamination_CommunicationPreferences', $patient);
+    if ($examination_communication_preferences && !is_null($examination_communication_preferences->language_id)) {
+        $element->language_id = $examination_communication_preferences->language_id;
+    }
+    if ($examination_communication_preferences && !is_null($examination_communication_preferences->interpreter_required_id)) {
+        $element->interpreter_required_id = $examination_communication_preferences->interpreter_required_id;
+    }
+    ?>
+    <tr>
+        <td>
+            <?php echo $form->dropDownList($element, 'language_id',
+                CHtml::listData(Language::model()->findAll(array('order' => 'name asc')), 'id', 'name') + array('0'=>'Other'), array('empty' => '- Please select -'), false, array('label' => 6, 'field' => 6)) ?>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <?php echo $form->dropDownList($element, 'interpreter_required_id',
+                CHtml::listData(Language::model()->findAll(array('order' => 'name asc')), 'id', 'name') + array('0'=>'Other'), array('empty' => '- Please select -'), false, array('label' => 6, 'field' => 6)) ?>
+        </td>
+    </tr>
     </tbody>
 </table>
 

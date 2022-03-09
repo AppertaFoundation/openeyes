@@ -67,7 +67,7 @@ class Element_OphCiExamination_CommunicationPreferences extends \BaseEventTypeEl
         return array(
             array('correspondence_in_large_letters, agrees_to_insecure_email_correspondence', 'safe'),
             array('language_id, interpreter_required_id', 'numerical', 'integerOnly' => true),
-            array('correspondence_in_large_letters, agrees_to_insecure_email_correspondence', 'required'),
+            array('correspondence_in_large_letters, agrees_to_insecure_email_correspondence, language_id, interpreter_required_id', 'required'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, event_id, correspondence_in_large_letters, agrees_to_insecure_email_correspondence, anticoagulant,language_id, interpreter_required_id', 'safe', 'on' => 'search'),
