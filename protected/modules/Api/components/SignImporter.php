@@ -20,6 +20,7 @@ class SignImporter
 {
     private $event;
     private $element;
+    public $signature;
     private $sign_img_string;
 
     public function __construct($event, $element, $element_type, $sign_base64 = null)
@@ -50,7 +51,7 @@ class SignImporter
 
     public function getFilePath()
     {
-        return $this->element->signatureFile->getFilePath();
+        return $this->signature->signatureFile->getFilePath();
     }
 
     public function save()
@@ -71,7 +72,6 @@ class SignImporter
         $signature->timestamp = strtotime(date('Y-m-d H:i'));
         $signature->signature_file_id = $protected_file->id;
         $signature->save(false);
-
-        return $this;
+        $this->signature = $signature;
     }
 }

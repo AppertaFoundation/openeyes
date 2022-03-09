@@ -32,7 +32,6 @@ class DefaultController extends \BaseEventTypeController
     public $event_prompt;
     public $cvi_limit = 1;
     protected $cvi_manager;
-
     public $demographicsData;
 
     const ACTION_TYPE_LIST = 'List';
@@ -60,6 +59,7 @@ class DefaultController extends \BaseEventTypeController
         'printConsent' => self::ACTION_TYPE_PRINT,
         'printVisualyImpaired' => self::ACTION_TYPE_PRINT,
         'printInfoSheet' => self::ACTION_TYPE_PRINT,
+        'printQRSignature' => self::ACTION_TYPE_PRINT,
     );
 
     /**
@@ -85,6 +85,41 @@ class DefaultController extends \BaseEventTypeController
 
     /** @var string label used in session storage for the list filter values */
     protected static $FILTER_LIST_KEY = 'OphCoCvi_list_filter';
+
+
+    public function actionPrintQRSignature($event_id)
+    {
+        $request = \Yii::app()->getRequest();
+        $this->printInit($event_id);
+
+        $this->layout = '//layouts/print';
+
+        $unique_code = \UniqueCodes::codeForEventId($event_id);
+
+        $esign_element = $this->event->getElementByClass('OEModule\OphCoCvi\models\Element_OphCoCvi_Esign');
+        $esign_element_id = $esign_element->id;
+        $esign_element_type_id = $esign_element->getElementType()->id;
+
+        $esign = \OphCoCvi_Signature::model()->find('element_id=:element_id', [':element_id' => $esign_element_id]);
+
+        $qr_code_data =
+            "@code:" . $unique_code .
+            "@key:" . "1" .
+            "@x_i:" . json_encode(['e_id' => $esign_element_id, 'e_t_id' => $esign_element_type_id]);
+
+        $this->render(
+            "print_Element_OphCoCvi_QRSignature",
+            [
+                'qr_code_data' => $qr_code_data,
+                'event' => $this->event,
+                'patient' => $this->patient,
+                'esign' => $esign,
+                'role' => urldecode($request->getQuery('role')),
+                'signatory' => urldecode($request->getQuery('signatory')),
+            ],
+            false
+        );
+    }
 
     /**
      * Create Form with check for the cvi existing events count
@@ -1068,12 +1103,25 @@ class DefaultController extends \BaseEventTypeController
         \Yii::app()->end();
     }
 
-    public function actionPrintEmptyConsent()
+    public function actionPrintEmptyConsent($event_id)
     {
+        $this->printInit($event_id);
+        $unique_code = \UniqueCodes::codeForEventId($event_id);
+
+        $element = $this->event->getElementByClass('OEModule\OphCoCvi\models\Element_OphCoCvi_Esign');
+        $element_id = $element->id;
+        $element_type_id = $element->getElementType()->id;
+
+        $qr_code_data =
+            "@code:" . $unique_code .
+            "@key:" . "1" .
+            "@x_i:" . json_encode(['e_id' => $element_id, 'e_t_id' => $element_type_id]);
+
         $this->layout = '//layouts/print';
         $this->render('_consent', [
             'elements' => $this->open_elements,
-            'eventId' => $this->event->id ?? null,
+            'eventId' => $this->event->id,
+            'qr_code_data' => $qr_code_data,
             'print_empty' => true,
         ]);
     }

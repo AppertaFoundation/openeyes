@@ -7,8 +7,21 @@ $(document).ready(function() {
         doPrint();
     }
 
+    handleButton($(".js-print-postal-form-btn"), function (e) {
+        let role = $(".js-print-postal-form-btn").closest('tr').find('.js-signatory_role-field').val();
+        let signatory = $(".js-print-postal-form-btn").closest('tr').find('.js-signatory_name-field').val();
+        let _url = '/OphCoCvi/default/printQRSignature?event_id='
+            +OE_event_id+'&role='+encodeURIComponent(role.replace(/'/g, '%27'))
+            +'&signatory='+encodeURIComponent(signatory.replace(/'/g, '%27'));
+
+        $frame = $("<iframe src='"+_url+"' style='position:fixed;left:-1000px;'></iframe>");
+        $frame.appendTo("body");
+        $frame.get(0).contentWindow.print();
+        setTimeout(enableButtons, 2000);
+    });
+
     handleButton($("#et_print_empty_consent"), function (e) {
-        $frame = $("<iframe src='/OphCoCvi/default/printEmptyConsent' style='position:fixed;left:-1000px;'></iframe>");
+        $frame = $("<iframe src='/OphCoCvi/default/printEmptyConsent?event_id="+OE_event_id+"' style='position:fixed;left:-1000px;'></iframe>");
         $frame.appendTo("body");
         $frame.get(0).contentWindow.print();
         setTimeout(enableButtons, 2000);

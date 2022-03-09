@@ -38,6 +38,9 @@
  */
 class OphCoCvi_Signature extends BaseSignature
 {
+    const SIGNATORY_PERSON_REPRESENTATIVE = "Patient's representative";
+    const SIGNATORY_PERSON_PARENT_OR_GUARDIAN = "Parent/Guardian";
+    const SIGNATORY_PERSON_PATIENT = "Patient";
     /**
      * @return string the associated database table name
      */

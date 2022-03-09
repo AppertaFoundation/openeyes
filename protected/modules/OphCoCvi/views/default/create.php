@@ -27,8 +27,6 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
     )
 ));
 
-$this->event_actions[] = EventAction::button('Print empty consent page', null, array('level' => 'secondary'), array('type' => 'button', 'id' => 'et_print_empty_consent', 'class' => 'button small',));
-
 $this->renderPartial('event_actions', array('form_id' => 'create-form'));
 ?>
 <?php

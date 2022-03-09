@@ -13,17 +13,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-
 $QRHelper = new SignatureQRCodeGenerator();
+$raw_file = $QRHelper->createQRCode($qr_code_data,200,[1000,600] );
 
-// Begin capturing the byte stream
-ob_start();
-
-// generate the byte stream
-imagejpeg($QRHelper->generateQRSignatureBox($qr_code_data, true, ['x' => 1000, 'y' => 600], 200), NULL, 100);
-
-// and finally retrieve the byte stream
-$rawImageBytes = ob_get_clean();
-
-
-echo "<img src='data:image/jpeg;base64," . base64_encode($rawImageBytes) . "' />";
+?>
+<img src='data:image/png;base64,<?= $raw_file; ?>' />

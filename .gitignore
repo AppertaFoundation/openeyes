@@ -5,6 +5,7 @@
 tags
 # rely on static build images to ensure dependency consistency
 composer.lock
+/signature_files/
 /puppet/cache/
 /.vagrant
 /.buildpath

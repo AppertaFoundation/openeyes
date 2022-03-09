@@ -136,15 +136,18 @@ if (isset($print_empty) && !$print_empty) {
     <p>I confirm that my attention has been drawn to the paragraph entitled ‘Driving’ and understand that I must not
         drive.</p>
     <h4>Signed by the patient (or signature and name of parent/guardian or representative)</h4>
-    <div class="box">
-        <div class="flex">
-            <div class="dotted-area">
-                <div class="label">Signed</div>
-                <?php if (isset($print_empty) && !$print_empty) : ?>
-                <img src="<?= $getSignatureSource(BaseSignature::TYPE_PATIENT); ?>" class="signature">
-                <?php endif;?>
-            </div>
-        </div>
+    <div class="box"> <!-- start BOX -->
+        <?php if (isset($print_empty) && !$print_empty) : ?>
+                <div class="flex">
+                    <div class="dotted-area">
+                        <div class="label">Signed</div>
+                        <img src="<?= $getSignatureSource(BaseSignature::TYPE_PATIENT); ?>" class="signature">
+                    </div>
+                </div>
+        <?php else :?>
+            <?php echo $this->renderPartial("_QR_box", ['qr_code_data' => $qr_code_data], true); ?>
+        <?php endif;?>
+
         <div class="flex">
             <div class="dotted-area">
                 <div class="label">Printed name</div>
@@ -153,5 +156,5 @@ if (isset($print_empty) && !$print_empty) {
                 <?php endif;?>
             </div>
         </div>
-    </div>
+    </div> <!-- end BOX -->
 </main>

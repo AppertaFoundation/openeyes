@@ -127,7 +127,7 @@ class SignController extends \BaseController
                 $element_instance = $element_type->getInstance();
                 $esign_element = $element_instance->findByAttributes(['event_id' => $event->id]);
 
-                $sign_importer = new SignImporter($event, $esign_element, $element_type, $extra_info);
+                $sign_importer = new SignImporter($event, $esign_element, $element_type, null);
                 $sign_importer->setSignBase64($data['image']);
                 $sign_importer->save();
 
@@ -137,11 +137,11 @@ class SignController extends \BaseController
                 $signature_import_log =  new SignatureImportLog();
                 $signature_import_log->filename = $sign_importer->getFilePath();
                 $signature_import_log->status_id = SignatureImportLog::STATUS_SUCCESS;
-                $signature_import_log->return_message = $data['extra_info']." ".$data['unique_identifier'];
+                $signature_import_log->return_message = $data['extra_info'] . " " . $data['unique_identifier'];
                 $signature_import_log->import_datetime = date('Y-m-d H:i:s');
                 $signature_import_log->save();
             } else {
-                $filename = "sign_".md5(time()).".png";
+                $filename = "sign_" . md5(time()) . ".png";
                 $protected_file = \ProtectedFile::createForWriting($filename);
                 file_put_contents($protected_file->getPath(), base64_decode($data['origImage']));
                 $protected_file->title = "";

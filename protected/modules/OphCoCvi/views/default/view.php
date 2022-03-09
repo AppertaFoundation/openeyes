@@ -33,8 +33,6 @@ if ($this->checkLabelPrintAccess()) {
 
 if ($this->getManager()->isIssued($this->event)) {
     $this->event_actions[] = EventAction::button('Print consent page', 'print_consent', array('level' => 'secondary'), array('type' => 'button', 'id' => 'et_print_consent', 'class' => 'button small',));
-} else {
-    $this->event_actions[] = EventAction::button('Print empty consent page', 'print_consent', array('level' => 'secondary'), array('type' => 'button', 'id' => 'et_print_empty_consent', 'class' => 'button small',));
 }
 
 // To be fixed in: OE-11959 - CVI - "Print Consent Page" feature is missing

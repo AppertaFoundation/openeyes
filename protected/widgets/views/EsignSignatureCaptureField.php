@@ -50,10 +50,11 @@ $name_prefix =  \CHtml::modelName($this->element)."[signatures][{$this->row_id}]
                     [
                         "readonly" => $this->isSigned(),
                         "placeholder" => "Please enter name",
-                        "class" => "js-signatory_name-field",
+                        "class" => "js-signatory_name-field hidden",
                     ]
             ) ?>
         </span>
+        <span class="js-signatory-default-name"><?= $this->signature->signatory_name ?></span>
     </td>
     <!-- Date -->
     <td>
@@ -72,7 +73,12 @@ $name_prefix =  \CHtml::modelName($this->element)."[signatures][{$this->row_id}]
         </div>
         <div class="js-signature-control" <?php if($this->isSigned()) { echo 'style="display:none"'; }?>>
             <button type="button" class="js-popup-sign-btn">e-Sign</button>
-            <button type="button" class="js-device-sign-btn">e-Sign using linked device</button>
+            <?php  if($this->controller->module->id === 'OphCoCvi'): ?>
+                <button type="button" class="js-device-sign-btn">e-Sign on tablet</button>
+                <button type="button" class="js-print-postal-form-btn">Print postal form</button>
+            <?php else: ?>
+                <button type="button" class="js-device-sign-btn">e-Sign using linked device</button>
+            <?php endif; ?>
         </div>
     </td>
 </tr>
@@ -83,5 +89,24 @@ $name_prefix =  \CHtml::modelName($this->element)."[signatures][{$this->row_id}]
             element_id: <?= $this->element->id ?? "null" ?>,
             mode: "<?= $this->mode ?>"
         });
+    });
+
+    $('.js-signatory_role-field').on('change', function(e) {
+        let _sel = $(this);
+        let _tr = _sel.closest('tr');
+        let signatory_name_object = _tr.find('.js-signatory_name-field');
+        let default_signatory_name_object = _tr.find('.js-signatory-default-name');
+
+        if(signatory_name_object.length > 0) {
+            if (_sel.val().toLowerCase() === 'patient') {
+                signatory_name_object.val($.trim(default_signatory_name_object.html()));
+                signatory_name_object.hide();
+                default_signatory_name_object.show();
+            } else {
+                signatory_name_object.val('');
+                signatory_name_object.show();
+                default_signatory_name_object.hide();
+            }
+        }
     });
 </script>
