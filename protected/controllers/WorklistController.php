@@ -137,7 +137,7 @@ class WorklistController extends BaseController
                     'picker_setup' => $picker_setup,
                     'path_step_type_ids' => $path_step_type_ids,
                     'path_steps' => PathwayStepType::getPathTypes(),
-                    'pathways' => PathwayType::model()->findAll(),
+                    'pathways' => PathwayType::model()->findAll('active = 1'),
                     'standard_steps' => PathwayStepType::getStandardTypes(),
                     'custom_steps' => PathwayStepType::getCustomTypes(),
                     'sync_interval_options' => $sync_interval_options,
