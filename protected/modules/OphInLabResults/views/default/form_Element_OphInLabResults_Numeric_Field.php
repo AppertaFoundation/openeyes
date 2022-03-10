@@ -10,13 +10,13 @@
                 <tr>
                     <td>
                         <?= $form->hiddenInput($element, 'type'); ?>
-                        <?php echo $form->textField($element, 'time', ['type' => 'time']); ?>
+                        <?php echo $form->textField($element, 'time', ['type' => 'time'], [], ['label' => 6]); ?>
                     </td>
                 </tr>
                 <tr>
                     <td>
                         <div class="data-group flex-layout cols-full">
-                            <div class="cols-2">Result</div>
+                            <div class="cols-6">Result</div>
                             <div class="cols-10">
                                 <?php echo $form->numberField($element, 'result', ['step' => '0.1']); ?>
                                 <span class="large-text highlighter orange js-lab-result-warning"
@@ -40,13 +40,13 @@
                 <tr>
                     <td>
                         <?php $element->setDefaultUnit();?>
-                        <?= $form->textField($element, 'unit', ['disabled' => ($element->resultType->allow_unit_change ? '' : 'disabled') ]); ?>
+                        <?= $form->textField($element, 'unit', ['disabled' => ($element->resultType->allow_unit_change ? '' : 'disabled') ], [], ['label' => 6]); ?>
                     </td>
                 </tr>
                 <?php } ?>
                 <tr>
                     <td>
-                        <?php echo $form->textArea($element, 'comment', $element->getHtmlOptionsForInput('comment'), array(), ['maxlength' => '250']); ?>
+                        <?php echo $form->textArea($element, 'comment', $element->getHtmlOptionsForInput('comment'), array(), ['maxlength' => '250'], ['label' => 6]); ?>
                     </td>
                 </tr>
                 </tbody>
