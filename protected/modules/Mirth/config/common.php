@@ -25,8 +25,8 @@ if ($mirth_username) {
             ),
             'mirth_connectionString' => 'mysql:host='.(getenv('MIRTH_DB_HOST') ? getenv('MIRTH_DB_HOST') : getenv('DATABASE_HOST')).';port='.(getenv('MIRTH_DB_PORT') ? getenv('MIRTH_DB_PORT') : getenv('DATABASE_PORT')).';dbname='.(getenv('MIRTH_DB_NAME') ? getenv('MIRTH_DB_NAME') : 'mirthdb'),
             'mirth_username' => (getenv('MIRTH_DB_USER') ? getenv('MIRTH_DB_USER') : 'mirthconnect'),
-            'mirth_password' => (getenv('MIRTH_DB_PASSWORD') ? getenv('MIRTH_DB_PASSWORD') : 'mirthconnect'),
-        )
+            'mirth_password' => (rtrim(@file_get_contents("/run/secrets/MIRTH_DB_PASSWORD")) ?: getenv('MIRTH_DB_PASSWORD') ? : 'mirthconnect'),
+        ),
     );
 } else {
     return array();
