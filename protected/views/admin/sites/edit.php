@@ -169,8 +169,8 @@ $default_urls = $logo_helper->getLogoURLs();
             <td>
                 <?php
                 echo $form->fileField($logo, 'primary_logo');
-                if (empty($default_urls['primaryLogo']) && !($parentlogo && $parentlogo->logoIsSet(true)) && !($logo->primary_logo)) {
-                    echo "<div class='alert-box info'>No uploaded primary logo and no inherited, nor system primary logo.</div>";
+                if (empty($default_urls['primaryLogo']) && !($parentlogo && $parentlogo->primary_logo) && !($logo->primary_logo)) {
+                    echo "<div class='alert-box info'>No uploaded primary logo and no inherited or system primary logo.</div>";
                 } else {
                     if ($logo&&$logo->primary_logo&&!$new) {
                         echo '<div style=" margin-top: 5px; position: relative; ">';
@@ -206,7 +206,7 @@ $default_urls = $logo_helper->getLogoURLs();
                 <?php
                 echo $form->fileField($logo, 'secondary_logo');
                 if (empty($default_urls['secondaryLogo']) && !($parentlogo && $parentlogo->secondary_logo) && !($logo->secondary_logo)) {
-                    echo "<div class='alert-box info'>No uploaded secondary logo and nor system secondary logo.</div>";
+                    echo "<div class='alert-box info'>No uploaded secondary logo or system secondary logo.</div>";
                 } else {
                     if ($logo && $logo->secondary_logo && !$new) {
                         echo '<div style="
