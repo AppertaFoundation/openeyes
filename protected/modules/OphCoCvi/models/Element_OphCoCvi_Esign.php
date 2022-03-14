@@ -26,6 +26,7 @@ namespace OEModule\OphCoCvi\models;
  */
 class Element_OphCoCvi_Esign extends \BaseEsignElement
 {
+    protected $widgetClass = \OEModule\OphCoCvi\widgets\EsignElementWidget::class;
     /**
      * Returns the static model of the specified AR class.
      *

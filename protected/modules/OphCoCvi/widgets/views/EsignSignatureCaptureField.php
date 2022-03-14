@@ -19,16 +19,24 @@
 /**  @var EsignSignatureCaptureField $this */
 $el_class = get_class($element);
 $widget_class = get_class($this);
-$uid = \CHtml::modelName($el_class) . "_" . $widget_class . "_" . $row_id;
+$uid = \CHtml::modelName($el_class) . "_" . \CHtml::modelName($widget_class) . "_" . $row_id;
 $name_prefix =  \CHtml::modelName($this->element)."[signatures][{$this->row_id}]";
+$edit_signature_role = Yii::app()->request->getParam('edit_signature_role');
 ?>
+<?php if ($edit_signature_role) : ?>
+<script type="text/javascript">
+    scrollToElement($('.OEModule_OphCoCvi_models_Element_OphCoCvi_Esign'));
+</script>
+<?php endif; ?>
+
 <tr id="<?= $uid ?>" data-row_id="<?= $row_id ?>">
     <?php $this->renderHiddenFields(); ?>
     <!-- Row num -->
     <td><span class="highlighter js-row-num"></span></td>
     <!-- Role -->
     <td><span class="js-signatory-label">
-            <?php if(!$this->isSigned() && !empty($roles = $this->signature->getRoleOptions())): ?>
+            <?php
+            if(($edit_signature_role == 1 || (!$this->isSigned())) && !empty($roles = $this->signature->getRoleOptions())): ?>
                 <?= CHtml::dropDownList(
                         $name_prefix."[signatory_role]",
                         $this->signature->signatory_role,
@@ -81,6 +89,17 @@ $name_prefix =  \CHtml::modelName($this->element)."[signatures][{$this->row_id}]
             <?php endif; ?>
         </div>
     </td>
+    <td>
+        <?php
+        $authRules = new AuthRules();
+        if ($this->isSigned() && $authRules->canEditEvent($this->element->event)) { ?>
+            <?php if (!$edit_signature_role) { ?>
+                <button class="js-signature-edit">Edit</button>
+            <?php } else { ?>
+                <button class="js-signature-save">Save</button>
+            <?php } ?>
+        <?php } ?>
+    </td>
 </tr>
 <script type="text/javascript">
     $(function(){
@@ -108,5 +127,28 @@ $name_prefix =  \CHtml::modelName($this->element)."[signatures][{$this->row_id}]
                 default_signatory_name_object.hide();
             }
         }
+    });
+
+    $('.js-signature-save').on('click', function(e) {
+        var signature_id = $(this).closest("tr").find(".js-id-field").val();
+        var role_name = $(this).closest("tr").find(".js-signatory_role-field").val();
+
+        $.ajax({
+            'type': 'POST',
+            'url': baseUrl + '/OphCoCvi/default/updateSignatureRole',
+            'data': {
+                signature_id: signature_id,
+                role_name: role_name,
+                YII_CSRF_TOKEN: YII_CSRF_TOKEN
+            },
+            'success': function(resp) {
+                console.log(resp);
+                window.location = baseUrl + '/OphCoCvi/default/view/'+OE_event_id;
+            }
+        });
+    });
+
+    $('.js-signature-edit').on('click', function(e) {
+        window.location = window.location.href+"?edit_signature_role=1";
     });
 </script>

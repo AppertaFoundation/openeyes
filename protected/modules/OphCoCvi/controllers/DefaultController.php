@@ -60,6 +60,7 @@ class DefaultController extends \BaseEventTypeController
         'printVisualyImpaired' => self::ACTION_TYPE_PRINT,
         'printInfoSheet' => self::ACTION_TYPE_PRINT,
         'printQRSignature' => self::ACTION_TYPE_PRINT,
+        'updateSignatureRole' => self::ACTION_TYPE_FORM,
     );
 
     /**
@@ -1456,5 +1457,17 @@ class DefaultController extends \BaseEventTypeController
         }
 
         $this->renderJSON($datas);
+    }
+
+    public function actionUpdateSignatureRole()
+    {
+        $signature_id = \Yii::app()->request->getPost('signature_id');
+        $role_name = \Yii::app()->request->getPost('role_name');
+
+        $signature_element = \OphCoCvi_Signature::model()->findByPk($signature_id);
+        $signature_element->signatory_role = $role_name;
+        if ($signature_element->saveAttributes(['signatory_role'])) {
+            return true;
+        }
     }
 }
