@@ -602,7 +602,7 @@ $config = array(
         ),
 
         'signature_app_url' => getenv('OE_SIGNATURE_APP_URL') ? getenv('OE_SIGNATURE_APP_URL') : 'https://dev.oesign.uk',
-        'docman_export_dir' => getenv('OE_DOCMAN_EXPORT_DIRECTORY') ? getenv('OE_DOCMAN_EXPORT_DIRECTORY') : '/tmp/docman',
+        'docman_export_dir' => getenv('OE_DOCMAN_EXPORT_DIRECTORY') ? getenv('OE_DOCMAN_EXPORT_DIRECTORY') : '/docman',
         'docman_login_url' => 'http://localhost/site/login',
         'docman_user' => rtrim(@file_get_contents("/run/secrets/OE_DOCMAN_USER")) ?: (getenv('OE_DOCMAN_USER') ?: 'docman_user'),
         'docman_password' => rtrim(@file_get_contents("/run/secrets/OE_DOCMAN_PASSWORD")) ?: (getenv('OE_DOCMAN_PASSWORD') ?: '1234qweR!'),
@@ -667,7 +667,7 @@ $config = array(
 
         'OphCoCorrespondence_Internalreferral' => array(
             'generate_csv' => false,
-            'export_dir' => '/tmp/internalreferral_delievery',
+            'export_dir' => getenv('OE_INT_REFER_EXPORT_DIRECTORY') ? getenv('OE_INT_REFER_EXPORT_DIRECTORY') : '/internalreferrals',
             'filename_format' => 'format1',
         ),
 

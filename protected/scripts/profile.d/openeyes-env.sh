@@ -50,6 +50,7 @@
 
 ## Config for various external services
 # export OE_DOCMAN_EXPORT_DIRECTORY="/tmp/docman"
+# export OE_INT_REFER_EXPORT_DIR="/internalreferrals"
 # export OE_PORTAL_URI=""
 # export OE_PORTAL_EXTERNAL_URI=""
 # export OE_PORTAL_USERNAME=""
