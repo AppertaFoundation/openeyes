@@ -2,6 +2,8 @@
 
 namespace OEModule\PASAPI\resources;
 
+use Pathway;
+
 /**
  * OpenEyes.
  *
@@ -155,8 +157,16 @@ class PatientAppointment extends BaseResource
             // set the event.worklist_patient_id to null before doing the delete
             \Event::model()->updateAll(['worklist_patient_id' => null], 'worklist_patient_id = :wp', [':wp' => $model->id]);
 
-            // Delete all pathway joined to the worklist
-            \Pathway::model()->deleteAll('worklist_patient_id = ?', array($model->id));
+            // Delete all pathways joined to the worklist
+            $pathways = \Pathway::model()->findAll('worklist_patient_id = ?', array($model->id));
+            foreach ($pathways as $pathway) {
+                // Delete all pathwayStep joined to the Pathway
+                \PathwayStep::model()->deleteAll('pathway_id = ?', array($pathway->id));
+
+                // Delete pathway by id
+                \Pathway::model()->deleteByPk($pathway->id);
+            }
+
 
             if (!$model->delete()) {
                 $this->addModelErrors($model->getErrors());
