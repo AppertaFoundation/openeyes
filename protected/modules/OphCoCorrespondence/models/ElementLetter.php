@@ -1207,7 +1207,7 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
             foreach ($this->document_instance as $instance) {
                 foreach ($instance->document_target as $target) {
                     if ($target->ToCc === 'To') {
-                        if (($newlines_setting = SettingMetadata::model()->getSetting('correspondence_address_max_lines')) >= 0) {
+                        if (($newlines_setting = (int) SettingMetadata::model()->getSetting('correspondence_address_max_lines')) >= 0) {
                             $addressPart = explode("\n", $target->address);
                             $address = '';
                             foreach ($addressPart as $index => $part) {

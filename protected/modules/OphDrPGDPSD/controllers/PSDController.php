@@ -19,6 +19,28 @@ class PSDController extends DefaultController
         return parent::beforeAction($action);
     }
 
+    public function actionRemovePSD()
+    {
+        $ret = array(
+            'success' => 0
+        );
+        $assignment_id = \Yii::app()->request->getParam('assignment_id', null);
+        $assignment = OphDrPGDPSD_Assignment::model()->findByPk($assignment_id);
+        if ($assignment && intval($assignment->status) === $assignment::STATUS_TODO) {
+            $transaction = \Yii::app()->db->beginTransaction();
+            $assignment->active = 0;
+            $assignment->save();
+        }
+        if ($assignment->getErrors()) {
+            $transaction->rollback();
+        } else {
+            $transaction->commit();
+            $ret['success'] = 1;
+            Audit::add('PSD Assignment', 'removed assignment', "Assignment id: {$assignment_id}");
+        }
+        $this->renderJSON($ret);
+    }
+
     /**
      * @param $partial              to display overview of the popup or full (with actions, detailed info)
      * @param $pathstep_id          for PathwayStep
