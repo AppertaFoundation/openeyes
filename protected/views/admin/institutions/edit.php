@@ -195,7 +195,7 @@ $default_urls = $logo_helper->getLogoURLs();
                 <?php
                 echo $form->fileField($logo, 'primary_logo');
                 if (empty($default_urls['primaryLogo']) && !($logo->primary_logo)) {
-                    echo "<div class='alert-box info'>No uploaded secondary logo and no default logo</div>";
+                    echo "<div class='alert-box info'>No uploaded primary logo and no default logo</div>";
                 } else {
                     if (!($logo) || !($logo->primary_logo)) {
                         echo "<div class='alert-box info'>Currently using system default logo</div>";
