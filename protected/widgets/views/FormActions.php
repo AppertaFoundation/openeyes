@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <div class="data-group">
     <div class="cols-<?php echo 12 - $layoutColumns['label']; ?> large-offset-<?php echo $layoutColumns['label']; ?> column">
@@ -35,20 +37,15 @@
             );
         } ?>
         <?php if ($buttonOptions['delete']) {
-            echo CHtml::htmlButton($buttonOptions['delete'],
+            echo CHtml::htmlButton(
+                $buttonOptions['delete'],
                 [
                     'name' => 'delete',
                     'class' => 'button large',
                     'id' => 'et_delete',
                     'data-uri' => $buttonOptions['delete-uri'] ?? ''
-                ]);
-        } ?>
-        <?php
-        if (isset($buttonOptions['add-snippet'])) {
-            // GenericAdmin and FormActions is so great that I cannot add extra buttons dynamically.... so let's just hardcode here
-            //@TODO: get rid of the GenericAdmin (+FormActions) to not to risk devs mental health
-
-            echo EventAction::link('Add Snippet', $buttonOptions['add-snippet'], array(), array('type' => 'button', 'class' => 'button large'))->toHtml();
+                ]
+            );
         } ?>
         <img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>"
              alt="loading..." style="display: none;"/>

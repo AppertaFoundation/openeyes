@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -99,9 +100,7 @@ class SnippetGroupController extends ModuleAdminController
 
         $this->admin->addExtraButton([
             'delete' => 'Delete',
-            'delete-uri' => '/' . $this->module->id . '/oeadmin/snippet/delete',
-            'add-snippet' => '/' . $this->module->id . '/oeadmin/snippet/edit/' . $group_id]
-        );
+            'delete-uri' => '/' . $this->module->id . '/oeadmin/snippet/delete']);
 
         $this->admin->editModel();
     }
