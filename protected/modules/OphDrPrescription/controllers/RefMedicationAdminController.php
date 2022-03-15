@@ -237,6 +237,12 @@ class RefMedicationAdminController extends BaseAdminController
     {
         $model->setAttributes($data);
 
+        //Yii will set an empty string as the id but then won't update the model object's id if it's not null
+        //So we need to set it to null for the model relations to save properly
+        if(empty($model->id)) {
+            $model->id = null;
+        }
+
         if (!array_key_exists('source_type', $data)) {
             $model->source_type = $this->source_type;
         }

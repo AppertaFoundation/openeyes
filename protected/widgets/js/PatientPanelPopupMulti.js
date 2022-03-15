@@ -134,7 +134,14 @@ PatientPanel.patientPopups = {
         // Not apply this change when the popup mode is not float
         if(popupMode === 'float') {
             var leftButton = $(button).offset().left;
-            $(content).css({left: (leftButton) + 'px'});
+            var popupWidth = $(content).show().width();
+            var tableWidth = $(".oe-full-header.flex-layout").width();
+
+            if (tableWidth > leftButton + popupWidth) {
+                $(content).css({left: (leftButton) + 'px'});
+            } else {
+                $(content).css({left: (leftButton - popupWidth) + 'px'});
+            }
         }
     }
 };

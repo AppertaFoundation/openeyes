@@ -45,7 +45,7 @@
         <?php /* @var Trial $trial */
         foreach ($dataProvided as $i => $trial) :
             $filter_date_start = $trial->started_date ? (new DateTime($trial->started_date))->format('Y-m-d') : '';
-            $filter_date_closed = $trial->closed_date ? (new DateTime($trial->closed_date))->format('Y:m:d') : '';
+            $filter_date_closed = $trial->closed_date ? (new DateTime($trial->closed_date))->format('Y-m-d') : '';
             ?>
         <tr id="r<?php echo $trial->id; ?>" class="clickable" data-hidden-label='hide' data-trial-name="<?php echo $trial->name; ?>" data-trial-description="<?php echo $trial->description ?>"
             data-trial-start="<?= $filter_date_start ?>" data-trial-closed="<?= $filter_date_closed ?>">
