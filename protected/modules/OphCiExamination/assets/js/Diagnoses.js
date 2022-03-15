@@ -106,6 +106,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                 glaucomaDiagnosisSelectedEyes
             ]);
 
+            controller.compareWithTriage();
         });
 
         controller.$element.on('click', '#ophthalmic-diagnoses-search-btn', function () {
@@ -328,6 +329,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     };
 
     DiagnosesController.prototype.addEntry = function (selectedItems) {
+        let controller = this;
         var rows = this.createRow(selectedItems);
         this.toggleTableHead();
         this.toggleNoOphthalmicDiagnoses();
@@ -337,6 +339,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             this.selectEye(this.$table.find('tbody tr:last'), selectedItems[i].eye_id);
             this.setDatepicker();
         }
+        this.$table.find('.js-left-eye').off('click').on('click', function() { controller.compareWithTriage(); });
+        this.$table.find('.js-right-eye').off('click').on('click', function() { controller.compareWithTriage(); });
         $(":input[name^='glaucoma_diagnoses']").trigger('change', ['bybys']);
     };
 
@@ -376,6 +380,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         if (eye_id & 2) {
             $tr.find('.js-right-eye').prop('checked', true);
         }
+
+        this.compareWithTriage();
     };
 
     /**
@@ -544,9 +550,35 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             controller.addEntry([{ id: id, label: name, eye_id: side }]);
             $tr = this.$table.find('tbody tr:last');
             $tr.addClass('js-external');
+        } else {
+            this.compareWithTriage();
         }
     };
 
+    DiagnosesController.prototype.compareWithTriage = function (removeWarningOnly) {
+        const triageEyeElement = $('.js-examination-triage-eye');
+
+        $('.js-examination-diagnoses-triage-eye-warning').remove();
+
+        if (!removeWarningOnly && triageEyeElement.length > 0 && triageEyeElement.val() !== undefined) {
+            const controller = this;
+            const triageEyeId = parseInt(triageEyeElement.val().trim());
+
+            const rowEyeIds = $('#OphCiExamination_diagnoses > tr')
+                  .map(function () { return controller.getEyeIdFromRow($(this)); })
+                  .get()
+                  .filter((value) => value !== 0);
+
+            const eyeShared = rowEyeIds.length === 0 || rowEyeIds.some((value) => (value & triageEyeId) !== 0);
+
+            if (!eyeShared) {
+                const warningDiv = $('<div>', { 'class': 'alert-box with-icon warning js-examination-diagnoses-triage-eye-warning' })
+                      .text('Warning: Mismatch in the Laterality of Eye selected in all Diagnoses and Triage Elements.')
+
+                $('#OphCiExamination_diagnoses').parents('div.element-fields').after(warningDiv);
+            }
+        }
+    };
 
     exports.DiagnosesController = DiagnosesController;
 })(OpenEyes.OphCiExamination);

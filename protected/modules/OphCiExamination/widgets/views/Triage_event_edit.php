@@ -137,7 +137,7 @@ $treat_as_input_type = $display_treat_as_paediatric && $display_treat_as_adult ?
                 <span id="chief_complaint_text"><?= $triage->getChiefComplaint() ?: 'None' ?></span>
                 <input type="hidden" name="<?= $model_name ?>[chief_complaint_id]" value="<?= $triage->chief_complaint_id ?>" />
                 <input type="hidden" name="<?= $model_name ?>[eye_injury_id]" value="<?= $triage->eye_injury_id ?>" />
-                <input type="hidden" name="<?= $model_name ?>[eye_id]" value=" <?= $triage->eye_id ?>" />
+                <input type="hidden" name="<?= $model_name ?>[eye_id]" value=" <?= $triage->eye_id ?>" class="js-examination-triage-eye" />
             </div>
             <div id="triage-comment" class="cols-full" style="<?= $triage->comments !== null ? 'display: block;' : 'display: none;' ?>">
                 <div class="comment-group flex-layout flex-left">
@@ -259,7 +259,13 @@ $eyes = [
 
                 OphCiExamination_ToggleSafeguardingPaediatricFields(!treat_as_adult);
             }
-        )
+        );
+
+        $('.js-examination-triage-eye').parents('section').on('element_removed', function () {
+            if ($('#OphCiExamination_diagnoses').length > 0 && typeof diagnosesController !== 'undefined') {
+                diagnosesController.compareWithTriage(true);
+            }
+        });
     });
 
     function setEyeLaterality(eye_id) {
@@ -281,6 +287,10 @@ $eyes = [
             $eye_lat_icons.append('<i class="oe-i laterality small pad NA"></i>');
         }
         $('input[name$="[eye_id]"]').val(eye_id);
+
+        if ($('#OphCiExamination_diagnoses').length > 0 && typeof diagnosesController !== 'undefined') {
+            diagnosesController.compareWithTriage();
+        }
     }
 
     function addSelectedItems(selectedItems) {
