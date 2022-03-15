@@ -42,7 +42,7 @@ return array(
     ],
     'params' => array(
         'admin_structure' => [
-            'PGD/PSD' => [
+            'Drugs' => [
                 'PGD/PSD Settings' => array(
                     'module' => 'OphDrPGDPSD',
                     'uri' => '/OphDrPGDPSD/admin/PGDPSDSettings/list',
