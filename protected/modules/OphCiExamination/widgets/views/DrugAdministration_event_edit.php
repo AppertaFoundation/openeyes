@@ -14,19 +14,40 @@ $field_prefix = $model_name . '[assignment][{{section_key}}][entries][{{entry_ke
         $hiden_comment = $assigned_psd->comment ? '' : 'display:none';
         $is_preset = $assigned_psd->pgdpsd ? true : false;
         $is_relevant = $assigned_psd->isrelevant;
-        $grey_out_section = $is_relevant ? null : 'fade';
-        $is_active = !$assigned_psd->isNewRecord;
+        $is_active = $assigned_psd->active;
+        $is_existing = !$assigned_psd->isNewRecord;
         $is_record_admin = !intval($assigned_psd->visit_id) ? true : false;
-        $is_confirmed = $assigned_psd->confirmed ? $assigned_psd->confirmed : '0';
-        $cancel_btn_display = $assigned_psd->isNewRecord && $is_confirmed ? '' : 'display: none';
+        $is_confirmed = $assigned_psd->confirmed ? $assigned_psd->confirmed : 0;
+
+        $grey_out_section = !$is_relevant || !$is_active ? 'fade' : null;
+
+        extract($this->getDeletedUI($is_active));
+
+        $cancel_btn = null;
+        if(!$is_existing){
+            $cancel_btn = array(
+                'class' => 'red js-cancel-preset',
+                'text' => 'Remove Block',
+                'display' => $is_confirmed ? '' : 'display:none;',
+            );
+        } else {
+            if ($is_prescriber && $is_active) {
+                $cancel_btn = array(
+                    'class' => 'red js-delete-preset',
+                    'text' => 'Delete',
+                    'display' => ''
+                );
+            }
+        }
         ?>
-    <div class="order-block <?=$grey_out_section;?>" data-key="<?=$key?>"  data-section-name="<?=$assignment_type_name['name']?>">
+    <div class="order-block <?=$grey_out_section;?> <?=$deleted_style?>" data-key="<?=$key?>"  data-section-name="<?=$assignment_type_name['name']?>">
         <input type="hidden" name="<?=$model_name . "[assignment][{$key}][assignment_id]"?>" value="<?=$assigned_psd->id?>">
         <input type="hidden" name="<?=$model_name . "[assignment][{$key}][pgdpsd_name]"?>" value="<?=$assignment_type_name['name']?>">
         <input type="hidden" name="<?=$model_name . "[assignment][{$key}][visit_id]"?>" value="<?=$assigned_psd->visit_id;?>">
         <input type="hidden" name="<?=$model_name . "[assignment][{$key}][pgdpsd_id]"?>" value="<?=$assigned_psd->pgdpsd ? $assigned_psd->pgdpsd->id : null;?>">
         <input type="hidden" name="<?=$model_name . "[assignment][{$key}][confirmed]"?>" value="<?=$is_confirmed;?>">
         <input type="hidden" name="<?=$model_name . "[assignment][{$key}][create_wp]"?>" value="<?=$assigned_psd->create_wp;?>">
+        <input type="hidden" name="<?=$model_name . "[assignment][{$key}][active]"?>" value="<?=$is_active?>">
         <div class="flex row">
             <div class="flex-l">
                 <!-- rely on pgdpsd id null or not -->
@@ -40,11 +61,14 @@ $field_prefix = $model_name . '[assignment][{{section_key}}][entries][{{entry_ke
                     <span class="js-appt-details">
                         <?=$appointment_details['appt_details_dom']?>
                     </span>
+                    <?=$deleted_tag?>
                 </div>
             </div>
             <div class="flex-r">
-                <?php if ($assigned_psd->isNewRecord) {?>
-                <button class="red hint js-cancel-preset js-after-confirm" style="<?=$cancel_btn_display?>">Cancel Preset</button>
+                <?php if($cancel_btn) {?>
+                    <button class="hint <?=$cancel_btn['class']?> js-after-confirm" style="<?=$cancel_btn['display']?>">
+                        <?=$cancel_btn['text']?>
+                    </button>
                 <?php }?>
                 <!-- rely on worklist -->
                 <?=$appointment_details['valid_date_dom']?>
@@ -76,11 +100,11 @@ $field_prefix = $model_name . '[assignment][{{section_key}}][entries][{{entry_ke
                         foreach ($entries as $entry_key => $entry) {
                             extract($entry->getAdministerDetails());
                             $row_action = array(
-                                'can_remove' => !$is_active,
+                                'can_remove' => !$is_existing,
                                 'msg' => 'No Permission to Remove',
                             );
                             if ($is_prescriber) {
-                                if ($entry->administered && $is_active) {
+                                if ($entry->administered && $is_existing) {
                                     $row_action['msg'] = 'Can not remove a drug already administered';
                                 } else {
                                     $row_action['can_remove'] = true;
@@ -88,7 +112,12 @@ $field_prefix = $model_name . '[assignment][{{section_key}}][entries][{{entry_ke
                             }
 
                             $can_remove = $is_prescriber ? ($entry->administered ? false : true) : false;
-                            $disable_administer_btn = $is_relevant ? ($is_prescriber ? '' : ($entry->administered ? 'disabled' : '')) : 'disabled';
+                            /**
+                             * if is not active, disable the buttons
+                             * if is relevant, not prescriber and the med is administered, disabled the button
+                             * if not relevant, disable the button
+                             */
+                            $disable_administer_btn = !$is_active ? 'disabled' : ($is_relevant ? ($is_prescriber ? '' : ($entry->administered ? 'disabled' : '')) : 'disabled');
                             $hide_administer_switch = ($is_confirmed && $is_record_admin && $entry->administered) || ($is_confirmed && !$is_prescriber && $entry->administered) ? true : false;
                             ?>
                         <tr 
@@ -211,7 +240,7 @@ $field_prefix = $model_name . '[assignment][{{section_key}}][entries][{{entry_ke
                                 <i class="oe-i no-permissions small-icon js-has-tooltip" data-tooltip-content="Drugs within a Preset Order not be changed."></i>
                                 <?php } else {?>
                                     <?php if ($row_action['can_remove']) {?>
-                                        <i class="oe-i trash js-remove-med"></i>
+                                        <i class="oe-i trash js-remove-med <?=$disable_administer_btn?>"></i>
                                     <?php } else {?>
                                         <i class="oe-i no-permissions small-icon js-has-tooltip" data-tooltip-content="<?=$row_action['msg']?>"></i>
                                     <?php }?>
@@ -238,7 +267,7 @@ $field_prefix = $model_name . '[assignment][{{section_key}}][entries][{{entry_ke
             </div>
         </div>
         <?php
-        if ($assigned_psd->isNewRecord && !$is_confirmed) {
+        if ($is_prescriber) {
             $this->render(
                 'DrugAdministration_event_edit_appointments',
                 array(

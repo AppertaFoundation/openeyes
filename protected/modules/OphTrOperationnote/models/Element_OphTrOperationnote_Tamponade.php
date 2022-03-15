@@ -61,7 +61,6 @@ class Element_OphTrOperationnote_Tamponade extends Element_OnDemand
         // will receive user inputs.
         return array(
             array('event_id, gas_type_id, gas_percentage_id, gas_volume_id', 'safe'),
-            array('gas_type_id, gas_percentage_id, gas_volume_id', 'required'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, event_id, gas_type_id, gas_percentage_id, gas_volume_id', 'safe', 'on' => 'search'),

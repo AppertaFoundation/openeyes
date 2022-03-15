@@ -940,7 +940,6 @@ class WorklistManager extends CComponent
     public function addPatientToWorklist(Patient $patient, Worklist $worklist, DateTime $when = null, $attributes = array())
     {
         $this->reset();
-
         if (!$this->allowDuplicatePatients() && $this->getWorklistPatient($worklist, $patient)) {
             $this->addError('Patient is already on the given worklist.');
 

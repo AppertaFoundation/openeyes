@@ -119,7 +119,12 @@ class Element_DrugAdministration extends BaseMedicationElement
                 $unbooked_worklist_manager = new \UnbookedWorklist();
                 $unbooked_worklist = $unbooked_worklist_manager->createWorklist(new \DateTime(), $site_id, $subspecialty->id);
                 $wl_manager = new \WorklistManager();
-                $worklist_patient = $wl_manager->addPatientToWorklist($this->event->episode->patient, $unbooked_worklist, new \DateTime());
+                $worklist_patient = $wl_manager->getWorklistPatient($unbooked_worklist, $this->event->episode->patient);
+
+                if (!$worklist_patient) {
+                    $worklist_patient = $wl_manager->addPatientToWorklist($this->event->episode->patient, $unbooked_worklist, new \DateTime());
+                }
+
                 $assignment->visit_id = $worklist_patient->id;
             }
             $assignment->save();

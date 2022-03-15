@@ -1211,12 +1211,13 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
                             $addressPart = explode("\n", $target->address);
                             $address = '';
                             foreach ($addressPart as $index => $part) {
+                                $part = trim($part);
                                 if ($index == 0) {
                                     $address = $part;
                                 } elseif ($index < $newlines_setting) {
                                     $address = $address . "\n" . $part;
                                 } else {
-                                    $address = $address . $part;
+                                    $address = $address . " " . $part;
                                 }
                             }
                             return $target->contact_name . "\n" . $address;

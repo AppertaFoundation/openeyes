@@ -5,6 +5,7 @@
     <input type="hidden" name="<?=$model_name . "[assignment][{{key}}][visit_id]"?>">
     <input type="hidden" name="<?=$model_name . "[assignment][{{key}}][confirmed]"?>" value="0">
     <input type="hidden" name="<?=$model_name . "[assignment][{{key}}][create_wp]"?>" value="0">
+    <input type="hidden" name="<?=$model_name . "[assignment][{{key}}][active]"?>" value="1">
     <div class="flex row">
         <div class="flex-l">
             <!-- rely on pgdpsd id null or not -->
@@ -19,7 +20,7 @@
             </div>
         </div>
         <div class="flex-r">
-            <button class="red hint js-cancel-preset js-after-confirm" style="display:none;">Cancel Preset</button>
+            <button class="red hint js-cancel-preset js-after-confirm" style="display:none;">Remove Block</button>
             <!-- rely on worklist -->
             <span class="js-validate-date"></span>
         </div>

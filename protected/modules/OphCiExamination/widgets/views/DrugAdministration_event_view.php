@@ -4,9 +4,12 @@
     foreach ($assigned_psds as $key => $assigned_psd) {
             $appointment_details = $assigned_psd->getAppointmentDetails();
             $assignment_type_name = $assigned_psd->getAssignmentTypeAndName();
-            $grey_out_section = $assigned_psd->isrelevant ? null : 'fade';
+            $is_active = $assigned_psd->active;
+            $is_relevant = $assigned_psd->isrelevant;
+            $grey_out_section = !$is_relevant || !$is_active ? 'fade' : null;
+            extract($this->getDeletedUI($is_active));
         ?>
-    <div class="order-block <?=$grey_out_section;?>">
+    <div class="order-block <?=$grey_out_section;?> <?=$deleted_style?>">
         <div class="flex row">
             <div class="flex-l">
                 <!-- rely on status class: todo | active | done -->
@@ -18,6 +21,7 @@
                     <span class="js-appt-details">
                         <?=$appointment_details['appt_details_dom']?>
                     </span>
+                    <?=$deleted_tag?>
                 </div>
             </div>
             <div class="flex-r">

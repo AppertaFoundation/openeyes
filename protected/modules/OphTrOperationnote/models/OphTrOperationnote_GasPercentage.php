@@ -17,18 +17,14 @@
  */
 
 /**
- * This is the model class for table "element_procedurelist".
+ * This is the model class for table "ophtroperationnote_gas_percentage".
  *
- * The followings are the available columns in table 'element_operation':
+ * The followings are the available columns in table 'ophtroperationnote_gas_percentage':
  *
  * @property string $id
- * @property int $event_id
- * @property int $surgeon_id
- * @property int $assistant_id
- * @property int $anaesthetic_type
+ * @property int $value
+ * @property int $display_order
  *
- * The followings are the available model relations:
- * @property Event $event
  */
 class OphTrOperationnote_GasPercentage extends BaseActiveRecordVersioned
 {
@@ -57,8 +53,7 @@ class OphTrOperationnote_GasPercentage extends BaseActiveRecordVersioned
     {
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
-        return array(
-        );
+        return array('value', 'required');
     }
 
     /**

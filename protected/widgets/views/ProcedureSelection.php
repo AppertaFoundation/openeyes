@@ -231,13 +231,19 @@ $formatted_subsections = array_merge(
                 // Procedures are in subsections, so fetch a clean list via ajax (easier than trying to work out if it's the right list)
                 updateProcedureSelect(identifier);
             } else if (popped) {
-                // No subsections, so we should be safe to just push it back into the list
-                $('ul.add-options[data-id="select"]').append(
-                    '<li data-label="' + popped["name"] + '" data-id="' + popped["id"] + '">' +
-                    '<span class="auto-width">' + popped["name"] + '</span>' +
-                    '</li>'
-                ).removeAttr('disabled');
-                sort_ul($('ul.add-options[data-id="select"]'));
+
+                let popID = popped["id"];
+                let popName = popped["name"];
+                let proc_exist = ($(`li[data-id="${popID}"]`).length > 0);
+                if (!proc_exist){
+                    // No subsections, so we should be safe to just push it back into the list
+                    $('ul.add-options[data-id="select"]').append(
+                        `<li data-label="${popName}" data-id="${popID}">
+                        <span class="auto-width">${popName}</span>
+                        </li>`
+                    ).removeAttr('disabled');
+                    sort_ul($('ul.add-options[data-id="select"]'));
+                }
             }
 
             return false;

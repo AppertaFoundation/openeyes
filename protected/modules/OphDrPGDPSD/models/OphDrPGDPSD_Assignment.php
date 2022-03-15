@@ -52,6 +52,7 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
             // The following rule is used by search().
             array('patient_id, pgdpsd_id, status, visit_id, assigned_meds, comment', 'safe'),
             array('institution_id', 'default', 'value' => Yii::app()->session->get('selected_institution_id'), 'on' => 'insert'),
+            array('active', 'default', 'value' => 1, 'on' => 'insert'),
             array('id, patient_id, visit_id, pgdpsd_id, status, comment_id', 'safe', 'on'=>'search'),
         );
     }

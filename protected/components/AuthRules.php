@@ -81,6 +81,10 @@ class AuthRules
             return false;
         }
 
+        if ($event->episode->patient->isDeceased()) {
+            return false;
+        }
+
         if (!$this->canModifyEvent($event)) {
             return false;
         }
@@ -143,10 +147,6 @@ class AuthRules
      */
     private function canModifyEvent(Event $event)
     {
-        if ($event->episode->patient->isDeceased()) {
-            return false;
-        }
-
         return $this->canEditEpisode($event->episode);
     }
 
