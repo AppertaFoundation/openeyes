@@ -470,7 +470,8 @@ class DefaultController extends BaseEventTypeController
                     'document_instance_id=:id AND ToCc=:ToCc AND (contact_type=:type_gp OR contact_type=:type_ir)',
                     array(
                         ':id' => $document_instance->id,
-                        ':ToCc' => 'To', ':type_gp' => \SettingMetadata::model()->getSetting('gp_label'),
+                        ':ToCc' => 'To',
+                        ':type_gp' => \SettingMetadata::model()->getSetting('gp_label'),
                         ':type_ir' => 'INTERNALREFERRAL',
                     )
                 );

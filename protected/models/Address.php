@@ -127,6 +127,16 @@ class Address extends BaseActiveRecordVersioned
     /**
      * @param bool $include_country
      *
+     * @return string Address as formatted with line breaks
+     */
+    public function getLetterFormatted($include_country = true)
+    {
+        return implode("\n", $this->getLetterArray($include_country));
+    }
+
+    /**
+     * @param bool $include_country
+     *
      * @return string Address as text (, separated)
      */
     public function getLetterLine($include_country = true)
