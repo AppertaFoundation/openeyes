@@ -55,9 +55,9 @@
                 <tr>
                     <?php if ($display_order) { ?>
                         <th>Order</th>
-                        <th><?= CHtml::checkBox("select-all")?></th>
-                        <?php
-                    }
+                    <?php } ?>
+                    <th><?= CHtml::checkBox("select-all")?></th>
+                    <?php
                     if (!$label_extra_field) : ?>
                         <th><?= $model::model()->getAttributeLabel($label_field) ?></th>
                     <?php endif;?>

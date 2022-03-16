@@ -90,9 +90,9 @@ class BaseAdminController extends BaseController
     /**
      * Allows generic CRUD operations on models.
      *
-     * @param string $title   The title of the form to be rendered
-     * @param string $model   The model for which we are generating a form
-     * @param array  $options An array of options that will configure how the form is generated.
+     * @param string $title The title of the form to be rendered
+     * @param string $model The model for which we are generating a form
+     * @param array $options An array of options that will configure how the form is generated.
      *                        label_field - Will set which field is displayed as a text input for the model
      *                        extra_fields - An array of arrays for which extra fields to render. Each array should contain
      *                        an attribute of the model in assigned to field. Passing a type and model will allow
@@ -103,7 +103,9 @@ class BaseAdminController extends BaseController
      *                        'model' => 'Site'
      *                        ),
      *                        filter_fields - Will allow you to filter results, expects an array the same as extra_fields
-     * @param int    $key     - if provided will only generate a single row for a null instance of the $model (for ajax additions)
+     * @param int $key - if provided will only generate a single row for a null instance of the $model (for ajax additions)
+     * @param bool $is_mapping - Specifies whether the entry can be mapped to one or more reference data levels.
+     * @throws CException
      */
     protected function genericAdmin($title, $model, array $options = array(), $key = null, $is_mapping = false)
     {
