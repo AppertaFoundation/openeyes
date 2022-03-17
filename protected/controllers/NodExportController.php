@@ -3358,6 +3358,7 @@ FROM
     , CASE evar.side
       WHEN 0 THEN 'R'
       WHEN 1 THEN 'L'
+      WHEN 2 THEN 'B'
       ELSE NULL
       END AS eye
     , CASE vam.name
