@@ -120,3 +120,4 @@ protected/extensions/yii2-debug
 .local_gitignore
 **/0-a-restore.sql
 buildinfo.txt
+.devcontainer/.env
