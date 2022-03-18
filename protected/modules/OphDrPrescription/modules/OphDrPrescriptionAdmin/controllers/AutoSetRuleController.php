@@ -300,7 +300,7 @@ class AutoSetRuleController extends BaseAdminController
         $criteria->together = true;
         $criteria->addCondition('medicationSet.id = :set_id');
         $criteria->params[':set_id'] = $set->id;
-        $criteria->order = 'id';
+        $criteria->order = 'medicationSet.id';
         $criteria->limit = 20;
 
         if (isset($filters['query']) && $filters['query']) {
