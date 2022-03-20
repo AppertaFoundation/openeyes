@@ -1266,7 +1266,9 @@ class DefaultController extends BaseEventTypeController
                     // email address is entered.
                     foreach ($target['DocumentOutput'] as $document_output) {
                         if (isset($document_output['output_type'])) {
-                            if (($document_output['output_type'] === 'Email' || $document_output['output_type'] === 'Email (Delayed)') && (!isset($target['attributes']['email']) || empty($target['attributes']['email']))) {
+                            if (($document_output['output_type'] === DocumentOutput::TYPE_EMAIL || $document_output['output_type'] === DocumentOutput::TYPE_EMAIL_DELAYED)
+                                && (!isset($target['attributes']['email']) || empty($target['attributes']['email'])))
+                            {
                                 $errors['Letter'][] = 'To Email: Email cannot be empty!';
                             }
                         }
@@ -1306,7 +1308,7 @@ class DefaultController extends BaseEventTypeController
         if ($print_outputs && Yii::app()->request->getUrlReferrer() !== null && !$is_view) {
             $withPrint = isset(\Yii::app()->params['docman_with_print']) && \Yii::app()->params['docman_with_print'];
             foreach ($print_outputs as $output) {
-                $output->output_status = $withPrint && $output->printIsUnique() ? 'PENDING' : 'COMPLETE';
+                $output->updateStatus($withPrint && $output->printIsUnique() ? DocumentOutput::STATUS_PENDING : DocumentOutput::STATUS_COMPLETE, $letter->draft);
                 $output->save();
             }
         }

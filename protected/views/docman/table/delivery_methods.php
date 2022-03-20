@@ -28,19 +28,19 @@
 if ( isset($target->document_output)) {
     foreach ($target->document_output as $output_key => $doc_output) {
         switch ($doc_output->output_type) {
-            case 'Docman':
+            case \DocumentOutput::TYPE_DOCMAN:
                 $document_output = $doc_output;
                 break;
-            case 'Print':
+            case \DocumentOutput::TYPE_PRINT:
                 $print_output = $doc_output;
                 break;
-            case 'Internalreferral':
+            case \DocumentOutput::TYPE_INTERNAL_REFERRAL:
                 $internalreferral_output = $doc_output;
                 break;
-            case 'Email':
+            case \DocumentOutput::TYPE_EMAIL:
                 $email_output = $doc_output;
                 break;
-            case 'Email (Delayed)':
+            case \DocumentOutput::TYPE_EMAIL_DELAYED:
                 $email_delayed_output = $doc_output;
                 break;
             default:

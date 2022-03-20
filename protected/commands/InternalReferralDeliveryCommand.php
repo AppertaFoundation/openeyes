@@ -283,7 +283,7 @@ class InternalReferralDeliveryCommand extends CConsoleCommand
     private function updateDelivery($output_id)
     {
         $output = DocumentOutput::model()->findByPk($output_id);
-        $output->output_status = "COMPLETE";
+        $output->updateStatus(DocumentOutput::STATUS_COMPLETE);
 
         return $output->save();
     }
@@ -313,7 +313,7 @@ class InternalReferralDeliveryCommand extends CConsoleCommand
     private function updateFailedDelivery($output_id)
     {
         $output = DocumentOutput::model()->findByPk($output_id);
-        $output->output_status = "FAILED";
+        $output->updateStatus(DocumentOutput::STATUS_FAILED);
 
         return $output->save();
     }

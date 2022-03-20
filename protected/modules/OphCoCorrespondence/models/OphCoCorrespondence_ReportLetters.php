@@ -164,9 +164,9 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
     private function mapOutputType($type)
     {
         $output_type_map = [
-            'Print' => 'Print',
-            'Docman' => 'Docman',
-            'Internalreferral' => 'Internal Referral',
+            \DocumentOutput::TYPE_PRINT => 'Print',
+            \DocumentOutput::TYPE_DOCMAN => 'Docman',
+            \DocumentOutput::TYPE_INTERNAL_REFFERAL => 'Internal Referral',
         ];
         return array_key_exists($type, $output_type_map)
             ? $output_type_map[$type]
