@@ -3358,7 +3358,6 @@ FROM
     , CASE evar.side
       WHEN 0 THEN 'R'
       WHEN 1 THEN 'L'
-      WHEN 2 THEN 'B'
       ELSE NULL
       END AS eye
     , CASE vam.name
@@ -3378,7 +3377,7 @@ FROM
       ON eva.event_id = c.oe_event_id
     /* Hard Join: Visual Acuity individual readings (across both eyes and all methods ) */
     JOIN ophciexamination_visualacuity_reading evar
-      ON evar.element_id = eva.id
+      ON evar.element_id = eva.id AND side != 2
     /* Join: Look up Visual Acuity individual readings for both eyes and all methods (LOJ used to return nulls if data problems (as opposed to loosing parent rows)) */
     LEFT OUTER JOIN ophciexamination_visualacuity_method vam
       ON vam.id = evar.method_id
