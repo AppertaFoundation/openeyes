@@ -477,7 +477,7 @@ class WorklistFilterQuery
                 case 'todo':
                     $todo_conditions = ['and',
                                     'pathway_step.pathway_id = pathway.id',
-                                    ['or', 'pathway_step.status IS NOT NULL', 'pathway_step.status = :pathway_step_requested'],
+                                    ['or', 'pathway_step.status IS NULL', 'pathway_step.status = :pathway_step_requested'],
                                     ['in', 'pathway_step.step_type_id', $optional[1]]];
 
                     $params[':pathway_step_requested'] = PathwayStep::STEP_REQUESTED;
