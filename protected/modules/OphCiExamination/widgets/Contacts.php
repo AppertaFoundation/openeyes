@@ -46,14 +46,17 @@ class Contacts extends \BaseEventElementWidget
             $contact_ids = isset($_POST["OEModule_OphCiExamination_models_Element_OphCiExamination_Contacts"]['contact_id']) ?
                 $_POST["OEModule_OphCiExamination_models_Element_OphCiExamination_Contacts"]['contact_id'] : [];
             if (!empty($contact_ids)) {
+                $i = 0;
                 foreach ($contact_ids as $contact_id) {
                     $patientContactAssignment = \PatientContactAssignment::model()->findByPk($contact_id);
                     if ($patientContactAssignment == null) {
                         $patientContactAssignment = new \PatientContactAssignment();
                         $patientContactAssignment->patient_id = $this->patient->id;
                         $patientContactAssignment->contact_id = $contact_id;
+                        $patientContactAssignment->comment = $_POST["OEModule_OphCiExamination_models_Element_OphCiExamination_Contacts"]['comments'][$i] ?? null;
                     }
                     $this->contact_assignments[] = $patientContactAssignment;
+                    $i++;
                 }
             }
         } else {
