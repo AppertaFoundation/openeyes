@@ -315,9 +315,9 @@ class Document //extends BaseActiveRecord
                             }
 
                             if ($this->is_draft) {
-                                $data['output_status'] = "DRAFT";
+                                $data['output_status'] = DocumentOutput::STATUS_DRAFT;
                             } else {
-                                $data['output_status'] = "PENDING";
+                                $data['output_status'] = DocumentOutput::STATUS_PENDING;
                             }
 
                             $this->createNewDocOutput($doc_target, $doc_instance_version, $data);
@@ -367,8 +367,13 @@ class Document //extends BaseActiveRecord
         $doc_output->output_type = $data['output_type'];
         $doc_output->requestor_id = 0;
 
-        if (isset($data['output_status']) && $doc_output->output_type != "COMPLETE") {
-            $doc_output->output_status = $data['output_status'];
+        if (isset($data['output_status']) && $doc_output->output_status !== DocumentOutput::STATUS_COMPLETE) {
+            $doc_output->updateStatus($data['output_status'], $this->is_draft);
+        } else {
+            // Because the behaviour in DocumentOutput::beforeSave was moved into DocumentOutput::updateStatus,
+            // updateStatus needs to be called anyway given that save is called immediately below.
+            // It has code for transitions from STATUS_COMPLETE to another status so removing it may cause issues
+            $doc_output->updateStatus(null, $this->is_draft);
         }
 
         if (!$doc_output->save()) {

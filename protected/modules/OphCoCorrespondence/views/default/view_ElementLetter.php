@@ -72,7 +72,7 @@ $is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getReq
                                     $emailOutputStatus = "";
                                     $isInfoBoxRequired = false;
                                     foreach ($target->document_output as $documentOutput) {
-                                        if ( ($documentOutput->output_type === 'Email') || ($documentOutput->output_type === 'Email (Delayed)') ) {
+                                        if ( ($documentOutput->output_type === \DocumentOutput::TYPE_EMAIL) || ($documentOutput->output_type === \DocumentOutput::TYPE_EMAIL_DELAYED) ) {
                                             $isInfoBoxRequired = true;
                                         }
                                     }

@@ -132,6 +132,6 @@ class ContactPracticeAssociate extends BaseActiveRecordVersioned
 
         $address = $contact->address;
 
-        return $address->getLetterArray();
+        return $address->getLetterFormatted();
     }
 }
