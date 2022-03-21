@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -103,8 +104,8 @@ class TheatreDiaryController extends BaseModuleController
 
         $this->jsVars['NHSDateFormat'] = Helper::NHS_DATE_FORMAT;
 
-        $used_firms =  CHtml::listData(OphTrOperationbooking_Operation_Session::model()->getFirmsBeenUsed(@$_POST['subspecialty-id']), "id", "name");
-        $this->render('index', array('wards' => $wards, 'theatres' => $theatres , 'used_firms' => $used_firms));
+        $used_firms = CHtml::listData(OphTrOperationbooking_Operation_Session::model()->getFirmsBeenUsed(@$_POST['subspecialty-id']), "id", "name");
+        $this->render('index', array('wards' => $wards, 'theatres' => $theatres, 'used_firms' => $used_firms));
     }
 
     /**
@@ -152,7 +153,6 @@ class TheatreDiaryController extends BaseModuleController
      */
     public function getDiaryTheatres($data)
     {
-        $firmId = Yii::app()->session['selected_firm_id'];
         $error = false;
         $errorMessage = '';
 
@@ -210,7 +210,7 @@ class TheatreDiaryController extends BaseModuleController
                 $criteria->addCondition('`t`.site_id = :siteId');
                 $criteria->params[':siteId'] = $data['site-id'];
             }
-            if (isset($data['theatre-id']) && $data['theatre-id'] != 'All') {
+            if (isset($data['theatre-id']) && $data['theatre-id'] != 'All' && $data['theatre-id'] != '') {
                 $criteria->addCondition('`t`.id = :theatreId');
                 $criteria->params[':theatreId'] = $_POST['theatre-id'];
             }
@@ -222,15 +222,19 @@ class TheatreDiaryController extends BaseModuleController
                 $criteria->addCondition('firm.id = :firmId');
                 $criteria->params[':firmId'] = $data['firm-id'];
             }
-            if (isset($data['ward-id']) && $data['ward-id'] != 'All') {
+            if (isset($data['ward-id']) && $data['ward-id'] != 'All' && $data['ward-id'] != '') {
                 $criteria->addCondition('activeBookings.ward_id = :wardId');
                 $criteria->params[':wardId'] = $_POST['ward-id'];
             }
+            if (!isset($data['include_no_booking_lists'])) {
+                $criteria->addCondition('activeBookings.ward_id is not null');
+            }
         }
 
-        $criteria->order = 'site.short_name, `t`.display_order, `t`.code, sessions.date, sessions.start_time, sessions.end_time';
+        $criteria->addCondition('site.institution_id = :institution_id');
+        $criteria->params[':institution_id'] = Yii::app()->session['selected_institution_id'];
 
-        Yii::app()->event->dispatch('start_batch_mode');
+        $criteria->order = 'site.short_name, `t`.display_order, `t`.code, sessions.date, sessions.start_time, sessions.end_time';
 
         return OphTrOperationbooking_Operation_Theatre::model()
             ->with(array(
@@ -432,7 +436,7 @@ class TheatreDiaryController extends BaseModuleController
         $comments_is_changed = false;
 
         if (!$session = OphTrOperationbooking_Operation_Session::model()->findByPk(@$_POST['session_id'])) {
-            throw new Exception('Session not found: '.@$_POST['session_id']);
+            throw new Exception('Session not found: ' . @$_POST['session_id']);
         }
 
         $errors = array();
@@ -443,23 +447,23 @@ class TheatreDiaryController extends BaseModuleController
             foreach ($_POST as $key => $value) {
                 if (preg_match('/^admitTime_([0-9]+)$/', $key, $m)) {
                     if (!$operation = Element_OphTrOperationbooking_Operation::model()->findByPk($m[1])) {
-                        throw new Exception('Operation not found: '.$m[1]);
+                        throw new Exception('Operation not found: ' . $m[1]);
                     }
                     if (!$booking = $operation->booking) {
-                        throw new Exception('Operation has no active booking: '.$m[1]);
+                        throw new Exception('Operation has no active booking: ' . $m[1]);
                     }
                     $booking_data = array(
-                            'original_display_order' => $booking->display_order,
-                            'booking_id' => $booking->id,
-                            'changed' => false,
+                        'original_display_order' => $booking->display_order,
+                        'booking_id' => $booking->id,
+                        'changed' => false,
                     );
 
                     // Check to see if the booking has been changed and so needs saving
-                    $confirmed = @$_POST['confirm_'.$m[1]];
+                    $confirmed = @$_POST['confirm_' . $m[1]];
                     if ((date('H:i', strtotime($booking->admission_time)) != $value) || $booking->confirmed != $confirmed) {
                         $booking_data['changed'] = true;
                         $booking->admission_time = $value;
-                        $booking->confirmed = @$_POST['confirm_'.$m[1]];
+                        $booking->confirmed = @$_POST['confirm_' . $m[1]];
                     }
 
                     $booking_data['booking'] = $booking;
@@ -467,7 +471,7 @@ class TheatreDiaryController extends BaseModuleController
 
                     if (!$booking->validate()) {
                         $formErrors = $booking->getErrors();
-                        $errors[(integer) $m[1]] = $formErrors['admission_time'][0];
+                        $errors[(integer)$m[1]] = $formErrors['admission_time'][0];
                     }
                 }
             }
@@ -479,27 +483,27 @@ class TheatreDiaryController extends BaseModuleController
             }
 
             if ($this->checkAccess('OprnEditTheatreSessionDetails')) {
-                $session->consultant = isset($_POST['consultant_'.$session->id]) ? $_POST['consultant_'.$session->id] : null ;
-                $session->paediatric = isset($_POST['paediatric_'.$session->id]) ? $_POST['paediatric_'.$session->id] : null ;
-                $session->anaesthetist = isset($_POST['anaesthetist_'.$session->id]) ? $_POST['anaesthetist_'.$session->id] : null ;
-                $session->general_anaesthetic = isset($_POST['general_anaesthetic_'.$session->id]) ? $_POST['general_anaesthetic_'.$session->id] : null ;
-                $session->available = isset($_POST['available_'.$session->id]) ? $_POST['available_'.$session->id] : null ;
-                $session->unavailablereason_id = isset($_POST['unavailablereason_id_'.$session->id]) ? $_POST['unavailablereason_id_'.$session->id] : null ;
-                $session->max_procedures = isset($_POST['max_procedures_'.$session->id]) ? $_POST['max_procedures_'.$session->id] : null ;
-                $session->max_complex_bookings = isset($_POST['max_complex_bookings_'.$session->id]) ? $_POST['max_complex_bookings_'.$session->id] : null ;
+                $session->consultant = isset($_POST['consultant_' . $session->id]) ? $_POST['consultant_' . $session->id] : null;
+                $session->paediatric = isset($_POST['paediatric_' . $session->id]) ? $_POST['paediatric_' . $session->id] : null;
+                $session->anaesthetist = isset($_POST['anaesthetist_' . $session->id]) ? $_POST['anaesthetist_' . $session->id] : null;
+                $session->general_anaesthetic = isset($_POST['general_anaesthetic_' . $session->id]) ? $_POST['general_anaesthetic_' . $session->id] : null;
+                $session->available = isset($_POST['available_' . $session->id]) ? $_POST['available_' . $session->id] : null;
+                $session->unavailablereason_id = isset($_POST['unavailablereason_id_' . $session->id]) ? $_POST['unavailablereason_id_' . $session->id] : null;
+                $session->max_procedures = isset($_POST['max_procedures_' . $session->id]) ? $_POST['max_procedures_' . $session->id] : null;
+                $session->max_complex_bookings = isset($_POST['max_complex_bookings_' . $session->id]) ? $_POST['max_complex_bookings_' . $session->id] : null;
             }
 
 
             $old_comments = $session->comments;
-            $session->comments = $_POST['comments_'.$session->id];
-            if ($session->comments!=$old_comments) {
+            $session->comments = $_POST['comments_' . $session->id];
+            if ($session->comments != $old_comments) {
                 $comments_is_changed = true;
             }
 
             if (!$session->save()) {
                 foreach ($session->getErrors() as $k => $v) {
                     $errors[$session->getAttributeLabel($k)] = $v;
-                };
+                }
                 throw new Exception('Unable to save session');
             }
 
@@ -549,7 +553,7 @@ class TheatreDiaryController extends BaseModuleController
                 $transaction->commit();
 
                 $booking_data_id = null;
-                if ( isset($booking_data) ) {
+                if (isset($booking_data)) {
                     $booking_data_id = $booking_data['booking_id'];
                 }
 
@@ -558,7 +562,7 @@ class TheatreDiaryController extends BaseModuleController
                 }
 
                 if ($comments_is_changed) {
-                    if ( isset($booking_data) ) {
+                    if (isset($booking_data)) {
                         Audit::add('diary', 'change-of-comment', $booking_data_id, null, array('module' => 'OphTrOperationbooking', 'model' => $session->getShortModelName()));
                     }
                 }
@@ -568,7 +572,7 @@ class TheatreDiaryController extends BaseModuleController
         } catch (Exception $e) {
             $transaction->rollback();
             if (empty($errors)) {
-                $errors[] = 'An unexpected error has occurred.'.$e->getMessage();
+                $errors[] = 'An unexpected error has occurred.' . $e->getMessage();
             }
         }
 
@@ -651,7 +655,7 @@ class TheatreDiaryController extends BaseModuleController
                 $last_modified_date = $ex[0];
                 $last_modified_time = $ex[1];
                 $user = User::model()->findByPk($session->last_modified_user_id);
-                echo 'Modified on '.Helper::convertMySQL2NHS($last_modified_date).' at '.$last_modified_time.' by '.$user->first_name.' '.$user->last_name;
+                echo 'Modified on ' . Helper::convertMySQL2NHS($last_modified_date) . ' at ' . $last_modified_time . ' by ' . $user->first_name . ' ' . $user->last_name;
             }
         }
     }
@@ -665,7 +669,7 @@ class TheatreDiaryController extends BaseModuleController
     public function actionCheckRequired()
     {
         if (!$session = OphTrOperationbooking_Operation_Session::model()->findByPk(@$_POST['session_id'])) {
-            throw new Exception('Session not found: '.$_POST['session_id']);
+            throw new Exception('Session not found: ' . $_POST['session_id']);
         }
 
         Yii::app()->event->dispatch('start_batch_mode');
@@ -728,12 +732,12 @@ class TheatreDiaryController extends BaseModuleController
                 $criteria->params[':anaestheticType'] = $anaesthetic_GA_id;
 
                 if (Element_OphTrOperationbooking_Operation::model()
-                        ->with(array(
-                            'booking' => array(
-                                'with' => 'session',
-                            ),
-                            'anaesthetic_type',
-                        ))
+                    ->with(array(
+                        'booking' => array(
+                            'with' => 'session',
+                        ),
+                        'anaesthetic_type',
+                    ))
                     ->find($criteria)) {
                     echo '1';
                 } else {
@@ -743,6 +747,6 @@ class TheatreDiaryController extends BaseModuleController
                 return;
         }
 
-        throw new Exception('Unknown type: '.@$_POST['type']);
+        throw new Exception('Unknown type: ' . @$_POST['type']);
     }
 }

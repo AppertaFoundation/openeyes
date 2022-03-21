@@ -64,7 +64,23 @@ OpenEyes.UI = OpenEyes.UI || {};
     var timeout_id = null;
     var max_height = null;
 
-    function initAutocomplete(input, autocomplete_url, autocomplete_max_height, params) {
+    RegExp.escape= function(s) {
+        return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+    };
+
+    function matchSearchTerm (str) {
+        var myRegExp = new RegExp(RegExp.escape(search_term),'ig');
+        var matches = str.match(myRegExp);
+        if (matches && matches.length > 0) {
+            $.each(matches,function(index, match){
+                str = str.replace(match, `<span class="autocomplete-match">`+match+`</span>`);
+            });
+        }
+
+        return str.trim();
+    }
+
+    function initAutocomplete(input, autocomplete_url, autocomplete_max_height, params, search_data_prefix) {
         input.on('input', function () {
             inputbox = input;
             inputbox.parent().find('.alert-box').addClass('hidden');
@@ -76,7 +92,7 @@ OpenEyes.UI = OpenEyes.UI || {};
                     if (search_term.length === 1) {
                         inputbox.parent().find('.js-min-chars').removeClass('hidden');
                     }
-                    hideMe();
+					$('.oe-autocomplete').addClass('hidden');
                     return false;
                 }, 1000);
             } else {
@@ -126,7 +142,7 @@ OpenEyes.UI = OpenEyes.UI || {};
 			exports.item_clicked = response[$(this).index()];
             inputbox.val('');
             onSelect[inputbox.selector.replace(/[^A-z]/, '')]();
-            hideMe();
+			$('.oe-autocomplete').addClass('hidden');
         });
 
         input.keydown(function (e) {
@@ -151,25 +167,35 @@ OpenEyes.UI = OpenEyes.UI || {};
             $('.oe-autocomplete a:eq(' + current_focus + ')').addClass('hint');
         });
 
-        $(document).click(hideMe);
+    	$(document).click(function(){ $('.oe-autocomplete').addClass('hidden'); });
     }
 
     function successResponse(response) {
-        $(".oe-autocomplete").empty();
-        var search_options = ``;
+	    $(".oe-autocomplete").empty();
+	    var search_options = ``;
 
-        $.each(response, function (index, value) {
+        $.each(response,function(index, value) {
         	search_options += `<li class="oe-menu-item" role="presentation"><a id="ui-id-`+index+`" tabindex="-1" style="text-align: justify">`;
             if (value.fullname !== undefined) {
                 search_options += matchSearchTerm(value.fullname);
             }
 
-            if (value.first_name !== undefined && value.last_name !== undefined) {
-                search_options += matchSearchTerm(value.first_name) + ` `
-                    + matchSearchTerm(value.last_name) + `
-        		(` + value.age + `) ` + value.gender + `<br>`
-                    + value.nhsnum + `<br><br>Hospital No.: ` + matchSearchTerm(value.hos_num) + `
-				<br>Date of birth: ` + value.dob;
+        	let id_string = '';
+        	if(value.patient_identifiers) {
+				value.patient_identifiers.forEach(function (identifier) {
+					id_string += `${identifier.title}: ${identifier.value}<br>`;
+				});
+			}
+
+			let primary_identifier = '';
+			if (typeof value.primary_patient_identifiers !== 'undefined' && value.primary_patient_identifiers.title && value.primary_patient_identifiers.value) {
+				primary_identifier = value.primary_patient_identifiers.value;
+			}
+
+        	if (value.first_name !== undefined && value.last_name !== undefined) {
+        		const name = matchSearchTerm(`${value.first_name} ${value.last_name} `);
+        		search_options += name + ` (${value.age}) ${value.gender}<br>${primary_identifier}<br><br>${matchSearchTerm(id_string)}` +
+				`<br>Date of birth: `+value.dob;
             }
 
             if (value.label !== undefined) {
@@ -188,22 +214,6 @@ OpenEyes.UI = OpenEyes.UI || {};
         	input_box_css['max-height'] = max_height;
 		}
         inputbox.parent().find(".oe-autocomplete").append(search_options).css(input_box_css).removeClass('hidden');
-    }
-
-    function matchSearchTerm(str) {
-        var myRegExp = new RegExp(search_term, 'ig');
-        var matches = str.match(myRegExp);
-        if (matches && matches.length > 0) {
-            $.each(matches, function (index, match) {
-                str = str.replace(match, `<span class="autocomplete-match">` + match + `</span>`);
-            });
-        }
-
-        return str.trim();
-    }
-
-    function hideMe() {
-        $('.oe-autocomplete').addClass('hidden');
     }
 
     function set_onSelect(input, f) {

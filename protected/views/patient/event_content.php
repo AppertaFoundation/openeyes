@@ -4,7 +4,7 @@
  * @var $form_id string
  */
 ?>
-<main class="main-event <?php echo $this->moduleStateCssClass; ?>" id="event-content">
+<main class="main-event <?php echo $this->moduleStateCssClass; ?>" id="event-content" data-has-errors="<?=($has_errors ?? 'false') ?>">
 
     <h2 class="event-title">
         <?php echo $this->title ?>
@@ -21,7 +21,13 @@
 
         <?php if ($this->title !== 'Please select booking') { ?>
             <?php if (isset($this->event->firm)) : ?>
-                <div class="extra-info">
+                <div class="extra-info" style="font-size:105%">
+                    <small class="fade">Institution: </small> <?=$this->event->institution;?>
+                </div>
+                <div class="extra-info" style="font-size:105%">
+                    <small class="fade">Site: </small> <?=$this->event->site ?? '-';?>
+                </div>
+                <div class="extra-info" style="font-size:105%">
                     <small class="fade">Subspecialty: </small>
                     <small><?= $this->event->firm->serviceSubspecialtyAssignment->subspecialty->name ?></small>
                 </div>
@@ -91,7 +97,7 @@
           <span class="extra-info js-event-date"><?= Helper::convertDate2NHS($this->event->event_date) ?></span>
         <span class="js-has-tooltip" data-tooltip-content="Change Event date">
             <i class="oe-i history large pad-left js-change-event-date"
-               style="display:<?= $this->action->id === 'view' ? 'none' : 'block' ?>"></i>
+               style="display:<?= in_array($this->action->id, array('view', 'removed')) ? 'none' : 'block' ?>"></i>
         </span>
         <?php } ?>
         </div>

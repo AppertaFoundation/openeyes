@@ -75,13 +75,8 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
 <?php echo $form->hiddenInput($element, 'report2', $element->report2) ?>
 <?php
 $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
-    'onReadyCommandArray' => array(
-        array('addDoodle', array('OperatingTable')),
-        array('addDoodle', array('Surgeon')),
-        array('deselectDoodles', array()),
-    ),
-    'syncArray' => array(
-        'Cataract' => array('Surgeon' => array('PhakoIncision' => array('parameters' => array('rotation')))),
+    'listenerArray' => array(
+        'surgeonController',
     ),
     'idSuffix' => 'Position',
     'side' => $this->selectedEyeForEyedraw->shortName,
@@ -97,4 +92,4 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
     'showDoodlePopup' => false,
     'template' => 'OEEyeDrawWidget_InlineToolbar',
 ));
-?>
+

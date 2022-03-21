@@ -461,7 +461,7 @@ class AutoSetRuleController extends BaseAdminController
                     $set_m[$row] = MedicationSetAutoRuleSetMembership::model()->findByPk($med_set['id']) ?? new MedicationSetAutoRuleSetMembership();
                     $set_m[$row]->attributes =  $med_set;
                 }
-            break;
+                break;
 
             case 'meds':
                 foreach ($tmp_set as $row => $med_meds) {
@@ -485,14 +485,14 @@ class AutoSetRuleController extends BaseAdminController
                         $set_m[$row]->tapers = $new_tapers;
                     }
                 }
-            break;
+                break;
 
             case 'rules':
                 foreach ($tmp_set as $row => $med_rules) {
                     $set_m[$row] = MedicationSetRule::model()->findByPk($med_rules['id']) ?? new MedicationSetRule();
                     $set_m[$row]->attributes =  $med_rules;
                 }
-            break;
+                break;
         }
 
         return $set_m;

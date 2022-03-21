@@ -1,0 +1,92 @@
+version: '3.8'
+
+## PLEASE provide values for relevant environment variables (e.g, GIT_USER) in an accompanying .env file
+## the .env file will not be checked in to version control
+
+services:
+  db:
+    image: toukanlabsdocker/oe-sample-db:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-openeyes}
+      TZ: "${TZ:-Europe/London}"
+    command:
+      # Changing log_file_size to allow lightning image processing of larger document image events
+      - "--innodb_log_file_size"
+      - "128M"
+      # disable binary logging (as not needed for development, but logs MUST be enabled for production)
+      - "--disable-log-bin"
+      # - "--sql-mode=NO_ENGINE_SUBSTITUTION,NO_AUTO_CREATE_USER"
+      # - "--sql-mode=NO_ENGINE_SUBSTITUTION,ERROR_FOR_DIVISION_BY_ZERO"
+      ## Following 2 options may help with uploading large binary documents
+      - "--max_allowed_packet"
+      - "128M"
+      - "--net_buffer_length"
+      - "1000000"
+      - "--default_authentication_plugin=mysql_native_password"
+
+  web:
+    image: toukanlabsdocker/oe-web-dev:php${PHP_VERSION:-7.4}
+    environment:
+      YII_DEBUG_BAR_IPS: '*'
+      XDEBUG_MODE: debug
+      PUID: ${PUID:-}
+      PGID: ${PGID:-}
+      GIT_USER: ${GIT_USER:-}
+      TZ: "${TZ:-Europe/London}"
+      MODULES: "${MODULES:-}"
+      OE_MODE: ${OE_MODE:-DEV}
+      OE_INSTITUTION_CODE: "${OE_INSTITUTION_CODE:-NEW}"
+      OE_PASAPI_ENABLE: "${OE_PASAPI_ENABLE:-FALSE}"
+      OE_PASAPI_URL: "${OE_PASAPI_URL:-http://mc:4200}"
+      OE_PORTAL_URI: ${OE_PORTAL_URI:-}
+      OE_PORTAL_EXTERNAL_URI: ${OE_PORTAL_EXTERNAL_URI:-}
+      OE_PORTAL_USERNAME: ${OE_PORTAL_USERNAME:-}
+      OE_PORTAL_PASSWORD: ${OE_PORTAL_PASSWORD:-}
+      OE_PORTAL_CLIENT_ID: ${OE_PORTAL_USERNAME:-}
+      OE_PORTAL_CLIENT_SECRET: ${OE_PORTAL_CLIENT_SECRET:-}
+      OE_PORTAL_ENABLED: "${OE_PORTAL_ENABLED:-FALSE}"
+      DATABASE_HOST: "${DATABASE_HOST:-db}"
+      DATABASE_PASS: "${DATABSE_PASS:-openeyes}"
+      DATABASE_USER: "${DATABSE_USER:-openeyes}"
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-openeyes}
+      ENABLE_CRON: "${ENAABLE_CRON:-FALSE}"
+      WAIT_HOSTS_TIMEOUT: "${WAIT_HOSTS_TIMEOUT:-}"
+      WAIT_SLEEP_INTERVAL: "${WAIT_SLEEP_INTERVAL:-}"
+      WAIT_HOSTS: "${WAIT_HOSTS:-}"
+      BUILD_BRANCH: ${BUILD_BRANCH:-}
+      GENERATE_TEMP_SODIUM_CRYPTO_KEY: "${GENERATE_TEMP_SODIUM_CRYPTO_KEY:-TRUE}"
+      OE_TRAINING_MODE: "${OE_TRAINING_MODE:-}"
+      OE_USER_BANNER_SHORT: "${OE_USER_BANNER_SHORT:-Local-Dev}"
+      HTTPS_ENABLE: "${HTTPS_ENABLE:-FALSE}"
+      HTTPS_SELF_SIGN_CN: "${HTTPS_SELF_SIGN_CN:-localhost}"
+      BASICAUTH_USER: "${BASICAUTH_USER:-}"
+      BASICAUTH_PASSWORD: "${BASICAUTH_PASSWORD:-}"
+      PW_ALLOW_CHANGE: "${PW_ALLOW_CHANGE:-}"
+      PW_RES_MIN_LEN: ${PW_RES_MIN_LEN:-}
+      PW_RES_STRENGTH: ${PW_RES_STRENGTH:-}
+      PW_STAT_ADMIN_CHANGE: ${PW_STAT_ADMIN_CHANGE:-}
+      PW_STAT_DAYS_EXPIRE: ${PW_STAT_DAYS_EXPIRE:-}
+      PW_STAT_DAYS_LOCK: ${PW_STAT_DAYS_LOCK:-}
+      PW_STAT_DAYS_STALE: ${PW_STAT_DAYS_STALE:-}
+      OUTPUT_APPLICATION_LOGS: "${OUTPUT_APPLICATION_LOGS:-FALSE}"
+      LOG_TO_BROWSER: "${LOG_TO_BROWSER:-}"
+      # HTTPS_BYPASS: "Require forward-dns host.docker.internal"      
+    volumes:
+      - "..:/var/www/openeyes:delegated"
+    secrets:
+      - source: SSH_PRIVATE_KEY
+      - source: GPG_KEY
+    tmpfs:
+      - /tmp
+    stdin_open: true
+    tty: true
+    depends_on:
+     - "db"
+    # hostname: oe-web-${PHP_VERSION:-7.4}
+    network_mode: service:db
+
+secrets:
+  SSH_PRIVATE_KEY:
+    file: ${SSH_PRIVATE_KEY_FILE:-~/.ssh/id_rsa}
+  GPG_KEY:
+    file: ~/.gnupg/github.pgp

@@ -25,6 +25,7 @@
                     <th><input type="checkbox" name="selectall" id="selectall"/></th>
                     <th>Display order</th>
                     <th>Name</th>
+                    <th>Institution</th>
                     <th>Active</th>
                 </tr>
             </thead>
@@ -39,6 +40,9 @@
                     </td>
                     <td>
                         <?= $model->name ?>
+                    </td>
+                    <td>
+                        <?= $model->institution ? $model->institution->name : 'N/A' ?>
                     </td>
                     <td>
                         <?= ($model->active) ?

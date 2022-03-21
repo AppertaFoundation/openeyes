@@ -4,9 +4,14 @@ use OEModule\OphCiExamination\models\FamilyHistoryCondition;
 use OEModule\OphCiExamination\models\FamilyHistoryRelative;
 use OEModule\OphCiExamination\models\FamilyHistorySide;
 
+/**
+ * Class FamilyHistoryParameterTest
+ * @covers FamilyHistoryParameter
+ * @covers CaseSearchParameter
+ */
 class FamilyHistoryParameterTest extends CDbTestCase
 {
-    public $parameter;
+    public FamilyHistoryParameter $parameter;
 
     public static function setUpBeforeClass()
     {
@@ -27,27 +32,27 @@ class FamilyHistoryParameterTest extends CDbTestCase
         unset($this->parameter);
     }
 
-    public function getFields()
+    public function getFields(): array
     {
         return array(
             'Any match' => array(
-                'relative' => '',
-                'side' => '',
-                'condition' => '',
+                'relative' => null,
+                'side' => null,
+                'condition' => null,
             ),
             'Specific relative' => array(
                 'relative' => 1,
-                'side' => '',
-                'condition' => '',
+                'side' => null,
+                'condition' => null,
             ),
             'Specific side' => array(
-                'relative' => '',
+                'relative' => null,
                 'side' => 1,
-                'condition' => '',
+                'condition' => null,
             ),
             'Specific condition' => array(
-                'relative' => '',
-                'side' => '',
+                'relative' => null,
+                'side' => null,
                 'condition' => 1,
             ),
             'Exact match' => array(
@@ -64,7 +69,7 @@ class FamilyHistoryParameterTest extends CDbTestCase
      * @param $side
      * @param $condition
      */
-    public function testGetAuditData($relative, $side, $condition)
+    public function testGetAuditData($relative, $side, $condition): void
     {
         $this->parameter->relative = $relative;
         $this->parameter->side = $side;
@@ -76,7 +81,11 @@ class FamilyHistoryParameterTest extends CDbTestCase
 
         $expected = "family_history: $side $relative = \"$condition\"";
 
-        $this->assertEquals($expected, $this->parameter->getAuditData());
+        self::assertEquals($expected, $this->parameter->getAuditData());
+
+        $this->parameter->operation = 'NOT IN';
+        $expected = "family_history: $side $relative != \"$condition\"";
+        self::assertEquals($expected, $this->parameter->getAuditData());
     }
 
     /**
@@ -85,7 +94,7 @@ class FamilyHistoryParameterTest extends CDbTestCase
      * @param $side
      * @param $condition
      */
-    public function testSaveSearch($relative, $side, $condition)
+    public function testSaveSearch($relative, $side, $condition): void
     {
         $this->parameter->relative = $relative;
         $this->parameter->side = $side;
@@ -93,11 +102,11 @@ class FamilyHistoryParameterTest extends CDbTestCase
 
         $saved_search = $this->parameter->saveSearch();
 
-        $this->assertEquals('FamilyHistoryParameter', $saved_search['class_name']);
-        $this->assertEquals('IN', $saved_search['operation']);
-        $this->assertEquals($relative, $saved_search['relative']);
-        $this->assertEquals($side, $saved_search['side']);
-        $this->assertEquals($condition, $saved_search['condition']);
+        self::assertEquals('FamilyHistoryParameter', $saved_search['class_name']);
+        self::assertEquals('IN', $saved_search['operation']);
+        self::assertEquals($relative, $saved_search['relative']);
+        self::assertEquals($side, $saved_search['side']);
+        self::assertEquals($condition, $saved_search['condition']);
     }
 
     /**
@@ -107,23 +116,23 @@ class FamilyHistoryParameterTest extends CDbTestCase
      * @param $condition
      * @throws CException
      */
-    public function testGetValueForAttribute($relative, $side, $condition)
+    public function testGetValueForAttribute($relative, $side, $condition): void
     {
         $this->parameter->relative = $relative;
         $this->parameter->side = $side;
         $this->parameter->condition = $condition;
 
         $expected = FamilyHistoryRelative::model()->findByPk($relative) ? FamilyHistoryRelative::model()->findByPk($relative)->name : 'Any relative';
-        $this->assertEquals($expected, $this->parameter->getValueForAttribute('relative'));
+        self::assertEquals($expected, $this->parameter->getValueForAttribute('relative'));
 
         $expected = FamilyHistorySide::model()->findByPk($side) ? FamilyHistorySide::model()->findByPk($side)->name : 'Any side of family';
-        $this->assertEquals($expected, $this->parameter->getValueForAttribute('side'));
+        self::assertEquals($expected, $this->parameter->getValueForAttribute('side'));
 
         $expected = FamilyHistoryCondition::model()->findByPk($condition) ? ('has ' . FamilyHistoryCondition::model()->findByPk($condition)->name) : 'Any condition';
-        $this->assertEquals($expected, $this->parameter->getValueForAttribute('condition'));
+        self::assertEquals($expected, $this->parameter->getValueForAttribute('condition'));
 
         $expected = 'IN';
-        $this->assertEquals($expected, $this->parameter->getValueForAttribute('operation'));
+        self::assertEquals($expected, $this->parameter->getValueForAttribute('operation'));
 
         $this->expectException('CException');
         $this->parameter->getValueForAttribute('invalid');
@@ -136,7 +145,7 @@ class FamilyHistoryParameterTest extends CDbTestCase
      * @param $side
      * @param $condition
      */
-    public function testBindValues($relative, $side, $condition)
+    public function testBindValues($relative, $side, $condition): void
     {
         $expected = array(
             'f_h_relative_0' => $relative,
@@ -148,7 +157,7 @@ class FamilyHistoryParameterTest extends CDbTestCase
         $this->parameter->side = $side;
         $this->parameter->condition = $condition;
 
-        $this->assertEquals($expected, $this->parameter->bindValues());
+        self::assertEquals($expected, $this->parameter->bindValues());
     }
 
     /**
@@ -157,13 +166,13 @@ class FamilyHistoryParameterTest extends CDbTestCase
      * @param $side
      * @param $condition
      */
-    public function testQuery($relative, $side, $condition)
+    public function testQuery($relative, $side, $condition): void
     {
         $this->parameter->relative = $relative;
         $this->parameter->side = $side;
         $this->parameter->condition = $condition;
 
-        $this->assertTrue($this->parameter->validate());
+        self::assertTrue($this->parameter->validate());
 
         $query_side = '';
         $query_relative = '';
@@ -191,7 +200,7 @@ WHERE 1=1 {$query_side} {$query_relative} {$query_condition}";
             if ($sign === 'NOT IN') {
                 $expected = "SELECT id FROM patient p WHERE id NOT IN ({$expected})";
             }
-            $this->assertEquals($expected, $this->parameter->query());
+            self::assertEquals($expected, $this->parameter->query());
         }
     }
 }

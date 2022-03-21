@@ -50,7 +50,7 @@ class LeafletsController extends BaseAdminController
         }
 
         $this->render('/oeadmin/leaflets/index', [
-            'leaflets' => $leaflet_model->findAll(),
+            'leaflets' => $leaflet_model->findAll()
         ]);
     }
 }

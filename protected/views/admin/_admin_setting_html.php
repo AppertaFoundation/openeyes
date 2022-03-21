@@ -14,7 +14,8 @@
  */
 ?>
 
-<?php $currentValue = $metadata->getSettingName(null, $allowed_classes);
+<?php $currentValue = $metadata->getSettingName(null, $allowed_classes, $institution_id, true);
+;
 if (!isset($currentValue) || $currentValue == null) {
     // we need this to prevent HTML value without =
     $currentValue = '';
@@ -29,7 +30,6 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl
         SettingMetadata::getPatientSubstitutions(),
         SettingMetadata::getRecipientAddressSubstitution()
     );
-    \OELog::log(print_r($substitutions, true));
     ?>
 
 <h2>Letterhead</h2>

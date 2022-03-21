@@ -59,6 +59,16 @@ class MessageCreator
     protected $messageData = array();
 
     /**
+     * @var int
+     */
+    protected $institution_id;
+
+    /**
+     * @var int
+     */
+    protected $site_id;
+
+    /**
      * @param $template
      */
     public function setMessageTemplate($template)
@@ -83,13 +93,17 @@ class MessageCreator
      * @param \User                              $sender
      * @param \User                              $recipient
      * @param OphCoMessaging_Message_MessageType $type
+     * @param int                                $institution_id
+     * @param ?int                                $site_id
      */
-    public function __construct(\Episode $episode, \User $sender, \User $recipient, OphCoMessaging_Message_MessageType $type)
+    public function __construct(\Episode $episode, \User $sender, \User $recipient, OphCoMessaging_Message_MessageType $type, int $institution_id, ?int $site_id)
     {
         $this->episode = $episode;
         $this->sender = $sender;
         $this->recipient = $recipient;
         $this->type = $type;
+        $this->institution_id = $institution_id;
+        $this->site_id = $site_id;
     }
 
     /**
@@ -105,7 +119,9 @@ class MessageCreator
      */
     public function save($message = '', $source = '')
     {
-        $messageEvent = new \Event();
+        $messageEvent = new \Event("automatic");
+        $messageEvent->institution_id = $this->institution_id;
+        $messageEvent->site_id = $this->site_id;
         $messageEvent->episode_id = $this->episode->id;
         $messageEvent->created_user_id = $messageEvent->last_modified_user_id = $this->sender->id;
         $messageEvent->event_date = date('Y-m-d');
@@ -123,6 +139,11 @@ class MessageCreator
 
             $messageElement->message_type_id = $this->type->id;
             if ($this->messageTemplate) {
+                $patient_identifier = \PatientIdentifierHelper::getIdentifierForPatient(
+                    \Yii::app()->params['display_primary_number_usage_code'],
+                    $this->episode->patient->id, $messageEvent->institution_id, $messageEvent->site_id
+                );
+                $this->messageData['patient_identifier'] = $patient_identifier;
                 $messageElement->message_text = $this->renderTemplate();
             } else {
                 $messageElement->message_text = $message;
@@ -188,5 +209,4 @@ class MessageCreator
             return false;
         }
     }
-
 }

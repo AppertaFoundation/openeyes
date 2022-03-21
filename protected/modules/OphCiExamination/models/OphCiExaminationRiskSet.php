@@ -28,6 +28,7 @@ use OEModule\OphCiExamination\models\OphCiExaminationRiskSetAssignment;
  * @property integer $id
  * @property string $name
  * @property integer $ophciexamination_risk_id
+ * @property integer $institution_id
  * @property string $firm_id
  * @property string $subspecialty_id
  * @property string $gender
@@ -39,6 +40,7 @@ use OEModule\OphCiExamination\models\OphCiExaminationRiskSetAssignment;
  * @property string $created_date
  *
  * The followings are the available model relations:
+ * @property Institution $institution
  * @property Firm $firm
  * @property User $createdUser
  * @property User $lastModifiedUser
@@ -69,7 +71,7 @@ class OphCiExaminationRiskSet extends \BaseActiveRecordVersioned
             array('firm_id, subspecialty_id, last_modified_date, created_date', 'safe'),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
-            array('id, name, firm_id, subspecialty_id, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
+            array('id, name, institution_id, firm_id, subspecialty_id, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
         );
     }
 
@@ -81,6 +83,7 @@ class OphCiExaminationRiskSet extends \BaseActiveRecordVersioned
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
+            'institution' => array(self::BELONGS_TO, 'Institution', 'institution_id'),
             'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
             'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
@@ -97,10 +100,11 @@ class OphCiExaminationRiskSet extends \BaseActiveRecordVersioned
         return array(
             'id' => 'ID',
             'name' => 'Name',
+            'institution_id' => 'Institution',
             'ophciexamination_risk_entry_id' => 'Risk',
             'firm_id' => \Firm::contextLabel(),
             'subspecialty_id' => 'Subspecialty',
-            'gender' => 'Gender',
+            'gender' => 'Sex',
             'age_min' => 'Age Min',
             'age_max' => 'Age Max',
         );
@@ -118,7 +122,7 @@ class OphCiExaminationRiskSet extends \BaseActiveRecordVersioned
      * @return CActiveDataProvider the data provider that can return the models
      * based on the search/filter conditions.
      */
-    public function search()
+    public function search($current_institution_only = false)
     {
         // @todo Please modify the following code to remove attributes that should not be searched.
 
@@ -127,11 +131,17 @@ class OphCiExaminationRiskSet extends \BaseActiveRecordVersioned
         $criteria->compare('id', $this->id);
         $criteria->compare('name', $this->name, true);
         $criteria->compare('firm_id', $this->firm_id, true);
+        $criteria->compare('institution_id', $this->institution_id, true);
         $criteria->compare('subspecialty_id', $this->subspecialty_id, true);
         $criteria->compare('last_modified_user_id', $this->last_modified_user_id, true);
         $criteria->compare('last_modified_date', $this->last_modified_date, true);
         $criteria->compare('created_user_id', $this->created_user_id, true);
         $criteria->compare('created_date', $this->created_date, true);
+
+        if ($current_institution_only) {
+            $criteria->addCondition('institution_id = :institution_id');
+            $criteria->params[':institution_id'] = \Yii::app()->session['selected_institution_id'];
+        }
 
         return new \CActiveDataProvider($this, array(
             'criteria'=>$criteria,

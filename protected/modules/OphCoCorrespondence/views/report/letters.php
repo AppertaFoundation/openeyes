@@ -96,6 +96,7 @@
                 </ul>
             </td>
         </tr>
+        <?php $this->renderPartial('//report/_institution_table_row', ['field_name' => "OphCoCorrespondence_ReportLetters[institution_id]"]);?>
         </tbody>
     </table>
 

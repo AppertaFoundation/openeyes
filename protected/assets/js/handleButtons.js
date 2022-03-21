@@ -106,7 +106,7 @@ $(document).ready(function(){
     $.when(et_delete_ajax_call(uri, serializedForm)).done(function(html){
       if (html === '1') {
         // CERA-573 inactivate user should not delete that user from the front-end. It should update the active status.
-        if(object==='users'){
+        if(object==='users' || object.toLowerCase() === 'teams' || object.toLowerCase() === 'pgdpsds'){
           updateActiveIcon($form);
         } else {
           $form.find('table.standard tbody input[type="checkbox"]:checked').closest('tr').remove();

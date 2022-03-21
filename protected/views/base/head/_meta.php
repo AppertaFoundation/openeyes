@@ -2,7 +2,7 @@
 <?php
 $assetManager = Yii::app()->getAssetManager();
 $newblue_path = $assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue'), true);
-$favicon_path = $newblue_path . '/img/favicon_package_OE';
+$favicon_path = $newblue_path . '/favicon_package_OE';
 
 //Because the wonderful way the namespace is created means if you don't include your file in the assets template
 //the namespace doesn't exist and gets overwritten.
@@ -22,7 +22,7 @@ $favicon_path = $newblue_path . '/img/favicon_package_OE';
     <meta http-equiv="pragma" content="no-cache" />
 <?php }?>
 
-<?php header("Content-Security-Policy: default-src 'self' localhost:*; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src data: https://*/Analytics http://*/Analytics 'self'", true); ?>
+<?php header("Content-Security-Policy: default-src 'self' localhost:*; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src data: https://*/Analytics http://*/Analytics 'self'; worker-src blob:; font-src 'self' data:", true); ?>
 
 <link rel="apple-touch-icon" sizes="180x180" href="<?= $favicon_path ?>/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="<?= $favicon_path ?>/favicon-32x32.png">

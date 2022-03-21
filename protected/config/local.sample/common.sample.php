@@ -71,6 +71,7 @@ $config = array(
         //'pseudonymise_patient_details' => false,
         //'ab_testing' => false,
         'local_users' => array('admin','api','docman_user','payload_processor'),
+        'special_usernames' => array('api'),
         //'log_events' => true,
         //'default_site_code' => '',
         'OphCoTherapyapplication_sender_email' => array('email@example.com' => 'Test'),

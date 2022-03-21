@@ -49,13 +49,14 @@ class ReportDiagnoses extends BaseReport
             'start_date' => 'Start date',
             'end_date' => 'End date',
             'condition_type' => 'Condition type',
+            'all_ids' => 'Patient IDs'
         );
     }
 
     public function rules()
     {
         return array(
-            array('principal, secondary, all, condition_type, start_date, end_date', 'safe'),
+            array('principal, secondary, all, condition_type, start_date, end_date,institution_id', 'safe'),
             array('start_date, end_date, condition_type', 'required'),
         );
     }
@@ -92,13 +93,16 @@ class ReportDiagnoses extends BaseReport
 
     public function run()
     {
+
+        $this->setInstitutionAndSite();
+
         if (!empty($this->all)) {
             $this->all = $this->filterDiagnoses();
         }
 
         $this->diagnoses = array();
 
-        $select = 'p.hos_num, c.first_name, c.last_name, p.dob';
+        $select = 'p.id, c.first_name, c.last_name, p.dob';
 
         $query = $this->getDbCommand();
 
@@ -114,8 +118,23 @@ class ReportDiagnoses extends BaseReport
 
         if ($this->condition_type == 'or') {
             $condition = '( ' . implode(' or ', $and_or_conditions) . ' )';
+            if ($this->institution_id) {
+                $condition .= " AND ";
+            }
         } elseif ($this->condition_type == 'and') {
             $condition = '( ' . implode(' and ', $and_or_conditions) . ' )';
+            if ($this->institution_id) {
+                $condition .= " AND ";
+            }
+        }
+
+        if ($this->institution_id) {
+            $condition .= "EXISTS( SELECT * FROM event ev1
+            JOIN episode ep1 on ep1.id = ev1.episode_id
+            WHERE ev1.institution_id = :institution_id AND ep1.patient_id = p.id
+            )";
+
+            $whereParams[':institution_id'] = $this->institution_id;
         }
 
         $query->where($condition, $whereParams);
@@ -155,6 +174,8 @@ class ReportDiagnoses extends BaseReport
 
     public function addDiagnosesResultItem($item)
     {
+        $patient_identifier_value = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $item['id'], $this->user_institution_id, $this->user_selected_site_id));
+        $patient_identifiers = PatientIdentifierHelper::getAllPatientIdentifiersForReports($item['id']);
         $diagnoses = array();
 
         !empty($this->principal) && $diagnoses = $this->getDiagnosesForRow('Principal', $item, $this->principal, $diagnoses);
@@ -171,11 +192,12 @@ class ReportDiagnoses extends BaseReport
         }
 
         $this->diagnoses[$ts] = array(
-            'hos_num' => $item['hos_num'],
+            'identifier' => $patient_identifier_value,
             'dob' => $item['dob'],
             'first_name' => $item['first_name'],
             'last_name' => $item['last_name'],
             'diagnoses' => $diagnoses,
+            'all_ids' => $patient_identifiers,
         );
     }
 
@@ -246,16 +268,16 @@ class ReportDiagnoses extends BaseReport
     {
         $output = $this->description() . "\n\n";
 
-        $output .= Patient::model()->getAttributeLabel('hos_num') . ',' . Patient::model()->getAttributeLabel('dob') . ',' . Patient::model()->getAttributeLabel('first_name') . ',' . Patient::model()->getAttributeLabel('last_name') . ",Date,Diagnoses\n";
+        $output .= $this->getPatientIdentifierPrompt() . ',' . Patient::model()->getAttributeLabel('dob') . ',' . Patient::model()->getAttributeLabel('first_name') . ',' . Patient::model()->getAttributeLabel('last_name') . ",Date,Diagnoses," . $this->getAttributeLabel('all_ids') . "\n";
 
         foreach ($this->diagnoses as $ts => $diagnosis) {
             foreach ($diagnosis['diagnoses'] as $_diagnosis) {
-                $output .= "\"{$diagnosis['hos_num']}\",\"" .
+                $output .= "\"{$diagnosis['identifier']}\",\"" .
                     ($diagnosis['dob'] ? date('j M Y', strtotime($diagnosis['dob'])) : 'Unknown') .
                     "\",\"{$diagnosis['first_name']}\",\"{$diagnosis['last_name']}\",\"" .
                     (isset($_diagnosis['date']) ? date('j M Y', strtotime($_diagnosis['date'])) : date('j M Y', $ts)) .
                     '","';
-                $output .= $_diagnosis['eye'] . ' ' . $_diagnosis['disorder'] . ' (' . $_diagnosis['type'] . ")\"\n";
+                $output .= $_diagnosis['eye'] . ' ' . $_diagnosis['disorder'] . ' (' . $_diagnosis['type'] . ")\",\"{$diagnosis['all_ids']}\"\n";
             }
         }
 

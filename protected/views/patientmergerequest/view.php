@@ -54,10 +54,8 @@
     <div class="cols-12 flex-layout">
       <div class="cols-5">
         <h2 class="secondaryPatient">Secondary</h2>
-            <?php $this->renderPartial(
-                '//patientmergerequest/_patient_details',
-                array('model' => $model, 'type' => 'secondary')
-            ) ?>
+            <?php $this->renderPartial('//patientmergerequest/_patient_details',
+              array('model' => $model, 'type' => 'secondary', 'patient_identifier_types' => $patient_identifier_types)) ?>
       </div>
 
       <div class="cols-2" style="text-align: center">
@@ -69,10 +67,8 @@
 
       <div class="cols-5">
         <h2 class="primaryPatient">Primary</h2>
-            <?php $this->renderPartial(
-                '//patientmergerequest/_patient_details',
-                array('model' => $model, 'type' => 'primary')
-            ) ?>
+            <?php $this->renderPartial('//patientmergerequest/_patient_details',
+              array('model' => $model, 'type' => 'primary', 'patient_identifier_types' => $patient_identifier_types)) ?>
       </div>
     </div>
     <hr>
@@ -83,3 +79,15 @@
   </form>
   <br>
 </div>
+<script>
+
+    patientMerge.patients.primary = JSON.parse('<?php echo $primary_patient_JSON; ?>');
+    patientMerge.patients.primary['all-episodes'] = $('<textarea />').html(patientMerge.patients.primary['all-episodes']).text();
+
+    patientMerge.patients.secondary = JSON.parse('<?php echo $secondary_patient_JSON; ?>');
+    patientMerge.patients.secondary['all-episodes'] = $('<textarea />').html(patientMerge.patients.secondary['all-episodes']).text();
+
+    patientMerge.updateDOM('primary');
+    patientMerge.updateDOM('secondary');
+
+</script>

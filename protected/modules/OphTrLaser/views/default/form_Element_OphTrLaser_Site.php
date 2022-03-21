@@ -71,7 +71,7 @@ foreach ($lasers as $laser) {
             <?php echo $form->dropDownList(
                 $element,
                 'operator_id',
-                CHtml::listData($element->surgeons, 'id', 'ReversedFullName'),
+                CHtml::listData(User::model()->getUsersFromCurrentInstitution(), 'id', 'ReversedFullName'),
                 array('class' => 'cols-full', 'empty' => 'Select', 'nowrapper' => true),
                 false
             ) ?>

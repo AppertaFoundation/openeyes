@@ -11,9 +11,109 @@
 * @package OpenEyes
 * @link http://www.openeyes.org.uk
 * @author OpenEyes <info@openeyes.org.uk>
-* @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+* @copyright Copyright (c) 2021, OpenEyes Foundation
 * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
 */
+class DateTime {
+	constructor(date = null) {
+
+		if (!(date instanceof Date)) {
+			date = new Date();
+		}
+
+		// clone
+		this.originalData = new Date(date.getTime());
+
+		// set internal date
+		this.date = date;
+	}
+	// Getter
+	get object() {
+		return this.date;
+	}
+
+	/**
+	 * Returns the display date
+	 *
+	 * @param date
+	 * @returns {string}
+	 */
+	getDisplayDate(date = null) {
+		const year = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(date ? date : this.date);
+		const month = new Intl.DateTimeFormat('en', { month: 'short' }).format(date ? date : this.date);
+		const day = new Intl.DateTimeFormat('en', { day: 'numeric' }).format(date ? date : this.date);
+
+		return `${day} ${month} ${year}`;
+	}
+
+	/**
+	 * Calculates the relative date/date ranges from different expressions like tomorrow/last-week etc
+	 * @param relative
+	 */
+	getRelativeDateRange(relative, dateObject = null) {
+		let dateFrom = new Date(dateObject instanceof Date ? dateObject.getTime() : this.date.getTime());
+		let dateTo = new Date(dateObject instanceof Date ? dateObject.getTime() : this.date.getTime());
+		const lastWeekDay = new Date(dateFrom.getFullYear(), dateFrom.getMonth(), dateFrom.getDate() - 7);
+		const nextWeekDay = new Date(dateFrom.getFullYear(), dateFrom.getMonth(), dateFrom.getDate() + 7);
+
+		switch (relative) {
+			case "yesterday":
+				dateFrom = (d => new Date(d.setDate(d.getDate() - 1)))(dateFrom);
+				dateTo = (d => new Date(d.setDate(d.getDate() - 1)))(dateTo);
+				break;
+			case "today":
+				break;
+			case "tomorrow":
+				dateFrom = (d => new Date(d.setDate(d.getDate() + 1)))(dateFrom);
+				dateTo = (d => new Date(d.setDate(d.getDate() + 1)))(dateTo);
+				break;
+			case "last-week":
+				const t = new Date().getDate() + (6 - new Date().getDay() - 1) - 7;
+                dateFrom.setFullYear(lastWeekDay.getFullYear(), lastWeekDay.getMonth(), lastWeekDay.getDate() - ((lastWeekDay.getDay() + 6) % 7));
+                dateTo.setDate(t);
+				break;
+			case "this-week":
+				const mod = dateFrom.getDate() - (dateFrom.getDay() + 6) % 7;
+				dateFrom.setDate(mod);
+				dateTo.setDate(mod + 4);
+				break;
+			case "next-week":
+				const d = new Date();
+				dateFrom.setDate(d.getDate() + (1 + 7 - d.getDay()) % 7);
+				dateTo.setDate(nextWeekDay.getDate() + (5 + 7 - nextWeekDay.getDay()) % 7);
+				break;
+			case "last-month":
+				dateFrom = new Date(dateFrom.getFullYear(), dateFrom.getMonth() - 1, 1);
+				dateTo.setDate(0); // set to last day of previous month
+				break;
+			case "this-month":
+				dateFrom = new Date(dateFrom.getFullYear(), dateFrom.getMonth(), 1);
+				dateTo = new Date(dateTo.getFullYear(), dateTo.getMonth() + 1, 0);
+				break;
+			case "next-month":
+				dateFrom = new Date(dateFrom.getFullYear(), dateFrom.getMonth() + 1, 1);
+				dateTo = new Date(dateTo.getFullYear(), dateTo.getMonth() + 2, 0);
+				break;
+			case "+4days":
+				dateTo.setDate(dateFrom.getDate() + 4);
+				break;
+			case "+7days":
+				dateTo.setDate(dateFrom.getDate() + 7);
+				break;
+			case "+12days":
+				dateTo.setDate(dateFrom.getDate() + 12);
+				break;
+
+			default:
+			// code block
+		}
+
+		return {
+			from: dateFrom,
+			to: dateTo
+		};
+	}
+}
 
 $(document).ready(function() {
 	$('#theatre-filter button[type="submit"]').click(function() {
@@ -28,7 +128,33 @@ $(document).ready(function() {
 		$('#ward-id').attr("disabled", $(this).is(':checked'));
 	});
 
-	$('#date-filter_0').click(function() {
+	const $ranges = document.getElementById('theatre-diaries-date-ranges');
+	$ranges.addEventListener('click', function(e) {
+		// loop parent nodes from the target to the delegation node
+		for (let target = e.target; target && target !== this; target = target.parentNode) {
+			if (target.matches('.btn')) {
+				const $from = document.querySelector('.js-filter-date-from');
+				const $to = document.querySelector('.js-filter-date-to');
+
+				const dateTime = new DateTime();
+				const dates = dateTime.getRelativeDateRange(target.dataset.range);
+
+				// populate the visible input fields
+				$from.value = dateTime.getDisplayDate(dates.from);
+				$to.value = dateTime.getDisplayDate(dates.to);
+
+				const dateFrom =  format_pickmeup_date(dates.from);
+				const dateTo = format_pickmeup_date(dates.to);
+
+				setDiaryFilter({'date-filter': target.dataset.range, 'date-start': dateFrom,'date-end':dateTo});
+				break;
+			}
+		}
+		return true;
+	}, false);
+
+
+	/*$('#date-filter_0').click(function() {
 		today = new Date();
 
 		clearBoundaries();
@@ -121,6 +247,8 @@ $(document).ready(function() {
 		return false;
 	});
 
+	 */
+
 	$('#theatre-filter select').change(function() {
 		var hash = {};
 		hash[$(this).attr('id')] = $(this).val();
@@ -132,6 +260,14 @@ $(document).ready(function() {
 			setDiaryFilter({'emergency_list':1});
 		} else {
 			setDiaryFilter({'emergency_list':0});
+		}
+	});
+
+	$('#include_no_booking_lists').click(function () {
+		if($(this).is(':checked')){
+			setDiaryFilter({'include_no_booking_lists':1});
+		} else {
+			setDiaryFilter({'include_no_booking_lists':0});
 		}
 	});
 
@@ -175,46 +311,71 @@ $(document).ready(function() {
 		}, enableButtons);
 	});
 
-	$(this).undelegate('.edit-session','click').delegate('.edit-session','click',function() {
+	function editList(e) {
+		e.preventDefault();
+
 		cancel_edit();
+		const $form = this.closest('form');
+		const $table = $form.querySelector('table.theatre-bookings');
 
 		disableButtons($('button,.button').not('.theatre'));
 		$('.spinner').hide();
-
-		theatre_edit_session_id = $(this).attr('rel');
+		theatre_edit_session_id = $form.getAttribute('id');
 
 		theatre_edit_session_data = {};
 
-		if ($('div.purpleUser').length >0) {
-			theatre_edit_session_data["purple_rinse"] = {
-				"consultant": $('#consultant_'+theatre_edit_session_id).is(':checked'),
-				"paediatric": $('#paediatric_'+theatre_edit_session_id).is(':checked'),
-				"anaesthetist": $('#anaesthetist_'+theatre_edit_session_id).is(':checked'),
-				"general_anaesthetic": $('#general_anaesthetic_'+theatre_edit_session_id).is(':checked'),
-				"available": $('#available_'+theatre_edit_session_id).is(':checked')
-			};
-		}
+		// what is purpleUser ??
+		// if ($('div.purpleUser').length >0) {
+		// 	theatre_edit_session_data["purple_rinse"] = {
+		// 		"consultant": $('#consultant_'+theatre_edit_session_id).is(':checked'),
+		// 		"paediatric": $('#paediatric_'+theatre_edit_session_id).is(':checked'),
+		// 		"anaesthetist": $('#anaesthetist_'+theatre_edit_session_id).is(':checked'),
+		// 		"general_anaesthetic": $('#general_anaesthetic_'+theatre_edit_session_id).is(':checked'),
+		// 		"available": $('#available_'+theatre_edit_session_id).is(':checked')
+		// 	};
+		// }
 
-		theatre_edit_session_data["row_order"] = [];
-		theatre_edit_session_data["confirm"] = {};
-		theatre_edit_session_data["comments"] = $('.comments p.comments[data-id="'+theatre_edit_session_id+'"]').text();
+		theatre_edit_session_data.row_order = [];
+		theatre_edit_session_data.confirm = {};
+		theatre_edit_session_data.comments = $table.querySelector('.js-comments-edit').innerText;
 
-		$('#tbody_'+theatre_edit_session_id).children('tr').map(function(){
-			theatre_edit_session_data["row_order"].push($(this).attr('id'));
-			var id = $(this).attr('id').match(/[0-9]+/);
-			theatre_edit_session_data["confirm"][id] = $('#confirm_'+id).is(':checked');
+		$table.querySelectorAll('tbody tr').forEach(($tr) => {
+			const id = $tr.getAttribute('id');
+			theatre_edit_session_data.row_order.push(id);
+			const $confirmed = $tr.querySelector('.js-confirmed');
+			theatre_edit_session_data.confirm[id] = $confirmed ? $confirmed.checked : false;
 		});
 
-		$('.diaryViewMode').hide();
-		$('.diaryEditMode[data-id="'+theatre_edit_session_id+'"]').show();
-		$('.action_options[data-id="'+theatre_edit_session_id+'"]').show();
+		// buttons
+		$form.querySelector('.js-update-session').style.display = 'inline-flex';
+		$form.querySelector('.js-cancel-update').style.display = 'inline-flex';
+		$form.querySelector('.js-edit-session').style.display = 'none';
 
-		$("#tbody_"+theatre_edit_session_id).sortable({
+		$('.js-diaryViewMode').hide();
+
+		// hide session features and show checkboxes
+		Array.from($form.querySelector('.js-session-features').children).forEach($el => {
+			$el.style.display = $el.tagName === 'LI' ? 'none' : 'inline-flex';
+		});
+
+		$form.querySelectorAll('.js-diaryEditMode').forEach(($el) => {
+			$el.style.display = 'inline-flex';
+		});
+
+		// now lets handle "session unavailable" part differently ofc
+		$form.querySelector('.session-unavailable').style.display = 'block';
+
+		// max patients and max compex procedures
+		$form.querySelectorAll('.max-limit.js-diaryEditMode').forEach($el => {
+			$el.style.display = 'inline-block';
+		});
+
+		$($table.querySelector('tbody')).sortable({
 			 helper: function(e, tr) {
 				 var $originals = tr.children();
 				 var $helper = tr.clone();
 				 $helper.children().each(function(index) {
-					 $(this).width($originals.eq(index).outerWidth())
+					 $(this).width($originals.eq(index).outerWidth());
 				 });
 				 return $helper;
 			 },
@@ -222,11 +383,22 @@ $(document).ready(function() {
 		}).disableSelection();
 		$("#theatre_list tbody").sortable('enable');
 
-		$('tbody[id="tbody_'+theatre_edit_session_id+'"] td.confirm input[name^="confirm_"]').attr('disabled',false);
-		$('th.footer').attr('colspan','10');
+		$('tbody[id="tbody_'+theatre_edit_session_id+'"] input[name^="confirm_"]').attr('disabled',false);
 
 		return false;
-	});
+	}
+
+	const $theatreList = document.getElementById('theatreList');
+
+	$theatreList.addEventListener('click', function(e) {
+		// loop parent nodes from the target to the delegation node
+		for (let target = e.target; target && target !== this; target = target.parentNode) {
+			if (target.matches('.js-edit-session')) {
+				editList.call(target, e);
+				break;
+			}
+		}
+	}, false);
 
 	$(this).undelegate('a.view-session','click').delegate('a.view-session','click',function() {
 		cancel_edit();
@@ -261,27 +433,23 @@ $(document).ready(function() {
 		}
 	});
 
-	$('.session-available').die('click').live('click',function() {
-		var reasons = $(this).parent().next().find('.unavailable-reasons');
-		// if they are changing status back and forth, don't want to lose any reason they may have selected,
-		// but don't want to submit it if they set it available
-		if ($(this).is(':checked')) {
-			reasons.parent().hide();
-			reasons.data('orig', reasons.val());
-			reasons.val('');
-		}
-		else {
-			reasons.val(reasons.data('orig'));
-			reasons.parent().show();
-		}
+	$('#theatreList').on('click', '.session-available', function() {
+		const $form = $(this).closest('form');
+		$form.find('.unavailable-reasons').toggle(!!$(this).is(':checked'));
+
+		$form.find('.js-hidden-available').attr('disabled', $(this).is(':checked'));
+		$form.find('.js-hidden-unavailable').attr('disabled', !$(this).is(':checked'));
 	});
 
-	$(this).undelegate('button[id^="btn_edit_session_save_"]','click').delegate('button[id^="btn_edit_session_save_"]','click',function() {
+	$(document).on('click', '.js-update-session' ,function() {
+
+		const $form = $(this).closest('form');
+
 		if (!$(this).hasClass('inactive')) {
 			disableButtons();
 			$('.diaries-search .spinner').hide();
 
-			var session_id = $(this).attr('id').match(/[0-9]+/);
+			const session_id = $form.attr('id');
 
 			$('input[name^="admitTime_"]').map(function() {
 				var m = $(this).val().match(/^([0-9]{1,2}).*?([0-9]{2})$/);
@@ -295,12 +463,13 @@ $(document).ready(function() {
 
 			$.ajax({
 				type: "POST",
-				data: $('#session_form'+session_id).serialize()+"&session_id="+session_id+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
+				data: $form.serialize()+"&session_id="+session_id+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
 				dataType: 'json',
 				url: baseUrl+'/OphTrOperationbooking/theatreDiary/saveSession',
 				success: function(errors) {
 					var opErrs = null;
 					var nonOpErrs = '';
+					const $tbody = $(`tbody_${session_id}`);
 					$('#tbody_'+session_id).children('tr').attr('style','');
 
 					for (var operation_id in errors) {
@@ -317,7 +486,7 @@ $(document).ready(function() {
 					}
 					if (nonOpErrs) {
 						if (opErrs) {
-							nonOpErrs += "<li>" + opErrs + "</li>"
+							nonOpErrs += "<li>" + opErrs + "</li>";
 						}
 						opErrs = "Please check the following errors:<ul>"+nonOpErrs+"</ul>";
 					}
@@ -332,24 +501,39 @@ $(document).ready(function() {
 
 					var markSessionUnavailable = false;
 
-					$('tr[id^="oprow_"]').attr('style','');
-
-					$('#session_form'+session_id+' span.admitTime_ro').map(function() {
-						$(this).text($('input[name="admitTime_'+$(this).attr('data-operation-id')+'"]').val());
+					$($tbody).find('div.op-time').map(function() {
+						const time = $(this).parent().find('input[name^="admitTime"]').val();
+						$(this).text(time);
 					});
 
-					$('.session-comments .comments[data-id="'+session_id+'"] .comment').text($('textarea[name="comments_'+session_id+'"]').val());
+					$.each($('.session-comments'), function(i, $div) {
+						const comment = $($div).find('textarea').val();
+						const $span = $($div).find('span');
+						$($div).find('i').remove();
+						const $icon = '<i class="oe-i comments-who small pad-right js-has-tooltip" data-tt-type="basic" data-tooltip-content="User comment"> </i>';
+						$span.html(comment ? ($icon + comment) : '<span class="user-comment fade">No session list comments</span>');
+						if (comment) {
+							$span.removeClass('fade');
+						} else {
+							$span.addClass('fade');
+						}
+					});
 
 					function checkedOrOne(field) {
-						if($(field).prop('type') == 'checkbox') {
+						if($(field).prop('type') === 'checkbox') {
 							return $(field).is(':checked');
-						} else if($(field).prop('type') == 'hidden') {
+						} else if($(field).prop('type') === 'hidden') {
 							return ($(field).val() == 1);
 						}
 					}
 
-					if (checkedOrOne($('#available_'+session_id))) {
+					if ($form.find(`input[name="available_${session_id}"]:enabled`).val() === "1") {
+						const $minutes = $form.find('.minutes');
 						$('#session_unavailable_'+session_id).hide();
+						$form.find('.theatre-overview').removeClass('full').addClass('available');
+						$minutes.text(`${$minutes.data('available-minutes')} mins available`);
+						$form.find('.session-unavailable-reason').hide();
+						$form.find('.js-session-features').show();
 					}
 					else {
 						// because the unavailable reason might not be set in sessions before reasons was an option, we have to put the
@@ -357,82 +541,84 @@ $(document).ready(function() {
 						$('#session_unavailablereason_' + session_id).html(" - " + $('#unavailablereason_id_' + session_id).children(':selected').text());
 						$('#session_unavailable_'+session_id).show();
 						markSessionUnavailable = true;
+
+						$('.theatre-overview').removeClass('available').addClass('full');
+						$form.find('.minutes').text('Session unavailable');
+						$form.find('.session-unavailable-reason').text($(`#unavailablereason_id_${session_id} option:selected`).text()).show();
+						$form.find('.js-session-features').hide();
 					}
+
+					$('tbody[id="tbody_'+session_id+'"] input[name^="confirm_"]').attr('disabled','disabled');
+
 					checkedOrOne($('#consultant_'+session_id)) ? $('#consultant_icon_'+session_id).show() : $('#consultant_icon_'+session_id).hide();
 					checkedOrOne($('#anaesthetist_'+session_id)) ? $('#anaesthetist_icon_'+session_id).show() : $('#anaesthetist_icon_'+session_id).hide();
-					$('#anaesthetist_icon_'+session_id).html(checkedOrOne($('#general_anaesthetic_'+session_id)) ? 'Anaesthetist (GA)' : 'Anaesthetist');
+					checkedOrOne($('#general_anaesthetic_'+session_id)) ? $('#general_anaesthetic_icon_'+session_id).show() : $('#general_anaesthetic_icon_'+session_id).hide();
 					checkedOrOne($('#paediatric_'+session_id)) ? $('#paediatric_icon_'+session_id).show() : $('#paediatric_icon_'+session_id).hide();
 
 					const $inputFieldForMaxProcedures = $('#max_procedures_'+session_id);
 					const maxProcedures = $inputFieldForMaxProcedures.val();
-					const $procedureCount = $('#procedure_count_'+session_id);
-					const $maxProceduresIcon = $('#max_procedures_icon_'+session_id);
+
 					if (maxProcedures) {
+						const $maxProcVal = $form.find('.js-max-procedures-val');
 						let overbooked = 0;
-						$maxProceduresIcon.find('.max-procedures-val').html(maxProcedures);
-						$maxProceduresIcon.show();
-						let availableProcedureCount = maxProcedures - $procedureCount.data('current-procedure-count');
+						$maxProcVal.html(`Max ${maxProcedures} patients`).show();
+						let availableProcedureCount = maxProcedures - $maxProcVal.data('current-procedure-count');
+
 						if (availableProcedureCount <= 0) {
 							overbooked = Math.abs(availableProcedureCount);
 							availableProcedureCount = 0;
 							markSessionUnavailable = true;
 						}
-						$procedureCount.find('.available-val').html(availableProcedureCount);
-						$procedureCount.show();
-						const $overbookedMessage = $('#procedure_count_'+session_id+' .overbooked');
+
 						if (overbooked > 0) {
-							$overbookedMessage.find('.overbooked-proc-val').html(overbooked);
-							$overbookedMessage.show();
+							const $msg = `<span class="complex-bookings-num highlighter warning">${overbooked}</span>`;
+							$form.find(".overbooked.js-max-patients").html(`Overbooked by ${$msg}`);
+
 						}
 						else {
-							$overbookedMessage.hide();
+							const $html = `<span class="bookings-num">${availableProcedureCount}</span> available`;
+							$form.find(".overbooked.js-max-patients").html($html);
 						}
-					}
-					else {
-						$maxProceduresIcon.hide();
-						$procedureCount.hide();
 					}
 
 					const $inputFieldForMaxComplexBookings = $('#max_complex_bookings_'+session_id);
 					const maxComplexBookings = $inputFieldForMaxComplexBookings.val();
-					const $complexBookingCount = $('#complex_booking_count_'+session_id);
-					const $maxComplexBookingsIcon = $('#max_complex_bookings_icon_'+session_id);
+
 					if (maxComplexBookings) {
+						const $maxComplecBookingVal = $form.find('.js-max-complex-bookings-value');
 						let overBookedComplexBookings = 0;
-						$maxComplexBookingsIcon.find('.max-complex-bookings-value').html(maxComplexBookings);
-						$maxComplexBookingsIcon.show();
-						let availableComplexBookings = maxComplexBookings - $complexBookingCount.data('current-complex-booking-count');
-						if (availableComplexBookings <= 0) {
-							overBookedComplexBookings = Math.abs(availableComplexBookings);
-							availableComplexBookings = 0;
+						$maxComplecBookingVal.html(`Max ${maxComplexBookings} complex bookings`).show();
+						let availableComplexBookingCount = maxComplexBookings - $maxComplecBookingVal.data('current-max-complex-count');
+
+						if (availableComplexBookingCount <= 0) {
+							overBookedComplexBookings = Math.abs(availableComplexBookingCount);
 						}
-						$complexBookingCount.find('.available-complex-booking-count').html(availableComplexBookings);
-						$complexBookingCount.show();
-						const $complexBookingOverbookedMessage = $complexBookingCount.find('.overbooked');
+
 						if (overBookedComplexBookings > 0) {
-							$complexBookingOverbookedMessage.find('.overbooked-complex-booking-count').html(overBookedComplexBookings);
-							$complexBookingOverbookedMessage.show();
+							const $msg = `<span class="complex-bookings-num highlighter warning">${overBookedComplexBookings}</span>`;
+							$form.find(".overbooked.js-max-patients").html(`Overbooked by ${$msg}`);
+
 						}
 						else {
-							$complexBookingOverbookedMessage.hide();
+							const $html = `<span class="bookings-num">${availableComplexBookingCount}</span> available`;
+							$form.find(".overbooked.js-max-complex-booking").html($html);
 						}
-					}
-					else {
-						$maxComplexBookingsIcon.hide();
-						$complexBookingCount.hide();
-					}
-
-					if (markSessionUnavailable) {
-						$('#tfoot_'+session_id).find('td').removeClass('available');
-					}
-					else if (parseInt($('#tfoot_'+session_id).find('td').data('minutes-available')) > 0) {
-						$('#tfoot_'+session_id).find('td').addClass('available');
 					}
 
 					cancel_edit(true);
 					$('#infoBox_'+session_id).show();
 
 					enableButtons();
+
+					// Update session times
+					const inputs = $form[0].querySelectorAll('.js-admit-time');
+					if (inputs) {
+						inputs.forEach(input => {
+							if (input.value) {
+								input.previousElementSibling.innerHTML = input.value;
+							}
+						});
+					}
 				}
 			});
 		}
@@ -440,7 +626,8 @@ $(document).ready(function() {
 		return false;
 	});
 
-	$(this).undelegate('button[id^="btn_edit_session_cancel_"]','click').delegate('button[id^="btn_edit_session_cancel_"]','click',function() {
+	$(document).on('click', '.js-cancel-update', function(e) {
+		e.preventDefault();
 		cancel_edit();
 		return false;
 	});
@@ -457,13 +644,16 @@ $(document).ready(function() {
 		}
 	});
 
+	// 'a-A-b-B-C-d-e-H-I-j-k-l-m-M-p-P-s-S-u-w-y-Y'
+	// Thu-Thursday-Dec-December-21-12-12-00-12-346-0-12-12-00-AM-AM-1576108800-00-5-4-19-2019
+	// Mon-Monday-Dec-  December-21-02-2-00-12-336-0-12-12-00-AM-AM-1575244800-00-2-1-19-2019
 	pickmeup('#date-start', {
-		format: 'Y-m-d',
+		format: 'e b Y',
 		hide_on_select: true,
 		date: $('#date-start').val()
 	});
 	pickmeup('#date-end', {
-		format: 'Y-m-d',
+		format: 'e b Y',
 		hide_on_select: true,
 		date: $('#date-end').val()
 	});
@@ -633,44 +823,55 @@ function printElem(method,options, callback){
 }
 
 function cancel_edit(dont_reset_checkboxes) {
+	
+	const $tbody = $(`#tbody_${theatre_edit_session_id}`);
+	const $form = $tbody.closest('form');
+
 	enableButtons();
-	if (!dont_reset_checkboxes && theatre_edit_session_id != null) {
-		for (var i in theatre_edit_session_data.purple_rinse) {
-			$('#'+i+'_'+theatre_edit_session_id).attr('checked',(theatre_edit_session_data.purple_rinse[i] ? 'checked' : false));
-		}
-	}
+	// what is purple_rinse ?
+	// if (!dont_reset_checkboxes && theatre_edit_session_id != null) {
+	// 	for (let i in theatre_edit_session_data.purple_rinse) {
+	// 		$('#'+i+'_'+theatre_edit_session_id).attr('checked',(theatre_edit_session_data.purple_rinse[i] ? 'checked' : false));
+	// 	}
+	// }
 
 	if (theatre_edit_session_data) {
 		if (!dont_reset_checkboxes) {
-			var rows = '';
+			let rows = '';
 
-			for (var i in theatre_edit_session_data["row_order"]) {
-				rows += '<tr id="'+theatre_edit_session_data["row_order"][i]+'">'+$('#'+theatre_edit_session_data["row_order"][i]).html()+'</tr>';
+			for (let id in theatre_edit_session_data.row_order) {
+				rows += '<tr id="'+theatre_edit_session_data.row_order[id]+'">'+$('#'+theatre_edit_session_data.row_order[id]).html()+'</tr>';
 			}
 
-			$('#tbody_'+theatre_edit_session_id).html(rows);
+			$tbody.html(rows);
 
-			for (var i in theatre_edit_session_data["row_order"]) {
-				var id = theatre_edit_session_data["row_order"][i].match(/[0-9]+/);
-
-				$('#confirm_'+id).attr('checked',(theatre_edit_session_data["confirm"][id] ? 'checked' : false));
+			for (let id in theatre_edit_session_data.row_order) {
+				$('#confirm_'+id).attr('checked',(theatre_edit_session_data.confirm[id] ? 'checked' : false));
 			}
 
-			$('textarea[name="comments_'+theatre_edit_session_id+'"]').val(theatre_edit_session_data['comments']);
+			$('textarea[name="comments_'+theatre_edit_session_id+'"]').val(theatre_edit_session_data.comments);
 
 		} else {
-			for (var i in theatre_edit_session_data["row_order"]) {
-				var id = theatre_edit_session_data["row_order"][i].match(/[0-9]+/);
-				theatre_edit_session_data["confirm"][id] = $('#confirm_'+id).is(':checked');
+			for (let id in theatre_edit_session_data.row_order) {
+				theatre_edit_session_data.confirm[id] = $('#confirm_'+id).is(':checked');
 			}
 		}
 	}
 
-	$('.diaryViewMode').show();
-	$('.diaryEditMode').hide();
+	$tbody.sortable( "destroy" );
+
+	// buttons
+	$('.js-update-session, .js-cancel-update').hide();
+	$('.js-edit-session').show();
+
+	$('.js-diaryViewMode').show();
+	$('.js-diaryEditMode').hide();
+
+	// oh yeah the "session unavailable" part
+	$('.session-unavailable').hide();
+
 	$('.infoBox').hide();
-	$('tbody[id="tbody_'+theatre_edit_session_id+'"] td.confirm input[name^="confirm_"]').attr('disabled','disabled');
-	$('th.footer').attr('colspan','9');
+	$('tbody[id="tbody_'+theatre_edit_session_id+'"] input[name^="confirm_"]').attr('disabled','disabled');
 
 	theatre_edit_session_id = null;
 }

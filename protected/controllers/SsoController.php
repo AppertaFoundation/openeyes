@@ -96,31 +96,22 @@ class SsoController extends BaseAdminController
                 throw $e;
             }
 
-            // Create an array of required user attributes (can be overidden from field_mapping)
-            $requiredUserFields = [
-                'username' => 'email',
-                'email' => 'email',
-                'first_name' => 'given_name',
-                'last_name' => 'family_name'
-            ];
-            foreach ($requiredUserFields as $userField => $oidcField) {
-                $userInfo[$userField] = $oidc->requestUserInfo($oidcField);
+            // Create an array of user attributes
+            $userAttributes = ['email', 'given_name', 'family_name'];
+
+            foreach ($userAttributes as $attribute) {
+                $userInfo[$attribute] = $oidc->requestUserInfo($attribute);
             }
 
+            // Get custom claims from OIDC ID Token
+            $customClaims = $OIDC_settings['custom_claims'];
             $token = (array)$oidc->getIdTokenPayload();
-            $claimsMapping = $OIDC_settings['field_mapping'];
-            foreach ($claimsMapping as $userField => $oidcField) {
-                if (!isset($token[$oidcField])) continue; //Don't add to user info if it doesn't come from claims
-                if ($userField === 'roles' && !is_array($token[$oidcField])) {
+            foreach ($customClaims as $claim => $attribute) {
+                if ($attribute === 'roles' && !is_array($token[$claim])) {
                     // Get the string value for roles and make it an array
-                    if (strlen($token[$oidcField]) > 0) {
-                        $userInfo[$userField] = explode(",", $token[$oidcField]);
-                    } else {
-                        $userInfo[$userField] = [];
-                    }
-                } else {
-                    $userInfo[$userField] = $token[$oidcField];
+                    $token[$claim] = explode(",", $token[$claim]);
                 }
+                $userInfo[$attribute] = $token[$claim];
             }
 
             if (!isset($userInfo['username'])) {
@@ -208,6 +199,7 @@ class SsoController extends BaseAdminController
         } else {
             $ssoRoles = SsoRoles::model()->findByPk($id);
         }
+
         if ($request->getIsPostRequest()) {
             $ssoAttributes = $request->getPost('SsoRoles');
             if (!array_key_exists('sso_roles_assignment', $ssoAttributes)) {

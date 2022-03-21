@@ -42,12 +42,16 @@ class SnippetGroupController extends ModuleAdminController
      */
     public function actionList()
     {
-        $this->admin->div_wrapper_class = 'cols-6';
+        $this->admin->div_wrapper_class = 'cols-8';
         $this->admin->setListFields(array(
             'display_order',
             'id',
+            'institution.name',
             'name',
         ));
+        if (!\Yii::app()->user->checkAccess('admin')) {
+            $this->admin->getSearch()->setSearchItems(['institution_id' => ['default' => \Yii::app()->session['selected_institution_id']]]);
+        }
         $this->admin->listModel();
     }
 
@@ -64,16 +68,20 @@ class SnippetGroupController extends ModuleAdminController
             $this->admin->setModelId($id);
         }
         $this->admin->setEditFields(array(
+            'institution_id' => array(
+                'widget' => 'DropDownList',
+                'options' => Institution::model()->getList(true) ,
+                'hidden' => false,
+                'layoutColumns' => null,
+                'htmlOptions' => [
+                    'class' => 'cols-8'
+                ]
+            ),
             'name' => 'text',
             'siteLetterStrings' => array(
                 'widget' => 'RelationList',
                 'relation' => 'siteLetterStrings',
                 'action' => 'OphCoCorrespondence/oeadmin/snippet',
-                'search' => array('site_id' => array(
-                    'type' => 'dropdown',
-                    'options' => CHtml::listData(Institution::model()->getCurrent()->sites, 'id', 'short_name'),
-                    'default' => Yii::app()->session['selected_site_id'],
-                )),
                 'listFields' => array(
                     'display_order',
                     'name',

@@ -87,6 +87,7 @@ protected/modules/*
 !/protected/modules/OphTrOperationnote/
 !/protected/modules/PASAPI/
 !/protected/modules/PatientTicketing/
+!/protected/modules/OphDrPGDPSD/
 
 # Tests
 /jm_behat_report.html
@@ -103,3 +104,4 @@ protected/scripts/sample_db.sql
 protected/scripts/sample_db.zip
 **/0-a-restore.sql
 buildinfo.txt
+.devcontainer/.env

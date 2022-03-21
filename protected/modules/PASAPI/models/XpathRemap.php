@@ -43,8 +43,8 @@ class XpathRemap extends \BaseActiveRecordVersioned
     public function rules()
     {
         return array(
-            array('id, xpath, name', 'safe'),
-            array('id, xpath, name, created_date, last_modified_date, created_user_id, last_modified_user_id',
+            array('id, xpath, name, institution_id', 'safe'),
+            array('id, xpath, name, institution_id, created_date, last_modified_date, created_user_id, last_modified_user_id',
                 'safe', 'on' => 'search', ),
         );
     }
@@ -55,9 +55,10 @@ class XpathRemap extends \BaseActiveRecordVersioned
     public function relations()
     {
         return array(
-        'values' => array(self::HAS_MANY, '\OEModule\PASAPI\models\RemapValue', 'xpath_id'),
-        'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-        'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+            'values' => array(self::HAS_MANY, '\OEModule\PASAPI\models\RemapValue', 'xpath_id'),
+            'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
+            'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+            'institution' => array(self::BELONGS_TO, 'Institution', 'institution_id'),
         );
     }
 
@@ -67,8 +68,9 @@ class XpathRemap extends \BaseActiveRecordVersioned
     public function attributeLabels()
     {
         return array(
-        'xpath' => 'XPath',
-        'name' => 'Name',
+            'xpath' => 'XPath',
+            'name' => 'Name',
+            'institution_id' => 'Institution',
         );
     }
 
@@ -84,6 +86,7 @@ class XpathRemap extends \BaseActiveRecordVersioned
         $criteria->compare('id', $this->id, true);
         $criteria->compare('xpath', $this->xpath, true);
         $criteria->compare('name', $this->name, true);
+        $criteria->compare('institution_id', $this->institution_id, true);
 
         return new \CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,
@@ -99,8 +102,8 @@ class XpathRemap extends \BaseActiveRecordVersioned
      */
     public function findAllByXpath($xpath = '/')
     {
-        $condition = 'xpath like :xpath';
-        $params = array(':xpath' => "{$xpath}%");
+        $condition = 'xpath like :xpath AND institution_id = :institution_id';
+        $params = array(':xpath' => "{$xpath}%", ':institution_id' => \Yii::app()->session['selected_institution_id']);
 
         return $this->findAll($condition, $params);
     }

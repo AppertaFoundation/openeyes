@@ -17,6 +17,14 @@
 
 $manager = $this->getManager();
 
+$institution = Institution::model()->getCurrent();
+$selected_site_id = Yii::app()->session['selected_site_id'];
+
+$primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(
+        Yii::app()->params['display_primary_number_usage_code'],
+        $institution->id ,
+        $selected_site_id);
+
 $cols = array(
     array(
         'id' => 'event_date',
@@ -51,8 +59,14 @@ $cols = array(
     array(
         'id' => 'hosnum',
         'class' => 'CDataColumn',
-        'header' => $dp->getSort()->link('hosnum', 'Hospital No.', array('class' => 'sort-link')),
-        'value' => '$data->event->episode->patient->hos_num'
+        'header' => $dp->getSort()->link('hosnum', $primary_identifier_prompt, array('class' => 'sort-link')),
+        'value' => function ($data) {
+            $institution = Institution::model()->getCurrent();
+            $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $data->event->episode->patient->id, $institution->id, $this->selectedSiteId);
+            $patient_identifier_widget = $this->widget('application.widgets.PatientIdentifiers', ['patient' => $data->event->episode->patient, 'show_all' => true, 'tooltip_size' => 'small'], true);
+            return PatientIdentifierHelper::getIdentifierValue($primary_identifier) . $patient_identifier_widget;
+        },
+        'type' => 'raw'
     ),
     array(
         'id' => 'creator',

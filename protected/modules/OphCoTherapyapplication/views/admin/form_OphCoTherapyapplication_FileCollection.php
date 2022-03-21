@@ -23,6 +23,12 @@
     </colgroup>
     <tbody>
         <tr>
+            <td><?= $model->getAttributeLabel('institution') ?></td>
+            <td><?= \CHtml::activeDropDownList($model, 'institution_id',
+                    Institution::model()->getList(true),
+                    ['class' => 'cols-full', 'empty' => '- Institution -']) ?></td>
+        </tr>
+        <tr>
             <td><?=$model->getAttributeLabel('name')?></td>
             <td><?=\CHtml::activeTextField($model, 'name', [
                     'autocomplete' => Yii::app()->params['html_autocomplete'],
@@ -59,7 +65,7 @@
                         <a href="<?php echo $file->getDownloadURL() ?>">download</a> | <a class="removeFile">delete</a>
                     </td>
                 </tr>
-                <?php endforeach; ?>
+             <?php endforeach; ?>
             </tbody>
             <tfoot class="pagination-container">
             <tr>
@@ -67,7 +73,7 @@
                     <a href="<?=Yii::app()->createUrl(
                         '/OphCoTherapyapplication/Default/downloadFileCollection',
                         ['id' => $model->id]
-                    ) ?>"
+                             ) ?>"
                        class="button small"
                     >Download zip file
                     </a>

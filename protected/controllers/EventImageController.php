@@ -53,7 +53,10 @@ class EventImageController extends BaseController
         );
         $event = Event::model()->findByPk($event_id);
         // If the event image doesn't already exist
+        // OR event is deleted
+        // OR event is modified after the image is generated
         if (!isset($event_image) ||
+            (isset($event) && ((int)$event->deleted === 1)) ||
             (isset($event) && ($event_image->last_modified_date < $event->last_modified_date))
         ) {
             // Then try to make it
@@ -96,6 +99,7 @@ class EventImageController extends BaseController
         $criteria->compare('status_id', $created_image_status_id);
         $criteria->addInCondition('event_id', $event_ids);
         $criteria->compare('t.last_modified_date', '>= e.last_modified_date');
+        $criteria->addCondition('e.deleted = 0');
         $criteria->addCondition('(t.page = 0 OR t.page IS NULL)');
         $criteria->join = 'join event e on t.event_id = e.id ';
         $criteria->order = 'event_date DESC';

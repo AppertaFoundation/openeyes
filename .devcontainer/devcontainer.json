@@ -1,0 +1,50 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.224.2/containers/docker-from-docker-compose
+{
+	"name": "OpenEyes Devcontainer",
+	"dockerComposeFile": "docker-compose.yml",
+	"service": "web",
+	"workspaceFolder": "/var/www/openeyes/",
+
+	// Use this environment variable if you need to bind mount your local source code into a new container.
+	// "remoteEnv": {
+	// 	"LOCAL_WORKSPACE_FOLDER": "${localWorkspaceFolder}"
+	// },
+	
+	// Set *default* container specific settings.json values on container create.
+	"settings": {},
+
+	// Add the IDs of extensions you want installed when the container is created.
+	"extensions": [
+		"atlassian.atlascode",
+		"bmewburn.vscode-intelephense-client",
+		"eamodio.gitlens",
+		"foxundermoon.shell-format",
+		"GitHub.vscode-pull-request-github",
+		"HookyQR.beautify",
+		"janisdd.vscode-edit-csv",
+		"junstyle.php-cs-fixer",
+		"mads-hartmann.bash-ide-vscode",
+		"mohd-akram.vscode-html-format",
+		"ms-vsliveshare.vsliveshare",
+		"naumovs.color-highlight",
+		"redhat.vscode-yaml",
+		"slevesque.vscode-zipexplorer",
+		"timonwong.shellcheck",
+		"valeryanm.vscode-phpsab",
+		"xdebug.php-debug"
+	],
+
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	"forwardPorts": [80, 443, 3306]
+
+	// Use 'postCreateCommand' to run commands after the container is created.
+	// "postCreateCommand": "docker --version",
+
+	// Comment out to connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
+	// "remoteUser": "vscode",
+	
+	// "features": {
+	// 	"git": "os-provided"
+	// }
+}

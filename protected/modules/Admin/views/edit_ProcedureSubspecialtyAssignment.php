@@ -15,7 +15,7 @@
 ?>
 <?php
 $enable_eur = SettingMetadata::model()->getSetting('cataract_eur_switch');
-$cols_size = intval($subspecialty_id) === 4 && $enable_eur === 'on' ? 'cols-9' : 'cols-5';
+$cols_size = (int)$subspecialty_id === 4 && $enable_eur === 'on' ? 'cols-9' : 'cols-5';
 ?>
 <h2>Procedure Subspecialty Assignments</h2>
 <?php $this->renderPartial('//base/_messages') ?>
@@ -44,7 +44,7 @@ $cols_size = intval($subspecialty_id) === 4 && $enable_eur === 'on' ? 'cols-9' :
         </table>
     </form>
     <?php if ($subspecialty_id) { ?>
-        <form method="POST" action="/Admin/procedureSubspecialtyAssignment/edit?subspecialty_id=<?= $subspecialty_id; ?>">
+        <form method="POST" action="/Admin/procedureSubspecialtyAssignment/edit?subspecialty_id=<?= $subspecialty_id ?>">
             <input type="hidden" class="no-clear" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
               <?php
                 $columns = [
@@ -69,7 +69,7 @@ $cols_size = intval($subspecialty_id) === 4 && $enable_eur === 'on' ? 'cols-9' :
                     ],
                 ];
                 //
-                if (intval($subspecialty_id) === 4 && $enable_eur === 'on') {
+                if ((int)$subspecialty_id === 4 && $enable_eur === 'on') {
                     $columns[] = [
                         'header' => 'Require Effective Use of Resources (EUR) assessment',
                         'type' => 'raw',
@@ -83,6 +83,16 @@ $cols_size = intval($subspecialty_id) === 4 && $enable_eur === 'on' ? 'cols-9' :
                         }
                     ];
                 }
+                $columns[] = [
+                    'header' => 'Institution',
+                    'type' => 'raw',
+                    'value' => function ($data, $row) {
+                        return $data->institution->name . CHtml::hiddenField(
+                            (get_class($data) . "[$row][institution_id]"),
+                            $data->institution->id,
+                        );
+                    }
+                ];
                 $columns[] =
                 [
                   'header' => 'Actions',
@@ -104,7 +114,7 @@ $cols_size = intval($subspecialty_id) === 4 && $enable_eur === 'on' ? 'cols-9' :
                 ?>
             <div>
                 <button class="button large" type="button" id="add_new">Add</button>&nbsp
-                <button class="generic-admin-save button large" name="admin-save" type="submit"id="et_admin-save">Save</button>&nbsp;
+                <button class="generic-admin-save button large" name="admin-save" type="submit" id="et_admin-save">Save</button>&nbsp;
             </div>
         </form>
     <?php } ?>
@@ -134,6 +144,7 @@ $cols_size = intval($subspecialty_id) === 4 && $enable_eur === 'on' ? 'cols-9' :
                 "row_count": OpenEyes.Util.getNextDataKey($tr, 'row'),
                 'order_value': parseInt($('table.generic-admin tbody tr:last-child ').find('input[name^="display_order"]').val()) + 1,
                 "procedure_options": procedure_options,
+                "institution_options": institution_options
             });
 
             $('table.generic-admin tbody').append(output);
@@ -142,8 +153,6 @@ $cols_size = intval($subspecialty_id) === 4 && $enable_eur === 'on' ? 'cols-9' :
         });
     });
 </script>
-
-
 
 <script type="text/template" id="procedure_assignment_template">
     <tr data-row="{{row_count}}" >
@@ -161,6 +170,14 @@ $cols_size = intval($subspecialty_id) === 4 && $enable_eur === 'on' ? 'cols-9' :
                 {{#procedure_options}}
                 <option value="{{id}}">{{term}}</option>
                 {{/procedure_options}}
+            </select>
+        </td>
+        <td>
+            <select name="ProcedureSubspecialtyAssignment[{{row_count}}][institution_id]"
+                    id="ProcedureSubspecialtyAssignment{{row_count}}_institution_id">
+                {{#institution_options}}
+                <option value="{{id}}">{{name}}</option>
+                {{/institution_options}}
             </select>
         </td>
         <td>

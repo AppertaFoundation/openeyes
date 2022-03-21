@@ -302,7 +302,7 @@ class Trial extends BaseActiveRecordVersioned
             default:
                 $sortBySql = "c.last_name $sort_dir, c.first_name";
                 break;
-            case 'Gender':
+            case 'Sex':
                 $sortBySql = 'p.gender';
                 break;
             case 'Age':

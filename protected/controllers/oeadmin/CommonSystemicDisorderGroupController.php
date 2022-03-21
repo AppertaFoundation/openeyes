@@ -35,18 +35,31 @@ class CommonSystemicDisorderGroupController extends BaseAdminController
             $model->name = $values['name'];
             $last_item = $model::model()->find(['order'=>'display_order DESC']);
             $model->display_order = $last_item ? $last_item->display_order + 1 : '1';
-            if ($model->save()) {
+            $result = $model->save();
+
+            $institution_id = Institution::model()->getCurrent()->id;
+            $needs_mapping =Yii::app()->request->getPost('assigned_institution');
+
+            if ($model->hasMapping(ReferenceData::LEVEL_INSTITUTION, $institution_id)) {
+                if (!$needs_mapping) {
+                    $model->deleteMapping(ReferenceData::LEVEL_INSTITUTION, $institution_id);
+                }
+            } else {
+                if ($needs_mapping) {
+                    $model->createMapping(ReferenceData::LEVEL_INSTITUTION, $institution_id);
+                }
+            }
+
+            if ($result) {
                 Audit::add(
                     'admin',
                     'create',
                     serialize($model->attributes),
                     false,
-                    ['model' => 'OEModule_OphCiExamination_models_OphCiExamination_PupillaryAbnormalities_Abnormality']
+                    ['model' => $model::getShortModelName()]
                 );
                 Yii::app()->user->setFlash('success', 'Common Systemic Disorder Group created');
                 $this->redirect(['list']);
-            } else {
-                $errors = $model->getErrors();
             }
         }
         $this->render('/admin/editcommonsystemicdisordergroup', [
@@ -68,6 +81,19 @@ class CommonSystemicDisorderGroupController extends BaseAdminController
         if (!empty($values)) {
             $model->name = $values['name'];
             if ($model->save()) {
+                $institution_id = Institution::model()->getCurrent()->id;
+                $needs_mapping =Yii::app()->request->getPost('assigned_institution');
+
+                if ($model->hasMapping(ReferenceData::LEVEL_INSTITUTION, $institution_id)) {
+                    if (!$needs_mapping) {
+                        $model->deleteMapping(ReferenceData::LEVEL_INSTITUTION, $institution_id);
+                    }
+                } else {
+                    if ($needs_mapping) {
+                        $model->createMapping(ReferenceData::LEVEL_INSTITUTION, $institution_id);
+                    }
+                }
+
                 Yii::app()->user->setFlash('success', 'Common Systemic Disorder Group saved');
                 $this->redirect(['list']);
             } else {

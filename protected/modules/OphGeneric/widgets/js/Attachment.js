@@ -16,10 +16,14 @@ function createSingleView(id, mime_type) {
         case 'application/pdf':
             result =
                 '<div class="attachment-container-popup">' +
-                '<object height="800" width="100%" data="' + src + "#toolbar=0" + '" type="application/pdf">' +
-                '<embed height="100%" width="100%" src="' + src + '" type="application/pdf" />' +
-                '</object>' +
+                '<iframe id="pdf-viewer" height="800" width="100%"  type="application/pdf" />' +
                 '</div>';
+            fetch(src).then((response) => {
+                response.blob().then((blob) => {
+                    let url = URL.createObjectURL(blob);
+                    document.getElementById('pdf-viewer').src = `${OE_core_asset_path}/components/pdfjs/web/viewer.html?file=${url}`;
+                });
+            });
             break;
         case 'mp4':
         case 'ogg':

@@ -22,8 +22,12 @@ class AdminController extends ModuleAdminController
 
     public function actionManageLasers()
     {
-        $model_list = OphTrLaser_Site_Laser::model()->with('type')->findAll(array('order' => 'display_order asc'));
-        //$this->jsVars['OphTrIntravitrealinjection_sort_url'] = $this->createUrl('sortTreatmentDrugs');
+        $criteria = new CDbCriteria();
+        $criteria->with = 'site';
+        $criteria->condition = 't.institution_id = :institution_id OR (t.institution_id is null AND site.institution_id = :institution_id)';
+        $criteria->params = [':institution_id' => Yii::app()->session['selected_institution_id']];
+        $criteria->order = 'display_order asc';
+        $model_list = OphTrLaser_Site_Laser::model()->with('type')->findAll($criteria);
 
         Audit::add('admin', 'list', null, false, array('module' => 'OphTrLaser', 'model' => 'OphTrLaser_Site_Laser'));
 
@@ -91,175 +95,117 @@ class AdminController extends ModuleAdminController
         ));
     }
 
-    public function actionViewLaserOperators()
-    {
-        Audit::add('admin', 'list', null, false, array('module' => 'OphTrLaser', 'model' => 'OphTrLaser_Laser_Operator'));
-
-        $pagination = $this->initPagination(OphTrLaser_Laser_Operator::model());
-
-        $this->render('laser_operators', array(
-            'operators' => $this->getItems(array(
-                'model' => 'OphTrLaser_Laser_Operator',
-                'page' => $pagination->currentPage,
-            )),
-            'pagination' => $pagination,
-        ));
-    }
-
-    public function getItems($params)
-    {
-        $model = $params['model']::model();
-        $page = $params['page'];
-
-        $criteria = new CDbCriteria();
-        if (isset($params['order'])) {
-            $criteria->order = $params['order'];
-        } else {
-            $criteria->order = 'id asc';
-        }
-        $criteria->offset = $page * $this->items_per_page;
-        $criteria->limit = $this->items_per_page;
-
-        if (!empty($_REQUEST['search'])) {
-            $criteria->addSearchCondition('username', $_REQUEST['search'], true, 'OR');
-            $criteria->addSearchCondition('first_name', $_REQUEST['search'], true, 'OR');
-            $criteria->addSearchCondition('last_name', $_REQUEST['search'], true, 'OR');
-        }
-
-        return array(
-            'items' => $params['model']::model()->findAll($criteria),
-        );
-    }
-
-    public function actionAddLaserOperator()
-    {
-        $errors = array();
-
-        $laser_operator = new OphTrLaser_Laser_Operator();
-
-        if (!empty($_POST)) {
-            if (OphTrLaser_Laser_Operator::model()->find('user_id = ?', array($_POST['OphTrLaser_Laser_Operator']['user_id']))) {
-                $errors[] = array('This user is already in the list.');
-            }
-
-            if (empty($errors)) {
-                $laser_operator->attributes = $_POST['OphTrLaser_Laser_Operator'];
-                if (!$laser_operator->save()) {
-                    $errors = $laser_operator->getErrors();
-                } else {
-                    Audit::add('admin', 'create', serialize($_POST), false, array('module' => 'OphTrLaser', 'model' => 'OphTrLaser_Laser_Operator'));
-                    $this->redirect(array('/OphTrLaser/admin/viewLaserOperators'));
-                }
-            }
-        }
-
-        $this->render('/admin/edit_laser_operator', array(
-            'laser_operator' => $laser_operator,
-            'errors' => $errors,
-        ));
-    }
-
-    public function actionEditLaserOperator($id)
-    {
-        if (!$laser_operator = OphTrLaser_Laser_Operator::model()->findByPk($id)) {
-            throw new Exception("Laser operator not found: $id");
-        }
-
-        $errors = array();
-
-        if (!empty($_POST)) {
-            if ($laser_operator->id) {
-                if (OphTrLaser_Laser_Operator::model()->find('id != ? and user_id = ?', array($laser_operator->id, $_POST['OphTrLaser_Laser_Operator']['user_id']))) {
-                    $errors[] = array('This user is already in the list.');
-                }
-            }
-
-            if (empty($errors)) {
-                $laser_operator->attributes = $_POST['OphTrLaser_Laser_Operator'];
-
-                if (!$laser_operator->save()) {
-                    $errors = $laser_operator->getErrors();
-                } else {
-                    Audit::add('admin', 'update', serialize(array_merge(array('id' => $id), $_POST)), false, array('module' => 'OphTrLaser', 'model' => 'OphTrLaser_Laser_Operator'));
-
-                    $this->redirect(array('/OphTrLaser/admin/viewLaserOperators'));
-                }
-            }
-        }
-
-        Audit::add('admin', 'view', $id, false, array('module' => 'OphTrLaser', 'model' => 'OphTrLaser_Laser_Operator'));
-
-        $this->render('/admin/edit_laser_operator', array(
-            'laser_operator' => $laser_operator,
-            'errors' => $errors,
-        ));
-    }
-
-    public function actionDeleteOperators()
-    {
-        $criteria = new CDbCriteria();
-        $criteria->addInCondition('id', $_POST['operators']);
-
-        OphTrLaser_Laser_Operator::model()->deleteAll($criteria);
-
-        echo '1';
-    }
-    protected function renderManageLaserProcdures($laser_procs)
-    {
-        $this->render('list_OphTrLaser_Procedures', array(
-            'laser_procs' => $laser_procs,
-            'title' => 'Manage Laser Procedures',
-        ));
-    }
-    protected function addNewLaserProcedure($proc_id)
-    {
-        $laser_proc = new OphTrLaser_LaserProcedure();
-        $laser_proc->procedure_id = $proc_id;
-        if (!$laser_proc->save()) {
-            throw new Exception("Unable to save $proc_id to laser procedure list");
-            return;
-        }
-        $this->logActivity("added procedure $proc_id to laser procedure list");
-        Audit::add('admin', 'add-laser-procedure', "added procedure $proc_id to laser procedure list", null, false, array('module' => 'OphTrLaser', 'model' => 'OphTrLaser_LaserProcedure'));
-    }
-    protected function editLaserProcedures($id, $proc_id)
-    {
-        $laser_proc = OphTrLaser_LaserProcedure::model()->find('id = :id', array(':id' => $id));
-        $procedure = Procedure::model()->find('id = :id', array(':id' => $proc_id));
-        if (!$laser_proc) {
-            throw new Exception("Unable to find laser procedure item with id $id");
-            return;
-        }
-        if (!$procedure) {
-            throw new Exception("Unable to find procedure item with id $proc_id");
-            return;
-        }
-        $previous_proc = $laser_proc->procedure_id;
-        $laser_proc->procedure_id = $proc_id;
-
-        if (!$laser_proc->save()) {
-            throw new Exception("Unable to update the procedure $previous_proc for laser procedure id $id to procedure $proc_id");
-            return;
-        }
-        $this->logActivity("updated procedure $previous_proc to $proc_id for laser procedure with id $id");
-        Audit::add('admin', 'edit-laser-procedure', "updated procedure $previous_proc to $proc_id for laser procedure with id $id", null, false, array('module' => 'OphTrLaser', 'model' => 'OphTrLaser_LaserProcedure'));
-    }
-    protected function deleteLaserProcedure($id)
-    {
-        $laser_proc = OphTrLaser_LaserProcedure::model()->find('id = :id', array(':id' => $id));
-        if (!$laser_proc) {
-            throw new Exception("Unable to find laser procedure item with id $id");
-            return;
-        }
-        if (!$laser_proc->delete()) {
-            throw new Exception("Unable to delete laser procedure item with id $id");
-            return;
-        }
-        $this->logActivity("deleted item id $id from laser procedure list");
-        Audit::add('admin', 'delete-laser-procedure', "deleted item id $id with procedure $laser_proc->procedure_id from laser procedure list", null, false, array('module' => 'OphTrLaser', 'model' => 'OphTrLaser_LaserProcedure'));
-    }
-
     public function actionManageLaserProcedures()
+    {
+        if (Yii::app()->user->checkAccess('admin')) {
+            // Show all procedures
+            $model_list = OphTrLaser_LaserProcedure::model()->findAll();
+        } else {
+            // Show procedures only at institution level
+            $model_list = OphTrLaser_LaserProcedure::model()
+                ->with(['institutions' => [
+                    'condition' => 'institutions_institutions.institution_id = :institution_id',
+                    'params' => [':institution_id' => Yii::app()->session['selected_institution_id']],
+                ]])
+                ->findAll();
+        }
+        $this->render('list_OphTrLaser_Procedure', [
+            'model_list' => $model_list
+        ]);
+    }
+
+    public function actionDeleteLaserProcedure($id)
+    {
+        $laser_procedure = OphTrLaser_LaserProcedure::model()->findByPk($id);
+        $institution = Institution::model()->getCurrent();
+        if (!$laser_procedure) {
+            throw new Exception("Unable to find laser procedure item with id $id");
+        }
+        $transaction = Yii::app()->db->beginTransaction();
+        try {
+            if (Yii::app()->user->checkAccess('admin')) {
+                // Only admins can delete instance at installation level
+                $laser_procedure->deleteMappings(ReferenceData::LEVEL_INSTITUTION);
+                $laser_procedure->delete();
+                $this->logActivity("deleted item id $id from laser procedure list");
+                Audit::add('admin', 'delete-laser-procedure', "deleted item id $id with procedure $laser_procedure->procedure_id from laser procedure list", null, false, array('module' => 'OphTrLaser', 'model' => 'OphTrLaser_LaserProcedure'));
+            } else {
+                // Delete only institution level instance
+                $laser_procedure->deleteMapping(ReferenceData::LEVEL_INSTITUTION, $institution->id);
+                $this->logActivity("deleted item id $id from laser procedure list for institution $institution->name");
+                Audit::add('admin', 'delete-laser-procedure', "deleted item id $id with procedure $laser_procedure->procedure_id from laser procedure list for institution $institution->name",
+                    null,
+                    false,
+                    array('module' => 'OphTrLaser', 'model' => 'OphTrLaser_LaserProcedure'));
+            }
+            $transaction->commit();
+            $this->redirect(['/OphTrLaser/admin/manageLaserProcedures']);
+        } catch (Exception $e) {
+            $transaction->rollback();
+            throw new CHttpException(500, $e->getMessage(), true);
+        }
+    }
+
+    public function actionAddLaserProcedure()
+    {
+        if (Yii::app()->request->isPostRequest) {
+            $procedure = $_POST['Procedure'];
+            if (Yii::app()->user->checkAccess('admin')) {
+                $institutions = $_POST['OphTrLaser_LaserProcedure']['institutions'];
+            } else {
+                $institutions[] = Institution::model()->getCurrent()->id;
+            }
+
+            try {
+                $laser_procedure = new OphTrLaser_LaserProcedure();
+                $laser_procedure->procedure_id = $procedure['proc_id'];
+                $laser_procedure->save();
+
+                if (!empty($institutions)) {
+                        $laser_procedure->createMappings(ReferenceData::LEVEL_INSTITUTION, $institutions);
+                }
+            } catch (Exception $e) {
+                throw new CHttpException(500, $e->getMessage(), true);
+            }
+            $this->redirect(['/OphTrLaser/admin/manageLaserProcedures']);
+        }
+
+        $this->setJSVars();
+        $model = new OphTrLaser_LaserProcedure();
+        $this->render('edit_OphTrLaser_Procedure', [
+            'laser_procedure' => $model,
+        ]);
+    }
+
+    public function actionEditLaserProcedure($id = null)
+    {
+        if (Yii::app()->request->isPostRequest) {
+            $procedure = $_POST['Procedure'];
+            $institutions = $_POST['OphTrLaser_LaserProcedure']['institutions'];
+
+            try {
+                $laser_procedure = OphTrLaser_LaserProcedure::model()->findByPk($id);
+                $laser_procedure->procedure_id = $procedure['proc_id'];
+                $laser_procedure->save();
+
+                OphTrLaser_LaserProcedure_Institution::model()->deleteAll('laserprocedure_id = :procedure_id', array(':procedure_id' => $id));
+                if (!empty($institutions)) {
+                    $laser_procedure->createMappings(ReferenceData::LEVEL_INSTITUTION, $institutions);
+                }
+            } catch (Exception $e) {
+                throw new CHttpException(500, $e->getMessage(), true);
+            }
+            $this->redirect(['/OphTrLaser/admin/manageLaserProcedures']);
+        }
+
+        $this->setJSVars();
+
+        $this->render('edit_OphTrLaser_Procedure', [
+            'laser_procedure' => OphTrLaser_LaserProcedure::model()->findByPk($id),
+        ]);
+    }
+
+    public function setJSVars()
     {
         $laser_procs = Yii::app()->db->createCommand()
             ->select('ol.id, ol.procedure_id, p.term')
@@ -277,44 +223,5 @@ class AdminController extends ModuleAdminController
             ->queryAll();
         $this->jsVars['laser_procs'] = $laser_procs;
         $this->jsVars['all_procs'] = $all_procs;
-        $this->renderManageLaserProcdures($laser_procs);
-    }
-
-    public function actionProcessLaserProcedures()
-    {
-        if (isset($_POST['laser_proc'])) {
-            $transaction = Yii::app()->db->beginTransaction();
-            try {
-                foreach ($_POST['laser_proc'] as $item) {
-                    switch ($item['mode']) {
-                        case 'create':
-                            if (isset($item['proc_id']) && !empty($item['proc_id'])) {
-                                $this->addNewLaserProcedure($item['proc_id']);
-                            }
-                            break;
-                        case 'edit':
-                            if (
-                                (isset($item['id']) && !empty($item['id']))
-                                && (isset($item['proc_id']) && !empty($item['proc_id']))
-                            ) {
-                                $this->editLaserProcedures($item['id'], $item['proc_id']);
-                            }
-                            break;
-                        case 'delete':
-                            if (isset($item['id']) && !empty($item['id'])) {
-                                $this->deleteLaserProcedure($item['id']);
-                            }
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            } catch (Exception $e) {
-                $transaction->rollback();
-                throw $e;
-            }
-            $transaction->commit();
-        }
-        $this->redirect(array('/OphTrLaser/admin/managelaserprocedures'));
     }
 }

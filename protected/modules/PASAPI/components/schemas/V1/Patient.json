@@ -25,7 +25,7 @@
   },
   "Gender": {
     "type": "choice",
-    "choices": ["M", "F"]
+    "choices": ["M", "F", "U"]
   },
   "AddressList": {
     "type": "list",

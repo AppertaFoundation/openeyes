@@ -285,10 +285,8 @@ class DefaultController extends BaseEventTypeController
 
         $criteria = new CDbCriteria();
 
-        $criteria->addCondition(array('active = :active'));
         $criteria->addCondition(array("LOWER(concat_ws(' ',first_name,last_name)) LIKE :term"));
 
-        $params[':active'] = 1;
         $params[':term'] = '%'.strtolower(strtr($_GET['term'], array('%' => '\%'))).'%';
 
         $criteria->params = $params;

@@ -58,16 +58,28 @@ class LeafletSubspecialtyFirmController extends BaseAdminController
         $leaflets = OphTrConsent_Leaflet::model()->findAll($criteria);
 
         $html_tbody = '';
-        foreach ($leaflets as $key => $leaflet) {
-            $html_tbody .=
-                '<tr>
-                    <td>' . $leaflet->id . '</td>
-                    <td>' . $leaflet->name . '</td>
-                    <td>
-                        <input id="' . $leaflet->id . '-' . $type . '-button" 
-                        type="button" value="DELETE" onclick="deleteLeaflet(this);" />
-                    </td>
-                </tr>';
+        foreach ($leaflets as $leaflet) {
+            $delete_button = '<input id="' . $leaflet->id . '-' . $type . '-button" 
+                        type="button" value="DELETE" onclick="deleteLeaflet(this);" />';
+            if ($type === 'firm' ||
+                ($type === 'subspecialty' && $this->checkAccess('admin'))
+            ) {
+                // Display the delete button if context has been selected or if context has not been selected and the user is an installation admin.
+                // Otherwise, hide it so subspecialty-level mappings cannot be deleted by institution admins.
+                $html_tbody .=
+                "<tr>
+                    <td>$leaflet->id</td>
+                    <td>$leaflet->name</td>
+                    <td>$delete_button</td>
+                </tr>";
+            } else {
+                $html_tbody .=
+                "<tr>
+                    <td>$leaflet->id</td>
+                    <td>$leaflet->name</td>
+                    <td></td>
+                </tr>";
+            }
         }
 
         echo $html_tbody;
@@ -109,7 +121,8 @@ class LeafletSubspecialtyFirmController extends BaseAdminController
 
         if ($type === 'firm') {
             $model = OphTrConsent_Leaflet_Firm::model();
-        } elseif ($type === 'subspecialty') {
+        } elseif ($type === 'subspecialty' && $this->checkAccess('admin')) {
+            // Only installation admins can delete subspecialty-level leaflet mappings.
             $model = OphTrConsent_Leaflet_Subspecialty::model();
         } else {
             echo 'error';
@@ -126,6 +139,7 @@ class LeafletSubspecialtyFirmController extends BaseAdminController
     /**
      * Add a relation between a leaflet and a Firm or a Subspecialty,
      *  depending on the type provided in the GET variable
+     * @throws Exception
      */
     public function actionAdd()
     {
@@ -166,6 +180,7 @@ class LeafletSubspecialtyFirmController extends BaseAdminController
             $criteria->select = 'id, name';
             $criteria->params = $params;
             $results = OphTrConsent_Leaflet::model()->active()->findAll($criteria);
+
             $return = array();
             foreach ($results as $resultRow) {
                 $return[] = array(

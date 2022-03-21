@@ -29,14 +29,15 @@ if (file_exists('/etc/openeyes/db.conf')) {
         'username' => rtrim(@file_get_contents("/run/secrets/DATABASE_USER")) ?: (getenv('DATABASE_USER') ? : 'openeyes'),
         'password' => rtrim(@file_get_contents("/run/secrets/DATABASE_PASS")) ?: (getenv('DATABASE_PASS') ? : 'openeyes'),
     );
-    $db_test = array(
-        'host' => getenv('DATABASE_TEST_HOST') ?: (getenv('DATABASE_HOST') ?: 'localhost'),
-        'port' => getenv('DATABASE_TEST_PORT') ?: (getenv('DATABASE_PORT') ?: '3306'),
-        'dbname' => getenv('DATABASE_TEST_NAME') ?: (getenv('DATABASE_NAME') ?: 'openeyes_test'),
-        'username' => rtrim(@file_get_contents("/run/secrets/DATABASE_TEST_USER")) ?: (getenv('DATABASE_TEST_USER') ?: (rtrim(@file_get_contents("/run/secrets/DATABASE_USER")) ?: (getenv('DATABASE_USER') ?: 'openeyes'))),
-        'password' => rtrim(@file_get_contents("/run/secrets/DATABASE_TEST_PASS")) ?: (getenv('DATABASE_TEST_PASS') ?: (rtrim(@file_get_contents("/run/secrets/DATABASE_PASS")) ?: (getenv('DATABASE_PASS') ?: 'openeyes'))),
-    );
 }
+
+$db_test = array(
+    'host' => getenv('DATABASE_TEST_HOST') ?: (getenv('DATABASE_HOST') ?: 'localhost'),
+    'port' => getenv('DATABASE_TEST_PORT') ?: (getenv('DATABASE_PORT') ?: '3306'),
+    'dbname' => getenv('DATABASE_TEST_NAME') ?: (getenv('DATABASE_NAME') ?: 'openeyes_test'),
+    'username' => rtrim(@file_get_contents("/run/secrets/DATABASE_TEST_USER")) ?: (getenv('DATABASE_TEST_USER') ?: (rtrim(@file_get_contents("/run/secrets/DATABASE_USER")) ?: (getenv('DATABASE_USER') ?: 'openeyes'))),
+    'password' => rtrim(@file_get_contents("/run/secrets/DATABASE_TEST_PASS")) ?: (getenv('DATABASE_TEST_PASS') ?: (rtrim(@file_get_contents("/run/secrets/DATABASE_PASS")) ?: (getenv('DATABASE_PASS') ?: 'openeyes'))),
+);
 
 /** START SINGLE SIGN-ON OPTIONS */
     // The base url for single-sign-on using SAML Authentication
@@ -52,16 +53,14 @@ if (file_exists('/etc/openeyes/db.conf')) {
     $ssoRedirectURL = getenv('SSO_REDIRECT_URL') ?: 'http://localhost';
     $ssoResponseType = array(getenv('SSO_RESPONSE_TYPE')) ?: array('code');
     $ssoImplicitFLow = strtolower(getenv('SSO_IMPLICIT_FLOW')) === 'true';
-
-    $ssoUserFields = getenv('SSO_USER_FIELDS') ?: '';
-    $ssoOIDCFields = getenv('SSO_OIDC_FIELDS') ?: '';
+    $ssoUserAttributes = getenv('SSO_USER_ATTRIBUTES') ?: '';
+    $ssoCustomClaims = getenv('SSO_CUSTOM_CLAIMS') ?: '';
 
     $ssoMappingsCheck = strtolower(getenv('STRICT_SSO_ROLES_CHECK')) === 'true';
     $ssoLoginURL = getenv('SSO_LOGIN_URL') ?: null;
-/** END SINGLE SIGN-ON SETTINGS */
 
-// Select from SAML, OIDC, LDAP or BASIC
-$authSource = getenv('AUTH_SOURCE') ?: (getenv('OE_LDAP_SERVER') ? 'LDAP' : 'BASIC');
+    $authSource = getenv('AUTH_SOURCE') ?: (getenv('OE_LDAP_SERVER') ? 'LDAP' : 'BASIC');    // OIDC, SAML, BASIC or LDAP;
+/** END SINGLE SIGN-ON SETTINGS */
 
 $breakGlassEnabled = strtolower(getenv('BREAK_GLASS_ENABLED')) === "true";
 $breakGlassField = getenv('BREAK_GLASS_FIELD') ?: 'qualifications';
@@ -77,11 +76,13 @@ $config = array(
         'application.vendors.*',
         'application.modules.*',
         'application.models.*',
+        'application.models.traits.*',
         'application.models.elements.*',
         'application.components.*',
         'application.components.reports.*',
         'application.components.actions.*',
         'application.components.worklist.*',
+        'application.components.patientSearch.*',
         'application.extensions.tcpdf.*',
         'application.modules.*',
         'application.commands.*',
@@ -128,7 +129,7 @@ $config = array(
         ),
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '202202071304',
+            'time' => '202202281420',
         ),
         'clientScript' => array(
             'class' => 'ClientScript',
@@ -255,7 +256,7 @@ $config = array(
             'class' => 'PuppeteerBrowser',
             'readTimeout' => 65,
             'logBrowserConsole' => false,
-            'leftFooterTemplate' => '{{DOCREF}}{{BARCODE}}{{PATIENT_NAME}}{{PATIENT_HOSNUM}}{{PATIENT_NHSNUM}}{{PATIENT_DOB}}',
+            'leftFooterTemplate' => '{{DOCREF}}{{BARCODE}}{{PATIENT_NAME}}{{PATIENT_PRIMARY_IDENTIFIER}}{{PATIENT_SECONDARY_IDENTIFIER}}{{PATIENT_DOB}}',
             'middleFooterTemplate' => 'Page {{PAGE}} of {{PAGES}}',
             'rightFooterTemplate' => 'OpenEyes',
             'topMargin' => '10mm',
@@ -413,7 +414,7 @@ $config = array(
                 'title' => 'Admin',
                 'uri' => 'admin',
                 'position' => 1,
-                'restricted' => array('admin'),
+                'restricted' => array('OprnInstitutionAdmin'),
             ),
             'audit' => array(
                 'title' => 'Audit',
@@ -448,7 +449,7 @@ $config = array(
                 'title' => 'Patient Merge',
                 'uri' => 'patientMergeRequest/index',
                 'position' => 17,
-                'restricted' => array('Patient Merge', 'Patient Merge Request'),
+                'restricted' => array('OprnPatientMerge', 'OprnPatientMergeRequest'),
             ),
             'patient' => array(
                 'title' => 'Add Patient',
@@ -492,6 +493,12 @@ $config = array(
                 'position' => 47,
                 'requires_setting' => array('setting_key' => 'enable_patient_import', 'required_value' => 'on'),
                 'restricted' => array('admin'),
+            ),
+            'virus_scan' => array(
+                'title' => 'Scan Uploaded Files',
+                'uri' => '/VirusScan/index',
+                'position' => 90,
+                'requires_setting' => array('setting_key' => 'enable_virus_scanning', 'required_value' => 'on'),
             ),
             /*
                  //TODO: not yet implemented
@@ -665,6 +672,11 @@ $config = array(
             ),
         ),
 
+        // used in behaviors/ExtraLog.php
+        // setting this true adding more (step by step type) logs
+        // useful for debugging the very complex patient search and PAS connections
+        'extra_debug_log' => false,
+
         'event_image' => [
             'base_url' => 'http://localhost/'
         ],
@@ -708,8 +720,6 @@ $config = array(
             'last_name' => 'mandatory',
             'dob' => 'mandatory',
             'primary_phone' => '',
-            'hos_num' => 'mandatory',
-            'nhs_num_status' => 'hidden'
         ],
         //        Set the parameter below to true if you want to use practitioner praactice associations feature
         'use_contact_practice_associate_model' => !empty(trim(getenv('OE_USE_CPA_MODEL'))) ? filter_var(getenv('OE_USE_CPA_MODEL'), FILTER_VALIDATE_BOOLEAN) : false,
@@ -736,7 +746,7 @@ $config = array(
         'default_patient_import_subspecialty' => 'GL',
         //        Add elements that need to be excluded from the admin sidebar in settings
         'exclude_admin_structure_param_list' => getenv('OE_EXCLUDE_ADMIN_STRUCT_LIST') ? explode(",", getenv('OE_EXCLUDE_ADMIN_STRUCT_LIST')) : array(''),
-        'oe_version' => '4.1.5b',
+        'oe_version' => '5.0.3beta',
         'gp_label' => !empty(trim(getenv('OE_GP_LABEL'))) ? getenv('OE_GP_LABEL') : null,
         'general_practitioner_label' => !empty(trim(getenv('OE_GENERAL_PRAC_LABEL'))) ? getenv('OE_GENERAL_PRAC_LABEL') : null,
         // number of days in the future to retrieve worklists for the automatic dashboard render (0 by default in v3)
@@ -803,6 +813,14 @@ $config = array(
         'watermark_admin' => getenv('OE_ADMIN_BANNER_LONG') ?: null,
         'sso_certificate_path' => '/run/secrets/SSO_CERTIFICATE',
         'ammonite_url' => getenv('AMMONITE_URL') ?: 'ammonite.toukan.co',
+        'cito_access_token_url' => trim(getenv('CITO_ACCESS_TOKEN_URL')) ?: null,
+        'cito_otp_url' => trim(getenv('CITO_OTP_URL')) ?: null,
+        'cito_sign_url' => trim(getenv('CITO_SIGN_URL')) ?: null,
+        'cito_client_id' => trim(getenv('CITO_CLIENT_ID')) ?: null,
+        'cito_grant_type' => trim(getenv('CITO_GRANT_TYPE')) ?: null,
+        'cito_application_id' => trim(@file_get_contents("/run/secrets/CITO_APPLICATION_ID")) ?: (trim(getenv('CITO_APPLICATION_ID')) ?: ''),
+        'cito_client_secret' => trim(@file_get_contents("/run/secrets/CITO_CLIENT_SECRET")) ?: (trim(getenv('CITO_CLIENT_SECRET')) ?: ''),
+
         /** START SINGLE SIGN-ON PARAMS */
         'strict_SSO_roles_check' => $ssoMappingsCheck,
         // Settings for OneLogin PHP-SAML toolkit
@@ -856,44 +874,18 @@ $config = array(
             'authParams' => array('response_mode' => 'form_post'),
             // Generates random encryption key for openssl
             'encryptionKey' => $ssoClientSecret,
-            'field_mapping_allow_list_with_defaults' => array(
-                'username' => '',
-                'email' => '',
-                'first_name' => '',
-                'last_name' => '',
-                'title' => '',
-                'qualifications' => '',
-                'role' => '',
-                'doctor_grade_id' => '',
-                'registration_code' => '',
-                'is_consultant' => 0,
-                'is_surgeon' => 0
-            ),
-            // Field mapping for (user_field, oidc_field). user_field must be in field_mapping_allow_list
-            'field_mapping' => array_combine(explode(",", $ssoUserFields), explode(",", $ssoOIDCFields)),
+            // Configure custom claims with the user attributes that the claims are for
+            'custom_claims' => array_combine(explode(",", $ssoCustomClaims), explode(",", $ssoUserAttributes)),
             // URL to redirect users to SSO portal to login again after session timeout
             'portal_login_url' => $ssoLoginURL,
         ),
         /** END SINGLE SIGN-ON PARAMS */
         'breakglass_enabled' => $breakGlassEnabled,
         'breakglass_field' => $breakGlassField,
-    ),
-);
+        ),
+        );
 
-// Enable logging of php errors to brwser console
-// Can be either "true", or can provide the error levels to output (e.g, one or more of trace, error, warning, info, notice)
-if (!empty(getenv('LOG_TO_BROWSER'))) {
-    $browserlog = array(
-                    'browser' => array(
-                        'class' => 'CWebLogRoute',
-                        'levels' => strtolower(trim(getenv('LOG_TO_BROWSER'))) == "true" ? 'error, warning, notice' : trim(getenv('LOG_TO_BROWSER')),
-                        'showInFireBug' => true,
-                    ),
-    );
-    $config['components']['log']['routes'] = array_merge_recursive($config['components']['log']['routes'], $browserlog);
-}
-
-$modules = array(
+        $modules = array(
         // Gii tool
         // 'gii' => array(
         //     'class' => 'system.gii.GiiModule',
@@ -922,10 +914,10 @@ $modules = array(
         'OphInLabResults',
         'OphCoCvi' => array('class' => '\OEModule\OphCoCvi\OphCoCviModule'),
         /* Uncomment next section if you want to use the genetics module
-￼        'Genetics',
-￼        'OphInDnasample',
-￼        'OphInDnaextraction',
-￼        'OphInGeneticresults',*/
+        ￼        'Genetics',
+        ￼        'OphInDnasample',
+        ￼        'OphInDnaextraction',
+        ￼        'OphInGeneticresults',*/
         'OphCoDocument',
         'OphCiDidNotAttend',
         'OphGeneric',
@@ -936,42 +928,42 @@ $modules = array(
         'OphTrOperationchecklists',
         'OphDrPGDPSD',
         'BreakGlass' => array('class' => '\OEModule\BreakGlass\BreakGlassModule'),
-);
+        );
 
-// deal with any custom modules added for the local deployment - which are set in /config/modules.conf (added via docker)
-// Gracefully ignores file if it is missing
-$custom_modules = explode(" ", trim(str_replace(["modules=(", ")", "'", "openeyes ", "eyedraw "], "", @file_get_contents("/config/modules.conf"))));
-if (!empty($custom_modules)) {
-    $final_custom_modules = array();
-    foreach ($custom_modules as $module) {
-        if (!empty($module)) {
-            $mod_split = explode("=", $module);
-            if (sizeof($mod_split) > 1) {
-                $final_custom_modules[$mod_split[0]] = array('class' => $mod_split[1]);
-            } else {
-                $final_custom_modules[] = (string)$mod_split[0];
+        // deal with any custom modules added for the local deployment - which are set in /config/modules.conf (added via docker)
+        // Gracefully ignores file if it is missing
+        $custom_modules = explode(" ", trim(str_replace(["modules=(", ")", "'", "openeyes ", "eyedraw "], "", @file_get_contents("/config/modules.conf"))));
+        if (!empty($custom_modules)) {
+            $final_custom_modules = array();
+            foreach ($custom_modules as $module) {
+                if (!empty($module)) {
+                    $mod_split = explode("=", $module);
+                    if (sizeof($mod_split) > 1) {
+                        $final_custom_modules[$mod_split[0]] = array('class' => $mod_split[1]);
+                    } else {
+                        $final_custom_modules[] = (string)$mod_split[0];
+                    }
+                }
             }
+            $modules = array_unique(array_merge($modules, $final_custom_modules), SORT_REGULAR);
         }
-    }
-    $modules = array_unique(array_merge($modules, $final_custom_modules), SORT_REGULAR);
-}
 
-$config["modules"] = $modules;
+        $config["modules"] = $modules;
 
-/**
- * Setup the local_users parameter. If the environment variable named OE_LOCAL_USERS is set then use it as an override.
- * else, default to the standard array
- * The OE_LOCAL_USERS environment variable should be a comma separated string
- */
-$local_users = !empty(trim(getenv('OE_LOCAL_USERS'))) ? getenv('OE_LOCAL_USERS') : 'admin, api, docman_user, payload_processor';
-$config["params"]["local_users"] = explode(',', $local_users);
+        /**
+        * Setup the local_users parameter. If the environment variable named OE_LOCAL_USERS is set then use it as an override.
+        * else, default to the standard array
+        * The OE_LOCAL_USERS environment variable should be a comma separated string
+        */
+        $local_users = !empty(trim(getenv('OE_LOCAL_USERS'))) ? getenv('OE_LOCAL_USERS') : 'admin, api, docman_user, payload_processor';
+        $config["params"]["local_users"] = explode(',', $local_users);
 
-/**
- * Setup the special_users parameter. If the environment variable named OE_SPECIAL_USERS is set then use it as an override.
- * else, default to the standard array
- * The OE_SPECIAL_USERS environment variable should be a comma separated string
- */
-$special_users = !empty(trim(getenv('OE_SPECIAL_USERS'))) ? getenv('OE_SPECIAL_USERS') : 'api';
-$config["params"]["special_users"] = explode(',', $special_users);
+        /**
+        * Setup the special_users parameter. If the environment variable named OE_SPECIAL_USERS is set then use it as an override.
+        * else, default to the standard array
+        * The OE_SPECIAL_USERS environment variable should be a comma separated string
+        */
+        $special_users = !empty(trim(getenv('OE_SPECIAL_USERS'))) ? getenv('OE_SPECIAL_USERS') : 'api';
+        $config["params"]["special_users"] = explode(',', $special_users);
 
-return $config;
+        return $config;

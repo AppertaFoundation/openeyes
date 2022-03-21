@@ -110,6 +110,10 @@ class GpController extends BaseController
 
         if (isset($_POST['Contact'])) {
             $contact->attributes = $_POST['Contact'];
+            $contact->created_institution_id = Yii::app()->session['selected_institution_id'];
+            $gp->is_active = $_POST['Gp']['is_active'];
+            $this->performAjaxValidation($contact);
+            list($contact, $gp) = $this->performGpSave($contact, $gp);
 
             // if context is AJAX then it means that this action is called from add patient screen, or it will go
             // to the else condition if it is called from the practitioners screen.

@@ -23,6 +23,7 @@ namespace OEModule\OphCiExamination\models;
  *
  * @property int $id
  * @property string $name
+ * @property int $institution_id
  * @property OphCiExamination_ElementSet[] $steps
  * @property OphCiExamination_ElementSet $first_step
  */
@@ -58,7 +59,7 @@ class OphCiExamination_Workflow extends \BaseActiveRecordVersioned
     {
         return array(
                 array('name', 'required'),
-                array('id, name', 'safe', 'on' => 'search'),
+                array('id, name, institution_id', 'safe', 'on' => 'search'),
         );
     }
 
@@ -79,6 +80,8 @@ class OphCiExamination_Workflow extends \BaseActiveRecordVersioned
                     'order' => 'position',
                     'condition' => 'is_active = 1'
                 ),
+                'institution' => array(self::BELONGS_TO, 'Institution', 'institution_id',
+                ),
         );
     }
 
@@ -90,6 +93,7 @@ class OphCiExamination_Workflow extends \BaseActiveRecordVersioned
         return array(
                 'id' => 'ID',
                 'name' => 'Name',
+                'institution_id' => 'Institution',
         );
     }
 
@@ -117,6 +121,7 @@ class OphCiExamination_Workflow extends \BaseActiveRecordVersioned
         $criteria = new \CDbCriteria();
         $criteria->compare('id', $this->id, true);
         $criteria->compare('name', $this->name, true);
+        $criteria->compare('institution_id', $this->institution_id, true);
 
         return new \CActiveDataProvider(get_class($this), array(
                 'criteria' => $criteria,

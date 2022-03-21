@@ -17,7 +17,10 @@
  */
 Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/pages.js", \CClientScript::POS_HEAD);
 Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/imageLoader.js", \CClientScript::POS_HEAD);
-Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/email.js", \CClientScript::POS_HEAD);
+
+if (!($element->draft && SettingMetadata::checkSetting('disable_draft_correspondence_email', 'on'))) {
+    Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/email.js", \CClientScript::POS_HEAD);
+}
 
 $correspondeceApp = Yii::app()->params['ask_correspondence_approval'];
 $is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getRequest()->getUserAgent()); ?>
@@ -108,7 +111,7 @@ $is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getReq
         <?php if ($is_mobile_or_tablet) { ?>
             <div class="js-correspondence-image-overlay" style="position: relative;"></div>
         <?php } else { ?>
-            <iframe src="/OphCoCorrespondence/default/PDFprint/<?= $element->event_id; ?>?auto_print=<?= $element->checkPrint() ?>&is_view=1#toolbar=0" data-eventid="<?= $element->event_id ?>"
+            <iframe id="pdf-js-viewer" src="<?= Yii::app()->assetManager->createUrl('components/pdfjs/web/viewer.html?file=/OphCoCorrespondence/default/PDFprint/' .  $element->event_id .  '?auto_print= ' . $element->checkPrint()  . '&is_view=1#zoom=100')?>" title="webviewer" data-eventid="<?= $element->event_id ?>"
                     style="width: <?= Yii::app()->params['lightning_viewer']['blank_image_template']['width'] ?>px; height: <?= Yii::app()->params['lightning_viewer']['blank_image_template']['height'] ?>px; border: 0; position: relative;"></iframe>
         <?php } ?>
     </div>

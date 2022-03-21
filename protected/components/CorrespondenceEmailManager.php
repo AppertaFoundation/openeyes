@@ -158,6 +158,7 @@ class CorrespondenceEmailManager
         curl_setopt($ch, CURLOPT_COOKIEFILE, '/tmp/cookie.txt');
 
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_COOKIE , "institution_id=$event->institution_id;site_id=$event->site_id");
         $response = curl_exec($ch);
         if (curl_errno($ch)) {
             die(curl_error($ch));
@@ -171,8 +172,6 @@ class CorrespondenceEmailManager
         $params = array(
             'LoginForm[username]' => $username,
             'LoginForm[password]' => $password,
-//                'LoginForm[YII_CSRF_TOKEN]' => $token[0],
-//                'YII_CSRF_TOKEN' => $token[0],
         );
         curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
 
@@ -445,8 +444,8 @@ class CorrespondenceEmailManager
         // if the email is being sent via the cron job then set the user_id for the auditing
         // as the docman_user.
         if ($this->isConsole) {
-            $user = User::model()->find('username = "docman_user"');
-            $properties['user_id'] = $user->id;
+            $user_auth = UserAuthentication::model()->find('username = "docman_user"');
+            $properties['user_id'] = $user_auth->user_id;
         }
         $audit = Audit::add('event', 'email', str_replace(PHP_EOL, "<br/>", $msg), $msg, $properties);
         if ($audit) {

@@ -96,6 +96,7 @@ class OphTrOperationbooking_Operation_Sequence extends BaseActiveRecordVersioned
             'theatre' => array(self::BELONGS_TO, 'OphTrOperationbooking_Operation_Theatre', 'theatre_id'),
             'firmAssignment' => array(self::HAS_ONE, 'SequenceFirmAssignment', 'sequence_id'),
             'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
+            'institution' => array(self::BELONGS_TO, 'Institution', 'institution_id'),
             'sessions' => array(self::HAS_MANY, 'OphTrOperationbooking_Operation_Session', 'sequence_id'),
             'interval' => array(self::BELONGS_TO, 'OphTrOperationbooking_Operation_Sequence_Interval', 'interval_id'),
         );
@@ -399,5 +400,19 @@ class OphTrOperationbooking_Operation_Sequence extends BaseActiveRecordVersioned
         $this->default_admission_time = $this->setDefaultAdmissionTime($this->default_admission_time, $this->start_time);
 
         return parent::beforeSave();
+    }
+
+    /**
+     * Gets all sequences for theatres with a site bound to the current institution.
+     */
+    public static function getSequencesForCurrentInstitution()
+    {
+        $site_id_list = array_map(
+            static function ($site) {
+                return $site->id;
+            },
+            Institution::model()->getCurrent()->sites
+        );
+        return self::model()->with('theatre')->findAll('theatre.site_id IN (' . implode(', ', $site_id_list) . ')');
     }
 }

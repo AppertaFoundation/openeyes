@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -21,7 +22,7 @@ class SiteController extends BaseController
         return array(
             // Allow unauthenticated users to view certain pages
             array('allow',
-                'actions' => array('error', 'login', 'loginFromOverlay', 'debuginfo'),
+                'actions' => array('error', 'login', 'loginFromOverlay', 'getOverlayPrepopulationData', 'debuginfo'),
             ),
             array('allow',
                 'actions' => array('index', 'changeSiteAndFirm', 'search', 'logout'),
@@ -36,7 +37,7 @@ class SiteController extends BaseController
     public function actionIndex()
     {
         $search_term = Yii::app()->session['search_term'];
-        Yii::app()->session['search_term']='';
+        Yii::app()->session['search_term'] = '';
         $this->pageTitle = 'Home';
         $this->fixedHotlist = false;
         $this->layout = 'home';
@@ -58,7 +59,7 @@ class SiteController extends BaseController
                     $event_id = $matches[2];
                     if ($event = Event::model()->findByPk($event_id)) {
                         $event_class_name = $event->eventType->class_name;
-                        $this->redirect(array($event_class_name.'/default/view/'.$event_id));
+                        $this->redirect(array($event_class_name . '/default/view/' . $event_id));
                     } else {
                         Yii::app()->user->setFlash('warning.search_error', 'Event ID not found');
                         $this->redirect('/');
@@ -68,13 +69,14 @@ class SiteController extends BaseController
                 } else {
                     $patientSearch = new PatientSearch();
 
-                    // lets check if it is a NHS number, Hospital number or Patient name
-
-                    if ($patientSearch->getNHSnumber($query) || $patientSearch->getHospitalNumber($query) || $patientSearch->getPatientName($query)) {
-                        $this->redirect(array('patient/search', 'term' => $query));
+                    if ($patientSearch->getValidSearchTerm($query)) {
+                        $redirect_array = ['patient/search', 'term' => $query];
+                        $type_id = \Yii::app()->request->getParam('patient_identifier_type_id');
+                        $redirect_array = $type_id ? array_merge($redirect_array, ['patient_identifier_type_id' => $type_id]) : $redirect_array;
+                        $this->redirect($redirect_array);
                     } else {
                         // not a valid search
-                        Yii::app()->user->setFlash('warning.search_error', '<strong>"'.CHtml::encode($query).'"</strong> is not a valid search.');
+                        Yii::app()->user->setFlash('warning.search_error', '<strong>"' . CHtml::encode($query) . '"</strong> is not a valid search.');
                     }
                 }
             }
@@ -99,8 +101,8 @@ class SiteController extends BaseController
                     Yii::app()->exit();
                 }
                 */
-                if (($view = $this->getViewFile('/error/error'.$error_code)) !== false) {
-                    $this->render('/error/error'.$error_code, $error);
+                if (($view = $this->getViewFile('/error/error' . $error_code)) !== false) {
+                    $this->render('/error/error' . $error_code, $error);
                 } else {
                     $this->render('/error/error', $error);
                 }
@@ -145,9 +147,11 @@ class SiteController extends BaseController
             return $this->render('login_wrong_browser');
         }
 
-        if (isset($_SERVER['HTTP_USER_AGENT']) && (
+        if (
+            isset($_SERVER['HTTP_USER_AGENT']) && (
                 strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE') !== false
-                || strpos($_SERVER['HTTP_USER_AGENT'], 'Trident') !== false)) {
+                || strpos($_SERVER['HTTP_USER_AGENT'], 'Trident') !== false)
+        ) {
             $this->layout = 'unsupported_browser';
 
             return $this->render('login_unsupported_browser');
@@ -187,6 +191,33 @@ class SiteController extends BaseController
         );
     }
 
+    public function actionGetOverlayPrepopulationData()
+    {
+        $data = array();
+
+        $session = Yii::app()->session;
+
+        if (isset($session['user_auth']->username)) {
+            $data['username'] = $session['user_auth']->username;
+        }
+
+        if (isset($session['selected_institution_id'])) {
+            $selected_institution = Institution::model()->findByPK($session['selected_institution_id']);
+
+            $data['institution']['id'] = $selected_institution->id;
+            $data['institution']['name'] = $selected_institution->name;
+        }
+
+        if (isset($session['selected_site_id'])) {
+            $selected_site = Site::model()->findByPK($session['selected_site_id']);
+
+            $data['site']['id'] = $selected_site->id;
+            $data['site']['name'] = $selected_site->name;
+        }
+
+        $this->renderJSON($data);
+    }
+
     public function actionLoginFromOverlay()
     {
         $model = new LoginForm();
@@ -216,11 +247,12 @@ class SiteController extends BaseController
      */
     public function actionLogout()
     {
-        $user = Yii::app()->session['user'];
+        $user_auth = Yii::app()->session['user_auth'];
+        $user = $user_auth->user;
 
         $user->audit('logout', 'logout');
 
-        OELog::log("User $user->username logged out");
+        OELog::log("User $user_auth->username logged out");
 
         Yii::app()->user->logout();
         $this->redirect(Yii::app()->homeUrl);
@@ -260,7 +292,7 @@ class SiteController extends BaseController
 
     private function sendVersionInfo($ammoniteURL, $uuid)
     {
-        $updateURL = $ammoniteURL."api/clients/".$uuid."/update";
+        $updateURL = $ammoniteURL . "api/clients/" . $uuid . "/update";
         if (file_exists('/etc/hostname')) {
             $hostname = trim(file_get_contents('/etc/hostname'));
         } else {
@@ -286,21 +318,15 @@ class SiteController extends BaseController
             $ex = explode('/', file_get_contents('.git/HEAD'));
             $branch = array_pop($ex);
         }
-        if (!empty(Yii::app()->session['user'])) {
-            $user = Yii::app()->session['user'];
-        } else {
-            $user = User::model()->findByPk(Yii::app()->user->id);
-        }
 
         $firm_id = $this->getApp()->session->get('selected_firm_id');
         $firm = Firm::model()->findByPk($firm_id);
-        if (is_object($user)) {
-            $username = "$user->username ($user->id)";
+        if (is_object($firm)) {
             $firm = "$firm->name ($firm->id)";
         } else {
-            $username = 'Not logged in';
             $firm = 'Not logged in';
         }
+        $username = Yii::app()->session['user_auth']->username ?? 'Not logged in';
 
         $ipaddress = '';
         if (getenv('HTTP_X_FORWARDED_FOR')) {
@@ -361,7 +387,7 @@ class SiteController extends BaseController
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => "PUT",
-            CURLOPT_POSTFIELDS =>$payload,
+            CURLOPT_POSTFIELDS => $payload,
             CURLOPT_HTTPHEADER => array(
                 "Content-Type: application/json"
             ),
@@ -387,7 +413,7 @@ class SiteController extends BaseController
 
     private function registerAPI($ammoniteURL)
     {
-        $url = $ammoniteURL."api/register/";
+        $url = $ammoniteURL . "api/register/";
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);

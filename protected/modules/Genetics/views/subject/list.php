@@ -23,15 +23,20 @@
     <div class="search-form">
         <?php $this->renderPartial('_list_search', array(
             'model' => $model,
-        ));  ?>
+        )); ?>
     </div><!-- search-form -->
 
     <?php
+    $institution = Institution::model()->getCurrent();
+    $selected_site_id = Yii::app()->session['selected_site_id'];
+
+    $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(Yii::app()->params['display_primary_number_usage_code'], $institution->id, $selected_site_id);
+
     $dataProvider = $model->search();
     $item_count = GeneticsPatient::model()->count();
 
     //we do not display any results until the user click on the search button - and post his/her query
-    if ( !Yii::app()->request->getQuery('GeneticsPatient')) {
+    if (!Yii::app()->request->getQuery('GeneticsPatient')) {
         $criteria = $dataProvider->getCriteria();
         $criteria->addCondition("1 != 1");
         $dataProvider->setCriteria($criteria);
@@ -49,27 +54,27 @@
             'selectedPageCssClass' => 'current',
             'htmlOptions' => array('class' => 'pagination right'),
         ),
-        'emptyText' => ( !empty($_GET) ? 'No result found - ' : '') . 'Total of ' . $item_count . ' items',
+        'emptyText' => (!empty($_GET) ? 'No result found - ' : '') . 'Total of ' . $item_count . ' items',
         "emptyTagName" => 'span',
 
         //click on a row - only one row can be selected
         'selectableRows' => 1,
 
         //here we say what should happen when a row selected
-        'selectionChanged'=>'function(id){ location.href = "'.$this->createUrl('view').'/id/"+$.fn.yiiGridView.getSelection(id);}',
+        'selectionChanged' => 'function(id){ location.href = "' . $this->createUrl('view') . '/id/"+$.fn.yiiGridView.getSelection(id);}',
 
         'rowCssClass' => ['clickable'],
 
         'columns' => array(
             array(
                 'name' => 'id',
-                'htmlOptions'=>array('width'=>'70px'),
+                'htmlOptions' => array('width' => '70px'),
             ),
             array(
                 'header' => 'Family Id',
-                'htmlOptions'=>array('width'=>'70px'),
+                'htmlOptions' => array('width' => '70px'),
                 'type' => 'raw',
-                'value' => function($data){
+                'value' => function ($data) {
 
                     $family_ids = '';
                     foreach ($data->pedigrees as $pedigrees) {
@@ -82,46 +87,55 @@
             ),
 
             array(
-                'name' => 'patient.hos_num',
-                'htmlOptions'=>array('width'=>'110px'),
+                'id' => 'hos_num',
+                'header' => $primary_identifier_prompt,
+                'htmlOptions' => array('width' => '70px'),
+                'value' => function ($data) {
+                    $institution = Institution::model()->getCurrent();
+                    $selected_site_id = Yii::app()->session['selected_site_id'];
+                    $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $data->patient->id, $institution->id, $selected_site_id);
+                    $patient_identifier_widget = $this->widget('application.widgets.PatientIdentifiers', ['patient' => $data->patient, 'show_all' => true, 'tooltip_size' => 'small'], true);
+                    return PatientIdentifierHelper::getIdentifierValue($primary_identifier) . $patient_identifier_widget;
+                },
+                'type' => 'raw'
             ),
             array(
                 'name' => 'patient.firstName',
-                'htmlOptions'=>array('width'=>'60x'),
+                'htmlOptions' => array('width' => '60x'),
                 'value' => '$data->patient->first_name'
             ),
             array(
                 'name' => 'patient.lastName',
-                'htmlOptions'=>array('width'=>'60px'),
+                'htmlOptions' => array('width' => '60px'),
                 'value' => '$data->patient->last_name'
             ),
             array(
                 'name' => 'patient.contact.maiden_name',
-                'htmlOptions'=>array('width'=>'60px'),
+                'htmlOptions' => array('width' => '60px'),
                 'value' => '$data->patient->contact->maiden_name'
             ),
 
 
             array(
                 'name' => 'patient.dob',
-                'value' => function($data){
+                'value' => function ($data) {
                     $date = new DateTime($data->patient->dob);
                     return $data->patient->dob ? $date->format("j M Y") : null;
                 },
-                'htmlOptions'=>array('width'=>'85px'),
+                'htmlOptions' => array('width' => '85px'),
             ),
 
             array(
                 'name' => 'diagnoses',
-                'value' => function($data){
+                'value' => function ($data) {
                     return implode(', ', $data->diagnoses);
                 },
-                'htmlOptions'=>array('width'=>'200px'),
+                'htmlOptions' => array('width' => '200px'),
             ),
             array(
                 'header' => 'Affected status',
                 'type' => 'raw',
-                'value' => function($model){
+                'value' => function ($model) {
                     if ($model->pedigrees) {
                         $html = '';
                         foreach ($model->pedigrees as $pedigree) {
@@ -135,10 +149,8 @@
                     }
                     return $html;
                 },
-                'htmlOptions'=>array('width'=>'150px'),
+                'htmlOptions' => array('width' => '150px'),
             ),
-
-
 
 
         ),

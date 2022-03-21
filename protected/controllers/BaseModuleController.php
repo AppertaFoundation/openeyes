@@ -16,6 +16,8 @@
  */
 class BaseModuleController extends BaseController
 {
+    /* @var Institution - the institution that user is logged in as for current action action */
+    public $institution;
     /* @var Firm - the firm that user is logged in as for current action action */
     public $firm;
     /* @var string alias path for the module of this controller */
@@ -74,6 +76,16 @@ class BaseModuleController extends BaseController
         }
     }
 
+    protected function setInstitutionFromSession()
+    {
+        if (!$institution_id = Yii::app()->session->get('selected_institution_id')) {
+            throw new CHttpException(400, 'Institution not selected');
+        }
+        if (!$this->institution || $this->institution->id != $institution_id) {
+            $this->institution = Institution::model()->findByPk($institution_id);
+        }
+    }
+
     /**
      * Sets up various standard js and css files for modules.
      *
@@ -118,7 +130,7 @@ class BaseModuleController extends BaseController
             $controller_name = Helper::getNSShortname($this);
             // Register print css
             $newblue_path = 'application.assets.newblue';
-            $assetManager->registerCssFile('css/style_oe3_print.min.css', $newblue_path, null, AssetManager::OUTPUT_PRINT);
+            $assetManager->registerCssFile('/dist/css/style_oe_print.3.css', $newblue_path, null, AssetManager::OUTPUT_PRINT);
             foreach ($paths as $p) {
                 $asset_path_alias = 'application.modules.'.$p.'.assets';
                 // Register module js

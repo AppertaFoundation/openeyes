@@ -35,4 +35,28 @@ return array(
         'end_time' => '12:00',
         'scheduled' => true,
     ),
+    'def3' => array(
+        'id' => 3,
+        'name' => 'test 3',
+        'rrule' => 'FREQ=DAILY',
+        'start_time' => '09:00',
+        'end_time' => '17:00',
+        'scheduled' => true,
+    ),
+    'def4' => array(
+        'id' => 4,
+        'name' => 'test 2',
+        'rrule' => 'FREQ=DAILY',
+        'start_time' => '09:00',
+        'end_time' => '17:00',
+        'scheduled' => true,
+    ),
+    'def5' => array(
+        'id' => 5,
+        'name' => 'test 5',
+        'rrule' => 'FREQ=DAILY',
+        'start_time' => '09:00',
+        'end_time' => '17:00',
+        'scheduled' => true,
+    ),
 );

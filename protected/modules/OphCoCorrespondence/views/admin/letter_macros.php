@@ -33,6 +33,12 @@
                     ['empty' => '- Type -']
                 ) ?></td>
                 <td><?=\CHtml::dropDownList(
+                    'institution_id',
+                    @$_GET['institution_id'],
+                    Institution::model()->getList(!Yii::app()->user->checkAccess('admin')),
+                    ['empty' => '- Institution -']
+                ) ?></td>
+                <td><?=\CHtml::dropDownList(
                     'site_id',
                     @$_GET['site_id'],
                     Site::model()->getListForCurrentInstitution(),
@@ -47,7 +53,7 @@
                 <td><?=\CHtml::dropDownList(
                     'firm_id',
                     @$_GET['firm_id'],
-                    Firm::model()->getListWithSpecialties(),
+                    Firm::model()->getListWithSpecialties(Yii::app()->session['selected_institution_id'], true),
                     ['empty' => '- ' . Firm::contextLabel() . ' -']
                 ) ?>
                 </td>

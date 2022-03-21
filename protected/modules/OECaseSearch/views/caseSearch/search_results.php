@@ -4,7 +4,7 @@
  * @var $trialPatient TrialPatient
  */
 
-$navIconsUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue'), true) . '/svg/oe-nav-icons.svg';
+$navIconsUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue'), true) . '/dist/svg/oe-nav-icons.svg';
 $warnings = array();
 foreach ($data->getWarnings() as $warn) {
     $warnings[] = "{$warn['long_msg']}: {$warn['details']}";
@@ -21,6 +21,7 @@ $data->hasAllergyStatus();
             'layout' => 'list',
             'trial' => $this->trialContext,
             'list_mode' => true,
+            'selected_site_id' => $this->selectedSiteId,
         )
     );
     $patientPanel->render('PatientPanel');

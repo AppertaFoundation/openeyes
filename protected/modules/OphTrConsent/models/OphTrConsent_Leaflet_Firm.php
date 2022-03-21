@@ -36,7 +36,7 @@ class OphTrConsent_Leaflet_Firm extends BaseActiveRecordVersioned
     /**
      * Returns the static model of the specified AR class.
      *
-     * @return the static model class
+     * @return OphTrConsent_Leaflet_Firm|BaseActiveRecord the static model class
      */
     public static function model($className = __CLASS__)
     {

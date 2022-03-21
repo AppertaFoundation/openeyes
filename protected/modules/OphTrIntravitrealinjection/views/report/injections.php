@@ -11,6 +11,7 @@
   <input type="hidden" name="report-name" value="Injections"/>
   <table class="standard cols-full">
     <tbody>
+    <?php $this->renderPartial('//report/_institution_table_row', ['field_name' => "institution_id"]);?>
     <tr>
       <td>
             <?=\CHtml::label('Date From', 'date_from') ?>

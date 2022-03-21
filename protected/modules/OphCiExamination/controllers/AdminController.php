@@ -57,7 +57,8 @@ class AdminController extends \ModuleAdminController
 
     public $defaultAction = 'ViewAllOphCiExamination_InjectionManagementComplex_NoTreatmentReason';
 
-    public function actions() {
+    public function actions()
+    {
         return [
             'sortWorkflowElementSetItem' => [
                 'class' => 'SaveDisplayOrderAction',
@@ -67,19 +68,124 @@ class AdminController extends \ModuleAdminController
         ];
     }
 
-    public function actionEditIOPInstruments()
+    public function actionViewIOPInstruments()
     {
-        $this->genericAdmin(
-            'Edit Intraocular Pressure Instruments',
-            'OEModule\OphCiExamination\models\OphCiExamination_Instrument',
-            array(
-                'extra_fields' => array(
-                    array('field' => 'short_name', 'type' => 'text',
-                        'model' => 'OEModule\OphCiExamination\models\OphCiExamination_Instrument', ),
-                ),
-                'div_wrapper_class' => 'cols-6',
-            )
-        );
+        Audit::add('admin', 'list', null, false, array('module' => 'OphCiExamination', 'model' => 'OphCiExamination_Instrument'));
+
+        $generic_admin = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.widgets.js') . '/GenericAdmin.js', true);
+        Yii::app()->getClientScript()->registerScriptFile($generic_admin);
+
+        if (\Yii::app()->request->isPostRequest) {
+            $instruments = \Yii::app()->request->getPost('OEModule_OphCiExamination_models_OphCiExamination_Instrument', []);
+            foreach ($instruments as $instrument) {
+                $model = models\OphCiExamination_Instrument::model()->findByPk($instrument['id']);
+                $model->display_order = $instrument['display_order'];
+                $model->save();
+            }
+        }
+
+        $model_list = models\OphCiExamination_Instrument::model()->findAll([
+            'order' => 'display_order asc',
+            'with' => 'institutions',
+            'condition' => !Yii::app()->user->checkAccess('admin') ? 'institutions_institutions.institution_id = :institution_id' : '',
+            'params' => [':institution_id' => Yii::app()->session['selected_institution_id']],
+        ]);
+
+        $this->render('list_OphCiExamination_IOPInstruments', array(
+            'model_class' => 'OphCiExamination_Instrument',
+            'model_list' => $model_list,
+            'title' => 'IOP Instruments',
+        ));
+    }
+
+    public function actionEditIOPInstrument($id)
+    {
+        $model = models\OphCiExamination_Instrument::model()->findByPk((int) $id);
+
+        if (isset($_POST[\CHtml::modelName($model)])) {
+            $post_attributes = $_POST[\CHtml::modelName($model)];
+            try {
+                $model = models\OphCiExamination_Instrument::model()->findByPk($id);
+                $model->name = $post_attributes['name'];
+                $model->short_name = $post_attributes['short_name'];
+                $model->active = $post_attributes['active'];
+                $model->save();
+
+                if (Yii::app()->user->checkAccess('admin')) {
+                    models\OphCiExamination_Instrument_Institution::model()->deleteAll('instrument_id = :instrument_id', [':instrument_id' => $id]);
+                } elseif ($model->hasMapping(\ReferenceData::LEVEL_INSTITUTION, Yii::app()->session['selected_institution_id'])) {
+                    $model->deleteMapping(\ReferenceData::LEVEL_INSTITUTION, Yii::app()->session['selected_institution_id']);
+                }
+
+                if (array_key_exists('institutions', $post_attributes) && !empty($post_attributes['institutions'])) {
+                    $model->createMappings(\ReferenceData::LEVEL_INSTITUTION, $post_attributes['institutions']);
+                }
+
+                Audit::add('admin', 'update', serialize($model->attributes), false, array('module' => 'OphCiExamination', 'model' => 'OphCiExamination_Instrument'));
+                Yii::app()->user->setFlash('success', 'IOP Instrument updated');
+            } catch (Exception $e) {
+                throw new CHttpException(500, $e->getMessage(), true);
+            }
+
+            $this->redirect(array('ViewIOPInstruments'));
+        }
+
+        $multiselect_list = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.widgets.js') . '/MultiSelectList.js', true);
+        Yii::app()->getClientScript()->registerScriptFile($multiselect_list);
+
+        $this->render('update', array(
+            'model' => $model,
+            'title' => 'Edit IOP Instrument',
+            'cancel_uri' => '/OphCiExamination/admin/viewIOPInstruments'
+        ));
+    }
+
+    public function actionAddIOPInstrument()
+    {
+        $model = new models\OphCiExamination_Instrument();
+
+        if (isset($_POST[\CHtml::modelName($model)])) {
+            $post_attributes = $_POST[\CHtml::modelName($model)];
+            if (Yii::app()->user->checkAccess('admin')) {
+                // Only admins can create instances at installation level
+                if (isset($post_attributes['institutions'])) {
+                    $institutions = $post_attributes['institutions'];
+                } else {
+                    $institutions = [];
+                }
+            } else {
+                // Save instance only at instition level
+                $institutions[] = Yii::app()->session['selected_institution_id'];
+            }
+            try {
+                $model->name = $post_attributes['name'];
+                $model->short_name = $post_attributes['short_name'];
+                $model->active = $post_attributes['active'];
+
+                $criteria=new CDbCriteria;
+                $criteria->select = 'max(display_order) AS display_order';
+                $order = $model->model()->find($criteria);
+                $model->display_order = (int)$order['display_order'] + 1;
+
+                if ($model->save(false)) {
+                    if (!empty($institutions)) {
+                        $model->createMappings(\ReferenceData::LEVEL_INSTITUTION, $institutions);
+                    }
+                    Audit::add('admin', 'create', serialize($model->attributes), false, array('module' => 'OphCiExamination', 'model' => 'OphCiExamination_Instrument'));
+                    Yii::app()->user->setFlash('success', 'IOP Instrument created');
+                }
+            } catch (Exception $e) {
+                throw new CHttpException(500, $e->getMessage(), true);
+            }
+
+            $this->redirect(array('ViewIOPInstruments'));
+        }
+
+        $this->render('update', array(
+            'model' => $model,
+            'title' => 'Add IOP Instrument',
+            'cancel_uri' => '/OphCiExamination/admin/viewIOPInstruments'
+        ));
     }
 
     // No Treatment Reason views
@@ -350,7 +456,7 @@ class AdminController extends \ModuleAdminController
 
         $this->render('list_OphCiExamination_Workflow', array(
                 'model_class' => 'OphCiExamination_Workflow',
-                'model_list' => models\OphCiExamination_Workflow::model()->findAll(array('order' => 'name asc')),
+                'model_list' => models\OphCiExamination_Workflow::model()->findAll(['condition' => 'institution_id = :institution_id', 'order' => 'name asc', 'params' => [':institution_id' => Yii::app()->session['selected_institution_id']]]),
                 'title' => 'Workflows',
         ));
     }
@@ -385,7 +491,9 @@ class AdminController extends \ModuleAdminController
         $model = models\OphCiExamination_Workflow::model()->findByPk((int) $id);
 
         if (isset($_POST[\CHtml::modelName($model)])) {
-            $model->attributes = $_POST[\CHtml::modelName($model)];
+            $updated_attributes = $_POST[\CHtml::modelName($model)];
+            $model->name = $updated_attributes['name'];
+            $model->institution_id = $updated_attributes['institution_id'];
 
             if ($model->save()) {
                 Audit::add('admin', 'update', serialize($model->attributes), false, array('module' => 'OphCiExamination', 'model' => 'OphCiExamination_ElementSet'));
@@ -433,7 +541,8 @@ class AdminController extends \ModuleAdminController
         ));
     }
 
-    public function actionSetWorkflowToDefault() {
+    public function actionSetWorkflowToDefault()
+    {
         $element_set_id = Yii::app()->request->getParam('element_set_id');
         if (!$element_set_id) {
             echo 0;
@@ -445,7 +554,9 @@ class AdminController extends \ModuleAdminController
         foreach ($default_types as $type) {
             $element_set = models\OphCiExamination_ElementSet::model()->findByPk($element_set_id);
             $items_to_edit = $element_set ? $element_set->items : [];
-            $items_to_edit = array_filter($items_to_edit, function ($item) use($type) { return $item->element_type_id == $type->id; });
+            $items_to_edit = array_filter($items_to_edit, function ($item) use ($type) {
+                return $item->element_type_id == $type->id;
+            });
 
             if (count($items_to_edit) == 1) {
                 $item = array_pop($items_to_edit);
@@ -658,9 +769,37 @@ class AdminController extends \ModuleAdminController
 
         $this->render('list_OphCiExamination_Workflow_Rules', array(
                 'model_class' => 'OphCiExamination_Workflow_Rule',
-                'model_list' => models\OphCiExamination_Workflow_Rule::model()->findAll(array('order' => 'id asc')),
+                'model_list' => models\OphCiExamination_Workflow_Rule::model()->findAll(
+                    array(
+                        'condition' => 'institution_id IS NULL OR institution_id = :institution_id',
+                        'order' => 't.id asc',
+                        'params' => [':institution_id' => Yii::app()->session['selected_institution_id']]
+                    )
+                ),
                 'title' => 'Workflow rules',
         ));
+    }
+
+    public function actionGetInstitutionFirms($id)
+    {
+        $firms = Yii::app()->db->createCommand()
+            ->select('id, name')
+            ->from('firm')
+            ->where('institution_id = :id', [':id' => $id])
+            ->queryAll();
+
+        $this->renderJSON($firms);
+    }
+
+    public function actionGetInstitutionWorkflows($id)
+    {
+        $workflows = Yii::app()->db->createCommand()
+            ->select('id, name')
+            ->from('ophciexamination_workflow')
+            ->where('institution_id = :id', [':id' => $id])
+            ->queryAll();
+
+        $this->renderJSON($workflows);
     }
 
     public function actionEditWorkflowRule($id)
@@ -742,8 +881,22 @@ class AdminController extends \ModuleAdminController
         $this->genericAdmin(
             'Edit Visit Intervals',
             'OEModule\OphCiExamination\models\OphCiExamination_VisitInterval',
-            ['div_wrapper_class' => 'cols-4']
-        );
+            ['extra_fields' => [
+                    [
+                        'field' => 'institution_id',
+                        'type' => 'institution',
+                        'model' => models\OphCiExamination_VisitInterval::model(),
+                        'current_institution_only' => true,
+                        'htmlOptions' => ['class' => 'cols-full'],
+                    ],
+                ],
+                'filter_fields' => [
+                    ['field' => 'institution_id',
+                        'value' => \Institution::model()->getCurrent()->name,
+                        'choices' => \Institution::model()->getList(true)],
+                ],
+                'filters_ready' => isset($_GET['institution_id']) && $_GET['institution_id'] === Yii::app()->session['selected_institution_id'],
+            ]);
     }
 
     public function actionManageGlaucomaStatuses()
@@ -828,27 +981,33 @@ class AdminController extends \ModuleAdminController
 
     public function actionManageClinicOutcomesStatus()
     {
-        $extra_fields = array(
-            array(
+        $extra_fields = [
+            [
                 'field' => 'episode_status_id',
                 'type' => 'lookup',
                 'model' => 'EpisodeStatus',
-            ),
-            array(
+            ],
+            [
+                'field' => 'institution_id',
+                'type' => 'institution',
+                'model' => models\OphCiExamination_ClinicOutcome_Status::model(),
+                'current_institution_only' => true,
+            ],
+            [
                 'field' => 'subspecialties',
                 'type' => 'multilookup',
                 'noSelectionsMessage' => 'All Subspecialties',
-                'htmlOptions' => array(
+                'htmlOptions' => [
                     'empty' => 'Select',
                     'nowrapper' => true,
-                ),
+                ],
                 'options' => \CHtml::listData(\Subspecialty::model()->findAll(), 'id', 'name'),
-            ),
-            array(
+            ],
+            [
                 'field' => 'followup',
                 'type' => 'boolean',
-            ),
-        );
+            ],
+        ];
 
         if (Yii::app()->moduleAPI->get('PatientTicketing')) {
             $extra_fields[] = array(
@@ -863,15 +1022,25 @@ class AdminController extends \ModuleAdminController
             array(
                 'extra_fields' => $extra_fields,
                 'div_wrapper_class' => 'cols-8',
+                'filter_fields' => [
+                    ['field' => 'institution_id',
+                    'value' => \Institution::model()->getCurrent()->name,
+                    'choices' => \Institution::model()->getList(true)],
+                ],
+                'filters_ready' => isset($_GET['institution_id']) && $_GET['institution_id'] === Yii::app()->session['selected_institution_id'],
             )
         );
     }
 
-    public function actionPostOpComplications($subspecialty_id = null)
+    public function actionPostOpComplications($institution_id = null, $subspecialty_id = null)
     {
+        if ($institution_id === null) {
+            $institution_id = Yii::app()->session['selected_institution_id'];
+        }
         $this->render('list_OphCiExamination_PostOpComplications', array(
+                'institution_id' => $institution_id,
                 'subspecialty_id' => $subspecialty_id,
-                'enabled_items' => models\OphCiExamination_PostOpComplications::model()->enabled($subspecialty_id)->findAll(),
+                'enabled_items' => models\OphCiExamination_PostOpComplications::model()->enabled($institution_id, $subspecialty_id)->findAll(),
                 'available_items' => models\OphCiExamination_PostOpComplications::model()->available($subspecialty_id)->findAll(),
         ));
     }
@@ -879,13 +1048,14 @@ class AdminController extends \ModuleAdminController
     public function actionUpdatePostOpComplications()
     {
         $item_ids = Yii::app()->request->getParam('item_ids', array());
+        $institution_id = Yii::app()->request->getParam('institution_id', array());
         $subspecialty_id = Yii::app()->request->getParam('subspecialty_id', null);
 
         $tx = Yii::app()->db->beginTransaction();
-        models\OphCiExamination_PostOpComplications::model()->assign($item_ids, $subspecialty_id);
+        models\OphCiExamination_PostOpComplications::model()->assign($item_ids, $institution_id, $subspecialty_id);
         $tx->commit();
 
-        $this->redirect(array('/OphCiExamination/admin/postOpComplications?subspecialty_id='. $subspecialty_id));
+        $this->redirect(array('/OphCiExamination/admin/postOpComplications?institution_id='. $institution_id .'&subspecialty_id='. $subspecialty_id));
     }
 
     /*
@@ -971,6 +1141,38 @@ class AdminController extends \ModuleAdminController
         }
 
         echo 1;
+    }
+
+    public function actionDrGradingFeatures()
+    {
+        $this->pageTitle = 'OpenEyes - DR Grading Feature Admin';
+        $extra_fields = array(
+            array(
+                'field' => 'grade',
+                'type' => 'dropdown',
+                'htmlOptions' => array(
+                    'empty' => 'Select',
+                    'nowrapper' => true,
+                ),
+                'options' => array(
+                    'R0' => 'R0',
+                    'R1' => 'R1',
+                    'R2' => 'R2',
+                    'R3a' => 'R3a',
+                    'R3s' => 'R3s',
+                    'M0' => 'M0',
+                    'M1' => 'M1',
+                )
+            )
+        );
+        $this->genericAdmin(
+            'Edit DR Grading features',
+            models\OphCiExamination_DRGrading_Feature::class,
+            array(
+                'div_wrapper_class' => 'cols-5',
+                'extra_fields' => $extra_fields,
+            )
+        );
     }
 
     /**

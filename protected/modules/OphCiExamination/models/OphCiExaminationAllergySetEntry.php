@@ -93,7 +93,7 @@ class OphCiExaminationAllergySetEntry extends \BaseActiveRecordVersioned
         return array(
             'id' => 'ID',
             'ophciexamination_allergy_id' => 'Ophciexamination Allergy',
-            'gender' => 'Gender',
+            'gender' => 'Sex',
             'age_min' => 'Age Min',
             'age_max' => 'Age Max',
             'last_modified_user_id' => 'Last Modified User',
