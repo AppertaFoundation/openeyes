@@ -95,7 +95,7 @@ class m200517_044325_add_multiple_LDAP_auth_to_institutions extends OEMigration
         // DETERMINE WHICH USERS ARE LDAP AND WHICH ARE LOCAL
         if (Yii::app()->params['auth_source'] === 'BASIC') {
             // CREATE USER AUTHENTICATION ENTRIES FOR LOCAL USERS
-            $this->execute("INSERT INTO `user_authentication`(`institution_authentication_id`,`user_id`,`username`,`password_hash`, `password_salt`) SELECT $local_inst_auth, u.id, u.username, u.password, u.salt FROM `user` u;");
+            $this->execute("INSERT INTO `user_authentication`(`institution_authentication_id`,`user_id`,`username`,`active`,`password_hash`, `password_salt`) SELECT $local_inst_auth, u.id, u.username, u.active, u.password, u.salt FROM `user` u;");
         } else {
             $local_users = Yii::app()->params['local_users'] ?? [];
             $local_user_ids = $this->dbConnection
