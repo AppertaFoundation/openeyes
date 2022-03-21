@@ -516,7 +516,7 @@ class DefaultController extends \BaseModuleController
             if (isset($this->event)) {
                 $ticket->event = $this->event;
             }
-            if ($to_queue->addTicket($ticket, Yii::app()->user, $this->firm, $data)) {
+            if ($to_queue->addTicket($ticket, Yii::app()->user->id, $this->firm, $data)) {
                 if ($ticket->assignee) {
                     $ticket->assignee_user_id = null;
                     $ticket->assignee_date = null;

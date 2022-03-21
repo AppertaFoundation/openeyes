@@ -215,7 +215,7 @@ class Queue extends \BaseActiveRecordVersioned
      * @param \Firm     $firm
      * @param $data
      */
-    public function addTicket(Ticket $ticket, $user_id, \Firm $firm, $data, $automatically_created = false)
+    public function addTicket(Ticket $ticket, int $user_id, \Firm $firm, $data, $automatically_created = false)
     {
         $assignment = new TicketQueueAssignment();
         $assignment->queue_id = $this->id;
