@@ -214,7 +214,7 @@ class ProtectedFile extends BaseActiveRecordVersioned
             // Try to set the ownsership to apache user. Allow to silently fail, as this may not be possible in some cloud sceanarios
             @chown($this->getPath(), 'www-data');
             @chgrp($this->getPath(), 'www-data');
-            @chmod($this->getPath(), 6777);
+            @chmod($this->getPath(), 0777);
             $this->source_path = null;
         } elseif (!file_exists($this->getPath())) {
             throw new Exception('There has been an error with file storage');
