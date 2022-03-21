@@ -62,6 +62,7 @@ class SafeguardingController extends BaseController
         }
 
         $criteria->addCondition('outcome_id IS NULL OR outcome_id=:followup_outcome_id');
+        $criteria->addCondition('no_concerns = 0');
         $params[':followup_outcome_id'] = \OEModule\OphCiExamination\models\Element_OphCiExamination_Safeguarding::FOLLOWUP_REQUIRED;
 
         $criteria->params = $params;
