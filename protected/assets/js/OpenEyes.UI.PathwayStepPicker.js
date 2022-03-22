@@ -169,11 +169,11 @@
                             // Add all steps for the chosen pathway to the selected pathways.
                             const pathway = $(`${self.options.pathway_checkboxes}:checked[value="${into_pathway_id}"]`).closest('tr').find('td.js-pathway-container');
 
-                            const oldSteps = pathway.find('.active, .todo').map(function () { return $(this).data('long-name') }).get();
+                            const oldSteps = pathway.find('.active, .todo').map(function () { return $(this).data('long-name'); }).get();
 
                             pathway.html(response.step_html);
 
-                            const newSteps = pathway.find('.active, .todo').map(function () { return $(this).data('long-name') }).get();
+                            const newSteps = pathway.find('.active, .todo').map(function () { return $(this).data('long-name'); }).get();
 
                             if (self.options.onChangePatientRow) {
                                 self.options.onChangePatientRow('change-waiting-for', { pathwayId: into_pathway_id, oldSteps: oldSteps, newSteps: newSteps });
@@ -204,11 +204,11 @@
                     $pathway = $(`tr[data-pathway-type-id="${pathway_id}"]`).find('td.js-pathway-container');
                 }
 
-                const oldSteps = $pathway.find('.active, .todo').map(function () { return $(this).data('long-name') }).get();
+                const oldSteps = $pathway.find('.active, .todo').map(function () { return $(this).data('long-name'); }).get();
 
                 $pathway.html(response.step_html);
 
-                const newSteps = $pathway.find('.active, .todo').map(function () { return $(this).data('long-name') }).get();
+                const newSteps = $pathway.find('.active, .todo').map(function () { return $(this).data('long-name'); }).get();
 
                 if (
                     $pathway.find('.oe-pathstep-btn.wait, .oe-pathstep-btn.delayed-wait').length === 0 &&
@@ -220,6 +220,7 @@
                             status: 'wait',
                             type: 'buff',
                             id: 'wait',
+                            type_id: null,
                             patient_id: response.patient_id,
                             icon: 'i-wait',
                             display_info: '0'

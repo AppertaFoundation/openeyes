@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @var $pathway Pathway
  */
@@ -18,6 +17,7 @@ $acceptable_wait_time = $pathway->getAcceptableWaitTime();
     $formatted_time = $time ? DateTime::createFromFormat('Y-m-d H:i:s', $time)->format('H:i') : null
     ?>
     <span class="oe-pathstep-btn <?= "$status_class process" ?>" data-pathstep-id="checkin"
+          data-pathstep-type-id="-1"
           data-patient-id="<?= $pathway->worklist_patient->patient_id ?>"
           data-visit-id="<?= $pathway->worklist_patient_id ?>">
         <?php if ($pathway->did_not_attend) { ?>
@@ -43,6 +43,7 @@ $acceptable_wait_time = $pathway->getAcceptableWaitTime();
         } else { ?>
             <span class="oe-pathstep-btn <?= "$status_class {$step->type->type}" ?>" data-pathstep-id="<?= $step->id ?>"
                   data-patient-id="<?= $pathway->worklist_patient->patient_id ?>"
+                  data-pathstep-type-id=""
                   data-visit-id="<?= $pathway->worklist_patient_id ?>"
                   data-pathway-id="<?= $pathway->id ?>"
                   data-long-name="<?= $step->long_name ?>">
@@ -64,6 +65,7 @@ $acceptable_wait_time = $pathway->getAcceptableWaitTime();
             if ($red_flag_count > 0) { ?>
             <span class="oe-pathstep-btn buff red-flag" data-pathstep-id="<?= $step->id ?>"
                   data-patient-id="<?= $pathway->worklist_patient->patient_id ?>"
+                  data-pathstep-type-id=""
                   data-visit-id="<?= $pathway->worklist_patient_id ?>"
                   data-pathway-id="<?= $pathway->id ?>"
                   data-red-flag="true" >
@@ -87,6 +89,7 @@ $acceptable_wait_time = $pathway->getAcceptableWaitTime();
         } else { ?>
         <span class="oe-pathstep-btn <?= "$status_class {$step->type->type}" ?>" data-pathstep-id="<?= $step->id ?>"
               data-patient-id="<?= $pathway->worklist_patient->patient_id ?>"
+              data-pathstep-type-id=""
               data-visit-id="<?= $pathway->worklist_patient_id ?>"
               data-pathway-id="<?= $pathway->id ?>"
               data-long-name="<?= $step->long_name ?>">
@@ -106,6 +109,7 @@ $acceptable_wait_time = $pathway->getAcceptableWaitTime();
         extract($wait_time_since_last_action, EXTR_OVERWRITE);
         ?>
         <span class="oe-pathstep-btn buff <?= $status_class ?>" data-pathstep-id="wait"
+              data-pathstep-type-id=""
               data-patient-id="<?= $pathway->worklist_patient->patient_id ?>"
               data-visit-id="<?= $pathway->worklist_patient_id ?>"
               data-pathway-id="<?= $pathway->id ?>">
@@ -113,36 +117,64 @@ $acceptable_wait_time = $pathway->getAcceptableWaitTime();
             <span class="info"><?= $wait_time ?? null ?></span>
         </span>
     <?php }
-    foreach ($pathway->requested_steps as $step) {
-        $status_class = $step->getStatusString();
-        $formatted_time = $step->start_time ? DateTime::createFromFormat('Y-m-d H:i:s', $step->start_time)->format(
-            'H:i'
-        ) : null; ?>
-        <?php if (in_array($step->type->short_name, PathwayStep::NON_GENERIC_STEP)) {
-            $short_name = str_replace(' ', '_', $step->type->short_name);
-            $view_file = "_{$short_name}_step_icon";
-            $this->renderPartial(
-                "//worklist/non_generic_icon/$view_file",
-                array('pathway' => $pathway, 'step' => $step, 'status_class' => $status_class)
-            );
-        } else { ?>
-        <span class="oe-pathstep-btn <?= "$status_class {$step->type->type}" ?>" data-pathstep-id="<?= $step->id ?>"
-              data-patient-id="<?= $pathway->worklist_patient->patient_id ?>"
-              data-visit-id="<?= $pathway->worklist_patient_id ?>"
-              data-pathway-id="<?= $pathway->id ?>"
-              data-long-name="<?= $step->long_name ?>">
-            <span class="step<?= $step->type->large_icon ? " {$step->type->large_icon}" : '' ?>">
-                <?= !$step->type->large_icon ? $step->short_name : '' ?>
+    if (count($pathway->steps) > 0) {
+        foreach ($pathway->requested_steps as $step) {
+            $status_class = $step->getStatusString();
+            $formatted_time = $step->start_time ? DateTime::createFromFormat('Y-m-d H:i:s', $step->start_time)->format(
+                'H:i'
+            ) : null; ?>
+            <?php if (in_array($step->type->short_name, PathwayStep::NON_GENERIC_STEP)) {
+                $short_name = str_replace(' ', '_', $step->type->short_name);
+                $view_file = "_{$short_name}_step_icon";
+                $this->renderPartial(
+                    "//worklist/non_generic_icon/$view_file",
+                    array('pathway' => $pathway, 'step' => $step, 'status_class' => $status_class)
+                );
+            } else { ?>
+            <span class="oe-pathstep-btn <?= "$status_class {$step->type->type}" ?>" data-pathstep-id="<?= $step->id ?>"
+                  data-patient-id="<?= $pathway->worklist_patient->patient_id ?>"
+                  data-pathstep-type-id=""
+                  data-visit-id="<?= $pathway->worklist_patient_id ?>"
+                  data-pathway-id="<?= $pathway->id ?>"
+                  data-long-name="<?= $step->long_name ?>">
+                <span class="step<?= $step->type->large_icon ? " {$step->type->large_icon}" : '' ?>">
+                    <?= !$step->type->large_icon ? $step->short_name : '' ?>
+                </span>
+                <span class="info" style="display: none;"><?= $formatted_time ?></span>
             </span>
-            <span class="info" style="display: none;"><?= $formatted_time ?></span>
-        </span>
-        <?php }
+            <?php }
+        }
+    } else {
+        foreach ($pathway->type->default_steps as $step) {
+            $status_class = $step->getStatusString(); ?>
+            <?php if (in_array($step->step_type->short_name, PathwayStep::NON_GENERIC_STEP)) {
+                $short_name = str_replace(' ', '_', $step->type->short_name);
+                $view_file = "_{$short_name}_step_icon";
+                $this->renderPartial(
+                    "//worklist/non_generic_icon/$view_file",
+                    array('pathway' => $pathway, 'step' => $step, 'status_class' => $status_class)
+                );
+            } else { ?>
+                <span class="oe-pathstep-btn <?= "$status_class {$step->step_type->type}" ?>" data-pathstep-type-id="<?= $step->id ?>"
+                      data-pathstep-id=""
+                      data-patient-id="<?= $pathway->worklist_patient->patient_id ?>"
+                      data-visit-id="<?= $pathway->worklist_patient_id ?>"
+                      data-pathway-id="<?= $pathway->id ?>"
+                      data-long-name="<?= $step->long_name ?>">
+                <span class="step<?= $step->step_type->large_icon ? " {$step->step_type->large_icon}" : '' ?>">
+                    <?= !$step->step_type->large_icon ? $step->short_name : '' ?>
+                </span>
+                <span class="info" style="display: none;"></span>
+            </span>
+            <?php }
+        }
     }
     if ((int)$pathway->status === Pathway::STATUS_DONE) {
         $formatted_time = $pathway->end_time ? DateTime::createFromFormat('Y-m-d H:i:s', $pathway->end_time)->format(
             'H:i'
         ) : date('H:i') ?>
         <span class="oe-pathstep-btn done buff finish" data-pathstep-id="finished"
+              data-pathstep-type-id=""
               data-patient-id="<?= $pathway->worklist_patient->patient_id ?>"
               data-visit-id="<?= $pathway->worklist_patient_id ?>">
             <span class="step i-fin"></span>

@@ -28,10 +28,10 @@
                                         $assignment = OphDrPGDPSD_Assignment::model()->findByPk($assignment_id);
                                     ?>
                                     <span 
-                                        data-worklist-id=<?=$assignment->visit_id?> 
-                                        data-patient-id=<?=$patient->id?> 
-                                        data-pathstep-id=<?=$step->id?>
-                                        data-assignment-id=<?=$step->id?>
+                                        data-worklist-id="<?=$assignment->visit_id ?>"
+                                        data-patient-id="<?=$patient->id ?>"
+                                        data-pathstep-id="<?=$step->id ?>"
+                                        data-assignment-id="<?=$step->id ?>"
                                         class="oe-pathstep-btn <?=$assignment->getStatusDetails(false, $step)['css']?> process js-no-interaction" 
                                         data-pathstep-name="<?=$assignment->getAssignmentTypeAndName()['name']?>"
                                     >

@@ -4,7 +4,7 @@
  * @var $step PathwayStep|PathwayTypeStep
  * @var $patient Patient
  */
-$status = (int)$step->status;
+$status = $step instanceof PathwayStep ? (int)$step->status : PathwayStep::STEP_REQUESTED;
 $is_step_instance = $step instanceof PathwayStep;
 $is_ready_to_start = $status === PathwayStep::STEP_REQUESTED && !in_array($status, array(PathwayStep::STEP_STARTED, PathwayStep::STEP_COMPLETED));
 $is_started = $status === PathwayStep::STEP_STARTED && !in_array($status, array(PathwayStep::STEP_REQUESTED, PathwayStep::STEP_COMPLETED));
@@ -17,7 +17,7 @@ $is_completed = $status === PathwayStep::STEP_COMPLETED;
     <h3 class="title">Hold timer (mins)</h3>
     <?php if (!$partial && !$is_completed) { ?>
     <div class="step-actions">
-        <?php if ($is_step_instance) { ?>
+        <?php if (isset($pathway)) { ?>
         <button 
             class="green hint js-ps-popup-btn" 
             data-action="next"

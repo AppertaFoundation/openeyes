@@ -92,19 +92,19 @@ $duration_period = [
             </table>
         </form>
     </div>
-    <?php if ($is_step_instance) {
+    <?php if (isset($pathway)) {
         $this->renderPartial(
             'step_components/_comment',
             array(
                 'partial' => $partial,
                 'model' => $step,
-                'pathway' => $step->pathway,
+                'pathway' => $pathway,
             )
         );
     } ?>
     <?php if (!$partial) { ?>
         <div class="step-actions">
-            <?php if ($is_step_instance) { ?>
+            <?php if (isset($pathway)) { ?>
                 <button class="green hint <?= $is_config ? 'js-change-book-appointment' : 'js-ps-popup-btn' ?>"
                         data-action="next"<?= (int)$step->status === PathwayStep::STEP_COMPLETED ? 'style="display: none;"' : '' ?>>
                     <?php if ((int)$step->status === PathwayStep::STEP_CONFIG) {

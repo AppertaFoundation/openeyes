@@ -18,6 +18,7 @@
         this.delayRequest = null;
         this.pathwayId = null;
         this.pathstepId = null;
+        this.pathstepTypeId = null;
         this.patientID = null;
         this.redFlag = null;
         this.visitID = null;
@@ -52,6 +53,7 @@
         popupContentCtnSelector: 'div.slide-open',
         pathwayDataKey: 'pathway-id',
         elementDataKey: 'pathstep-id',
+        elementDataTypeKey: 'pathstep-type-id',
         patientIDKey: 'patient-id',
         redFlagKey: 'red-flag',
         visitIDKey: 'visit-id',
@@ -98,9 +100,9 @@
                     ps,
                     {
                         partial: 1, 
-                        pathstep_id: ps.pathstepId, 
-                        visit_id: ps.visitID, 
-                        patient_id: ps.patientID, 
+                        pathstep_id: ps.pathstepId,
+                        pathstep_type_id: ps.pathstepTypeId,
+                        visit_id: ps.visitID,
                         red_flag: ps.redFlag, 
                     }
                 ),
@@ -158,8 +160,8 @@
                     {
                         partial: 0,
                         pathstep_id: ps.pathstepId,
+                        pathstep_type_id: ps.pathstepTypeId,
                         visit_id: ps.visitID,
-                        patient_id: ps.patientID,
                         red_flag: ps.redFlag,
                         interactive: ps.isInteractive
                     }
@@ -188,6 +190,7 @@
         this.pathstepIcon = ele;
         this.pathwayId = $(ele).data(this.options.pathwayDataKey);
         this.pathstepId = $(ele).data(this.options.elementDataKey);
+        this.pathstepTypeId = $(ele).data(this.options.elementDataTypeKey);
         this.patientID = $(ele).data(this.options.patientIDKey);
         this.redFlag = $(ele).data(this.options.redFlagKey);
         this.visitID = $(ele).data(this.options.visitIDKey);
@@ -244,8 +247,8 @@
         $(document).on('click', edit_btn_selector, function () {
             $(this).parent().prev().css('display', '');
             $(this).parent().css('display', 'none');
-        })
-    }
+        });
+    };
 
     // send request for detailed content
     PathStep.prototype.requestDetails = function (data = null, url = null, type = null, callback = null, complete = null) {

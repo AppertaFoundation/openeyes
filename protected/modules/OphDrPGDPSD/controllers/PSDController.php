@@ -51,12 +51,16 @@ class PSDController extends DefaultController
      * @throws CHttpException
      * @throws Exception
      */
-    public function actionGetPathStep($partial, $pathstep_id, $patient_id, $for_administer, $interactive = true)
+    public function actionGetPathStep($partial, $pathstep_id, $visit_id, $pathstep_type_id, $for_administer, $interactive = true)
     {
         $step = PathwayStep::model()->findByPk($pathstep_id);
+        $wl_patient = WorklistPatient::model()->findByPk($visit_id);
 
         if (!$step) {
-            throw new CHttpException(404, 'Unable to retrieve path step.');
+            $step = PathwayTypeStep::model()->findByPk($pathstep_type_id);
+            if (!$step) {
+                throw new CHttpException(404, 'Unable to retrieve path step.');
+            }
         }
 
         $assignment_id = $step->getState('assignment_id');
@@ -70,7 +74,7 @@ class PSDController extends DefaultController
             throw new CHttpException(404, 'Unable to retrieve PSD.');
         }
 
-        $pathway = $step->pathway;
+        $pathway = $wl_patient->pathway;
 
         if (!$pathway) {
             throw new CHttpException(404, 'Unable to retrieve Pathway.');
@@ -79,10 +83,11 @@ class PSDController extends DefaultController
         $pathway->updateStatus();
 
         $can_remove_psd = \Yii::app()->user->checkAccess('Prescribe')
-            && (int)$step->status === PathwayStep::STEP_REQUESTED
+            && ($step instanceof PathwayTypeStep || (int)$step->status === PathwayStep::STEP_REQUESTED)
             && !$assignment->elements ? '' : 'disabled';
         if ($interactive) {
-            $interactive = in_array((int)$step->pathway->status, Pathway::inProgressStatuses(), true);
+            $status = $step instanceof PathwayStep ? (int)$step->status : PathwayStep::STEP_REQUESTED;
+            $interactive = in_array($status, Pathway::inProgressStatuses(), true);
         }
         $dom = $this->renderPartial(
             '/pathstep/pathstep_view',
@@ -90,7 +95,9 @@ class PSDController extends DefaultController
                 'assignment' => $assignment,
                 'step' => $step,
                 'partial' => (int)$partial,
-                'patient_id' => $patient_id,
+                'visit' => $wl_patient,
+                'patient_id' => $wl_patient->patient_id,
+                'pathway' => $wl_patient->pathway,
                 'for_administer' => $for_administer,
                 'is_prescriber' => Yii::app()->user->checkAccess('Prescribe'),
                 'can_remove_psd' => $can_remove_psd,
@@ -105,7 +112,7 @@ class PSDController extends DefaultController
             'status_html' => $pathway->getPathwayStatusHTML(),
             'step_html' => $this->renderPartial('//worklist/_clinical_pathway', ['pathway' => $pathway], true),
             'waiting_time_html' => $pathway->getTotalDurationHTML(true),
-            'wait_time_details' => json_encode($pathway->getWaitTimeSinceLastAction()),
+            'wait_time_details' => $pathway->getWaitTimeSinceLastAction(),
         );
         $this->renderJSON($ret);
     }
@@ -167,16 +174,32 @@ class PSDController extends DefaultController
         $data = \Yii::app()->request->getParam('Assignment', array());
         $patient_id = array_key_exists('patient_id', $data) ? $data['patient_id'] : null;
         $step_id = \Yii::app()->request->getParam('step_id', null);
+        $step_type_id = \Yii::app()->request->getParam('step_type_id', null);
+        $visit_id = \Yii::app()->request->getParam('visit_id', null);
 
-        $this->actionGetPathStep(0, $step_id, $patient_id, 1);
+        $this->actionGetPathStep(0, $step_id, $visit_id, $step_type_id, $patient_id, 1);
     }
 
+    /**
+     * @return void
+     * @throws CHttpException
+     * @throws JsonException
+     */
     public function actionConfirmAdministration()
     {
         $step_id = \Yii::app()->request->getParam('step_id');
+        $step_type_id = \Yii::app()->request->getParam('step_type_id');
+        $visit_id = \Yii::app()->request->getParam('visit_id');
         $step = PathwayStep::model()->findByPk($step_id);
         if (!$step) {
-            throw new CHttpException(404, 'Unable to retrieve step for processing.');
+            $type_step = PathwayTypeStep::model()->findByPk($step_type_id);
+
+            if (!$type_step) {
+                throw new CHttpException(404, 'Unable to retrieve step for processing.');
+            }
+            $visit = WorklistPatient::model()->findByPk($visit_id);
+            $steps = $type_step->pathway_type->instancePathway($visit->pathway->id);
+            $step = $steps[$step_type_id];
         }
         $assignment_id = $step->getState('assignment_id');
         $patient_id = $step->pathway->worklist_patient->patient_id;
@@ -185,6 +208,6 @@ class PSDController extends DefaultController
             'step_progress',
             ['step' => $step, 'assignment' => $assignment_data, 'assignment_id' => $assignment_id, 'patient_id' => $patient_id]
         );
-        $this->actionGetPathStep(0, $step_id, $patient_id, 0);
+        $this->actionGetPathStep(0, $step_id, $visit_id, $step_type_id, $patient_id, 0);
     }
 }

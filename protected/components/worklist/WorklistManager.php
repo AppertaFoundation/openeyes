@@ -918,6 +918,9 @@ class WorklistManager extends CComponent
                     && $start_status
                     && strtolower($start_status->attribute_value) === strtolower('Attended')) {
                     // Start the pathway immediately.
+                    if (count($wp->pathway->steps) === 0) {
+                        $wp->pathway->type->instancePathway($wp->pathway->id);
+                    }
                     $wp->pathway->startPathway();
                 }
             } else {

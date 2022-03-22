@@ -84,8 +84,9 @@ $(function () {
                         ps.resetPopup();
                         ps.requestDetails({
                             partial: 0,
+                            pathstep_type_id: ps.pathstepTypeId,
                             pathstep_id: ps.pathstepId,
-                            patient_id: ps.patientID
+                            visit_id: ps.visitID
                         });
                     }
                 });

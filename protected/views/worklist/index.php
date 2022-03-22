@@ -244,7 +244,7 @@ $initial_filter = $session_filter_info['filter'];
 </div>
 <input type="hidden" name="selected-complete-option" id="selected-complete-option" value="none"/>
 <script id="js-step-template" type="text/template">
-    <span class="oe-pathstep-btn {{status}} {{type}}" data-pathstep-id="{{id}}" data-patient-id="{{patient_id}}">
+    <span class="oe-pathstep-btn {{status}} {{type}}" data-pathstep-id="{{id}}" data-pathstep-type-id="{{type_id}}" data-patient-id="{{patient_id}}">
         <span class="step{{#icon}} {{icon}}{{/icon}}">{{^icon}}{{short_name}}{{/icon}}</span>
         <span class="info" style="{{^display_info}}display: none;{{/display_info}}">{{#display_info}}{{display_info}}{{/display_info}}</span>
     </span>

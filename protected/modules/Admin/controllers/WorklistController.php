@@ -898,13 +898,17 @@ class WorklistController extends BaseAdminController
      * @throws CException
      * @throws CHttpException
      */
-    public function actionGetPathStep($partial, $pathstep_id)
+    public function actionGetPathStep($partial, $pathstep_id, $pathstep_type_id)
     {
         $step = PathwayTypeStep::model()->findByPk($pathstep_id);
 
+        if (!$step) {
+            $step = PathwayTypeStep::model()->findByPk($pathstep_type_id);
+        }
+
         if ($step && $step->step_type->short_name === 'drug admin') {
             $this->redirect(
-                "/OphDrPGDPSD/PSD/getPathStep?partial=$partial&pathstep_id=$pathstep_id&interactive=1"
+                "/OphDrPGDPSD/PSD/getPathStep?partial=$partial&pathstep_id=$pathstep_id&pathstep_type_id=$pathstep_type_id&interactive=1"
             );
             Yii::app()->end();
         }

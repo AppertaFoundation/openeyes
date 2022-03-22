@@ -44,7 +44,7 @@ $(function () {
     // when there are multiple timers on the page
     let timer_interval = {};
     let completeHoldStep = function (ele, step_data) {
-        let id = parseInt(step_data.id)
+        let id = parseInt(step_data.id);
         if(window.timer_status_request[id]){
             return;
         }
@@ -69,7 +69,7 @@ $(function () {
     };
     
     let cancelTimer = function (ele, step_data) {
-        let id = parseInt(step_data.id)
+        let id = parseInt(step_data.id);
         if (timer_interval[id]) {
             clearInterval(timer_interval[id]);
         }
@@ -77,7 +77,7 @@ $(function () {
 
     let startTimer = function (ele, step_data) {
         // clear active interval if exists
-        let id = parseInt(step_data.id)
+        let id = parseInt(step_data.id);
         if (timer_interval[id]) {
             clearInterval(timer_interval[id]);
         }
@@ -172,7 +172,7 @@ $(function () {
             cancelButtonClassList: 'red hint cancel',
         });
         dialog.on('ok', function () {
-            const $selected_complete_option = $('#selected-complete-option')
+            const $selected_complete_option = $('#selected-complete-option');
             const selected_option = $selected_complete_option.val();
             $selected_complete_option.val('none');
             $.ajax({
@@ -309,7 +309,7 @@ $(function () {
 
     let unlockAdministration = function (event, context, ps) {
         event.preventDefault();
-        let form = $('form#worklist-administration-form')
+        let form = $('form#worklist-administration-form');
         ps.resetPopup();
         ps.administer_ready = true;
         ps.requestDetails(form.serialize(), '/OphDrPGDPSD/PSD/unlockPSD', 'POST');
@@ -391,7 +391,8 @@ $(function () {
         ps.requestDetails({
             partial: 0,
             pathstep_id: ps.pathstepId,
-            patient_id: ps.patientID
+            pathstep_type_id: ps.pathstepTypeId,
+            visit_id: ps.visitID,
         }, null, null, updatePathstepIcon);
     };
     // use timeout to handle the popup position and display
@@ -446,22 +447,43 @@ $(function () {
                 pathway_id: ps.pathwayId,
                 patient_id: ps.patientID,
                 pathstep_id: ps.pathstepId,
+                pathstep_type_id: ps.pathstepTypeId,
                 user_id: user_id,
                 comment: comment,
             },
             success: function (response) {
-                let $eventSelector = $(event.target);
-                let $editSelector = $eventSelector.closest('.js-comments-edit');
-                let $viewSelector = $editSelector.next('.js-comments-view');
-                let $commentButton = $('.comments[data-pathway-id="' + ps.pathwayId + '"]');
-                $eventSelector.removeClass('spinner');
-                $eventSelector.removeClass('as-icon');
-                $eventSelector.addClass('save-plus');
-                $editSelector.css('display', 'none');
-                $viewSelector.find('.comment').text(response);
-                $viewSelector.show();
-                if (!$commentButton.hasClass('comments-added')) {
-                    $commentButton.addClass('comments-added');
+                if (response.step_html) {
+                    const $thisStep = $('.oe-pathstep-btn[data-pathstep-type-id="' + ps.pathstepTypeId + '"][data-visit-id="' + ps.visitID +'"]');
+                    const $pathway = $thisStep.closest('td.js-pathway-container');
+                    const oldSteps = collectActiveTodoStepsFrom($pathway);
+
+                    $pathway.html(response.step_html);
+
+                    const newSteps = collectActiveTodoStepsFrom($pathway);
+
+                    refreshStatistics(ps.visitID, oldSteps, newSteps);
+
+                    ps.resetPopup();
+                    ps.requestDetails({
+                        partial: 0,
+                        pathstep_type_id: ps.pathstepTypeId,
+                        pathstep_id: response.step_id,
+                        visit_id: ps.visitID
+                    });
+                } else {
+                    let $eventSelector = $(event.target);
+                    let $editSelector = $eventSelector.closest('.js-comments-edit');
+                    let $viewSelector = $editSelector.next('.js-comments-view');
+                    let $commentButton = $('.comments[data-pathway-id="' + ps.pathwayId + '"]');
+                    $eventSelector.removeClass('spinner');
+                    $eventSelector.removeClass('as-icon');
+                    $eventSelector.addClass('save-plus');
+                    $editSelector.css('display', 'none');
+                    $viewSelector.find('.comment').text(response.comment);
+                    $viewSelector.show();
+                    if (!$commentButton.hasClass('comments-added')) {
+                        $commentButton.addClass('comments-added');
+                    }
                 }
             }
         });
@@ -479,7 +501,7 @@ $(function () {
             $tr.find('.wait-duration').removeClass('stopped');
             $tr.find('.wait-duration').html();
             $tr.find('.wait-duration').html(response.waiting_time_html);
-            $tr.removeClass('done')
+            $tr.removeClass('done');
         }
         if($tr.hasClass('done')){
             $tr.find('.patient-checkbox').hide();
@@ -492,15 +514,15 @@ $(function () {
     };
 
     let collectActiveTodoStepsFrom = function (row) {
-        return row.find('.active, .todo').map(function() { return $(this).data('long-name') }).get();
-    }
+        return row.find('.active, .todo').map(function() { return $(this).data('long-name'); }).get();
+    };
 
     let refreshStatistics = function (pathwayId, oldSteps, newSteps) {
         // This really should be threaded in elsewhere but this may entail restructuring
         if (worklistFiltersController) {
             worklistFiltersController.updateCountsOnChange('change-waiting-for', { pathwayId: pathwayId, oldSteps: oldSteps, newSteps: newSteps });
         }
-    }
+    };
 
     // update pathstep icon status and position
     let handleRunActionResponse = function ($thisStep, response) {
@@ -539,11 +561,12 @@ $(function () {
             if ($nextHoldStep.length) {
                 $nextHoldStep.find('.js-ps-popup-btn').trigger('click');
             } else {
-                const wait_time_details = JSON.parse(response.wait_time_details);
+                const wait_time_details = response.wait_time_details;
                 let step_html = Mustache.render($('#js-step-template').html(), {
                     status: wait_time_details.status_class,
                     type: 'buff',
                     id: 'wait',
+                    type_id: null,
                     patient_id: $thisStep.data('patient-id'),
                     icon: wait_time_details.icon_class,
                     display_info: wait_time_details.wait_time.toString(),
@@ -571,15 +594,19 @@ $(function () {
         refreshStatistics(pathwayId, oldSteps, newSteps);
 
         updatePathwayTr($thisStep.closest('tr'), response);
-    }
+    };
 
     let runAction = function (event, context, ps, form_data) {
         event.preventDefault();
         let action = $(event.target).data('action');
         // the runAction may not be manually triggered, so try to grab the step id from the event target first
         let pathstep_id = $(event.target).data('pathstep-id') || ps.pathstepId;
+        let pathstep_type_id = $(event.target).data('pathstep-type-id') || ps.pathstepTypeId;
+        let pathway_id = $(event.target).data('pathway-id') || ps.pathwayId;
         let data = {
             step_id: pathstep_id,
+            pathway_id: pathway_id,
+            step_type_id: pathstep_type_id,
             direction: action,
             YII_CSRF_TOKEN: YII_CSRF_TOKEN
         };
@@ -597,12 +624,15 @@ $(function () {
                     success: function (response) {
                         // Move the step to the correct position.
                         // query the step icon again to make sure the consistency with the server
-                        const $thisStep = $('.oe-pathstep-btn[data-pathstep-id="' + response.step.id + '"]');
+                        const $oldStep = $('.oe-pathstep-btn[data-pathstep-id="' + response.step.id + '"], .oe-pathstep-btn[data-visit-id="' + ps.visitID + '"][data-pathstep-type-id="' + pathstep_type_id + '"]');
+
                         // get the special action from the button data attribute
                         // current format: step_status: callback
                         let special_action = $(event.target).data('special-action');
 
-                        const oldSteps = collectActiveTodoStepsFrom($thisStep.closest('td.js-pathway-container'));
+                        const oldSteps = collectActiveTodoStepsFrom($oldStep.closest('td.js-pathway-container'));
+                        $oldStep.closest('td.js-pathway-container').html(response.step_html);
+                        const $thisStep = $('.oe-pathstep-btn[data-pathstep-id="' + response.step.id + '"]');
 
                         const state_data = JSON.parse(response.step.state_data);
                         // run the special action if it matches the current status
@@ -627,8 +657,9 @@ $(function () {
                             ps.resetPopup();
                             ps.requestDetails({
                                 partial: 0,
-                                pathstep_id: ps.pathstepId,
-                                patient_id: ps.patientID
+                                pathstep_id: ps.pathstepId || response.step.id,
+                                pathstep_type_id: ps.pathstepTypeId,
+                                visit_id: ps.visitID
                             });
                         }
                     }
@@ -642,24 +673,20 @@ $(function () {
                     type: 'POST',
                     data: {
                         step_id: ps.pathstepId,
+                        step_type_id: ps.pathstepTypeId,
+                        pathway_id: ps.pathwayId,
                         direction: action,
                         YII_CSRF_TOKEN: YII_CSRF_TOKEN
                     },
-                    success: function () {
+                    success: function (response) {
                         // Swap the step with the step either in front or behind it (depending on the action).
-                        let $current_step = $('.oe-pathstep-btn[data-pathstep-id="' + ps.pathstepId + '"]');
-                        const oldSteps = collectActiveTodoStepsFrom($current_step.closest('td.js-pathway-container'));
+                        let $old_step = $('.oe-pathstep-btn[data-pathstep-id="' + response.step.id + '"], .oe-pathstep-btn[data-visit-id="' + ps.visitID + '"][data-pathstep-type-id="' + pathstep_type_id + '"]');
 
-                        if (action === 'left') {
-                            if ($current_step.prev()) {
-                                $current_step.prev().before($current_step);
-                            }
-                        } else {
-                            if ($current_step.next()) {
-                                $current_step.before($current_step.next());
-                            }
-                        }
+                        const oldSteps = collectActiveTodoStepsFrom($old_step.closest('td.js-pathway-container'));
 
+                        $old_step.closest('td.js-pathway-container').html(response.step_html);
+
+                        let $current_step = $('.oe-pathstep-btn[data-pathstep-id="' + response.step.id + '"]');
                         const newSteps = collectActiveTodoStepsFrom($current_step.closest('td.js-pathway-container'));
 
                         refreshStatistics(ps.visitID, oldSteps, newSteps);
@@ -667,8 +694,9 @@ $(function () {
                         ps.resetPopup();
                         ps.requestDetails({
                             partial: 0,
-                            pathstep_id: ps.pathstepId,
-                            patient_id: ps.patientID
+                            pathstep_id: ps.pathstepId || response.step.id,
+                            pathstep_type_id: ps.pathstepTypeId,
+                            visit_id: ps.visitID
                         });
                     }
                 });
@@ -679,12 +707,14 @@ $(function () {
                     type: 'POST',
                     data: {
                         visit_id: ps.visitID,
+                        pathway_id: pathway_id,
                         YII_CSRF_TOKEN: YII_CSRF_TOKEN
                     },
                     success: function (response) {
                         // This is a check-in step so it is already in the correct position.
                         const $thisStep = $('.oe-pathstep-btn[data-pathstep-id="checkin"][data-visit-id="' + ps.visitID + '"]');
                         const oldSteps = collectActiveTodoStepsFrom($thisStep.closest('td.js-pathway-container'));
+                        $thisStep.closest('td.js-pathway-container').html(response.step_html);
 
                         $thisStep.addClass('done');
                         $thisStep.removeClass('todo');
@@ -699,6 +729,7 @@ $(function () {
                             status: 'wait',
                             type: 'buff',
                             id: 'wait',
+                            type_id: null,
                             patient_id: ps.patientID,
                             icon: 'i-wait',
                             display_info: '0'
@@ -715,7 +746,8 @@ $(function () {
                         ps.requestDetails({
                             partial: 0,
                             pathstep_id: ps.pathstepId,
-                            patient_id: ps.patientID
+                            pathstep_type_id: -1,
+                            visit_id: ps.visitID
                         });
                     }
                 });
@@ -727,6 +759,7 @@ $(function () {
                     type: 'POST',
                     data: {
                         visit_id: ps.visitID,
+                        pathway_id: pathway_id,
                         YII_CSRF_TOKEN: YII_CSRF_TOKEN
                     },
                     success: function (response) {
@@ -748,7 +781,8 @@ $(function () {
                         ps.requestDetails({
                             partial: 0,
                             pathstep_id: ps.pathstepId,
-                            patient_id: ps.patientID
+                            pathstep_type_id: ps.pathstepTypeId,
+                            visit_id: ps.visitID
                         });
                     }
                 });
@@ -758,13 +792,13 @@ $(function () {
                     url: '/worklist/deleteStep',
                     type: 'POST',
                     data: data,
-                    success: function () {
+                    success: function (response) {
                         // This is a requested step so as long as it is deleted the order of other requested steps should be correct.
-                        const $thisStep = $('.oe-pathstep-btn[data-pathstep-id="' + ps.pathstepId + '"]');
+                        const $thisStep = $('.oe-pathstep-btn[data-pathstep-id="' + ps.pathstepId + '"], .oe-pathstep-btn[data-pathstep-type-id="' + ps.pathstepTypeId + '"][data-visit-id="' + ps.visitID +'"]');
                         const $pathway = $thisStep.closest('td.js-pathway-container');
                         const oldSteps = collectActiveTodoStepsFrom($pathway);
 
-                        $thisStep.remove();
+                        $pathway.html(response.step_html);
 
                         const newSteps = collectActiveTodoStepsFrom($pathway);
 
@@ -789,18 +823,39 @@ $(function () {
                         pathway_id: ps.pathwayId,
                         patient_id: ps.patientID,
                         pathstep_id: ps.pathstepId,
+                        pathstep_type_id: ps.pathstepTypeId,
                         user_id: user_id,
                         comment: comment,
                     },
-                    success: function () {
-                        $(event.target).removeAttr('data-action');
-                        $(event.target).addClass('green');
-                        $(event.target).html('<i class="oe-i medium tick"></i>')
-                        setTimeout(function () {
-                            $(event.target).removeClass('green');
-                            $(event.target).attr('data-action', btn_action);
-                            $(event.target).html(btn_text);
-                        }, 1500);
+                    success: function (response) {
+                        if (response.step_html) {
+                            const $thisStep = $('.oe-pathstep-btn[data-pathstep-type-id="' + ps.pathstepTypeId + '"][data-visit-id="' + ps.visitID +'"]');
+                            const $pathway = $thisStep.closest('td.js-pathway-container');
+                            const oldSteps = collectActiveTodoStepsFrom($pathway);
+
+                            $pathway.html(response.step_html);
+
+                            const newSteps = collectActiveTodoStepsFrom($pathway);
+
+                            refreshStatistics(ps.visitID, oldSteps, newSteps);
+
+                            ps.resetPopup();
+                            ps.requestDetails({
+                                partial: 0,
+                                pathstep_type_id: ps.pathstepTypeId,
+                                pathstep_id: response.step_id,
+                                visit_id: ps.visitID
+                            });
+                        } else {
+                            $(event.target).removeAttr('data-action');
+                            $(event.target).addClass('green');
+                            $(event.target).html('<i class="oe-i medium tick"></i>');
+                            setTimeout(function () {
+                                $(event.target).removeClass('green');
+                                $(event.target).attr('data-action', btn_action);
+                                $(event.target).html(btn_text);
+                            }, 1500);
+                        }
                     }
                 });
                 break;
@@ -810,6 +865,8 @@ $(function () {
                     type: 'POST',
                     data: {
                         step_id: pathstep_id,
+                        step_type_id: pathstep_type_id,
+                        pathway_id: pathway_id,
                         YII_CSRF_TOKEN: YII_CSRF_TOKEN
                     },
                     success: function (response) {

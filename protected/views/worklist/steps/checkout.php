@@ -46,7 +46,7 @@ if ($is_step_instance) {
     </div>
     <?php if (!$partial) { ?>
     <div class="step-actions">
-        <?php if ($is_step_instance) { ?>
+        <?php if (isset($pathway)) { ?>
             <button 
                 class="green hint js-ps-popup-btn" 
                 data-pathstep-id="<?=$step->id?>"

@@ -190,6 +190,10 @@ class PathwayStep extends BaseActiveRecordVersioned
             $this->start_time = date('Y-m-d H:i:s');
             $this->started_user_id = Yii::app()->user->id;
             $this->pathway->enqueue($this);
+            if (!$this->pathway->start_time) {
+                $this->pathway->start_time = date('Y-m-d H:i:s');
+                $this->pathway->save();
+            }
         } elseif ((int)$this->status === self::STEP_STARTED) {
             if($this->getState('duration')){
                 $diff = strtotime(date('Y-m-d H:i:s')) - strtotime($this->start_time);

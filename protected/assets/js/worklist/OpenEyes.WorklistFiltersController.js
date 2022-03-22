@@ -18,7 +18,7 @@ var OpenEyes = OpenEyes || {};
         ['next-7-days', {title: '+ 7 days', includes: 'includes Today'}],
     ];
 
-    // When items is an array, a the zero-based index will be returned as the id in the filter data
+    // When items is an array, a zero-based index will be returned as the id in the filter data
     // If a Map is stored in their instead, the key will be used as the id instead, with the value as the label
     const optionalFiltersOptions = [
         ['ageRanges', {
@@ -93,7 +93,6 @@ var OpenEyes = OpenEyes || {};
         worklists: [],
 
         users: [],
-        sites: [],
 
         initial_selected_filter_type: null,
         initial_selected_filter_id: null,
@@ -124,9 +123,9 @@ var OpenEyes = OpenEyes || {};
             this.options.saveFilterPopupButtonSelector);
 
         const quickViewSelector = this.options.quickFilterPanelSelector;
-        this.quickView = quickViewSelector !== ''
-            ? new OpenEyes.UI.WorklistQuickFilterPanel(this, quickViewSelector, this.options.sortByPopupSelector)
-            : null;
+        this.quickView = quickViewSelector !== '' ?
+            new OpenEyes.UI.WorklistQuickFilterPanel(this, quickViewSelector, this.options.sortByPopupSelector) :
+            null;
 
         this.establishMappings();
 
@@ -206,15 +205,15 @@ var OpenEyes = OpenEyes || {};
 
         this.mappings.worklists.set('all', `All (${this.options.worklists.length})`);
 
-        for (worklistData of this.options.worklists) {
+        for (let worklistData of this.options.worklists) {
             this.mappings.worklists.set(worklistData.id, worklistData.title);
         }
 
-        for (userData of this.options.users) {
+        for (let userData of this.options.users) {
             this.mappings.users.set(parseInt(userData.id), userData.label);
         }
 
-        for (stepData of this.options.steps) {
+        for (let stepData of this.options.steps) {
             this.mappings.steps.set(parseInt(stepData.id), stepData.label);
         }
 
@@ -244,11 +243,11 @@ var OpenEyes = OpenEyes || {};
         const optional = [assignedTo, steps, todo];
 
         this.mappings.optional = new Map(optional.concat(this.options.optionalFiltersOptions));
-    }
+    };
 
     WorklistFiltersController.prototype.updateActiveQuickFilter = function (success) {
         this.setSessionFilter('Quick', JSON.stringify(this.quickProperties), success);
-    }
+    };
 
     // Retrieval and storage of filters
     WorklistFiltersController.prototype.retrieveFilters = function (success) {
@@ -265,9 +264,9 @@ var OpenEyes = OpenEyes || {};
                 controller.savedFilters = resp.saved.map(OpenEyes.WorklistFilter.fromJSON);
                 controller.recentFilters = resp.recent.map(OpenEyes.WorklistFilter.fromJSON);
 
-                controller.maxRecentFilters = resp.max_recents
-                    ? resp.max_recents
-                    : controller.options.maxRecentFilters;
+                controller.maxRecentFilters = resp.max_recents ?
+                    resp.max_recents :
+                    controller.options.maxRecentFilters;
 
                 controller.panelView.setSavedTabList(controller.mappings, controller.savedFilters);
                 controller.panelView.setRecentTabList(controller.mappings, controller.recentFilters);
@@ -282,7 +281,7 @@ var OpenEyes = OpenEyes || {};
                 }).open();
             }
         });
-    }
+    };
 
     WorklistFiltersController.prototype.storeFilter = function (isRecent, onSuccess) {
         $('.spinner').show();
@@ -312,13 +311,13 @@ var OpenEyes = OpenEyes || {};
                 }).open();
             }
         });
-    }
+    };
 
     WorklistFiltersController.prototype.applyFilterWhenAltered = function () {
         if (this.filterIsAltered) {
             this.pushRecentFilter(this.applyFilter.bind(this));
         }
-    }
+    };
 
     WorklistFiltersController.prototype.applyFilter = function () {
         this.activeFilterIsCombined = this.filter.combined;
@@ -326,7 +325,7 @@ var OpenEyes = OpenEyes || {};
         if (this.options.applyFilter) {
             this.options.applyFilter(this);
         }
-    }
+    };
 
     // Handling of saved (starred) and recent filters
     WorklistFiltersController.prototype.saveFilter = function (name) {
@@ -337,7 +336,7 @@ var OpenEyes = OpenEyes || {};
         this.storeFilter(false);
 
         this.panelView.setSavedTabList(this.mappings, this.savedFilters);
-    }
+    };
 
     WorklistFiltersController.prototype.pushRecentFilter = function (onSuccess) {
         const existing = this.recentFilters.findIndex(this.filter.compare.bind(this.filter));
@@ -356,7 +355,7 @@ var OpenEyes = OpenEyes || {};
 
             this.panelView.setRecentTabList(this.mappings, this.recentFilters);
         }
-    }
+    };
 
     WorklistFiltersController.prototype.loadSavedFilter = function (index, onlyUpdateUI) {
         this.filter = this.savedFilters[index].clone();
@@ -376,7 +375,7 @@ var OpenEyes = OpenEyes || {};
         }
 
         this.panelView.updatePanel(this.mappings, this.filter);
-    }
+    };
 
     WorklistFiltersController.prototype.loadRecentFilter = function (index, onlyUpdateUI) {
         this.filter = this.recentFilters[index].clone();
@@ -396,7 +395,7 @@ var OpenEyes = OpenEyes || {};
         }
 
         this.panelView.updatePanel(this.mappings, this.filter);
-    }
+    };
 
     WorklistFiltersController.prototype.setSessionFilter = function (type, value, success) {
         $.ajax({
@@ -411,7 +410,7 @@ var OpenEyes = OpenEyes || {};
                 success();
             }
         });
-    }
+    };
 
     // Panel wide properties (site & context)
     Object.defineProperty(WorklistFiltersController.prototype, 'site', {
@@ -529,7 +528,7 @@ var OpenEyes = OpenEyes || {};
             this.filterIsAltered = true;
             this.filter.optional.delete(filterType);
         }
-    }
+    };
 
     // Convenience method for lists view, which shows/hides lists when they are uncombined
     WorklistFiltersController.prototype.setShownLists = function (lists) {
@@ -538,7 +537,7 @@ var OpenEyes = OpenEyes || {};
         if (this.options.changeShownLists) {
             this.options.changeShownLists(this.activeFilterIsCombined ? 'all' : lists);
         }
-    }
+    };
 
     // Convenience method for views/worklist/index.php, which shows/hides lists when they are uncombined
     // Called after data has been refreshed
@@ -546,7 +545,7 @@ var OpenEyes = OpenEyes || {};
         if (this.options.changeShownLists) {
             this.options.changeShownLists(this.activeFilterIsCombined ? 'all' : this.shownLists);
         }
-    }
+    };
 
     // Update Quick filter panel details
     WorklistFiltersController.prototype.updateCounts = function (quickDetails, waitingForDetails, assignedToDetails) {
@@ -559,7 +558,7 @@ var OpenEyes = OpenEyes || {};
 
             this.quickView.setListsAndCounts(data);
         }
-    }
+    };
 
     // Update Quick filter panel details
     WorklistFiltersController.prototype.updateCountsOnChange = function (changeType, details) {
@@ -573,11 +572,11 @@ var OpenEyes = OpenEyes || {};
                 this.quickView.changeAssignedTo(this.mappings.users, parseInt(details.newId), 1);
             }
 
-            if (this.options.removeRow
-                && typeof this.quickProperties.filter !== 'string'
-                && this.quickProperties.filter.type === 'assignedTo'
-                && this.quickProperties.filter.value !== parseInt(details.newId))
-            {
+            if (this.options.removeRow &&
+                typeof this.quickProperties.filter !== 'string' &&
+                this.quickProperties.filter.type === 'assignedTo' &&
+                this.quickProperties.filter.value !== parseInt(details.newId)
+            ) {
                 this.options.removeRow(details.pathwayId);
             }
             break;
@@ -591,7 +590,7 @@ var OpenEyes = OpenEyes || {};
                     if (details.newSteps.length !== 0) {
                         this.quickView.changeWaitingFor(details.newSteps[0], 1);
 
-                        for (step of details.newSteps) {
+                        for (let step of details.newSteps) {
                             this.quickView.changeWaitingFor(step, 0);
                         }
                     }
@@ -603,22 +602,22 @@ var OpenEyes = OpenEyes || {};
                         this.quickView.changeWaitingFor(details.newSteps[0], 1);
                     }
 
-                    for (step of details.newSteps) {
+                    for (let step of details.newSteps) {
                         this.quickView.changeWaitingFor(step, 0);
                     }
                 }
             }
 
-            if (this.options.removeRow
-                && typeof this.quickProperties.filter !== 'string'
-                && this.quickProperties.filter.type === 'waitingFor'
-                && this.quickProperties.filter.value !== newId)
+            if (this.options.removeRow &&
+                typeof this.quickProperties.filter !== 'string' &&
+                this.quickProperties.filter.type === 'waitingFor' &&
+                this.quickProperties.filter.value !== newId)
             {
                 this.options.removeRow(details.pathwayId);
             }
             break;
         }
-    }
+    };
 
     exports.WorklistFiltersController = WorklistFiltersController;
 }(OpenEyes));

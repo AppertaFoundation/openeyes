@@ -117,7 +117,7 @@ if ($is_step_instance) {
         </div>
         <?php if (!$partial) { ?>
             <div class="step-actions">
-                <?php if ($is_step_instance) { ?>
+                <?php if (isset($pathway)) { ?>
                     <button
                             class="green hint <?= $is_config ? 'js-change-visual-fields' : 'js-ps-popup-btn'?>"
                             data-action="next"<?= (int)$step->status === PathwayStep::STEP_COMPLETED ? 'style="display: none;"' : ''?>>

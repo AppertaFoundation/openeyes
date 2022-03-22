@@ -2,6 +2,7 @@
 
 /**
  * @var $step PathwayStep|PathwayTypeStep
+ * @var $pathway Pathway|null
  * @var $patient Patient
  * @var $red_flag bool
  * @var $partial bool
@@ -148,14 +149,14 @@ if ($is_step_instance) {
             } ?>
         </div>
         <div class="step-comments">
-            <?php if ($is_step_instance && !$partial) { ?>
-            <div class="flex js-comments-edit" style="<?= $step->comment ? 'display: none;' : '' ?>">
+            <?php if (isset($pathway) && !$partial) { ?>
+            <div class="flex js-comments-edit" style="<?= $step instanceof PathwayStep && $step->comment ? 'display: none;' : '' ?>">
                 <div class="cols-11">
                     <input class="cols-full js-step-comments" type="text" maxlength="80" placeholder="Comments"
-                    <?= $step->comment ? 'value="' . $step->comment->comment . '"' : '' ?>/>
+                    <?= $step instanceof PathwayStep && $step->comment ? 'value="' . $step->comment->comment . '"' : '' ?>/>
                     <div class="character-counter">
                         <span class="percent-bar"
-                              style="width: <?= $step->comment ? strlen($step->comment->comment) / 0.8 : 0 ?>%;"></span>
+                              style="width: <?= $step instanceof PathwayStep && $step->comment ? strlen($step->comment->comment) / 0.8 : 0 ?>%;"></span>
                     </div>
                 </div>
                 <i class="oe-i save-plus js-save"></i>
@@ -173,14 +174,14 @@ if ($is_step_instance) {
             </div>
             <?php } ?>
         </div>
-        <?php if (!$partial || !$is_step_instance) { ?>
+        <?php if (!$partial) { ?>
         <div class="step-actions">
-            <?php if ($is_step_instance) { ?>
+            <?php if (isset($pathway)) { ?>
                 <button class="green hint js-ps-popup-btn" data-action="next"<?= (int)$step->status === PathwayStep::STEP_COMPLETED ? ' style="display: none;"' : ''?>>
-                    <?= (int)$step->status === PathwayStep::STEP_STARTED ? 'Complete' : 'Start' ?>
+                    <?= $is_step_instance && (int)$step->status === PathwayStep::STEP_STARTED ? 'Complete' : 'Start' ?>
                 </button>
                 <button class="blue hint js-ps-popup-btn" data-action="prev"<?= $is_requested ? ' style="display: none;"' : ''?>>
-                    <?php if ((int)$step->status === PathwayStep::STEP_COMPLETED) {
+                    <?php if ($is_step_instance && (int)$step->status === PathwayStep::STEP_COMPLETED) {
                         echo 'Undo complete';
                     } else {
                         echo 'Cancel';

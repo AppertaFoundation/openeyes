@@ -132,14 +132,32 @@ class PathwayType extends BaseActiveRecordVersioned
         if (!$pathway->save()) {
             return false;
         }
-        $pathway->refresh();
+        return true;
+    }
 
-        foreach ($this->default_steps as $step) {
-            if (!$step->cloneStepForPathway($pathway->id, array())) {
-                return false;
+    /**
+     * @param int $pathway_id
+     * @return PathwayStep[]
+     * @throws JsonException
+     */
+    public function instancePathway(int $pathway_id): array
+    {
+        $new_steps = array();
+        $pathway = Pathway::model()->findByPk($pathway_id);
+
+        if ($pathway) {
+            if (count($pathway->steps) > 0) {
+                return $new_steps;
+            }
+            foreach ($this->default_steps as $step) {
+                $new_step = $step->cloneStepForPathway($pathway_id, array());
+                if (!$new_step) {
+                    return $new_steps;
+                }
+                $new_steps[$step->id] = $new_step;
             }
         }
-        return true;
+        return $new_steps;
     }
 
     /**
