@@ -49,11 +49,11 @@ EOH;
 
     private function processDocumentOutput($document)
     {
-        if ($document->output_type == 'Docman') {
+        if ($document->output_type == DocumentOutput::TYPE_DOCMAN) {
             echo 'Processing event ' . $document->document_target->document_instance->correspondence_event_id . ' :: Docman' . PHP_EOL;
             $this->savePDFFile($document->document_target->document_instance->correspondence_event_id, $document->id);
             // $this->savePDFFile generates xml if required
-        } elseif ($document->output_type == 'Internalreferral') {
+        } elseif ($document->output_type == DocumentOutput::TYPE_INTERNAL_REFERRAL) {
             $file_info = $this->getFileName($document->id, 'Internal');
             //Docman xml will be used
             $xml_generated = $this->generateXMLOutput($file_info['filename'], $this->event, $document);
@@ -65,7 +65,7 @@ EOH;
                 //now we only generate PDF file, until the integration, the generate_xml is set to false in the InternalReferralDeliveryCommand
                 $internal_referral_command->actionGenerateOne($this->event->id);
             }
-        } elseif ($document->output_type == 'Print' && $this->with_print) {
+        } elseif ($document->output_type == DocumentOutput::TYPE_PRINT && $this->with_print) {
             echo 'Processing event ' . $document->document_target->document_instance->correspondence_event_id . ' :: Print' . PHP_EOL;
             $this->savePDFFile($document->document_target->document_instance->correspondence_event_id, $document->id);
         }
@@ -148,7 +148,7 @@ EOH;
         $pdf_generated = false;
         $xml_generated = false;
         $document_output = DocumentOutput::model()->findByPk($output_id);
-        $print_only_gp = $document_output->output_type != 'Docman' ? '0' : '1';
+        $print_only_gp = $document_output->output_type != DocumentOutput::TYPE_DOCMAN ? '0' : '1';
 
         //@TODO: remove the $this->>event and pass it to the function as a param
         $this->event = $event = Event::model()->findByPk($event_id);
@@ -419,7 +419,7 @@ EOH;
     private function updateDelivery($output_id)
     {
         $output = DocumentOutput::model()->findByPk($output_id);
-        $output->output_status = "COMPLETE";
+        $output->updateStatus(DocumentOutput::STATUS_COMPLETE);
 
         return $output->save();
     }
@@ -427,7 +427,7 @@ EOH;
     private function updateFailedDelivery($output_id)
     {
         $output = DocumentOutput::model()->findByPk($output_id);
-        $output->output_status = "FAILED";
+        $output->updateStatus(DocumentOutput::STATUS_FAILED);
 
         return $output->save();
     }

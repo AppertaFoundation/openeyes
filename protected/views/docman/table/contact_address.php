@@ -31,7 +31,7 @@
             foreach ($_POST['DocumentTarget'][$row_index]['DocumentOutput'] as $document_output) {
                 // check when the data is posted back, if the email or email (delayed) is checked then show the email textbox.
                 if (isset($document_output['output_type'])) {
-                    if ($document_output['output_type'] === 'Email' || $document_output['output_type'] === 'Email (Delayed)') {
+                    if ($document_output['output_type'] === \DocumentOutput::TYPE_EMAIL || $document_output['output_type'] === \DocumentOutput::TYPE_EMAIL_DELAYED) {
                         $isEmailDisplayable = true;
                     }
                 }
