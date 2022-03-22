@@ -174,7 +174,11 @@ $form = $this->beginWidget(
 
         <h2>Login Authentications</h2>
         <hr class="divider">
-        <?php $user_authentication_fields = ['id', 'institution_authentication', 'username', 'lookup_user', 'password', 'password_repeat', 'password_status', 'active'] ?>
+        <?php $user_authentication_fields = ['id', 'institution_authentication', 'username', 'lookup_user', 'password', 'password_repeat', 'password_status', 'active'];
+        if (!Yii::app()->hasModule('mehstaffdb')) {
+            $user_authentication_fields = array_diff($user_authentication_fields, array('lookup_user'));
+        }
+        ?>
         <table class="standard" id="user-authentications">
             <thead>
             <tr>
