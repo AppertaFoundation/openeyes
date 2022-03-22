@@ -1,2 +1,2 @@
-# Run to send the day's correspondence to docman
+# Run to send the day's CVI applications
 ${CRON_CVIDELIVERY_SCH:-00 25 * * *}   bash $WROOT/protected/scripts/cronrunner.sh '$WROOT/protected/scripts/cvidelivery.sh'
