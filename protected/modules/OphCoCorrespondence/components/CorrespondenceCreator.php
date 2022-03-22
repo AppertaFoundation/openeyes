@@ -86,7 +86,7 @@ class CorrespondenceCreator extends \EventCreator
                     'DocumentOutput' => [
                         [
                             //this gp_label param thing is extremely dodgy, we will have problem here I guess later
-                            'output_type' => strtolower($macro_target_data['to']['contact_type']) == strtolower(\SettingMetadata::model()->getSetting('gp_label')) 
+                            'output_type' => strtolower($macro_target_data['to']['contact_type']) == strtolower(\SettingMetadata::model()->getSetting('gp_label'))
                             ? \DocumentOutput::TYPE_DOCMAN
                             : \DocumentOutput::TYPE_PRINT,
                         ]
