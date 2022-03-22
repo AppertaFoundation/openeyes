@@ -18,4 +18,4 @@
 <?php $this->renderPartial('//print/event', array(
     'hide_modified' => isset($hide_modified) ? $hide_modified : null,
     'hide_created' => isset($hide_created) ? $hide_created : null,
-)); ?>
+));

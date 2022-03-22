@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,23 +16,26 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <?php
-    $printHelperClass = '';
+    $print_helper_class = '';
     $controller = Yii::app()->controller;
 if (!is_null($controller->module)) {
     switch ($controller->module->id) {
         case 'OphCoCorrespondence':
-            $printHelperClass = 'OphCoCorrespondence large-font';
-            $printHelperStyles = 'margin: 0 80px';
+            $print_helper_class = 'OphCoCorrespondence large-font';
+            $print_helper_styles = 'margin: 0 80px';
             break;
         case 'OphTrConsent':
-            $printHelperClass = 'OphTrConsent '.(isset($_GET['vi']) && $_GET['vi'] ? 'impaired-vision' : 'large-font');
+            $print_helper_class = 'OphTrConsent ' . (isset($_GET['vi']) && $_GET['vi'] ? 'impaired-vision' : 'large-font');
             break;
     }
 }
+$is_visual_impairment = \Yii::app()->request->getParam('is_visual_impairment');
+$print_helper_class .= ($is_visual_impairment ? ' impaired-vision' : '');
 
-$event = $controller->event;
+$event = $controller->event ?? null;
 $deleted_watermark = $event && (int)$event->deleted ? 'void' : null;
 ?>
 <!doctype html>
@@ -41,7 +45,7 @@ $deleted_watermark = $event && (int)$event->deleted ? 'void' : null;
 <title><?=\CHtml::encode($this->pageTitle); ?></title>
 <?php Yii::app()->clientScript->registerCoreScript('jquery')?>
 </head>
-<body class="open-eyes print <?= $printHelperClass ?> <?=$deleted_watermark?>" <?= isset($printHelperStyles) ? 'style="'.$printHelperStyles.'"' : '' ?>>
+<body class="open-eyes print <?= $print_helper_class ?> <?=$deleted_watermark?>" <?= isset($print_helper_styles) ? 'style="' . $print_helper_styles . '"' : '' ?>>
     <?php echo $content; ?>
     <script type="text/javascript">
         $(document).ready(function() {

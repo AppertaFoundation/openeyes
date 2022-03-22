@@ -26,7 +26,7 @@ class AminoAcidChangeAdminController extends BaseAdminController
                 'roles' => array('Genetics Admin'),
             ),
         );
-        
+
         //return array(array('allow', 'roles' => array('Genetics Admin')));
     }
 
@@ -80,7 +80,7 @@ class AminoAcidChangeAdminController extends BaseAdminController
         if (Yii::app()->request->isPostRequest) {
             if ($valid) {
                 Yii::app()->user->setFlash('success', "Amino Acid Change Type Saved");
-                $url = '/Genetics/aminoAcidChangeAdmin/view/'.$admin->getModel()->id;
+                $url = '/Genetics/aminoAcidChangeAdmin/view/' . $admin->getModel()->id;
                 $this->redirect($url);
             } else {
                 $admin->render($admin->getEditTemplate(), array('admin' => $admin, 'errors' => $admin->getModel()->getErrors()));
@@ -96,7 +96,7 @@ class AminoAcidChangeAdminController extends BaseAdminController
         $admin = new Admin(PedigreeAminoAcidChangeType::model(), $this);
         $admin->deleteModel();
     }
-    
+
      /**
      * Returns the data model based on the primary key given in the GET variable.
      * If the data model is not found, an HTTP exception will be raised.

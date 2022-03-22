@@ -124,13 +124,18 @@ class IOPVariableTest extends CDbTestCase
         self::assertEquals('IOP (mm Hg)', $this->variable->x_label);
         self::assertNotEmpty($this->variable->id_list);
         $variables = array($this->variable);
+        $expected_query = 'SELECT 10 * FLOOR(value/10) iop, COUNT(*) frequency, GROUP_CONCAT(DISTINCT patient_id) patient_id_list
+        FROM v_patient_iop iop
+        WHERE iop.patient_id IN (1, 2, 3)
+        AND iop.event_date = (SELECT MIN(event_date) FROM v_patient_iop iop2 WHERE iop2.patient_id = iop.patient_id AND iop2.eye = iop.eye)
+        AND iop.reading_time = (SELECT MIN(reading_time) FROM v_patient_iop iop2 WHERE iop2.patient_id = iop.patient_id AND iop2.eye = iop.eye AND iop2.event_date = iop.event_date)
+        GROUP BY 10 * FLOOR(value/10)
+        ORDER BY 1';
 
         $results = Yii::app()->searchProvider->getVariableData($variables);
+        $expected = Yii::app()->db->createCommand("SELECT COUNT(*) FROM ({$expected_query}) t")->queryScalar();
 
-        self::assertCount(1, $results[$this->variable->field_name]);
-        self::assertEquals('20', $results[$this->variable->field_name][0]['iop']);
-        self::assertEquals('1', $results[$this->variable->field_name][0]['frequency']);
-        self::assertEquals('1', $results[$this->variable->field_name][0]['patient_id_list']);
+        self::assertCount($expected, $results[$this->variable->field_name]);
     }
 
     public function testGetPrimaryDataPointName()

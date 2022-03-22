@@ -23,7 +23,7 @@ $attributes = ['bo', 'bi', 'bu', 'bd'];
     <td><?= $entry->display_prism_over_eye ?></td>
 
     <?php foreach ($attributes as $attr) { ?>
-        <td><?php if (!empty($entry->{"near_{$attr}"})) { ?>
+        <td><?php if(is_numeric($entry->{"near_{$attr}"})) { ?>
             <?= CHtml::encode($entry->{"near_{$attr}"}) ?> Δ <b><?= strtoupper($attr) ?></b>
             <?php } else { ?>
             -
@@ -31,7 +31,7 @@ $attributes = ['bo', 'bi', 'bu', 'bd'];
         </td>
     <?php } ?>
     <?php foreach ($attributes as $attr) { ?>
-        <td><?php if (!empty($entry->{"distance_{$attr}"})) { ?>
+        <td><?php if (is_numeric($entry->{"distance_{$attr}"})) { ?>
                 <?= CHtml::encode($entry->{"distance_{$attr}"}) ?> Δ <b><?= strtoupper($attr) ?></b>
             <?php } else { ?>
                 -

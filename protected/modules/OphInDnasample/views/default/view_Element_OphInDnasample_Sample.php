@@ -16,99 +16,102 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<section class="element">
-  <div class="element-data">
-    <div class="data-group">
-      <div class="cols-2 column">
-        <div class="data-label"><?php echo $element->getAttributeLabel('id') ?>:</div>
-      </div>
-      <div class="cols-10 column">
-        <div class="data-value">
-            <?php echo $element->id; ?>
-        </div>
-      </div>
+<div class="element-fields full-width flex-layout flex-top col-gap">
+    <div class="cols-7 data-group">
+        <table class= "cols-full">
+            <colgroup>
+                <col class="cols-5">
+                <col class="cols-7">
+            </colgroup>
+            <tbody>
+                <tr>
+                    <td>
+                        <div class="data-label"><?php echo $element->getAttributeLabel('id') ?>:</div>
+                    </td>
+                    <td>
+                        <div class="data-value">
+                            <?php echo $element->id; ?>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="data-label"><?php echo $element->getAttributeLabel('type_id') ?>:</div>
+                    </td>
+                    <td>
+                        <div class="data-value">
+                            <?php echo $element->type ? $element->type->name : 'None' ?>
+                            <?php if ($element->type->id == 4) : ?>
+                                (<?php echo $element->other_sample_type; ?>)
+                            <?php endif; ?>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="data-label"><?php echo $element->getAttributeLabel('blood_date') ?>:</div>
+                    </td>
+                    <td>
+                        <div class="data-value"><?php echo $element->NHSDate('blood_date') ?></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="data-label"><?php echo $element->getAttributeLabel('volume') ?>:</div>
+                    </td>
+                    <td>
+                        <div class="data-value"><?=\CHtml::encode($element->volume) ?></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="data-label"><?php echo $element->getAttributeLabel('destination') ?>:</div>
+                    </td>
+                    <td>
+                        <div class="data-value"><?=\CHtml::encode($element->destination) ?></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="data-label"><?php echo $element->getAttributeLabel('consented_by') ?>:</div>
+                    </td>
+                    <td>
+                        <div class="data-value">
+                            <?php
+                            $user = User::model()->findByPk($element->consented_by);
+                            echo $user['first_name'] . ' ' . $user['last_name'];
+                            ?>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="data-label"><?php echo $element->getAttributeLabel('studies') ?>:</div>
+                    </td>
+                    <td>
+                        <div class="data-value">
+                            <?php
+                            $studies = [];
+                            foreach ($element->studies as $s) {
+                                $studies[] = $s->name;
+                            }
+                            echo implode(", ", $studies);
+                            ?>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="data-label"><?php echo $element->getAttributeLabel('comments') ?>:</div>
+                    </td>
+                    <td>
+                        <div class="data-value"><?=\CHtml::encode($element->comments) ?></div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
-    <div class="data-group">
-      <div class="cols-2 column">
-        <div class="data-label"><?php echo $element->getAttributeLabel('type_id') ?>:</div>
-      </div>
-      <div class="cols-10 column">
-        <div class="data-value">
-            <?php echo $element->type ? $element->type->name : 'None' ?>
-            <?php if ($element->type->id == 4) : ?>
-              (<?php echo $element->other_sample_type; ?>)
-            <?php endif; ?>
-        </div>
-      </div>
-    </div>
-
-    <div class="data-group">
-      <div class="cols-2 column">
-        <div class="data-label"><?php echo $element->getAttributeLabel('blood_date') ?>:</div>
-      </div>
-      <div class="cols-10 column">
-        <div class="data-value"><?php echo $element->NHSDate('blood_date') ?></div>
-      </div>
-    </div>
-    <div class="data-group">
-      <div class="cols-2 column">
-        <div class="data-label"><?php echo $element->getAttributeLabel('volume') ?>:</div>
-      </div>
-      <div class="cols-10 column">
-        <div class="data-value"><?=\CHtml::encode($element->volume) ?></div>
-      </div>
-    </div>
-
-    <div class="data-group">
-      <div class="cols-2 column">
-        <div class="data-label"><?php echo $element->getAttributeLabel('destination') ?>:</div>
-      </div>
-      <div class="cols-10 column">
-        <div class="data-value"><?=\CHtml::encode($element->destination) ?></div>
-      </div>
-    </div>
-
-    <div class="data-group">
-      <div class="cols-2 column">
-        <div class="data-label"><?php echo $element->getAttributeLabel('consented_by') ?>:</div>
-      </div>
-      <div class="cols-10 column">
-        <div class="data-value">
-            <?php
-            $user = User::model()->findByPk($element->consented_by);
-            echo $user['first_name'] . ' ' . $user['last_name'];
-            ?>
-        </div>
-      </div>
-    </div>
-
-    <div class="data-group">
-      <div class="cols-2 column">
-        <div class="data-label"><?php echo $element->getAttributeLabel('studies') ?>:</div>
-      </div>
-      <div class="cols-10 column">
-        <div class="data-value">
-            <?php
-            $studies = [];
-            foreach ($element->studies as $s) {
-                $studies[] = $s->name;
-            }
-            echo implode(", ", $studies);
-            ?>
-        </div>
-      </div>
-    </div>
-
-    <div class="data-group">
-      <div class="cols-2 column">
-        <div class="data-label"><?php echo $element->getAttributeLabel('comments') ?>:</div>
-      </div>
-      <div class="cols-10 column">
-        <div class="data-value"><?=\CHtml::encode($element->comments) ?></div>
-      </div>
-    </div>
-  </div>
-</section>
+</div>
 <?php if ($this->event->children) { ?>
   <section class="sub-element">
     <header class="sub-element-header">

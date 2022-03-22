@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -80,7 +81,7 @@ class OphTrOperationbookingModule extends BaseEventTypeModule
             $setting = $metadata->getSetting($metadata->key, null, true);
             $element_enabled = $setting->value;
         }
-        
+
         return isset($element_enabled) && $element_enabled == 'on';
     }
 
@@ -94,6 +95,18 @@ class OphTrOperationbookingModule extends BaseEventTypeModule
     {
         $golden_patient_enabled = Yii::app()->params['op_booking_disable_golden_patient'];
         return isset($golden_patient_enabled) && $golden_patient_enabled == 'on';
+    }
+
+    /**
+     * @return bool
+     *
+     * Returns true if the Anaesthetic Cover Required is disabled
+     */
+
+    public function isLACDisabled()
+    {
+        $lac_enabled = Yii::app()->params['op_booking_show_lac_required'];
+        return isset($lac_enabled) && $lac_enabled == 'off';
     }
 }
 

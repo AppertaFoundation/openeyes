@@ -18,6 +18,10 @@
 class AutoCompleteSearch extends BaseCWidget
 {
         public $field_name = 'oe-autocompletesearch';
+        public $hidden = false;
+
+        // we can block js include in view file for templates <script type="text/template">
+        public $js_include = true;
 
             /**
              * @var bool This variable can be passed when calling the Widget and it controls whether

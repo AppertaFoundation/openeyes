@@ -68,21 +68,28 @@ touch $WROOT/protected/runtime/migrate.log
 # disable log to browser during migrate, otherwise it can cause extraneous trace output on the CLI
 export LOG_TO_BROWSER=""
 
-if [ $quiet = 0 ]; then
-	# Show output on screen AND write to log
-	if php $WROOT/protected/yiic migrate --interactive=0 2>&1 | tee $WROOT/protected/runtime/migrate.log; then
-		# don't bother trying to migrate modules if the core failed
-		php $WROOT/protected/yiic migratemodules --interactive=0 2>&1 | tee -a $WROOT/protected/runtime/migrate.log
-	fi
-else
-	# Write output to log only (do not show on screen)
-	if php $WROOT/protected/yiic migrate --interactive=0 >$WROOT/protected/runtime/migrate.log; then
-		# don't bother trying to migrate modules if the core failed
-		php $WROOT/protected/yiic migratemodules --interactive=0 >>$WROOT/protected/runtime/migrate.log
-	fi
+migratelog="$WROOT/protected/runtime/migrate.log"
+
+# Show output on screen AND write to log
+outputredirectnew="2>&1 | tee ${migratelog}"
+outputredirectappend="2>&1 | tee -a ${migratelog}"
+
+if [ $quiet -eq 1 ]; then
+	# write to log only
+	outputredirectnew=">${migratelog}"
+	outputredirectappend=">>${migratelog}"
 fi
 
 founderrors=0
+
+if ! eval "php $WROOT/protected/yiic migrate --interactive=0 $outputredirectnew"; then
+	founderrors=1
+fi
+
+if [ $founderrors -ne 1 ] && ! eval "php $WROOT/protected/yiic migratemodules --interactive=0 $outputredirectappend"; then
+	founderrors=1
+fi
+
 if [ $ignorewarnings = "0" ]; then
 	if grep -i 'error\|exception.[^al]\|warning\*' $WROOT/protected/runtime/migrate.log; then
 		founderrors=1

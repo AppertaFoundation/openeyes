@@ -308,4 +308,26 @@ class OphDrPrescription_Item extends EventMedicationUse
 
         return parent::beforeSave();
     }
+
+    public function getDescriptionLongFrequency()
+    {
+        $return = $this->medication->label;
+
+        $return .= ': '.Helper::formatPluralForDose($this->dose);
+        $return .= ' '.$this->frequency->term;
+
+        if ($this->routeOptions()) {
+            $return .= ' ' . $this->getLateralityDisplay();
+        }
+
+        $return .= ' ' . $this->route->term ?? '';
+
+        if (preg_match('/^[0-9]+/', $this->medicationDuration->name)) {
+            $return .= ' for '.$this->medicationDuration->name;
+        } else {
+            $return .= ' '.$this->medicationDuration->name;
+        }
+
+        return $return;
+    }
 }

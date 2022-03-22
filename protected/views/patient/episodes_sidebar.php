@@ -20,6 +20,8 @@
 <?php
 extract($this->getEpisodes());
 $current_episode = @$this->current_episode;
+
+$active_pathway = $this->patient->getClinicPathwayInProgress();
 ?>
 
 <?php if ((Yii::app()->controller->action->id != 'update' && Yii::app()->controller->action->id != 'create') || Yii::app()->controller->show_element_sidebar == false) { ?>
@@ -34,6 +36,7 @@ $current_episode = @$this->current_episode;
 <?php } ?>
 
 <nav class="sidebar subgrid">
+    <div class="sidebar-fixed-top">
     <?php
     $this->renderPartial('//patient/_single_oescape_sidebar', array(
         'legacyepisodes' => $legacyepisodes,
@@ -41,6 +44,12 @@ $current_episode = @$this->current_episode;
         'supportserviceepisodes' => $supportserviceepisodes,
         'current_episode' => $current_episode,
     ));
+
+    if ($active_pathway !== null) {
+        $this->renderPartial('//patient/_patient_clinic_pathway_sidebar', [
+            'pathway' => $active_pathway,
+        ]);
+    }
 
     $this->renderPartial('//patient/_single_episode_sidebar', array(
         'legacyepisodes' => $legacyepisodes,
@@ -50,6 +59,7 @@ $current_episode = @$this->current_episode;
     ));
 
     ?>
+    </div>
 </nav>
 
 <div class="oe-event-quickview" id="js-event-quickview" style="display: none;">

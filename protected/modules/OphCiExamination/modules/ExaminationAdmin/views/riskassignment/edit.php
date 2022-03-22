@@ -31,6 +31,6 @@ $this->renderPartial(
 
 <?php
 $this->endWidget();
-?>
+
 
 

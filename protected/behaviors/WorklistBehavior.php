@@ -150,7 +150,6 @@ class WorklistBehavior extends CBehavior
 
         // for Eye Casualty events, the only time the patient wont be added to todays Eye Casualty unbooked worklist is if they already have a "booked" eye casualty appointment for today
         if ($this->owner->event && !$this->owner->event->worklist_patient_id || ($subspecialty && $subspecialty->ref_spec === 'AE' && !($worklist_patient_today_AE))) {
-
             $site = Site::model()->findByPk($site_id);
 
             $patient_identifier_type = PatientIdentifierHelper::getPatientIdentifierType('LOCAL', $site->institution_id, $site->id) ??
@@ -174,12 +173,10 @@ class WorklistBehavior extends CBehavior
                 } else {
                     \OELog::log("Unbooked worklist cannot be found for patient_id: {$this->owner->patient->id}");
                 }
-
             } else {
                 \OELog::log("Unbooked worklist cannot be found for patient_id: {$this->owner->patient->id} for 
                 institutions/sites that do not have a patient identifier type");
             }
-
         }
         return false;
     }

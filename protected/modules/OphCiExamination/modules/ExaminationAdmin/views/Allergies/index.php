@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
@@ -12,6 +13,7 @@
  * @copyright Copyright (C) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <div class="row divider cols-5">
     <h2>Edit Allergies</h2>
@@ -26,7 +28,7 @@
                 <tr>
                     <th>Order</th>
                     <th>Name</th>
-                    <th>Medication Set Id</th>
+                    <th>Allergic to Medication Set</th>
                     <th>Active</th>
                 </tr>
             </thead>

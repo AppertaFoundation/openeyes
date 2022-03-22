@@ -572,11 +572,7 @@ class Admin
         $this->assetManager->registerScriptFile('/js/oeadmin/edit.js');
         $errors = array();
         if (Yii::app()->request->isPostRequest) {
-            $post = Yii::app()->request->getPost($this->modelName);
-            if (empty($post)) {
-                $this->modelName = str_replace('\\', '_', $this->modelName);
-                $post = Yii::app()->request->getPost($this->modelName);
-            }
+            $post = Yii::app()->request->getPost(\CHtml::modelName($this->modelName));
             if (array_key_exists('id', $post) && $post['id']) {
                 $this->model->attributes = $post;
             } else {

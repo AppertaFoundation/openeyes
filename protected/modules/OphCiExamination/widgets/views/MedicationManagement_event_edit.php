@@ -16,6 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OEModule\OphCiExamination\controllers\DefaultController as ExamController;
 use OEModule\OphCiExamination\models\MedicationManagement;
 use OEModule\OphCiExamination\models\MedicationManagementEntry;
 use OEModule\OphCiExamination\models\OphCiExaminationAllergy;
@@ -48,7 +49,7 @@ $laterality_options = Chtml::listData($element->getLateralityOptions(), 'id', 'n
 $unit_options = CHtml::listData(MedicationAttribute::model()->find("name='UNIT_OF_MEASURE'")->medicationAttributeOptions, 'description', 'description');
 
 $element_errors = $element->getErrors();
-$read_only = $element->event ? date('Y-m-d', strtotime($element->event->event_date)) != date('Y-m-d') : false;
+$read_only = $element->event && !empty(ExamController::getMedicationManagementEditable($element->event->getPatient()->id, date('d M Y', strtotime($element->event->event_date)))['errorMessages']);
 $entries_from_previous_event = array_filter($element->entries, function ($entry) {
     return is_null($entry->id);
 });
@@ -72,6 +73,12 @@ if (!Yii::app()->request->isPostRequest && !empty($entries_from_previous_event) 
 
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryMedications.js') ?>"></script>
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryRisks.js') ?>"></script>
+<?php
+$assetManager = \Yii::app()->getAssetManager();
+$asset_folder = $assetManager->publish('protected/widgets/js', true);
+echo '<script type="text/javascript" src="' . $asset_folder . '/EsignWidget.js"></script>';
+echo '<script type="text/javascript" src="' . $asset_folder . '/EsignElementWidget.js"></script>';
+?>
 <?php if ($read_only) {
     Yii::app()->user->setFlash('alert.read_only', 'Medication Management cannot be edited for past events');
 } ?>
@@ -159,10 +166,30 @@ if (!Yii::app()->request->isPostRequest && !empty($entries_from_previous_event) 
             </tbody>
         </table>
     </div>
+
+    <div id="MedicationManegement_Signature_row">
+        <hr class="divider">
+        <div class="data-group">
+        <?php
+            $row = 0;
+        foreach ($element->getSignatures() as $signature) {
+            $this->widget(
+                static::getWidgetClassByType($signature->type),
+                [
+                    "row_id" => $row++,
+                    "element" => $element,
+                    "signature" => $signature,
+                ]
+            );
+        }
+        ?>
+        </div>
+    </div>
+
     <div class="flex-layout flex-right">
         <div class="add-data-actions flex-item-bottom" id="medication-management-popup">
             <?php if (!\Yii::app()->user->checkAccess('Prescribe')) { ?>
-            <button id="mm-add-pgd-btn" class="button hint green <?=$read_only ? 'disabled' : ''?>" type="button">Add PGD Set</button>
+                <button id="mm-add-pgd-btn" class="button hint green <?=$read_only ? 'disabled' : ''?>" type="button">Add PGD Set</button>
             <?php } ?>
             <button id="mm-add-standard-set-btn" class="button hint green <?php if ($read_only) {
                 ?>disabled<?php
@@ -174,6 +201,7 @@ if (!Yii::app()->request->isPostRequest && !empty($entries_from_previous_event) 
             </button>
         </div>
     </div>
+
     <div class="oe-popup-wrap" id="js-save-mm-event" style="z-index:100; display: none">
         <div class="oe-popup">
             <div class="title">
@@ -614,5 +642,16 @@ if (!Yii::app()->request->isPostRequest && !empty($entries_from_previous_event) 
         if (elementHasRisks && !$('.' + OE_MODEL_PREFIX + 'HistoryRisks').length) {
             $('#episodes-and-events').data('patient-sidebar').addElementByTypeClass(OE_MODEL_PREFIX + 'HistoryRisks', undefined);
         }
+    });
+</script>
+
+<script type="text/javascript">
+    $(function(){
+        new OpenEyes.UI.EsignElementWidget(
+            $(".<?= \CHtml::modelName($element) ?>"),
+            {
+                mode : "<?= $this->mode === $this::$EVENT_VIEW_MODE ? 'view' : 'edit' ?>"
+            }
+        );
     });
 </script>

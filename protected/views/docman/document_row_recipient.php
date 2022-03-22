@@ -8,7 +8,7 @@ if (!isset($element)) {
 ?>
 <tr class="valign-top new_entry_row rowindex-<?php echo $row_index ?>" data-rowindex="<?php echo $row_index ?>">
     <td>
-        <?php echo ($row_index == 0 ? 'To' : 'Cc') ?>
+        <b class="large-text"><?php echo ($row_index == 0 ? 'To:' : 'Cc:') ?></b>
         <?=\CHtml::hiddenField("DocumentTarget[" . $row_index . "][attributes][ToCc]", ($row_index == 0 ? 'To' : 'Cc')); ?>
     </td>
     <td>
@@ -52,7 +52,7 @@ if (!isset($element)) {
     </td>
     <td>
         <?php if ($row_index > 0) : ?>
-            <a class="remove_recipient removeItem <?php echo $is_mandatory ? 'hidden' : '' ?>" data-rowindex="<?php echo $row_index ?>">Remove</a>
+            <a class="remove_recipient removeItem <?php echo $is_mandatory ? 'hidden' : '' ?>" data-rowindex="<?php echo $row_index ?>"><i class="oe-i trash js-has-tooltip" data-tooltip-content="Remove recipient"></i></a>
         <?php endif; ?>
     </td>
 </tr>

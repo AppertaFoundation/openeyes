@@ -71,7 +71,7 @@ $r3a_retinopathy_features = OphCiExamination_DRGrading_Feature::model()->findAll
 </div>
 <?php $this->endClip('element-title-additional');?>
 
-<div class="element-fields flex-layout full-width ">
+<div class="element-both-eyes flex-layout full-width ">
     <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField'))?>
     <fieldset class="data-group">
                 <?php echo $element->getAttributeLabel('secondarydiagnosis_disorder_id')?>:

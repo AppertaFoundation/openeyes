@@ -21,9 +21,9 @@
           <a href = <?=  Yii::app()->createURL(
               'csv/upload',
               array('context' => 'trialPatients', 'backuri' => '/OETrial/trial/view/'.$trial->id)
-          ) ?> >Upload trial patients</a>
+                    ) ?> >Upload trial patients</a>
         </li>
-        <?php endif; ?>
+            <?php endif; ?>
         <?php endif; ?>
     <li>
         <?php echo CHtml::link(

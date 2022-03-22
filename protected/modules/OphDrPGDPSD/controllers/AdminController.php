@@ -1,7 +1,8 @@
 <?php
+
 class AdminController extends BaseAdminController
 {
-    public $group = 'PGD/PSD';
+    public $group = 'Drugs';
     public $delete_url = '/OphDrPGDPSD/admin/deletePGDPSDs';
     public $index_url = '/OphDrPGDPSD/admin/PGDPSDSettings';
     public $add_url = '/OphDrPGDPSD/admin/addPGDPSD';

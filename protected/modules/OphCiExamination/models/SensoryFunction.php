@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Apperta Foundation, 2020
  * This file is part of OpenEyes.
@@ -69,15 +70,18 @@ class SensoryFunction extends \BaseEventTypeElement
             return "$prefix No entries";
         }
 
-        return implode("\n",
+        return implode(
+            "\n",
             array_map(function ($entry) use ($prefix) {
                 return "$prefix $entry";
-            }, $this->entries));
+            },
+            $this->entries)
+        );
     }
 
     public function beforeDelete()
     {
-        foreach($this->entries as $entry){
+        foreach ($this->entries as $entry) {
             $entry->delete();
         }
         return parent::beforeDelete();

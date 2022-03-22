@@ -41,7 +41,11 @@ $allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical');
     </div>
     <?php $this->renderPartial('//patient/add_new_event', array(
         'button_selector' => '#add-event',
-        'episodes' => array(),
+        // even we declared there are no episodes in the controller, still there are cases when
+        // an episode is hanging around without event, like create a new event then click on cancel (not creating the event)
+        // in this case the episode will be saved but the event won't.
+        // Now the question is, if $this->patient->episodes relation's condition is enough here?
+        'episodes' => $this->patient->episodes,
         'context_firm' => $this->firm,
         'patient_id' => $this->patient->id,
         'event_types' => EventType::model()->getEventTypeModules(),

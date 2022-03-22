@@ -1,4 +1,5 @@
 <?php
+
 return array(
     'setting1' => array(
         'key' => 'watermark',
@@ -63,10 +64,6 @@ return array(
         'setting16' => array(
             'key' => 'enable_forum_integration',
             'value' => 'off'
-        ),
-        'setting17' => array(
-            'key' => 'nhs_num_label',
-            'value' => 'NHS'
         ),
         'setting18' => array(
             'key' => 'element_close_warning_enabled',
@@ -156,14 +153,6 @@ return array(
         ),
         'setting40' => array(
             'key' => 'imagenet_url',
-        ),
-        'setting41' => array(
-            'key' => 'nhs_num_label_short',
-            'value' => 'NHS'
-        ),
-        'setting42' => array(
-            'key' => 'hos_num_label_short',
-            'value' => 'ID'
         ),
         'setting43' => array(
             'key' => 'patient_phone_number_mandatory',

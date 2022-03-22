@@ -108,7 +108,7 @@ if (!empty($this->assessments)) {
                                 ]);
                                 ?>
                             </div>
-                            <?php if ($page_side === "right" && $assessment->eye_id === EYE::BOTH || $assessment->eye_id !== EYE::BOTH) { ?>
+                            <?php if ($page_side === "right" && $assessment->eye_id === Eye::BOTH || $assessment->eye_id !== Eye::BOTH) { ?>
                                 <div class="flex-layout flex-right">
                                     <i class="oe-i trash js-delete-assessment"></i>
                                 </div>
@@ -337,7 +337,7 @@ if (!empty($this->assessments)) {
                                 'id' => $assessment->id
                             ];
                     }, $this->assessments)
-                ) ?>,
+                                                               ) ?>,
                     {'multiSelect': true}
                 ),
                 ],

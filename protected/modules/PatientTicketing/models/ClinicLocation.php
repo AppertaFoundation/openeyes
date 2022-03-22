@@ -26,6 +26,7 @@ use ReferenceData;
 class ClinicLocation extends BaseActiveRecordVersioned
 {
     use MappedReferenceData;
+    use \FindOrNewModel;
 
     protected function getSupportedLevels(): int
     {
@@ -44,7 +45,8 @@ class ClinicLocation extends BaseActiveRecordVersioned
     public function rules()
     {
         return array(
-            array('name', 'required'),
+            array('name, queueset_id', 'required'),
+            array('name, queueset_id', 'safe'),
         );
     }
 
@@ -54,5 +56,39 @@ class ClinicLocation extends BaseActiveRecordVersioned
             'clinic_location_institutions' => array(self::HAS_MANY, ClinicLocation_Institution::class, 'clinic_location_id'),
             'institutions' => array(self::MANY_MANY, Institution::class, 'patientticketing_clinic_location_institution(clinic_location_id, institution_id)')
         );
+    }
+
+    /**
+     * Assign ClinicLocation to an institution
+     *
+     * @param int $institution_id
+     * @return bool
+     * @throws \Exception
+     */
+    public function addToInstitution(int $institution_id): bool
+    {
+        $exist = ClinicLocation_Institution::model()->exists('clinic_location_id =:clinic_location_id AND institution_id =:institution_id', [
+            'clinic_location_id' => $this->id,
+            'institution_id' => $institution_id
+        ]);
+
+        if (!$exist) {
+            $model = new ClinicLocation_Institution();
+            $model->clinic_location_id = $this->id;
+            $model->institution_id = $institution_id;
+            if (!$model->save()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public function beforeDelete()
+    {
+        foreach ($this->clinic_location_institutions as $clinic_location_institution) {
+            $clinic_location_institution->delete();
+        }
+        return parent::beforeDelete();
     }
 }

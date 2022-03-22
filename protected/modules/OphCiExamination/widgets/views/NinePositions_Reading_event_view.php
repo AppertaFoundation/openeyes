@@ -31,7 +31,6 @@ use OEModule\OphCiExamination\models\NinePositions_MovementForGaze;
 ?>
 
 <div class="collapse-group highlight">
-    <div class="header-icon collapse">Reading</div>
     <div class="collapse-group-content">
         <?php if (count($data_list)) { ?>
         <div class="data-group">

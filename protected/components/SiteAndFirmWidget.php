@@ -137,7 +137,18 @@ class SiteAndFirmWidget extends CWidget
             }
         }
 
-        foreach ($this->controller->firms as $firm_id => $firm_label) {
+        $userFirms = [];
+        foreach ($user->getAvailableFirms() as $firm) {
+            if ($firm->serviceSubspecialtyAssignment) {
+                $userFirms[$firm->id] = "{$firm->name} ({$firm->serviceSubspecialtyAssignment->subspecialty->name})";
+            } else {
+                $userFirms[$firm->id] = $firm->name;
+            }
+        }
+
+        natcasesort($userFirms);
+
+        foreach ($userFirms as $firm_id => $firm_label) {
             if ((count($user_firm_ids) === 0 || (!isset($firms['Recent'][$firm_id]) && in_array(
                         $firm_id,
                         $user_firm_ids

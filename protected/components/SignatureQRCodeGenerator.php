@@ -16,69 +16,67 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-/**
- * Created by PhpStorm.
- * User: veta
- * Date: 11/08/2016
- * Time: 15:30
- */
+use Endroid\QrCode\Color\Color;
+use Endroid\QrCode\Encoding\Encoding;
+use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelLow;
+use Endroid\QrCode\QrCode;
+use Endroid\QrCode\Label\Label;
+use Endroid\QrCode\Logo\Logo;
+use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
+use Endroid\QrCode\Writer\PngWriter;
 
-use \Endroid\QrCode\QrCode;
+$writer = new PngWriter();
+
 
 class SignatureQRCodeGenerator
 {
     /**
      * @param $text
      * @param $size
-     * @return resource
+     * @return base64 string
      * @throws \Endroid\QrCode\Exceptions\ImageTypeInvalidException
      */
-    public function createQRCode($text, $size)
+    public function createQRCode($text, $size, $box_size)
     {
-        $qrCode = new QrCode();
-        $qrCode
-            ->setText($text)
+        $result = null;
+        $writer = new PngWriter();
+        $qrCode = QrCode::create($text)
+            ->setEncoding(new Encoding('UTF-8'))
             ->setSize($size)
-            ->setPadding(3)
-            ->setErrorCorrection('high')
-            ->setForegroundColor(array('r' => 0, 'g' => 0, 'b' => 0, 'a' => 0))
-            ->setBackgroundColor(array('r' => 255, 'g' => 255, 'b' => 255, 'a' => 0))
-            ->setDrawQuietZone(false)
-            ->setDrawBorder(false)
-            ->setLabelFontSize(16)
-            ->setImageType(QrCode::IMAGE_TYPE_PNG);
+            ->setMargin(0)
+            ->setErrorCorrectionLevel(new ErrorCorrectionLevelLow())
+            ->setRoundBlockSizeMode(new RoundBlockSizeModeMargin())
+            ->setForegroundColor(new Color(0, 0, 0))
+            ->setBackgroundColor(
+                new Color(255, 255, 255)
+            );
 
-        return $qrCode->getImage();
+        $raw_file_source = explode(',', $writer->write($qrCode)->getDataUri())[1];
 
-    }
+        $canvas = imagecreatetruecolor($box_size[0], $box_size[1]);
+        $black = imagecolorallocate($canvas, 0, 0, 0);
+        $white = imagecolorallocate($canvas, 255, 255, 255);
+        imagefill($canvas, 0, 0, $black);
 
-    /**
-     * @param $text
-     * @param bool $returnObject
-     * @return resource
-     */
-    public function generateQRSignatureBox( $text, $returnObject = true, $box_size =array("x"=>700, "y"=>140), $qr_size =130 )
-    {
-        $canvas = imagecreatetruecolor($box_size["x"],$box_size["y"]);
-        $black = imagecolorallocate($canvas, 0,0,0);
-        $white = imagecolorallocate($canvas, 255,255,255);
-        imagefill($canvas,0,0,$black);
+        imagefilledrectangle($canvas, 3, 3, imagesx($canvas) - 4, imagesy($canvas) - 4, $white);
+        $qrCodeImg = imagecreatefromstring(base64_decode($raw_file_source));
+        imagecopy(
+            $canvas,
+            $qrCodeImg,
+            (imagesx($canvas) - imagesx($qrCodeImg)) - 3,
+            3,
+            0,
+            0,
+            imagesx($qrCodeImg),
+            imagesy($qrCodeImg)
+        );
 
-        imagefilledrectangle($canvas, 3, 3, imagesx($canvas)-4, imagesy($canvas)-4, $white);
+        // Return base64 string
+        ob_start();
+            imagepng($canvas);
+            $image_data = ob_get_contents();
+        ob_end_clean();
 
-        $qrCode = $this->createQRCode( $text, $qr_size );
-        imagecopy($canvas, $qrCode, (imagesx($canvas)-imagesx($qrCode))-3, 3, 0, 0, imagesx($qrCode), imagesy($qrCode));
-        //imageloadfont("Arial.ttf");
-        // TODO: check how to load font here!
-        //imagestring($canvas, null, 10, 145, "This signature will be user for OpenEyes eCVI module to print.", $black);
-        if ($returnObject){
-            return $canvas;
-        }else {
-            // Output and free from memory
-            header('Content-Type: image/jpeg');
-
-            imagejpeg($canvas);
-            imagedestroy($canvas);
-        }
+        return base64_encode($image_data);
     }
 }

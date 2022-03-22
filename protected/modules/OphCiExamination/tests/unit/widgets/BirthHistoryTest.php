@@ -112,7 +112,7 @@ class BirthHistoryTest extends \OEDbTestCase
 
         $this->getWidgetInstanceForElement($element, [
             'gestation_weeks' => 40, // ensure don't get failure because no required attributes set
-            BirthHistory::$INPUT_LB_PORTION_FLD => (string) rand(1,11),
+            BirthHistory::$INPUT_LB_PORTION_FLD => (string) rand(1, 11),
             BirthHistory::$INPUT_OZ_PORTION_FLD => (string) rand(16, 30)]);
 
         $this->assertAttributeInvalid($element, 'weight_ozs', "Too many ozs");

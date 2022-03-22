@@ -167,7 +167,7 @@ function setRecipientToInternalReferral() {
 
     $('#DocumentTarget_0_attributes_contact_type').val('INTERNALREFERRAL');
 
-    $('#dm_table tr:first-child td:last-child').html('Change the letter type <br> to amend this recipient').css({ 'font-size': '11px' });
+    $('#dm_table tr:first-child td:last-child').html('<i class="oe-i info js-has-tooltip" data-tooltip-content="Change the letter type <br> to amend this recipient"></i>').css({ 'font-size': '11px' });
 
     if (!$('#yDocumentTarget_0_attributes_contact_type').length) {
         var $input = $('<input>', {
@@ -212,7 +212,7 @@ function resetRecipientFromInternalReferral() {
 function updateConsultantDropdown(subspecialty_id) {
     $.ajax({
         url: baseUrl + "/" + moduleName + "/Default/getConsultantsBySubspecialty",
-        data: { "subspecialty_id": subspecialty_id },
+        data: { "subspecialty_id": subspecialty_id, "check_service_firms_filter_setting": true },
         dataType: "json",
         beforeSend: function() {
             $('button#et_saveprint, button#et_saveprint_footer').prop('disabled', true);

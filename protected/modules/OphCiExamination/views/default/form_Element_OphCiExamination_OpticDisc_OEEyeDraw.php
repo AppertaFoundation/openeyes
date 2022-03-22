@@ -44,4 +44,4 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
         'side' => $side,
         'element' => $element,
     ), true),
-))?>
+));

@@ -1,0 +1,10 @@
+{
+  "PrimaryPatientNumber" : {
+    "type" : "string",
+    "required" : true
+  },
+  "SecondaryPatientNumber" : {
+    "type": "string",
+    "required" : true
+  }
+}

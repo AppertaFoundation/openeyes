@@ -13,6 +13,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use \OEModule\OphCiExamination\widgets\MedicationManagement as MedicationManagementWidget;
+
 /**
  * @var Element_OphDrPrescription_Details $element
  */
@@ -45,12 +47,14 @@
                             <?php $this->widget('MedicationInfoBox', array('medication_id' => $item->medication_id)); ?>
                             <?=$item->renderPGDInfo();?>
                         </td>
-                            
+
                         <td><?php echo $item->dose . " " . $item->dose_unit_term; ?></td>
-                        <td><?php echo $item->route->term ?>
-                            <?php if ($item->laterality) {
+                        <td><?php if ($item->route != null) {
+                                    echo $item->route->term;
+                            if ($item->route->has_laterality) {
                                 echo ' (' . $item->medicationLaterality->name . ')';
-                            } ?>
+                            }
+                            }?>
                         </td>
               <td><?php echo $item->frequency ? $item->frequency->term : '' ?></td>
               <td><?php echo $item->duration_id ? $item->medicationDuration->name : '' ?></td>
@@ -106,5 +110,72 @@
         <div class="data-value">
             <span class="large-text"><?php echo $element->textWithLineBreaks('comments') ?></span>
         </div>
+    </div>
+<?php } ?>
+
+<?php if ($signatures = $element->isSignedByMedication()) {?>
+    <div class="element-data full-width">
+        <?php
+        $row = 0;
+        $allow_signing_on_view = (($element->draft) && (!$element->isEditableByMedication()) && $this->checkEditAccess());
+
+        $readonly_signatures = $signatures->getSignatures(true);
+        $all_signatures = $signatures->getSignatures(false);
+
+        if ($allow_signing_on_view && count($readonly_signatures) < count($all_signatures)) {
+            ?>
+        <form class="js-view-signature-form" action="/OphDrPrescription/default/finalizeWithSignatures" method="post">
+            <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>" />
+            <input type="hidden" name="event" value="<?= $element->event->id ?>" />
+            <?php
+            Yii::app()->user->setFlash('info.info', 'To finalise this prescription, please sign below');
+            foreach ($all_signatures as $signature) {
+                $this->widget(
+                    MedicationManagementWidget::getWidgetClassByType($signature->type),
+                    [
+                        'row_id' => $row++,
+                        'element' => $signatures,
+                        'signature' => $signature,
+                        'mode' => 'edit',
+                    ]
+                );
+            }
+            ?>
+        </form>
+        <script>
+            $(document).ready(function() {
+                $('.js-signature-control label').hide();
+
+                $(document).on('signatureAdded', function() {
+                    const proofs = $('.js-proof-field');
+                    const proofsWithValues = $('.js-proof-field[value!=""]');
+
+                    if (proofs.length === proofsWithValues.length) {
+                        $('.js-view-signature-form').submit();
+                    }
+                });
+            })
+        </script>
+            <?php
+        } else {
+            foreach ($readonly_signatures as $signature) {
+                ?>
+        <div class="js-signature-wrapper flex-r">
+            <div class="large-text">
+                <small class="fade"><?= $signature->signatory_role ?></small> <?= $signature->signatory_name ?>
+                <span class="tabspace"></span>
+            </div>
+            <div class="flex-l">
+                <?= $signature->displaySignature() ?>
+                <div class="esigned-at">
+                    <i class="oe-i tick-green small pad-right"></i>
+                    Signed <small>at</small> <span class="js-signature-time"><?= $signature->getSignedTime(); ?></span>
+                </div>
+            </div>
+        </div>
+                <?php
+            }
+        }
+        ?>
     </div>
 <?php } ?>

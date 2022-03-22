@@ -185,4 +185,16 @@ class OphDrPrescription_ItemTaper extends BaseActiveRecordVersioned
 
         return $current_date->add(DateInterval::createFromDateString($this->duration->name));
     }
+
+    /*
+     * Get description with long frequency name
+     */
+    public function getDescriptionLongFrequency()
+    {
+        $return = ', then ' . Helper::formatPluralForDose($this->dose);
+        $return .= ' ' . $this->frequency->long_name;
+        $return .= ' for '.$this->duration->name;
+
+        return $return;
+    }
 }

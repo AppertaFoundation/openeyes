@@ -64,7 +64,15 @@ class ProfileController extends BaseController
 
         if (!empty($_POST)) {
             if (Yii::app()->params['profile_user_can_edit']) {
-                foreach (array('title', 'first_name', 'last_name', 'email', 'qualifications', 'correspondence_sign_off_user_id') as $field) {
+                $fields = [
+                    'title',
+                    'first_name', 'last_name',
+                    'email',
+                    'qualifications',
+                    'correspondence_sign_off_user_id',
+                    'correspondence_sign_off_text',
+                ];
+                foreach ($fields as $field) {
                     if (isset($_POST['User'][$field])) {
                         $user->{$field} = $_POST['User'][$field];
                     }
@@ -152,7 +160,7 @@ class ProfileController extends BaseController
 
                 if (empty($errors)) {
                     if ($user_auth->institutionAuthentication->user_authentication_method === 'LOCAL') {
-                        if ($user_auth->password_status==="stale"||$user_auth->password_status==="expired") {// this user pw is now current
+                        if ($user_auth->password_status === "stale" || $user_auth->password_status === "expired") {// this user pw is now current
                             $user_auth->password_status = 'current';
                         }
                         //reset pw checks
@@ -179,14 +187,115 @@ class ProfileController extends BaseController
 
     public function actionPincode()
     {
-        $user_auth = null;
-        if (Yii::app()->session['user_auth']) {
-            $user_auth = Yii::app()->session['user_auth'];
-            $user_auth->refresh();
-        }
+        $user = Yii::app()->session['user_auth']->user;
+        // when the user access pincode page, calls the generatePin function without argument
+        // it will check if the user has pincode, if no pincode, a new pincode will be generated for the user
+        $user->generatePin();
+        $pin_regen_status = $user->pincodeRegenStatus();
         $this->render('/profile/pincode', array(
-            'user_auth' => $user_auth,
+            'pin_regen_status' => $pin_regen_status
         ));
+    }
+
+    /**
+     * API entry point for viewing pincode
+     */
+    public function actionViewPincode()
+    {
+        $password = Yii::app()->request->getParam('pwd', null);
+        $user_auth = Yii::app()->session['user_auth'];
+        // refresh user_auth before use, in case the auth method change in admin
+        $user_auth->refresh();
+
+        if ($user_auth->isLocalAuth()) {
+            // verify password for local user
+            $is_verified = $user_auth->verifyPassword($password);
+        } else {
+            // for external user, send username and password in a request for verification
+            $institution_id = Yii::app()->session['selected_institution_id'];
+            $site_id = Yii::app()->session['selected_site_id'];
+            // make a copy of current $user_auth
+            $user_auth_clone = clone $user_auth;
+            // modify the password to the user input
+            $user_auth_clone->password = $password;
+            $user_identity = new UserIdentity($user_auth->username, $password, $institution_id, $site_id);
+            $is_verified = $user_identity->verifyExternalPassword($user_auth_clone);
+        }
+
+        $info_icon = null;
+        $pincode_html = null;
+        $pincode_regen_html = null;
+
+        if ($is_verified) {
+            $user = $user_auth->user;
+            $msg = '<div class="alert-box success">Your password verification was successful</div>';
+            $info_icon = '<i class="js-pwd-verification-info oe-i info small js-has-tooltip" data-tooltip-content="Your password verification will expire in 30 seconds or immediately after page refresh"></i>';
+            $pincode = $user->getPincode();
+            $pincode_html = "<span class='js-pincode'>$pincode</span><span class='js-count-down'> (30)</span>";
+
+            // getPincodeRegenUI will be extracted into $is_reach_limit, $pincode_regen_html
+            extract($this->getPincodeRegenUI($user));
+        } else {
+            $msg = '<div class="alert-box warning">Password verification failed.</div>';
+        }
+
+        $this->renderJSON(array(
+            'is_verified' => $is_verified,
+            'msg' => $msg,
+            'info_icon' => $info_icon,
+            'pincode_html' => $pincode_html,
+            'pincode_regen_html' => $pincode_regen_html
+        ));
+    }
+
+    /**
+     * API entry point for regenerating pincode
+     */
+    public function actionGeneratePincode()
+    {
+        $user = Yii::app()->session['user_auth']->user;
+
+        $msg = '';
+        // getPincodeRegenUI will be extracted into $is_reach_limit, $pincode_regen_html
+        extract($this->getPincodeRegenUI($user, false));
+        if (!$is_reach_limit) {
+            $user->generatePin(true);
+            // after regenerating, need to re-test to see if the user reaches the limit
+            extract($this->getPincodeRegenUI($user, false));
+            if ($user->getErrors()) {
+                $msg = '<div class="alert-box warning">Generating pincode fail, please try again later</div>';
+            } else {
+                $user->refresh();
+                $msg = '<div class="alert-box success">Pincode Updated</div>';
+            }
+        }
+        $pin_regen_status = $user->pincodeRegenStatus();
+
+        $this->renderJSON(array(
+            'msg' => $msg,
+            'pincode' => $user->getPincode(),
+            'pincode_regen_html' => $pincode_regen_html,
+            'pin_regen_status' => $pin_regen_status,
+        ));
+    }
+
+    /**
+     * produce pincode regenerate UI
+     *
+     * @param User $user
+     * @param boolean $render_btn indicates if a button needs to be rendered
+     * @return array returnning a flag that indicates if the user reaches the pincode regenerate limit, and corresponding html
+     */
+    private function getPincodeRegenUI(User $user, $render_btn = true)
+    {
+        $is_reach_limit = $user->isPincodeRegenReachLimit();
+        $pin_regen_btn_html = $render_btn ? '<div><button class="button large hint green" id="js-regen-pincode">Regenerate Pincode</button></div>' : null;
+        $pincode_regen_html = $is_reach_limit ? '<span class="alert-box issue">You have reached the pincode regenerate limit</span class="alert-box ">' : $pin_regen_btn_html;
+
+        return array(
+            'pincode_regen_html' => $pincode_regen_html,
+            'is_reach_limit' => $is_reach_limit,
+        );
     }
 
     public function actionSites()
@@ -324,83 +433,42 @@ class ProfileController extends BaseController
     {
         $user = User::model()->findByPk(Yii::app()->user->id);
 
-
         $this->render('/profile/signature', array(
             'user' => $user,
+            'recapture' => filter_var(Yii::app()->request->getParam("recapture"), FILTER_VALIDATE_BOOLEAN)
         ));
     }
 
-    public function actionGetSignatureFromPortal()
+    public function actionUploadSignature()
     {
-        if (Yii::app()->user->id) {
-            // TODO: query the portal here:
-            // TODO: get current unique ID for the user
-            // TODO: query the portal with the current unique ID
-            // TODO: if successfull save the signature as a ProtectedFile
-            // from the portal we receive binary data:
-
-            $user = User::model()->findByPk(Yii::app()->user->id);
-            $portal_conn = new OptomPortalConnection();
-            if ($portal_conn) {
-                $signature_data = $portal_conn->signatureSearch(
-                    null,
-                    $user->generateUniqueCodeWithChecksum($this->getUniqueCodeForUser())
-                );
-
-                if (is_array($signature_data) && isset($signature_data["image"])) {
-                    $signature_file = $portal_conn->createNewSignatureImage(
-                        $signature_data["image"],
-                        Yii::app()->user->id
-                    );
-                    if ($signature_file) {
-                        $user->signature_file_id = $signature_file->id;
-                        if ($user->save()) {
-                            echo true;
-                        }
-                    }
-                }
-            }
+        if (!$user = User::model()->findByPk(Yii::app()->user->id)) {
+            $this->renderJSON([
+                "success" => false,
+                "message" => "User not found"
+            ]);
         }
-        echo false;
-    }
-
-    public function actionShowSignature()
-    {
-        if (Yii::app()->user->id && Yii::app()->getRequest()->getParam("signaturePin")) {
-            $user = User::model()->findByPk(Yii::app()->user->id);
-            if ($user->signature_file_id) {
-                $decodedImage = $user->getDecryptedSignature(Yii::app()->getRequest()->getParam("signaturePin"));
-                if ($decodedImage) {
-                    echo base64_encode($decodedImage);
-                }
-            }
+        if (!$img = Yii::app()->request->getPost("image")) {
+            $this->renderJSON([
+                "success" => false,
+                "message" => "Image not provided"
+            ]);
         }
-        echo false;
-    }
-
-    public function actionGenerateSignatureQR()
-    {
-        if (Yii::app()->user->id) {
-            $QRSignature = new SignatureQRCodeGenerator();
-            // TODO: need to get a unique code for the user and add a key here!
-
-            $user = User::model()->findByPk(Yii::app()->user->id);
-            $user_code = $this->getUniqueCodeForUser();
-            if (!$user_code) {
-                throw new CHttpException('Could not get unique code for user - unique codes might need to be generated');
-            }
-            $finalUniqueCode = $user->generateUniqueCodeWithChecksum($user_code);
-
-            $QRimage = $QRSignature->createQRCode(
-                "@U:1@code:" . $finalUniqueCode . "@key:" . md5(Yii::app()->user->id),
-                250
-            );
-
-            // Output and free from memory
-            header('Content-Type: image/jpeg');
-
-            imagejpeg($QRimage);
-            imagedestroy($QRimage);
+        $img = base64_decode(str_replace('data:image/jpeg;base64,', '', $img));
+        $file = ProtectedFile::createForWriting("user_signature_" . $user->id);
+        $file->title = "Signature";
+        $file->mimetype = "image/jpeg";
+        file_put_contents($file->getPath(), $img);
+        if ($file->save()) {
+            $user->signature_file_id = $file->id;
+            $user->save(false, ["signature_file_id"]);
+            $this->renderJSON([
+                "success" => true
+            ]);
+        } else {
+            $this->renderJSON([
+                "success" => false,
+                "message" => "An error occurred while saving the signature."
+            ]);
         }
     }
 

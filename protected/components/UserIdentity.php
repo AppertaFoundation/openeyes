@@ -30,6 +30,7 @@ class UserIdentity extends CUserIdentity
     private $available_authentications;
     private $available_auth_error;
     private $is_special = false;
+    private $user_id;
 
     /*
      * New error code for users with active set to 0
@@ -43,14 +44,18 @@ class UserIdentity extends CUserIdentity
      * @param int $institution_id institution id
      * @param int $site_id site id
      */
-    public function __construct($username,$password,$institution_id,$site_id)
+    public function __construct($username, $password, $institution_id = null, $site_id = null, $user_pin = null)
     {
-      $this->institution_id=$institution_id;
-      $this->site_id=$site_id;
-      $available_auth_result = UserAuthentication::findAvailableAuthentications($username, $institution_id, $site_id);
-      $this->available_authentications = $available_auth_result[0];
-      $this->available_auth_error = $available_auth_result[1];
-      parent::__construct($username,$password);
+        $this->institution_id = $institution_id;
+        $this->site_id = $site_id;
+        $available_auth_result = UserAuthentication::findAvailableAuthentications($username, $institution_id, $site_id);
+        $this->available_authentications = $available_auth_result[0];
+        $this->available_auth_error = $available_auth_result[1];
+        if (is_null($user_pin)) {
+            parent::__construct($username, $password);
+        } else {
+            $this->username = $username;
+        }
     }
 
     public function authenticate()
@@ -71,6 +76,7 @@ class UserIdentity extends CUserIdentity
                 return $result;
             }
         }
+
         return [false, "Invalid login."];
     }
 
@@ -127,7 +133,9 @@ class UserIdentity extends CUserIdentity
             'useStartTls' => false,
         );
 
+        OELog::log('Establishing LDAP connection at ' . (new DateTime())->format('H:i:s'));
         $ldap = $this->getLdap($options);
+        OELog::log('LDAP connection established at ' . (new DateTime())->format('H:i:s'));
 
         /*
          * Try and bind to the login details provided. This indicates if
@@ -135,14 +143,17 @@ class UserIdentity extends CUserIdentity
          */
 
         try {
+            OELog::log('Attempting LDAP bind at ' . (new DateTime())->format('H:i:s'));
             $ldap->bind(
                 'cn='.$this->username.','.$ldap_config->ldap_dn,
                 $this->password
             );
+            OELog::log('LDAP bind complete at ' . (new DateTime())->format('H:i:s'));
         } catch (Exception $e) {
             /*
              * User not authenticated via LDAP
              */
+            OELog::log('LDAP login failed at ' . (new DateTime())->format('H:i:s'));
             $audit = new Audit();
             $audit->action = 'login-failed';
             $audit->target_type = 'login';
@@ -172,6 +183,7 @@ class UserIdentity extends CUserIdentity
         $ldap_config = $user_authentication->institutionAuthentication->LDAPConfig;
         $user = $user_authentication->user;
 
+        OELog::log('Establising LDAP connection at ' . (new DateTime())->format('H:i:s'));
         if (preg_match('~ldaps?://~', $ldap_config->ldap_server)) {
             if (!$link = ldap_connect($ldap_config->ldap_server)) {
                 OELog::log('Unable to connect to LDAP server: '.$ldap_config->ldap_server);
@@ -184,6 +196,7 @@ class UserIdentity extends CUserIdentity
                 return [false, "Invalid login."];
             }
         }
+        OELog::log('LDAP connection established at ' . (new DateTime())->format('H:i:s'));
 
         ldap_set_option($link, LDAP_OPT_REFERRALS, 0);
         if ($ldap_config->getLDAPParam('ldap_protocol_version') !== null) {
@@ -192,6 +205,7 @@ class UserIdentity extends CUserIdentity
         ldap_set_option($link, LDAP_OPT_NETWORK_TIMEOUT, $ldap_config->getLDAPParam('ldap_native_timeout'));
 
         // Bind as the LDAP admin user. Set parameters ldap_admin_dn and ldap_password in local config for this.
+        OELog::log('Attempting LDAP bind at ' . (new DateTime())->format('H:i:s'));
         if (!@ldap_bind($link, $ldap_config->ldap_admin_dn, $ldap_config->ldap_admin_password)) {
             $audit = new Audit();
             $audit->action = 'login-failed';
@@ -205,12 +219,15 @@ class UserIdentity extends CUserIdentity
 
             return [false, "Invalid login."];
         }
+        OELog::log('LDAP bind successful at ' . (new DateTime())->format('H:i:s'));
 
         // Perform an LDAP search for the username in order to retrieve their DN. Set the base DN in parameter ldap_dn in local config for this.
 
         $ldapSearchFilter = '(sAMAccountName='.$this->username.')';
 
+        OELog::log('LDAP search started at ' . (new DateTime())->format('H:i:s'));
         $ldapSearchResult = ldap_search($link, $ldap_config->ldap_dn, $ldapSearchFilter);
+        OELog::log('LDAP search completed at ' . (new DateTime())->format('H:i:s'));
 
         $ldapSearchEntries = ldap_get_entries($link, $ldapSearchResult);
 
@@ -232,6 +249,7 @@ class UserIdentity extends CUserIdentity
 
         // Now attempt to bind to the user's DN with their entered password.
 
+        OELog::log('LDAP distinguished name bind attempted at ' . (new DateTime())->format('H:i:s'));
         if (!@ldap_bind($link, $info['distinguishedname'][0], $this->password)) {
             $audit = new Audit();
             $audit->action = 'login-failed';
@@ -245,6 +263,7 @@ class UserIdentity extends CUserIdentity
 
             return [false, "Invalid login."];
         }
+        OELog::log('LDAP distinguished name bind successful at ' . (new DateTime())->format('H:i:s'));
         return [true, $info];
     }
 
@@ -254,10 +273,12 @@ class UserIdentity extends CUserIdentity
         $user = $user_authentication->user;
 
         if ($fp = @fsockopen($ldap_config->ldap_server, 389, $errno, $errstr, 5)) {
+            OELog::log('LDAP connection attempted at ' . (new DateTime())->format('H:i:s'));
             if (!$link = ldap_connect($ldap_config->ldap_server)) {
                 OELog::log('Unable to connect to LDAP server: '.$ldap_config->ldap_server);
                 return [false, "Invalid login."];
             }
+            OELog::log('LDAP connection established at ' . (new DateTime())->format('H:i:s'));
         } else {
             throw new Exception('Unable to reach ldap server: '.$ldap_config->ldap_server.': '.$errstr);
             OELog::log('Unable to reach ldap server: '.$ldap_config->ldap_server.': '.$errstr);
@@ -270,6 +291,7 @@ class UserIdentity extends CUserIdentity
         }
         $ldap_user_prefix = $ldap_config->getLDAPParam('ldap_username_prefix') ?: 'cn';
 
+        OELog::log('LDAP bind attempted at ' . (new DateTime())->format('H:i:s'));
         if (!@ldap_bind($link, "$ldap_user_prefix=$this->username,".$ldap_config->ldap_dn, $this->password)) {
             $audit = new Audit();
             $audit->action = 'login-failed';
@@ -283,6 +305,7 @@ class UserIdentity extends CUserIdentity
 
             return [false, "Invalid login."];
         }
+        OELog::log('LDAP bind at ' . (new DateTime())->format('H:i:s'));
 
         $attempts = $ldap_config->getLDAPParam('ldap_info_retries') ?? 1;
 
@@ -290,7 +313,9 @@ class UserIdentity extends CUserIdentity
             if ($i > 0 && $ldap_config->getLDAPParam('ldap_info_retry_delay')) {
                 sleep($ldap_config->getLDAPParam('ldap_info_retry_delay'));
             }
+            OELog::log('LDAP search commenced at ' . (new DateTime())->format('H:i:s'));
             $sr = ldap_search($link, $ldap_config->ldap_dn, "$ldap_user_prefix=$this->username");
+            OELog::log('LDAP search completed at ' . (new DateTime())->format('H:i:s'));
             $info = ldap_get_entries($link, $sr);
 
             if (isset($info[0])) {
@@ -312,7 +337,7 @@ class UserIdentity extends CUserIdentity
      * the openeyes DB. LDAP uses whichever LDAP is specified in the params.php
      * config file.
      *
-     * @return bool whether authentication succeeds.
+     * @return array [0 => bool success, 1 => string message]
      *
      * @throws
      */
@@ -413,6 +438,67 @@ class UserIdentity extends CUserIdentity
             throw new SystemException('Unknown auth_source: '.$inst_auth->user_authentication_method);
         }
 
+        $this->setSessionDataForUser($user, $user_authentication);
+
+        if (!$this->is_special) {
+            $institution_name = Institution::model()->findByPk($this->institution_id)->name;
+            $site_name = Site::model()->findByPk($this->site_id)->name;
+
+            $user->audit('login',
+                'login-successful', null,
+                'User ' . strtoupper($this->username) . ' logged in to Institution: ' . strtoupper($institution_name) . ', Site: ' . strtoupper($site_name)
+            );
+        }
+
+        return [true, ""];
+    }
+
+    public function firmString($firm)
+    {
+        if ($firm->serviceSubspecialtyAssignment) {
+            return "{$firm->name} ({$firm->serviceSubspecialtyAssignment->subspecialty->name})";
+        }
+
+        return $firm->name;
+    }
+
+    public function getId()
+    {
+        return $this->_id;
+    }
+
+    public function getLdap($options)
+    {
+        return new Zend_Ldap($options);
+    }
+
+    /**
+     * Logs the user in case a PIN code was used for login
+     * IMPORTANT!! PIN must be verified beforehand as this method
+     * does not check PIN.
+     *
+     * @param User $user
+     * @param UserAuthentication $user_authentication
+     * @return bool
+     */
+    public function authenticateWithPIN(User $user, UserAuthentication $user_authentication) : bool
+    {
+        // PIN already validated at this point
+        $this->_id = $user->id;
+        $this->errorCode = self::ERROR_NONE;
+        try {
+            $this->setSessionDataForUser($user, $user_authentication);
+        }
+        catch (Exception $e) {
+            Yii::log($e->getMessage(), CLogger::LEVEL_ERROR);
+            return false;
+        }
+        $user->audit('login', 'login-successful', null, 'User '.strtoupper($this->username).' logged in');
+        return true;
+    }
+
+    private function setSessionDataForUser(User $user, UserAuthentication $user_authentication) : void
+    {
         $app = Yii::app();
         $this->_id = $user->id;
         $this->username = $user_authentication->username;
@@ -473,7 +559,7 @@ class UserIdentity extends CUserIdentity
                 'Special User '.strtoupper($this->username).' logged in.'
             );
 
-            return [true, ""];
+            return;
         }
 
         // Set this first as we'll need it to determine the selected firm and site.
@@ -517,25 +603,36 @@ class UserIdentity extends CUserIdentity
             'User '.strtoupper($this->username).' logged in to Institution: ' . strtoupper($institution_name) . ', Site: ' . strtoupper($site_name)
         );
 
-        return [true, ""];
+        return;
     }
 
-    public function firmString($firm)
+    /**
+     * extract ldap authentication logic from function authticateUser
+     * 
+     * @param UserAuthentication $user_authentication
+     * @return bool
+     */
+    public function verifyExternalPassword(UserAuthentication $user_authentication)
     {
-        if ($firm->serviceSubspecialtyAssignment) {
-            return "{$firm->name} ({$firm->serviceSubspecialtyAssignment->subspecialty->name})";
+        $inst_auth = $user_authentication->institutionAuthentication;
+
+        $ldap_config = $inst_auth->LDAPConfig;
+        if ($ldap_config->getLDAPParam('utf8_decode_required')) {
+            $this->password = utf8_decode($this->password);
+        }
+        $auth_result = [false, "Invalid login."];
+        switch ($ldap_config->ldap_method) {
+            case 'zend':
+                $auth_result = $this->authenticateZendLDAP($user_authentication);
+                break;
+            case 'native-search':
+                $auth_result = $this->authenticateNativeLDAP($user_authentication);
+                break;
+            default:
+                $auth_result = $this->authenticateOtherLDAP($user_authentication);
+                break;
         }
 
-        return $firm->name;
-    }
-
-    public function getId()
-    {
-        return $this->_id;
-    }
-
-    public function getLdap($options)
-    {
-        return new Zend_Ldap($options);
+        return $auth_result[0];
     }
 }

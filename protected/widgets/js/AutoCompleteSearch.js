@@ -128,6 +128,7 @@ OpenEyes.UI = OpenEyes.UI || {};
                                 successResponse(response);
                             } else {
                                 inputbox.parent().find('.js-no-result').removeClass('hidden');
+                                inputbox.parent().find('ul').addClass('hidden');
                             }
                             searching = false;
                             current_focus = -1;

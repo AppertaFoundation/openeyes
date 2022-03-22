@@ -37,7 +37,6 @@ class DicomLogViewerController extends BaseController
     public function beforeAction($action)
     {
         $userid = Yii::app()->session['user']->id;
-        //if (($userid != 2103)and($userid != 122)and($userid != 613)and($userid != 1330)and($userid != 1)) return false;
         return parent::beforeAction($action);
     }
 
@@ -63,7 +62,116 @@ class DicomLogViewerController extends BaseController
     {
         $this->render('//dicomlogviewer/index');
     }
-    /////////////
+
+    public function actionSignatureList($type = 1, $sortby = 'DESC', $page = 1)
+    {
+        $this->layout = 'admin';
+        Audit::add('admin-SignatureImportLog', 'list');
+
+        $likewhere = '';
+        if ($type == SignatureImportLog::TYPE_CVI) {
+            $likewhere = 'cvi';
+        } elseif ($type == SignatureImportLog::TYPE_CONSENT) {
+            $likewhere = 'consent';
+        }
+
+        $search = new ModelSearch(SignatureImportLog::model());
+        $criteria = new CDbCriteria();
+        $criteria->order = "import_datetime ".$sortby;
+        $search->setCriteria($criteria);
+
+        if (!$page) {
+            $page = $search->initPagination()->currentPage+1;
+        }
+
+
+        $this->render('/dicomlogviewer/signature_import_log', array(
+            'pagination' => $search->initPagination(),
+            'logs' => $search->retrieveResults(),
+            'type' => $type,
+            'sortby' => $sortby,
+            'current_page' => $page,
+        ));
+    }
+
+    public function actionSignatureCrop($id, $type = 1, $page = 1)
+    {
+        $this->layout = 'admin';
+        $file = SignatureImportLog::model()->findByPk($id);
+        $path = $file->filename;
+        $filetype = pathinfo($path, PATHINFO_EXTENSION);
+        $data = @file_get_contents($path);
+        if (!$data) {
+            $img = false;
+        } else {
+            $img = 'data:image/' . $filetype . ';base64,' . base64_encode($data);
+        }
+        $elementy_type_id = ElementType::model()->findByAttributes(array('class_name'=> 'OEModule\OphCoCvi\models\Element_OphCoCvi_Esign'))->id;
+
+        $this->render('/dicomlogviewer/signature_import_log_crop', array('img' => $img, 'log_id' => $id, 'type' => $type, 'elementy_type_id' => $elementy_type_id, 'page' => $page));
+    }
+
+    /**
+     * Lists all disorders for a given search term.
+     */
+    public function actionSignatureImportLogAutocomplete($term)
+    {
+        $search = "%{$term}%";
+        $where = '(pi.value like :search)';
+        //$where = '';
+        $cvis = \Yii::app()->db->createCommand()
+            ->select('uc.code AS unique_id, DATE_FORMAT(e.event_date, "%d %b %Y") as value, ps.id AS element_id, pi.value AS hos_num, CONCAT(first_name," ", last_name) AS patient_name, e.id AS event_id')
+            ->from('event e')
+            ->join('episode ep', 'e.episode_id = ep.id')
+            ->join('patient p', 'ep.patient_id = p.id')
+            ->join('patient_identifier pi', 'pi.patient_id = p.id')
+            ->join('unique_codes_mapping ucm', 'e.id = ucm.event_id')
+            ->join('unique_codes uc', 'ucm.unique_code_id = uc.id')
+            ->join('et_ophcocvi_consentsig ps', 'e.id = ps.event_id')
+            ->join('contact c', 'p.contact_id = c.id')
+            //->join('et_ophcocvi_eventinfo eoe', 'e.id = eoe.event_id')
+            ->where($where, array(
+                ':search' => $search,
+            ))
+            ->order('e.event_date')
+            ->queryAll();
+
+
+        echo json_encode($cvis);
+    }
+
+    public function actionSignatureImageView($id)
+    {
+        $file = SignatureImportLog::model()->findByPk($id);
+
+        $filepath = $file->filename;
+        if (!file_exists($filepath)) {
+            return false;
+        }
+        header('Content-Type: image');
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate');
+        ob_clean();
+        flush();
+        readfile($filepath);
+    }
+
+    public function actionStatusChange()
+    {
+        if (Yii::app()->request->isPostRequest) {
+            $id = Yii::app()->request->getPost("id");
+            $status_id = Yii::app()->request->getPost("status_id");
+            $event_id = Yii::app()->request->getPost("event_id");
+
+            $log = SignatureImportLog::model()->findByPk($id);
+            $log->status_id = $status_id;
+            $log->event_id = $event_id;
+            $log->save();
+
+            return true;
+        }
+        return false;
+    }
 
     public function actionSearch()
     {
@@ -140,20 +248,12 @@ class DicomLogViewerController extends BaseController
             $criteria->params[':date_to'] = $date_to;
         }
 
-     //  !($count) && $criteria->join = 'left join event on t.event_id = event.id left join event_type on event.event_type_id = event_type.id';
-
         return $criteria;
     }
 
     public function getData($page = 1, $id = false)
     {
         $data = array();
-
-/*        if ($_data = Audit::model()->with('event')->find($this->criteria(true))) {
-            $data['total_items'] = $_data->count;
-        } else {
-            $data['total_items'] = 0;
-        }*/
 
         $data['total_items'] = count($this->getDicomFiles($page));
         $data['pages'] = 1;
@@ -168,7 +268,6 @@ class DicomLogViewerController extends BaseController
         } else {
             $criteria->offset = (($page - 1) * $this->items_per_page);
         }
-       // $data['items'] = Audit::model()->findAll($criteria);
         $data['pages'] = ceil($data['total_items'] / $this->items_per_page);
         if ($data['pages'] < 1) {
             $data['pages'] = 1;
@@ -179,8 +278,6 @@ class DicomLogViewerController extends BaseController
         if (!$id) {
             $data['page'] = $page;
         }
-
-       // print_r($criteria);
 
         $data['items'] = $data['files_data'] = $this->getDicomFiles($page);
 
@@ -266,13 +363,9 @@ class DicomLogViewerController extends BaseController
         return Yii::app()->db->createCommand()
             ->select('dfl.*')
             ->from('dicom_file_log as dfl')
-            //->join('dicom_import_log as dil', 'df.id = dil.dicom_file_id')
             ->where('dfl.dicom_file_id=:fid', array(':fid' => $file_id))
             ->order('dfl.event_date_time')
-            //->limit( $this->items_per_page)
-            //->offset(($page-1)*$this->items_per_page)
             ->queryAll();
-        //->getText();
     }
 
     public function actionReprocess()

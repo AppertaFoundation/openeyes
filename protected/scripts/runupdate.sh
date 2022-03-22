@@ -127,6 +127,13 @@ fi
 [ -f "/config/modules.conf" ] && MODULES_CONF="/config/modules.conf" || MODULES_CONF="$SCRIPTDIR/modules.conf"
 source $MODULES_CONF
 
+# Ensure that openeyes and eyedraw modules are included (the easiest way to do this is delete if they already exist, then add)
+delete=(openeyes)
+modules=("${modules[@]/$delete/}") # removes openeyes from modules list
+delete=(eyedraw)
+modules=("${modules[@]/$delete/}") # removes eyedraw from modules list
+modules=(openeyes eyedraw "${modules[@]}")
+
 MODULEROOT=$WROOT/protected/modules
 if [ -d "$MODULEROOT/sample" ]; then modules=(${modules[@]} sample); fi # Add sample DB to list if it exists
 

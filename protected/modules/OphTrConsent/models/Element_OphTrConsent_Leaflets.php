@@ -61,7 +61,7 @@ class Element_OphTrConsent_Leaflets extends BaseEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('event_id', 'safe'),
+            array('event_id, information, anaesthetic_leaflet', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, event_id', 'safe', 'on' => 'search'),

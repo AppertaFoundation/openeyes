@@ -28,6 +28,7 @@ use ReferenceData;
 class TicketAssignOutcomeOption extends BaseActiveRecordVersioned
 {
     use MappedReferenceData;
+    use \FindOrNewModel;
 
     protected function getSupportedLevels(): int
     {
@@ -67,7 +68,8 @@ class TicketAssignOutcomeOption extends BaseActiveRecordVersioned
     public function rules()
     {
         return array(
-            array('name, display_order', 'required'),
+            array('name, display_order, queueset_id', 'required'),
+            array('episode_status_id, followup, display_order', 'safe'),
         );
     }
 
@@ -80,9 +82,18 @@ class TicketAssignOutcomeOption extends BaseActiveRecordVersioned
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'episode_status' => array(self::BELONGS_TO, 'EpisodeStatus', 'episode_status_id'),
-            'outcome_option_institutions' => array(self::HAS_MANY, TicketAssignOutComeOption_Institution::class, 'outcome_option_id'),
-            'institutions' => array(self::MANY_MANY, Institution::class, 'patientticketing_ticketassignoutcomeoption_institution(outcome_option_id, institution_id)')
+            'outcome_option_institutions' => array(self::HAS_MANY, TicketAssignOutcomeOption_Institution::class, 'outcome_option_id'),
+            'institutions' => array(self::MANY_MANY, Institution::class, 'patientticketing_ticketassignoutcomeoption_institution(outcome_option_id, institution_id)'),
+            'queue_set' => array(self::BELONGS_TO, 'QueueSet', 'queueset_id'),
         );
+    }
+
+    public function beforeDelete()
+    {
+        foreach ($this->outcome_option_institutions as $outcome_option_institution) {
+            $outcome_option_institution->delete();
+        }
+        return parent::beforeDelete();
     }
 
     /**
@@ -119,5 +130,31 @@ class TicketAssignOutcomeOption extends BaseActiveRecordVersioned
         return new CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,
         ));
+    }
+
+    /**
+     * Assign Option to an institution
+     *
+     * @param int $institution_id
+     * @return bool
+     * @throws \Exception
+     */
+    public function addToInstitution(int $institution_id): bool
+    {
+        $exist = TicketAssignOutcomeOption_Institution::model()->findByAttributes([
+            'outcome_option_id' => $this->id,
+            'institution_id' => $institution_id
+        ]);
+
+        if (!$exist) {
+            $model = new TicketAssignOutcomeOption_Institution();
+            $model->outcome_option_id = $this->id;
+            $model->institution_id = $institution_id;
+            if (!$model->save()) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

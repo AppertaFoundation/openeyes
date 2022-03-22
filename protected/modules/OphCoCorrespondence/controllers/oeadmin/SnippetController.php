@@ -40,19 +40,106 @@ class SnippetController extends ModuleAdminController
      */
     public function actionList()
     {
+        $search = \Yii::app()->request->getPost('search');
+
+        if (isset($search['institution_relations.institution_id'])) {
+            $institutions_id = $search['institution_relations.institution_id'];
+        }
+
+        if (isset($search['sites.id'])) {
+            $sites_id = $search['sites.id'];
+        }
+
+
         $this->admin->setListFields(array(
             'display_order',
             'id',
-            \Yii::app()->user->checkAccess('admin') ? 'institutions.name' : 'sites.name',
+            'sites.name',
             'name',
             'body',
             'elementTypeName',
             'eventTypeName',
         ));
-        if (!\Yii::app()->user->checkAccess('admin')) {
-            $this->admin->getSearch()->setSearchItems(['institution_id' => ['default' => \Yii::app()->session['selected_institution_id']]]);
+
+        /**
+         * @var CDbCriteria $criteria
+         */
+        $criteria = $this->admin->getSearch()->getCriteria();
+        if (!isset($search['institution_relations.institution_id'])) {
+            $criteria->join = "JOIN ophcocorrespondence_letter_string_institution institution_relations ON institution_relations.letter_string_id = t.id";
         }
-        $this->admin->listModel();
+
+        /**
+         * @var CDbCriteria $criteria
+         */
+        $institution_criteria = new CDbCriteria;
+        $institution_criteria->join = 'JOIN institution_authentication ia ON ia.institution_id = t.id
+                                       JOIN user_authentication ua ON ua.institution_authentication_id = ia.id
+                                       JOIN user u ON u.id = ua.user_id';
+        $institution_criteria->compare('ua.user_id', Yii::app()->user->id);
+        $is_admin = Yii::app()->user->checkAccess('admin');
+
+        if($is_admin) {
+            $this->admin->getSearch()->addSearchItem('institution_relations.institution_id', array(
+                'type' => 'dropdown',
+                'options' => CHtml::listData(Institution::model()->findAll($institution_criteria), 'id', 'name'),
+                'default' => \Yii::app()->session['selected_institution_id']
+            ));
+        } else {
+            $this->admin->getSearch()->addSearchItem('institution_relations.institution_id', array(
+                'type' => 'dropdown',
+                'options' => CHtml::listData(array(), 'id', 'name'),
+                'default' => \Yii::app()->session['selected_institution_id']
+            ));
+        }
+
+        if (isset($institutions_id) && strcmp("", $institutions_id) !== 0) {
+            $this->admin->getSearch()->addSearchItem('sites.id', array(
+                'type' => 'dropdown',
+                'empty' => 'All sites',
+                'options' => CHtml::listData(Site::model()->findAllByAttributes(['institution_id' => $institutions_id]), 'id', 'name')
+            ));
+        } else {
+            if($is_admin) {
+                $this->admin->getSearch()->addSearchItem('sites.id', array(
+                    'type' => 'dropdown',
+                    'empty' => 'All sites',
+                    'options' => CHtml::listData(Site::model()->findAllByAttributes(['institution_id' => \Yii::app()->session['selected_institution_id']]), 'id', 'name')
+                ));
+            } else {
+                $this->admin->getSearch()->addSearchItem('sites.id', array(
+                    'type' => 'dropdown',
+                    'empty' => 'All sites',
+                    'options' => CHtml::listData(array(), 'id', 'name')
+                ));
+            }
+        }
+
+        $this->admin->getSearch()->addSearchItem('name');
+
+        if (isset($institutions_id) && strcmp("", $institutions_id) !== 0 &&
+            isset($sites_id) && strcmp("", $sites_id) !== 0) {
+            $criteria = new CDbCriteria;
+            $criteria->join = 'JOIN ophcocorrespondence_letter_string_institution institutions ON institutions.letter_string_id = t.id';
+            $criteria->join = 'JOIN ophcocorrespondence_letter_string_site sites ON sites.letter_string_id = t.id';
+            $criteria->compare('institution_relations.institution_id', null);
+            $criteria->compare('sites.site_id', $sites_id);
+            if(isset($search['name'])) {
+                $criteria->compare('name', $search['name']);
+            }
+            $criteria->mergeWith($criteria, 'OR');
+            $this->admin->getSearch()->setCriteria($criteria);
+
+            $this->admin->listModel();
+        } elseif (!$is_admin) {
+            $criteria = new CDbCriteria;
+            $criteria->compare('id', 0);
+            $this->admin->getSearch()->setCriteria($criteria);
+
+            $this->admin->listModel(false);
+        } else {
+            $this->admin->listModel();
+        }
     }
 
     /**
@@ -69,31 +156,65 @@ class SnippetController extends ModuleAdminController
         }
 
         $group_id = Yii::app()->request->getParam('group_id');
+        if(!empty(Yii::app()->request->getParam('default'))) {
+            $list_institution_id = Yii::app()->request->getParam('default')['institution_relations.institution_id'];
+        }
 
         if (!$id && $group_id) {
             $this->admin->getModel()->letter_string_group_id = $group_id;
         }
 
+        $model = $this->admin->getModel();
+        $institutions = $model->institutions;
+        $sites = $model->sites;
+
+        if (Yii::app()->request->isPostRequest) {
+            $post = \Yii::app()->request->getPost($this->admin->getModelName());
+            if (!array_key_exists('institutions', $post) && !is_array($post['institutions'])) {
+                if (isset($institutions)) {
+                    $selected_institution = array_values($institutions)[0]->id;
+                } elseif (isset($sites) && !empty($sites)) {
+                    $selected_institution = array_values($sites)[0]->institution_id;
+                } else {
+                    $selected_institution = $list_institution_id;
+                }
+            } else {
+                $selected_institution = $post['institutions'];
+            }
+        } else {
+            if (isset($institutions) && !empty($institutions)) {
+                $selected_institution = array_values($institutions)[0]->id;
+            } elseif (isset($sites) && !empty($sites)) {
+                $selected_institution = array_values($sites)[0]->institution_id;
+            } else {
+                $selected_institution = $list_institution_id;
+            }
+        }
+
         $is_admin = Yii::app()->user->checkAccess('admin');
         $this->admin->setEditFields(array(
             'institutions' => array(
-                'widget' => 'MultiSelectList',
+                'widget' => 'DropDownList',
                 'relation_field_id' => 'id',
                 'options' => \Institution::model()->getList(!$is_admin),
                 'htmlOptions' => [
-                    'label' => 'Institutions',
+                    'label' => 'Institution',
                     'empty' => '-- Add --',
                     'searchable' => false,
                     'class' => 'cols-8',
+                    'options' => array($selected_institution => array('selected' => true)),
+                    'disabled' => 'disabled'
                 ],
+                'hidden' => false,
+                'layoutColumns' => null,
             ),
             'sites' => array(
                 'widget' => 'MultiSelectList',
                 'relation_field_id' => 'id',
-                'options' => CHtml::listData(Institution::model()->getCurrent()->sites, 'id', 'short_name'),
+                'options' => CHtml::listData(Institution::model()->findByPk($selected_institution)->sites, 'id', 'name'),
                 'htmlOptions' => [
                     'label' => 'Sites',
-                    'empty' => '-- Add --',
+                    'empty' => 'All sites',
                     'searchable' => false,
                     'class' => 'cols-8',
                 ],
@@ -102,7 +223,7 @@ class SnippetController extends ModuleAdminController
                 'widget' => 'DropDownList',
                 'options' => CHtml::listData(LetterStringGroup::model()->findAll([
                     'condition' => 'institution_id = :institution_id',
-                    'params' => [':institution_id' => Yii::app()->session['selected_institution_id']]
+                    'params' => [':institution_id' => $selected_institution]
                 ]), 'id', 'name'),
                 'htmlOptions' => ['class' => 'cols-8'],
                 'hidden' => false,
@@ -137,10 +258,10 @@ class SnippetController extends ModuleAdminController
                 $model = $this->admin->getModel();
                 LetterString_Institution::model()->deleteAll('letter_string_id = :ls_id', [':ls_id' => $model->id]);
                 LetterString_Site::model()->deleteAll('letter_string_id = :ls_id', [':ls_id' => $model->id]);
-                if (array_key_exists('institutions', $post)) {
-                    $model->createMappings(ReferenceData::LEVEL_INSTITUTION, $post['institutions']);
-                } elseif (array_key_exists('site', $post)) {
+                if (array_key_exists('sites', $post) && is_array($post['sites'])) {
                     $model->createMappings(ReferenceData::LEVEL_SITE, $post['sites']);
+                } elseif (array_key_exists('institutions', $post) && strcmp("", $post['institutions']) !== 0) {
+                    $model->createMappings(ReferenceData::LEVEL_INSTITUTION, array($post['institutions']));
                 }
                 $this->redirect(['list']);
             } else {
@@ -154,9 +275,11 @@ class SnippetController extends ModuleAdminController
      */
     public function actionDelete()
     {
-        $model = $this->admin->getModel();
-        LetterString_Institution::model()->deleteAll('letter_string_id = :ls_id', [':ls_id' => $model->id]);
-        LetterString_Site::model()->deleteAll('letter_string_id = :ls_id', [':ls_id' => $model->id]);
+        $post = Yii::app()->request->getPost($this->admin->getModelName());
+        foreach ($post['id'] as $id) {
+            LetterString_Institution::model()->deleteAll('letter_string_id = :ls_id', [':ls_id' => $id]);
+            LetterString_Site::model()->deleteAll('letter_string_id = :ls_id', [':ls_id' => $id]);
+        }
         $this->admin->deleteModel();
     }
 

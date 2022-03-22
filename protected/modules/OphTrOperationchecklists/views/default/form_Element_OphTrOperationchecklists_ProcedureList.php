@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Copyright Apperta Foundation, 2020
  * This file is part of OpenEyes.
@@ -43,7 +44,7 @@ Yii::app()->clientScript->registerScript(
                             $element,
                             'eye_id',
                             $element->getEyeOptions(),
-                            ($element->eye ? (intval($element->eye->id) === Eye::BOTH ? EYE::RIGHT : $element->eye->id) : null),
+                            ($element->eye ? (intval($element->eye->id) === Eye::BOTH ? Eye::RIGHT : $element->eye->id) : null),
                             null,
                             null,
                             null,

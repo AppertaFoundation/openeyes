@@ -172,4 +172,41 @@ class SenderEmailAddresses extends BaseActiveRecordVersioned
     {
         return parent::model($className);
     }
+
+    public static function getSenderAddress($email, $institution_id, $site_id):? SenderEmailAddresses
+    {
+        $email_domain = substr($email, strpos($email, '@'));
+
+        $criteria = new \CDbCriteria();
+        $criteria->addCondition("t.institution_id = :institution_id OR t.institution_id IS NULL");
+        $criteria->addCondition("t.site_id = :site_id OR t.site_id IS NULL");
+        $criteria->addInCondition('t.domain', ['*', $email_domain]);
+        $criteria->order = 't.institution_id IS NULL, t.site_id IS NULL, t.domain = "*"';
+        $criteria->limit = 1;
+
+        $criteria->params[':institution_id'] = $institution_id;
+        $criteria->params[':site_id'] = $site_id;
+
+        return SenderEmailAddresses::model()->find($criteria);
+    }
+
+    /**
+     * Prepare global mailer
+     *
+     * @throws SodiumException
+     */
+    public function prepareMailer(): void
+    {
+        // Setting up the SMTP properties
+        \Yii::app()->mailer->setSmtpHost($this->host);
+        \Yii::app()->mailer->setSmtpUsername($this->username);
+
+        // decrypt the password
+        $encryptionDecryptionHelper = new EncryptionDecryptionHelper();
+        $password = $encryptionDecryptionHelper->decryptData($this->password);
+        \Yii::app()->mailer->setSmtpPassword($password);
+
+        \Yii::app()->mailer->setSmtpPort($this->port);
+        \Yii::app()->mailer->setSmtpSecurity($this->security);
+    }
 }

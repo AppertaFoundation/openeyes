@@ -48,7 +48,7 @@ namespace OEModule\PatientTicketing\models;
 class Queue extends \BaseActiveRecordVersioned
 {
     // used to prevent form field name conflicts
-    protected static $FIELD_PREFIX = 'patientticketing_';
+    public static $FIELD_PREFIX = 'patientticketing_';
 
     protected $auto_update_relations = true;
 
@@ -169,8 +169,17 @@ class Queue extends \BaseActiveRecordVersioned
     public function validJSON($attribute)
     {
         if ($this->$attribute) {
-            if (!\CJSON::decode($this->$attribute)) {
+            $array = \CJSON::decode($this->$attribute);
+            if (!$array) {
                 $this->addError($attribute, $this->getAttributeLabel($attribute).' must be valid JSON');
+            } else {
+                // valid JSON
+                $ids = array_column($array, 'id');
+                $duplicates = array_diff_key($ids, array_unique(array_map('strtolower', $ids)));
+
+                if ($duplicates) {
+                    $this->addError($attribute, '"id" must be unique');
+                }
             }
         }
     }
@@ -202,34 +211,43 @@ class Queue extends \BaseActiveRecordVersioned
      * Add the given ticket to the Queue for the user and firm.
      *
      * @param Ticket    $ticket
-     * @param \CWebUser $user
+     * @param int       $user_id
      * @param \Firm     $firm
      * @param $data
      */
-    public function addTicket(Ticket $ticket, $user, \Firm $firm, $data)
+    public function addTicket(Ticket $ticket, int $user_id, \Firm $firm, $data, $automatically_created = false)
     {
         $assignment = new TicketQueueAssignment();
         $assignment->queue_id = $this->id;
         $assignment->ticket_id = $ticket->id;
-        $assignment->assignment_user_id = $user->id;
+        $assignment->assignment_user_id = $user_id;
         $assignment->assignment_firm_id = $firm->id;
         $assignment->assignment_date = date('Y-m-d H:i:s');
-        $assignment->notes = @$data[self::$FIELD_PREFIX.'_notes'];
+        $assignment->notes = $data[self::$FIELD_PREFIX.'_notes'] ?? null;
 
         // store the assignment field values to the assignment object.
         if ($assignment_fields = $this->getAssignmentFieldDefinitions()) {
             $details = array();
             foreach ($assignment_fields as $assignment_field) {
-                if ($val = @$data[$assignment_field['form_name']]) {
-                    $store = array('id' => $assignment_field['id']);
-                    if (@$assignment_field['type'] == 'widget') {
-                        // store the widget for later data manipulation
-                        $store['widget_name'] = $assignment_field['widget_name'];
-                        // post processing handling
-                        $class_name = 'OEModule\\PatientTicketing\\widgets\\'.$assignment_field['widget_name'];
-                        $widget = new $class_name();
+                $store = array('id' => $assignment_field['id']);
+                if (@$assignment_field['type'] == 'widget') {
+                    // store the widget for later data manipulation
+                    $store['widget_name'] = $assignment_field['widget_name'];
+                    // post processing handling
+                    $class_name = 'OEModule\\PatientTicketing\\widgets\\'.$assignment_field['widget_name'];
+                    $widget = new $class_name();
+                    $widget->form_name = $assignment_field['form_name'];
+                    $widget->assignment_field = $assignment_field;
+                    $widget->ticket = $ticket;
+                    $widget->queue = $this;
+
+                    $field_name = $widget->fieldName ?? $assignment_field['form_name'] ?? null;
+                    $val = $data[$field_name] ?? null;
+                    if ($val) {
                         $widget->processAssignmentData($ticket, $val);
-                    } elseif (@$assignment_field['choices']) {
+                    }
+                } elseif (@$assignment_field['choices']) {
+                    if ($val = @$data[$assignment_field['form_name']]) {
                         foreach ($assignment_field['choices'] as $k => $v) {
                             if ($k == $val) {
                                 $val = $v;
@@ -237,19 +255,27 @@ class Queue extends \BaseActiveRecordVersioned
                             }
                         }
                     }
-                    $store['value'] = $val;
-                    $details[] = $store;
                 }
+                $store['value'] = $val;
+                $details[] = $store;
             }
             $assignment->details = json_encode($details);
         }
 
-        // generate the report field on the ticket.
-        $assignment->generateReportText();
+        //If ticket is created from a console command  we cannot generate report text as it requires rendering HTML
+        // which is only possible if we have a controller instantiated
+        if(!$automatically_created) {
+            // generate the report field on the ticket.
+            $assignment->generateReportText();
+        } else {
+            $assignment->notes = "Report unavailable as ticket has been created automatically.";
+        }
 
         if (!$assignment->save()) {
-            throw new \Exception('Unable to save queue assignment');
+            throw new \Exception('Unable to save queue assignment' . print_r($assignment->getErrors(), true));
         }
+
+        \FollowupAnalysisAggregate::updateForPatientTickets($ticket->patient_id, $ticket->id);
 
         return true;
     }
@@ -314,6 +340,7 @@ class Queue extends \BaseActiveRecordVersioned
                         'widget_name' => @$ass_fld['widget_name'],
                         'label' => @$ass_fld['label'],
                         'choices' => @$ass_fld['choices'],
+                        'assignment_fields' => $ass_fld
                 );
             }
         }

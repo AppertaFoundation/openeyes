@@ -275,7 +275,7 @@ foreach ($readings as $reading) {
         // scroll the numbers list so 9 is at top
         side.find('.js-add-select-search').on('click', function () {
             let $selected = side.find('ul.add-options.cols-full.single[data-id="time"] ul.number li[data-time="9"]');
-            side.find('ul.add-options.cols-full.single[data-id="time"]').scrollTop($selected.offset().top - $selected.parent().offset().top);
+            side.find('ul.add-options.cols-full.single[data-id="time"]').scrollTop($selected.top - $selected.parent().top);
         });
 
     });

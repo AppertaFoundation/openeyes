@@ -1,6 +1,5 @@
 <?php
 
-
 namespace OEModule\OphCiExamination\tests\unit\models;
 
 use OEModule\OphCiExamination\models\interfaces\SidedData;
@@ -253,7 +252,7 @@ class Synoptophore_ReadingForGazeTest extends \ModelTestCase
         $instance->setAttributes($data);
 
         $savedInstance = $this->saveEntry($instance, $side, $eye_id);
-        $expected = "+" . $data['horizontal_angle'] . "° " . $data['vertical_power'] . "Δ " .
+        $expected = $data['horizontal_angle'] . "° " . $data['vertical_power'] . "Δ " .
             $direction->name . " " . $data['torsion'] . " " . $deviation->abbreviation;
 
         $this->assertEquals($expected, (string) $savedInstance); // explicit type casting may not be nesc, but added for readability

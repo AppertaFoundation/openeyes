@@ -39,6 +39,8 @@ class QueueAssign extends \CWidget
     public $assetFolder;
     public $shortName;
     public $extra_view_data = array();
+    public $episode_id = null;
+    public $is_template = false;
 
     public function run()
     {
@@ -87,6 +89,7 @@ class QueueAssign extends \CWidget
             'auto_save' => $auto_save,
             'print_letter_event' => $print_letter_event,
             'extra_view_data' => $this->extra_view_data,
+            'episode_id' => $this->episode_id,
         ));
     }
 }

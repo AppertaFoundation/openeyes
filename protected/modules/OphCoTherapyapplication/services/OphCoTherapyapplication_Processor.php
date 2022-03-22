@@ -106,15 +106,11 @@ class OphCoTherapyapplication_Processor
                     'params' => array(':snomed' => $this::SNOMED_INTRAVITREAL_INJECTION, ':snomed2' => $this::SNOMED_PDT),
                 )
             );
+            $proc_ids = array_map(function($proc){
+                return $proc->id;
+            }, $procedures);
             foreach ($sides as $side) {
-                $sideHasConsent = false;
-                foreach ($procedures as $procedure) {
-                    if ($api->hasConsentForProcedure($this->event->episode, $procedure, $side)) {
-                        $sideHasConsent = true;
-                        break;
-                    }
-                }
-                if (!$sideHasConsent) {
+                if (!$api->hasConsentForProcedure($this->event->episode, $proc_ids, $side)) {
                     $warnings[] = 'Consent form is required for ' . $side . ' eye.';
                 }
             }

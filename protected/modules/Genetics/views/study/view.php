@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,33 +16,34 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
     <div class="admin box">
     <div class="data-group">
         <div class="cols-10 column"><h2>View Genetics Study</h2></div>
         <div class="cols-2 column right">
-            <?php if ( $this->checkAccess('OprnEditGeneticPatient') ) : ?>
-                <a href="/Genetics/study/edit/<?php echo $model->id; ?>?returnUri=<?php echo urlencode('/Genetics/study/view/').$model->id; ?>" class="button small right" id="study_edit">Edit</a>
+            <?php if ($this->checkAccess('OprnEditGeneticPatient')) : ?>
+                <a href="/Genetics/study/edit/<?php echo $model->id; ?>?returnUri=<?php echo urlencode('/Genetics/study/view/') . $model->id; ?>" class="button small right" id="study_edit">Edit</a>
             <?php endif; ?>
         </div>
     </div>
         <?php $this->widget('zii.widgets.CDetailView', array(
-            'data'=>$model,
-            'htmlOptions' => array('class'=>'detailview'),
-            'attributes'=>array(
+            'data' => $model,
+            'htmlOptions' => array('class' => 'standard flex-layout cols-full'),
+            'attributes' => array(
                 'name',
                 'criteria',
                 'end_date',
                 array(
                     'label' => 'Subjects',
                     'type' => 'raw',
-                    'value' => function() use ($model){
+                    'value' => function () use ($model) {
                         $html = null;
                         if ($model->subjects) {
                             $html = '<ul>';
                             foreach ($model->subjects as $subject) {
                                 $html .= '<li>';
-                                $html .= '<a href="/Genetics/subject/view/'.$subject->id.'">' . $subject->patient->fullName .  '</a>';
+                                $html .= '<a href="/Genetics/subject/view/' . $subject->id . '">' . $subject->patient->fullName .  '</a>';
                                 $html .= '</li>';
                             }
                             $html .= '</ul>';
@@ -52,12 +54,12 @@
                 array(
                     'label' => 'Investigators',
                     'type' => 'raw',
-                    'value' => function() use ($model){
+                    'value' => function () use ($model) {
                         $investigators = '';
                         if ($model->proposers) {
                             $investigators = '<ul>';
                             foreach ($model->proposers as $proposer) {
-                                $investigators .= '<li>'.$proposer->first_name.' '.$proposer->last_name.'</li>';
+                                $investigators .= '<li>' . $proposer->first_name . ' ' . $proposer->last_name . '</li>';
                             }
                             $investigators .= '</ul>';
                         }
@@ -67,5 +69,3 @@
             )
 
             ));
-        
-        

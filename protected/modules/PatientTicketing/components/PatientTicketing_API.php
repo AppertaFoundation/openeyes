@@ -159,11 +159,14 @@ class PatientTicketing_API extends \BaseAPI
             if (@$field['type'] == 'widget') {
                 $class_name = 'OEModule\\PatientTicketing\\widgets\\'.$field['widget_name'];
                 $widget = new $class_name();
+                $widget->form_name = $field_name;
+                $widget->label = $field['assignment_fields']['label'] ?? '';
+                $form_name = $widget->fieldName ?? $field_name ?? null;
 
-                if (isset($data[$field['form_name']])) { // if widget is missing don't validate
-                    $result[$field_name] = $widget->extractFormData($data[$field['form_name']]);
+                if (isset($data[$form_name])) { // if widget is missing don't validate
+                    $result[$form_name] = $widget->extractFormData($data[$form_name]);
                     if ($validate) {
-                        $errors = array_merge($errors, $widget->validate($data[$field['form_name']]));
+                        $errors = array_merge($errors, $widget->validate($data[$form_name]));
                     }
                 }
             } else {
@@ -197,7 +200,7 @@ class PatientTicketing_API extends \BaseAPI
     /**
      * @param \Event    $event
      * @param Queue     $initial_queue
-     * @param \CWebUser $user
+     * @param int       $user_id
      * @param \Firm     $firm
      * @param $data
      *
@@ -205,13 +208,13 @@ class PatientTicketing_API extends \BaseAPI
      *
      * @return \OEModule\PatientTicketing\models\Ticket
      */
-    public function createTicketForEvent(\Event $event, Queue $initial_queue, \CWebUser $user, \Firm $firm, $data)
+    public function createTicketForEvent(\Event $event, Queue $initial_queue, $user_id, \Firm $firm, $data, $automatically_created = false)
     {
+
         $patient = $event->episode->patient;
-        if ($ticket = $this->createTicketForPatient($patient, $initial_queue, $user, $firm, $data)) {
-            $ticket->event_id = $event->id;
-            $ticket->save();
-        } else {
+        $ticket = $this->createTicketForPatient($patient, $initial_queue, $user_id, $firm, $data, $event, $automatically_created);
+
+        if (!$ticket) {
             throw new \Exception('Ticket was not created for an unknown reason');
         }
 
@@ -239,7 +242,7 @@ class PatientTicketing_API extends \BaseAPI
     /**
      * @param \Patient  $patient
      * @param Queue     $initial_queue
-     * @param \CWebUser $user
+     * @param int       $user_id
      * @param \Firm     $firm
      * @param $data
      *
@@ -247,7 +250,7 @@ class PatientTicketing_API extends \BaseAPI
      *
      * @return \OEModule\PatientTicketing\models\Ticket
      */
-    public function createTicketForPatient(\Patient $patient, Queue $initial_queue, \CWebUser $user, \Firm $firm, $data)
+    public function createTicketForPatient(\Patient $patient, Queue $initial_queue, $user_id, \Firm $firm, $data, \Event $event, $automatically_created = false)
     {
         $transaction = Yii::app()->db->getCurrentTransaction() === null
                 ? Yii::app()->db->beginTransaction()
@@ -256,13 +259,14 @@ class PatientTicketing_API extends \BaseAPI
         try {
             $ticket = new Ticket();
             $ticket->patient_id = $patient->id;
-            $ticket->created_user_id = $user->id;
-            $ticket->last_modified_user_id = $user->id;
+            $ticket->created_user_id = $user_id;
+            $ticket->last_modified_user_id = $user_id;
             $ticket->priority_id = $data['patientticketing__priority'];
+            $ticket->event_id = $event->id;
             $ticket->save();
             $ticket->audit('ticket', 'create', $ticket->id);
 
-            $initial_queue->addTicket($ticket, $user, $firm, $data);
+            $initial_queue->addTicket($ticket, $user_id, $firm, $data, $automatically_created);
             if ($transaction) {
                 $transaction->commit();
             }

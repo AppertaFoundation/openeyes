@@ -27,16 +27,14 @@
 $qs_svc = Yii::app()->service->getService($this::$QUEUESET_SERVICE);
 ?>
 
-<div class="oe-full-header flex-layout">
+<div class="oe-full-header use-full-screen">
     <div class="title wordcaps">
         <b><?= $queueset ? $queueset->name : $category->name ?></b>
     </div>
-    <div>
-        <button class="button blue hint" id="js-virtual-clinic-btn">Change Virtual Clinic</button>
-    </div>
+    <nav class="options-right"><button class="button blue hint" id="js-virtual-clinic-btn">Change Virtual Clinic</button></nav>
 </div>
 
-<div class="oe-full-content oe-virtual-clinic">
+<div class="oe-full-content subgrid virtual-clinic use-full-screen">
     <?php
     if ($queueset) {
         $flash_message = Yii::app()->user->getFlash('patient-ticketing-' . $queueset->getId());

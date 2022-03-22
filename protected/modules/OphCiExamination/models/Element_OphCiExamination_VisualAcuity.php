@@ -283,8 +283,10 @@ class Element_OphCiExamination_VisualAcuity extends \BaseEventTypeElement implem
     public function getUnits($excluded_unit_id, $is_near)
     {
         $criteria = new \CDbCriteria();
-        $criteria->condition = 'id <> :unit_id AND active = 1 AND is_near = :is_near';
-        $criteria->params = array(':unit_id' => $excluded_unit_id, 'is_near' => $is_near);
+        $criteria->condition = 'id <> :unit_id AND active = 1';
+        $criteria->addCondition($is_near ? 'is_near = 1' : 'is_va = 1');
+
+        $criteria->params = array(':unit_id' => $excluded_unit_id);
         $criteria->order = 'name';
         return OphCiExamination_VisualAcuityUnit::model()->findAll($criteria);
     }
@@ -665,7 +667,9 @@ class Element_OphCiExamination_VisualAcuity extends \BaseEventTypeElement implem
 
     protected function letterStringSimple(OphCiExamination_VisualAcuityUnit $va_unit = null)
     {
-        return $this->getApp()->controller->renderPartial(
+        $controller = $this->getApp()->controller;
+
+        return $controller->renderPartial(
             'application.modules.OphCiExamination.views.default.letter.va',
             [
                 'left' => $this->getNamedReadings('left', $va_unit ? $va_unit->id : null),

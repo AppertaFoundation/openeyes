@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <?php
@@ -23,13 +25,15 @@
 <table class="cols-full" id="dm_table" data-macro_id="<?php echo $macro_id; ?>">
     <colgroup>
         <col>
-        <col class="cols-3">
+        <col class="cols-5">
         <col class="cols-4">
+        <col class="cols-1">
+        <col>
     </colgroup>
     <thead>
         <tr id="dm_0">
-                    <th colspan="4"></th>
-                    <th class="actions"><img class="docman_loader right" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>" alt="loading..." style="display: none;"></th>
+            <th colspan="4"></th>
+            <th class="actions"><img class="docman_loader right" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif') ?>" alt="loading..." style="display: none;"></th>
         </tr>
     </thead>
     <tbody>
@@ -107,7 +111,7 @@
         <?php endif; ?>
         <?php $row_index++; ?>
 
-        <?php if ( isset($macro_data['cc']) ) : ?>
+        <?php if (isset($macro_data['cc'])) : ?>
             <?php foreach ($macro_data['cc'] as $cc_index => $macro) : ?>
                 <?php $index = $row_index + $cc_index ;
                 $contact_name = isset($macro["contact_name"]) ? $macro["contact_name"] : null;
@@ -159,7 +163,7 @@
                         ?>
                     </td>
                     <td>
-                        <a class="remove_recipient removeItem <?php echo (isset($macro['is_mandatory']) && $macro['is_mandatory'])? 'hidden' : '' ?>" data-rowindex="<?php echo $index ?>">Remove</a>
+                        <a class="remove_recipient removeItem <?php echo (isset($macro['is_mandatory']) && $macro['is_mandatory']) ? 'hidden' : '' ?>" data-rowindex="<?php echo $index ?>"><i class="oe-i trash"></i></a>
                     </td>
                 </tr>
             <?php endforeach; ?>

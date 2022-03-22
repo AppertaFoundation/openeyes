@@ -50,6 +50,7 @@
 
 ## Config for various external services
 # export OE_DOCMAN_EXPORT_DIRECTORY="/tmp/docman"
+# export OE_INT_REFER_EXPORT_DIR="/internalreferrals"
 # export OE_PORTAL_URI=""
 # export OE_PORTAL_EXTERNAL_URI=""
 # export OE_PORTAL_USERNAME=""
@@ -61,6 +62,24 @@
 ## Will turn on automatic daily import of GP/Practice/CCG data (UK Only).
 ## Options are england, scotland, ni
 # export OE_HSCIC_REGION="england"
+
+## Authentication options
+# export AUTH_SOURCE="BASIC" # OIDC, SAML, BASIC or LDAP;
+
+# export SSO_BASE_URL='http://localhost'
+# export SSO_ENTITY_ID=''
+# export SSO_APP_EMBED_LINK=''
+# export ## Credentials necessary for single-sign-on using OpenID-Connect
+# export SSO_PROVIDER_URL=''
+# export SSO_CLIENT_ID=''
+# export SSO_CLIENT_SECRET''
+# export SSO_ISSUER_URL
+# export SSO_REDIRECT_URL='http://localhost'
+# export SSO_RESPONSE_TYPE='code'
+# export SSO_IMPLICIT_FLOW='true'
+# export SSO_USER_ATTRIBUTES=''
+# export SSO_CUSTOM_CLAIMS=''
+# export STRICT_SSO_ROLES_CHECK='true'
 
 ## Set the endpoint for an LDAP server. Also automatically changes authentication from 'BASIC' to 'LDAP'
 # export OE_LDAP_SERVER='ldap.example.com'
@@ -115,7 +134,18 @@
 # export OE_ADMIN_BANNER_SHORT=""
 # export OE_ADMIN_BANNER_LONG=""
 
+## Training hub variables
+# export OE_TRAINING_HUB_TEXT=""
+# export OE_TRAINING_HUB_URL=""
+
+## Users - comma separated lists
+# export OE_LOCAL_USERS='admin, api, docman_user, payload_processor'
+# export OE_SPECIAL_USERS='api'
+
 ## Customise which user profile fields should be read-only.
 ## E.g, with SSO, you may not want users to be able to edit theor own name, qualifications, etc.
 ## Comma separated list
 # export PROFILE_USER_READONLY_FIELDS=''
+
+## Number of FULL days events can be edited for (by non-admins)
+#OE_EVENT_LOCK_DAYS=1

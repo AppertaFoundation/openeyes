@@ -158,7 +158,7 @@ class PatientShortcode extends BaseActiveRecordVersioned
         if ($this->eventType) {
             if ($api = Yii::app()->moduleAPI->get($this->eventType->class_name)) {
                 $r = new ReflectionClass($api);
-                if ($m = $r->getMethod($this->method)) {
+                if ($r->hasMethod($this->method) && $m = $r->getMethod($this->method)) {
                     return static::formatDocComment($m->getDocComment());
                 }
             }

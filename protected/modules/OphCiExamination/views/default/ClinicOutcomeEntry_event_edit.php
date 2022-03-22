@@ -22,6 +22,12 @@ if (!isset($values)) {
     $values = array(
         'status_id' => $entry->status_id,
         'status' => $entry->getStatusLabel(),
+        'discharge_status_id' => $entry->discharge_status_id,
+        'discharge_status' => $entry->getDischargeStatusLabel(),
+        'discharge_destination_id' => $entry->discharge_destination_id,
+        'discharge_destination' => $entry->getDischargeDestinationLabel(),
+        'transfer_institution_id' => $entry->transfer_institution_id,
+        'transfer_to' => $entry->getTransferToLabel(),
         'followup_quantity' => $entry->followup_quantity ? $entry->followup_quantity : null,
         'followup_period_id' => $entry->followup_period_id,
         'followup_period' => $entry->getPeriodLabel(),
@@ -44,20 +50,38 @@ if (!isset($values)) {
         <?php } ?>
         <input type="hidden" name="<?= $field_prefix ?>[status_id]" value="<?= $values['status_id'] ?>"/>
         <?php if (!$patient_ticket) { ?>
+            <input type="hidden" name="<?= $field_prefix ?>[discharge_status_id]"
+                   value="<?= $values['discharge_status_id'] ?>"/>
+            <input type="hidden" name="<?= $field_prefix ?>[discharge_destination_id]"
+                   value="<?= $values['discharge_destination_id'] ?>"/>
+            <input type="hidden" name="<?= $field_prefix ?>[transfer_institution_id]"
+                   value="<?= $values['transfer_institution_id'] ?>"/>
             <input type="hidden" name="<?= $field_prefix ?>[followup_quantity]"
                    value="<?= $values['followup_quantity'] ?>"/>
             <input type="hidden" name="<?= $field_prefix ?>[followup_period_id]"
                    value="<?= $values['followup_period_id'] ?>"/>
             <input type="hidden" name="<?= $field_prefix ?>[followup_comments]"
                    value="<?= $values['followup_comments'] ?>"/>
-            <input type="hidden" name="<?= $field_prefix ?>[role_id]" value="<?= $values['role_id'] ?>"/>
-            <input type="hidden" name="<?= $field_prefix ?>[risk_status_id]" value="<?= $values['risk_status_id'] ?>"/>
+            <input type="hidden" name="<?= $field_prefix ?>[role_id]"
+                   value="<?= $values['role_id'] ?>"/>
+            <input type="hidden" name="<?= $field_prefix ?>[risk_status_id]"
+                   value="<?= $values['risk_status_id'] ?>"/>
         <?php } ?>
         <?= isset($condition_text) ? $condition_text : "{{condition_text}}"; ?>
     </td>
     <td>
         <?php if (!$patient_ticket) { ?>
-            <?=$values['status'] . ' ' . $values['followup_quantity'] . ' ' . $values['followup_period'] . $values['role'] . $values['followup_comments_display'];?>
+            <?=$values['status']
+            . ' '
+            . $values['discharge_status']
+            . ' '
+            . $values['discharge_destination'] . ($values['transfer_to'] ?? null)
+            . ' '
+            . $values['followup_quantity']
+            . ' '
+            . $values['followup_period']
+            . $values['role']
+            . $values['followup_comments_display']?>
             <?php if ($values['risk_status_id']) { ?>
                 <i 
                 class="<?=$values['risk_status_class']?>"
@@ -106,7 +130,12 @@ if (!isset($values)) {
                         <?php if (isset($_POST['patientticket_queue']) && !empty($_POST['patientticket_queue'])) {
                             $this->widget(
                                 $ticket_api::$QUEUE_ASSIGNMENT_WIDGET,
-                                array('queue_id' => $_POST['patientticket_queue'], 'label_width' => 3, 'data_width' => 5)
+                                array(
+                                    'queue_id' => $_POST['patientticket_queue'],
+                                    'label_width' => 3,
+                                    'data_width' => 5,
+                                    'is_template' => (isset($is_template) && $is_template)
+                                )
                             );
                         } ?>
                     </div>

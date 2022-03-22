@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -216,18 +217,21 @@ class Firm extends BaseActiveRecordVersioned
      * @param null $include_id
      * @param null $runtime_selectable
      * @param null $can_own_an_episode
+     * @param $include_subspecialty_name Will return name as "<context name> (<subspecialty name)"
      * @return array
      * @throws CException
      */
-    public function getList($institution_id = null, $subspecialty_id = null, $include_id = null, $runtime_selectable = null, $can_own_an_episode = null)
+    public function getList($institution_id = null, $subspecialty_id = null, $include_id = null, $runtime_selectable = null, $can_own_an_episode = null, $include_subspecialty_name = null)
     {
         $bindValues = array();
         /**
          * @var CDbCommand $cmd
          */
         $cmd = Yii::app()->db->createCommand()
-            ->select('f.id, f.name')
+            ->select('f.id, f.name, s.name as subspecialty')
             ->from('firm f')
+            ->join('service_subspecialty_assignment ssa', 'f.service_subspecialty_assignment_id = ssa.id')
+            ->join('subspecialty s', 's.id = ssa.subspecialty_id')
             ->where('f.active = 1 ' .
                 ($runtime_selectable ? 'and f.runtime_selectable = 1' : '') .
                 ($can_own_an_episode ? 'and f.can_own_an_episode = 1' : '') .
@@ -239,8 +243,7 @@ class Firm extends BaseActiveRecordVersioned
         }
 
         if ($subspecialty_id) {
-            $cmd = $cmd->join('service_subspecialty_assignment ssa', 'f.service_subspecialty_assignment_id = ssa.id')
-                ->andWhere('ssa.subspecialty_id = :subspecialty_id');
+            $cmd = $cmd->andWhere('ssa.subspecialty_id = :subspecialty_id');
             $bindValues[':subspecialty_id'] = $subspecialty_id;
         }
 
@@ -254,7 +257,7 @@ class Firm extends BaseActiveRecordVersioned
 
         $result = array();
         foreach ($cmd->queryAll() as $firm) {
-            $result[$firm['id']] = $firm['name'];
+            $result[$firm['id']] = ($include_subspecialty_name ? $firm['name'] . ' (' . $firm['subspecialty'] . ')' : $firm['name']);
         }
 
         natcasesort($result);
@@ -268,7 +271,7 @@ class Firm extends BaseActiveRecordVersioned
      *
      * @return array
      */
-    public function getListWithSpecialties($institution_id = null, $include_non_subspecialty = false, $subspecialty_id = null)
+    public function getListWithSpecialties($institution_id = null, $include_non_subspecialty = false, $subspecialty_id = null, $only_with_consultant = false, $only_service_firms = false)
     {
 
         $join_method = $include_non_subspecialty ? 'leftJoin' : 'join';
@@ -280,12 +283,20 @@ class Firm extends BaseActiveRecordVersioned
             ->$join_method('subspecialty s', 'ssa.subspecialty_id = s.id')
             ->where('f.active = 1');
 
+        if ($only_with_consultant) {
+            $command->andWhere('consultant_id IS NOT NULL');
+        }
+
         if ($subspecialty_id) {
             $command->andWhere('s.id = :id', array(':id' => $subspecialty_id));
         }
 
         if ($institution_id) {
             $command->andWhere('f.institution_id = :institution_id', array(':institution_id' => $institution_id));
+        }
+
+        if ($only_service_firms) {
+            $command->andWhere('f.can_own_an_episode = 1');
         }
 
         $firms = $command->order('f.name, s.name')->queryAll();
@@ -474,7 +485,7 @@ class Firm extends BaseActiveRecordVersioned
 
     public function beforeValidate()
     {
-        if ( $this->can_own_an_episode && $this->service_email != '' ) {
+        if ($this->can_own_an_episode && $this->service_email != '') {
             // check if there is an email already existing for this subspeciality
             $criteria = new CDbCriteria();
             // get the service_subspeciality_assignment_id from the service_id
@@ -486,7 +497,7 @@ class Firm extends BaseActiveRecordVersioned
                 $criteria->params[':id'] = $this->id;
             }
             $firm = $this->findAll($criteria);
-            if (count($firm) >= 1  ) {
+            if (count($firm) >= 1) {
                 $this->addError('service_email', 'Email already set for another service of this specialty.');
             }
         }

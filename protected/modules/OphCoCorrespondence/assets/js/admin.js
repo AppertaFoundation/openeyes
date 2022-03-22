@@ -4,23 +4,11 @@ $(document).ready(function() {
 		updateMacroList(0);
 	});
 
-	$('#site_id').change(function() {
+	$('#site_id, #institution_id, #subspecialty_id, #firm_id').change(function() {
 		updateMacroList(0);
 	});
 
-	$('#subspecialty_id').change(function() {
-		updateMacroList(0);
-	});
-
-	$('#firm_id').change(function() {
-		updateMacroList(0);
-	});
-
-	$('#name').change(function() {
-		updateMacroList(1);
-	});
-
-	$('#episode_status_id').change(function() {
+	$('#name, #episode_status_id').change(function() {
 		updateMacroList(1);
 	});
 
@@ -268,6 +256,50 @@ $(document).ready(function() {
 		});
     });
 
+	var pathname = window.location.pathname;
+    if(pathname.indexOf('/snippet/') > -1){
+
+		$('#search_institution_relations\\.institution_id option')
+		.filter(function() {
+			return !this.value || $.trim(this.value).length == 0 || $.trim(this.text).length == 0;
+		})
+		.remove();
+
+		$("#et_add").prop('value', 'Add to ' + $('#search_institution_relations\\.institution_id option:selected').text());
+		
+		$('#search_institution_relations\\.institution_id').on('change', function () {
+			getInstitutionSites($(this).val(), $('#search_sites\\.id'));
+		});
+
+		if($('#LetterString_institutions').val() === "") {
+			$("#LetterString_sites").prop("disabled", true);
+		} else {
+			$("#LetterString_sites").prop("disabled", false);
+		}
+
+		$('#LetterString_institutions').on('change', function () {
+			getInstitutionSites($(this).val(), $('#LetterString_sites'));
+
+			$(".multi-select-remove").each(function(i) {
+				var btn = $(this);
+				setTimeout(btn.trigger.bind(btn, "click"), i * 1);
+			});
+
+			if($('#LetterString_institutions').val() === "") {
+				$("#LetterString_sites").prop("disabled", true);
+			} else {
+				$("#LetterString_sites").prop("disabled", false);
+			}
+		});
+
+		$("#et_save").click(function(event){
+			$('#LetterString_institutions').prop("disabled", false); // Element(s) are now enabled.
+		});
+
+	}
+
+
+
     /** End of EditMacro Page **/
 
 });
@@ -295,7 +327,16 @@ function updateMacroList(preserve)
 
 	$.ajax({
 		'type': 'GET',
-		'url': baseUrl + '/OphCoCorrespondence/admin/filterMacros?type=' + $('#type').val() + '&site_id=' + $('#site_id').val() + '&subspecialty_id=' + $('#subspecialty_id').val() + '&firm_id=' + $('#firm_id').val() + '&name=' + name + '&episode_status_id=' + episode_status_id,
+		'url': baseUrl + '/OphCoCorrespondence/admin/filterMacros',
+		data: {
+			type: $('#type').val(),
+			institution_id: document.getElementById('institution_id').value,
+			site_id: $('#site_id').val(),
+			subspecialty_id: $('#subspecialty_id').val(),
+			firm_id: $('#firm_id').val(),
+			name: name,
+			episode_status_id: episode_status_id
+		},
 		'success': function(html) {
 			$('#admin_letter_macros tbody').html(html);
 		}
@@ -303,7 +344,14 @@ function updateMacroList(preserve)
 
 	$.ajax({
 		'type': 'GET',
-		'url': baseUrl + '/OphCoCorrespondence/admin/filterMacroNames?type=' + $('#type').val() + '&site_id=' + $('#site_id').val() + '&subspecialty_id=' + $('#subspecialty_id').val() + '&firm_id=' + $('#firm_id').val(),
+		'url': baseUrl + '/OphCoCorrespondence/admin/filterMacroNames',
+		data: {
+			type: $('#type').val(),
+			institution_id: document.getElementById('institution_id').value,
+			site_id: $('#site_id').val(),
+			subspecialty_id: $('#subspecialty_id').val(),
+			firm_id: $('#firm_id').val()
+		},
 		'success': function(html) {
 			$('#name').html(html);
 
@@ -315,7 +363,14 @@ function updateMacroList(preserve)
 
 	$.ajax({
 		'type': 'GET',
-		'url': baseUrl + '/OphCoCorrespondence/admin/filterEpisodeStatuses?type=' + $('#type').val() + '&site_id=' + $('#site_id').val() + '&subspecialty_id=' + $('#subspecialty_id').val() + '&firm_id=' + $('#firm_id').val(),
+		'url': baseUrl + '/OphCoCorrespondence/admin/filterEpisodeStatuses',
+		data: {
+			type: $('#type').val(),
+			institution_id: document.getElementById('institution_id').value,
+			site_id: $('#site_id').val(),
+			subspecialty_id: $('#subspecialty_id').val(),
+			firm_id: $('#firm_id').val()
+		},
 		'success': function(html) {
 			$('#episode_status_id').html(html);
 

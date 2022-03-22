@@ -4,6 +4,15 @@
  */
 
 $display_queue = $ticket->getDisplayQueueAssignment();
+$is_patient_called = null;
+$data = json_decode($display_queue->details,true);
+if($data) {
+    if (array_key_exists('value', $data[0])) {
+        if (is_array($data[0]['value'])) {
+            $is_patient_called = array_key_exists('is_patient_called', $data[0]['value']) ? $data[0]['value']['is_patient_called'] : null;
+        }
+    }
+}
 ?>
 
 <?php if ($display_queue->report) { ?>
@@ -16,6 +25,16 @@ $display_queue = $ticket->getDisplayQueueAssignment();
             <div class="data-value">
                 <?= $display_queue->report ?>
             </div>
+        </div>
+    </div>
+<?php } ?>
+<?php if ($is_patient_called!==null) {?>
+    <div class="row divider">
+        <div class="large-4 column">
+            <div class="data-label">Did you telephone the patient during this review?</div>
+        </div>
+        <div class="large-6 column left">
+            <div class="data-value"><?= $is_patient_called ? 'Yes' : 'No' ?></div>
         </div>
     </div>
 <?php } ?>

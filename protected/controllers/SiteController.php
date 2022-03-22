@@ -22,13 +22,28 @@ class SiteController extends BaseController
         return array(
             // Allow unauthenticated users to view certain pages
             array('allow',
-                'actions' => array('error', 'login', 'loginFromOverlay', 'getOverlayPrepopulationData', 'debuginfo'),
+                'actions' => array('error', 'login', 'loginFromOverlay', 'getOverlayPrepopulationData', 'debuginfo', 'listSites'),
             ),
             array('allow',
-                'actions' => array('index', 'changeSiteAndFirm', 'search', 'logout'),
+                'actions' => array(
+                    'index', 'changeSiteAndFirm', 'search', 'logout', 'deviceready',
+                    'pollSignatureRequests', 'pollCompletedSignature', 'getCurrentTimestamp', 'esignDevicePopup'
+                ),
                 'users' => array('@'),
             ),
         );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function actions()
+    {
+        return [
+            'esignDevicePopup' => [
+                'class' => \EsignDevicePopupAction::class
+            ],
+        ];
     }
 
     /**
@@ -129,7 +144,7 @@ class SiteController extends BaseController
     /**
      * Displays the login page.
      */
-    public function actionLogin()
+    public function actionLogin($type = null, $user_id = null, $username = null, $institution_id = null, $site_id = null)
     {
         $this->layout = 'home';
         $this->pageTitle = 'Login';
@@ -158,6 +173,30 @@ class SiteController extends BaseController
         }
 
         $model = new LoginForm();
+        if (!is_null($type)) {
+            $this->layout = 'esign';
+            $this->pageTitle = 'Login';
+            $return_url = '/site/deviceready';
+
+            if ($type == 'esigndevice') {
+                $view = 'login';
+                $return_url = "/site/deviceready";
+            } elseif ($type == 'esigndevicepin' && !is_null($username)  && !is_null($user_id) && !is_null($institution_id) && !is_null($site_id) ) {
+                $model = new LoginFormMobileDevice();
+                $model->user_id = $user_id;
+                $model->username = $username;
+                $model->institution_id = $institution_id;
+                $model->site_id = $site_id;
+                $view = 'login_esigndevicepin';
+            } else {
+                $this->layout = 'home';
+                $view = 'login';
+                $return_url = Yii::app()->user->returnUrl;
+            }
+        } else {
+            $view = 'login';
+            $return_url = Yii::app()->user->returnUrl;
+        }
 
         // collect user input data
         if (isset($_POST['LoginForm'])) {
@@ -173,7 +212,7 @@ class SiteController extends BaseController
                     if (Yii::app()->user->checkAccess('admin') && !($autoVersionEnabled === false)) {
                         $this->doVersionCheck();
                     }
-                    $this->redirect(Yii::app()->user->returnUrl);
+                    $this->redirect($return_url);
                 }
             }
         }
@@ -183,10 +222,10 @@ class SiteController extends BaseController
         }
 
         // display the login form
-        $this->render(
-            'login',
+        $this->render($view,
             array(
                 'model' => $model,
+                'login_type' => $type,
             )
         );
     }
@@ -225,11 +264,7 @@ class SiteController extends BaseController
         // collect user input data
         if (isset($_POST['LoginForm'])) {
             $model->attributes = $_POST['LoginForm'];
-            // Check if its the same user that wants to continue the session
-            if (Yii::app()->session['user']->username !== $model->username) {
-                $this->renderJSON('Username different');
-                return;
-            }
+
             // validate user input and redirect to the previous page if valid
             if ($model->validate() && $model->login()) {
                 // Flag site for confirmation
@@ -452,6 +487,112 @@ class SiteController extends BaseController
             // if the last check is within 7 days, skip the check.
             return false;
         }
+    }
+
+    public function actionDeviceready()
+    {
+        $this->layout = 'esign';
+        $this->pageTitle = 'Device ready';
+
+        $this->render(
+            'device_ready',
+        );
+    }
+
+    public function actionPollSignatureRequests()
+    {
+        $user_id = Yii::app()->user->id;
+        $criteria = new \CDbCriteria();
+        $criteria->addCondition('created_user_id = :user_id');
+        $criteria->addCondition('signature_date IS NULL');
+        $criteria->params[':user_id'] = $user_id;
+        $criteria->order = "created_date DESC";
+        $criteria->limit = 1;
+        while (true) {
+            /** @var SignatureRequest $result */
+            $result = SignatureRequest::model()->find($criteria);
+
+            if ($result) {
+                $this->renderJSON([
+                    'status' => true,
+                    'event_id' => $result->event_id,
+                    'module_id' => $result->event->eventType->class_name,
+                    'element_type_id' => $result->element_type_id,
+                    'signature_type' => $result->signature_type,
+                    'signatory_role' => $result->signatory_role,
+                    'signatory_name' => $result->signatory_name,
+                    'initiator_element_type_id' => $result->initiator_element_type_id,
+                    'initiator_row_id' => $result->initiator_row_id,
+                ]);
+            }
+
+            sleep(2);
+        }
+    }
+
+    public function actionPollCompletedSignature($event_id, $element_type_id, $signature_type)
+    {
+        $criteria = new \CDbCriteria();
+        $criteria->compare('created_user_id', Yii::app()->user->id);
+        $criteria->addCondition('signature_date IS NOT NULL');
+        $criteria->compare('element_type_id', $element_type_id);
+        $criteria->compare('event_id', $event_id);
+        $criteria->compare('signature_type', $signature_type);
+        $criteria->order = "created_date DESC";
+        $criteria->limit = 1;
+        while (true) {
+            /** @var SignatureRequest $result */
+            $result = SignatureRequest::model()->find($criteria);
+            if ($result) {
+                $signatures = $result->getElement()->getSignaturesByType($signature_type);
+                $signature = array_shift($signatures);
+                if ($signature) {
+                    $file = $signature->signatureFile;
+                    $thumbnail1 = $file->getThumbnail("72x24", true);
+                    $thumbnail2 = $file->getThumbnail("150x50", true);
+                    $thumbnail1_source = file_get_contents($thumbnail1['path']);
+                    $thumbnail_src1 = 'data:' . $file->mimetype . ';base64,' . base64_encode($thumbnail1_source);
+                    $thumbnail2_source = file_get_contents($thumbnail2['path']);
+                    $thumbnail_src2 = 'data:' . $file->mimetype . ';base64,' . base64_encode($thumbnail2_source);
+                    $date_time = (new DateTime())->setTimestamp($signature->timestamp);
+                    $this->renderJSON([
+                        'status' => true,
+                        'signature_image1_base64' => $thumbnail_src1,
+                        'signature_image2_base64' => $thumbnail_src2,
+                        'date' => $date_time->format(Helper::NHS_DATE_FORMAT),
+                        'time' => $date_time->format("H:i"),
+                    ]);
+                }
+            }
+            sleep(2);
+        }
+    }
+
+    public function actionListSites($term)
+    {
+        $criteria = new CDbCriteria;
+        $criteria->addSearchCondition('LOWER(name)', strtolower($term), true, 'OR');
+        $criteria->addCondition('institution_id != :institution_id');
+        $criteria->params[':institution_id'] = \Yii::app()->session['selected_institution_id'];
+
+        $sites = Site::model()->findAll($criteria);
+
+        $output = [];
+
+        foreach ($sites as $site) {
+            $output[] = [
+                'label' => $site->name,
+                'value' => $site->id,
+            ];
+        }
+
+        $this->renderJSON($output);
+        Yii::app()->end();
+    }
+
+    public function actionGetCurrentTimestamp()
+    {
+        return time();
     }
 
 //    Advanced search is not integrated at the moment, but we leave the code here for later

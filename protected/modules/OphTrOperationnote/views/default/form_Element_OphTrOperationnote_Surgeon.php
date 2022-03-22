@@ -85,21 +85,21 @@
                 return ['label' => $item->first_name.' '.$item->last_name,
                     'id' => $item->id];
             },
-            $surgeons) 
+            $surgeons)
         ) ?>, {'header':'Surgeon', 'id':'surgeon_id'}),
         new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
             array_map(function ($item) {
                 return ['label' => $item->first_name.' '.$item->last_name,
                     'id' => $item->id];
             },
-            $surgeons) 
+            $surgeons)
         ) ?>, {'header':'Assistant', 'id':'assistant_id'}),
         new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
             array_map(function ($item) {
                 return ['label' => $item->first_name.' '.$item->last_name,
                     'id' => $item->id];
             },
-            $surgeons) 
+            $surgeons)
         ) ?>, {'header':'Supervising Surgeon', 'id':'supervising_surgeon_id'})
       ],
       onReturn: function (adderDialog, selectedItems) {

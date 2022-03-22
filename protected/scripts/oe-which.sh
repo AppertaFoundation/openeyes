@@ -28,6 +28,13 @@ function gitbranch {
 [ -f "/config/modules.conf" ] && MODULES_CONF="/config/modules.conf" || MODULES_CONF="$SCRIPTDIR/modules.conf"
 source $MODULES_CONF
 
+# Ensure that openeyes and eyedraw modules are included (the easiest way to do this is delete if they already exist, then add)
+delete=(openeyes)
+modules=("${modules[@]/$delete/}") # removes openeyes from modules list
+delete=(eyedraw)
+modules=("${modules[@]/$delete/}") # removes eyedraw from modules list
+modules=(openeyes eyedraw "${modules[@]}")
+
 MODULEROOT=$WROOT/protected/modules
 
 # TODO: Should be able to replace current modules.conf method with a recursive lookup using gitbranch function to determine which modules to display

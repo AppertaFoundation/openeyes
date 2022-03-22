@@ -15,6 +15,7 @@
  * @property User $lastModifiedUser
  * @property OphDrPGDPSD_PGDPSD $pgdpsd
  * @property Patient $patient
+ * @property WorklistPatient $worklist_patient
  */
 class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
 {
@@ -238,37 +239,50 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
         $this->comment_id = $comment_obj->id;
     }
 
-    public function getStatusDetails($get_dict = false)
+    /**
+     * @param bool|false $get_dict
+     * @param PathwayStep|null $step
+     * @return false|string|string[]
+     */
+    public function getStatusDetails(bool $get_dict = false, PathwayStep $step = null)
     {
-        $todo_next = null;
-        $arrival_status_name = \SettingMetadata::model()->getSetting('pas_appt_patient_arrival_status_name') ? : 'status';
-        $arrival_status_text = \SettingMetadata::model()->getSetting('pas_appt_patient_arrival_status_text') ? : 'arrived';
-        if ($this->worklist_patient) {
-            $wl_patient_status = $this->worklist_patient->getWorklistPatientAttribute($arrival_status_name);
-            if ($wl_patient_status) {
-                $attr_value = strtolower($wl_patient_status->attribute_value);
-                $arrival_status_text = strtolower($arrival_status_text);
-                if ($attr_value === $arrival_status_text) {
-                    $todo_next = 'todo-next';
-                }
-            }
-        }
-        $status_dict = array(
-            $this::STATUS_TODO => array(
-                'text' => "Waiting to be done",
-                'css' => $todo_next ? : 'todo'
-            ),
-            $this::STATUS_PART_DONE => array(
-                'text' => "Currently active",
-                'css' => 'active'
-            ),
-            $this::STATUS_COMPLETE => array(
-                'text' => "Completed",
-                'css' => 'done'
-            ),
-        );
+        $todo_next = $this->worklist_patient && $this->worklist_patient->pathway && $this->worklist_patient->pathway->start_time ? 'todo-next' : 'todo';
 
-        return $get_dict ? json_encode(array_values($status_dict)) : $status_dict[$this->status];
+        if ($step) {
+            $status_dict = array(
+                PathwayStep::STEP_REQUESTED => array(
+                    'text' => "Waiting to be done",
+                    'css' => $todo_next
+                ),
+                PathwayStep::STEP_STARTED => array(
+                    'text' => "Currently active",
+                    'css' => 'active'
+                ),
+                PathwayStep::STEP_COMPLETED => array(
+                    'text' => "Completed",
+                    'css' => 'done'
+                ),
+            );
+        } else {
+            $status_dict = array(
+                self::STATUS_TODO => array(
+                    'text' => "Waiting to be done",
+                    'css' => $todo_next
+                ),
+                self::STATUS_PART_DONE => array(
+                    'text' => "Currently active",
+                    'css' => 'active'
+                ),
+                self::STATUS_COMPLETE => array(
+                    'text' => "Completed",
+                    'css' => 'done'
+                ),
+            );
+        }
+
+        return $get_dict
+            ? json_encode(array_values($status_dict))
+            : $status_dict[($step->status ?? $this->status)];
     }
 
     public function getAssignedMeds()
@@ -312,6 +326,7 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
         $administered_count = 0;
         $status = $this->status;
         foreach ($this->assigned_meds as $med) {
+            $med->refresh();
             $event_entry = $med->event_entry;
             if ($event_entry && (!$event_entry->event || ($event_entry->event && $event_entry->event->deleted) || !$event_entry->element)) {
                 // assignment med has corresponding event medication use but event is deleted
@@ -332,7 +347,7 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
         } else {
             $status = $this::STATUS_TODO;
         }
-        $this->status = strval($status);
+        $this->status = (string)$status;
         if ($this->isModelDirty()) {
             $this->save();
         }
@@ -426,7 +441,7 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
     protected function afterFind()
     {
         parent::afterFind();
-        if($this->active){
+        if ($this->active) {
             $this->updateStatus();
         }
     }

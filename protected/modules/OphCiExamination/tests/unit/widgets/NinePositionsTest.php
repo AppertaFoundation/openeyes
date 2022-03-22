@@ -21,6 +21,7 @@ use OEModule\OphCiExamination\models\NinePositions as NinePositionsElement;
 use OEModule\OphCiExamination\models\NinePositions_Reading;
 use OEModule\OphCiExamination\tests\traits\InteractsWithNinePositions;
 use OEModule\OphCiExamination\widgets\NinePositions;
+use SettingMetadata;
 
 /**
  * Class NinePositionsTest
@@ -110,14 +111,15 @@ class NinePositionsTest extends \OEDbTestCase
     public function reading_attribute_enabled_checks_setting($flag)
     {
         $widget = $this->getWidgetInstanceForElement();
-        $setting = \SettingMetadata::model()->find(
+        $setting = SettingMetadata::model()->find(
             'element_type_id = ? and `key` = ?', [
                 $this->element_type_id,
                 $flag
-        ]);
+            ]);
 
         $setting->default_value = 0;
         $setting->save();
+        SettingMetadata::resetCache();
 
         $this->assertFalse($widget->isReadingAttributeEnabled($flag));
     }

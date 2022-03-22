@@ -29,7 +29,7 @@ class StudyController extends BaseAdminController
             ),
         );
     }
-    
+
     public function actionView($id)
     {
         $genetics_study = $this->loadModel($id);
@@ -58,7 +58,11 @@ class StudyController extends BaseAdminController
             'proposers' => array(
                 'widget' => 'MultiSelectList',
                 'relation_field_id' => 'id',
-                'label' => 'Investigator',
+                'htmlOptions' => array(
+                    'empty' => 'Select an Investigator ',
+                    'searchable' => false,
+                    'label' => 'Investigator',
+                ),
                 'options' => CHtml::encodeArray(CHtml::listData(
                     // because of performance issues we need to list all the required roles even if they are in parent-child
                     User::model()->findAllByRoles(['Genetics User', 'Genetics Clinical', 'Genetics Laboratory Technician', 'Genetics Admin'], true),
@@ -69,7 +73,7 @@ class StudyController extends BaseAdminController
                 )),
             ),
         ));
-        
+
         $admin->setCustomCancelURL(Yii::app()->request->getUrlReferrer());
 
         $valid = $admin->editModel(false);
@@ -77,7 +81,7 @@ class StudyController extends BaseAdminController
         if (Yii::app()->request->isPostRequest) {
             if ($valid) {
                 Yii::app()->user->setFlash('success', "Study Saved");
-                $url = str_replace('/edit', '/view', (Yii::app()->request->requestUri)).'/'.$admin->getModel()->id;
+                $url = str_replace('/edit', '/view', (Yii::app()->request->requestUri)) . '/' . $admin->getModel()->id;
                 $this->redirect($url);
             } else {
                 $admin->render($admin->getEditTemplate(), array('admin' => $admin, 'errors' => $admin->getModel()->getErrors()));
@@ -122,7 +126,7 @@ class StudyController extends BaseAdminController
         $admin = new Admin(GeneticsStudy::model(), $this);
         $admin->deleteModel();
     }
-    
+
     /**
      * Returns the data model based on the primary key given in the GET variable.
      * If the data model is not found, an HTTP exception will be raised.
@@ -138,5 +142,4 @@ class StudyController extends BaseAdminController
 
         return $model;
     }
-
 }

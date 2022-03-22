@@ -45,27 +45,16 @@ $workflows = $restrict_to_current_institution
             </td>
         </tr>
     <?php endif; ?>
-
-    <tr>
-        <td>Institution</td>
-        <td class="cols-full">
-            <?= CHtml::activeDropDownList(
-                $model,
-                'institution_id',
-                Institution::model()->getList($restrict_to_current_institution),
-                ['class' => 'cols-full', 'id' => 'js-institution']
-            ) ?>
-        </td>
-    </tr>
+    
     <tr>
         <td>Context</td>
         <td class="cols-full">
             <?= \CHtml::activeDropDownList(
                 $model,
                 'firm_id',
-                CHtml::listData($firms, 'id', 'nameAndSubspecialty'),
+                CHtml::listData(Firm::model()->activeOrPk($model->firm_id)->findAllByAttributes(array('institution_id' => Institution::model()->getCurrent()->id)), 'id', 'nameAndSubspecialty'),
                 ['class' => 'cols-full', 'id' => 'js-firm', 'empty' => '- All -']
-            ) ?>
+            ); ?>
         </td>
     </tr>
     <tr>
@@ -97,7 +86,7 @@ $workflows = $restrict_to_current_institution
                 $model,
                 'workflow_id',
                 CHtml::listData(
-                    $workflows,
+                    OEModule\OphCiExamination\models\OphCiExamination_Workflow::model()->findAllByAttributes(array('institution_id' => Institution::model()->getCurrent()->id)),
                     'id',
                     'name'
                 ),

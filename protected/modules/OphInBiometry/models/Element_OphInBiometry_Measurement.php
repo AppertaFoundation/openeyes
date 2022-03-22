@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -65,15 +66,19 @@ class Element_OphInBiometry_Measurement extends SplitEventTypeElement
         $this->acd_right = null;
         $this->snr_left = null;
         $this->snr_right = null;
+        $this->lvc_left = null;
+        $this->lvc_mode_left = null;
+        $this->lvc_right = null;
+        $this->lvc_mode_right = null;
     }
 
 
     public function beforeSave()
     {
-        if ($this->snr_left==='') {
+        if ($this->snr_left === '') {
             $this->snr_left = null;
         }
-        if ($this->snr_right==='') {
+        if ($this->snr_right === '') {
             $this->snr_right = null;
         }
         return parent::beforeSave();
@@ -107,7 +112,7 @@ class Element_OphInBiometry_Measurement extends SplitEventTypeElement
         if (count(OphInBiometry_Imported_Events::model()->findAllByAttributes(array('event_id' => $this->event_id))) == 0) {
             return array(
                 array(
-                    'event_id, eye_id , k1_left, k1_right, k2_left, k2_right, k1_axis_left, k1_axis_right, axial_length_left, axial_length_right, snr_left, snr_right, k2_axis_left, k2_axis_right, delta_k_left, delta_k_right, delta_k_axis_left, delta_k_axis_right, acd_left, acd_right, refraction_sphere_left, refraction_sphere_right, refraction_delta_left, refraction_delta_right, refraction_axis_left, refraction_axis_right, eye_status_left, eye_status_right, comments',
+                    'event_id, eye_id , k1_left, k1_right, k2_left, k2_right, k1_axis_left, k1_axis_right, axial_length_left, axial_length_right, snr_left, snr_right, k2_axis_left, k2_axis_right, delta_k_left, delta_k_right, delta_k_axis_left, delta_k_axis_right, acd_left, acd_right, refraction_sphere_left, refraction_sphere_right, refraction_delta_left, refraction_delta_right, refraction_axis_left, refraction_axis_right, eye_status_left, eye_status_right, comments, lvc_left, lvc_mode_left, lvc_right, lvc_mode_right',
                     'safe',
                 ),
                 array(
@@ -147,7 +152,7 @@ class Element_OphInBiometry_Measurement extends SplitEventTypeElement
         } else {
             return array(
                 array(
-                    'event_id, eye_id , k1_left, k1_right, k2_left, k2_right, k1_axis_left, k1_axis_right, axial_length_left, axial_length_right, snr_left, snr_right, k2_axis_left, k2_axis_right, delta_k_left, delta_k_right, delta_k_axis_left, delta_k_axis_right, acd_left, acd_right, refraction_sphere_left, refraction_sphere_right, refraction_delta_left, refraction_delta_right, refraction_axis_left, refraction_axis_right, eye_status_left, eye_status_right, comments',
+                    'event_id, eye_id , k1_left, k1_right, k2_left, k2_right, k1_axis_left, k1_axis_right, axial_length_left, axial_length_right, snr_left, snr_right, k2_axis_left, k2_axis_right, delta_k_left, delta_k_right, delta_k_axis_left, delta_k_axis_right, acd_left, acd_right, refraction_sphere_left, refraction_sphere_right, refraction_delta_left, refraction_delta_right, refraction_axis_left, refraction_axis_right, eye_status_left, eye_status_right, comments, lvc_left, lvc_mode_left, lvc_right, lvc_mode_right',
                     'safe',
                 ),
             );
@@ -166,7 +171,7 @@ class Element_OphInBiometry_Measurement extends SplitEventTypeElement
                 self::HAS_ONE,
                 'ElementType',
                 'id',
-                'on' => "element_type.class_name='".get_class($this)."'",
+                'on' => "element_type.class_name='" . get_class($this) . "'",
             ),
             'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
             'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
@@ -196,6 +201,10 @@ class Element_OphInBiometry_Measurement extends SplitEventTypeElement
             'axial_length_right' => 'Axial length (mm)',
             'snr_left' => 'SNR',
             'snr_right' => 'SNR',
+            'lvc_left' => 'LVC',
+            'lvc_right' => 'LVC',
+            'lvc_mode_left' => 'LVC Mode',
+            'lvc_mode_right' => 'LVC Mode',
         );
     }
 

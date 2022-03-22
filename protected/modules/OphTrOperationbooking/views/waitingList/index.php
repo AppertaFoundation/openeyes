@@ -107,9 +107,10 @@
                         'class' => 'cols-full',
                     )
                 ) ?>
-        <div class="row">
-          <button class="green hint cols-full" type="submit">Search Waiting List</button>
-        </div>
+
+            <div class="row">
+                <button class="green hint cols-full" type="submit">Search Waiting List</button>
+            </div>
       </form>
     </div>
 

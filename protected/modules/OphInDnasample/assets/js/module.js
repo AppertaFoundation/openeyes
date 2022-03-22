@@ -73,9 +73,9 @@ $(document).ready(function() {
 			id: 'add-new-test-dialog'
 		});
 
-		$('#et_add_test').click(function() {
-			dialog.open();
-		});
+        $('[id*="et_add_test"]').click(function() {
+            dialog.open();
+        });
 	}());
 
 	$('#Element_OphInDnasample_Sample_type_id').on('change',function(){

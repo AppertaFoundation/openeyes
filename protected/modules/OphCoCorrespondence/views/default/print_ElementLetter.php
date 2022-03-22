@@ -100,7 +100,7 @@ if (!@$no_header) { ?>
     <p class="accessible" nobr="true">
         <?php echo $element->renderFooter() ?>
     </p>
-
+    <br/>
     <div class="spacer"></div>
     <h5>
         <?php

@@ -280,4 +280,32 @@ class OphDrPGDPSD_PGDPSD extends \BaseActiveRecordVersioned
             return $user->id;
         }, $authed_users);
     }
+
+    public function serialiseMedicationAssignments($laterality)
+    {
+        $meds = array();
+        foreach ($this->assigned_meds as $key => $medication) {
+            $entry = array();
+            $entry['pair_key'] = $key;
+            $entry['medication_id'] = $medication->medication_id;
+            $entry['dose'] = $medication->dose;
+            $entry['dose_unit_term'] = $medication->dose_unit_term;
+            $entry['route_id'] = $medication->route_id;
+            $entry['laterality'] = $medication->route->has_laterality ? $laterality : null;
+
+            if (
+                isset($entry['laterality'])
+                && $entry['laterality']
+                && (int)$entry['laterality'] === MedicationLaterality::BOTH
+            ) {
+                $entry['pair_key'] = $key + 1;
+                $dup_entry = $entry;
+                $entry['laterality'] = MedicationLaterality::RIGHT;
+                $dup_entry['laterality'] = MedicationLaterality::LEFT;
+                $meds[] = $dup_entry;
+            }
+            $meds[] = $entry;
+        }
+        return $meds;
+    }
 }

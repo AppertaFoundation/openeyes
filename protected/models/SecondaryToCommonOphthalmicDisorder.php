@@ -27,6 +27,7 @@
  * @property int $disorder_id
  * @property int $finding_id
  * @property int $parent_id
+ * @property string $letter_macro_text
  *
  * The followings are the available model relations:
  * @property Disorder $disorder
@@ -82,6 +83,7 @@ class SecondaryToCommonOphthalmicDisorder extends BaseActiveRecordVersioned
         return array(
                 array('parent_id', 'required'),
                 array('disorder_id, finding_id, parent_id', 'length', 'max' => 10),
+                array('letter_macro_text', 'length', 'max' => 255),
                 array('id, disorder_id, finding_id, parent_id, letter_macro_text, created_date, created_user_id, last_modified_date, last_modified_user_id', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.

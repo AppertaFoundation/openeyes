@@ -26,7 +26,6 @@ $(document).ready(function(){
 
     function MultiSelectDropDownListController(options) {
         this.options = $.extend(true, {}, MultiSelectDropDownListController._defaultOptions, options);
-
         this.init();
     }
 
@@ -38,45 +37,44 @@ $(document).ready(function(){
     MultiSelectDropDownListController.prototype.init = function () {
         let controller = this;
 
-        $('body').on('change', controller.options.wrapperSelector + ' select', function(){
+        $('body').on('change', controller.options.wrapperSelector + ' select', function() {
             let $selected_option = $(this).find('option:selected');
-            let $tr = $(this).closest('tr');
-            controller.addToList($tr, {id:$selected_option.val(), label: $selected_option.text() });
+            let $wrapper = $(this).closest(controller.options.wrapperSelector);
+            controller.addToList($wrapper, {id:$selected_option.val(), label: $selected_option.text() });
         });
-        $('body').on('click', controller.options.wrapperSelector + ' .remove-circle', function(){
-            let $tr = $(this).closest('tr');
+
+        $('body').on('click', controller.options.wrapperSelector + ' .remove-circle', function() {
+            let $wrapper = $(this).closest(controller.options.wrapperSelector);
             let $li = $(this).closest('li');
             let value = $li.find('input[type="hidden"]').val();
             let $option = $('<option>', {value: value}).text($li.text());
-            let $select = $tr.find(controller.options.wrapperSelector).find('select');
-
+            let $select = $wrapper.find('select');
             if (!$select.find('option[value="' + value + '"]').length && value){
                 $select.append($option);
             }
 
             $li.remove();
-            if( !$tr.find(controller.options.listWrapperSelector).find('li').length) {
-                $tr.find(controller.options.listWrapperSelector).find('ul').hide();
+            if( !$wrapper.find('li').length) {
+                $wrapper.find('ul').hide();
             }
         });
 
     };
 
-    MultiSelectDropDownListController.prototype.addToList = function ($tr, item) {
+    MultiSelectDropDownListController.prototype.addToList = function ($wrapper, item) {
         let controller = this;
         let $li = $('<li>').text(item.label).append( $('<i>', {class: 'oe-i remove-circle small-icon pad-left'}) );
-        let inputName = $tr.find(controller.options.listWrapperSelector).find('ul').data('inputname');
+        let inputName = $wrapper.find('ul').data('inputname');
         //whitespace after li items...
         $li.after(" ");
         $li.append( $('<input>', {type:'hidden', name:inputName, value:item.id}) );
-        $tr.find(controller.options.listWrapperSelector).find('ul').append($li);
-        controller.removeFromDropDown($tr, item.id);
-        $tr.find(controller.options.listWrapperSelector).find('ul').show();
+        $wrapper.find('ul').append($li);
+        controller.removeFromDropDown($wrapper, item.id);
+        $wrapper.find('ul').show();
     };
 
-    MultiSelectDropDownListController.prototype.removeFromDropDown = function ($tr, id) {
-        let controller = this;
-        $tr.find(controller.options.wrapperSelector).find('option[value="' + id + '"]').remove();
+    MultiSelectDropDownListController.prototype.removeFromDropDown = function ($wrapper, id) {
+        $wrapper.find('option[value="' + id + '"]').remove();
     };
 
     exports.MultiSelectDropDownListController = MultiSelectDropDownListController;

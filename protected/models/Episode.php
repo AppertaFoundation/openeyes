@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -87,7 +88,7 @@ class Episode extends BaseActiveRecordVersioned
         $table_alias = $this->getTableAlias(false, false);
 
         return array(
-            'condition' => $table_alias.'.deleted = 0',
+            'condition' => $table_alias . '.deleted = 0',
         );
     }
 
@@ -255,7 +256,7 @@ class Episode extends BaseActiveRecordVersioned
                 ->from('episode e')
                 ->join('firm f', 'e.firm_id = f.id')
                 ->join('service_subspecialty_assignment s_s_a', 'f.service_subspecialty_assignment_id = s_s_a.id')
-                ->where('e.deleted = false'.$where.' AND e.patient_id = :patient_id AND s_s_a.subspecialty_id = :subspecialty_id', array(
+                ->where('e.deleted = false' . $where . ' AND e.patient_id = :patient_id AND s_s_a.subspecialty_id = :subspecialty_id', array(
                     ':patient_id' => $patient_id,
                     ':subspecialty_id' => $subspecialty_id,
                 ))
@@ -264,7 +265,7 @@ class Episode extends BaseActiveRecordVersioned
             $episode = Yii::app()->db->createCommand()
                 ->select('e.id AS eid')
                 ->from('episode e')
-                ->where('e.deleted = false AND e.legacy = false AND e.support_services = TRUE '.$where.' AND e.patient_id = :patient_id', array(
+                ->where('e.deleted = false AND e.legacy = false AND e.support_services = TRUE ' . $where . ' AND e.patient_id = :patient_id', array(
                     ':patient_id' => $patient_id,
                 ))
                 ->queryRow();
@@ -483,16 +484,20 @@ class Episode extends BaseActiveRecordVersioned
         }
     }
 
-    public function setPrincipalDiagnosis($disorder_id, $eye_id, $disorder_date = false)
+    public function setPrincipalDiagnosis($disorder_id, $eye_id, $disorder_date = false, $disorder_time = false)
     {
         if (!$disorder_date) {
             $disorder_date = date('Y-m-d');
         }
+        if (!$disorder_time) {
+            $disorder_time = date('H:i:s');
+        }
         $this->disorder_id = $disorder_id;
         $this->eye_id = $eye_id;
         $this->disorder_date = $disorder_date;
+        $this->disorder_time = $disorder_time;
         if (!$this->save()) {
-            throw new Exception('Unable to set episode principal diagnosis/eye: '.print_r($this->getErrors(), true));
+            throw new Exception('Unable to set episode principal diagnosis/eye: ' . print_r($this->getErrors(), true));
         }
 
         $this->audit('episode', 'set-principal-diagnosis');
@@ -504,6 +509,14 @@ class Episode extends BaseActiveRecordVersioned
             return null;
         }
         return \Helper::formatFuzzyDate($this->disorder_date);
+    }
+
+    public function getDisplayTime()
+    {
+        if (!$this->disorder_time) {
+            return null;
+        }
+        return $this->disorder_time;
     }
 
     public function audit($target, $action, $data = null, $log = false, $properties = array())

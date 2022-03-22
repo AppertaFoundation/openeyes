@@ -18,6 +18,6 @@
 ?>
 <ul class="<?php echo $css_class?>">
     <?php foreach ($procedures as $proc) {?>
-        <li><?php echo $eye?> <?php echo $proc->term?></li>
+        <li><?php echo $proc->eye->adjective?> <?php echo $proc->proc->term?></li>
     <?php }?>
 </ul>

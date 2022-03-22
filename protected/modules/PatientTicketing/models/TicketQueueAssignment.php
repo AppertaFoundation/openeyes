@@ -1,22 +1,23 @@
 <?php
 /**
- * OpenEyes.
+ * OpenEyes
  *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2014
+ * (C) OpenEyes Foundation, 2021
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
  * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
+ * @package OpenEyes
  * @link http://www.openeyes.org.uk
- *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2011-2014, OpenEyes Foundation
+ * @copyright Copyright (c) 2021, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
 namespace OEModule\PatientTicketing\models;
+
+use OEModule\PatientTicketing\components\Substitution;
 
 /**
  * This is the model class for table "patientticketing_ticketqueue_assignment". THis is the link table between tickets and queues.
@@ -85,7 +86,7 @@ class TicketQueueAssignment extends \BaseActiveRecordVersioned
                 'assignment_user' => array(self::BELONGS_TO, 'User', 'assignment_user_id'),
                 'assignment_firm' => array(self::BELONGS_TO, 'Firm', 'assignment_firm_id'),
                 'ticket' => array(self::BELONGS_TO, 'OEModule\PatientTicketing\models\Ticket', 'ticket_id'),
-                'queue' => array(self::BELONGS_TO, 'OEModule\PatientTicketing\models\Queue', 'queue_id'),
+                'queue' => array(self::BELONGS_TO, 'OEModule\PatientTicketing\models\Queue', 'queue_id')
         );
     }
 
@@ -95,6 +96,7 @@ class TicketQueueAssignment extends \BaseActiveRecordVersioned
     public function attributeLabels()
     {
         return array(
+            'is_patient_called' => 'Did you telephone the patient during this review?'
         );
     }
 
@@ -134,7 +136,11 @@ class TicketQueueAssignment extends \BaseActiveRecordVersioned
                 if (@$fld['widget_name']) {
                     $cls_name = 'OEModule\\PatientTicketing\\widgets\\'.$fld['widget_name'];
                     $widget = new $cls_name();
-                    $by_id[$fld['id']] = $widget->getReportString($fld['value']);
+                    $field_id = $fld['id'];
+                    $widget->ticket = $this->ticket;
+                    $widget->queue = $this->queue;
+                    $widget->assignment_field = $fld;
+                    $by_id[$field_id] = $widget->getReportString($fld['value']);
                 } else {
                     $by_id[$fld['id']] = $fld['value'];
                 }
@@ -158,11 +164,11 @@ class TicketQueueAssignment extends \BaseActiveRecordVersioned
     /* Generate the report text */
     public function generateReportText()
     {
-        $this->report = \OEModule\PatientTicketing\components\Substitution::replace($this->replaceAssignmentCodes($this->queue->report_definition), $this->ticket->patient);
+        $this->report = Substitution::replace($this->replaceAssignmentCodes($this->queue->report_definition), $this->ticket->patient);
     }
 
     public function getFormattedReport()
     {
-        return \OEModule\PatientTicketing\components\Substitution::replace($this->replaceAssignmentCodes($this->queue->report_definition, true), $this->ticket->patient);
+        return Substitution::replace($this->replaceAssignmentCodes($this->queue->report_definition, true), $this->ticket->patient);
     }
 }

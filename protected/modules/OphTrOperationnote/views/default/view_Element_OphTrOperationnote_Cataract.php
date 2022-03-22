@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -14,6 +15,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <section class="element view">
@@ -32,6 +34,17 @@
                 'model' => $element,
                 'attribute' => 'eyedraw',
                 'idSuffix' => 'Cataract',
+            ));
+            ?>
+        <?php
+            $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
+                'idSuffix' => 'Position',
+                'side' => $element->eye->getShortName(),
+                'mode' => 'view',
+                'width' => $this->action->id === 'view' ? 200 : 120,
+                'height' => $this->action->id === 'view' ? 200 : 120,
+                'model' => $element,
+                'attribute' => 'eyedraw2',
             ));
             ?>
             <div class="eyedraw-data" style="max-width: 50%">
@@ -198,17 +211,6 @@
                 </table>
             </div>
 
-            <?php
-            $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
-                'idSuffix' => 'Position',
-                'side' => $element->eye->getShortName(),
-                'mode' => 'view',
-                'width' => $this->action->id === 'view' ? 200 : 120,
-                'height' => $this->action->id === 'view' ? 200 : 120,
-                'model' => $element,
-                'attribute' => 'eyedraw2',
-            ));
-            ?>
         </div>
     </section>
 </section>

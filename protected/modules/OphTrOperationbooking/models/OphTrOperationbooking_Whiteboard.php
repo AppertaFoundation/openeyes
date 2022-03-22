@@ -42,6 +42,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
                 'joinType' => 'INNER JOIN',
                 'alias' => 'booking',
             ),
+            'consent' => array(self::BELONGS_TO, 'Element_OphTrConsent_Procedure', 'consent_procedure_id'),
             'biometry_report' => array(
                 self::BELONGS_TO,
                 'Element_OphCoDocument_Document',
@@ -73,6 +74,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
     public function loadData($id)
     {
         $booking = Element_OphTrOperationbooking_Operation::model()->find('event_id=?', array($id));
+        $consent = Element_OphTrConsent_Procedure::model()->find('booking_event_id=?', [$id]);
 
         $eye = Eye::model()->findByPk($booking->eye_id);
         if ($eye->name === 'Both' && $booking->event->episode->firm->getSubspecialty()->name === 'Cataract') {
@@ -95,6 +97,9 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
 
         $this->event_id = $id;
         $this->booking = $booking;
+        if (!is_null($consent)) {
+            $this->consent_procedure_id = $consent->id;
+        }
         $this->eye_id = $eye->id;
         $this->eye = $eye;
         $this->patient_name = $contact->title . ' ' . $contact->first_name . ' ' . $contact->last_name;
@@ -114,7 +119,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $this->formula = 'Unknown';
         $this->axis = 0.0;
 
-        if ($biometry && in_array($biometry->eye_id, [$booking->eye_id, EYE::BOTH])) {
+        if ($biometry && in_array($biometry->eye_id, [$booking->eye_id, Eye::BOTH])) {
             $this->iol_model = $biometry->attributes["lens_display_name_$eyeLabel"];
             $this->iol_power = $biometry->attributes["iol_power_$eyeLabel"];
             $this->axial_length = $biometry->attributes["axial_length_$eyeLabel"];

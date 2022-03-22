@@ -1,38 +1,54 @@
 <?php
 /**
- * OpenEyes.
+ * OpenEyes
  *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2014
+ * (C) OpenEyes Foundation, 2021
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
  * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
+ * @package OpenEyes
  * @link http://www.openeyes.org.uk
- *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2011-2014, OpenEyes Foundation
+ * @copyright Copyright (c) 2021, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
 namespace OEModule\PatientTicketing\widgets;
 
 use OEModule\PatientTicketing\components\AutoSaveTicket;
+use OEModule\PatientTicketing\controllers\DefaultController;
 use OEModule\PatientTicketing\models;
 
 class TicketAssignOutcome extends BaseTicketAssignment
 {
     public $hideFollowUp = true;
     public $form_data;
+    public $queueset = null;
 
     public function run()
     {
+        $this->label = $this->label ?: "Outcome";
+
+        $qs_svc = \Yii::app()->service->getService(DefaultController::$QUEUESET_SERVICE);
+        $this->queueset = $qs_svc->getQueueSetForQueue($this->queue->id ?? null);
+
         if (isset($this->form_data[$this->form_name])) {
             if ($outcome_id = @$this->form_data[$this->form_name]['outcome']) {
                 $outcome = models\TicketAssignOutcomeOption::model()->findByPk((int) $outcome_id);
-                if ($outcome->followup) {
+                if ($outcome && $outcome->followup) {
                     $this->hideFollowUp = false;
+                }
+
+                if (!$outcome) {
+                    $msg = "Outcome option cannot be found in database (table: patientticketing_ticketassignoutcomeoption, id: $outcome_id)";
+                    $data = print_r($this->form_data[$this->form_name], true);
+
+                    \Audit::add('admin', 'error', $data, $msg, [
+                        'module' => 'PatientTicketing',
+                        'model' => 'TicketAssignOutcomeOption',
+                    ]);
                 }
             }
         }
@@ -43,7 +59,14 @@ class TicketAssignOutcome extends BaseTicketAssignment
     public function getOutcomeOptions()
     {
         $res = array('options' => array());
-        $models = models\TicketAssignOutcomeOption::model()->findAll();
+        $criteria = new \CDbCriteria();
+
+        if ($this->queueset) {
+            $criteria->addCondition('queueset_id =:queueset_id');
+            $criteria->params[':queueset_id'] = $this->queueset->getId();
+        }
+
+        $models = models\TicketAssignOutcomeOption::model()->findAll($criteria);
         foreach ($models as $opt) {
             $res['options'][(string) $opt->id] = array('data-followup' => $opt->followup);
         }
@@ -67,11 +90,27 @@ class TicketAssignOutcome extends BaseTicketAssignment
     public function extractFormData($form_data)
     {
         $res = array();
-        foreach (array('outcome', 'followup_quantity', 'followup_period', 'clinic_location') as $k) {
+        foreach (array('outcome', 'followup_quantity', 'followup_period', 'clinic_location', 'is_patient_called') as $k) {
             $res[$k] = @$form_data[$k];
         }
 
         return $res;
+    }
+
+    /**
+     * Returns a list of clinic locations by queue set
+     * @return array
+     */
+    public function getClinicLocations(): array
+    {
+        $criteria = new \CDbCriteria();
+
+        if ($this->queueset) {
+            $criteria->addCondition('queueset_id =:queueset_id');
+            $criteria->params[':queueset_id'] = $this->queueset->getId();
+        }
+
+        return models\ClinicLocation::model()->findAll($criteria);
     }
 
     /**
@@ -157,13 +196,22 @@ class TicketAssignOutcome extends BaseTicketAssignment
         $res = '';
         if ($outcome_id = @$data['outcome']) {
             $outcome = models\TicketAssignOutcomeOption::model()->findByPk((int) $outcome_id);
-            $res = $outcome->name;
-            if ($outcome->followup) {
+            $res = $outcome->name ?? '';
+            if ($outcome && $outcome->followup) {
                 if (@$data['followup_quantity'] == 1 && isset($data['followup_period'])) {
                     $data['followup_period'] = rtrim($data['followup_period'], 's');
                 }
                 $res .= ' in '.@$data['followup_quantity'].' '.@$data['followup_period'];
                 $res .= ' at '.@$data['clinic_location'];
+            }
+
+            if (!$outcome) {
+                $msg = "Outcome option cannot be found in database (table: patientticketing_ticketassignoutcomeoption, id: $outcome_id)";
+                $data = print_r($data, true);
+                \Audit::add('admin', 'error', $data, $msg, [
+                    'module' => 'PatientTicketing',
+                    'model' => 'TicketAssignOutcomeOption',
+                ]);
             }
         }
 

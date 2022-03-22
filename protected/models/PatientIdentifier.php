@@ -26,6 +26,7 @@
  * @property string $last_modified_date
  * @property string $created_user_id
  * @property string $created_date
+ * @property string $unique_row_string
  * @property PatientIdentifierType $patientIdentifierType
  *
  * The followings are the available model relations:
@@ -51,10 +52,9 @@ class PatientIdentifier extends BaseActiveRecordVersioned
     {
         $rules = array(
             ['patient_id, patient_identifier_type_id, value', 'required'],
-            ['patient_id, patient_identifier_type_id, value, source_info, deleted, last_modified_date, created_date', 'safe'],
+            ['patient_id, patient_identifier_type_id, value, source_info, deleted, last_modified_date, created_date, unique_row_string,id ', 'safe'],
             ['value', 'valueValidator'],
             ['patient_identifier_status_id', 'statusValidator'],
-            //    ['value', 'nhsNumValidator'],
         );
 
         return $rules;
@@ -209,28 +209,33 @@ class PatientIdentifier extends BaseActiveRecordVersioned
         return parent::model($className);
     }
 
-    /**
-     * As the table does not have a primary key, it is required that the corresponding AR class specify which column(s) should be the primary key by overriding the primaryKey() method
-     **/
-    public function primaryKey()
-    {
-        // For composite primary key, return an array
-        return array('patient_id', 'patient_identifier_type_id', 'value');
-    }
-
     public function defaultScope()
     {
         if ($this->getDefaultScopeDisabled()) {
             return [];
         }
 
-        return ['select' => 'patient_id, patient_identifier_type_id, value, source_info, deleted, last_modified_user_id, last_modified_date, created_user_id, created_date, patient_identifier_status_id',
-            'condition' => 'patient_identifier_not_deleted.deleted = 0', 'alias' => 'patient_identifier_not_deleted'];
+        return ['condition' => 'patient_identifier_not_deleted.deleted = 0', 'alias' => 'patient_identifier_not_deleted'];
     }
 
     public function beforeValidate()
     {
         $this->value = str_replace(' ', '', $this->value);
         return parent::beforeValidate();
+    }
+
+    protected function beforeSave()
+    {
+        $unique_row_string = "";
+        $unique_row_string .= $this->patient_id . '-' . $this->patient_identifier_type_id . '-';
+        if($this->deleted === 0) {
+            $unique_row_string .= 'ACTIVE';
+        } else {
+            $unique_row_string .= $this->source_info . '-' . $this->value;
+        }
+
+        $this->unique_row_string = $unique_row_string;
+
+        return parent::beforeSave();
     }
 }
