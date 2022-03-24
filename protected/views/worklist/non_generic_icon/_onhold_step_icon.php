@@ -12,18 +12,20 @@ if((int)$step->status === $step::STEP_STARTED){
         $offset = 0;
     }
 }
+$icon = $step instanceof PathwayStep ? $step->type->large_icon : $step->step_type->large_icon;
 ?>
 <span
-    class="oe-pathstep-btn <?= "$status_class {$step->type->type}" ?>" 
-    data-pathstep-id="<?= $step->id ?>"
+    class="oe-pathstep-btn <?= "$status_class {$step->type->type}" ?>"
+    data-pathstep-id="<?= $step instanceof PathwayStep ? $step->id : null ?>"
+    data-pathstep-type-id="<?= $step instanceof PathwayTypeStep ? $step->id : null ?>"
     data-patient-id="<?= $pathway->worklist_patient->patient_id ?>"
     data-visit-id="<?= $pathway->worklist_patient_id ?>"
     data-pathway-id="<?= $pathway->id ?>"
     data-timestamp-start="<?=strtotime($step->start_time)?>"
     data-step-data='<?=json_encode($step->toJSON())?>'
 >
-    <span class="step<?= $step->type->large_icon ? " {$step->type->large_icon}" : '' ?>">
-        <?= !$step->type->large_icon ? $step->short_name : '' ?>
+    <span class="step<?= $icon ? " {$icon}" : '' ?>">
+        <?= !$icon ? $step->short_name : '' ?>
     </span>
     <svg class="progress-ring" viewBox="0 0 34 34">
         <circle 

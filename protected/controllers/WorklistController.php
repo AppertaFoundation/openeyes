@@ -619,6 +619,7 @@ class WorklistController extends BaseController
                         array(
                             'assignment' => $psd_assignment,
                             'step' => $step,
+                            'visit' => $wl_patient,
                             'partial' => (int)$partial,
                             'patient_id' => $wl_patient->patient_id,
                             'pathway' => $wl_patient->pathway,
