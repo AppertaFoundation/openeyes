@@ -166,7 +166,9 @@ $quick_filter_name = $filter->getQuickFilterTypeName();
                           data-worklist-patient-id="<?= $wl_patient->id?>"
                           data-pathway-id="<?= $wl_patient->pathway->id ?>"
                           data-patient-id="<?= $wl_patient->patient_id ?>"
-                          data-pathstep-id="comment">
+                          data-visit-id="<?= $wl_patient->id?>"
+                          data-pathstep-id="comment"
+                          data-pathstep-type-id="">
                         <span class="step i-comments"></span>
                         <span class="info" style="display: none;"></span>
                     </span>

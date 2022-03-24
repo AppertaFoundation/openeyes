@@ -456,12 +456,17 @@ $(function () {
                     const $thisStep = $('.oe-pathstep-btn[data-pathstep-type-id="' + ps.pathstepTypeId + '"][data-visit-id="' + ps.visitID +'"]');
                     const $pathway = $thisStep.closest('td.js-pathway-container');
                     const oldSteps = collectActiveTodoStepsFrom($pathway);
+                    let $commentButton = $('.comments[data-pathway-id="' + ps.pathwayId + '"]');
 
                     $pathway.html(response.step_html);
 
                     const newSteps = collectActiveTodoStepsFrom($pathway);
 
                     refreshStatistics(ps.visitID, oldSteps, newSteps);
+
+                    if (!$commentButton.hasClass('comments-added')) {
+                        $commentButton.addClass('comments-added');
+                    }
 
                     ps.resetPopup();
                     ps.requestDetails({
