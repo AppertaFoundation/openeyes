@@ -241,7 +241,6 @@ $user_searches = array_map(
 
     function performSort(field, $container) {
         let $field = $container.find('#sort-field option[value="' + field + '"]');
-        console.log($field.val());
         let direction = $container.find("input[name='sort-options']").filter("input[checked='checked']").val();
         $('#js-analytics-spinner').show();
         if (direction === 'ascend') {
