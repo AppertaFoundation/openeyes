@@ -64,7 +64,7 @@ if (file_exists('/etc/openeyes/db.conf')) {
 $authSource = getenv('AUTH_SOURCE') ?: (getenv('OE_LDAP_SERVER') ? 'LDAP' : 'BASIC');
 
 $breakGlassEnabled = strtolower(getenv('BREAK_GLASS_ENABLED')) === "true";
-$breakGlassField = getenv('BREAK_GLASS_FIELD') ?: 'qualifications';
+$userBreakGlassField = getenv('BREAK_GLASS_FIELD') ?: 'registration_code';
 
 $config = array(
     'name' => 'OpenEyes',
@@ -876,7 +876,7 @@ $config = array(
         ),
         /** END SINGLE SIGN-ON PARAMS */
         'breakglass_enabled' => $breakGlassEnabled,
-        'breakglass_field' => $breakGlassField,
+        'user_breakglass_field' => $userBreakGlassField,
     ),
 );
 
