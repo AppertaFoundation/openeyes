@@ -100,7 +100,7 @@ class PatientIdentifierHelper
     public static function getPatientByPatientIdentifier($identifier_value, $identifier_type_key)
     {
         $patient_identifier_type = PatientIdentifierType::model()->findByAttributes([
-            'unique_row_str' => $identifier_type_key
+            'unique_row_string' => $identifier_type_key
         ]);
         if (isset($patient_identifier_type)) {
             $patient_identifier = PatientIdentifier::model()->findByAttributes([
