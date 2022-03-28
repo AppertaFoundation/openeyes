@@ -241,6 +241,7 @@ class WorklistController extends BaseController
                     case 'active':
                         $pathway->status = Pathway::STATUS_ACTIVE;
                         break;
+                    case 'undocheckin':
                     default:
                         $pathway->status = Pathway::STATUS_LATER;
                         break;
@@ -359,6 +360,33 @@ class WorklistController extends BaseController
             );
         }
         throw new CHttpException(404, 'Unable to retrieve step for processing or step is not a checkin step.');
+    }
+
+    /**
+     * @throws CHttpException
+     * @throws Exception
+     */
+    public function actionUndoCheckIn()
+    {
+        $visit_id = Yii::app()->request->getPost('visit_id');
+        $wl_patient = WorklistPatient::model()->findByPk($visit_id);
+        /**
+         * @var $wl_patient WorklistPatient
+         */
+        $pathway = $wl_patient->pathway;
+
+        if ($pathway) {
+            $pathway->status = Pathway::STATUS_LATER;
+            $pathway->start_time = null;
+            $pathway->save();
+            $this->renderJSON(
+                [
+                    'pathway_id' => $pathway->id,
+                    'status_html' => $pathway->getPathwayStatusHTML(),
+                ]
+            );
+        }
+        throw new CHttpException(404, 'Unable to retrieve step for processing or step is not a undo checkin step.');
     }
 
     /**

@@ -70,7 +70,7 @@ services:
       PW_STAT_DAYS_STALE: ${PW_STAT_DAYS_STALE:-}
       OUTPUT_APPLICATION_LOGS: "${OUTPUT_APPLICATION_LOGS:-FALSE}"
       LOG_TO_BROWSER: "${LOG_TO_BROWSER:-}"
-      # HTTPS_BYPASS: "Require forward-dns host.docker.internal"      
+      # HTTPS_BYPASS: "Require forward-dns host.docker.internal"
     volumes:
       - "..:/var/www/openeyes:delegated"
     secrets:

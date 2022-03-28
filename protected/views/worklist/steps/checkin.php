@@ -28,4 +28,11 @@
         </button>
     </div>
     <?php } ?>
+    <?php if (!$partial && ((int)$pathway->status === Pathway::STATUS_STUCK || (int)$pathway->status === Pathway::STATUS_WAITING)) { ?>
+        <div class="step-actions">
+            <button class="green hint js-ps-popup-btn js-pathway-undo-check-in" data-pathway-id=<?= $pathway->id ?> data-action="undocheckin">
+                Undo Check-in
+            </button>
+        </div>
+    <?php } ?>
 </div>

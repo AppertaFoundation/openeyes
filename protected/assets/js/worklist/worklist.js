@@ -67,7 +67,7 @@ $(function () {
             }
         });
     };
-    
+
     let cancelTimer = function (ele, step_data) {
         let id = parseInt(step_data.id);
         if (timer_interval[id]) {
@@ -501,7 +501,6 @@ $(function () {
         $tr.addClass(status);
         $tr.find('.js-pathway-container').html(response.step_html);
         $tr.find('.js-pathway-status').html(response.status_html);
-
         if(response.waiting_time_html){
             $tr.find('.wait-duration').removeClass('stopped');
             $tr.find('.wait-duration').html();
@@ -643,7 +642,7 @@ $(function () {
                         // run the special action if it matches the current status
                         if (special_action && special_action[response.step.status]) {
                             const callback = special_action[response.step.status];
-                            /* 
+                            /*
                             * no existence check, as if the special action is required, it must be included
                             * in special_actions dictionary
                             */
@@ -896,7 +895,28 @@ $(function () {
                         updatePathwayTr($tr, response, null, ps);
                     }
                 });
-                
+                break;
+            case 'undocheckin':
+                $.ajax({
+                    url: '/worklist/undoCheckIn',
+                    type: 'POST',
+                    data: {
+                        visit_id: ps.visitID,
+                        YII_CSRF_TOKEN: YII_CSRF_TOKEN
+                    },
+                    success: function (response) {
+                        // This is a check-in step so it is already in the correct position.
+                        const $tr = $(`tr#js-pathway-${response.pathway_id}`);
+                        updatePathwayTr($tr, response, 'later', ps);
+
+                        // This is a check-in step so it is already in the correct position.
+                        const $thisStep = $('.oe-pathstep-btn[data-pathstep-id="checkin"][data-visit-id="' + ps.visitID + '"]');
+                        $thisStep.removeClass('done');
+                        $thisStep.addClass('todo');
+                        $thisStep.find('.info').text('');
+                        $thisStep.siblings('.oe-pathstep-btn.buff.wait').remove();
+                    }
+                });
                 break;
             default:
                 new OpenEyes.UI.Dialog.Alert({
