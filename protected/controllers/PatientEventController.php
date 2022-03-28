@@ -30,7 +30,7 @@ class PatientEventController extends BaseController
     {
         return array(
             array('allow',
-                'actions' => array('create'),
+                'actions' => array('create', 'hasServiceFirmForSubspecialty'),
                 'users' => array('@'),
             )
         );
@@ -194,5 +194,18 @@ class PatientEventController extends BaseController
         $this->redirect(
             $app->createUrl($event_type->class_name . '/Default/create') . '?patient_id=' . $patient->id
         );
+    }
+
+    public function actionHasServiceFirmForSubspecialty()
+    {
+        $request = Yii::app()->getRequest();
+
+        $patient = $this->resolvePatient($request);
+
+        if ($patient && $episode = $patient->getOpenEpisodeOfSubspecialty($request->getQuery('subspecialty_id'))) {
+            $this->renderJSON($episode->firm_id);
+        } else {
+            $this->renderJSON(null);
+        }
     }
 }

@@ -81,10 +81,12 @@ $picker_setup = $pick_behavior->setupPicker();
                     <button id=<?= "add-next-steps-preset-" . $pathway->id?> type="button" class="green hint js-add-select-btn">Next presets</button>
                 </td>
                 <script type="text/javascript">
+                    const pathwaySetupData = <?=$picker_setup?>;
+
                     $(document).ready(function () {
                         let picker = new OpenEyes.UI.PathwayStepPicker({
                             ...<?=$path_step_type_ids?>,
-                            ...<?=$picker_setup?>,
+                            ...pathwaySetupData,
                             pathways: <?= $pathway->getPathwaysJSON() ?>,
                         });
                         picker.init();

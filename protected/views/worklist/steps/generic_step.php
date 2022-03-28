@@ -112,31 +112,7 @@ if ($is_step_instance) {
                 } else {
                     $step_type = $step->step_type;
                 }
-                if ($step_type->short_name === 'Exam') {
-                    $subspecialty = Subspecialty::model()->findByPk($step->getState('subspecialty_id'));
-                    $firm = Firm::model()->findByPk($step->getState('firm_id'));
-                    $workflow = \OEModule\OphCiExamination\models\OphCiExamination_Workflow::model()->findByPk($step->getState('workflow_id'));
-                    $elementset = \OEModule\OphCiExamination\models\OphCiExamination_ElementSet::model()->findByPk($step->getState('workflow_step_id'));
-                    ?>
-                    <table>
-                        <tr>
-                            <th>Context</th>
-                            <td><?= $firm->name ?? '' ?></td>
-                        </tr>
-                        <tr>
-                            <th>Subspecialty</th>
-                            <td><?= $subspecialty->name ?? '' ?></td>
-                        </tr>
-                        <tr>
-                            <th>Examination Workflow</th>
-                            <td><?= $workflow->name ?? 'None' ?></td>
-                        </tr>
-                        <tr>
-                            <th>Workflow Step</th>
-                            <td><?= $elementset->name ?? 'None' ?></td>
-                        </tr>
-                    </table>
-                <?php } elseif ($step_type->short_name === 'Letter') {
+                if ($step_type->short_name === 'Letter') {
                     $macro = LetterMacro::model()->findByPk($step->getState('macro_id'));
                     ?>
                     <table>

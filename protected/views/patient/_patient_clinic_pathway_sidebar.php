@@ -28,6 +28,8 @@ $picker_setup = $pick_behavior->setupPicker();
 </div>
 
 <script type="text/javascript">
+    const pathwaySetupData = <?=$picker_setup?>;
+
     $('#clinic-pathway-btn').click(function (){
         if ($(this).hasClass('active')) {
             removePathwayContainer();
@@ -59,7 +61,7 @@ $picker_setup = $pick_behavior->setupPicker();
                     let picker = new OpenEyes.UI.PathwayStepPicker({
                         pathways: <?= $pathway->getPathwaysJSON() ?>,
                         ...<?=$path_step_type_ids?>,
-                        ...<?=$picker_setup?>,
+                        ...pathwaySetupData,
                     });
                     picker.init();
                 },

@@ -1497,6 +1497,25 @@ class WorklistController extends BaseController
             if ($step->getState('subspecialty_id')) {
                 $step_data['subspecialty_id'] = $step->getState('subspecialty_id');
             }
+
+            $step_data['service_id'] = $step_data['service_id'] ?? $step->getState('service_id');
+
+            if (!$step_data['service_id'] && (isset($step_data['subspecialty_id']) || !empty($step_data['firm_id']))) {
+                $service_subspecialty = $step_data['subspecialty_id'] ?? Firm::model()->findByPk($step_data['firm_id'])->serviceSubspecialtyAssignment->subspecialty_id;
+                $episode = $pathway->worklist_patient->patient->getOpenEpisodeOfSubspecialty($service_subspecialty);
+
+                if ($episode) {
+                    $step_data['service_id'] = $episode->firm_id;
+                } else {
+                    // Choose a default service firm
+                    $service_firm = Firm::model()->with('serviceSubspecialtyAssignment')
+                                                 ->find('can_own_an_episode = 1 AND subspecialty_id = :subspecialty',
+                                                        [':subspecialty' => $service_subspecialty]);
+
+                    $step_data['service_id'] = $service_firm ? $service_firm->id : null;
+                }
+            }
+
             $new_step = $step->createNewStepForPathway($pathway_id, $step_data, true, (int)$position);
         }
 

@@ -34,11 +34,25 @@ class PathstepObserver
             if (!$firm) {
                 $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
             }
-            $service = Firm::model()->find(
-                'service_subspecialty_assignment_id = :id AND can_own_an_episode = 1',
-                [':id' => $firm->service_subspecialty_assignment_id]
-            );
-            $service_id = $service->id;
+
+            $service_id = $step->getState('service_id');
+
+            // Either use the firm for an existing episode for the selected subspecialty or default to the first one found if it's not set in the step state
+            if ($service_id === null) {
+                $episode = $step->pathway->worklist_patient->patient->getOpenEpisodeOfSubspecialty($firm->serviceSubspecialtyAssignment->subspecialty_id);
+
+                if ($episode) {
+                    $service_id = $episode->firm_id;
+                } else {
+                    $service = Firm::model()->find(
+                        'service_subspecialty_assignment_id = :id AND can_own_an_episode = 1',
+                        [':id' => $firm->service_subspecialty_assignment_id]
+                    );
+
+                    $service_id = $service->id;
+                }
+            }
+
             $workflow_step_id = $step->getState('workflow_step_id');
 
             // This is to avoid the scenario where undoing a pathway step would proceed ahead examination workflow to next step

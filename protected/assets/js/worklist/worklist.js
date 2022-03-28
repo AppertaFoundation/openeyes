@@ -384,6 +384,20 @@ $(function () {
         }
     };
 
+    let changeExamination = function (event, context, ps) {
+        event.preventDefault();
+
+        let action = $(event.target).data('action');
+
+        if (action === 'next') {
+            let form_data = serializeForm('.js-examination-change-form');
+
+            runAction(event, context, ps, form_data);
+        } else {
+            runAction(event, context, ps);
+        }
+    };
+
     let cancelAdmin = function (event, context, ps) {
         event.preventDefault();
         ps.resetPopup();
@@ -974,6 +988,11 @@ $(function () {
                 'target': '.step-actions .js-change-book-appointment',
                 'event': 'click',
                 'callback': changeBookingAppointment,
+            },
+            {
+                'target': '.step-actions .js-change-examination',
+                'event': 'click',
+                'callback': changeExamination,
             },
             {
                 'target': '.step-actions .user-pin-entry',

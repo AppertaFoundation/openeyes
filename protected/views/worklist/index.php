@@ -1323,13 +1323,16 @@ $initial_filter = $session_filter_info['filter'];
     // Pathstep picker
     let picker = null;
 
+    // Common data used by the PathwayStepPicker and some step widget views
+    const pathwaySetupData = <?=$picker_setup?>;
+
     // Workaround for the complete option dialog disappearing before the 'ok' event is triggered.
     $(document).off('click', '.js-complete-option-list .li').on('click', '.js-complete-option-list .li', function() {
         $('#selected-complete-option').val($(this).prev().val());
     });
 
     $(document).ready(function () {
-        const picker_setup = <?=$picker_setup?>;
+        const picker_setup = pathwaySetupData;
         const path_step_type_ids = <?=$path_step_type_ids?>;
         $('body').on('click', '.collapse-data-header-icon', function () {
             $(this).toggleClass('collapse expand');
