@@ -50,7 +50,7 @@ class DidNotAttend extends BaseResource
     {
         if (!$this->patient) {
             $this->addError('Patient not found');
-        } else if (!$this->episode) {
+        } elseif (!$this->episode) {
             // Only need to check if patient exists as if it doesn't
             // the episode definitely won't exist.
             $this->addError('Episode could not be created');
