@@ -1237,11 +1237,17 @@ class AdminController extends BaseAdminController
                 if (!$institution->validate()) {
                     $errors = $institution->getErrors();
                 }
+
                 if ($new) {
                     $contact->save(false);
 
                     $institution->contact_id = $contact->id;
                     $address->contact_id = $contact->id;
+                }
+                $contact->attributes = $request->getPost('Contact', []);
+
+                if (!$contact->validate()) {
+                    $errors = array_merge(@$errors, $contact->getErrors());
                 }
 
                 $address->attributes = $request->getPost('Address', []);
@@ -1306,6 +1312,9 @@ class AdminController extends BaseAdminController
                     if (!$institution->save()) {
                         throw new CHttpException(500, 'Unable to save institution: ' . print_r($institution->getErrors(), true));
                     }
+                    if (!$contact->save()) {
+                        throw new CHttpException(500, 'Unable to save institution contact: ' . print_r($contact->getErrors(), true));
+                    }
                     if (!$address->save()) {
                         throw new CHttpException(500, 'Unable to save institution address: ' . print_r($address->getErrors(), true));
                     }
@@ -1366,10 +1375,26 @@ class AdminController extends BaseAdminController
 
                     $new_site->attributes = $site_attributes;
                     $new_site->institution_id = $institution->id;
-                    $this->initialiseEmptyContactForSiteAndAddress($new_site, $site_address);
+
+                    $site_contact = new Contact('admin_contact');
+                    $site_contact->nick_name = 'NULL';
+                    $site_contact->title = null;
+                    $site_contact->first_name = '-';
+                    $site_contact->last_name = '-';
+                    $site_contact->qualifications = null;
+                    $site_contact->created_institution_id = Yii::app()->session['selected_institution_id'];
+
+                    $site_contact->save(false);
+
+                    $new_site->contact_id = $site_contact->id;
+                    $site_address->contact_id = $site_contact->id;
 
                     if (!$new_site->validate()) {
                         $errors = array_merge($errors, $new_site->getErrors());
+                    }
+
+                    if (!$site_contact->validate()) {
+                        $errors = array_merge($errors, $site_contact->getErrors());
                     }
 
                     if (!$site_address->validate()) {
@@ -1419,6 +1444,7 @@ class AdminController extends BaseAdminController
 
         $this->render('/admin/institutions/edit', array(
             'institution' => $institution,
+            'contact' => $contact,
             'address' => $address,
             'patient_identifier_types' => $patient_identifier_types,
             'logo' => $logo,
@@ -1642,6 +1668,11 @@ class AdminController extends BaseAdminController
             $address = new Address();
             $logo = new SiteLogo();
             $errors = array();
+            $contact = new Contact('admin_contact');
+            $contact->created_institution_id = Yii::app()->session['selected_institution_id'];
+            $contact->save(false);
+            $site->contact_id = $contact->id;
+            $address->contact_id = $contact->id;
         } else {
             $id = @$_GET['site_id'];
             $site = Site::model()->findByPk($id);
@@ -1660,17 +1691,15 @@ class AdminController extends BaseAdminController
         if (!empty($_POST)) {
             $site->attributes = $_POST['Site'];
 
-
-
             if (!$site->validate()) {
                 $errors = $site->getErrors();
             }
-            if ($new) {
-                /*
-            * Set default blank contact to fulfill the current relationship with a site
-            */
-                $this->initialiseEmptyContactForSiteAndAddress($site, $address);
+
+            $contact->attributes = $_POST['Contact'];
+            if (!$contact->validate()) {
+                $errors = array_merge($errors, $contact->getErrors());
             }
+
             $address->attributes = $_POST['Address'];
 
             if (!$address->validate()) {
@@ -1749,6 +1778,9 @@ class AdminController extends BaseAdminController
                 if (!$site->save()) {
                     throw new CHttpException(500, 'Unable to save site: ' . print_r($site->getErrors(), true));
                 }
+                if (!$contact->save()) {
+                    throw new CHttpException(500, 'Unable to save site address: ' . print_r($contact->getErrors(), true));
+                }
                 if (!$address->save()) {
                     throw new CHttpException(500, 'Unable to save site address: ' . print_r($address->getErrors(), true));
                 }
@@ -1765,29 +1797,13 @@ class AdminController extends BaseAdminController
         $this->render('/admin/sites/edit', array(
             'site' => $site,
             'errors' => $errors,
+            'contact' => $contact,
             'address' => $address,
             'logo' => $logo,
             'parentlogo' => $logo->parent_logo ? SiteLogo::model()->findByPk($logo->parent_logo) : null,
             'new' => $new,
         ));
     }
-
-    private function initialiseEmptyContactForSiteAndAddress($site, $address)
-    {
-        $contact = new Contact('admin_contact');
-        $contact->nick_name = 'NULL';
-        $contact->title = null;
-        $contact->first_name = '-';
-        $contact->last_name = '-';
-        $contact->qualifications = null;
-        $contact->created_institution_id = Yii::app()->session['selected_institution_id'];
-
-        $contact->save(false);
-
-        $site->contact_id = $contact->id;
-        $address->contact_id = $contact->id;
-    }
-
 
     public function actionLogo()
     {
@@ -1848,8 +1864,8 @@ class AdminController extends BaseAdminController
             Audit::add('admin-logo', 'view', 1);
         }
         $this->render('/admin/sites/logos', array(
-            'logo' => $logo,
-            'errors' => $errors,
+        'logo' => $logo,
+        'errors' => $errors,
         ));
     }
 
@@ -1928,8 +1944,8 @@ class AdminController extends BaseAdminController
         }
 
         $this->render('/admin/addcontact', array(
-            'contact' => $contact,
-            'errors' => @$errors,
+        'contact' => $contact,
+        'errors' => @$errors,
         ));
     }
 
@@ -1952,8 +1968,8 @@ class AdminController extends BaseAdminController
         }
 
         $this->render('/admin/addcontactlabel', array(
-            'contactlabel' => $contactlabel,
-            'errors' => @$errors,
+        'contactlabel' => $contactlabel,
+        'errors' => @$errors,
         ));
     }
 
@@ -1982,8 +1998,8 @@ class AdminController extends BaseAdminController
         }
 
         $this->render('/admin/editcontactlabel', array(
-            'contactlabel' => $contactlabel,
-            'errors' => @$errors,
+        'contactlabel' => $contactlabel,
+        'errors' => @$errors,
         ));
     }
 
@@ -2037,8 +2053,8 @@ class AdminController extends BaseAdminController
         }
 
         $this->render('/admin/editdatasource', array(
-            'source' => $source,
-            'errors' => @$errors,
+        'source' => $source,
+        'errors' => @$errors,
         ));
     }
 
@@ -2061,8 +2077,8 @@ class AdminController extends BaseAdminController
         }
 
         $this->render('/admin/editdatasource', array(
-            'source' => $source,
-            'errors' => @$errors,
+        'source' => $source,
+        'errors' => @$errors,
         ));
     }
 
@@ -2207,9 +2223,9 @@ class AdminController extends BaseAdminController
         }
 
         $this->render('/admin/commissioning_bodies/edit', array(
-            'cb' => $cb,
-            'address' => $address,
-            'errors' => $errors,
+        'cb' => $cb,
+        'address' => $address,
+        'errors' => $errors,
         ));
     }
 
@@ -2298,8 +2314,8 @@ class AdminController extends BaseAdminController
         }
 
         $this->render('/admin/commissioning_body_types/edit', array(
-            'cbt' => $cbt,
-            'errors' => $errors,
+        'cbt' => $cbt,
+        'errors' => $errors,
         ));
     }
 
@@ -2397,12 +2413,12 @@ class AdminController extends BaseAdminController
         $errors = $this->saveEditCommissioningBodyService($cbs, $contact, $address, $return_url);
 
         $this->render('//admin/commissioning_body_services/edit', array(
-            'commissioning_bt' => $commissioning_bt,
-            'commissioning_bst' => $commissioning_bst,
-            'cbs' => $cbs,
-            'address' => $address,
-            'errors' => $errors,
-            'return_url' => $return_url
+        'commissioning_bt' => $commissioning_bt,
+        'commissioning_bst' => $commissioning_bst,
+        'cbs' => $cbs,
+        'address' => $address,
+        'errors' => $errors,
+        'return_url' => $return_url
         ));
     }
 
@@ -2442,15 +2458,15 @@ class AdminController extends BaseAdminController
 
                     if (!$cbs->save()) {
                         throw new CHttpException(500, 'Unable to save CommissioningBodyService: ' . print_r(
-                            $cbs->getErrors(),
-                            true
+                        $cbs->getErrors(),
+                        true
                         ));
                     }
 
                     if (!$address->save()) {
                         throw new CHttpException(500, 'Unable to save CommissioningBodyService address: ' . print_r(
-                            $address->getErrors(),
-                            true
+                        $address->getErrors(),
+                        true
                         ));
                     }
 
@@ -2534,8 +2550,8 @@ class AdminController extends BaseAdminController
             if (empty($errors)) {
                 if (!$cbs->save()) {
                     throw new CHttpException(500, 'Unable to save CommissioningBodyServiceType: ' . print_r(
-                        $cbs->getErrors(),
-                        true
+                    $cbs->getErrors(),
+                    true
                     ));
                 }
 
@@ -2546,8 +2562,8 @@ class AdminController extends BaseAdminController
         }
 
         $this->render('/admin/commissioning_body_service_types/edit', array(
-            'cbs' => $cbs,
-            'errors' => $errors,
+        'cbs' => $cbs,
+        'errors' => $errors,
         ));
     }
 
@@ -2586,10 +2602,10 @@ class AdminController extends BaseAdminController
     public function actionEventDeletionRequests()
     {
         $this->render('/admin/event_deletion_requests', array(
-            'events' => Event::model()->findAll(array(
-                'order' => 'last_modified_date asc',
-                'condition' => 'delete_pending = 1',
-            )),
+        'events' => Event::model()->findAll(array(
+            'order' => 'last_modified_date asc',
+            'condition' => 'delete_pending = 1',
+        )),
         ));
     }
 
@@ -2606,8 +2622,8 @@ class AdminController extends BaseAdminController
         $event->softDelete();
 
         $event->audit('event', 'delete-approved', serialize(array(
-            'requested_by_user_id' => $requested_by_user_id,
-            'requested_by_datetime' => $requested_by_datetime,
+        'requested_by_user_id' => $requested_by_user_id,
+        'requested_by_datetime' => $requested_by_datetime,
         )));
 
         echo '1';
@@ -2631,8 +2647,8 @@ class AdminController extends BaseAdminController
         }
 
         $event->audit('event', 'delete-rejected', serialize(array(
-            'requested_by_user_id' => $requested_by_user_id,
-            'requested_by_datetime' => $requested_by_datetime,
+        'requested_by_user_id' => $requested_by_user_id,
+        'requested_by_datetime' => $requested_by_datetime,
         )));
 
         echo '1';
@@ -2641,12 +2657,12 @@ class AdminController extends BaseAdminController
     public function actionEpisodeSummaries($subspecialty_id = null)
     {
         $this->render(
-            '/admin/episodeSummaries',
-            array(
-                'subspecialty_id' => $subspecialty_id,
-                'enabled_items' => EpisodeSummaryItem::model()->enabled($subspecialty_id)->findAll(),
-                'available_items' => EpisodeSummaryItem::model()->available($subspecialty_id)->findAll(),
-            )
+        '/admin/episodeSummaries',
+        array(
+            'subspecialty_id' => $subspecialty_id,
+            'enabled_items' => EpisodeSummaryItem::model()->enabled($subspecialty_id)->findAll(),
+            'available_items' => EpisodeSummaryItem::model()->available($subspecialty_id)->findAll(),
+        )
         );
     }
 
@@ -2683,8 +2699,8 @@ class AdminController extends BaseAdminController
 
         $this->group = "System";
         $this->render('/admin/settings', array(
-            'institution_id' => $institution_id,
-            'is_admin' => $is_admin,
+        'institution_id' => $institution_id,
+        'is_admin' => $is_admin,
         ));
     }
 
@@ -2770,14 +2786,14 @@ class AdminController extends BaseAdminController
         }
 
         $this->render(
-            '/admin/edit_setting',
-            array(
-                'metadata' => $metadata,
-                'errors' => $errors,
-                'allowed_classes' => [$class],
-                'institution_id' => $institution_id,
-                'is_admin' => $is_admin,
-            )
+        '/admin/edit_setting',
+        array(
+            'metadata' => $metadata,
+            'errors' => $errors,
+            'allowed_classes' => [$class],
+            'institution_id' => $institution_id,
+            'is_admin' => $is_admin,
+        )
         );
     }
 
@@ -2813,8 +2829,8 @@ class AdminController extends BaseAdminController
         }
 
         $this->render('/admin/editanaestheticagent', array(
-            'agent' => $agent,
-            'errors' => $errors,
+        'agent' => $agent,
+        'errors' => $errors,
         ));
     }
 
@@ -2844,8 +2860,8 @@ class AdminController extends BaseAdminController
 
         Audit::add('admin', 'view', $id, null, array('model' => 'AnaestheticAgent'));
         $this->render('/admin/editanaestheticagent', array(
-            'agent' => $agent,
-            'errors' => $errors,
+        'agent' => $agent,
+        'errors' => $errors,
         ));
     }
 
@@ -2869,7 +2885,7 @@ class AdminController extends BaseAdminController
 
         Audit::add('admin', 'view', $id, null, array('model' => 'AnaestheticAgent'));
         $this->render('/admin/deleteanaestheticagent', array(
-            'agent' => $agent,
+        'agent' => $agent,
         ));
     }
 
@@ -2897,7 +2913,7 @@ class AdminController extends BaseAdminController
         }
 
         $this->render('/admin/attachments/index', array(
-            'event_types' => EventType::model()->findAll(),
+        'event_types' => EventType::model()->findAll(),
         ));
     }
 
