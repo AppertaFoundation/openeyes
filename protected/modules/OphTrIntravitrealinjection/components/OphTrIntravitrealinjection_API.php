@@ -46,8 +46,10 @@ class OphTrIntravitrealinjection_API extends BaseAPI
         if ($injection = $this->getPreviousTreatmentForSide($patient, $episode, $side)) {
             $date_time = new \DateTime($injection->event->event_date);
             $date_time->format(\Helper::NHS_DATE_FORMAT);
-            $num = $this->getLetterTreatmentNumberLeft($patient);
-            $drug = $this->getLetterTreatmentDrugLeft($patient);
+            $num_method = "getLetterTreatmentNumber{$side}";
+            $drug_method = "getLetterTreatmentDrug{$side}";
+            $num = $this->$num_method($patient);
+            $drug = $this->$drug_method($patient);
             return "$num injections, last $drug " . $date_time->format(\Helper::NHS_DATE_FORMAT);
         }
 
