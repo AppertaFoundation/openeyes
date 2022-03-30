@@ -711,8 +711,12 @@ class AdminController extends BaseAdminController
                         $invalid_existing[] = $user_auth;
                     }
                 }
-            } elseif (empty($user_auth_errors)) {
+            } else {
+                $transaction = Yii::app()->db->beginTransaction();
+
                 if (!$user->save(false)) {
+                    $transaction->rollback();
+
                     throw new CHttpException(500, 'Unable to save user: ' . print_r($user->getErrors(), true));
                 }
 
@@ -753,6 +757,8 @@ class AdminController extends BaseAdminController
                         $user_auth->handlePassword();
                         $user_auth->setPasswordHash();
                         if (!$user_auth->save(false)) {
+                            $transaction->rollback();
+
                             throw new CHttpException(500, 'Unable to save user authentication: ' . print_r($user_auth->getErrors(), true));
                         } else {
                             Audit::add('admin-User-Authentication', 'save', $user_auth->id);
@@ -772,6 +778,8 @@ class AdminController extends BaseAdminController
                 $contact->created_institution_id = Yii::app()->session['selected_institution_id'];
 
                 if (!$contact->save()) {
+                    $transaction->rollback();
+
                     throw new CHttpException(500, 'Unable to save user contact: ' . print_r($contact->getErrors(), true));
                 }
 
@@ -779,6 +787,8 @@ class AdminController extends BaseAdminController
                     $user->contact_id = $contact->id;
 
                     if (!$user->save()) {
+                        $transaction->rollback();
+
                         throw new CHttpException(500, 'Unable to save user: ' . print_r($user->getErrors(), true));
                     }
                 }
@@ -801,8 +811,23 @@ class AdminController extends BaseAdminController
                     $user->addError('global_firm_rights', 'When no global firm rights is set, a firm must be selected');
                     $errors = $user->getErrors();
                 }
+
+                $errors = array_merge($errors, $user_auth_errors);
+
+                if (empty($errors)) {
+                    $transaction->commit();
+                } else {
+                    // Kludge to prevent an exception: when creating a new user, if there is an error with the user auth data
+                    // that prevents it from saving, while the user data is okay, the stale user id will persist and cause a problem
+                    // when the user corrects the user auth error and tries to save again.
+                    // TODO: Restructure this controller action and views to avoid passing around stale user ids
+                    if ($is_new) {
+                        $user->id = null;
+                    }
+
+                    $transaction->rollback();
+                }
             }
-            $errors = array_merge($errors, $user_auth_errors);
             if (empty($errors)) {
                 $this->redirect('/admin/users/' . ceil($user->id / $this->items_per_page));
             }
