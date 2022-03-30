@@ -2766,9 +2766,12 @@ class DefaultController extends \BaseEventTypeController
 
         $latest_med_management_element = $api->getLatestElement('models\MedicationManagement', $patient);
         $latest_med_history_element =  $api->getLatestElement('models\HistoryMedications', $patient);
-
-        $latest_mm_datetime = $latest_med_management_element->event->event_date ?? null;
-        $latest_mh_datetime = $latest_med_history_element->event->event_date ?? null;
+        if($latest_med_management_element){
+            $latest_mm_datetime = $latest_med_management_element->event ? ($latest_med_management_element->event->event_date ?? null) : null;
+        }
+        if($latest_med_history_element){
+            $latest_mh_datetime = $latest_med_history_element->event ? ($latest_med_history_element->event->event_date ?? null) : null;
+        }
 
         $latest_med_element_datetime = max($latest_mm_datetime, $latest_mh_datetime);
 
