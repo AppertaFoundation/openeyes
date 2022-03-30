@@ -36,7 +36,7 @@ $required_allergy_ids = array_map(function ($r) {
             <?=\CHtml::checkBox($model_name . '[no_allergies]', $element->no_allergies_date ? true : false)?>
             No allergies
         </label>
-        
+
 </div>
     <div class="cols-full">
     <table id="<?= $model_name ?>_entry_table" class="cols-full">
