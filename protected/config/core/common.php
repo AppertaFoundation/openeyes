@@ -63,7 +63,7 @@ $db_test = array(
 /** END SINGLE SIGN-ON SETTINGS */
 
 $breakGlassEnabled = strtolower(getenv('BREAK_GLASS_ENABLED')) === "true";
-$breakGlassField = getenv('BREAK_GLASS_FIELD') ?: 'qualifications';
+$userBreakGlassField = getenv('BREAK_GLASS_FIELD') ?: 'registration_code';
 
 $config = array(
     'name' => 'OpenEyes',
@@ -129,7 +129,7 @@ $config = array(
         ),
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '202202281416',
+            'time' => '202203311426',
         ),
         'clientScript' => array(
             'class' => 'ClientScript',
@@ -746,7 +746,7 @@ $config = array(
         'default_patient_import_subspecialty' => 'GL',
         //        Add elements that need to be excluded from the admin sidebar in settings
         'exclude_admin_structure_param_list' => getenv('OE_EXCLUDE_ADMIN_STRUCT_LIST') ? explode(",", getenv('OE_EXCLUDE_ADMIN_STRUCT_LIST')) : array(''),
-        'oe_version' => '5.0.2',
+        'oe_version' => '5.0.3',
         'gp_label' => !empty(trim(getenv('OE_GP_LABEL'))) ? getenv('OE_GP_LABEL') : null,
         'general_practitioner_label' => !empty(trim(getenv('OE_GENERAL_PRAC_LABEL'))) ? getenv('OE_GENERAL_PRAC_LABEL') : null,
         // number of days in the future to retrieve worklists for the automatic dashboard render (0 by default in v3)
@@ -881,89 +881,102 @@ $config = array(
         ),
         /** END SINGLE SIGN-ON PARAMS */
         'breakglass_enabled' => $breakGlassEnabled,
-        'breakglass_field' => $breakGlassField,
-        ),
-        );
+        'user_breakglass_field' => $userBreakGlassField,
+    ),
+);
 
-        $modules = array(
-        // Gii tool
-        // 'gii' => array(
-        //     'class' => 'system.gii.GiiModule',
-        //     'password' => 'openeyes',
-        //     'ipFilters' => array('127.0.0.1'),
-        // ),
-        'oldadmin',
-        'Admin',
-        'Api',
-        'eyedraw',
-        'OphCiExamination' => array('class' => '\OEModule\OphCiExamination\OphCiExaminationModule'),
-        'OphCoCorrespondence',
-        'OphCiPhasing',
-        'OphTrIntravitrealinjection',
-        'OphCoTherapyapplication',
-        'OphDrPrescription',
-        'OphTrConsent',
-        'OphTrOperationnote',
-        'OphTrOperationbooking',
-        'OphTrLaser',
-        'PatientTicketing' => array('class' => '\OEModule\PatientTicketing\PatientTicketingModule'),
-        'OphInVisualfields',
-        'OphInBiometry',
-        'OphCoMessaging' => array('class' => '\OEModule\OphCoMessaging\OphCoMessagingModule'),
-        'PASAPI' => array('class' => '\OEModule\PASAPI\PASAPIModule'),
-        'OphInLabResults',
-        'OphCoCvi' => array('class' => '\OEModule\OphCoCvi\OphCoCviModule'),
-        /* Uncomment next section if you want to use the genetics module
-        ￼        'Genetics',
-        ￼        'OphInDnasample',
-        ￼        'OphInDnaextraction',
-        ￼        'OphInGeneticresults',*/
-        'OphCoDocument',
-        'OphCiDidNotAttend',
-        'OphGeneric',
-        'OECaseSearch',
-        'OETrial',
-        'SSO',
-        'OphOuCatprom5',
-        'OphTrOperationchecklists',
-        'OphDrPGDPSD',
-        'BreakGlass' => array('class' => '\OEModule\BreakGlass\BreakGlassModule'),
-        );
+// Enable logging of php errors to brwser console
+// Can be either "true", or can provide the error levels to output (e.g, one or more of trace, error, warning, info, notice)
+if (!empty(getenv('LOG_TO_BROWSER'))) {
+    $browserlog = array(
+                    'browser' => array(
+                        'class' => 'CWebLogRoute',
+                        'levels' => strtolower(trim(getenv('LOG_TO_BROWSER'))) == "true" ? 'error, warning, notice' : trim(getenv('LOG_TO_BROWSER')),
+                        'showInFireBug' => true,
+                    ),
+    );
+    $config['components']['log']['routes'] = array_merge_recursive($config['components']['log']['routes'], $browserlog);
+}
 
-        // deal with any custom modules added for the local deployment - which are set in /config/modules.conf (added via docker)
-        // Gracefully ignores file if it is missing
-        $custom_modules = explode(" ", trim(str_replace(["modules=(", ")", "'", "openeyes ", "eyedraw "], "", @file_get_contents("/config/modules.conf"))));
-        if (!empty($custom_modules)) {
-            $final_custom_modules = array();
-            foreach ($custom_modules as $module) {
-                if (!empty($module)) {
-                    $mod_split = explode("=", $module);
-                    if (sizeof($mod_split) > 1) {
-                        $final_custom_modules[$mod_split[0]] = array('class' => $mod_split[1]);
-                    } else {
-                        $final_custom_modules[] = (string)$mod_split[0];
-                    }
-                }
+$modules = array(
+// Gii tool
+// 'gii' => array(
+//     'class' => 'system.gii.GiiModule',
+//     'password' => 'openeyes',
+//     'ipFilters' => array('127.0.0.1'),
+// ),
+'oldadmin',
+'Admin',
+'Api',
+'eyedraw',
+'OphCiExamination' => array('class' => '\OEModule\OphCiExamination\OphCiExaminationModule'),
+'OphCoCorrespondence',
+'OphCiPhasing',
+'OphTrIntravitrealinjection',
+'OphCoTherapyapplication',
+'OphDrPrescription',
+'OphTrConsent',
+'OphTrOperationnote',
+'OphTrOperationbooking',
+'OphTrLaser',
+'PatientTicketing' => array('class' => '\OEModule\PatientTicketing\PatientTicketingModule'),
+'OphInVisualfields',
+'OphInBiometry',
+'OphCoMessaging' => array('class' => '\OEModule\OphCoMessaging\OphCoMessagingModule'),
+'PASAPI' => array('class' => '\OEModule\PASAPI\PASAPIModule'),
+'OphInLabResults',
+'OphCoCvi' => array('class' => '\OEModule\OphCoCvi\OphCoCviModule'),
+/* Uncomment next section if you want to use the genetics module
+￼        'Genetics',
+￼        'OphInDnasample',
+￼        'OphInDnaextraction',
+￼        'OphInGeneticresults',*/
+'OphCoDocument',
+'OphCiDidNotAttend',
+'OphGeneric',
+'OECaseSearch',
+'OETrial',
+'SSO',
+'OphOuCatprom5',
+'OphTrOperationchecklists',
+'OphDrPGDPSD',
+'BreakGlass' => array('class' => '\OEModule\BreakGlass\BreakGlassModule'),
+);
+
+// deal with any custom modules added for the local deployment - which are set in /config/modules.conf (added via docker)
+// Gracefully ignores file if it is missing
+$custom_modules = explode(" ", trim(str_replace(["modules=(", ")", "'", "openeyes ", "eyedraw "], "", @file_get_contents("/config/modules.conf"))));
+if (!empty($custom_modules)) {
+    $final_custom_modules = array();
+    foreach ($custom_modules as $module) {
+        if (!empty($module)) {
+            $mod_split = explode("=", $module);
+            if (sizeof($mod_split) > 1) {
+                $final_custom_modules[$mod_split[0]] = array('class' => $mod_split[1]);
+            } else {
+                $final_custom_modules[] = (string)$mod_split[0];
             }
-            $modules = array_unique(array_merge($modules, $final_custom_modules), SORT_REGULAR);
         }
+    }
+    $modules = array_unique(array_merge($modules, $final_custom_modules), SORT_REGULAR);
+}
 
-        $config["modules"] = $modules;
+$config["modules"] = $modules;
 
-        /**
-        * Setup the local_users parameter. If the environment variable named OE_LOCAL_USERS is set then use it as an override.
-        * else, default to the standard array
-        * The OE_LOCAL_USERS environment variable should be a comma separated string
-        */
-        $local_users = !empty(trim(getenv('OE_LOCAL_USERS'))) ? getenv('OE_LOCAL_USERS') : 'admin, api, docman_user, payload_processor';
-        $config["params"]["local_users"] = explode(',', $local_users);
+/**
+* Setup the local_users parameter. If the environment variable named OE_LOCAL_USERS is set then use it as an override.
+* else, default to the standard array
+* The OE_LOCAL_USERS environment variable should be a comma separated string
+*/
+$local_users = !empty(trim(getenv('OE_LOCAL_USERS'))) ? getenv('OE_LOCAL_USERS') : 'admin, api, docman_user, payload_processor';
+$config["params"]["local_users"] = explode(',', $local_users);
 
-        /**
-        * Setup the special_users parameter. If the environment variable named OE_SPECIAL_USERS is set then use it as an override.
-        * else, default to the standard array
-        * The OE_SPECIAL_USERS environment variable should be a comma separated string
-        */
-        $special_users = !empty(trim(getenv('OE_SPECIAL_USERS'))) ? getenv('OE_SPECIAL_USERS') : 'api';
-        $config["params"]["special_users"] = explode(',', $special_users);
+/**
+* Setup the special_users parameter. If the environment variable named OE_SPECIAL_USERS is set then use it as an override.
+* else, default to the standard array
+* The OE_SPECIAL_USERS environment variable should be a comma separated string
+*/
+$special_users = !empty(trim(getenv('OE_SPECIAL_USERS'))) ? getenv('OE_SPECIAL_USERS') : 'api';
+$config["params"]["special_users"] = explode(',', $special_users);
 
-        return $config;
+return $config;

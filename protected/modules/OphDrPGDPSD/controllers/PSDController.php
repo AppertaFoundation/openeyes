@@ -81,7 +81,8 @@ class PSDController extends DefaultController
         $assignment = OphDrPGDPSD_Assignment::model()->findByPk($assignment_id);
         if ($assignment && intval($assignment->status) === $assignment::STATUS_TODO) {
             $transaction = \Yii::app()->db->beginTransaction();
-            $assignment->delete();
+            $assignment->active = 0;
+            $assignment->save();
         }
         if ($assignment->getErrors()) {
             $transaction->rollback();

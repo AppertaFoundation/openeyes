@@ -25,7 +25,30 @@ $form = $this->beginWidget(
             'field' => 4,
         ),
     ]
-) ?>
+);
+
+$ua_criteria = new CDbCriteria();
+$ua_criteria->compare('user_id', $user->id);
+$ua_criteria->addNotInCondition(
+    'id',
+    array_map(
+        function ($user_auth) {
+            return $user_auth->id;
+        },
+        $invalid_existing
+    )
+);
+$user_auths = array_merge(
+    $invalid_existing,
+    isset($user->id) ? UserAuthentication::model()->findAll($ua_criteria) : []
+);
+usort(
+    $user_auths,
+    function ($a, $b) {
+        return $a->id < $b->id ? -1 : 1;
+    }
+);
+?>
 
 <div>
     <div class="cols-7">
@@ -106,9 +129,31 @@ $form = $this->beginWidget(
                 <td>
                     <?php
                     $firm_label = [];
-                    foreach ($user->getAllAvailableFirms() as $firm) {
+                    $available_firms = count($user_auths) > 0 ? $user->getAllAvailableFirms() : (new User())->getAllAvailableFirms();
+
+                    foreach ($available_firms as $firm) {
                         $firm_label[$firm->id] = "{$firm->name} ". ($firm->serviceSubspecialtyAssignment ? "({$firm->serviceSubspecialtyAssignment->subspecialty->name})" : "") . " [{$firm->institution->name}]";
                     }
+
+                    if (count($user_auths) === 0) {
+                        // Kludge around an issue of firms containing only ids instead of Firm objects,
+                        // which causes multiSelectList to throw an exception.
+                        //
+                        // This only happens when an attempt is made to save a user with a list of context firms
+                        // and invalid user authentication data.
+                        $firm_objects = [];
+
+                        foreach ($user->firms as $firm) {
+                            if (getType($firm) === 'object') {
+                                $firm_objects[] = $firm;
+                            } else {
+                                $firm_objects[] = Firm::model()->findByPk($firm);
+                            }
+                        }
+
+                        $user->firms = $firm_objects;
+                    }
+
                     echo $form->multiSelectList(
                         $user,
                         'User[firms]',
@@ -182,29 +227,6 @@ $form = $this->beginWidget(
             </tr>
             </thead>
             <tbody id="user-auth-rows">
-                <?php
-                    $criteria = new CDbCriteria();
-                    $criteria->compare('user_id', $user->id);
-                    $criteria->addNotInCondition(
-                        'id',
-                        array_map(
-                            function ($user_auth) {
-                                return $user_auth->id;
-                            },
-                            $invalid_existing
-                        )
-                    );
-                    $user_auths = array_merge(
-                        $invalid_existing,
-                        isset($user->id) ? UserAuthentication::model()->findAll($criteria) : []
-                    );
-                    usort(
-                        $user_auths,
-                        function ($a, $b) {
-                            return $a->id < $b->id ? -1 : 1;
-                        }
-                    );
-                    ?>
                 <?php foreach ($user_auths as $key => $user_auth) {
                     $this->renderPartial('/admin/_user_authentication_row', [
                         'key' => $key,

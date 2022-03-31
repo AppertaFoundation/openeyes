@@ -458,6 +458,7 @@ class CorrespondenceEmailManager
             }
         }
         $documentOutput = DocumentOutput::model()->findByPk($documentOutputId);
-        $documentOutput->updateOutputStatus($emailStatus);
+        $documentOutput->updateStatus($emailStatus, false, true);
+        $documentOutput->save();
     }
 }

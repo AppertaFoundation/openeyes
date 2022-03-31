@@ -32,7 +32,7 @@
           </div>
           <div class="cols-8 column">
             <div class="data-value">
-                <?php echo $element->gas_type->name ?>
+                <?php echo $element->gas_type->name ?? 'No tamponade'?>
             </div>
           </div>
         </div>
@@ -44,7 +44,7 @@
           </div>
           <div class="cols-8 column">
             <div class="data-value">
-                <?php echo $element->gas_percentage->value ?>%
+                <?php echo $element->gas_percentage ? $element->gas_percentage->value . "%" : 'N/A' ?>
             </div>
           </div>
         </div>
@@ -56,7 +56,7 @@
           </div>
           <div class="cols-8 column">
             <div class="data-value">
-                <?php echo $element->gas_volume ? $element->gas_volume->value : '-' ?>
+                <?php echo $element->gas_volume ? $element->gas_volume->value : 'N/A' ?>
             </div>
           </div>
         </div>

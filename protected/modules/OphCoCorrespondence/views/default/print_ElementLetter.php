@@ -40,6 +40,9 @@ if (!@$no_header) { ?>
         <?php
         $ccString = $element->getCCString();
         $toAddress = $element->getToAddress();
+        if ((int)SettingMetadata::model()->getSetting('correspondence_address_max_lines')>=0) {
+            $letter_address = $toAddress;
+        }
 
         if (isset($letter_header) && !empty($letter_header) && !ctype_space($letter_header)) {
             echo $letter_header;

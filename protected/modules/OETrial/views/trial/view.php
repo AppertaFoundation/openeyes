@@ -259,7 +259,7 @@
       }
     });
   });
-    $(document).on('keyup', '.js-comment-trial-patient', function () {
+    $(document).on('input', '.js-comment-trial-patient', function () {
         var $container=$(this).closest('.js-trial-patient-comment-tr');
         $container.find('.js-comment-trial-patient-actions').show();
     });

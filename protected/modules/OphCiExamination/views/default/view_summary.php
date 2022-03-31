@@ -401,7 +401,7 @@ if ($historyElement) {
                 </div>
             <?php } else { ?>
                 <div class="data-value">
-                    <?= $managementElement->comments ?>
+                    <?= nl2br($managementElement->comments) ?>
                 </div>
             <?php } ?>
         </div>

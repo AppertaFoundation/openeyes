@@ -113,7 +113,12 @@ class Element_DrugAdministration extends BaseMedicationElement
                 $unbooked_worklist_manager = new \UnbookedWorklist();
                 $unbooked_worklist = $unbooked_worklist_manager->createWorklist(new \DateTime(), $site_id, $subspecialty->id);
                 $wl_manager = new \WorklistManager();
-                $worklist_patient = $wl_manager->addPatientToWorklist($this->event->episode->patient, $unbooked_worklist, new \DateTime());
+                $worklist_patient = $wl_manager->getWorklistPatient($unbooked_worklist, $this->event->episode->patient);
+
+                if (!$worklist_patient) {
+                    $worklist_patient = $wl_manager->addPatientToWorklist($this->event->episode->patient, $unbooked_worklist, new \DateTime());
+                }
+
                 $assignment->visit_id = $worklist_patient->id;
             }
             $assignment->save();
@@ -243,13 +248,13 @@ class Element_DrugAdministration extends BaseMedicationElement
     public function softDelete()
     {
         $new_assignments = array();
-        foreach($this->assignments as $assignment){
+        foreach ($this->assignments as $assignment) {
             $duplicate = new OphDrPGDPSD_Assignment();
             $assignment_attrs = $assignment->attributes;
             unset($assignment_attrs['id']);
             unset($assignment_attrs['comment_id']);
             $duplicate->attributes = $assignment_attrs;
-            $duplicate->assigned_meds = array_map(function($med){
+            $duplicate->assigned_meds = array_map(function ($med) {
                 $med_attrs = $med->attributes;
                 unset($med_attrs['id']);
                 return $med_attrs;
@@ -257,7 +262,7 @@ class Element_DrugAdministration extends BaseMedicationElement
             $duplicate->setConfirmed(true);
             $duplicate->active = 0;
             $duplicate->save();
-            if($assignment->comment){
+            if ($assignment->comment) {
                 $duplicate_comment = new OphDrPGDPSD_Assignment_Comment();
                 $duplicate_comment->attributes = $assignment->comment->attributes;
                 $duplicate->saveComment($duplicate_comment);

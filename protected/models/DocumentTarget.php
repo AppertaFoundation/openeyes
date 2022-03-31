@@ -98,10 +98,10 @@ class DocumentTarget extends BaseActiveRecord
         $documentOutputs = $this->document_output;
 
         foreach ($documentOutputs as $documentOutput) {
-            if ($documentOutput->output_type === 'Email') {
-                $emailStatus = 'Email: ' . ($documentOutput->output_status === 'PENDING_RETRY' ? 'PENDING' : $documentOutput->output_status) . '<br/>' . 'Address: ' . $this->email;
+            if ($documentOutput->output_type === DocumentOutput::TYPE_EMAIL) {
+                $emailStatus = 'Email: ' . ($documentOutput->output_status === DocumentOutput::STATUS_PENDING_RETRY ? 'PENDING' : $documentOutput->output_status) . '<br/>' . 'Address: ' . $this->email;
             }
-            if ($documentOutput->output_type === 'Email (Delayed)') {
+            if ($documentOutput->output_type === DocumentOutput::TYPE_EMAIL_DELAYED) {
                 $delayedEmailStatus = 'Email (Delayed): ' . $documentOutput->output_status . '<br/>' . 'Address: ' . $this->email;
             }
         }

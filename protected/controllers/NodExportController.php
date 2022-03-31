@@ -849,14 +849,23 @@ EOL;
                     "" AS DiabetesRegimeId,
                     (
 			SELECT CASE WHEN DATE != ''
-                                    THEN IFNULL((DATE_FORMAT(`date`, '%Y') - DATE_FORMAT(p.dob, '%Y') - (DATE_FORMAT(`date`, '00-%m-%d') < DATE_FORMAT(p.dob, '00-%m-%d'))), "")
+                                    THEN IFNULL((DATE_FORMAT(`converted_date`, '%Y') - DATE_FORMAT(p.dob, '%Y') - (DATE_FORMAT(`converted_date`, '00-%m-%d') < DATE_FORMAT(p.dob, '00-%m-%d'))), "")
                                     ELSE ""
 				END
                     )
 		    AS AgeAtDiagnosis
             FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
             JOIN patient p ON c.patient_id = p.id
-            JOIN secondary_diagnosis s ON s.patient_id = p.id
+            JOIN (select *,
+                case
+                    when trim(date) regexp '^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$' = 1 then date
+                    when trim(date) regexp '^[0-9]{4}-[0-9]{1,2}$' = 1 then concat(date,'-01')
+                    when trim(date) regexp '^[0-9]{4}$' = 1 then concat(date,'-01-01')
+                    else null
+                end converted_date
+                from secondary_diagnosis
+                ) s
+            ON s.patient_id = p.id
             JOIN disorder d ON d.id = s.disorder_id;
 EOL;
         return $query;
@@ -3368,7 +3377,7 @@ FROM
       ON eva.event_id = c.oe_event_id
     /* Hard Join: Visual Acuity individual readings (across both eyes and all methods ) */
     JOIN ophciexamination_visualacuity_reading evar
-      ON evar.element_id = eva.id
+      ON evar.element_id = eva.id AND side != 2
     /* Join: Look up Visual Acuity individual readings for both eyes and all methods (LOJ used to return nulls if data problems (as opposed to loosing parent rows)) */
     LEFT OUTER JOIN ophciexamination_visualacuity_method vam
       ON vam.id = evar.method_id

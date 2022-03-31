@@ -20,8 +20,12 @@
     <?php echo $form->dropDownList(
         $element,
         'gas_type_id',
-        'OphTrOperationnote_GasType',
-        array('empty' => 'Select'),
+        CHtml::listData(
+            OphTrOperationnote_GasType::model()->findAllByAttributes(array('active' => 1), array('order' => 'display_order')),
+            'id',
+            'name'
+        ),
+        array('empty' => 'No tamponade'),
         false,
         array('field' => 2)
     ) ?>
@@ -29,11 +33,11 @@
         $element,
         'gas_percentage_id',
         CHtml::listData(
-            OphTrOperationnote_GasPercentage::model()->findAll(array('order' => 'display_order')),
+            OphTrOperationnote_GasPercentage::model()->findAllByAttributes(array('active' => 1), array('order' => 'display_order')),
             'id',
             'value'
         ),
-        array('empty' => 'Select'),
+        array('empty' => 'N/A'),
         false,
         array('field' => 2)
     ) ?>
@@ -41,13 +45,23 @@
         $element,
         'gas_volume_id',
         CHtml::listData(
-            OphTrOperationnote_GasVolume::model()->activeOrPk($element->gas_volume_id)->findAll(array('order' => 'display_order')),
+            OphTrOperationnote_GasVolume::model()->activeOrPk($element->gas_volume_id)->findAllByAttributes(array('active' => 1), array('order' => 'display_order')),
             'id',
             'value'
         ),
-        array('empty' => 'Select'),
+        array('empty' => 'N/A'),
         false,
         array('field' => 2)
     ) ?>
 </div>
 
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#Element_OphTrOperationnote_Tamponade_gas_type_id').change(function(){
+            if($(this).val() === "") {
+                $('#Element_OphTrOperationnote_Tamponade_gas_percentage_id > option[value=""]').prop('selected', true);
+                $('#Element_OphTrOperationnote_Tamponade_gas_volume_id > option[value=""]').prop('selected', true);
+            }
+        });
+    });
+</script>

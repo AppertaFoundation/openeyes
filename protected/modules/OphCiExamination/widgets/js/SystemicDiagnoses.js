@@ -27,6 +27,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     this.$table = this.$element.find('#OEModule_OphCiExamination_models_SystemicDiagnoses_diagnoses_table');
     this.$noSystemicDiagnosesFld = this.$element.find('.' + this.options.modelName + '_no_systemic_diagnoses');
     this.$noSystemicDiagnosesWrapper = this.$element.find('.' + this.options.modelName + '_no_systemic_diagnoses_wrapper');
+    this.displayRLSide = false;
     this.templateText = $('#OEModule_OphCiExamination_models_SystemicDiagnoses_template').text();
     this.$popup = $('#systemic-diagnoses-popup');
     this.searchRequest = null;
@@ -53,6 +54,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             controller.$popup.hide();
         }
         controller.hideNoSystemicDiagnoses();
+        controller.hideLaterality();
     });
 
     // removal button for table entries
@@ -95,6 +97,30 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     });
 
   };
+
+    SystemicDiagnosesController.prototype.toggleLaterality  = function(e) {
+        if(e){
+            let rowRL = e.closest('td').prev().children();
+            let rightBox = rowRL.find(".js-right-eye").prop('checked');
+            let leftBox = rowRL.find(".js-left-eye").prop('checked');
+
+            if (this.displayRLSide === false || rightBox || leftBox) {
+                rowRL.show();
+                this.displayRLSide = true;
+            } else {
+                rowRL.hide();
+                this.displayRLSide = false;
+            }
+        }
+    };
+
+    SystemicDiagnosesController.prototype.hideLaterality = function () {
+        $('.js-na-eye').each(function(){
+            if ($(this).prop("checked")){
+                $(this).closest('td').prev().children().hide();
+            }
+        });
+    };
 
   SystemicDiagnosesController.prototype.hideNoSystemicDiagnoses = function() {
       if (this.$table.find('tbody tr').length > 0) {
@@ -158,6 +184,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     $radioButtons.on('change', function (e) {
       $(e.target).parent().siblings('tr input[type="hidden"]').val($(e.target).val());
     });
+
+    let $noLateralityRow=$row.find('.js-na-eye');
+    $noLateralityRow.on('click', function() {
+      controller.toggleLaterality($(this));
+    });
   };
 
   SystemicDiagnosesController.prototype.createRow = function (selectedOptions) {
@@ -184,6 +215,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
       this.initialiseRow(this.$table.find('tbody tr:last'));
       this.setDatepicker();
     }
+    this.hideLaterality();
   };
 
   exports.SystemicDiagnosesController = SystemicDiagnosesController;
