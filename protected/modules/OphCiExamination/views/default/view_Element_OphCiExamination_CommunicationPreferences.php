@@ -52,7 +52,7 @@
                 <span class="data-label fade"><?= $element->getAttributeLabel('interpreter_required_id') ?></span>
             </td>
             <td>
-                <span class="data-value large-text"><?= (!is_null($element->interpreter_required_id)) ? $element->interpreter_required->name : 'Unknown' ?></span>
+                <span class="data-value large-text"><?= (!is_null($element->interpreter_required_id)) ? $element->interpreter_required->name : 'N/A' ?></span>
             </td>
         </tr>
         </tbody>

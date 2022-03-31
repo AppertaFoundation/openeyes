@@ -129,9 +129,9 @@ class Address extends BaseActiveRecordVersioned
      *
      * @return string Address as formatted with line breaks
      */
-    public function getLetterFormatted($include_country = true)
+    public function getLetterFormatted($include_country = true, $name = false)
     {
-        return implode("\n", $this->getLetterArray($include_country));
+        return implode("\n", $this->getLetterArray($include_country, $name));
     }
 
     /**
