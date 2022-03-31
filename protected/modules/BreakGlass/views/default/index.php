@@ -17,7 +17,7 @@ $tech_support_url = Yii::App()->params['tech_support_url'] ? htmlspecialchars(Yi
         </tr>
         <tr>
           <td>CHI</td>
-          <td><?= $patient->getNhsnum(); ?></td>
+          <td><?= $patient->nhs_num; ?></td>
         </tr>
         <tr>
           <td>Date of birth</td>

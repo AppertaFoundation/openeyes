@@ -157,8 +157,8 @@ class CaseSearchController extends BaseModuleController
                     /*
                     // reserve for OE-12343 re-implementation
                     'hos_num'=> array(
-                        'asc' => 'hos_num',
-                        'desc' => 'hos_num DESC',
+                        'asc' => 'hos_num*1',
+                        'desc' => 'hos_num*1 DESC',
                         'label' => \SettingMetadata::model()->getSetting('hos_num_label'),
                     ),
                     'nhs_num' => array(
