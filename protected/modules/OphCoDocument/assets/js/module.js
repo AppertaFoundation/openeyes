@@ -451,12 +451,21 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
     };
 
     function generatePdfOutput(element, shouldSavePdf = false) {
-        let doc = new jsPDF();
+        let doc;
         let imageObjs = element.querySelectorAll('img');
 
         imageObjs.forEach(function (imageObj, index) {
-            if (index !== 0) {
-                doc.addPage();
+            let aspectRatio = (imageObj.height / imageObj.width);
+            let orientation = 'portrait';
+            if (imageObj.height < imageObj.width) {
+                orientation = 'landscape';
+            }
+            if (index === 0) 
+            {
+                doc = new jsPDF({ 'orientation': orientation });
+            }
+            else {
+                doc.addPage('a4', orientation);
                 doc.setPage(index + 1);
             }
             doc.addImage(
@@ -465,7 +474,7 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
                 0,
                 0,
                 doc.internal.pageSize.getWidth(),
-                doc.internal.pageSize.getHeight(),
+                doc.internal.pageSize.getWidth() * aspectRatio,
                 `page-${index + 1}`,
                 undefined
             );

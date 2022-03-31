@@ -45,7 +45,13 @@ $missingRequiredSystemicDiagnoses = $this->getMissingRequiredSystemicDiagnoses()
                                 <?= $diag->disorder; ?>
                             </td>
                             <td class="nowrap flex-layout">
-                                <?php $this->widget('EyeLateralityWidget', array('laterality' => $diag->side)) ?>
+                                <?php
+                                if(isset($diag->side)){
+                                    $this->widget('EyeLateralityWidget', array('laterality' => $diag->side));
+                                } else {
+                                    echo '<span class="oe-eye-lat-icons"></span>';
+                                }
+                                ?>
                                 <span class="oe-date"><?= $diag->getHTMLformatedDate() ?></span>
                             </td>
                         </tr>
