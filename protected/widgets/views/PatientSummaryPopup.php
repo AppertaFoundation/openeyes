@@ -279,7 +279,7 @@
                         <tr>
                             <td>Interpreter required</td>
                             <td>
-                                <span class="large-text"><?= ($examination_communication_preferences && !is_null($examination_communication_preferences->interpreter_required_id)) ? $examination_communication_preferences->interpreter_required->name : 'Unknown' ?></span>
+                                <span class="large-text"><?= ($examination_communication_preferences && !is_null($examination_communication_preferences->interpreter_required_id)) ? $examination_communication_preferences->interpreter_required->name : 'N/A' ?></span>
                             </td>
                         </tr>
                         </tbody>
