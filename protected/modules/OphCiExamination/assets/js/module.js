@@ -1074,7 +1074,7 @@ function setPostOpComplicationTableText() {
 }
 
 function medicationManagementValidationFunction() {
-    let medicationManagementEditableUrl = 'MedicationManagementEditable';
+    let medicationManagementEditableUrl = '/OphCiExamination/Default/MedicationManagementEditable';
 
     let errorMessages = [];
 
