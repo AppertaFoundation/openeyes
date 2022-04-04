@@ -243,32 +243,6 @@ OpenEyes.UI = OpenEyes.UI || {};
             });
         });
 
-        //Shows the current event image if it's loaded and the quickview is open
-        function showCurrentEventImage() {
-            //First check the parent element is visible
-            let quickview = $('.oe-event-quickview');
-            let loader = quickview.find('.spinner');
-            let event_id = quickview.data('current_event');
-            if (quickview.is(':visible') && event_id) {
-                let img = quickview.find('img[data-event-id=' + event_id + ']');
-                if (img.data('loaded')) {
-                    img.show();
-                    loader.hide();
-                } else {
-                    loader.show();
-                }
-            }
-        }
-
-        function setEventImageSrcFromData(li_item) {
-            let event_id = li_item.data('event-id');
-            let quickview = $('.oe-event-quickview');
-            let img = quickview.find('img[data-event-id=' + event_id + ']');
-            if (img.attr('src') === undefined) {
-                img.attr('src', img.data('src'));
-            }
-        }
-
         function setEventImageSrc(event_id, url) {
             let img = $('img[data-event-id=' + event_id + ']');
             img.data('src', url);
@@ -382,11 +356,6 @@ OpenEyes.UI = OpenEyes.UI || {};
 
     EpisodeSidebar.prototype.addControls = function () {
         const self = this;
-        let controls = '';
-        controls += self.getGroupingPicker();
-
-        $(controls).insertBefore(self.element.find('.events'));
-        $(self.getListControls()).insertBefore(self.element.find('.events'));
 
         self.element.on('change', '.' + self.options.grouping_picker_class, function (e) {
             self.grouping.id = $(e.target).val();
@@ -408,33 +377,6 @@ OpenEyes.UI = OpenEyes.UI || {};
             self.updateGrouping();
             self.saveState();
         });
-    };
-
-    EpisodeSidebar.prototype.getGroupingPicker = function () {
-        const self = this;
-        let select = '<div class="sidebar-grouping">';
-        select += '<select name="grouping-picker" class="' + self.options.grouping_picker_class + '">';
-        $(groupings).each(function () {
-            select += '<option value="' + this.id + '"';
-            if (self.grouping && self.grouping.id === this.id)
-                select += ' selected';
-            select += '>' + this.label + '</option>';
-        });
-        select += '</select></span>';
-
-        return select;
-    };
-
-    EpisodeSidebar.prototype.getListControls = function () {
-        let controls = '<div class="list-controls">';
-        controls += '<span class="sorting-order asc"><i class="oe-i arrow-up pro-theme"></i></span>';
-        controls += '<span class="sorting-order desc"><i class="oe-i arrow-down pro-theme"></i></span>';
-        controls += '<div class="right">';
-        controls += '<span class="expand-all"><i class="oe-i plus pro-theme"></i></span>';
-        controls += '<span class="collapse-all"><i class="oe-i minus pro-theme"></i></span>';
-        controls += '</div>';
-        controls += '</div>';
-        return controls;
     };
 
     EpisodeSidebar.prototype.resetGrouping = function () {
@@ -499,13 +441,14 @@ OpenEyes.UI = OpenEyes.UI || {};
 
         $(groupingElements).insertAfter(self.element.find(this.options.event_list_selector).parent());
         self.element.find(this.options.event_list_selector).parent().hide();
+        $(self.element.find('select')).val(self.grouping.id);
         // TODO: here we should expand or collapse based on current state
         self.processGroupingState();
 
     };
 
     EpisodeSidebar.prototype.setGroupingState = function (groupingValue, state) {
-        if (this.grouping.state === undefined)
+        if ((this.grouping.state === undefined) || !this.grouping.state)
             this.grouping.state = {};
 
         if (this.grouping.state === null)
@@ -566,10 +509,14 @@ OpenEyes.UI = OpenEyes.UI || {};
             self.expandAll();
         } else {
             self.element.find('.collapse-group').each(function () {
-                if (self.grouping.state[$(this).data('grouping-val')] === 'collapse') {
-                    self.collapseGrouping($(this), false);
-                } else {
+                if (!self.grouping.state) {
                     self.expandGrouping($(this), false);
+                } else {
+                    if (self.grouping.state[$(this).data('grouping-val')] === 'collapse') {
+                        self.collapseGrouping($(this), false);
+                    } else {
+                        self.expandGrouping($(this), false);
+                    }
                 }
             });
         }

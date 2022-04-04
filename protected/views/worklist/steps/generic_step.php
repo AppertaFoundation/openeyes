@@ -2,7 +2,6 @@
 
 /**
  * @var $step PathwayStep|PathwayTypeStep
- * @var $pathway Pathway|null
  * @var $patient Patient
  * @var $red_flag bool
  * @var $partial bool
@@ -125,7 +124,7 @@ if ($is_step_instance) {
             } ?>
         </div>
         <div class="step-comments">
-            <?php if (isset($pathway) && !$partial) { ?>
+            <?php if (isset($worklist_patient) && !$partial) { ?>
             <div class="flex js-comments-edit" style="<?= $step instanceof PathwayStep && $step->comment ? 'display: none;' : '' ?>">
                 <div class="cols-11">
                     <input class="cols-full js-step-comments" type="text" maxlength="80" placeholder="Comments"
@@ -152,7 +151,7 @@ if ($is_step_instance) {
         </div>
         <?php if (!$partial) { ?>
         <div class="step-actions">
-            <?php if (isset($pathway)) { ?>
+            <?php if (isset($worklist_patient)) { ?>
                 <button class="green hint js-ps-popup-btn" data-action="next"<?= (int)$step->status === PathwayStep::STEP_COMPLETED ? ' style="display: none;"' : ''?>>
                     <?= $is_step_instance && (int)$step->status === PathwayStep::STEP_STARTED ? 'Complete' : 'Start' ?>
                 </button>

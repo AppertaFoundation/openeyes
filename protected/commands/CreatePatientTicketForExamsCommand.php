@@ -29,6 +29,7 @@ class CreatePatientTicketForExamsCommand extends CConsoleCommand
         $max_age = null;
         $max_days = null;
         $user_id = null;
+        $only_most_recent = false;
 
         foreach ($args as $arg) {
             //Determine if the argument marches the expected form
@@ -61,6 +62,9 @@ class CreatePatientTicketForExamsCommand extends CConsoleCommand
                         break;
                     case "--max-days":
                         $max_days = $arg_value;
+                        break;
+                    case "--only-most-recent-event":
+                        $only_most_recent = boolval($arg_value);
                         break;
                     default:
                         $errors[] = "Unrecognised option: " . $arg_key;
@@ -103,17 +107,11 @@ class CreatePatientTicketForExamsCommand extends CConsoleCommand
                 ->join("episode ep", "ep.id = ev.episode_id")
                 ->join("patient p", "p.id = ep.patient_id")
                 ->where("ev.event_type_id = :event_type_id", array(":event_type_id" => $event_type_id))
-                ->andWhere("NOT EXISTS (
-                    SELECT ev2.id FROM event ev2
-                    JOIN episode ep2 ON ep2.id = ev2.episode_id
-                    WHERE ev2.event_type_id = :event_type_id 
-                        AND ep2.patient_id = ep.patient_id 
-                        AND ev2.created_date > ev.created_date
-                )", array(":event_type_id" => $event_type_id))
+                ->andWhere("ev.deleted = 0")
                 ->andWhere("NOT EXISTS ( 
                         SELECT tck.id FROM patientticketing_ticket tck
                         WHERE tck.event_id = ev.id
-                    )", array(":event_type_id" => $event_type_id));
+                    )");
 
             if (isset($context_id)) {
                 $sql->andWhere("(ev.firm_id IS NULL OR ev.firm_id = :context_id)", array(':context_id' => $context_id));
@@ -134,6 +132,16 @@ class CreatePatientTicketForExamsCommand extends CConsoleCommand
 
             if (isset($max_days)) {
                 $sql->andWhere("TIMESTAMPDIFF(DAY, DATE(ev.created_date), CURDATE()) <= :max_days", array(":max_days" => $max_days));
+            }
+
+            if ($only_most_recent) {
+                $sql->andWhere("NOT EXISTS (
+                        SELECT ev2.id FROM event ev2
+                        JOIN episode ep2 ON ep2.id = ev2.episode_id
+                        WHERE ev2.event_type_id = :event_type_id 
+                            AND ep2.patient_id = ep.patient_id 
+                            AND ev2.created_date > ev.created_date
+                    )", array(":event_type_id" => $event_type_id));
             }
 
             $results = $sql->queryAll();
@@ -183,6 +191,7 @@ COMMAND OPTIONS:
     --service-subspecialty-id=SERVICE_SUBSPECIALTY_ID   : Applies command only to examination events with the associated service subspecialty assignment specified by SERVICE_SUBSPECIALTY_ASSIGNMENT_ID
     --min-age=MINIMUM_AGE                               : Applies command only to patients older (in years) than the age specified by MINIMUM_AGE
     --max-age=MAXIMUM_AGE                               : Applies command only to patients older (in years) than the age specified by MAXIMUM_AGE
-    --max-days=MAXIMUM_DAYS                             : Applies command only to examination events that are older (in days) then the amount of days specified by MAXIMUM_DAYS");
+    --max-days=MAXIMUM_DAYS                             : Applies command only to examination events that are older (in days) then the amount of days specified by MAXIMUM_DAYS
+    --only-most-recent-event=ONLY_RECENT                : When ONLY_RECENT is 1, will only create a ticket for the patient's most recent event");
     }
 }

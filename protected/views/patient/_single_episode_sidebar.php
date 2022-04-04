@@ -48,6 +48,31 @@ $display_deleted_events_in_deleted_category = $display_deleted_in && $display_de
         $existing_modules = array();
         $missing_modules = array();
         ?>
+        <div class="sidebar-grouping">
+            <select name="grouping-picker" class="grouping-picker">
+                <option value="none" selected="">Events by date</option>
+                <option id="institution" value="institution">Events by institution</option>
+                <option id="event-year-display" value="event-year-display">Events by year</option>
+                <option id="event-type" value="event-type">Events by type</option>
+                <option id="subspecialty" value="subspecialty">Specialty</option>
+            </select>
+        </div>
+        <div class="list-controls">
+            <span class="sorting-order asc">
+                <i class="oe-i arrow-up pro-theme"></i>
+            </span>
+            <span class="sorting-order desc">
+                <i class="oe-i arrow-down pro-theme"></i>
+            </span>
+            <div class="right">
+                <span class="expand-all">
+                    <i class="oe-i plus pro-theme"></i>
+                </span>
+                <span class="collapse-all">
+                    <i class="oe-i minus pro-theme"></i>
+                </span>
+            </div>
+        </div>
         <ul class="events" id="js-events-by-date">
             <?php foreach ($ordered_episodes as $specialty_episodes) {
                 foreach ($specialty_episodes['episodes'] as $i => $episode) {

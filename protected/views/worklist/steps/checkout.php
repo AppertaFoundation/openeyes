@@ -46,7 +46,7 @@ if ($is_step_instance) {
     </div>
     <?php if (!$partial) { ?>
     <div class="step-actions">
-        <?php if (isset($pathway)) { ?>
+        <?php if (isset($worklist_patient)) { ?>
             <button 
                 class="green hint js-ps-popup-btn" 
                 data-pathstep-id="<?=$step->id?>"

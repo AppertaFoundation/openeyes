@@ -122,7 +122,7 @@ if (!$service_firm && $subspecialty) {
         </form>
     </div>
     <div class="step-comments">
-        <?php if (isset($pathway) && !$partial) { ?>
+        <?php if (isset($worklist_patient) && !$partial) { ?>
             <div class="flex js-comments-edit" style="<?= $step instanceof PathwayStep && $step->comment ? 'display: none;' : '' ?>">
                 <div class="cols-11">
                     <input class="cols-full js-step-comments" type="text" maxlength="80" placeholder="Comments"
@@ -149,7 +149,7 @@ if (!$service_firm && $subspecialty) {
     </div>
     <?php if (!$partial) { ?>
         <div class="step-actions">
-            <?php if (isset($pathway)) { ?>
+            <?php if (isset($worklist_patient)) { ?>
                 <button class="green hint <?= $is_config ? 'js-change-examination' : 'js-ps-popup-btn' ?>"
                         data-action="next"<?= (int)$step->status === PathwayStep::STEP_COMPLETED ? 'style="display: none;"' : '' ?>>
                     <?php if ((int)$step->status === PathwayStep::STEP_CONFIG) {

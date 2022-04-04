@@ -110,7 +110,7 @@ class PSDController extends DefaultController
             'step' => $step->toJSON(),
             'pathway_status' => $pathway->getStatusString(),
             'status_html' => $pathway->getPathwayStatusHTML(),
-            'step_html' => $this->renderPartial('//worklist/_clinical_pathway', ['pathway' => $pathway], true),
+            'step_html' => $this->renderPartial('//worklist/_clinical_pathway', ['visit' => $wl_patient], true),
             'waiting_time_html' => $pathway->getTotalDurationHTML(true),
             'wait_time_details' => $pathway->getWaitTimeSinceLastAction(),
         );
@@ -177,6 +177,13 @@ class PSDController extends DefaultController
         $step_type_id = \Yii::app()->request->getParam('step_type_id', null);
         $visit_id = \Yii::app()->request->getParam('visit_id', null);
 
+        $wl_patient = WorklistPatient::model()->findByPk($visit_id);
+
+        if (!$wl_patient->pathway->start_time) {
+            $wl_patient->pathway->start_time = date('Y-m-d H:i:s');
+            $wl_patient->pathway->save();
+        }
+
         $this->actionGetPathStep(0, $step_id, $visit_id, $step_type_id, $patient_id, 1);
     }
 
@@ -198,7 +205,7 @@ class PSDController extends DefaultController
                 throw new CHttpException(404, 'Unable to retrieve step for processing.');
             }
             $visit = WorklistPatient::model()->findByPk($visit_id);
-            $steps = $type_step->pathway_type->instancePathway($visit->pathway->id);
+            $steps = $type_step->pathway_type->instancePathway($visit);
             $step = $steps[$step_type_id];
         }
         $assignment_id = $step->getState('assignment_id');

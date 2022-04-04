@@ -92,7 +92,7 @@ $duration_period = [
             </table>
         </form>
     </div>
-    <?php if (isset($pathway)) {
+    <?php if (isset($worklist_patient)) {
         $this->renderPartial(
             'step_components/_comment',
             array(
@@ -104,7 +104,7 @@ $duration_period = [
     } ?>
     <?php if (!$partial) { ?>
         <div class="step-actions">
-            <?php if (isset($pathway)) { ?>
+            <?php if (isset($worklist_patient)) { ?>
                 <button class="green hint <?= $is_config ? 'js-change-book-appointment' : 'js-ps-popup-btn' ?>"
                         data-action="next"<?= (int)$step->status === PathwayStep::STEP_COMPLETED ? 'style="display: none;"' : '' ?>>
                     <?php if ((int)$step->status === PathwayStep::STEP_CONFIG) {

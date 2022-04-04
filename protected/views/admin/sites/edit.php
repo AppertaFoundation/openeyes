@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2018
  * This file is part of OpenEyes.
@@ -17,31 +18,31 @@ $logo_helper = new LogoHelper();
 $default_urls = $logo_helper->getLogoURLs();
 ?>
 <style>
-    .flash-success{
-        border:1px solid #1DDD50;
+    .flash-success {
+        border: 1px solid #1DDD50;
         background: #C3FFD3;
         text-align: center;
-        padding: 7px 15px ;
+        padding: 7px 15px;
         color: #000000;
         margin-bottom: 20px;
     }
 
-    .error{
-        border:1px solid #ff6666;
+    .error {
+        border: 1px solid #ff6666;
         background: #ffe6e6;
         text-align: center;
-        padding: 7px 15px ;
+        padding: 7px 15px;
         color: #000000;
         margin-bottom: 20px;
     }
 
-    .remove-logo{
+    .remove-logo {
         display: block;
         position: absolute;
         top: 1px;
         right: 2px;
         padding: 11px 11px;
-        background-color: rgba(255,255,255,.5);
+        background-color: rgba(255, 255, 255, .5);
     }
 </style>
 <?php if (Yii::app()->user->hasFlash('success')) : ?>
@@ -63,7 +64,7 @@ $default_urls = $logo_helper->getLogoURLs();
         <h2>
             <?php
             if ($site->id) {
-                echo "Edit site: ".$site->name;
+                echo "Edit site: " . $site->name;
             } else {
                 echo "Add Site";
             }
@@ -83,7 +84,7 @@ $default_urls = $logo_helper->getLogoURLs();
                 'label' => 2,
                 'field' => 5,
             ),
-            'method'=> "POST",
+            'method' => "POST",
             'htmlOptions' => array('enctype' => 'multipart/form-data')
         ]
     ) ?>
@@ -95,169 +96,188 @@ $default_urls = $logo_helper->getLogoURLs();
         </colgroup>
 
         <tbody>
-        <tr>
-            <td>Institution</td>
-            <td>
-                <?php if ($this->checkAccess('admin')) {
-                    echo \CHtml::activeDropDownList(
-                        $site,
-                        'institution_id',
-                        CHtml::listData(Institution::model()->findAll(), 'id', 'name'),
-                        ['class' => 'cols-full']
-                    );
-                } else {
-                    $institution = Institution::model()->getCurrent();
-                    echo $site->institution_id ? $site->institution->name : $institution->name;
-                    echo \CHtml::activeHiddenField(
-                        $site,
-                        'institution_id',
-                        ['value' => $site->institution_id ?? $institution->id]
-                    );
-                } ?>
-            </td>
-        </tr>
-        <?php foreach (['name', 'short_name', 'remote_id', 'fp_10_code'] as $field) : ?>
             <tr>
-                <td><?= $site->getAttributeLabel($field) ?></td>
+                <td>Institution</td>
                 <td>
-                    <?= \CHtml::activeTextField(
-                        $site,
-                        $field,
-                        [
-                            'class' => 'cols-full',
-                            'autocomplete' => Yii::app()->params['html_autocomplete']
-                        ]
-                    ) ?>
-                </td>
-            </tr>
-        <?php endforeach; ?>
-        <?php
-        $address_fields = ['address1', 'address2', 'city', 'county', 'postcode'];
-        foreach ($address_fields as $field) : ?>
-            <tr>
-                <td><?= $address->getAttributeLabel($field); ?></td>
-                <td>
-                    <?= \CHtml::activeTextField(
-                        $address,
-                        $field,
-                        [
-                            'class' => 'cols-full',
-                            'autocomplete' => Yii::app()->params['html_autocomplete']
-                        ]
-                    ); ?>
-                </td>
-            </tr>
-        <?php endforeach; ?>
-        <?php foreach (['telephone', 'fax'] as $field) : ?>
-            <tr>
-                <td><?= $site->getAttributeLabel($field); ?></td>
-                <td>
-                    <?= \CHtml::activeTextField(
-                        $site,
-                        $field,
-                        [
-                            'class' => 'cols-full',
-                            'autocomplete' => Yii::app()->params['html_autocomplete']
-                        ]
-                    ); ?>
-                </td>
-            </tr>
-        <?php endforeach; ?>
-        <tr>
-            <td>Country</td>
-            <td>
-                <?= \CHtml::activeDropDownList(
-                    $address,
-                    'country_id',
-                    CHtml::listData(Country::model()->findAll(), 'id', 'name'),
-                    ['class' => 'cols-full']
-                ); ?>
-            </td>
-        </tr>
-        <tr>
-            <td>Primary logo</td>
-            <td>
-                <?php
-                echo $form->fileField($logo, 'primary_logo');
-                if (empty($default_urls['primaryLogo']) && !($parentlogo && $parentlogo->primary_logo) && !($logo->primary_logo)) {
-                    echo "<div class='alert-box info'>No uploaded primary logo and no inherited or system primary logo.</div>";
-                } else {
-                    if ($logo&&$logo->primary_logo&&!$new) {
-                        echo '<div style=" margin-top: 5px; position: relative; ">';
-                        echo "<img src='". $logo->getImageUrl()."' style='width:100%;'>";
-                        echo '<br>'.CHtml::button(
-                            '',
-                            array('submit' => array('admin/deletelogo/'),
-                            'params' => array(
-                                'site_id' => $site->id,
-                                'deletePrimaryLogo' => true,
-                            ),
-                             'csrf' => true,
-                             'class' =>'remove-logo oe-i remove-circle small',
-                             'confirm' => 'Are you sure you want to delete the primary logo? You will lose all unsaved edits you have made to this site.',
-                             'data-method'=>"POST"
-                            )
+                    <?php if ($this->checkAccess('admin')) {
+                        echo \CHtml::activeDropDownList(
+                            $site,
+                            'institution_id',
+                            CHtml::listData(Institution::model()->findAll(), 'id', 'name'),
+                            ['class' => 'cols-full']
                         );
-                        echo '</div>';
-                    } elseif ( $parentlogo &&  $parentlogo->primary_logo && !$new) {
-                        echo "<div class='alert-box info'>Currently using inherited logo.</div>";
-                        echo "<img src='". $logo->getImageUrl()."' style='width:100%;'>";
-                    } elseif (!$new) {
-                        echo "<div class='alert-box info'>Currently using system default logo.</div>";
-                        echo "<img src='". $default_urls['primaryLogo']."' style='width:100%;'>";
+                    } else {
+                        $institution = Institution::model()->getCurrent();
+                        echo $site->institution_id ? $site->institution->name : $institution->name;
+                        echo \CHtml::activeHiddenField(
+                            $site,
+                            'institution_id',
+                            ['value' => $site->institution_id ?? $institution->id]
+                        );
+                    } ?>
+                </td>
+            </tr>
+            <?php foreach (['name', 'short_name', 'remote_id', 'fp_10_code'] as $field) : ?>
+                <tr>
+                    <td><?= $site->getAttributeLabel($field) ?></td>
+                    <td>
+                        <?= \CHtml::activeTextField(
+                            $site,
+                            $field,
+                            [
+                                'class' => 'cols-full',
+                                'autocomplete' => Yii::app()->params['html_autocomplete']
+                            ]
+                        ) ?>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+            <?php
+            $contact_fields = ['title', 'first_name', 'last_name', 'nick_name', 'email', 'primary_phone'];
+            foreach ($contact_fields as $field) : ?>
+                <tr>
+                    <td><?= "Site contact " .  $contact->getAttributeLabel($field); ?></td>
+                    <td>
+                        <?= \CHtml::activeTextField(
+                            $contact,
+                            $field,
+                            [
+                                'class' => 'cols-full',
+                                'autocomplete' => Yii::app()->params['html_autocomplete']
+                            ]
+                        ); ?>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+            <?php
+            $address_fields = ['address1', 'address2', 'city', 'county', 'postcode'];
+            foreach ($address_fields as $field) : ?>
+                <tr>
+                    <td><?= $address->getAttributeLabel($field); ?></td>
+                    <td>
+                        <?= \CHtml::activeTextField(
+                            $address,
+                            $field,
+                            [
+                                'class' => 'cols-full',
+                                'autocomplete' => Yii::app()->params['html_autocomplete']
+                            ]
+                        ); ?>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+            <?php foreach (['telephone', 'fax'] as $field) : ?>
+                <tr>
+                    <td><?= $site->getAttributeLabel($field); ?></td>
+                    <td>
+                        <?= \CHtml::activeTextField(
+                            $site,
+                            $field,
+                            [
+                                'class' => 'cols-full',
+                                'autocomplete' => Yii::app()->params['html_autocomplete']
+                            ]
+                        ); ?>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+            <tr>
+                <td>Country</td>
+                <td>
+                    <?= \CHtml::activeDropDownList(
+                        $address,
+                        'country_id',
+                        CHtml::listData(Country::model()->findAll(), 'id', 'name'),
+                        ['class' => 'cols-full']
+                    ); ?>
+                </td>
+            </tr>
+            <tr>
+                <td>Primary logo</td>
+                <td>
+                    <?php
+                    echo $form->fileField($logo, 'primary_logo');
+                    if (empty($default_urls['primaryLogo']) && !($parentlogo && $parentlogo->primary_logo) && !($logo->primary_logo)) {
+                        echo "<div class='alert-box info'>No uploaded primary logo and no inherited or system primary logo.</div>";
+                    } else {
+                        if ($logo && $logo->primary_logo && !$new) {
+                            echo '<div style=" margin-top: 5px; position: relative; ">';
+                            echo "<img src='" . $logo->getImageUrl() . "' style='width:100%;'>";
+                            echo '<br>' . CHtml::button(
+                                '',
+                                array(
+                                    'submit' => array('admin/deletelogo/'),
+                                    'params' => array(
+                                        'site_id' => $site->id,
+                                        'deletePrimaryLogo' => true,
+                                    ),
+                                    'csrf' => true,
+                                    'class' => 'remove-logo oe-i remove-circle small',
+                                    'confirm' => 'Are you sure you want to delete the primary logo? You will lose all unsaved edits you have made to this site.',
+                                    'data-method' => "POST"
+                                )
+                            );
+                            echo '</div>';
+                        } elseif ($parentlogo &&  $parentlogo->primary_logo && !$new) {
+                            echo "<div class='alert-box info'>Currently using inherited logo.</div>";
+                            echo "<img src='" . $logo->getImageUrl() . "' style='width:100%;'>";
+                        } elseif (!$new) {
+                            echo "<div class='alert-box info'>Currently using system default logo.</div>";
+                            echo "<img src='" . $default_urls['primaryLogo'] . "' style='width:100%;'>";
+                        }
                     }
-                }
-                ?>
-            </td>
-        </tr>
-        <tr>
-            <td>Secondary logo</td>
-            <td>
-                <?php
-                echo $form->fileField($logo, 'secondary_logo');
-                if (empty($default_urls['secondaryLogo']) && !($parentlogo && $parentlogo->secondary_logo) && !($logo->secondary_logo)) {
-                    echo "<div class='alert-box info'>No uploaded secondary logo or system secondary logo.</div>";
-                } else {
-                    if ($logo && $logo->secondary_logo && !$new) {
-                        echo '<div style="
+                    ?>
+                </td>
+            </tr>
+            <tr>
+                <td>Secondary logo</td>
+                <td>
+                    <?php
+                    echo $form->fileField($logo, 'secondary_logo');
+                    if (empty($default_urls['secondaryLogo']) && !($parentlogo && $parentlogo->secondary_logo) && !($logo->secondary_logo)) {
+                        echo "<div class='alert-box info'>No uploaded secondary logo or system secondary logo.</div>";
+                    } else {
+                        if ($logo && $logo->secondary_logo && !$new) {
+                            echo '<div style="
                         margin-top: 5px;
                         position: relative;
                     ">';
-                        echo "<img src='". $logo->getImageUrl(true) . "' style='width:100%;'>";
-                        echo '<br>'.CHtml::button(
-                            '',
-                            array('submit' => array('admin/deletelogo/'),
-                            'params' => array(
-                                'site_id' => $site->id,
-                                'deleteSecondaryLogo' => true,
-                            ),
-                            'csrf' => true,
-                            'class' =>'remove-logo oe-i remove-circle small',
-                            'confirm' => 'Are you sure you want to delete the secondary logo? You will lose all unsaved edits you have made to this site.',
-                            'data-method'=>"POST"
-                            )
-                        );
-                        echo '</div>';
-                    } elseif ( $parentlogo && $parentlogo->secondary_logo  && !$new) {
-                        echo "<div class='alert-box info'>Currently using inherited logo.</div>";
-                        echo "<img src='". $logo->getImageUrl(true) . "' style='width:100%;'>";
-                    } elseif (!$new) {
-                        echo "<div class='alert-box info'>Currently using system default logo.</div>";
-                        echo "<img src='". $default_urls['secondaryLogo'] . "' style='width:100%;'>";
+                            echo "<img src='" . $logo->getImageUrl(true) . "' style='width:100%;'>";
+                            echo '<br>' . CHtml::button(
+                                '',
+                                array(
+                                    'submit' => array('admin/deletelogo/'),
+                                    'params' => array(
+                                        'site_id' => $site->id,
+                                        'deleteSecondaryLogo' => true,
+                                    ),
+                                    'csrf' => true,
+                                    'class' => 'remove-logo oe-i remove-circle small',
+                                    'confirm' => 'Are you sure you want to delete the secondary logo? You will lose all unsaved edits you have made to this site.',
+                                    'data-method' => "POST"
+                                )
+                            );
+                            echo '</div>';
+                        } elseif ($parentlogo && $parentlogo->secondary_logo  && !$new) {
+                            echo "<div class='alert-box info'>Currently using inherited logo.</div>";
+                            echo "<img src='" . $logo->getImageUrl(true) . "' style='width:100%;'>";
+                        } elseif (!$new) {
+                            echo "<div class='alert-box info'>Currently using system default logo.</div>";
+                            echo "<img src='" . $default_urls['secondaryLogo'] . "' style='width:100%;'>";
+                        }
                     }
-                }
-                ?>
-            </td>
-        </tr>
+                    ?>
+                </td>
+            </tr>
         </tbody>
 
         <tfoot>
-        <tr>
-            <td colspan="2">
-            <?= $form->formActions(array('cancel'=>'Back to Sites','cancel-uri' => '/admin/sites'));?>
-            </td>
-        </tr>
-        
+            <tr>
+                <td colspan="2">
+                    <?= $form->formActions(array('cancel' => 'Back to Sites', 'cancel-uri' => '/admin/sites')); ?>
+                </td>
+            </tr>
+
         </tfoot>
     </table>
 

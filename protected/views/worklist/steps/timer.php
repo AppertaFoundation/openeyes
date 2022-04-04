@@ -17,7 +17,7 @@ $is_completed = $status === PathwayStep::STEP_COMPLETED;
     <h3 class="title">Hold timer (mins)</h3>
     <?php if (!$partial && !$is_completed) { ?>
     <div class="step-actions">
-        <?php if (isset($pathway)) { ?>
+        <?php if (isset($worklist_patient)) { ?>
         <button 
             class="green hint js-ps-popup-btn" 
             data-action="next"

@@ -1,8 +1,9 @@
 <?php
 
 /**
- * @var $pathway Pathway
+ * @var $visit WorklistPatient
  * @var $patient Patient
+ * @var $partial int
  */
 ?>
 <div class="slide-open">
@@ -14,8 +15,9 @@
                 <col class="cols-4">
             </colgroup>
             <tbody>
-            <?php foreach ($pathway->steps as $step) { ?>
-                <?php if ($step->comment) { ?>
+            <?php if ($visit->pathway) {
+                foreach ($visit->pathway->steps as $step) {
+                    if ($step->comment) { ?>
                     <tr>
                         <th>
                             <?= $step->comment->doctor->getFullNameAndTitle() ?>
@@ -23,8 +25,9 @@
                         </th>
                         <td><?= $step->comment->comment ?></td>
                     </tr>
-                <?php } ?>
-            <?php } ?>
+                <?php }
+                }
+            } ?>
             </tbody>
         </table>
     </div>
@@ -34,8 +37,8 @@
             'step_components/_comment',
             array(
                 'partial' => $partial,
-                'model' => $pathway,
-                'pathway' => $pathway,
+                'model' => $visit->pathway,
+                'visit' => $visit,
             )
         );
         ?>

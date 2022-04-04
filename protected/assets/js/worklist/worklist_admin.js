@@ -49,7 +49,7 @@ $(function () {
         event.preventDefault();
         let action = $(event.target).data('action');
         let data = {
-            step_id: ps.pathstepId,
+            step_id: ps.pathstepTypeId,
             direction: action,
             YII_CSRF_TOKEN: YII_CSRF_TOKEN
         };
@@ -71,7 +71,7 @@ $(function () {
                     },
                     success: function () {
                         // Swap the step with the step either in front or behind it (depending on the action).
-                        let $current_step = $('.oe-pathstep-btn[data-pathstep-id="' + ps.pathstepId + '"]');
+                        let $current_step = $('.oe-pathstep-btn[data-pathstep-type-id="' + ps.pathstepTypeId + '"]');
                         if (action === 'left') {
                             if ($current_step.prev()) {
                                 $current_step.prev().before($current_step);
@@ -98,7 +98,7 @@ $(function () {
                     data: data,
                     success: function () {
                         // This is a requested step so as long as it is deleted the order of other requested steps should be correct.
-                        const $thisStep = $('.oe-pathstep-btn[data-pathstep-id="' + ps.pathstepId + '"]');
+                        const $thisStep = $('.oe-pathstep-btn[data-pathstep-type-id="' + ps.pathstepTypeId + '"]');
                         $thisStep.remove();
                         ps.closePopup(true);
                     }

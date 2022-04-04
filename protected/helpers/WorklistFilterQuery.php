@@ -257,7 +257,7 @@ class WorklistFilterQuery
         $command = Yii::app()->db->createCommand();
 
         $command->from('worklist_patient wp');
-        $command->join('pathway', 'pathway.worklist_patient_id = wp.id');
+        $command->leftJoin('pathway', 'pathway.worklist_patient_id = wp.id');
 
         $conditions = array('and');
         $params = [];
@@ -311,7 +311,7 @@ class WorklistFilterQuery
 
         $command->from('worklist_patient wp');
         $command->select('pathway.status, COUNT(pathway.id) AS count');
-        $command->join('pathway', 'pathway.worklist_patient_id = wp.id');
+        $command->leftJoin('pathway', 'pathway.worklist_patient_id = wp.id');
 
         $conditions = array('and');
         $params = [];

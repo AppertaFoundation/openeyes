@@ -35,7 +35,7 @@ $picker_setup = $pick_behavior->setupPicker();
             <td class="js-pathway-container">
                 <?php $this->renderPartial(
                     '//worklist/_clinical_pathway',
-                    ['pathway' => $pathway]
+                    ['visit' => $pathway->worklist_patient]
                 ) ?>
             </td>
             <td class="js-pathway-assignee" data-id="<?= $pathway->owner_id ?>">
@@ -134,7 +134,7 @@ $picker_setup = $pick_behavior->setupPicker();
                 <?php } ?>
                 <td>
                     <label class="patient-checkbox">
-                        <input class="js-check-patient" value="<?= $pathway->id ?>" type="checkbox"/>
+                        <input class="js-check-patient" value="<?= $pathway->worklist_patient_id ?>" type="checkbox"/>
                         <div class="checkbox-btn"></div>
                     </label>
                 </td>

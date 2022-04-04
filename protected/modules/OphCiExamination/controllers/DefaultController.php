@@ -2763,6 +2763,8 @@ class DefaultController extends \BaseEventTypeController
     {
         $patient = \Patient::model()->findByPk($patient_id);
         $api = \Yii::app()->moduleAPI->get('OphCiExamination');
+        $latest_mm_datetime = null;
+        $latest_mh_datetime = null;
 
         $latest_med_management_element = $api->getLatestElement('models\MedicationManagement', $patient);
         $latest_med_history_element =  $api->getLatestElement('models\HistoryMedications', $patient);

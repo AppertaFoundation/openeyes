@@ -2521,6 +2521,7 @@ class OphCiExamination_API extends \BaseAPI
         $criteria = new \CDbCriteria();
         $criteria->addCondition("(t.subspecialty_id = :subspecialty_id OR t.subspecialty_id IS NULL)");
         $criteria->addCondition("(t.firm_id = :firm_id OR t.firm_id IS NULL)");
+        $criteria->addCondition("(t.institution_id = :institution_id OR t.institution_id IS NULL)");
         $criteria->with = array(
             'entries' => array(
                 'condition' =>
@@ -2532,6 +2533,7 @@ class OphCiExamination_API extends \BaseAPI
 
         $criteria->params['subspecialty_id'] = $subspecialty_id;
         $criteria->params['firm_id'] = $firm->id;
+        $criteria->params['institution_id'] = \Yii::app()->session['selected_institution_id'];
         $criteria->params['age'] = $patient->age;
         $criteria->params['gender'] = $patient->gender;
 
@@ -2567,6 +2569,7 @@ class OphCiExamination_API extends \BaseAPI
         $criteria = new \CDbCriteria();
         $criteria->addCondition("(t.subspecialty_id = :subspecialty_id OR t.subspecialty_id IS NULL)");
         $criteria->addCondition("(t.firm_id = :firm_id OR t.firm_id IS NULL)");
+        $criteria->addCondition("(t.institution_id = :institution_id OR t.institution_id IS NULL)");
         $criteria->with = array(
             'entries' => array(
                 'condition' =>
@@ -2578,6 +2581,7 @@ class OphCiExamination_API extends \BaseAPI
 
         $criteria->params['subspecialty_id'] = $subspecialty_id;
         $criteria->params['firm_id'] = $firm->id;
+        $criteria->params['institution_id'] = \Yii::app()->session['selected_institution_id'];
         $criteria->params['age'] = $patient->age;
         $criteria->params['gender'] = $patient->gender;
 
@@ -2660,6 +2664,7 @@ class OphCiExamination_API extends \BaseAPI
         $criteria = new \CDbCriteria();
         $criteria->addCondition("(t.subspecialty_id = :subspecialty_id OR t.subspecialty_id IS NULL)");
         $criteria->addCondition("(t.firm_id = :firm_id OR t.firm_id IS NULL)");
+        $criteria->addCondition("(t.institution_id = :institution_id OR t.institution_id IS NULL)");
         $criteria->with = array(
             'entries' => array(
                 'condition' =>
@@ -2671,6 +2676,7 @@ class OphCiExamination_API extends \BaseAPI
 
         $criteria->params['subspecialty_id'] = $subspecialty_id;
         $criteria->params['firm_id'] = $firm->id;
+        $criteria->params['institution_id'] = \Yii::app()->session['selected_institution_id'];
         $criteria->params['age'] = $patient->age;
         $criteria->params['gender'] = $patient->gender;
 
@@ -2706,6 +2712,7 @@ class OphCiExamination_API extends \BaseAPI
         $criteria = new \CDbCriteria();
         $criteria->addCondition("(t.subspecialty_id = :subspecialty_id OR t.subspecialty_id IS NULL)");
         $criteria->addCondition("(t.firm_id = :firm_id OR t.firm_id IS NULL)");
+        $criteria->addCondition("(t.institution_id = :institution_id OR t.institution_id IS NULL)");
         $criteria->with = array(
             'entries' => array(
                 'condition' =>
@@ -2716,6 +2723,7 @@ class OphCiExamination_API extends \BaseAPI
         );
         $criteria->params['subspecialty_id'] = $subspecialty_id;
         $criteria->params['firm_id'] = $firm->id;
+        $criteria->params['institution_id'] = \Yii::app()->session['selected_institution_id'];
         $criteria->params['age'] = $patient->age;
         $criteria->params['gender'] = $patient->gender;
         $sets = models\SurgicalHistorySet::model()->findAll($criteria);
@@ -2746,6 +2754,7 @@ class OphCiExamination_API extends \BaseAPI
         $criteria = new \CDbCriteria();
         $criteria->addCondition("(t.subspecialty_id = :subspecialty_id OR t.subspecialty_id IS NULL)");
         $criteria->addCondition("(t.firm_id = :firm_id OR t.firm_id IS NULL)");
+        $criteria->addCondition("(t.institution_id = :institution_id OR t.institution_id IS NULL)");
         $criteria->with = [
             'entries' => [
                 'condition' =>
@@ -2756,6 +2765,7 @@ class OphCiExamination_API extends \BaseAPI
         ];
         $criteria->params['subspecialty_id'] = $subspecialty_id;
         $criteria->params['firm_id'] = $firm->id;
+        $criteria->params['institution_id'] = \Yii::app()->session['selected_institution_id'];
         $criteria->params['age'] = $patient->age;
         $criteria->params['gender'] = $patient->gender;
         $sets = models\SystemicSurgerySet::model()->findAll($criteria);

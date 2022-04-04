@@ -155,7 +155,7 @@ $(function () {
 
     $(document).off('click', '.js-pathway-finish').on('click', '.js-pathway-finish', function () {
         // Display a dialog with options to specify how to alter step states.
-        const id = $(this).data('pathway-id');
+        const id = $(this).data('visit-id');
         const $pathway = $(this);
         let dialog = new OpenEyes.UI.Dialog.Confirm({
             title: 'Quick complete pathway',
@@ -178,7 +178,7 @@ $(function () {
             $.ajax({
                 url: '/worklist/changePathwayStatus',
                 data: {
-                    pathway_id: id,
+                    visit_id: id,
                     new_status: 'done',
                     step_action: selected_option,
                     YII_CSRF_TOKEN: YII_CSRF_TOKEN
@@ -192,12 +192,12 @@ $(function () {
         dialog.open();
     });
     $(document).off('click', '.js-pathway-complete').on('click', '.js-pathway-complete', function () {
-        const id = $(this).data('pathway-id');
+        const id = $(this).data('visit-id');
         let $this = $(this);
         $.ajax({
             url: '/worklist/changePathwayStatus',
             data: {
-                pathway_id: id,
+                visit_id: id,
                 new_status: 'done',
                 YII_CSRF_TOKEN: YII_CSRF_TOKEN
             },
@@ -208,12 +208,12 @@ $(function () {
         });
     });
     $(document).off('click', '.js-pathway-reactivate').on('click', '.js-pathway-reactivate', function () {
-        const id = $(this).data('pathway-id');
+        const id = $(this).data('visit-id');
         let $this = $(this);
         $.ajax({
             url: '/worklist/changePathwayStatus',
             data: {
-                pathway_id: id,
+                visit_id: id,
                 new_status: 'discharged',
                 YII_CSRF_TOKEN: YII_CSRF_TOKEN
             },
@@ -347,6 +347,13 @@ $(function () {
         ps.requestDetails(form_data, '/OphDrPGDPSD/PSD/confirmAdministration', 'POST', updatePathstepIcon, () => (ps.administer_ready = false));
     };
 
+    /**
+     * Changes visual fields step configuration. This handler ensures the laterality is set to the correct value as the form elements
+     * for each eye are separate.
+     * @param event
+     * @param context
+     * @param ps
+     */
     let changeVisualFields = function (event, context, ps) {
         event.preventDefault();
         let action = $(event.target).data('action');
@@ -462,6 +469,7 @@ $(function () {
                 patient_id: ps.patientID,
                 pathstep_id: ps.pathstepId,
                 pathstep_type_id: ps.pathstepTypeId,
+                visit_id: ps.visitID,
                 user_id: user_id,
                 comment: comment,
             },
@@ -607,9 +615,9 @@ $(function () {
         }
 
         const newSteps = collectActiveTodoStepsFrom($thisStep.closest('td.js-pathway-container'));
-        const pathwayId = $thisStep.closest('.pathway').data('visit-id') || $thisStep.closest('tr').data('pathway-type-id');
+        const visit_id = $thisStep.closest('.pathway').data('visit-id');
 
-        refreshStatistics(pathwayId, oldSteps, newSteps);
+        refreshStatistics(visit_id, oldSteps, newSteps);
 
         updatePathwayTr($thisStep.closest('tr'), response);
     };
@@ -621,10 +629,12 @@ $(function () {
         let pathstep_id = $(event.target).data('pathstep-id') || ps.pathstepId;
         let pathstep_type_id = $(event.target).data('pathstep-type-id') || ps.pathstepTypeId;
         let pathway_id = $(event.target).data('pathway-id') || ps.pathwayId;
+        let visit_id = $(event.target).data('visit-id') || ps.visitID;
         let data = {
             step_id: pathstep_id,
             pathway_id: pathway_id,
             step_type_id: pathstep_type_id,
+            visit_id: visit_id,
             direction: action,
             YII_CSRF_TOKEN: YII_CSRF_TOKEN
         };
@@ -642,7 +652,7 @@ $(function () {
                     success: function (response) {
                         // Move the step to the correct position.
                         // query the step icon again to make sure the consistency with the server
-                        const $oldStep = $('.oe-pathstep-btn[data-pathstep-id="' + response.step.id + '"], .oe-pathstep-btn[data-visit-id="' + ps.visitID + '"][data-pathstep-type-id="' + pathstep_type_id + '"]');
+                        const $oldStep = $('.oe-pathstep-btn[data-pathstep-id="' + response.step.id + '"], .oe-pathstep-btn[data-visit-id="' + visit_id + '"][data-pathstep-type-id="' + pathstep_type_id + '"]');
 
                         // get the special action from the button data attribute
                         // current format: step_status: callback
@@ -693,6 +703,7 @@ $(function () {
                         step_id: ps.pathstepId,
                         step_type_id: ps.pathstepTypeId,
                         pathway_id: ps.pathwayId,
+                        visit_id: ps.visitID,
                         direction: action,
                         YII_CSRF_TOKEN: YII_CSRF_TOKEN
                     },
@@ -725,7 +736,6 @@ $(function () {
                     type: 'POST',
                     data: {
                         visit_id: ps.visitID,
-                        pathway_id: pathway_id,
                         YII_CSRF_TOKEN: YII_CSRF_TOKEN
                     },
                     success: function (response) {
@@ -777,7 +787,6 @@ $(function () {
                     type: 'POST',
                     data: {
                         visit_id: ps.visitID,
-                        pathway_id: pathway_id,
                         YII_CSRF_TOKEN: YII_CSRF_TOKEN
                     },
                     success: function (response) {
@@ -842,6 +851,7 @@ $(function () {
                         patient_id: ps.patientID,
                         pathstep_id: ps.pathstepId,
                         pathstep_type_id: ps.pathstepTypeId,
+                        visit_id: ps.visitID,
                         user_id: user_id,
                         comment: comment,
                     },
@@ -884,6 +894,7 @@ $(function () {
                     data: {
                         step_id: pathstep_id,
                         step_type_id: pathstep_type_id,
+                        visit_id: ps.visitID,
                         pathway_id: pathway_id,
                         YII_CSRF_TOKEN: YII_CSRF_TOKEN
                     },

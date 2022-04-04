@@ -12,7 +12,7 @@ $is_step_instance = $step instanceof PathwayStep;
         </div>
     <?php } ?>
     <h3 class="title">Path decision</h3>
-    <?php if (isset($pathway)) { ?>
+    <?php if (isset($worklist_patient)) { ?>
         <div class="step-content">
             <h4>Assess patient and decide suitable path at this point</h4>
             <p>added by <b><?= $step->created_user->getFullName() ?></b></p>

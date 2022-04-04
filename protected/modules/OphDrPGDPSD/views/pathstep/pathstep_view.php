@@ -27,7 +27,7 @@ if ($is_step_instance) {
             <div class="patient"><?=$patient_name?></div>
         <?php } ?>
         <h3 class="title"><?=$assignment->getAssignmentTypeAndName()['name']?></h3>
-        <?php if (isset($pathway)) { ?>
+        <?php if (isset($worklist_patient)) { ?>
             <input type="hidden" class="no-clear" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
             <input type="hidden" name="step_id" value="<?= $is_step_instance ? $step->id : null?>"/>
             <input type="hidden" name="step_type_id" value="<?= !$is_step_instance ? $step->id : null ?>"/>
@@ -135,7 +135,7 @@ if ($is_step_instance) {
 
         <?php if (!$partial && (!$is_step_instance || (!$is_assignment_complete && $interactive))) {?>
         <div class="step-actions">
-            <?php if (isset($pathway)) { ?>
+            <?php if (isset($worklist_patient)) { ?>
                 <?php if ($for_administer) {?>
                     <button class="green hint js-confirm-admin" data-action="confirm_da">Confirm Administration</button>
                     <button class="blue hint js-cancel-admin" data-action="cancel_da">Cancel</button>

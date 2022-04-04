@@ -279,7 +279,7 @@
                         <tr>
                             <td>Interpreter required</td>
                             <td>
-                                <span class="large-text"><?= ($examination_communication_preferences && !is_null($examination_communication_preferences->interpreter_required_id)) ? $examination_communication_preferences->interpreter_required->name : 'Unknown' ?></span>
+                                <span class="large-text"><?= ($examination_communication_preferences && !is_null($examination_communication_preferences->interpreter_required_id)) ? $examination_communication_preferences->interpreter_required->name : 'N/A' ?></span>
                             </td>
                         </tr>
                         </tbody>
@@ -436,7 +436,14 @@
                                 <td> <?= $systemic_diagnosis->disorder->term ?></td>
                                 <td><i class="oe-i"></i></td>
                                 <td class="nowrap">
-                                    <?php $this->widget('EyeLateralityWidget', array('eye' => $systemic_diagnosis->eye, 'pad' => '')) ?>
+                                    <?php
+                                    if(isset($systemic_diagnosis->eye)){
+                                        $this->widget('EyeLateralityWidget', array('eye' => $systemic_diagnosis->eye, 'pad' => ''));
+                                    } else {
+                                        // The placeholder for the icons
+                                        echo '<span class="oe-eye-lat-icons"><i class="oe-i laterality small"></i><i class="oe-i laterality small"></i></span>';
+                                    }
+                                    ?>
                                     <div class="oe-date"><?= $systemic_diagnosis->getHTMLformatedDate() ?></div>
                                 </td>
                                 <td>

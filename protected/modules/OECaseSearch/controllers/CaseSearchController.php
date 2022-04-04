@@ -624,7 +624,7 @@ class CaseSearchController extends BaseModuleController
 
         if (
             !Yii::app()->clientScript->isScriptFileRegistered(
-            $assetPath . '/js/OpenEyes.UI.Dialog.LoadSavedSearch.js'
+                $assetPath . '/js/OpenEyes.UI.Dialog.LoadSavedSearch.js'
             )
         ) {
             Yii::app()->assetManager->registerScriptFile(
@@ -636,7 +636,7 @@ class CaseSearchController extends BaseModuleController
 
         if (
             !Yii::app()->clientScript->isScriptFileRegistered(
-            $assetPath . '/js/OpenEyes.UI.Dialog.SaveSearch.js'
+                $assetPath . '/js/OpenEyes.UI.Dialog.SaveSearch.js'
             )
         ) {
             Yii::app()->assetManager->registerScriptFile(
@@ -673,7 +673,7 @@ class CaseSearchController extends BaseModuleController
             if (!empty($patient)) {
                 Audit::add('case-search', 'viewed-summary-popups', 'Summary popup ' .  $summaryId . ' for patient ' . $patientID . ' has been viewed', false, array(
                     'module' => 'OECaseSearch', 'patient_id' => $patientID
-                ) );
+                ));
                 return true;
             } else {
                 throw new CHttpException(404, 'Unable to find patient');

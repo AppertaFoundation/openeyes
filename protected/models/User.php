@@ -590,17 +590,24 @@ class User extends BaseActiveRecordVersioned
             throw new FirmSaveException('When global firm rights are not set, a firm must be selected');
         }
 
-        $transaction = Yii::app()->db->beginTransaction();
+        $transaction = Yii::app()->db->getCurrentTransaction() === null ? Yii::app()->db->beginTransaction() : null;
         FirmUserAssignment::model()->deleteAll('user_id = :user_id', array('user_id' => $this->id));
         foreach ($firms as $firm) {
             $firmUserAssign = new FirmUserAssignment();
             $firmUserAssign->user_id = $this->id;
             $firmUserAssign->firm_id = $firm;
             if (!$firmUserAssign->insert()) {
+                if ($transaction) {
+                    $transaction->rollback();
+                }
+
                 throw new CDbException('Unable to save firm assignment');
             }
         }
-        $transaction->commit();
+
+        if ($transaction) {
+            $transaction->commit();
+        }
     }
 
     /**
