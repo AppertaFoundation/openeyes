@@ -118,9 +118,9 @@ $quick_filter_name = $filter->getQuickFilterTypeName();
                 ->bindValues([':patient_id' => $wl_patient->patient_id, ':worklist_id' => $wl_patient->worklist_id])
                 ->queryScalar();
             /** @var $wl_patient WorklistPatient */
-            $hide_add_step_btn = (int)$wl_patient->pathway->status === Pathway::STATUS_DONE ? 'style="display:none;"' : null;
+            $hide_add_step_btn = $wl_patient->pathway && (int)$wl_patient->pathway->status === Pathway::STATUS_DONE ? 'style="display:none;"' : null;
             ?>
-            <tr class="<?= $wl_patient->pathway->getStatusString() ?>" data-timestamp="<?= time() ?>" id="js-pathway-<?=$wl_patient->pathway->id?>">
+            <tr class="<?= $wl_patient->pathway ? $wl_patient->pathway->getStatusString() : 'later' ?>" data-timestamp="<?= time() ?>" id="js-pathway-<?= $wl_patient->id ?>">
                 <td><?= $wl_patient->scheduledtime ?></td>
                 <td>
                     <div class="list-name"><?= $wl_patient->worklist->name ?></div>
@@ -130,25 +130,25 @@ $quick_filter_name = $filter->getQuickFilterTypeName();
                     <?php $this->renderPartial('application.widgets.views.PatientMeta', array('patient' => $wl_patient->patient, 'coreapi' => $coreapi)); ?>
 
                 </td>
-                <td id="oe-patient-details" class="js-oe-patient" data-patient-id="<?= $wl_patient->patient->id ?>">
+                <td id="oe-patient-details" class="js-oe-patient" data-patient-id="<?= $wl_patient->patient_id ?>">
                     <i class="eye-circle medium pad oe-i js-worklist-btn" onmouseenter="onMouseEnterPatientQuickOverview(this)" onmouseleave="hidePatientQuickOverview()" onclick="onClickPatientQuickOverview(this)" id="js-worklist-btn"></i>
                 </td>
                 <td class="js-pathway-container">
                     <!--Render full pathway in a separate view. -->
                     <?php $this->renderPartial(
                         '//worklist/_clinical_pathway',
-                        ['pathway' => $wl_patient->pathway]
+                        ['visit' => $wl_patient]
                     ); ?>
                 </td>
                 <td>
                     <label class="patient-checkbox" <?=$hide_add_step_btn?>>
-                        <input class="js-check-patient" value="<?= $wl_patient->pathway->id ?>" type="checkbox"/>
+                        <input class="js-check-patient" value="<?= $wl_patient->id ?>" type="checkbox"/>
                         <div class="checkbox-btn"></div>
                     </label>
                 </td>
-                <td class="js-pathway-assignee" data-id="<?= $wl_patient->pathway->owner_id ?>">
+                <td class="js-pathway-assignee" data-id="<?= $wl_patient->pathway->owner_id ?? null ?>">
                     <!-- Assignee -->
-                    <?= $wl_patient->pathway->owner ? $wl_patient->pathway->owner->getInitials() : null ?>
+                    <?= $wl_patient->pathway && $wl_patient->pathway->owner ? $wl_patient->pathway->owner->getInitials() : null ?>
                 </td>
                 <td>
                     <!-- Priority/Risk -->
@@ -162,9 +162,9 @@ $quick_filter_name = $filter->getQuickFilterTypeName();
 
                 </td>
                 <td>
-                    <span class="oe-pathstep-btn buff comments <?= $wl_patient->pathway->checkForComments() ? 'comments-added' : '' ?>"
+                    <span class="oe-pathstep-btn buff comments <?= $wl_patient->pathway && $wl_patient->pathway->checkForComments() ? 'comments-added' : '' ?>"
                           data-worklist-patient-id="<?= $wl_patient->id?>"
-                          data-pathway-id="<?= $wl_patient->pathway->id ?>"
+                          data-pathway-id="<?= $wl_patient->pathway->id ?? null ?>"
                           data-patient-id="<?= $wl_patient->patient_id ?>"
                           data-visit-id="<?= $wl_patient->id?>"
                           data-pathstep-id="comment"
@@ -174,35 +174,74 @@ $quick_filter_name = $filter->getQuickFilterTypeName();
                     </span>
                 </td>
                 <td>
-                    <div class="wait-duration<?= (int)$wl_patient->pathway->status === Pathway::STATUS_DONE ? ' stopped' : ''?>">
-                        <?= $wl_patient->pathway->getTotalDurationHTML(true) ?>
+                    <div class="wait-duration<?= $wl_patient->pathway && (int)$wl_patient->pathway->status === Pathway::STATUS_DONE ? ' stopped' : ''?>">
+                        <?php if ($wl_patient->pathway) {
+                            echo $wl_patient->pathway->getTotalDurationHTML(true);
+                        } elseif ($wl_patient->when) {
+                            if ($this->worklist_patient->when instanceof DateTime) {
+                                $start_time = $this->worklist_patient->when;
+                            } else {
+                                $start_time = DateTime::createFromFormat('Y-m-d H:i:s', $this->worklist_patient->when);
+                            }
+                            $end_time = new DateTime();
+                            $wait_length = $start_time->diff($end_time);
+                            if ($wait_length->h < 2) {
+                                $wait_color = 'green';
+                            } elseif ($wait_length->h < 3) {
+                                $wait_color = 'yellow';
+                            } elseif ($wait_length->h < 4) {
+                                $wait_color = 'orange';
+                            } else {
+                                $wait_color = 'red';
+                            }
+                            $duration_graphic = '<svg class="duration-graphic ' . $wait_color . '" viewBox="0 0 48 12" height="12" width="48">
+                                                <circle class="c0" cx="6" cy="6" r="6"></circle>
+                                                <circle class="c1" cx="18" cy="6" r="6"></circle>
+                                                <circle class="c2" cx="30" cy="6" r="6"></circle>
+                                                <circle class="c3" cx="42" cy="6" r="6"></circle>
+                                            </svg>';
+                            // Show duration of the pathway
+                            $duration_graphic .= '<div class="mins">';
+                            if ((int)$this->status === self::STATUS_DONE) {
+                                $duration_graphic .= $wait_length->format('%h:%I');
+                            } else {
+                                $duration_graphic .= '<small>' . $wait_length->format('%h:%I') . '</small>';
+                            }
+                            echo $duration_graphic .= '</div>';
+                        } ?>
                     </div>
                 </td>
                 <td class="js-pathway-status">
                     <!-- Completion icon/actions -->
                     <?php
                     $class = 'oe-i pad js-has-tooltip ';
-                    switch ($wl_patient->pathway->status) {
-                        case Pathway::STATUS_LATER:
-                            $class .= 'no-permissions small-icon';
-                            $tooltip_text = 'Pathway not started';
-                            break;
-                        case Pathway::STATUS_DISCHARGED:
-                            $class .= 'save medium-icon js-pathway-complete';
-                            $tooltip_text = 'Pathway completed';
-                            break;
-                        case Pathway::STATUS_DONE:
-                            // Done.
-                            $class .= 'undo medium-icon js-pathway-reactivate';
-                            $tooltip_text = 'Re-activate pathway to add steps';
-                            break;
-                        default:
-                            // Covers all 'active' statuses, including long-wait and break.
-                            $class .= 'save-blue medium-icon js-pathway-finish';
-                            $tooltip_text = 'Patient has left<br/>Quick complete pathway';
-                            break;
-                    } ?>
-                    <i class="<?= $class ?>" data-tooltip-content="<?= $tooltip_text ?>" data-pathway-id="<?= $wl_patient->pathway->id ?>"></i>
+                    if ($wl_patient->pathway) {
+                        switch ($wl_patient->pathway->status) {
+                            case Pathway::STATUS_LATER:
+                                $class .= 'no-permissions small-icon';
+                                $tooltip_text = 'Pathway not started';
+                                break;
+                            case Pathway::STATUS_DISCHARGED:
+                                $class .= 'save medium-icon js-pathway-complete';
+                                $tooltip_text = 'Pathway completed';
+                                break;
+                            case Pathway::STATUS_DONE:
+                                // Done.
+                                $class .= 'undo medium-icon js-pathway-reactivate';
+                                $tooltip_text = 'Re-activate pathway to add steps';
+                                break;
+                            default:
+                                // Covers all 'active' statuses, including long-wait and break.
+                                $class .= 'save-blue medium-icon js-pathway-finish';
+                                $tooltip_text = 'Patient has left<br/>Quick complete pathway';
+                                break;
+                        }
+                    } else {
+                        $class .= 'no-permissions small-icon';
+                        $tooltip_text = 'Pathway not started';
+                    }
+                    ?>
+                    <i class="<?= $class ?>" data-tooltip-content="<?= $tooltip_text ?>" data-pathway-id="<?= $wl_patient->pathway->id ?? null ?>"></i>
                 </td>
             </tr>
         <?php endforeach; ?>
@@ -227,17 +266,3 @@ $quick_filter_name = $filter->getQuickFilterTypeName();
     $widgetPath = $assetManager->publish('protected/widgets/js');
     Yii::app()->clientScript->registerScriptFile($widgetPath . '/PatientPanelPopupMulti.js');
 ?>
-
-<?php if (!$filter->getCombineWorklistsStatus()) : ?>
-<!--script type="text/javascript">
-    $(document).ready(function () {
-        let col_num = $('#js-worklist-<?=$worklist->id?> thead th').length;
-        $('#js-worklist-<?=$worklist->id?> tfoot td').attr('colspan', col_num);
-    });
-
-    $('body').on('click', '.collapse-data-header-icon', function () {
-        $(this).toggleClass('collapse expand');
-        $(this).next('div').toggle();
-    });
-</script-->
-<?php endif; ?>

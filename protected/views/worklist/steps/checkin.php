@@ -1,24 +1,25 @@
 <?php
 /**
- * @var $pathway Pathway
- * @var $patient Patient
+ * @var $worklist_patient Pathway
  * @var $partial bool
  */
 ?>
 <div class="slide-open">
     <div class="patient">
-        <?= strtoupper($patient->last_name) . ', ' . $patient->first_name . ' (' . $patient->title . ')'?>
+        <?= strtoupper($worklist_patient->patient->last_name) . ', ' . $worklist_patient->patient->first_name . ' (' . $worklist_patient->patient->title . ')'?>
     </div>
-    <?php if ($pathway->start_time && !$pathway->did_not_attend) { ?>
-        <h3 class="title">
-            Arrived <small>at</small> <?= DateTime::createFromFormat('Y-m-d H:i:s', $pathway->start_time)->format('H:i') ?>
-        </h3>
-    <?php } elseif ($pathway->did_not_attend) { ?>
-        <h3 class="title">
-            Did not attend
-        </h3>
-    <?php } ?>
-    <?php if (!$partial && (int)$pathway->status === Pathway::STATUS_LATER) { ?>
+    <?php if ($worklist_patient->pathway){
+        if ($worklist_patient->pathway->start_time && !$worklist_patient->pathway->did_not_attend) { ?>
+            <h3 class="title">
+                Arrived <small>at</small> <?= DateTime::createFromFormat('Y-m-d H:i:s', $worklist_patient->pathway->start_time)->format('H:i') ?>
+            </h3>
+        <?php } elseif ($worklist_patient->pathway->did_not_attend) { ?>
+            <h3 class="title">
+                Did not attend
+            </h3>
+        <?php }
+    }?>
+    <?php if (!$partial && (!$worklist_patient->pathway || (int)$worklist_patient->pathway->status === Pathway::STATUS_LATER)) { ?>
     <div class="step-actions">
         <button class="green hint js-ps-popup-btn" data-action="done">
             Check-in
@@ -28,9 +29,9 @@
         </button>
     </div>
     <?php } ?>
-    <?php if (!$partial && ((int)$pathway->status === Pathway::STATUS_STUCK || (int)$pathway->status === Pathway::STATUS_WAITING)) { ?>
+    <?php if (!$partial && $worklist_patient->pathway && ((int)$worklist_patient->pathway->status === Pathway::STATUS_STUCK || (int)$worklist_patient->pathway->status === Pathway::STATUS_WAITING)) { ?>
         <div class="step-actions">
-            <button class="green hint js-ps-popup-btn js-pathway-undo-check-in" data-pathway-id=<?= $pathway->id ?> data-action="undocheckin">
+            <button class="green hint js-ps-popup-btn js-pathway-undo-check-in" data-pathway-id=<?= $worklist_patient->pathway->id ?> data-action="undocheckin">
                 Undo Check-in
             </button>
         </div>

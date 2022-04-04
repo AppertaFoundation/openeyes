@@ -192,14 +192,14 @@
             url: this.options.base_url + 'worklist/addStepToPathway',
             data: {
                 id: step_type_id,
-                pathway_id: pathway_id,
+                visit_id: pathway_id,
                 position: position,
                 step_data: step_data,
                 YII_CSRF_TOKEN: YII_CSRF_TOKEN,
             },
             type: 'POST',
             success: function (response) {
-                let $pathway = $(`.pathway[data-pathway-id="${pathway_id}"]`).closest('td.js-pathway-container');
+                let $pathway = $(`.pathway[data-visit-id="${pathway_id}"]`).closest('td.js-pathway-container');
                 if (!$pathway.length) {
                     $pathway = $(`tr[data-pathway-type-id="${pathway_id}"]`).find('td.js-pathway-container');
                 }

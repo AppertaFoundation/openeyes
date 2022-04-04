@@ -1339,16 +1339,6 @@ $initial_filter = $session_filter_info['filter'];
             $(this).next('div').toggle();
         });
 
-         picker = new OpenEyes.UI.PathwayStepPicker({
-            ...path_step_type_ids,
-            ...picker_setup,
-            pathways: <?= $pathway_json ?>,
-            onChangePatientRow: function(changeType, details) {
-                worklistFiltersController.updateCountsOnChange(changeType, details);
-            },
-        });
-        picker.init();
-
         // Set up client side controller for filters
 
         // Gather the set of worklist ids and titles, now from the worklists
@@ -1398,7 +1388,7 @@ $initial_filter = $session_filter_info['filter'];
             },
 
             removeRow: function(pathwayId) {
-                const pathway = $(`#js-pathway-${pathwayId}`);
+                const pathway = $(`.pathway[data-visit-id="${pathwayId}"`).closest('tr');
                 const pagination = pathway.closest('.oec-patients').find('.pagination');
 
                 pathway.remove();
@@ -1423,6 +1413,16 @@ $initial_filter = $session_filter_info['filter'];
             <?= json_encode($this->getWaitingForList($initial_filter, $worklists)) ?>,
             <?= json_encode($this->getAssignedToList($initial_filter, $worklists)) ?>
         );
+
+         picker = new OpenEyes.UI.PathwayStepPicker({
+            ...path_step_type_ids,
+            ...picker_setup,
+            pathways: <?= $pathway_json ?>,
+            onChangePatientRow: function(changeType, details) {
+                worklistFiltersController.updateCountsOnChange(changeType, details);
+            },
+        });
+        picker.init();
 
         // init timer obj
         let autorefresh_countdown = null;

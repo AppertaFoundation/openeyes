@@ -251,7 +251,7 @@ class WorklistController extends BaseController
                 $this->renderJSON(
                     [
                         'status' => $pathway->getStatusString(),
-                        'step_html' => $this->renderPartial('_clinical_pathway', ['pathway' => $pathway], true),
+                        'step_html' => $this->renderPartial('_clinical_pathway', ['visit' => $pathway->worklist_patient], true),
                         'status_html' => $pathway->getPathwayStatusHTML(),
                         'waiting_time_html' => $pathway->getTotalDurationHTML(true),
                     ]
@@ -271,15 +271,17 @@ class WorklistController extends BaseController
     {
         $step_id = Yii::app()->request->getPost('step_id');
         $type_step_id = Yii::app()->request->getPost('step_type_id');
+        $visit_id = Yii::app()->request->getPost('visit_id');
         $direction = Yii::app()->request->getPost('direction');
         $pathway_id = Yii::app()->request->getPost('pathway_id');
         $step = PathwayStep::model()->find('id = :id AND pathway_id = :pathway_id', [':id' => $step_id, ':pathway_id' => $pathway_id]);
 
         if (!$step) {
+            $visit = WorklistPatient::model()->findByPk($visit_id);
             $type_step = PathwayTypeStep::model()->findByPk($type_step_id);
 
             if ($type_step) {
-                $pathway_steps = $type_step->pathway_type->instancePathway($pathway_id);
+                $pathway_steps = $type_step->pathway_type->instancePathway($visit);
                 $step = $pathway_steps[$type_step_id] ?? null;
             }
         }
@@ -316,7 +318,7 @@ class WorklistController extends BaseController
             $this->renderJSON(
                 [
                     'step' => $step->toJSON(),
-                    'step_html' => $this->renderPartial('_clinical_pathway', ['pathway' => $step->pathway], true),
+                    'step_html' => $this->renderPartial('_clinical_pathway', ['visit' => $step->pathway->worklist_patient], true),
                     'pathway_status' => $pathway->getStatusString(),
                     'pathway_status_html' => $pathway->getPathwayStatusHTML(),
                     'wait_time_details' => $pathway->getWaitTimeSinceLastAction(),
@@ -335,30 +337,24 @@ class WorklistController extends BaseController
     {
         $visit_id = Yii::app()->request->getPost('visit_id');
         $wl_patient = WorklistPatient::model()->findByPk($visit_id);
-        /**
-         * @var $wl_patient WorklistPatient
-         */
-        $pathway = $wl_patient->pathway;
 
-        if ($pathway) {
-            if (count($pathway->steps) === 0) {
-                $pathway->type->instancePathway($pathway->id);
-                $pathway->refresh();
-            }
-
-            $pathway->startPathway();
-            $this->renderJSON(
-                [
-                    'step_html' => $this->renderPartial(
-                        '_clinical_pathway',
-                        ['pathway' => $pathway],
-                        true
-                    ),
-                    'end_time' => DateTime::createFromFormat('Y-m-d H:i:s', $pathway->start_time)->format('H:i'),
-                    'pathway_status_html' => $pathway->getPathwayStatusHTML(),
-                ]
-            );
+        if (!$wl_patient->pathway) {
+            $wl_patient->worklist->worklist_definition->pathway_type->instancePathway($wl_patient);
+            $wl_patient->refresh();
         }
+        $wl_patient->pathway->startPathway();
+        $wl_patient->refresh();
+        $this->renderJSON(
+            [
+                'step_html' => $this->renderPartial(
+                    '_clinical_pathway',
+                    ['visit' => $wl_patient],
+                    true
+                ),
+                'end_time' => DateTime::createFromFormat('Y-m-d H:i:s', $wl_patient->pathway->start_time)->format('H:i'),
+                'pathway_status_html' => $wl_patient->pathway->getPathwayStatusHTML(),
+            ]
+        );
         throw new CHttpException(404, 'Unable to retrieve step for processing or step is not a checkin step.');
     }
 
@@ -397,52 +393,48 @@ class WorklistController extends BaseController
     {
         $visit_id = Yii::app()->request->getPost('visit_id');
         $wl_patient = WorklistPatient::model()->findByPk($visit_id);
-        /**
-         * @var $wl_patient WorklistPatient
-         */
-        $pathway = $wl_patient->pathway;
 
-        if ($pathway) {
-            if (count($pathway->steps) === 0) {
-                $pathway->type->instancePathway($pathway->id);
-            }
-            $pathway->start_time = date('Y-m-d H:i:s');
-            if (count($pathway->requested_steps) === 0) {
-                $pathway->status = Pathway::STATUS_DONE;
-                $pathway->end_time = date('Y-m-d H:i:s');
-            } else {
-                $pathway->status = Pathway::STATUS_DISCHARGED;
-            }
-
-            $pathway->did_not_attend = true;
-            $pathway->save();
-            // Create and save a Did Not Attend event.
-            $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
-            $event_type_id = EventType::model()->find(
-                'class_name = :class_name',
-                [':class_name' => 'OphCiDidNotAttend']
-            )->id;
-            $service = Firm::model()->find(
-                'service_subspecialty_assignment_id = :id AND can_own_an_episode = 1',
-                [':id' => $firm->service_subspecialty_assignment_id]
-            );
-            $service_id = $service->id;
-
-            $params = [
-                'patient_id' => $pathway->worklist_patient->patient_id,
-                'context_id' => $firm->id,
-                'service_id' => $service_id,
-                'event_type_id' => $event_type_id
-            ];
-
-            $this->renderJSON(
-                [
-                    'redirect_url' => '/patientEvent/create?' . http_build_query($params),
-                    'pathway_status_html' => $pathway->getPathwayStatusHTML(),
-                    'step_html' => $this->renderPartial('_clinical_pathway', ['pathway' => $pathway], true)
-                ]
-            );
+        if (!$wl_patient->pathway) {
+            $wl_patient->worklist->worklist_definition->pathway_type->instancePathway($wl_patient);
+            $wl_patient->refresh();
         }
+        $pathway = $wl_patient->pathway;
+        $pathway->start_time = date('Y-m-d H:i:s');
+        if (count($pathway->requested_steps) === 0) {
+            $pathway->status = Pathway::STATUS_DONE;
+            $pathway->end_time = date('Y-m-d H:i:s');
+        } else {
+            $pathway->status = Pathway::STATUS_DISCHARGED;
+        }
+
+        $pathway->did_not_attend = true;
+        $pathway->save();
+        // Create and save a Did Not Attend event.
+        $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+        $event_type_id = EventType::model()->find(
+            'class_name = :class_name',
+            [':class_name' => 'OphCiDidNotAttend']
+        )->id;
+        $service = Firm::model()->find(
+            'service_subspecialty_assignment_id = :id AND can_own_an_episode = 1',
+            [':id' => $firm->service_subspecialty_assignment_id]
+        );
+        $service_id = $service->id;
+
+        $params = [
+            'patient_id' => $pathway->worklist_patient->patient_id,
+            'context_id' => $firm->id,
+            'service_id' => $service_id,
+            'event_type_id' => $event_type_id
+        ];
+
+        $this->renderJSON(
+            [
+                'redirect_url' => '/patientEvent/create?' . http_build_query($params),
+                'pathway_status_html' => $pathway->getPathwayStatusHTML(),
+                'step_html' => $this->renderPartial('_clinical_pathway', ['visit' => $wl_patient], true)
+            ]
+        );
         throw new CHttpException(404, 'Unable to retrieve step for processing or step is not a checkin step.');
     }
 
@@ -456,12 +448,14 @@ class WorklistController extends BaseController
         $step_id = Yii::app()->request->getPost('step_id');
         $type_step_id = Yii::app()->request->getPost('step_type_id');
         $pathway_id = Yii::app()->request->getPost('pathway_id');
+        $visit_id = Yii::app()->request->getPost('visit_id');
         $step = PathwayStep::model()->find('id = :id AND pathway_id = :pathway_id', [':id' => $step_id, ':pathway_id' => $pathway_id]);
         if (!$step) {
+            $wl_patient = WorklistPatient::model()->findByPk($visit_id);
             $type_step = PathwayTypeStep::model()->findByPk($type_step_id);
 
             if ($type_step) {
-                $pathway_steps = $type_step->pathway_type->instancePathway($pathway_id);
+                $pathway_steps = $type_step->pathway_type->instancePathway($wl_patient);
                 $step = $pathway_steps[$type_step_id] ?? null;
             }
         }
@@ -469,7 +463,7 @@ class WorklistController extends BaseController
             Yii::app()->event->dispatch('step_deleted', ['step' => $step]);
             $step->delete();
             $this->renderJSON(
-                array('step_html' => $this->renderPartial('_clinical_pathway', ['pathway' => $step->pathway], true))
+                array('step_html' => $this->renderPartial('_clinical_pathway', ['visit' => $step->pathway->worklist_patient], true))
             );
         }
     }
@@ -486,12 +480,14 @@ class WorklistController extends BaseController
         $pathway_id = Yii::app()->request->getPost('pathway_id');
         $direction = Yii::app()->request->getPost('direction');
         $step = PathwayStep::model()->find('id = :id AND pathway_id = :pathway_id', [':id' => $step_id, ':pathway_id' => $pathway_id]);
+        $visit_id = Yii::app()->request->getPost('visit_id');
 
         if (!$step) {
+            $wl_patient = WorklistPatient::model()->findByPk($visit_id);
             $type_step = PathwayTypeStep::model()->findByPk($type_step_id);
 
             if ($type_step) {
-                $pathway_steps = $type_step->pathway_type->instancePathway($pathway_id);
+                $pathway_steps = $type_step->pathway_type->instancePathway($wl_patient);
                 $step = $pathway_steps[$type_step_id] ?? null;
             }
         }
@@ -527,7 +523,7 @@ class WorklistController extends BaseController
         $this->renderJSON(
             array(
                 'step' => $step->toJSON(),
-                'step_html' => $this->renderPartial('_clinical_pathway', ['pathway' => $step->pathway], true)
+                'step_html' => $this->renderPartial('_clinical_pathway', ['visit' => $step->pathway->worklist_patient], true)
             )
         );
     }
@@ -570,7 +566,7 @@ class WorklistController extends BaseController
             case 'checkin':
                 if ($wl_patient) {
                     $dom = $this->renderPartial('/worklist/steps/checkin', array(
-                        'pathway' => $wl_patient->pathway,
+                        'worklist_patient' => $wl_patient,
                         'patient' => $wl_patient->patient,
                         'partial' => $partial
                     ), true);
@@ -582,7 +578,7 @@ class WorklistController extends BaseController
             case 'comment':
                 if ($wl_patient) {
                     $dom = $this->renderPartial('//worklist/comment', array(
-                        'pathway' => $wl_patient->pathway,
+                        'visit' => $wl_patient,
                         'patient' => $wl_patient->patient,
                         'partial' => $partial
                     ), true);
@@ -650,7 +646,7 @@ class WorklistController extends BaseController
                             'visit' => $wl_patient,
                             'partial' => (int)$partial,
                             'patient_id' => $wl_patient->patient_id,
-                            'pathway' => $wl_patient->pathway,
+                            'worklist_patient' => $wl_patient,
                             'for_administer' => 0,
                             'is_prescriber' => Yii::app()->user->checkAccess('Prescribe'),
                             'can_remove_psd' => $can_remove_psd,
@@ -668,7 +664,7 @@ class WorklistController extends BaseController
                         '//worklist/steps/' . $view_file,
                         array(
                             'step' => $step,
-                            'pathway' => $wl_patient->pathway,
+                            'worklist_patient' => $wl_patient,
                             'patient' => $wl_patient->patient,
                             'partial' => $partial,
                             'red_flag' => $red_flag
@@ -1478,14 +1474,14 @@ class WorklistController extends BaseController
     public function actionAddStepToPathway()
     {
         $id = Yii::app()->request->getPost('id');
-        $pathway_id = Yii::app()->request->getPost('pathway_id');
         $position = Yii::app()->request->getPost('position');
         $step_data = Yii::app()->request->getPost('step_data') ?: array();
+        $visit_id = Yii::app()->request->getPost('visit_id');
+        $wl_patient = WorklistPatient::model()->findByPk($visit_id);
 
-        $pathway = Pathway::model()->findByPk($pathway_id);
-
-        if (count($pathway->steps) === 0) {
-            $pathway->type->instancePathway($pathway_id);
+        if (!$wl_patient->pathway) {
+            $wl_patient->worklist->worklist_definition->pathway_type->instancePathway($wl_patient);
+            $wl_patient->refresh();
         }
 
         $step = PathwayStepType::model()->findByPk($id);
@@ -1502,7 +1498,7 @@ class WorklistController extends BaseController
 
             if (!$step_data['service_id'] && (isset($step_data['subspecialty_id']) || !empty($step_data['firm_id']))) {
                 $service_subspecialty = $step_data['subspecialty_id'] ?? Firm::model()->findByPk($step_data['firm_id'])->serviceSubspecialtyAssignment->subspecialty_id;
-                $episode = $pathway->worklist_patient->patient->getOpenEpisodeOfSubspecialty($service_subspecialty);
+                $episode = $wl_patient->patient->getOpenEpisodeOfSubspecialty($service_subspecialty);
 
                 if ($episode) {
                     $step_data['service_id'] = $episode->firm_id;
@@ -1516,7 +1512,7 @@ class WorklistController extends BaseController
                 }
             }
 
-            $new_step = $step->createNewStepForPathway($pathway_id, $step_data, true, (int)$position);
+            $new_step = $step->createNewStepForPathway($wl_patient->pathway->id, $step_data, true, (int)$position);
         }
 
         if ($new_step) {
@@ -1524,7 +1520,7 @@ class WorklistController extends BaseController
                 [
                     'step_html' => $this->renderPartial(
                         '_clinical_pathway',
-                        ['pathway' => $new_step->pathway],
+                        ['visit' => $new_step->pathway->worklist_patient],
                         true
                     ),
                     'no_wait_timer' => in_array($new_step->type->short_name, PathwayStep::NO_WAIT_TIMER_AFTER_ADD)
@@ -1543,15 +1539,17 @@ class WorklistController extends BaseController
         $position = $_POST['selected_values'][1]['value'];
         $pathway_type = PathwayType::model()->findByPk($id);
         $pathway_id = Yii::app()->request->getPost('target_pathway_id');
-        $pathway = Pathway::model()->findByPk($pathway_id);
+        $visit_id = Yii::app()->request->getPost('visit_id');
+        $wl_patient = WorklistPatient::model()->findByPk($visit_id);
 
-        if (count($pathway->steps) === 0) {
-            $pathway->type->instancePathway($pathway_id);
+        if (!$wl_patient->pathway) {
+            $wl_patient->worklist->worklist_definition->pathway_type->instancePathway($wl_patient);
+            $wl_patient->refresh();
         }
 
         if ($pathway_type) {
             $pathway_type->duplicateStepsForPathway($pathway_id, $position);
-            $this->renderJSON(['step_html' => $this->renderPartial('_clinical_pathway', ['pathway' => $pathway], true)]);
+            $this->renderJSON(['step_html' => $this->renderPartial('_clinical_pathway', ['visit' => $wl_patient], true)]);
         }
         throw new CHttpException(404, 'Unable to retrieve pathway type for duplication.');
     }
@@ -1583,16 +1581,17 @@ class WorklistController extends BaseController
     public function actionAssignUserToPathway()
     {
         $id = Yii::app()->request->getPost('user_id');
-        $pathway_id = Yii::app()->request->getPost('target_pathway_id');
-        $pathway = Pathway::model()->findByPk($pathway_id);
+        $visit_id = Yii::app()->request->getPost('target_visit_id');
+        $visit = WorklistPatient::model()->findByPk($visit_id);
 
-        if ($pathway) {
-            $pathway->owner_id = $id;
-            $pathway->save();
-            $pathway->refresh();
-            $this->renderJSON(array('id' => $id, 'initials' => $pathway->owner->getInitials()));
+        if (!($visit->pathway)) {
+            $visit->worklist->worklist_definition->pathway_type->instancePathway($visit);
+            $visit->refresh();
         }
-        throw new CHttpException(404, 'Unable to retrieve pathway');
+        $visit->pathway->owner_id = $id;
+        $visit->pathway->save();
+        $visit->refresh();
+        $this->renderJSON(array('id' => $id, 'initials' => $visit->pathway->owner->getInitials()));
     }
 
     /**
@@ -1603,20 +1602,27 @@ class WorklistController extends BaseController
     public function actionAddComment()
     {
         $post = $_POST;
-        $pathway = Pathway::model()->findByPk($post['pathway_id']);
+        $wl_patient = WorklistPatient::model()->findByPk($post['visit_id']);
         $step_id = null;
         $pathway_instanced = false;
         if ($post['pathstep_id'] === 'comment') {
-            $comment = PathwayComment::model()->find('pathway_id=?', [$post['pathway_id']]);
+            $pathway_id = $post['pathway_id'];
+            if (!$wl_patient->pathway) {
+                $wl_patient->worklist->worklist_definition->pathway_type->instancePathway($wl_patient);
+                $pathway_instanced = true;
+                $wl_patient->refresh();
+                $pathway_id = $wl_patient->pathway->id;
+            }
+            $comment = PathwayComment::model()->find('pathway_id=?', [$pathway_id]);
             if ($comment === null) {
                 $comment = new PathwayComment();
-                $comment->pathway_id = $post['pathway_id'];
+                $comment->pathway_id = $pathway_id;
             }
         } else {
             if (!$post['pathstep_id']) {
                 $type_step = PathwayTypeStep::model()->findByPk($post['pathstep_type_id']);
                 if ($type_step) {
-                    $steps = $type_step->pathway_type->instancePathway($post['pathway_id']);
+                    $steps = $type_step->pathway_type->instancePathway($wl_patient);
                     $step_id = $steps[$post['pathstep_type_id']]->id;
                     $pathway_instanced = true;
                 }
@@ -1634,7 +1640,7 @@ class WorklistController extends BaseController
         if ($comment->save()) {
             $this->renderJSON(
                 array(
-                    'step_html' => $pathway_instanced ? $this->renderPartial('_clinical_pathway', ['pathway' => $pathway], true) : null,
+                    'step_html' => $pathway_instanced ? $this->renderPartial('_clinical_pathway', ['visit' => $wl_patient], true) : null,
                     'step_id' => $step_id,
                     'comment' => $comment->comment
                 )
@@ -1740,7 +1746,7 @@ class WorklistController extends BaseController
         $this->renderJSON(
             [
                 'status' => $pathway->getStatusString(),
-                'step_html' => $this->renderPartial('_clinical_pathway', ['pathway' => $pathway], true),
+                'step_html' => $this->renderPartial('_clinical_pathway', ['visit' => $pathway->worklist_patient], true),
                 'status_html' => $pathway->getPathwayStatusHTML(),
                 'pathway_id' => $pathway->id,
             ]
@@ -1771,7 +1777,7 @@ class WorklistController extends BaseController
         $this->renderJSON(
             [
                 'status' => $pathway->getStatusString(),
-                'step_html' => $this->renderPartial('_clinical_pathway', ['pathway' => $pathway], true),
+                'step_html' => $this->renderPartial('_clinical_pathway', ['pathway' => $pathway->worklist_patient], true),
                 'status_html' => $pathway->getPathwayStatusHTML(),
                 'pathway_id' => $pathway->id,
                 'waiting_time_html' => $pathway->getTotalDurationHTML(true),

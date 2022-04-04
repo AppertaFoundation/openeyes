@@ -55,7 +55,7 @@ if ($is_step_instance) {
     <?php } ?>
     <?php if (!$partial) {?>
         <div class="step-actions">
-            <?php if (isset($pathway)) { ?>
+            <?php if (isset($worklist_patient)) { ?>
             <button class="green hint js-ps-popup-btn" data-action="next"<?= $step->status === PathwayStep::STEP_COMPLETED ? 'style="display: none;"' : ''?>>
                 Patient is back
             </button>

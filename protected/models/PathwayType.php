@@ -139,18 +139,16 @@ class PathwayType extends BaseActiveRecordVersioned
      * @param int $pathway_id
      * @return PathwayStep[]
      * @throws JsonException
+     * @throws Exception
      */
-    public function instancePathway(int $pathway_id): array
+    public function instancePathway(WorklistPatient $worklist_patient): array
     {
         $new_steps = array();
-        $pathway = Pathway::model()->findByPk($pathway_id);
 
-        if ($pathway) {
-            if (count($pathway->steps) > 0) {
-                return $new_steps;
-            }
+        if ($this->createNewPathway($worklist_patient->id)) {
+            $worklist_patient->refresh();
             foreach ($this->default_steps as $step) {
-                $new_step = $step->cloneStepForPathway($pathway_id, array());
+                $new_step = $step->cloneStepForPathway($worklist_patient->pathway->id, array());
                 if (!$new_step) {
                     return $new_steps;
                 }
