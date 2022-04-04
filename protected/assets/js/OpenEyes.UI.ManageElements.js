@@ -269,7 +269,7 @@
     ManageElements.prototype.buildTreeItem = function(itemData) {
         let item;
 
-        let itemClass = 'selector-group';
+        let itemClass = 'selector-group outline';
 
         item = $("<div>")
             .data('element-type-class', itemData.class_name)
