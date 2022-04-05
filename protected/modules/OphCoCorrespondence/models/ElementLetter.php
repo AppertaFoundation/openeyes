@@ -591,7 +591,7 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
             $institution_id,
             $site_id
         );
-        $re = $patient->first_name . ' ' . $patient->last_name;
+        $re = 'Re: ' . $patient->first_name . ' ' . $patient->last_name;
 
         foreach (array('address1', 'address2', 'city', 'postcode') as $field) {
             if ($patient->contact->address && $patient->contact->address->{$field}) {

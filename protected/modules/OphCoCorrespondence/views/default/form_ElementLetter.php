@@ -405,7 +405,7 @@ $footer_array = explode("{e-signature}", $element["footer"]);
                         'introduction',
                         array('rows' => 1, 'label' => false, 'nowrapper' => true),
                         false,
-                        array('class' => 'cols-full correspondence-letter-text')
+                        array('class' => 'cols-full correspondence-letter-text autosize')
                     ) ?>
                 </td>
                 <!--Nickname-->
@@ -422,7 +422,7 @@ $footer_array = explode("{e-signature}", $element["footer"]);
                             're',
                             array('rows' => 2, 'label' => false, 'nowrapper' => true),
                             empty($_POST) ? strlen($element->re) === 0 : strlen(@$_POST['ElementLetter']['re']) === 0,
-                            array('class' => 'cols-full correspondence-letter-text')
+                            array('class' => 'cols-full correspondence-letter-text autosize')
                         ) ?>
                 </td>
                 <td class="fade">Editor help: <i class="oe-i info small pad js-has-tooltip" data-tooltip-content="Use SHIFT+ENTER to create a new text line"></i></td>
