@@ -120,7 +120,8 @@ $quick_filter_name = $filter->getQuickFilterTypeName();
             /** @var $wl_patient WorklistPatient */
             $hide_add_step_btn = $wl_patient->pathway && (int)$wl_patient->pathway->status === Pathway::STATUS_DONE ? 'style="display:none;"' : null;
             ?>
-            <tr class="<?= $wl_patient->pathway ? $wl_patient->pathway->getStatusString() : 'later' ?>" data-timestamp="<?= time() ?>" id="js-pathway-<?= $wl_patient->id ?>">
+            <tr class="<?= $wl_patient->pathway ? $wl_patient->pathway->getStatusString() : 'later' ?>" data-timestamp="<?= time() ?>" id="js-pathway-<?= $wl_patient->id ?>"
+                  data-status="<?= $wl_patient->pathway ? $wl_patient->pathway->getStatusString() : 'later' ?>">
                 <td><?= $wl_patient->scheduledtime ?></td>
                 <td>
                     <div class="list-name"><?= $wl_patient->worklist->name ?></div>

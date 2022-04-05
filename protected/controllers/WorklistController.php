@@ -353,6 +353,7 @@ class WorklistController extends BaseController
                 ),
                 'end_time' => DateTime::createFromFormat('Y-m-d H:i:s', $wl_patient->pathway->start_time)->format('H:i'),
                 'pathway_status_html' => $wl_patient->pathway->getPathwayStatusHTML(),
+                'status' => $wl_patient->pathway->getStatusString(),
             ]
         );
         throw new CHttpException(404, 'Unable to retrieve step for processing or step is not a checkin step.');
@@ -432,7 +433,8 @@ class WorklistController extends BaseController
             [
                 'redirect_url' => '/patientEvent/create?' . http_build_query($params),
                 'pathway_status_html' => $pathway->getPathwayStatusHTML(),
-                'step_html' => $this->renderPartial('_clinical_pathway', ['visit' => $wl_patient], true)
+                'step_html' => $this->renderPartial('_clinical_pathway', ['visit' => $wl_patient], true),
+                'status' => $pathway->getStatusString(),
             ]
         );
         throw new CHttpException(404, 'Unable to retrieve step for processing or step is not a checkin step.');
@@ -1371,19 +1373,21 @@ class WorklistController extends BaseController
         foreach ($counts as $item) {
             $progress = Pathway::inProgressStatuses();
             $results['all'] += $item['count'];
+            $status = (int)$item['status'];
 
-            if ($item['status'] != Pathway::STATUS_LATER) {
+            if ($status !== Pathway::STATUS_LATER) {
                 $results['clinic'] += $item['count'];
             }
 
             if (
-                $item['status'] != Pathway::STATUS_ACTIVE
-                && in_array($item['status'], $progress)
+                $status !== Pathway::STATUS_ACTIVE
+                && $status !== Pathway::STATUS_DISCHARGED
+                && in_array($status, $progress)
             ) {
                 $results['issues'] += $item['count'];
-            } elseif ($item['status'] == Pathway::STATUS_DISCHARGED) {
+            } elseif ($status === Pathway::STATUS_DISCHARGED) {
                 $results['discharged'] += $item['count'];
-            } elseif ($item['status'] == Pathway::STATUS_DONE) {
+            } elseif ($status === Pathway::STATUS_DONE) {
                 $results['done'] += $item['count'];
             }
         }

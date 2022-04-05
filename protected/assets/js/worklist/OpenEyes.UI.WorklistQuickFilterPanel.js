@@ -215,5 +215,43 @@ OpenEyes.UI = OpenEyes.UI || {};
         }
     }
 
+    WorklistQuickFilterPanel.prototype.changeCategoryCount = function(statusCategory, amount) {
+        const controller = this.controller;
+        const button = this.panel.find(`.js-clinic-btn-filter[data-filter="${statusCategory}"]`);
+
+        if (button.length > 0) {
+            const count = parseInt(button.children('.count').text().trim()) + amount;
+
+            button.children('.count').text(Math.max(count, 0));
+        }
+    }
+
+    WorklistQuickFilterPanel.prototype.changeStatusTypeCount = function(status, amount) {
+        // The following string constants used in the switch statement need to reflect
+        // those in getStatusString() inside protected/models/Pathway.php
+        switch (status) {
+        case 'stuck':
+        case 'waiting':
+        case 'long-wait':
+        case 'break':
+            this.changeCategoryCount('clinic', amount);
+            this.changeCategoryCount('issues', amount);
+            break;
+
+        case 'active':
+            this.changeCategoryCount('clinic', amount);
+            break;
+
+        case 'discharged':
+            this.changeCategoryCount('discharged', amount);
+            break;
+
+        case 'done':
+            this.changeCategoryCount('clinic', amount);
+            this.changeCategoryCount('done', amount);
+            break;
+        }
+    }
+
     exports.WorklistQuickFilterPanel = WorklistQuickFilterPanel;
 }(OpenEyes.UI));

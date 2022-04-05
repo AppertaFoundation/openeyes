@@ -110,7 +110,7 @@ class WorklistFilterQuery
 
             $this->combined = false;
 
-            $this->quick = $quick;
+            $this->quick = (getType($quick) === 'string') ? json_decode($quick) : $quick;
         }
 
         if ($this->context === self::ALL_CONTEXTS) {
@@ -310,7 +310,7 @@ class WorklistFilterQuery
         $command = Yii::app()->db->createCommand();
 
         $command->from('worklist_patient wp');
-        $command->select('pathway.status, COUNT(pathway.id) AS count');
+        $command->select('pathway.status, COUNT(wp.id) AS count');
         $command->leftJoin('pathway', 'pathway.worklist_patient_id = wp.id');
 
         $conditions = array('and');
@@ -685,14 +685,13 @@ class WorklistFilterQuery
     public static function getLastUsedFilterFromSession()
     {
         $filter = null;
-        $quick = null;
+        $quick = !empty(Yii::app()->session['current_worklist_filter_quick']) ? Yii::app()->session['current_worklist_filter_quick'] : null;
         $type = 'New';
         $id = null;
 
         if (!empty(Yii::app()->session['current_worklist_filter_type']) && !empty(Yii::app()->session['current_worklist_filter_id'])) {
             $type = Yii::app()->session['current_worklist_filter_type'];
             $id = Yii::app()->session['current_worklist_filter_id'];
-            $quick = !empty(Yii::app()->session['current_worklist_filter_quick']) ? Yii::app()->session['current_worklist_filter_quick'] : null;
 
             if ($type === 'Saved') {
                 $filter = \WorklistFilter::model()->findByPk($id);
