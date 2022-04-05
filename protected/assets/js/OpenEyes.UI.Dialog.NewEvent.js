@@ -284,7 +284,7 @@
         } else {
             self.content.find(selectors.addNewSubspecialty).addClass('disabled');
             self.content.find(selectors.noSubspecialty).show();
-            self.content.find(selectors.fixedService).hide();
+            self.content.find(selectors.fixedService).text("Select subspecialty");
             self.content.find(selectors.serviceList).hide();
         }
     };
@@ -326,7 +326,7 @@
         var self = this;
         var select = self.content.find(selectors.serviceList);
         select.html('');
-        var options = '<option value="">Select</option>';
+        var options = '<option value="">Select ' + select.data('service-firm-label') + '</option>';
         for (var i in services) {
             options += '<option value="' + services[i].id + '"';
             // default to current runtime firm

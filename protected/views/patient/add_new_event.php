@@ -64,16 +64,16 @@
         <div class="change-subspecialty">
           <h6>Add New Subspecialty</h6>
           <select class="new-subspecialty cols-10">
-            <option value="">Select</option>
+            <option value="">Select Subspecialty</option>
             {{#selectableSubspecialties}}
             <option value="{{id}}">{{name}} ({{shortName}})</option>
             {{/selectableSubspecialties}}
           </select>
 
-          <h6 style="margin-top:5px"><?= Firm::serviceLabel() ?></h6>
-          <div class="no-subspecialty"><h6>Select Subspecialty</h6></div>
-          <div class="fixed-service" style="display: none;"></div>
-          <select class="select-service cols-10" style="display: none;">
+          <!-- <h6 style="margin-top:5px"><?= Firm::serviceLabel() ?></h6> -->
+          <!-- <div class="no-subspecialty">&nbsp;</div> -->
+          <div class="fixed-service cols-10">&nbsp;</div>
+          <select class="select-service cols-10" style="display: none;" data-service-firm-label="<?= Firm::serviceLabel() ?>">
           </select>
 
           <button class="add-subspecialty-btn button hint green" id="js-add-subspecialty-btn"><i class="oe-i plus"></i></button>
