@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2017, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <?php
 /**
@@ -147,7 +149,7 @@
         $(document).on('click', '<?= $button_selector ?>', function () {
             newEventDialog = new OpenEyes.UI.Dialog.NewEvent({
                 id: 'add-new-event-dialog',
-                    class: 'oe-create-event-popup',
+                    class: 'oe-create-event-popup oe-popup',
                 viewSubspecialtyId: <?= @$view_subspecialty ? $view_subspecialty->id : 'undefined' ?>,
                 patientId: <?= $patient_id ?>,
                 userSubspecialtyId: '<?= $context_firm->getSubspecialtyID() ?: 'SS'; ?>',
