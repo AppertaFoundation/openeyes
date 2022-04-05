@@ -42,16 +42,16 @@ class PSDController extends DefaultController
     }
 
     /**
-     * @param $partial              to display overview of the popup or full (with actions, detailed info)
-     * @param $pathstep_id          for PathwayStep
-     * @param $assignment_id        for OphDrPGDPSD_Assignment
-     * @param $patient_id           for Patient
-     * @param $for_administer       to display form or read only content
-     * @param bool $interactive     to display popup buttons
+     * @param $partial int              to display overview of the popup or full (with actions, detailed info)
+     * @param $pathstep_id int         for PathwayStep
+     * @param $visit_id int       for OphDrPGDPSD_Assignment
+     * @param $pathstep_type_id int           for Patient
+     * @param $for_administer int      to display form or read only content
+     * @param int $interactive     to display popup buttons
      * @throws CHttpException
      * @throws Exception
      */
-    public function actionGetPathStep($partial, $pathstep_id, $visit_id, $pathstep_type_id, $for_administer, $interactive = true)
+    public function actionGetPathStep($partial, $pathstep_id, $visit_id, $pathstep_type_id, $for_administer, $interactive = 1)
     {
         $step = PathwayStep::model()->findByPk($pathstep_id);
         $wl_patient = WorklistPatient::model()->findByPk($visit_id);
@@ -85,10 +85,6 @@ class PSDController extends DefaultController
         $can_remove_psd = \Yii::app()->user->checkAccess('Prescribe')
             && ($step instanceof PathwayTypeStep || (int)$step->status === PathwayStep::STEP_REQUESTED)
             && !$assignment->elements ? '' : 'disabled';
-        if ($interactive) {
-            $status = $step instanceof PathwayStep ? (int)$step->status : PathwayStep::STEP_REQUESTED;
-            $interactive = in_array($status, Pathway::inProgressStatuses(), true);
-        }
         $dom = $this->renderPartial(
             '/pathstep/pathstep_view',
             array(
@@ -101,7 +97,7 @@ class PSDController extends DefaultController
                 'for_administer' => $for_administer,
                 'is_prescriber' => Yii::app()->user->checkAccess('Prescribe'),
                 'can_remove_psd' => $can_remove_psd,
-                'interactive' => (bool)$interactive,
+                'interactive' => (int)$interactive,
             ),
             true
         );
@@ -171,8 +167,6 @@ class PSDController extends DefaultController
 
     public function actionUnlockPSD()
     {
-        $data = \Yii::app()->request->getParam('Assignment', array());
-        $patient_id = array_key_exists('patient_id', $data) ? $data['patient_id'] : null;
         $step_id = \Yii::app()->request->getParam('step_id', null);
         $step_type_id = \Yii::app()->request->getParam('step_type_id', null);
         $visit_id = \Yii::app()->request->getParam('visit_id', null);
@@ -184,7 +178,7 @@ class PSDController extends DefaultController
             $wl_patient->pathway->save();
         }
 
-        $this->actionGetPathStep(0, $step_id, $visit_id, $step_type_id, $patient_id, 1);
+        $this->actionGetPathStep(0, $step_id, $visit_id, $step_type_id, 1);
     }
 
     /**
@@ -215,6 +209,6 @@ class PSDController extends DefaultController
             'step_progress',
             ['step' => $step, 'assignment' => $assignment_data, 'assignment_id' => $assignment_id, 'patient_id' => $patient_id]
         );
-        $this->actionGetPathStep(0, $step_id, $visit_id, $step_type_id, $patient_id, 0);
+        $this->actionGetPathStep(0, $step_id, $visit_id, $step_type_id, 0);
     }
 }

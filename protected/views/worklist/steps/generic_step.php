@@ -121,6 +121,30 @@ if ($is_step_instance) {
                         </tr>
                     </table>
                 <?php }
+                elseif ($step->step_type->short_name === 'drug admin') {
+                    $preset = OphDrPGDPSD_PGDPSD::model()->findByPk($step->getState('preset_id'));
+                    $laterality = $step->getState('laterality');
+                    ?>
+                    <table>
+                        <tr>
+                            <th>PGD Preset</th>
+                            <td><?= $preset->name ?></td>
+                        </tr>
+                        <tr>
+                            <th>Laterality</th>
+                            <td>
+                                <span class="oe-eye-lat-icons">
+                                <?php if ($laterality & Eye::RIGHT) { ?>
+                                    <i class="oe-i laterality R medium pad"></i>
+                                <?php } ?>
+                                <?php if ($laterality & Eye::LEFT) { ?>
+                                    <i class="oe-i laterality L medium pad"></i>
+                                <?php } ?>
+                                </span>
+                            </td>
+                        </tr>
+                    </table>
+                <?php }
             } ?>
         </div>
         <div class="step-comments">
