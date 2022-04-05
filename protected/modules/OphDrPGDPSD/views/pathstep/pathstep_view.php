@@ -144,7 +144,9 @@ if ($is_step_instance) {
                     <input class="user-pin-entry" name="pincode" type="password" maxlength="6" minlength="6" inputmode="numeric" placeholder="*******">
                     <button type="submit" class="try-pin js-unlock" data-action="unlock_da" disabled>Unlock</button>
                 </div>
-                <button class="js-remove-assignment blue hint" <?=$can_remove_psd?> data-action="remove">Remove PSD</button>
+                <button class="blue i-btn left hint js-ps-popup-btn" data-action="left"></button>
+                <button class="blue i-btn right hint js-ps-popup-btn" data-action="right"></button>
+                <button class="red i-btn trash hint js-ps-popup-btn" data-action="remove"></button>
                 <?php } ?>
             <?php } ?>
         </div>
