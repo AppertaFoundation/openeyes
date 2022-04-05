@@ -63,7 +63,7 @@
         </ul>
         <div class="change-subspecialty">
           <h6>Add New Subspecialty</h6>
-          <select class="new-subspecialty">
+          <select class="new-subspecialty cols-10">
             <option value="">Select</option>
             {{#selectableSubspecialties}}
             <option value="{{id}}">{{name}} ({{shortName}})</option>
