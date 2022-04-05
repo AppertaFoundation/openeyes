@@ -1,8 +1,6 @@
 // avoid progressing timer step status multiple times from different pages
 window.timer_status_request = window.timer_status_request || {};
 $(function () {
-    // Worklist Filter is not required when pathway is added through patient overview page
-    let worklistFiltersController = null;
     // setup the node to observe
     const targetNode = document.querySelector('main, .clinic-pathway');
     const config = { childList: true, subtree: true,};
@@ -529,10 +527,12 @@ $(function () {
     };
 
     let updatePathwayTr = function($tr, response, static_status = null, ps = null){
+        const old_status = $tr.attr('data-status');
         const pathway_status = response.status || response.pathway_status;
         let status = static_status ? static_status : pathway_status;
         $tr.attr('class', '');
         $tr.addClass(status);
+        $tr.attr('data-status', status)
         $tr.find('.js-pathway-container').html(response.step_html);
         $tr.find('.js-pathway-status').html(response.status_html);
         if(response.waiting_time_html){
@@ -549,6 +549,11 @@ $(function () {
         if(ps){
             ps.closePopup();
         }
+
+        // This really should be threaded in elsewhere but this may entail restructuring
+        if (typeof worklistFiltersController !== 'undefined' && worklistFiltersController) {
+            worklistFiltersController.updateCountsOnChange('change-pathway-status', { oldStatus: old_status, newStatus: status });
+        }
     };
 
     let collectActiveTodoStepsFrom = function (row) {
@@ -557,7 +562,7 @@ $(function () {
 
     let refreshStatistics = function (pathwayId, oldSteps, newSteps) {
         // This really should be threaded in elsewhere but this may entail restructuring
-        if (worklistFiltersController) {
+        if (typeof worklistFiltersController !== 'undefined' && worklistFiltersController) {
             worklistFiltersController.updateCountsOnChange('change-waiting-for', { pathwayId: pathwayId, oldSteps: oldSteps, newSteps: newSteps });
         }
     };
@@ -781,6 +786,7 @@ $(function () {
                         const newSteps = collectActiveTodoStepsFrom($thisStep.closest('td.js-pathway-container'));
 
                         refreshStatistics(ps.visitID, oldSteps, newSteps);
+                        updatePathwayTr($(`tr#js-pathway-${ps.visitID}`), response);
 
                         ps.resetPopup();
                         ps.requestDetails({
@@ -815,6 +821,7 @@ $(function () {
                         const newSteps = collectActiveTodoStepsFrom($thisStep.closest('td.js-pathway-container'));
 
                         refreshStatistics(ps.visitID, oldSteps, newSteps);
+                        updatePathwayTr($(`tr#js-pathway-${ps.visitID}`), response);
 
                         ps.resetPopup();
                         ps.requestDetails({
@@ -943,7 +950,7 @@ $(function () {
                     },
                     success: function (response) {
                         // This is a check-in step so it is already in the correct position.
-                        const $tr = $(`tr#js-pathway-${response.pathway_id}`);
+                        const $tr = $(`tr#js-pathway-${ps.visitID}`);
                         updatePathwayTr($tr, response, 'later', ps);
 
                         // This is a check-in step so it is already in the correct position.

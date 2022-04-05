@@ -616,6 +616,16 @@ var OpenEyes = OpenEyes || {};
                 this.options.removeRow(details.pathwayId);
             }
             break;
+
+        case 'change-pathway-status':
+            const from = typeof details.oldStatus === 'undefined' ? 'later' : details.oldStatus;
+            const to = typeof details.newStatus === 'undefined' ? 'later' : details.newStatus;
+
+            if (this.quickView && from !== to) {
+                this.quickView.changeStatusTypeCount(from, -1);
+                this.quickView.changeStatusTypeCount(to, 1);
+            }
+            break;
         }
     };
 

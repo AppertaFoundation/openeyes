@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2017, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <?php
 /**
@@ -61,17 +63,17 @@
         </ul>
         <div class="change-subspecialty">
           <h6>Add New Subspecialty</h6>
-          <select class="new-subspecialty">
-            <option value="">Select</option>
+          <select class="new-subspecialty cols-10">
+            <option value="">Select Subspecialty</option>
             {{#selectableSubspecialties}}
             <option value="{{id}}">{{name}} ({{shortName}})</option>
             {{/selectableSubspecialties}}
           </select>
 
-          <h6 style="margin-top:5px"><?= Firm::serviceLabel() ?></h6>
-          <div class="no-subspecialty"><h6>Select Subspecialty</h6></div>
-          <div class="fixed-service" style="display: none;"></div>
-          <select class="select-service cols-10" style="display: none;">
+          <!-- <h6 style="margin-top:5px"><?= Firm::serviceLabel() ?></h6> -->
+          <!-- <div class="no-subspecialty">&nbsp;</div> -->
+          <div class="fixed-service cols-10">&nbsp;</div>
+          <select class="select-service cols-10" style="display: none;" data-service-firm-label="<?= Firm::serviceLabel() ?>">
           </select>
 
           <button class="add-subspecialty-btn button hint green" id="js-add-subspecialty-btn"><i class="oe-i plus"></i></button>
@@ -147,7 +149,7 @@
         $(document).on('click', '<?= $button_selector ?>', function () {
             newEventDialog = new OpenEyes.UI.Dialog.NewEvent({
                 id: 'add-new-event-dialog',
-                    class: 'oe-create-event-popup',
+                    class: 'oe-create-event-popup oe-popup',
                 viewSubspecialtyId: <?= @$view_subspecialty ? $view_subspecialty->id : 'undefined' ?>,
                 patientId: <?= $patient_id ?>,
                 userSubspecialtyId: '<?= $context_firm->getSubspecialtyID() ?: 'SS'; ?>',

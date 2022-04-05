@@ -65,7 +65,7 @@
                 url: this.options.base_url + 'worklist/assignUserToPathway',
                 data: {
                     user_id: $(e.target).data('id'),
-                    target_pathway_id: pathway_id,
+                    target_visit_id: pathway_id,
                     YII_CSRF_TOKEN: YII_CSRF_TOKEN,
                 },
                 type: 'POST',
