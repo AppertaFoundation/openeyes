@@ -15,7 +15,7 @@ $elementset = \OEModule\OphCiExamination\models\OphCiExamination_ElementSet::mod
 // in the Worklist controller.
 $episode = null;
 
-if (!$service_firm && $subspecialty) {
+if (!$service_firm && $subspecialty && isset($patient)) {
     $episode = $patient->getOpenEpisodeOfSubspecialty($subspecialty->id);
 
     $service_firm = $episode

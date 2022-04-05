@@ -795,7 +795,7 @@ class WorklistController extends BaseAdminController
     public function actionAddStepToPathway()
     {
         $id = Yii::app()->request->getPost('id');
-        $pathway_id = Yii::app()->request->getPost('pathway_id');
+        $pathway_id = Yii::app()->request->getPost('visit_id');
         $position = Yii::app()->request->getPost('position');
         $step_data = Yii::app()->request->getPost('step_data') ?: array();
 
@@ -898,20 +898,9 @@ class WorklistController extends BaseAdminController
      * @throws CException
      * @throws CHttpException
      */
-    public function actionGetPathStep($partial, $pathstep_id, $pathstep_type_id)
+    public function actionGetPathStep($partial, $pathstep_id)
     {
         $step = PathwayTypeStep::model()->findByPk($pathstep_id);
-
-        if (!$step) {
-            $step = PathwayTypeStep::model()->findByPk($pathstep_type_id);
-        }
-
-        if ($step && $step->step_type->short_name === 'drug admin') {
-            $this->redirect(
-                "/OphDrPGDPSD/PSD/getPathStep?partial=$partial&pathstep_id=$pathstep_id&pathstep_type_id=$pathstep_type_id&interactive=1"
-            );
-            Yii::app()->end();
-        }
 
         if ($step) {
             $view_file = $step->step_type->widget_view ?? 'generic_step';
