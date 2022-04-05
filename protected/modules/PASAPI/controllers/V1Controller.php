@@ -29,6 +29,7 @@ use UserIdentity;
 class V1Controller extends \CController
 {
     protected static $resources = array('Patient', 'PatientAppointment', 'PatientMerge');
+    protected static $create_only_resources = ['DidNotAttend'];
     protected static $version = 'V1';
     protected static $supported_formats = array('xml');
 
@@ -71,6 +72,17 @@ class V1Controller extends \CController
                     break;
                 case 'DELETE':
                     return parent::createAction('Delete');
+                    break;
+                default:
+                    $this->sendResponse(405);
+                    break;
+            }
+        }
+        if (in_array($actionID, static::$create_only_resources)) {
+            $_GET['resource_type'] = $actionID;
+            switch (\Yii::app()->getRequest()->getRequestType()) {
+                case 'PUT':
+                    return parent::createAction('Create');
                     break;
                 default:
                     $this->sendResponse(405);
@@ -133,6 +145,7 @@ class V1Controller extends \CController
         return array(
             'update' => 'id',
             'delete' => 'id',
+            'create' => null,
         )[strtolower($action->id)];
     }
 
@@ -178,6 +191,50 @@ class V1Controller extends \CController
         }
 
         return (bool)$_SERVER[static::$PARTIAL_RECORD_HEADER];
+    }
+
+    /**
+     * @param $resource_type
+     */
+    public function actionCreate($resource_type)
+    {
+        $resource_model = $this->getResourceModel($resource_type);
+        $body = \Yii::app()->request->rawBody;
+
+        try {
+            $resource = $resource_model::fromXml(static::$version, $body, array(
+                'update_only' => false, // Always new
+                'partial_record' => false,
+            ));
+
+            if (!$resource->isEnabled()) {
+                $response['Message'] = "$resource_type not created as it is disabled in the admin settings.";
+
+                $this->sendSuccessResponse(200, $response);
+                return;
+            }
+
+            if (!$id = $resource->save()) {
+                if ($resource->errors) {
+                    $this->sendErrorResponse(400, $resource->errors);
+                    return;
+                }
+                $this->sendErrorResponse(400, "Failed to create $resource_type.");
+                return;
+            }
+
+            if ($resource->warnings) {
+                $response['Warnings'] = $resource->warnings;
+            }
+            $response['Id'] = $id;
+            $response['Message'] = "Successfully created $resource_type.";
+            $this->sendSuccessResponse(201, $response);
+        } catch (\Exception $e) {
+            $errors = $resource->errors ?? [];
+            $errors[] = $e->getMessage();
+
+            $this->sendErrorResponse(500, $errors);
+        }
     }
 
     /**
