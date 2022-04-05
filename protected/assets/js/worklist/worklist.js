@@ -312,6 +312,18 @@ $(function () {
         let form = $('form#worklist-administration-form');
         ps.resetPopup();
         ps.administer_ready = true;
+        let $step = $('.oe-pathstep-btn[data-pathstep-id="' + ps.pathstepId + '"]');
+        let $type_step = $('.oe-pathstep-btn[data-pathstep-type-id="' + ps.pathstepTypeId + '"][data-visit-id="' + ps.visitID + '"]');
+        if ($step) {
+            $step.removeClass('todo-next');
+            $step.removeClass('todo');
+            $step.addClass('active');
+        } else {
+            $type_step.removeClass('todo-next');
+            $type_step.removeClass('todo');
+            $type_step.addClass('active');
+        }
+
         ps.requestDetails(form.serialize(), '/OphDrPGDPSD/PSD/unlockPSD', 'POST');
     };
     let administerMeds = function (event, context, ps) {

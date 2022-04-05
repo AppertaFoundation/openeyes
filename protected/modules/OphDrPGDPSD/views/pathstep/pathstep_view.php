@@ -5,7 +5,7 @@
  * @var $visit WorklistPatient
  * @var $partial bool
  * @var $assignment OphDrPGDPSD_Assignment
- * @var $interactive bool
+ * @var $interactive int
  * @var $for_administer bool
  */
 $is_step_instance = $step instanceof PathwayStep;
@@ -19,6 +19,8 @@ if ($is_step_instance) {
     $has_event = false;
     $index = 0;
     $patient_name = $assignment->patient ? $assignment->patient->getHSCICName() : null;
+} else {
+    $is_assignment_complete = false;
 }
 ?>
 <div class="slide-open" data-status-dict='<?=$assignment->getStatusDetails(true)?>'>
@@ -27,7 +29,7 @@ if ($is_step_instance) {
             <div class="patient"><?=$patient_name?></div>
         <?php } ?>
         <h3 class="title"><?=$assignment->getAssignmentTypeAndName()['name']?></h3>
-        <?php if (isset($worklist_patient)) { ?>
+        <?php if (isset($visit)) { ?>
             <input type="hidden" class="no-clear" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
             <input type="hidden" name="step_id" value="<?= $is_step_instance ? $step->id : null?>"/>
             <input type="hidden" name="step_type_id" value="<?= !$is_step_instance ? $step->id : null ?>"/>
@@ -133,9 +135,9 @@ if ($is_step_instance) {
             </table>
         </div>
 
-        <?php if (!$partial && (!$is_step_instance || (!$is_assignment_complete && $interactive))) {?>
+        <?php if (!$partial && !$is_assignment_complete && $interactive) {?>
         <div class="step-actions">
-            <?php if (isset($worklist_patient)) { ?>
+            <?php if (isset($visit)) { ?>
                 <?php if ($for_administer) {?>
                     <button class="green hint js-confirm-admin" data-action="confirm_da">Confirm Administration</button>
                     <button class="blue hint js-cancel-admin" data-action="cancel_da">Cancel</button>
