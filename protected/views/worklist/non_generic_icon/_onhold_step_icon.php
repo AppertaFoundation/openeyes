@@ -22,7 +22,7 @@ $type = $step instanceof PathwayStep ? $step->type->type : $step->step_type->typ
     data-patient-id="<?= $visit->patient_id ?>"
     data-visit-id="<?= $visit->id ?>"
     data-pathway-id="<?= $visit->pathway->id ?? null ?>"
-    data-timestamp-start="<?=strtotime($step->start_time)?>"
+    data-timestamp-start="<?= $step instanceof PathwayStep ? strtotime($step->start_time) : null ?>"
     data-step-data='<?=json_encode($step->toJSON())?>'
 >
     <span class="step<?= $icon ? " {$icon}" : '' ?>">

@@ -150,7 +150,7 @@ $pathway = $visit->pathway;
         foreach ($visit->worklist->worklist_definition->pathway_type->default_steps as $step) {
             $status_class = $step->getStatusString(); ?>
             <?php if (in_array($step->step_type->short_name, PathwayStep::NON_GENERIC_STEP)) {
-                $short_name = str_replace(' ', '_', $step->type->short_name);
+                $short_name = str_replace(' ', '_', $step->step_type->short_name);
                 $view_file = "_{$short_name}_step_icon";
                 $this->renderPartial(
                     "//worklist/non_generic_icon/$view_file",
