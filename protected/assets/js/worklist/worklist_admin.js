@@ -64,11 +64,7 @@ $(function () {
                 $.ajax({
                     url: '/Admin/worklist/reorderStep',
                     type: 'POST',
-                    data: {
-                        step_id: ps.pathstepId,
-                        direction: action,
-                        YII_CSRF_TOKEN: YII_CSRF_TOKEN
-                    },
+                    data: data,
                     success: function () {
                         // Swap the step with the step either in front or behind it (depending on the action).
                         let $current_step = $('.oe-pathstep-btn[data-pathstep-type-id="' + ps.pathstepTypeId + '"]');
