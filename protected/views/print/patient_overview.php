@@ -21,7 +21,7 @@
     <tbody><tr>
         <th>Patient Name</th>
         <td><?php echo $this->patient->contact->fullName?></td>
-        <th>Hospital Number</th>
+        <th><?php echo \SettingMetadata::model()->getSetting('hos_num_label')?></th>
         <td><?php echo $this->patient->hos_num ?></td>
     </tr>
     <tr>

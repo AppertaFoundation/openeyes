@@ -67,7 +67,7 @@ if (isset($element->authorisedByUser)) {
         <tr>
             <th>Patient Name</th>
             <td><?= $this->patient->fullname ?> (<?= $this->patient->gender ?>)</td>
-            <th>Hospital Number</th>
+            <th><?php echo \SettingMetadata::model()->getSetting('hos_num_label')?></th>
             <td><?= $this->patient->hos_num ?></td>
         </tr>
         <tr>
@@ -137,7 +137,7 @@ if (isset($element->authorisedByUser)) {
                 <td><?=is_numeric($item->dose) ? ($item->dose . " " . $item->dose_unit_term) : $item->dose ?></td>
                 <td><?=$item->route->term ?><?php if ($item->laterality) {
                         echo ' (' . $item->medicationLaterality->name . ')';
-                            } ?></td>
+                    } ?></td>
                 <td><?=$item->frequency->term; ?></td>
                 <td><?=$item->medicationDuration->name ?></td>
                         <?php if (strpos($group_name, 'Hospital') !== false) { ?>
