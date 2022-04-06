@@ -108,6 +108,7 @@ class CreatePatientTicketForExamsCommand extends CConsoleCommand
                 ->join("patient p", "p.id = ep.patient_id")
                 ->where("ev.event_type_id = :event_type_id", array(":event_type_id" => $event_type_id))
                 ->andWhere("ev.deleted = 0")
+                ->andWhere("ep.change_tracker != 1")
                 ->andWhere("NOT EXISTS ( 
                         SELECT tck.id FROM patientticketing_ticket tck
                         WHERE tck.event_id = ev.id
