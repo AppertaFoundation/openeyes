@@ -30,6 +30,7 @@ class PathstepObserver
      * @param int $patient_id
      * @param bool $include_active_steps
      * @return PathwayStep|null
+     * @throws JsonException
      */
     protected function getUnassociatedStepForEvent(
         EventType $event_type,
@@ -55,6 +56,10 @@ class PathstepObserver
          * @var $worklist_patient WorklistPatient
          */
         if ($worklist_patient) {
+            if (!$worklist_patient->pathway) {
+                $worklist_patient->worklist->worklist_definition->pathway_type->instancePathway($worklist_patient);
+                $worklist_patient->refresh();
+            }
             $criteria->compare('pathway_id', $worklist_patient->pathway->id);
             $criteria->addCondition("status IS NULL OR status IN ($status_list)");
             $criteria->addCondition('JSON_CONTAINS(state_data, \'"'.$event_type->class_name.'"\', \'$.event_type\')');
