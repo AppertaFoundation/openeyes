@@ -287,13 +287,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         }
     };
 
-    DiagnosesController.prototype.setCurrentTime = function () {
-        let date = new Date();
-        let hours = date.getHours();
-        let minutes = ('0' + date.getMinutes()).slice(-2); // This handles instances where the minute value is <10 as a leading 0 is required.
-        return hours + ':' + minutes;
-    };
-
     DiagnosesController.prototype.getEyeIdFromRow = function ($row) {
         let eye_id = $row.find('.js-left-eye').is(':checked') ? 1 : 0;
         eye_id += $row.find('.js-right-eye').is(':checked') ? 2 : 0;

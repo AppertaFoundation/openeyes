@@ -238,7 +238,6 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
                 $cd->eye_id = $disorder_to_update[$cd->id]['eye_id'];
                 $cd->principal = $disorder_to_update[$cd->id]['principal'];
                 $cd->date = $disorder_to_update[$cd->id]['date'];
-                $cd->time = $disorder_to_update[$cd->id]['time'];
                 if (!$cd->save()) {
                     throw new \Exception('save failed' . print_r($cd->getErrors(), true));
                 }
@@ -265,7 +264,6 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
                 $new_diagnosis->disorder_id = $new_disorder['disorder_id'];
                 $new_diagnosis->eye_id = $new_disorder['eye_id'];
                 $new_diagnosis->date = $new_disorder['date'];
-                $new_diagnosis->time = $new_disorder['time'];
                 $new_diagnosis->principal = $new_disorder['principal'];
                 if (!$new_diagnosis->save()) {
                     throw new \Exception('Unable to save old secondary disorder');
@@ -284,7 +282,7 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
 
             foreach ($added_diagnoses as $diagnosis) {
                 if ($diagnosis->principal) {
-                    $this->event->episode->setPrincipalDiagnosis($diagnosis->disorder_id, $diagnosis->eye_id, $diagnosis->date, $diagnosis->time);
+                    $this->event->episode->setPrincipalDiagnosis($diagnosis->disorder_id, $diagnosis->eye_id, $diagnosis->date);
                 } else {
                     $this->event->episode->patient->addDiagnosis(
                         $diagnosis->disorder_id,
