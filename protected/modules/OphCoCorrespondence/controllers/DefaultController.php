@@ -1383,7 +1383,7 @@ class DefaultController extends BaseEventTypeController
         $letter = ElementLetter::model()->find('event_id=?', array($event->id));
 
         $recipient = Yii::app()->request->getParam('recipient');
-        $auto_print = Yii::app()->request->getParam('auto_print', false);
+        $auto_print = Yii::app()->request->getParam('auto_print', true);
         $is_view = Yii::app()->request->getParam('is_view', false);
         $inject_autoprint_js = $auto_print === '0' ? false : $auto_print;
 
