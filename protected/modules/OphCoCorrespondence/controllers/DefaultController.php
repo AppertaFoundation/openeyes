@@ -974,7 +974,7 @@ class DefaultController extends BaseEventTypeController
                         'condition' => 'ToCc = "To"',
                     )
                 )
-            )->findAll('output_type="Print" and output_status="DRAFT"');
+            )->findAll('output_type="Print"');
 
             if (count($documentOutput) >= 1) {
                 $return = true;
