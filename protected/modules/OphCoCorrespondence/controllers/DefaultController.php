@@ -960,6 +960,7 @@ class DefaultController extends BaseEventTypeController
      */
     public function actionGetDraftPrintRecipients($id)
     {
+        $return = false;
         $letter = ElementLetter::model()->find('event_id=?', array($id));
         if (!$letter->draft) {
             $return = true;
