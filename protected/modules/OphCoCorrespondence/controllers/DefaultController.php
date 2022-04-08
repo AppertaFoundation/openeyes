@@ -960,7 +960,12 @@ class DefaultController extends BaseEventTypeController
      */
     public function actionGetDraftPrintRecipients($id)
     {
-        $return = false;
+        $letter = ElementLetter::model()->find('event_id=?', array($id));
+        if (!$letter->draft) {
+            $return = true;
+        } else {
+            $return = false;
+        }
 
         if(SettingMetadata::checkSetting('disable_draft_auto_print', 'off')) {
             $documentOutput = DocumentOutput::model()->with(
@@ -968,9 +973,10 @@ class DefaultController extends BaseEventTypeController
                     'document_target' => array(
                         'with' => array(
                             'document_instance' => array(
-                                'condition' => 'correspondence_event_id=' . $id
+                                'condition' => 'correspondence_event_id=' . $id,
                             )
-                        )
+                        ),
+                        'condition' => 'ToCc = "To"',
                     )
                 )
             )->findAll('output_type="Print" and output_status="DRAFT"');
@@ -1379,9 +1385,6 @@ class DefaultController extends BaseEventTypeController
 
         $recipient = Yii::app()->request->getParam('recipient');
         $auto_print = Yii::app()->request->getParam('auto_print', false);
-        if ($letter->draft != 1 && (isset($letter->getOutputByType("Print")[0]) && $letter->getOutputByType("Print")[0]->document_target->ToCc == "To")) {
-            $auto_print = Yii::app()->request->getParam('auto_print', true);
-        }
         $is_view = Yii::app()->request->getParam('is_view', false);
         $inject_autoprint_js = $auto_print === '0' ? false : $auto_print;
 
