@@ -963,25 +963,25 @@ class DefaultController extends BaseEventTypeController
         $return = false;
         $letter = ElementLetter::model()->find('event_id=?', array($id));
         if (!$letter->draft) {
-            $return = true;
+            $documentOutput = DocumentOutput::model()->with(
+                array(
+                    'document_target' => array(
+                        'with' => array(
+                            'document_instance' => array(
+                                'condition' => 'correspondence_event_id=' . $id,
+                            )
+                        ),
+                        'condition' => 'ToCc = "To"',
+                    )
+                )
+            )->findAll('output_type="Print" and output_status="DRAFT"');
+
+            if (count($documentOutput) >= 1) {
+                $return = true;
+            }
         } else {
             if(SettingMetadata::checkSetting('disable_draft_auto_print', 'off')) {
-                $documentOutput = DocumentOutput::model()->with(
-                    array(
-                        'document_target' => array(
-                            'with' => array(
-                                'document_instance' => array(
-                                    'condition' => 'correspondence_event_id=' . $id,
-                                )
-                            ),
-                            'condition' => 'ToCc = "To"',
-                        )
-                    )
-                )->findAll('output_type="Print" and output_status="DRAFT"');
-
-                if (count($documentOutput) >= 1) {
-                    $return = true;
-                }
+                $return = true;
             }
         }
 
