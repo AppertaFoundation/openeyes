@@ -964,25 +964,23 @@ class DefaultController extends BaseEventTypeController
         if (!$letter->draft) {
             $return = true;
         } else {
-            $return = false;
-        }
-
-        if(SettingMetadata::checkSetting('disable_draft_auto_print', 'off')) {
-            $documentOutput = DocumentOutput::model()->with(
-                array(
-                    'document_target' => array(
-                        'with' => array(
-                            'document_instance' => array(
-                                'condition' => 'correspondence_event_id=' . $id,
-                            )
-                        ),
-                        'condition' => 'ToCc = "To"',
+            if(SettingMetadata::checkSetting('disable_draft_auto_print', 'off')) {
+                $documentOutput = DocumentOutput::model()->with(
+                    array(
+                        'document_target' => array(
+                            'with' => array(
+                                'document_instance' => array(
+                                    'condition' => 'correspondence_event_id=' . $id,
+                                )
+                            ),
+                            'condition' => 'ToCc = "To"',
+                        )
                     )
-                )
-            )->findAll('output_type="Print" and output_status="DRAFT"');
+                )->findAll('output_type="Print" and output_status="DRAFT"');
 
-            if (count($documentOutput) >= 1) {
-                $return = true;
+                if (count($documentOutput) >= 1) {
+                    $return = true;
+                }
             }
         }
 
