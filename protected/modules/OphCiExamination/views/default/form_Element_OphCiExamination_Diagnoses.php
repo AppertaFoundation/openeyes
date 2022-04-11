@@ -83,7 +83,6 @@ foreach ($this->patient->episodes as $ep) {
                 <col class="cols-2">
                 <col class="cols-3">
                 <col class="cols-1">
-                <col class="cols-1">
             </colgroup>
             <thead>
                 <tr>
@@ -91,7 +90,6 @@ foreach ($this->patient->episodes as $ep) {
                     <th>Side</th>
                     <th>Principal</th>
                     <th>Date</th>
-                    <th>Time</th>
                     <th></th>
                 </tr>
             </thead>
@@ -161,7 +159,6 @@ foreach ($this->patient->episodes as $ep) {
                     'event_date' => '{{event_date}}',
                     'is_glaucoma' => '{{is_glaucoma}}',
                     'date' => '{{date}}',
-                    'time' => '{{time}}',
                     'date_display' => '{{date_display}}',
                     'row_count' => '{{row_count}}',
                     'is_principal' => '{{is_principal}}',

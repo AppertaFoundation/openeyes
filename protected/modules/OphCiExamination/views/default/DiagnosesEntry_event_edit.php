@@ -26,7 +26,6 @@ if (!isset($values)) {
         'is_glaucoma' => isset($diagnosis->disorder)? (strpos(strtolower($diagnosis->disorder->term), 'glaucoma')) !== false : false,
         'eye_id' => $diagnosis->eye_id,
         'date' => $diagnosis->date,
-        'time' => $diagnosis->time,
         'date_display' => \Helper::formatFuzzyDate($diagnosis->date),
         'is_principal' => $diagnosis->principal
     );
@@ -98,12 +97,6 @@ if (!isset($values['date']) || !strtotime($values['date'])) {
              data-tooltip-content="You can enter date format as yyyy-mm-dd, or yyyy-mm or yyyy.">
           </i>
 
-    </td>
-    <td>
-        <input class="fixed-width-medium"
-               type="time"
-               name="<?= $field_prefix ?>[time]"
-               value="<?= $values['time'] ?>"/>
     </td>
     <td class="edit-column">
         <?php if ($removable) : ?>
