@@ -289,7 +289,7 @@ class WorklistController extends BaseAdminController
     public function actionCustomPathSteps()
     {
         $this->render('custom_pathsteps', [
-            'custom_pathsteps' => PathwayStepType::getCustomTypes(),
+            'custom_pathsteps' => PathwayStepType::getCustomTypes($this->checkAccess('admin')),
         ]);
     }
 
@@ -690,7 +690,7 @@ class WorklistController extends BaseAdminController
             'path_step_type_ids' => $path_step_type_ids,
             'path_steps' => PathwayStepType::getPathTypes(),
             'standard_steps' => PathwayStepType::getStandardTypes(),
-            'custom_steps' => PathwayStepType::getCustomTypes(),
+            'custom_steps' => PathwayStepType::getCustomTypes($this->checkAccess('admin')),
         ));
     }
 
@@ -846,6 +846,54 @@ class WorklistController extends BaseAdminController
                 $users
             )
         );
+    }
+
+    public function actionAddStepInstitutionMapping()
+    {
+        $ids = Yii::app()->request->getPost('select');
+        $instances = PathwayStepType::model()->findAllByPk($ids);
+        $institution_id = Institution::model()->getCurrent()->id;
+        $errors = array();
+        $status = 1;
+
+        /**
+         * @var $instances MappedReferenceData[]|PathwayStepType[]
+         */
+        foreach ($instances as $instance) {
+            if (!$instance->createMapping(ReferenceData::LEVEL_INSTITUTION, $institution_id)) {
+                $errors[] = $instance->getErrors();
+            }
+        }
+
+        if (!empty($errors)) {
+            $status = 0;
+        }
+        $this->redirect('/Admin/worklist/customPathSteps');
+    }
+
+    public function actionDeleteStepInstitutionMapping()
+    {
+        $ids = $_POST['select'];
+
+        $instances = PathwayStepType::model()->findAllByPk($ids);
+        $institution_id = Institution::model()->getCurrent()->id;
+        $errors = array();
+        $status = 1;
+
+        /**
+         * @var $instances MappedReferenceData[]|PathwayStepType[]
+         */
+        foreach ($instances as $instance) {
+            if (!$instance->deleteMapping(ReferenceData::LEVEL_INSTITUTION, $institution_id)) {
+                $errors[] = $instance->getErrors();
+            }
+        }
+
+        if (!empty($errors)) {
+            $status = 0;
+        }
+
+        $this->redirect('/Admin/worklist/customPathSteps');
     }
 
     /**

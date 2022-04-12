@@ -6,19 +6,27 @@ class SetupPathwayStepPickerBehavior extends CBehavior
             Yii::app()->session['selected_institution_id'],
             null
         );
-        $custom_booking_steps = PathwayStepTypePresetAssignment::model()->findAll('preset_short_name = "Book Apt."');
+        $custom_booking_step_sql = Yii::app()->db->createCommand()
+            ->select('pstpa.custom_pathway_step_type_id, pstpa.site_id, pstpa.subspecialty_id, pstpa.firm_id, pstpa.preset_id')
+            ->from('pathway_step_type_preset_assignment pstpa')
+            ->join('pathway_step_type pst', 'pst.id = pstpa.custom_pathway_step_type_id')
+            ->join('pathway_step_type_institution psti', 'psti.pathway_step_type_id = pst.id')
+            ->where('pstpa.preset_short_name = "Book Apt." AND psti.institution_id = :institution_id')
+            ->group('pstpa.custom_pathway_step_type_id, pstpa.site_id, pstpa.subspecialty_id, pstpa.firm_id, pstpa.preset_id')
+            ->bindValue(':institution_id', Yii::app()->session['selected_institution_id'])
+            ->queryAll();
         $custom_booking_steps = array_map(
             static function ($item) {
                 return [
-                    'id' => $item->custom_pathway_step_type_id,
-                    'site_id' => $item->site_id,
-                    'subspecialty_id' => $item->subspecialty_id,
-                    'firm_id' => $item->firm_id,
-                    'duration_value' => $item->preset_id%100,
-                    'duration_period' => $item->preset_id ? PathwayStepTypePresetAssignment::$duration_period[$item->preset_id/100] : null,
+                    'id' => $item['custom_pathway_step_type_id'],
+                    'site_id' => $item['site_id'],
+                    'subspecialty_id' => $item['subspecialty_id'],
+                    'firm_id' => $item['firm_id'],
+                    'duration_value' => ((int)$item['preset_id'])%100,
+                    'duration_period' => $item['preset_id'] ? PathwayStepTypePresetAssignment::$duration_period[((int)$item['preset_id'])/100] : null,
                 ];
             },
-            $custom_booking_steps
+            $custom_booking_step_sql
         );
         $preset_criteria = new CDbCriteria();
         $preset_criteria->compare('LOWER(type)', 'psd');

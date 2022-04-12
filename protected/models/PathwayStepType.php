@@ -87,6 +87,7 @@ class PathwayStepType extends BaseActiveRecordVersioned
             'custom_pathway_step_type' => array(self::HAS_ONE, 'PathwayStepTypePresetAssignment', 'id'),
             'standard_pathway_step_type' => array(self::HAS_ONE, 'PathwayStepTypePresetAssignment', 'id'),
             'institutions' => array(self::MANY_MANY, 'Institution', 'pathway_step_type_institution(pathway_step_type_id, institution_id)'),
+            'pathway_step_type_institutions' => array(self::HAS_MANY, 'PathwayStepType_Institution', 'pathway_step_type_id'),
         );
     }
 
@@ -174,13 +175,16 @@ class PathwayStepType extends BaseActiveRecordVersioned
     /**
      * @return array|CActiveRecord|mixed|PathwayStepType[]|null
      */
-    public static function getCustomTypes()
+    public static function getCustomTypes($is_admin = false)
     {
         $criteria = self::basePathTypeCriteria();
         $criteria->addCondition('`group` IS NULL');
-        $criteria->with = ['institutions'];
-        $criteria->addCondition('institutions_institutions.institution_id = :institution_id');
-        $criteria->params[':institution_id'] = Yii::app()->session['selected_institution_id'];
+        if (!$is_admin) {
+            $criteria->with = ['institutions'];
+            $criteria->addCondition('institutions_institutions.institution_id = :institution_id');
+            $criteria->params[':institution_id'] = Yii::app()->session['selected_institution_id'];
+        }
+
         return self::model()->findAll($criteria);
     }
 

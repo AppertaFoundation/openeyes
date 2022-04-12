@@ -523,7 +523,7 @@ class Pathway extends BaseActiveRecordVersioned
     public function getPathwaysJSON($pathways = null)
     {
         if ($pathways === null) {
-            $pathways = PathwayType::model()->findAll();
+            $pathways = PathwayType::model()->findAll('institution_id IS NULL or institution_id = :id', [':id' => Yii::app()->session['selected_institution_id']]);
         }
         $pathway_json = json_encode(
             array_map(
