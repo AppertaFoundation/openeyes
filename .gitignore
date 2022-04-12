@@ -121,3 +121,4 @@ protected/extensions/yii2-debug
 **/0-a-restore.sql
 buildinfo.txt
 .devcontainer/.env
+.history

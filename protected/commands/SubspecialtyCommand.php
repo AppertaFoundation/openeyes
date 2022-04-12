@@ -3,6 +3,9 @@
 class SubspecialtyCommand extends CConsoleCommand
 {
     /**
+     * Adds a new subspecialty.
+     * Usage Example: yiic subspecialty add --name="Teleophthalmology" --ref_spec="TO"
+     *
      * @param name The name of the subspecialty to add
      * @param ref_spec The 2 letter code used to refrence the subspecialty in, e.g, event lists
      * @param shot_name The short / abbreviated form of the name [Optional - defaults to same as name]
