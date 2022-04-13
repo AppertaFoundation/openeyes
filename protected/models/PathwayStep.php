@@ -9,7 +9,8 @@
  * @property int $step_type_id
  * @property int $started_user_id
  * @property int $completed_user_id
- * @property int $order
+ * @property int $queue_order
+ * @property int $todo_order
  * @property string $short_name
  * @property string $long_name
  * @property string $pincode
@@ -63,8 +64,8 @@ class PathwayStep extends BaseActiveRecordVersioned
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('pathway_id, step_type_id, order, short_name, long_name', 'required'),
-            array('pathway_id, step_type_id, order, status', 'numerical', 'integerOnly' => true),
+            array('pathway_id, step_type_id, todo_order, short_name, long_name', 'required'),
+            array('pathway_id, step_type_id, queue_order, status', 'numerical', 'integerOnly' => true),
             array('started_user_id, completed_user_id, last_modified_user_id, created_user_id, started_user_id, completed_user_id', 'length', 'max' => 10),
             array('short_name', 'length', 'max' => 20),
             array('long_name', 'length', 'max' => 100),
@@ -72,7 +73,7 @@ class PathwayStep extends BaseActiveRecordVersioned
             array('start_time, end_time, last_modified_date, created_date', 'safe'),
             // The following rule is used by search().
             array(
-                'id, pathway_id, step_type_id, owner_id, order, short_name, long_name, pincode, start_time, end_time, status, created_user_id, created_date, started_user_id, completed_user_id',
+                'id, pathway_id, step_type_id, owner_id, queue_order, todo_order, short_name, long_name, pincode, start_time, end_time, status, created_user_id, created_date, started_user_id, completed_user_id',
                 'safe',
                 'on' => 'search'
             ),
@@ -109,7 +110,8 @@ class PathwayStep extends BaseActiveRecordVersioned
             'pathway_id' => 'Pathway',
             'step_type_id' => 'Step Type',
             'owner_id' => 'Owner',
-            'order' => 'Order',
+            'queue_order' => 'Queue Order',
+            'todo_order' => 'Todo Order',
             'short_name' => 'Short Name',
             'long_name' => 'Long Name',
             'pincode' => 'Pincode',
@@ -138,7 +140,8 @@ class PathwayStep extends BaseActiveRecordVersioned
         $criteria->compare('id', $this->id);
         $criteria->compare('pathway_id', $this->pathway_id);
         $criteria->compare('step_type_id', $this->step_type_id);
-        $criteria->compare('order', $this->order);
+        $criteria->compare('queue_order', $this->queue_order);
+        $criteria->compare('todo_order', $this->todo_order);
         $criteria->compare('short_name', $this->short_name, true);
         $criteria->compare('long_name', $this->long_name, true);
         $criteria->compare('pincode', $this->pincode, true);
@@ -227,7 +230,7 @@ class PathwayStep extends BaseActiveRecordVersioned
             if ($this->getState('event_create_url')) {
                 $this->setState('event_create_url', null);
             }
-            $this->pathway->enqueue($this);
+            $this->pathway->dequeue($this);
         } elseif ((int)$this->status === self::STEP_REQUESTED) {
             $this->status = self::STEP_CONFIG;
             $this->save();

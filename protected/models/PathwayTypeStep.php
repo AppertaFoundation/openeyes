@@ -7,7 +7,7 @@
  * @property int $id
  * @property int $pathway_type_id
  * @property int $step_type_id
- * @property int $order
+ * @property int $queue_order
  * @property string $short_name
  * @property string $long_name
  * @property string $default_state_data
@@ -45,15 +45,15 @@ class PathwayTypeStep extends BaseActiveRecordVersioned
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('pathway_type_id, step_type_id, order, short_name, long_name', 'required'),
-            array('pathway_type_id, step_type_id, order, status', 'numerical', 'integerOnly' => true),
+            array('pathway_type_id, step_type_id, queue_order, short_name, long_name', 'required'),
+            array('pathway_type_id, step_type_id, queue_order, status', 'numerical', 'integerOnly' => true),
             array('last_modified_user_id, created_user_id', 'length', 'max' => 10),
             array('short_name', 'length', 'max' => 20),
             array('long_name', 'length', 'max' => 100),
             array('last_modified_date, created_date', 'safe'),
             // The following rule is used by search().
             array(
-                'id, pathway_type_id, step_type_id, order, short_name, long_name, status, created_user_id, created_date',
+                'id, pathway_type_id, step_type_id, queue_order, short_name, long_name, status, created_user_id, created_date',
                 'safe',
                 'on' => 'search'
             ),
@@ -84,7 +84,7 @@ class PathwayTypeStep extends BaseActiveRecordVersioned
             'id' => 'ID',
             'pathway_type_id' => 'Pathway Type',
             'step_type_id' => 'Step Type',
-            'order' => 'Order',
+            'queue_order' => 'Queue Order',
             'short_name' => 'Short Name',
             'long_name' => 'Long Name',
             'status' => 'Status',
@@ -110,7 +110,7 @@ class PathwayTypeStep extends BaseActiveRecordVersioned
         $criteria->compare('id', $this->id);
         $criteria->compare('pathway_type_id', $this->pathway_type_id);
         $criteria->compare('step_type_id', $this->step_type_id);
-        $criteria->compare('order', $this->order);
+        $criteria->compare('queue_order', $this->queue_order);
         $criteria->compare('short_name', $this->short_name, true);
         $criteria->compare('long_name', $this->long_name, true);
         $criteria->compare('status', $this->status);
@@ -235,6 +235,7 @@ class PathwayTypeStep extends BaseActiveRecordVersioned
                 ? $initial_state_data['long_name']
                 : $this->long_name;
             $step->status = $this->status;
+            $step->todo_order = $this->queue_order;
             if (!empty($initial_state_data)) {
                 if ($this->default_state_data) {
                     $template = json_decode($this->default_state_data, true, 512, JSON_THROW_ON_ERROR);

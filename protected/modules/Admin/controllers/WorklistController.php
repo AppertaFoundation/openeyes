@@ -988,7 +988,7 @@ class WorklistController extends BaseAdminController
         $altered_steps = array();
 
         if ($step) {
-            $old_order = $step->order;
+            $old_order = $step->queue_order;
             $new_order = $direction === 'left' ? $old_order - 1 : $old_order + 1;
 
             // As we're only moving one step, we should only have to reorder at most a single step.
@@ -1002,12 +1002,12 @@ class WorklistController extends BaseAdminController
             );
 
             if ($step_to_reorder) {
-                $step_to_reorder->order = $old_order;
+                $step_to_reorder->queue_order = $old_order;
                 $step_to_reorder->save();
                 $step_to_reorder->refresh();
                 $altered_steps[$step_to_reorder->id] = $step_to_reorder;
             }
-            $step->order = $new_order;
+            $step->queue_order = $new_order;
             if (!$step->save()) {
                 throw new CHttpException('Unable to reorder step.');
             }

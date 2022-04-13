@@ -60,7 +60,7 @@ class PathwayType extends BaseActiveRecordVersioned
         // class name for the relations automatically generated below.
         return array(
             'pathways' => array(self::HAS_MANY, 'Pathway', 'pathway_type_id'),
-            'default_steps' => array(self::HAS_MANY, 'PathwayTypeStep', 'pathway_type_id', 'order' => '`order`'),
+            'default_steps' => array(self::HAS_MANY, 'PathwayTypeStep', 'pathway_type_id', 'order' => 'queue_order'),
             'default_owner' => array(self::BELONGS_TO, 'User', 'default_owner_id'),
             'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
@@ -205,12 +205,12 @@ class PathwayType extends BaseActiveRecordVersioned
     public function enqueue(PathwayTypeStep $step): bool
     {
         $end_position = Yii::app()->db->createCommand()
-            ->select('MAX(`order`)')
+            ->select('MAX(queue_order)')
             ->from('pathway_type_step')
             ->where('pathway_type_id = :id')
             ->bindValues([':id' => $this->id])
             ->queryScalar();
-        $step->order = $end_position + 1;
+        $step->queue_order = $end_position + 1;
         return $step->save();
     }
 
@@ -223,10 +223,10 @@ class PathwayType extends BaseActiveRecordVersioned
     public function enqueueAtPosition(PathwayTypeStep $step, int $position): bool
     {
         $start_position = $position;
-        $step->order = $start_position;
+        $step->queue_order = $start_position;
         foreach ($this->default_steps as $existing_step) {
-            if ($existing_step->order >= $position) {
-                $existing_step->order = ++$start_position;
+            if ($existing_step->queue_order >= $position) {
+                $existing_step->queue_order = ++$start_position;
                 $existing_step->save();
             }
         }

@@ -91,23 +91,23 @@ class Pathway extends BaseActiveRecordVersioned
                         ', ',
                         [PathwayStep::STEP_REQUESTED, PathwayStep::STEP_CONFIG]
                     ) . ')',
-                'order' => '`order`'
+                'order' => 'todo_order'
             ),
             'started_steps' => array(
                 self::HAS_MANY,
                 'PathwayStep',
                 'pathway_id',
                 'condition' => 'status = ' . PathwayStep::STEP_STARTED,
-                'order' => '`order`'
+                'order' => 'queue_order'
             ),
             'completed_steps' => array(
                 self::HAS_MANY,
                 'PathwayStep',
                 'pathway_id',
                 'condition' => 'status = ' . PathwayStep::STEP_COMPLETED,
-                'order' => '`order`'
+                'order' => 'queue_order'
             ),
-            'steps' => array(self::HAS_MANY, 'PathwayStep', 'pathway_id', 'order' => 'status DESC, `order` ASC'),
+            'steps' => array(self::HAS_MANY, 'PathwayStep', 'pathway_id', 'order' => 'status DESC, queue_order ASC, todo_order ASC'),
         );
     }
 
@@ -186,6 +186,18 @@ class Pathway extends BaseActiveRecordVersioned
     }
 
     /**
+     * Remove the specified step from the queue
+     * @param PathwayStep $step
+     * @return bool
+     * @throws Exception
+     */
+    public function dequeue(PathwayStep $step): bool
+    {
+        $step->queue_order = null;
+        return $step->save();
+    }
+
+    /**
      * Add a step to a queue relevant to its current status.
      * @param PathwayStep $step The step to add
      * @return bool True if the step was successfully enqueued; otherwise false.
@@ -194,22 +206,28 @@ class Pathway extends BaseActiveRecordVersioned
     public function enqueue(PathwayStep $step): bool
     {
         if ((int)$step->status === PathwayStep::STEP_REQUESTED) {
-            $end_position = Yii::app()->db->createCommand()
-                ->select('MAX(`order`)')
-                ->from('pathway_step')
-                ->where('pathway_id = :id AND (status IN (-1, 0) OR status IS NULL)')
-                ->bindValues([':id' => $this->id])
-                ->queryScalar();
-        } else {
-            $end_position = Yii::app()->db->createCommand()
-                ->select('MAX(`order`)')
-                ->from('pathway_step')
-                ->where('pathway_id = :id AND status = :status')
-                ->bindValues([':id' => $this->id, ':status' => $step->status])
-                ->queryScalar();
-        }
+            if (!$step->todo_order) {
+                $end_position = Yii::app()->db->createCommand()
+                    ->select('MAX(todo_order)')
+                    ->from('pathway_step')
+                    ->where('pathway_id = :id AND status = :status')
+                    ->bindValues([':id' => $this->id, ':status' => $step->status])
+                    ->queryScalar();
 
-        $step->order = $end_position + 1;
+                $step->todo_order = $end_position + 1;
+                $step->queue_order = $step->todo_order;
+                return $step->save();
+            }
+            return $this->dequeue($step);
+        }
+        $end_position = Yii::app()->db->createCommand()
+            ->select('MAX(queue_order)')
+            ->from('pathway_step')
+            ->where('pathway_id = :id AND status = :status')
+            ->bindValues([':id' => $this->id, ':status' => $step->status])
+            ->queryScalar();
+
+        $step->queue_order = $end_position + 1;
         return $step->save();
     }
 
@@ -222,10 +240,10 @@ class Pathway extends BaseActiveRecordVersioned
     public function enqueueAtPosition(PathwayStep $step, int $position): bool
     {
         $start_position = $position;
-        $step->order = $start_position;
+        $step->queue_order = $start_position;
         foreach ($this->requested_steps as $existing_step) {
-            if ($existing_step->order >= $position) {
-                $existing_step->order = ++$start_position;
+            if ($existing_step->todo_order >= $position) {
+                $existing_step->todo_order = ++$start_position;
                 $existing_step->save();
             }
         }
@@ -257,7 +275,7 @@ class Pathway extends BaseActiveRecordVersioned
             $criteria->compare('pathway_id', $this->id);
             $criteria->compare('status', $queue);
             $criteria->addInCondition('step_type_id', $step_type_id_list);
-            $criteria->order = '`order`';
+            $criteria->order = 'queue_order, todo_order';
             $criteria->limit = 1;
             return PathwayStep::model()->find($criteria);
         }

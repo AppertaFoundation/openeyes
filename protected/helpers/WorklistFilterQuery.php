@@ -47,7 +47,7 @@ class WorklistFilterQuery
     ];
 
     private const PATHWAY_STEP_WAIT_TIME_VALUE = 'IF(pathway.end_time IS NULL AND (NVL(pswt.started_count, 0) = 0), NVL(pswt.step_wait, NOW() - pathway.start_time), NULL)';
-    private const EARLIEST_UNCOMPLETED_STEP_QUERY = '(SELECT pathway_id, MIN(`order`) AS first FROM pathway_step WHERE status IS NULL OR status < 1 GROUP BY pathway_id) AS earlier';
+    private const EARLIEST_UNCOMPLETED_STEP_QUERY = '(SELECT pathway_id, MIN(todo_order) AS first FROM pathway_step WHERE status IS NULL OR status < 1 GROUP BY pathway_id) AS earlier';
 
     private $site;
     private $context;
@@ -352,7 +352,7 @@ class WorklistFilterQuery
         $command->join('pathway', 'pathway.id = ps.pathway_id');
         $command->join('worklist_patient wp', $worklist_patient_conditions);
 
-        $command->leftJoin(self::EARLIEST_UNCOMPLETED_STEP_QUERY, 'earlier.pathway_id = ps.pathway_id AND earlier.first = ps.`order`');
+        $command->leftJoin(self::EARLIEST_UNCOMPLETED_STEP_QUERY, 'earlier.pathway_id = ps.pathway_id AND earlier.first = ps.todo_order');
 
         $conditions = array('and');
         $params = [];
@@ -620,7 +620,7 @@ class WorklistFilterQuery
 
                             $command->join(self::EARLIEST_UNCOMPLETED_STEP_QUERY,
                                            'earlier.pathway_id = pathway.id'.
-                                           ' AND earlier.first = pathway_step.`order`');
+                                           ' AND earlier.first = pathway_step.todo_order');
                             break;
 
                         case 'assignedTo':

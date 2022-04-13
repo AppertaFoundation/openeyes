@@ -495,12 +495,12 @@ class WorklistController extends BaseController
         }
 
         if ($step) {
-            $old_order = $step->order;
+            $old_order = $step->todo_order;
             $new_order = $direction === 'left' ? $old_order - 1 : $old_order + 1;
 
             // As we're only moving one step, we should only have to reorder at most a single step.
             $step_to_reorder = PathwayStep::model()->find(
-                "pathway_id = :pathway_id AND (status IN (-1, 0) OR status IS NULL) AND id != :id AND `order` = :order",
+                "pathway_id = :pathway_id AND (status IN (-1, 0) OR status IS NULL) AND id != :id AND todo_order = :order",
                 [
                     'pathway_id' => $step->pathway_id,
                     ':id' => $step->id,
@@ -509,12 +509,12 @@ class WorklistController extends BaseController
             );
 
             if ($step_to_reorder) {
-                $step_to_reorder->order = $old_order;
+                $step_to_reorder->todo_order = $old_order;
                 $step_to_reorder->save();
                 $step_to_reorder->refresh();
                 $altered_steps[$step_to_reorder->id] = $step_to_reorder;
             }
-            $step->order = $new_order;
+            $step->todo_order = $new_order;
             if (!$step->save()) {
                 throw new CHttpException('Unable to reorder step.');
             }
