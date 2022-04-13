@@ -151,8 +151,8 @@ class PathstepObserver
             // Only fire this event handler if the action is a create action, or if the action is an update action AND
             // the event is an Examination event.
             if (
-                ($params['action'] === 'update' && $params['event']->eventType->class_name === 'OphCiExamination')
-                || $params['action'] === 'create'
+                $params['action'] === 'create'
+                || ($params['action'] === 'update' && in_array($params['event']->eventType->class_name, ['OphCiExamination', 'OphInBiometry'], true))
             ) {
                 if ($step) {
                     if ((int)$step->status === PathwayStep::STEP_STARTED) {
