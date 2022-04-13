@@ -281,52 +281,67 @@ class WorklistController extends BaseController
             $type_step = PathwayTypeStep::model()->findByPk($type_step_id);
 
             if ($type_step) {
+                $transaction = Yii::app()->db->beginTransaction();
                 $pathway_steps = $type_step->pathway_type->instancePathway($visit);
                 $step = $pathway_steps[$type_step_id] ?? null;
+                if (!$step) {
+                    $transaction->rollback();
+                    throw new CHttpException(404, 'Unable to retrieve step for processing.');
+                }
+            } else {
+                throw new CHttpException(404, 'Unable to retrieve step for processing.');
             }
+        } else {
+            $transaction = Yii::app()->db->beginTransaction();
         }
 
         if ($step) {
-            if ($direction === 'next') {
-                $extra_form_data = Yii::app()->request->getPost('extra_form_data');
-                if ($extra_form_data && array_key_exists('YII_CSRF_TOKEN', $extra_form_data)) {
-                    unset($extra_form_data['YII_CSRF_TOKEN']);
+            try {
+                if ($direction === 'next') {
+                    $extra_form_data = Yii::app()->request->getPost('extra_form_data');
+                    if ($extra_form_data && array_key_exists('YII_CSRF_TOKEN', $extra_form_data)) {
+                        unset($extra_form_data['YII_CSRF_TOKEN']);
+                    }
+                    $step->nextStatus($extra_form_data);
+                } else {
+                    if ($step->short_name === "Discharge") {
+                        $hl7_a13 = new \OEModule\PASAPI\resources\HL7_A13();
+                        $hl7_a13->setDataFromEvent(\Event::model()->find("worklist_patient_id = ?", array($step->pathway->worklist_patient->id))->id);
+                        Yii::app()->event->dispatch('emergency_care_update',
+                                                    $hl7_a13
+                        );
+                    }
+                    $step->prevStatus();
                 }
-                $step->nextStatus($extra_form_data);
-            } else {
-                if ($step->short_name === "Discharge") {
-                    $hl7_a13 = new \OEModule\PASAPI\resources\HL7_A13();
-                    $hl7_a13->setDataFromEvent(\Event::model()->find("worklist_patient_id = ?", array($step->pathway->worklist_patient->id))->id);
-                    Yii::app()->event->dispatch('emergency_care_update',
-                            $hl7_a13
-                    );
+                $step->refresh();
+
+                $pathway = $step->pathway;
+
+                $pathway->updateStatus();
+
+                if ((int)$step->status === PathwayStep::STEP_STARTED) {
+                    Yii::app()->event->dispatch('step_started', ['step' => $step]);
+                } elseif ((int)$step->status === PathwayStep::STEP_COMPLETED) {
+                    Yii::app()->event->dispatch('step_completed', ['step' => $step]);
                 }
-                $step->prevStatus();
+
+                $transaction->commit();
+
+                $this->renderJSON(
+                    [
+                        'step' => $step->toJSON(),
+                        'step_html' => $this->renderPartial('_clinical_pathway', ['visit' => $step->pathway->worklist_patient], true),
+                        'pathway_status' => $pathway->getStatusString(),
+                        'pathway_status_html' => $pathway->getPathwayStatusHTML(),
+                        'wait_time_details' => $pathway->getWaitTimeSinceLastAction(),
+                    ]
+                );
+                Yii::app()->end();
+            } catch (Exception $e) {
+                $transaction->rollback();
+                throw $e;
             }
-            $step->refresh();
-
-            $pathway = $step->pathway;
-
-            $pathway->updateStatus();
-
-            if ((int)$step->status === PathwayStep::STEP_STARTED) {
-                Yii::app()->event->dispatch('step_started', ['step' => $step]);
-            } elseif ((int)$step->status === PathwayStep::STEP_COMPLETED) {
-                Yii::app()->event->dispatch('step_completed', ['step' => $step]);
-            }
-
-            $this->renderJSON(
-                [
-                    'step' => $step->toJSON(),
-                    'step_html' => $this->renderPartial('_clinical_pathway', ['visit' => $step->pathway->worklist_patient], true),
-                    'pathway_status' => $pathway->getStatusString(),
-                    'pathway_status_html' => $pathway->getPathwayStatusHTML(),
-                    'wait_time_details' => $pathway->getWaitTimeSinceLastAction(),
-                ]
-            );
-            Yii::app()->end();
         }
-        throw new CHttpException(404, 'Unable to retrieve step for processing.');
     }
 
     /**

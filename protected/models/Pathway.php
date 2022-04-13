@@ -436,10 +436,8 @@ class Pathway extends BaseActiveRecordVersioned
 
         $acceptable_wait_time = $this->getAcceptableWaitTime();
         if ($this->completed_steps) {
-            $completed_steps = array_filter($this->completed_steps, function ($step) {
-                return $step->type->type !== 'hold';
-            });
-            if ($completed_steps) {
+            $completed_steps = $this->completed_steps;
+            if (count($completed_steps) > 0) {
                 $last_completed_step = $completed_steps[array_key_last($completed_steps)];
                 $start_time = DateTime::createFromFormat('Y-m-d H:i:s', $last_completed_step->end_time);
             }

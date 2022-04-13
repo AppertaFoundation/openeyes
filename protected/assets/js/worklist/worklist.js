@@ -52,6 +52,9 @@ $(function () {
         // send post request to update the hold step to complete
         let data = {
             step_id: step_data.id,
+            pathway_id: $(ele).data('pathway-id'),
+            step_type_id: $(ele).data('pathstep-type-id'),
+            visit_id: $(ele).data('visit-id'),
             direction: 'next',
             YII_CSRF_TOKEN: YII_CSRF_TOKEN
         };
