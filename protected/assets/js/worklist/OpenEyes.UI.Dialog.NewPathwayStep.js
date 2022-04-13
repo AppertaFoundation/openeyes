@@ -82,6 +82,7 @@
         $(document).off('change', '.js-custom-option[name="custom_option_context"]')
             .on('change', '.js-custom-option[name="custom_option_context"]', this.updateWorkflowStepList.bind(this));
         $(document).off('input', 'input[name="taskname"]').on('input', 'input[name="taskname"]', this.updateShortName.bind(this));
+        $(document).off('input', 'input[name="shortname"]').on('input', 'input[name="shortname"]', this.checkNames.bind(this));
     };
 
     /**
@@ -117,6 +118,17 @@
 
     NewPathwayStep.prototype.updateShortName = function (e) {
         $('input[name="shortname"]').val($(e.target).val().substring(0, 16));
+        this.checkNames();
+    };
+
+    NewPathwayStep.prototype.checkNames = function () {
+        let $shortName = $('input[name="shortname"]');
+        let $taskname = $('input[name="taskname"]');
+        if ($shortName.val().length > 0 && $taskname.val().length > 0) {
+            $('.js-add-pathway').prop('disabled', false);
+        } else {
+            $('.js-add-pathway').prop('disabled', true);
+        }
     };
 
     NewPathwayStep.prototype.updateWorkflowStepList = function () {

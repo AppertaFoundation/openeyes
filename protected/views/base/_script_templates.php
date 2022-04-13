@@ -89,7 +89,7 @@
     </select>
     {{/custom_options}}
     <div class="popup-actions flex-right">
-        <button class="green hint js-add-pathway">Add to selected patients</button>
+        <button class="green hint js-add-pathway" disabled="disabled">Add to selected patients</button>
         <button class="red hint js-cancel-popup-steps">Cancel</button>
     </div>
 </script>
