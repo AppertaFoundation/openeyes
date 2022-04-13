@@ -578,13 +578,10 @@ class DefaultController extends BaseEventTypeController
         $parent_episode = $parent_event->episode;
         $parent_patient = $parent_episode->patient;
 
-        $parent_contact = $parent_patient->contact;
-        $parent_address = $parent_contact->address;
-
         $substitutions = array_merge(
             SettingMetadata::getSessionSubstitutions(),
             SettingMetadata::getPatientSubstitutions($parent_patient),
-            SettingMetadata::getRecipientAddressSubstitution($recipient_address)
+            SettingMetadata::getCorrespondenceSubstitutions($letter, $recipient_address)
         );
 
         $letter_header_html = SettingMetadata::performSubstitutions($letter_header_raw, $substitutions);

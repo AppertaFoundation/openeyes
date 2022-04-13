@@ -75,7 +75,7 @@ class SettingMetadata extends BaseActiveRecordVersioned
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, element_type_id, display_order, field_type_id, key, name, data, default_value', 'safe', 'on' => 'search'),
-            array('default_value,', 'filter', 'filter' => array($obj = new CHtmlPurifier(),'purify')),
+            array('default_value,', 'filter', 'filter' => function($param) { return SettingMetadata::getPurifiedValue($param); }),
         );
     }
 
@@ -290,8 +290,7 @@ class SettingMetadata extends BaseActiveRecordVersioned
     public function setSettingValue($setting, $metadata, $value)
     {
         if (@$data = unserialize($metadata->data)) {
-            $purifier = new CHtmlPurifier();
-            $value = $purifier->purify($value);
+            $value = self::getPurifiedValue($setting->value);
 
             if ($metadata->field_type->name === 'HTML') {
                 $value = $this->stripSubstitutions($value);
@@ -299,6 +298,20 @@ class SettingMetadata extends BaseActiveRecordVersioned
         }
 
         $setting->value = $value;
+    }
+
+    public static function getPurifiedValue($value)
+    {
+        $purifier_options = HTMLPurifier_Config::createDefault();
+        $purifier_options->set('Cache.SerializerPath', Yii::app()->getRuntimePath());
+
+        $po_html = $purifier_options->getHTMLDefinition(true);
+        $po_html->addAttribute('span', 'data-substitution', 'CDATA');
+        $po_html->addAttribute('span', 'contenteditable', 'Enum#true,false');
+
+        $purifier = new \HTMLPurifier($purifier_options);
+
+        return $purifier->purify($value);
     }
 
     public function stripSubstitutions($value)
@@ -392,7 +405,7 @@ class SettingMetadata extends BaseActiveRecordVersioned
             'site_postcode' => array('label' => 'Site Postcode', 'value' => $site_address ? self::makeSpan($site_address->postcode) : null),
             'primary_logo' => array('label' => 'Primary Logo', 'value' => isset($logos['primaryLogo']) ? self::makeImg($logos['primaryLogo']) : null),
             'secondary_logo' => array('label' => 'Secondary Logo', 'value' => isset($logos['secondaryLogo']) ? self::makeImg($logos['secondaryLogo']) : null),
-            'current_date' => array('label' => 'Current Date', 'value' => self::makeSpan(date('d-M-Y'))),
+            'current_date' => array('label' => 'Current Date', 'value' => self::makeSpan(date('d M Y'))),
         );
     }
 
@@ -414,20 +427,19 @@ class SettingMetadata extends BaseActiveRecordVersioned
             'patient_full_name' => array('label' => 'Patient Full Name', 'value' => $patient ? self::makeSpan($patient->getFullName()) : null),
             'patient_first_name' => array('label' => 'Patient First Name', 'value' => $patient_contact ? self::makeSpan($patient_contact->first_name) : null),
             'patient_last_name' => array('label' => 'Patient Last Name', 'value' => $patient_contact ? self::makeSpan($patient_contact->last_name) : null),
-            'patient_date_of_birth' => array('label' => 'Patient Date Of Birth', 'value' => $patient ? self::makeSpan($patient->dob) : null),
+            'patient_date_of_birth' => array('label' => 'Patient Date Of Birth', 'value' => $patient ? self::makeSpan(\Helper::convertMySQL2NHS($patient->dob)) : null),
             'patient_gender' => array('label' => 'Patient Gender', 'value' => $patient ? self::makeSpan($patient->getGenderString()) : null),
             'patient_nhs_num' => array('label' => 'Patient NHS Number', 'value' => $patient ? self::makeSpan($patient->nhs_num) : null),
             'patient_hos_num' => array('label' => 'Patient Hospital Number', 'value' => $patient ? self::makeSpan($patient->hos_num) : null),
-            'patient_last_exam_date' => array('label' => 'Patient Last Examination Date', 'value' => $last_exam ? self::makeSpan((new DateTime($last_exam->event_date))->format('d-M-Y')) : null),
+            'patient_last_exam_date' => array('label' => 'Patient Last Examination Date', 'value' => $last_exam ? self::makeSpan(\Helper::convertMySQL2NHS($last_exam->event_date)) : null),
         );
     }
 
-    public static function getCorrespondenceSubstitutions($element_letter = null)
+    public static function getCorrespondenceSubstitutions($element_letter = null, $recipient_address = null)
     {
         return array(
-            'to_address' => array('label' => 'Recipient Address', 'value' => isset($element_letter) && !empty($element_letter->address_target) ? self::makeSpan($element_letter->address_target) : null),
-            'source_address' => array('label' => 'Source Address', 'value' => isset($element_letter) && !empty($element_letter->source_address) ? self::makeSpan($element_letter->source_address) : null),
-            'cc_address' => array('label' => 'CC Address', 'value' => isset($element_letter) && !empty($element_letter->cc) ? self::makeSpan($element_letter->cc) : null),
+            'to_address' => array('label' => 'Recipient Address', 'value' => $recipient_address),
+            'correspondence_date' => array('label' => 'Correspondence Date', 'value' => isset($element_letter) && !empty($element_letter->event) ? self::makeSpan(\Helper::convertMySQL2NHS($element_letter->event->event_date)) : null),
         );
     }
 
