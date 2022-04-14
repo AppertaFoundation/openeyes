@@ -199,7 +199,7 @@ class PatientSearch
             'currentPage' => $current_page,
             'first_name' => CHtml::decode($this->search_terms['first_name']),
             'last_name' => CHtml::decode($this->search_terms['last_name']),
-            'dob' => CHtml::decode($this->search_terms['dob']),
+            'dob' => isset($this->search_terms['dob']) ? CHtml::decode($this->search_terms['dob']) : '',
             'patient_identifier_value' => $this->search_terms['patient_identifier_value'],
             'terms_with_types' => [],
             'original_term' => $term,
