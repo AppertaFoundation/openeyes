@@ -219,6 +219,16 @@ class Pathway extends BaseActiveRecordVersioned
                 return $step->save();
             }
             return $this->dequeue($step);
+        } elseif (!$step->todo_order) {
+            $end_position = Yii::app()->db->createCommand()
+                ->select('MAX(todo_order)')
+                ->from('pathway_step')
+                ->where('pathway_id = :id AND status = :status')
+                ->bindValues([':id' => $this->id, ':status' => $step->status])
+                ->queryScalar();
+
+            $step->todo_order = $end_position + 1;
+            $step->queue_order = $step->todo_order;
         }
         $end_position = Yii::app()->db->createCommand()
             ->select('MAX(queue_order)')

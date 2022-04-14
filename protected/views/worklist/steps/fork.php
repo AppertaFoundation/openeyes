@@ -23,7 +23,7 @@ $is_step_instance = $step instanceof PathwayStep;
                 array(
                     'partial' => $partial,
                     'model' => $step,
-                    'pathway' => $pathway,
+                    'pathway' => $worklist_patient->pathway,
                 )
             );
     } else { ?>
