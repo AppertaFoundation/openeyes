@@ -1557,8 +1557,7 @@ class WorklistController extends BaseController
         $id = $_POST['selected_values'][0]['value'];
         $position = $_POST['selected_values'][1]['value'];
         $pathway_type = PathwayType::model()->findByPk($id);
-        $pathway_id = Yii::app()->request->getPost('target_pathway_id');
-        $visit_id = Yii::app()->request->getPost('visit_id');
+        $visit_id = Yii::app()->request->getPost('target_pathway_id');
         $wl_patient = WorklistPatient::model()->findByPk($visit_id);
 
         if (!$wl_patient->pathway) {
@@ -1567,7 +1566,7 @@ class WorklistController extends BaseController
         }
 
         if ($pathway_type) {
-            $pathway_type->duplicateStepsForPathway($pathway_id, $position);
+            $pathway_type->duplicateStepsForPathway($wl_patient->pathway->id, $position);
             $this->renderJSON(['step_html' => $this->renderPartial('_clinical_pathway', ['visit' => $wl_patient], true)]);
         }
         throw new CHttpException(404, 'Unable to retrieve pathway type for duplication.');

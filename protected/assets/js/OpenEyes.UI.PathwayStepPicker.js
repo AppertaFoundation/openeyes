@@ -117,7 +117,7 @@
                 return $(this).val();
             }
         ).get();
-        new OpenEyes.UI.Dialog.PathwayStepOptions({
+        let dialog = new OpenEyes.UI.Dialog.PathwayStepOptions({
             title: 'Add common pathway',
             itemSets: [{
                 is_form: true,
@@ -183,7 +183,13 @@
                 }
                 dialog.close();
             }
-        }).open();
+        });
+
+        dialog.open();
+
+        $("div[data-itemset-id]").each(function() {
+            $(this).find('label > input[type="radio"]').first().prop('checked', true);
+        });
     };
 
     PathwayStepPicker.prototype.newStep = function (step_type_id, pathway_id, step_data = null, position = 0) {
@@ -392,6 +398,10 @@
                     $('.js-itemset[data-itemset-id="duration-digits"] .btn-list label input[value="' + self.duration_digits + '"]').prop("checked", true);
                     $('.js-itemset[data-itemset-id="duration-period"] .btn-list label input[value="' + self.duration_period + '"]').prop("checked", true);
                 }).open();
+
+                $("div[data-itemset-id]").each(function() {
+                    $(this).find('label > input[type="radio"]').first().prop('checked', true);
+                });
                 // Reset the booking pathway step
                 self.options.custom_booking_step = null;
                 break;
@@ -485,6 +495,10 @@
                         dialog.close();
                     }
                 }).open();
+
+                $("div[data-itemset-id]").each(function() {
+                    $(this).find('label > input[type="radio"]').first().prop('checked', true);
+                });
                 break;
             case this.options.vf_step_type_id:
                 new OpenEyes.UI.Dialog.PathwayStepOptions({
@@ -647,6 +661,10 @@
                         dialog.close();
                     }
                 }).open();
+
+                $("div[data-itemset-id]").each(function() {
+                    $(this).find('label > input[type="radio"]').first().prop('checked', true);
+                });
                 break;
             case this.options.exam_step_type_id:
                 new OpenEyes.UI.Dialog.NewPathwayStep({
@@ -753,6 +771,10 @@
                         dialog.close();
                     }
                 }).open();
+
+                $("div[data-itemset-id]").each(function() {
+                    $(this).find('label > input[type="radio"]').first().prop('checked', true);
+                });
                 break;
             default:
                 for (let pathway_id of pathway_ids) {
