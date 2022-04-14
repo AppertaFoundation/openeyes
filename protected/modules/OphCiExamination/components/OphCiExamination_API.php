@@ -64,11 +64,11 @@ class OphCiExamination_API extends \BaseAPI
                 $mp = $dr->{"{$side}_nscmaculopathy_photocoagulation"};
 
                 if ($rp && $mp) {
-                    return "peripherial and macular";
+                    return "peripheral and macular";
                 }
 
                 if ($rp) {
-                    return "peripherial";
+                    return "peripheral";
                 }
 
                 if ($mp) {
@@ -475,15 +475,15 @@ class OphCiExamination_API extends \BaseAPI
         $events = $patient->getEvents();
         //for each of the events that we care about
         foreach ($events as $event) {
-            if (($event->getEventName()=='Phasing')||($event->getEventName()=='Examination')) {
+            if (($event->getEventName() == 'Phasing') || ($event->getEventName() == 'Examination')) {
                 //get the elements (phasing still works here)
                 $elements = $event->getElements('models\Element_OphCiExamination_IntraocularPressure', $patient);
 
                 //for each element that we care about
                 foreach ($elements as $iop) {
-                    if ($iop->getElementTypeName()=='Intraocular Pressure' || $iop->getElementTypeName()=='Intraocular Pressure Phasing') {
+                    if ($iop->getElementTypeName() == 'Intraocular Pressure' || $iop->getElementTypeName() == 'Intraocular Pressure Phasing') {
                         //if the date is null then this is the min value, otherwise check if this is the min value and not null
-                        if ( $base_values['date'] ==null||($first_date > $iop->event->event_date) && $iop->event->event_date != null) {
+                        if ($base_values['date'] == null || ($first_date > $iop->event->event_date) && $iop->event->event_date != null) {
                             //set the date to this date
                             $first_date = $iop->event->event_date;
                             $base_values['date'] = \Helper::convertMySQL2NHS($iop->event->event_date);
@@ -499,7 +499,7 @@ class OphCiExamination_API extends \BaseAPI
                                     foreach ($readings as $reading) {
                                             $sum_values[$side] += (float)$reading;
                                     }
-                                    $base_values[$side] = ($sum_values[$side])/count($readings);
+                                    $base_values[$side] = ($sum_values[$side]) / count($readings);
                                 } else {
                                     $base_values[$side] = null;
                                 }
@@ -524,13 +524,13 @@ class OphCiExamination_API extends \BaseAPI
         $events = $patient->getEvents();
         //for each of the events that we care about
         foreach ($events as $event) {
-            if (($event->getEventName()=='Phasing')||($event->getEventName()=='Examination')) {
+            if (($event->getEventName() == 'Phasing') || ($event->getEventName() == 'Examination')) {
                 //get the elements (phasing still works here)
                 $iops = $event->getElements('models\Element_OphCiExamination_IntraocularPressure', $patient);
 
                 //for each element that we care about
                 foreach ($iops as $iop) {
-                    if ($iop->getElementTypeName()=='Intraocular Pressure' || $iop->getElementTypeName()=='Intraocular Pressure Phasing') {
+                    if ($iop->getElementTypeName() == 'Intraocular Pressure' || $iop->getElementTypeName() == 'Intraocular Pressure Phasing') {
                         foreach (['left', 'right'] as $side) {
                             //get all readings for each side separately
                             $readings = $iop->getReadings($side);
@@ -2413,7 +2413,7 @@ class OphCiExamination_API extends \BaseAPI
 
                     <tr>
                         <th>Comments:</th>
-                        <th><?=!empty($element->{$side.'_notes'})?$element->{$side.'_notes'}:'No comments'?></th>
+                        <th><?=!empty($element->{$side . '_notes'}) ? $element->{$side . '_notes'} : 'No comments'?></th>
                     </tr>
                 <?php } ?>
                 </tbody>
@@ -3061,7 +3061,7 @@ class OphCiExamination_API extends \BaseAPI
      * @param bool $exclude_medication_management_entries
      * @return \CActiveRecord[]
      */
-    public function getEventMedicationUseItemsForPatient(Patient $patient, $exclude_ids = array(), $exclude_medication_management_entries = false) : array
+    public function getEventMedicationUseItemsForPatient(Patient $patient, $exclude_ids = array(), $exclude_medication_management_entries = false): array
     {
         $criteria = new \CDbCriteria(array('order' => 'event_date DESC'));
         $criteria->compare('event.deleted', 0);
@@ -3365,7 +3365,7 @@ class OphCiExamination_API extends \BaseAPI
                     <?php
                         $tapers = [];
                         $comments = $entry->comments ?: null;
-                        $stop_display_date = $entry->end_date ? \Helper::convertDate2NHS($entry->end_date): 'Ongoing';
+                        $stop_display_date = $entry->end_date ? \Helper::convertDate2NHS($entry->end_date) : 'Ongoing';
                     if ($entry->prescription_item_id) {
                         $tapers = $entry->prescriptionItem->tapers;
                         $stop_date = $entry->prescriptionItem->stopDateFromDuration(false);
@@ -3378,7 +3378,7 @@ class OphCiExamination_API extends \BaseAPI
                         <?= $entry->getMedicationDisplay(true) ?>
                         <?= $comments ? ('<br /><br /><i>Comment: </i>' . $comments) : '' ?>
                     </td>
-                    <td><?= $entry->dose . ($entry->dose_unit_term ? (' (' . $entry->dose_unit_term. ')') : '') ?></td>
+                    <td><?= $entry->dose . ($entry->dose_unit_term ? (' (' . $entry->dose_unit_term . ')') : '') ?></td>
                         <td>
                             <?=$entry->getLateralityDisplay(true)?>
                         </td>
@@ -3394,7 +3394,7 @@ class OphCiExamination_API extends \BaseAPI
                                     <div class="oe-i child-arrow small no-click"></div>
                                     <i> then</i>
                                 </td>
-                                <td><?=$taper->dose . ($entry->dose_unit_term ? (' (' . $entry->dose_unit_term. ')') : '')?></td>
+                                <td><?=$taper->dose . ($entry->dose_unit_term ? (' (' . $entry->dose_unit_term . ')') : '')?></td>
                                 <td></td>
                                 <td><?= $taper->frequency ? $taper->frequency->term : '' ?></td>
                                 <td><?= $taper_display_date ? \Helper::convertDate2NHS($taper_display_date->format('Y-m-d')) : $taper->duration->name; ?></td>
@@ -3468,7 +3468,7 @@ class OphCiExamination_API extends \BaseAPI
             <?php foreach ($current_systemic_meds as $entry) { ?>
                 <?php
                 $tapers = [];
-                $stop_display_date = $entry->end_date ? \Helper::convertDate2NHS($entry->end_date): 'Ongoing';
+                $stop_display_date = $entry->end_date ? \Helper::convertDate2NHS($entry->end_date) : 'Ongoing';
                 $comments = $entry->comments ?: null;
                 if ($entry->prescription_item_id) {
                     $tapers = $entry->prescriptionItem->tapers;
@@ -3545,7 +3545,7 @@ class OphCiExamination_API extends \BaseAPI
         foreach ($entries as $entry) {
             $text .= $entry->medication->preferred_term .
                 ", started at " . \Helper::convertMySQL2NHS($entry->start_date) .
-                " and ended at " .  \Helper::convertMySQL2NHS($entry->end_date) ."<br>";
+                " and ended at " .  \Helper::convertMySQL2NHS($entry->end_date) . "<br>";
         }
 
         return $text;
