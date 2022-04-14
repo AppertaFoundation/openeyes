@@ -418,7 +418,7 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
                 $doc->Header = $header;
                 $body = new stdClass();
 
-                $body->DocumentBase64 = base64_encode(file_get_contents($file_path));
+                $body->DocumentBase64 = file_get_contents($file_path);
                 $doc->Body = $body;
 
                 $wrapper->DocumentVersion = $doc;
@@ -581,11 +581,15 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
         }
         $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(
             Yii::app()->params['display_primary_number_usage_code'],
-            $patient->id, $institution_id, $site_id
+            $patient->id,
+            $institution_id,
+            $site_id
         );
         $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(
             Yii::app()->params['display_secondary_number_usage_code'],
-            $patient->id, $institution_id, $site_id
+            $patient->id,
+            $institution_id,
+            $site_id
         );
         $re = $patient->first_name . ' ' . $patient->last_name;
 
@@ -1147,18 +1151,17 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
             foreach ($this->document_instance as $instance) {
                 foreach ($instance->document_target as $target) {
                     if ($target->ToCc === 'To') {
-                        if (($newlines_setting = (int) SettingMetadata::model()->getSetting('correspondence_address_max_lines'))>=0) {
+                        if (($newlines_setting = (int) SettingMetadata::model()->getSetting('correspondence_address_max_lines')) >= 0) {
                             $addressPart = explode("\n", $target->address);
-                            $address ='';
-                            foreach ($addressPart as $index=>$part) {
+                            $address = '';
+                            foreach ($addressPart as $index => $part) {
                                 $part = trim($part);
                                 if ($index == 0) {
                                     $address = $part;
-                                }
-                                elseif ($index < $newlines_setting) {
-                                    $address = $address."\n".$part;
+                                } elseif ($index < $newlines_setting) {
+                                    $address = $address . "\n" . $part;
                                 } else {
-                                    $address = $address." ".$part;
+                                    $address = $address . " " . $part;
                                 }
                             }
                             return $target->contact_name . "\n" . $address;
