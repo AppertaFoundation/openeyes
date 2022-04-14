@@ -215,7 +215,7 @@
         let modelNameSelector = $('.js-preset-id');
         modelNameSelector.empty();
         $.each(workFlowStepsList[selectedFirm], function(key, step) {
-            modelNameSelector.append($('<option></option>').attr('value', step.id).text(step.name));
+            modelNameSelector.append($('<option></option>').attr('value', step.id).attr('selected', step.id === '<?= $preset_model->preset_id ?>').text(step.name));
         });
     }
 
@@ -223,7 +223,7 @@
         let modelNameSelector = $('.js-preset-id');
         modelNameSelector.empty();
         $.each(options, function (key, value) {
-            modelNameSelector.append($('<option></option>').attr('value', value).text(key));
+            modelNameSelector.append($('<option></option>').attr('value', value).attr('selected', value === '<?= $preset_model->preset_id ?>').text(key));
         });
         modelNameSelector.parent().prev().text(label);
         modelNameSelector.closest('tr').show();
