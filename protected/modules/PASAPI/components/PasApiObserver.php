@@ -81,7 +81,7 @@ class PasApiObserver
                 'last_name' => $data['params']['last_name'] ?? '',
                 'first_name' => $data['params']['first_name'] ?? '',
                 'is_global_search' => $terms_with_type['is_global_search'] ?? false,
-                'dob' => $data['dob'] ?? '',
+                'dob' => $data['params']['dob'] ?? '',
 
                 // we return error message via patient model
                 'patient' => $data['patient']

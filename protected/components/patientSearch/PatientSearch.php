@@ -23,7 +23,7 @@ class PatientSearch
     /**
      * Patient name regex
      */
-    const PATIENT_NAME_REGEX = '/^([a-zA-Z]{2,}\s?[a-zA-Z]{1,}\'?-?,?\s?[a-zA-Z]{2,}\s?([a-zA-Z]{1,})?)(\s\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4})?/';
+    const PATIENT_NAME_REGEX = '/^([\D]+[ ,]?[\D]*)(\s\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4})?$/';
 
     /**
      * @var array relevant information of search term by type
