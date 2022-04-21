@@ -392,6 +392,12 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
             controller.options.action = 'save';
             e.preventDefault();
 
+            document.querySelectorAll(".js-save-annotation-action").forEach(button => {
+                if (button.style.display === '') {
+                    button.click();
+                }
+            });
+
             let canvasData = OpenEyes.UI.ImageAnnotator.getCanvasDataUrl();
 
             if ((typeof canvasData !== "boolean")){
@@ -428,7 +434,7 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
             if (imageObj.height < imageObj.width) {
                 orientation = 'landscape';
             }
-            if (index === 0) 
+            if (index === 0)
             {
                 doc = new jsPDF({ 'orientation': orientation });
             }
