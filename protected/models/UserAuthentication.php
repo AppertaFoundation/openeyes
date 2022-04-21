@@ -74,7 +74,7 @@ class UserAuthentication extends BaseActiveRecordVersioned
             ['last_modified_user_id, created_user_id', 'length', 'max' => 10],
             ['active, password_status, institution_authentication_id, password_softlocked_until, last_modified_date, created_date', 'safe'],
             // The following rule is used by search().
-            ['id, user_id, username, last_modified_user_id, last_modified_date, created_user_id, created_date, active', 'safe', 'on'=>'search'],
+            ['id, user_id, username, last_modified_user_id, last_modified_date, created_user_id, created_date, active', 'safe', 'on' => 'search'],
 
             // conditional rules only for local authentications:
             [
@@ -254,7 +254,7 @@ class UserAuthentication extends BaseActiveRecordVersioned
             $this->password_salt = null;
             $this->password_hash = PasswordUtils::hashPassword($password, null);
             if (!$this->saveAttributes(array('password_hash','password_salt'))) {
-                $this->audit('login', 'auto-encrypt-password-failed', "user_authentication_id = {$this->id}, with error :". var_export($this->getErrors(), true));
+                $this->audit('login', 'auto-encrypt-password-failed', "user_authentication_id = {$this->id}, with error :" . var_export($this->getErrors(), true));
                 return false;
             }
             $this->audit('login', 'auto-encrypt-password', "user_authentication_id = {$this->id}");
@@ -284,7 +284,7 @@ class UserAuthentication extends BaseActiveRecordVersioned
      */
     public function search()
     {
-        $criteria=new CDbCriteria;
+        $criteria = new CDbCriteria();
 
         $criteria->compare('id', $this->id);
         $criteria->compare('user_id', $this->user_id);
@@ -295,7 +295,7 @@ class UserAuthentication extends BaseActiveRecordVersioned
         $criteria->compare('created_date', $this->created_date, true);
 
         return new CActiveDataProvider($this, [
-            'criteria'=>$criteria,
+            'criteria' => $criteria,
         ]);
     }
 
@@ -330,13 +330,14 @@ class UserAuthentication extends BaseActiveRecordVersioned
             );
             $error = (
                 !empty($inactive_user_auths) &&
-                array_reduce($inactive_user_auths,
+                array_reduce(
+                    $inactive_user_auths,
                     function ($total, $match) {
                         return $total | $match;
                     }
                 )) ?
                 "User has been deactivated, please contact an admin." :
-                "Username not found for this location, please ensure you have entered the correct username.";
+                "Invalid login.";
 
             return [[], $error];
         }
@@ -358,7 +359,7 @@ class UserAuthentication extends BaseActiveRecordVersioned
                 }
             }
         }
-        $error = empty($matches) ? "Username not found for this location, please ensure you have entered the correct username" : "success";
+        $error = empty($matches) ? "Invalid login" : "success";
 
         return [$matches, $error];
     }
