@@ -99,7 +99,7 @@ class PathstepObserver
             } else {
                 $params = [
                     'patient_id' => $step->pathway->worklist_patient->patient_id,
-                    'context_id' => $step->getState('firm_id'),
+                    'context_id' => $firm->id,
                     'service_id' => $service_id,
                     'event_type_id' => $event_type_id,
                     'worklist_patient_id' => $step->pathway->worklist_patient_id,

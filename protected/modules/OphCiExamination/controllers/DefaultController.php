@@ -886,7 +886,9 @@ class DefaultController extends \BaseEventTypeController
      */
     public function actionStep($id)
     {
-        $this->setContext($this->event->firm);
+        $context = $this->event->firm ?? $this->event->episode->firm;
+
+        $this->setContext($context);
 
         $step_id = \Yii::app()->request->getParam('step_id');
         if (!isset(Yii::app()->session['active_step_id'])) {
