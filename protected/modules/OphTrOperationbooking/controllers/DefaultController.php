@@ -20,6 +20,7 @@ class DefaultController extends OphTrOperationbookingEventController
         'checkProcedureEUR' => self::ACTION_TYPE_FORM,
         'cancel' => self::ACTION_TYPE_EDIT,
         'admissionLetter' => self::ACTION_TYPE_PRINT,
+        'admissionLetterPdf' => self::ACTION_TYPE_FORM,
         'admissionForm' => self::ACTION_TYPE_PRINT,
         'verifyProcedures' => self::ACTION_TYPE_CREATE,
         'putOnHold' => self::ACTION_TYPE_EDIT,
@@ -734,10 +735,10 @@ class DefaultController extends OphTrOperationbookingEventController
      *
      * @throws Exception
      */
-    public function actionAdmissionLetter()
+    public function actionAdmissionLetter($id)
     {
         $this->layout = '//layouts/print';
-
+        $this->printInit($id);
         if ($this->patient->isDeceased()) {
             // no admission for dead patients
             return false;
@@ -754,8 +755,7 @@ class DefaultController extends OphTrOperationbookingEventController
 
         $this->logActivity('printed admission letter');
 
-        $this->pdf_print_suffix = 'admission_letter';
-        $this->pdf_print_html = $this->render('../letters/admission_letter', array(
+        $this->render('../letters/admission_letter', array(
             'site' => $site,
             'patient' => $this->event->episode->patient,
             'firm' => $firm,
@@ -771,9 +771,25 @@ class DefaultController extends OphTrOperationbookingEventController
                 'include_fax' => true,
                 'delimiter' => "\n",
             )),
-        ), true);
+        ));
+    }
 
-        return $this->actionPDFPrint($this->operation->event->id);
+    public function actionAdmissionLetterPdf() {
+
+        $this->printInit(Yii::app()->request->getParam('id'));
+        $wk = Yii::app()->puppeteer;
+        $wk->setDocRef($this->event->docref);
+        $wk->setPatient($this->event->episode->patient);
+        $wk->setBarcode($this->event->barcodeSVG);
+        $wk->savePageToPDF($this->event->imageDirectory, $this->pdf_print_suffix, '', 'http://localhost/OphTrOperationbooking/default/admissionLetter/'.$this->event->id);
+
+        $pdf = $this->event->imageDirectory."/$this->pdf_print_suffix.pdf";
+
+        header('Content-Type: application/pdf');
+        header('Content-Length: '.filesize($pdf));
+
+        readfile($pdf);
+        @unlink($pdf);
     }
 
     protected function initActionAdmissionForm()

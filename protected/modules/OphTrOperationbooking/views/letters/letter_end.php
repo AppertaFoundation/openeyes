@@ -16,8 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-
-<p <?php if (@$accessible) {?> 
+<br/>
+<p <?php if (@$accessible) {?>
     class="accessible"
     <?php }?> nobr="true" style="margin-bottom: 0;">
     Yours sincerely,

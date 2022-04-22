@@ -519,9 +519,9 @@ if ($element->isEditable()) {
             }
             $this->event_actions[] = EventAction::button(
                 'Print letter',
-                'print-letter',
+                'print_admission_letter',
                 $print_letter_options,
-                array('id' => 'btn_print-admissionletter', 'class' => 'small button')
+                array('id' => 'print-admissionletter', 'class' => 'small button')
             );
             $this->event_actions[] = EventAction::button('Print admission form', 'print_admission_form', null, array('class' => 'small button'));
         }

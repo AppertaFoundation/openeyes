@@ -162,6 +162,10 @@
             printIFrameUrl(baseUrl + '/OphTrOperationbooking/default/printAdmissionFormPdf/' + OE_event_id);
         });
 
+        $(this).on('click', '#print-admissionletter', function () {
+            printIFrameUrl(baseUrl + '/OphTrOperationbooking/default/admissionLetterPdf/' + OE_event_id);
+        });
+
 
         $(this).on('click', '#et_print', function (e) {
             printEvent(null);
