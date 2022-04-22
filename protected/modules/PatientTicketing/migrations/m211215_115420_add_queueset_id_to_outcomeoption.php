@@ -10,9 +10,9 @@ class m211215_115420_add_queueset_id_to_outcomeoption extends OEMigration
             $this->addColumn($this->table, 'queueset_id', 'INT(11) AFTER followup');
             $this->addColumn("{$this->table}_version", 'queueset_id', 'INT(11) AFTER followup');
             $this->addForeignKey('fk_outcomeoption_queueset_id', $this->table, 'queueset_id', 'patientticketing_queueset', 'id');
-        }
 
-        $this->migrateOptions();
+            $this->migrateOptions();
+        }
     }
 
     public function safeDown()

@@ -9,9 +9,9 @@ class m220105_123220_add_queueset_id_to_clinic_location extends OEMigration
         if (!$this->isColumnExist($this->table, 'queueset_id')) {
             $this->addOEColumn($this->table, 'queueset_id', 'INT(11) DEFAULT NULL AFTER name', true);
             $this->addForeignKey('fk_cliniclocation_queueset_id', $this->table, 'queueset_id', 'patientticketing_queueset', 'id');
-        }
 
-        $this->migrateLocations();
+            $this->migrateLocations();
+        }
     }
 
     public function safeDown()
