@@ -230,7 +230,9 @@ class Patient extends BaseResource
      */
     private function mapLanguageCodeAndInterpreterRequired(\Patient $patient)
     {
-        if (property_exists($this, 'LanguageCode') || property_exists($this, 'InterpreterRequired')) {
+        if (property_exists($this, 'LanguageCode')
+            || property_exists($this, 'InterpreterRequired')
+            || property_exists($this, 'Risks')) {
             $change_episode = \Episode::getChangeEpisode($patient);
             $change_episode->save();
 
