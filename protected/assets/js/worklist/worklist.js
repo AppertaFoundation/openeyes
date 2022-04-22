@@ -79,8 +79,9 @@ $(function () {
     let startTimer = function (ele, step_data) {
         // clear active interval if exists
         let id = parseInt(step_data.id);
+        //Don't add a new interval if one already exists for this timer
         if (timer_interval[id]) {
-            clearInterval(timer_interval[id]);
+            return;
         }
         // total duration
         const total = Number(step_data.short_name) * 60;
@@ -90,29 +91,40 @@ $(function () {
         const radius = 15;
         const circumference = radius * 2 * Math.PI;
 
-        timer_interval[id] = setInterval(() => {
-            let percent = (elapsed / total) * 100;
+        timer_interval[id] = setInterval(function(){
+            let elapsed_ratio = elapsed / total;
+            let elapsed_ratio_inverted = 1.0 - elapsed_ratio;
+            let percent = elapsed_ratio * 100;
             if (percent >= 100) {
                 // clear interval and complete the hold step when time is up
                 completeHoldStep(ele, step_data);
                 return;
             }
             // from blueJS, make sure displaying something after start the timer
-            if (percent < 2)
-                percent = 2;
+            percent = Math.max(percent, 2);
+
+            // Select element from pathstep id, to ensure no issues with dangling pointers when timer is reconstructed
+            let $ele = $(`.oe-pathstep-btn.hold.active[data-pathstep-id="${id}"]`);
+
             // offset acts as an indicator of the progress
-            let offset = circumference - percent / 100 * circumference;
-            $(ele).find('circle').css({strokeDashoffset: offset});
+            let offset = elapsed_ratio_inverted * circumference;
+            $ele.find('circle').css({strokeDashoffset: offset});
+
+            //Change the displayed minutes to reflect the current remaining time
+            $ele.find('span.step').text(Math.ceil((elapsed_ratio_inverted * total) / 60));
+
             elapsed += 1;
         }, 1000);
     };
 
-
     let loadTimer = function() {
         $(document).find('.oe-pathstep-btn.hold.active').each(function (i, ele) {
-            let step_data = $(ele).data('step-data');
+            //Duplicate the reference in this scope
+            let elem = ele;
+            //Read step data JSON from step-data data attribute
+            let step_data = $(elem).data('step-data');
             if(step_data.status !== 'todo' && step_data.start_time){
-                startTimer(ele, step_data);
+                startTimer(elem, step_data);
             }
         });
     };
