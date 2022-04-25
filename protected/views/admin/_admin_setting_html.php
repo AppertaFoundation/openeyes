@@ -28,7 +28,7 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl
     $substitutions = array_merge(
         SettingMetadata::getSessionSubstitutions(),
         SettingMetadata::getPatientSubstitutions(),
-        SettingMetadata::getRecipientAddressSubstitution()
+        SettingMetadata::getCorrespondenceSubstitutions()
     );
     ?>
 

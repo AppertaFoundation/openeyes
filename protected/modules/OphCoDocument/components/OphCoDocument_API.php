@@ -1,5 +1,7 @@
 <?php
 
+use Xthiago\PDFVersionConverter\Guesser\RegexGuesser;
+
 /**
  * OpenEyes.
  *
@@ -42,4 +44,43 @@ class OphCoDocument_API extends BaseAPI
         return $element->sub_type->name;
     }
 
+    private function getPDFVersion($pdf_path)
+    {
+        $guesser = new RegexGuesser();
+        return $guesser->guess($pdf_path);
+    }
+
+    private function convertPDF($pdf_path, $version = '1.4')
+    {
+        $tmpfname = tempnam("/tmp", "OE");
+        exec('gs -sDEVICE=pdfwrite -dCompatibilityLevel='.$version.' -dNOPAUSE -dBATCH -sOutputFile='.$tmpfname.' '.$pdf_path);
+        return $tmpfname;
+    }
+
+    public function getDocumentAttachments($event)
+    {
+        $document_attachments = [];
+
+        $element = Element_OphCoDocument_Document::model()->findByAttributes(['event_id' => $event->id]);
+
+        foreach (['single_document_id', 'left_document_id', 'right_document_id'] as $index) {
+            if ($element->$index) {
+                $pf = ProtectedFile::model()->findByPk($element->$index);
+                // Return no path for image types since it can be printed and attached
+                if (strpos($pf->mimetype, 'image') === 0) {
+                    $document_attachments['image'] = '';
+                } elseif ($pf->mimetype === 'application/pdf') {
+                    $pdf_path = $pf->getPath();
+                    // Only PDF version 1.4 and below can be printed
+                    if ((float)$this->getPDFVersion($pdf_path) > 1.4) {
+                        $pdf_path = $this->convertPDF($pdf_path);
+                    }
+                    $document_attachments['application'] = $pdf_path;
+                } else {
+                    $document_attachments[] = ['other' => null];
+                }
+            }
+        }
+        return $document_attachments;
+    }
 }
