@@ -96,7 +96,7 @@ class OphCiExamination_VisualAcuity_Reading extends \BaseActiveRecordVersioned
     public function attributeLabels()
     {
         return array(
-            'method_id' => 'Correction',
+            'method_id' => 'Method',
             'unit_id' => 'Type',
             'fixation_id' => 'Fixation',
             'source_id' => 'Source',
