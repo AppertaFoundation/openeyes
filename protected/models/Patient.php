@@ -469,7 +469,7 @@ class Patient extends BaseActiveRecordVersioned
             if ($conditions_array) {
                 $criteria->addCondition("(" . implode(' OR ', $conditions_array) . ")");
             }
-        } elseif (!$params['first_name'] && !$params['last_name']) {
+        } elseif (!$params['first_name'] && !$params['last_name'] && !$params['dob']) {
             // if name search we don't need to worry about this, doing search as normal, without types
             // However, we need types for PAS, if $params['terms_with_types'] set PAS will use it, but here we do not need
 

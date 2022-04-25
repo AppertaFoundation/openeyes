@@ -594,13 +594,10 @@ class DefaultController extends BaseEventTypeController
         $parent_episode = $parent_event->episode;
         $parent_patient = $parent_episode->patient;
 
-        $parent_contact = $parent_patient->contact;
-        $parent_address = $parent_contact->address;
-
         $substitutions = array_merge(
             SettingMetadata::getSessionSubstitutions(),
-            SettingMetadata::getPatientSubstitutions($parent_patient, $parent_event),
-            SettingMetadata::getRecipientAddressSubstitution($recipient_address)
+            SettingMetadata::getPatientSubstitutions($parent_patient, $parent_patient),
+            SettingMetadata::getCorrespondenceSubstitutions($letter, $recipient_address)
         );
 
         $letter_header_html = SettingMetadata::performSubstitutions($letter_header_raw, $substitutions);
@@ -980,7 +977,7 @@ class DefaultController extends BaseEventTypeController
                 $return = true;
             }
         } else {
-            if(SettingMetadata::checkSetting('disable_draft_auto_print', 'off')) {
+            if (SettingMetadata::checkSetting('disable_draft_auto_print', 'off')) {
                 $return = true;
             }
         }
@@ -1364,9 +1361,10 @@ class DefaultController extends BaseEventTypeController
                     // email address is entered.
                     foreach ($target['DocumentOutput'] as $document_output) {
                         if (isset($document_output['output_type'])) {
-                            if (($document_output['output_type'] === DocumentOutput::TYPE_EMAIL || $document_output['output_type'] === DocumentOutput::TYPE_EMAIL_DELAYED)
-                                && (!isset($target['attributes']['email']) || empty($target['attributes']['email'])))
-                            {
+                            if (
+                                ($document_output['output_type'] === DocumentOutput::TYPE_EMAIL || $document_output['output_type'] === DocumentOutput::TYPE_EMAIL_DELAYED)
+                                && (!isset($target['attributes']['email']) || empty($target['attributes']['email']))
+                            ) {
                                 $errors['Letter'][] = 'To Email: Email cannot be empty!';
                             }
                         }
@@ -1445,15 +1443,42 @@ class DefaultController extends BaseEventTypeController
             // add attachments for each
             if (count($attachments) > 0) {
                 foreach ($attachments as $attachment) {
-                    $this->pdf_print_suffix = '';
-                    if ($attached_event = Event::model()->findByPk($attachment['associated_event_id'])) {
-                        $attachment_route = $this->setPDFprintData($attached_event->id, false, true, $attached_event->eventType->class_name);
+                    $attached_event = Event::model()->findByPk($attachment['associated_event_id']);
+                    if ($attached_event) {
+                        $this->pdf_print_suffix = '';
 
-                        $attachment_path = $attached_event->imageDirectory . '/event_' . $attachment_route . '.pdf';
+                        // For Document Events, search for the uploaded files directly and attach them
+                        if ($attached_event->eventType->name === 'Document') {
+                            $document_api = Yii::app()->moduleAPI->get('OphCoDocument');
+                            $attachment_paths = $document_api->getDocumentAttachments($attached_event);
+                            foreach ($attachment_paths as $mimetype => $attachment_path) {
+                                // Skip and move to another attachment
+                                if ($mimetype === 'other') {
+                                    continue;
+                                }
 
-                        $this->addPDFToOutput($attachment_path);
-                        @unlink($attachment_path);
-                        @rmdir($attached_event->imageDirectory);
+                                // Attachment is an image, attach it as a 'printout'
+                                if ($mimetype === 'image') {
+                                    $attachment_route = $this->setPDFprintData($attached_event->id, false, true, $attached_event->eventType->class_name);
+                                    $attachment_path = $attached_event->imageDirectory . '/event_' . $attachment_route . '.pdf';
+                                    $this->addPDFToOutput($attachment_path);
+                                    @unlink($attachment_path);
+                                    @rmdir($attached_event->imageDirectory);
+                                } else {
+                                    // Attach PDFs directly, but do not remove their path
+                                    $this->addPDFToOutput($attachment_path);
+                                }
+                            }
+                        } else {
+                            // For all other evenets, generate a PDF print and attach it to correspondence
+                            $attachment_route = $this->setPDFprintData($attached_event->id, false, true, $attached_event->eventType->class_name);
+
+                            $attachment_path = $attached_event->imageDirectory . '/event_' . $attachment_route . '.pdf';
+
+                            $this->addPDFToOutput($attachment_path);
+                            @unlink($attachment_path);
+                            @rmdir($attached_event->imageDirectory);
+                        }
                     }
                 }
             }

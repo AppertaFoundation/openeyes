@@ -171,6 +171,7 @@ class BaseEventTypeController extends BaseModuleController
      * @var array
      */
     public array $external_errors = [];
+    protected $has_conflict = false;
 
     public function behaviors()
     {
@@ -1281,9 +1282,17 @@ class BaseEventTypeController extends BaseModuleController
             ));
             $element->widget = $widget;
         } else {
-            $element->attributes = Helper::convertNHS2MySQL($el_data);
-            $this->setElementComplexAttributesFromData($element, $data, $index);
-            $element->event = $this->event;
+            if (!$this->has_conflict || $element->isNewRecord) {
+                $element->attributes = Helper::convertNHS2MySQL($el_data);
+                $this->setElementComplexAttributesFromData($element, $data, $index);
+                $element->event = $this->event;
+            }
+        }
+        // if has conflict and the element is not a new record
+        // reload element data
+        if ($this->has_conflict && !$element->isNewRecord) {
+            $element->refresh();
+            return;
         }
     }
 
@@ -1394,16 +1403,15 @@ class BaseEventTypeController extends BaseModuleController
         $elements = array();
 
         // check if the event is edited recently
-        $is_conflict = false;
         $has_last_modified_date_value = isset($data['Event']) && isset($data['Event']['last_modified_date']);
-        if (!$this->event->isNewRecord
-        && ($has_last_modified_date_value
+        if (
+            !$this->event->isNewRecord
+            && ($has_last_modified_date_value
             && $data['Event']['last_modified_date'] !== $this->event->last_modified_date)
         ) {
             $user = $this->event->usermodified->getFullName();
-            $this->setOpenElementsFromCurrentEvent('edit');
-            $errors['conflict'][] = "The event was recently modified by {$user} at {$this->event->last_modified_date}, please doulbe check the entries and save again";
-            $is_conflict = true;
+            $this->has_conflict = true;
+            $errors['conflict'][] = "The event was recently modified by {$user} at {$this->event->last_modified_date}, please double check the entries and save again";
         }
 
         // only process data for elements that are part of the element type set for the controller event type
@@ -1420,21 +1428,20 @@ class BaseEventTypeController extends BaseModuleController
             $errors[$this->event_type->name][] = 'Cannot create an event without at least one element';
         }
 
-        // assign
-        // if there are conflicts, load the saved element data
-        // and append the newly added elements
-        if ($is_conflict) {
-            $existing_elements_names = array_map(function ($oe) {
-                return get_class($oe);
-            }, $this->open_elements);
-            foreach ($elements as $ele) {
-                if (!in_array(get_class($ele), $existing_elements_names)) {
-                    $this->open_elements[] = $ele;
+        // if has conflict
+        // add missing elements
+        if ($this->has_conflict) {
+            $added_elements_name = array_map(function ($ele) {
+                return get_class($ele);
+            }, $elements);
+            $event_elements = $this->event->getElements();
+            foreach ($event_elements as $ele) {
+                if (!in_array(get_class($ele), $added_elements_name)) {
+                    $elements[] = $ele;
                 }
             }
-        } else {
-            $this->open_elements = $elements;
         }
+        $this->open_elements = $elements;
 
         // validate
         foreach ($this->open_elements as $element) {

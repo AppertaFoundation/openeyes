@@ -23,7 +23,7 @@ class PatientSearch
     /**
      * Patient name regex
      */
-    const PATIENT_NAME_REGEX = '/^([a-zA-Z]{2,}\s?[a-zA-z]{1,}\'?-?,?\s?[a-zA-Z]{2,}\s?([a-zA-Z]{1,})?)/';
+    const PATIENT_NAME_REGEX = '/^([\D]+[ ,]?[\D]*)(\s\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4})?$/';
 
     /**
      * @var array relevant information of search term by type
@@ -124,6 +124,7 @@ class PatientSearch
         if ($name) {
             $this->search_terms['first_name'] = trim($name['first_name']);
             $this->search_terms['last_name'] = trim($name['last_name']);
+            $this->search_terms['dob'] = trim($name['dob']);
             $this->search_terms['is_name_search'] = true;
         } else {
 
@@ -198,6 +199,7 @@ class PatientSearch
             'currentPage' => $current_page,
             'first_name' => CHtml::decode($this->search_terms['first_name']),
             'last_name' => CHtml::decode($this->search_terms['last_name']),
+            'dob' => isset($this->search_terms['dob']) ? CHtml::decode($this->search_terms['dob']) : '',
             'patient_identifier_value' => $this->search_terms['patient_identifier_value'],
             'terms_with_types' => [],
             'original_term' => $term,
@@ -337,18 +339,30 @@ class PatientSearch
         $result = [];
         if (preg_match(self::PATIENT_NAME_REGEX, $term, $m)) {
             $name = $m[1];
+            $name = trim(preg_replace('/\s?\d[\/\-]\d[\/\-]\d/', '', $name));
 
             if (strpos($name, ',') !== false) {
-                list($surname, $firstname) = explode(',', $name, 2);
+                [$surname, $firstname] = explode(',', $name, 2);
             } elseif (strpos($name, ' ')) {
-                list($firstname, $surname) = explode(' ', $name, 2);
+                [$firstname, $surname] = explode(' ', $name, 2);
             } else {
                 $surname = $name;
                 $firstname = '';
             }
+            $dob = $m[2] ?? '';
 
             $result['first_name'] = trim($firstname);
             $result['last_name'] = trim($surname);
+            if($dob){
+                // normalize dob input for DateTime::createFromFormat
+                $normalized_dob = trim(preg_replace('/[-\/]+/', ' ', $dob));
+                // specify day month year for the date string
+                $formated_dob = DateTime::createFromFormat('d m Y', $normalized_dob);
+                if($formated_dob){
+                    $dob = $formated_dob->format('Y-m-d');
+                }
+            }
+            $result['dob'] = trim($dob);
         }
 
         return $result;

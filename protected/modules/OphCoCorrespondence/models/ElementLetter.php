@@ -418,7 +418,7 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
                 $doc->Header = $header;
                 $body = new stdClass();
 
-                $body->DocumentBase64 = base64_encode(file_get_contents($file_path));
+                $body->DocumentBase64 = file_get_contents($file_path);
                 $doc->Body = $body;
 
                 $wrapper->DocumentVersion = $doc;

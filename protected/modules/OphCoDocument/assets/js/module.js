@@ -73,11 +73,11 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
         }
 
         $(controller.options.dropAreaSelector).on({
-            "dragenter, dragover": function(ev){
+            "dragenter, dragover": function (ev) {
                 ev.preventDefault();
                 ev.stopPropagation();
             },
-            "drop": function(ev){
+            "drop": function (ev) {
                 ev.preventDefault();
 
                 let data = ev.originalEvent.dataTransfer.files;
@@ -108,7 +108,7 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
                     xhr: function () {
                         var myXhr = $.ajaxSettings.xhr();
                         if (myXhr.upload) {
-                            myXhr.upload.addEventListener('progress', function(evt) {
+                            myXhr.upload.addEventListener('progress', function (evt) {
                                 if (evt.lengthComputable) {
                                     let percentage = (evt.loaded / evt.total) * 100;
                                     controller.setUploadStatusText($field, 'Uploading: ' + parseInt(percentage) + '%');
@@ -165,16 +165,18 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
             $.ajax({
                 url: '/OphCoDocument/Default/getImage',
                 type: 'POST',
-                data: {subTypeId: this.options[this.selectedIndex].value,
+                data: {
+                    subTypeId: this.options[this.selectedIndex].value,
                     uploadMode: uploadMode,
-                    YII_CSRF_TOKEN: YII_CSRF_TOKEN},
+                    YII_CSRF_TOKEN: YII_CSRF_TOKEN
+                },
                 success: function (response) {
                     if (response) {
-                        response['document'].forEach(function(side) {
+                        response['document'].forEach(function (side) {
                             const td = document.querySelector(`.js-document-upload-wrapper td[data-side=${side}]`);
                             let $hidden_field = td.querySelector(`#Element_OphCoDocument_Document_${side}_document_id`);
 
-                            if (typeof($hidden_field) !== 'undefined' && $hidden_field != null) {
+                            if (typeof ($hidden_field) !== 'undefined' && $hidden_field != null) {
                                 $hidden_field.value = response['file_id'];
                             }
 
@@ -199,8 +201,8 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
             });
         });
 
-        Array.from(document.querySelectorAll(controller.options.removeButtonSelector)).forEach(function(element) {
-            element.addEventListener('click', function(event) {
+        Array.from(document.querySelectorAll(controller.options.removeButtonSelector)).forEach(function (element) {
+            element.addEventListener('click', function (event) {
                 event.preventDefault();
                 controller.removeDocument(element.dataset.side);
             });
@@ -258,15 +260,15 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
                     }
                 });
 
-                const index = ''+this.imageAnnotators.length;
+                const index = '' + this.imageAnnotators.length;
                 this.imageAnnotators.push(imageAnnotator);
                 imageEl.dataset.imageAnnotatorId = index;
                 annotateImage.dataset.imageAnnotatorId = index;
             });
         });
 
-        Array.from(document.querySelectorAll(controller.options.downloadImageActionSelector)).forEach(function(element) {
-            element.addEventListener('click', function(event) {
+        Array.from(document.querySelectorAll(controller.options.downloadImageActionSelector)).forEach(function (element) {
+            element.addEventListener('click', function (event) {
                 event.preventDefault();
 
                 const div = element.parentElement;
@@ -297,7 +299,7 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
                 const imageEl = el.querySelector(el.getAttribute('data-image-el'));
                 const fileType = el.getAttribute('data-file-type');
                 const imageAnnotator = this.imageAnnotators[imageEl.dataset.imageAnnotatorId];
-                const canvasDataUrl =  await imageAnnotator.getCanvasDataUrl();
+                const canvasDataUrl = await imageAnnotator.getCanvasDataUrl();
                 imageEl.src = canvasDataUrl;
                 if (fileType !== 'pdf') {
                     document.querySelector(`#ProtectedFile_${side}_file_content`).value = canvasDataUrl;
@@ -307,8 +309,8 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
             });
         });
 
-        Array.from(document.querySelectorAll(controller.options.cancelAnnotationActionSelector)).forEach(function(element) {
-            element.addEventListener('click', function(event) {
+        Array.from(document.querySelectorAll(controller.options.cancelAnnotationActionSelector)).forEach(function (element) {
+            element.addEventListener('click', function (event) {
                 event.preventDefault();
 
                 const div = element.parentElement;
@@ -319,8 +321,8 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
             });
         });
 
-        Array.from(document.querySelectorAll(controller.options.pdfPrevButtonSelector)).forEach(function(element) {
-            element.addEventListener('click', function(event) {
+        Array.from(document.querySelectorAll(controller.options.pdfPrevButtonSelector)).forEach(function (element) {
+            element.addEventListener('click', function (event) {
                 event.preventDefault();
 
                 const td = element.parentElement.parentElement;
@@ -330,7 +332,7 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
                 let totalPages = parseInt(el.getAttribute('data-total-pages'));
                 if (currentPage !== 1) {
                     el.querySelector(`.page-${currentPage}`).style.display = 'none';
-                    el.querySelector(`.page-${currentPage-1}`).style.display = '';
+                    el.querySelector(`.page-${currentPage - 1}`).style.display = '';
                     el.setAttribute('data-current-page', (currentPage - 1).toString());
                     el.setAttribute('data-image-el', `.page-${currentPage - 1}`);
                     document.querySelector(`.js-document-upload-wrapper td[data-side=${side}] label`).innerText = `Page: ${currentPage - 1}/${totalPages}`;
@@ -338,8 +340,8 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
             });
         });
 
-        Array.from(document.querySelectorAll(controller.options.pdfNextButtonSelector)).forEach(function(element) {
-            element.addEventListener('click', function(event) {
+        Array.from(document.querySelectorAll(controller.options.pdfNextButtonSelector)).forEach(function (element) {
+            element.addEventListener('click', function (event) {
                 event.preventDefault();
                 const td = element.parentElement.parentElement;
                 const side = td.dataset.side;
@@ -348,7 +350,7 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
                 let totalPages = parseInt(el.getAttribute('data-total-pages'));
                 if (currentPage !== totalPages) {
                     el.querySelector(`.page-${currentPage}`).style.display = 'none';
-                    el.querySelector(`.page-${currentPage+1}`).style.display = '';
+                    el.querySelector(`.page-${currentPage + 1}`).style.display = '';
                     el.setAttribute('data-current-page', (currentPage + 1).toString());
                     el.setAttribute('data-image-el', `.page-${currentPage + 1}`);
                     document.querySelector(`.js-document-upload-wrapper td[data-side=${side}] label`).innerText = `Page: ${currentPage + 1}/${totalPages}`;
@@ -361,46 +363,46 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
             var files = event.clipboardData.files;
             if (files[0] && files[0].type.includes("image")) {
 
-                    if ($("input[name='upload_mode']:checked").val() === 'double') {
+                if ($("input[name='upload_mode']:checked").val() === 'double') {
 
-                        let dialog = new OpenEyes.UI.Dialog({
-                            content: $($('#side-selector-popup').html()),
-                            title: "Do you want to upload right or left document ?",
+                    let dialog = new OpenEyes.UI.Dialog({
+                        content: $($('#side-selector-popup').html()),
+                        title: "Do you want to upload right or left document ?",
 
-                            onOpen: function() {
-                                let dialog = this;
-                                dialog.content.on("click", ".js-side-picker", function() {
-                                    let side = $(this).data("side");
+                        onOpen: function () {
+                            let dialog = this;
+                            dialog.content.on("click", ".js-side-picker", function () {
+                                let side = $(this).data("side");
 
-                                    controller.paste(side, files);
-                                    $(controller.options.fileInputSelector).trigger('change');
-                                    dialog.close();
-                                });
-                            },
-                            onClose: function() {
-                                this.destroy();
-                            }
-                        });
-                        dialog.open();
-
-                        $(window).on('keypress', function (event) {
-
-                            if (event.key === 'l' || event.key === 'L') {
-                                controller.paste("left", files);
+                                controller.paste(side, files);
+                                $(controller.options.fileInputSelector).trigger('change');
                                 dialog.close();
-                                $(this).unbind(event);
-                            }
-                            if (event.key === 'r' || event.key === 'R') {
-                                controller.paste("right", files);
-                                dialog.close();
-                                $(this).unbind(event);
-                            }
-                            $(controller.options.fileInputSelector).trigger('change');
-                        });
-                    } else if ($("input[name='upload_mode']:checked").val() === 'single') {
-                        controller.paste("single", files);
+                            });
+                        },
+                        onClose: function () {
+                            this.destroy();
+                        }
+                    });
+                    dialog.open();
+
+                    $(window).on('keypress', function (event) {
+
+                        if (event.key === 'l' || event.key === 'L') {
+                            controller.paste("left", files);
+                            dialog.close();
+                            $(this).unbind(event);
+                        }
+                        if (event.key === 'r' || event.key === 'R') {
+                            controller.paste("right", files);
+                            dialog.close();
+                            $(this).unbind(event);
+                        }
                         $(controller.options.fileInputSelector).trigger('change');
-                    }
+                    });
+                } else if ($("input[name='upload_mode']:checked").val() === 'single') {
+                    controller.paste("single", files);
+                    $(controller.options.fileInputSelector).trigger('change');
+                }
 
             } else {
                 new OpenEyes.UI.Dialog.Alert({
@@ -410,7 +412,7 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
         }, false);
 
         $("a.button.header-tab.red").on('click', function () {
-           controller.options.action = 'cancel';
+            controller.options.action = 'cancel';
         });
 
         $("#et_save,#et_save_footer").on('click', async function (e) {
@@ -418,36 +420,40 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
             e.preventDefault();
             let side, containerElem, imageElem;
             let canvasData = false;
-            const canvasJs =  document.querySelector('#js-annotate-image .canvas-js');
+            const canvasJs = document.querySelector('#js-annotate-image .canvas-js');
 
             if (canvasJs) {
                 side = canvasJs.getAttribute('data-side');
                 containerElem = document.querySelector(`.js-document-upload-wrapper td[data-side=${side}] .ophco-image-container`);
                 imageElem = containerElem.querySelector(containerElem.getAttribute('data-image-el'));
 
-                const imageAnnotator = controller.imageAnnotators[imageElem.dataset.imageAnnotatorId];
-                canvasData = await imageAnnotator.getCanvasDataUrl();
-            }
+                document.querySelectorAll(".js-save-annotation-action").forEach(button => {
+                    if (button.style.display === '') {
+                        button.click();
+                    }
+                });
 
-            if ((typeof canvasData !== "boolean")) {
-                const fileType = containerElem.getAttribute('data-file-type');
-                imageElem.src = canvasData;
-                if (fileType === 'image') {
-                    containerElem.parentElement.querySelector('.js-protected-file-content').value = canvasData;
-                }
-            }
+                let canvasData = OpenEyes.UI.ImageAnnotator.getCanvasDataUrl();
 
-            // before submitting it, check if the pdf was uploaded or not
-            document.querySelectorAll('.ophco-image-container').forEach(function (element) {
-                if ((element.getAttribute('data-file-type') === 'pdf') && (element.parentElement.querySelector('.js-canvas-modified').value === '1')) {
-                    // then generate a base64 pdf
-                    console.log('generating pdf' + element);
-                    element.parentElement.querySelector('.js-protected-file-content').value = generatePdfOutput(element);
+                if ((typeof canvasData !== "boolean")) {
+                    const fileType = containerElem.getAttribute('data-file-type');
+                    imageElem.src = canvasData;
+                    if (fileType === 'image') {
+                        containerElem.parentElement.querySelector('.js-protected-file-content').value = canvasData;
+                    }
                 }
+
+                // before submitting it, check if the pdf was uploaded or not
+                document.querySelectorAll('.ophco-image-container').forEach(function (element) {
+                    if ((element.getAttribute('data-file-type') === 'pdf') && (element.parentElement.querySelector('.js-canvas-modified').value === '1')) {
+                        // then generate a base64 pdf
+                        console.log('generating pdf' + element);
+                        element.parentElement.querySelector('.js-protected-file-content').value = generatePdfOutput(element);
+                    }
+                });
+
+                $('#document-create').submit();
             });
-
-            $('#document-create').submit();
-        });
     };
 
     function generatePdfOutput(element, shouldSavePdf = false) {
@@ -460,8 +466,7 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
             if (imageObj.height < imageObj.width) {
                 orientation = 'landscape';
             }
-            if (index === 0) 
-            {
+            if (index === 0) {
                 doc = new jsPDF({ 'orientation': orientation });
             }
             else {
@@ -490,20 +495,20 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
     DocumentUploadController.prototype.rotateImage = function (type, event) {
         event.preventDefault();
 
-        let image_id = $('#Element_OphCoDocument_Document_'+type+'_document_id').val();
+        let image_id = $('#Element_OphCoDocument_Document_' + type + '_document_id').val();
         const imageEl = $(`#${type}-image-${image_id}`);
         let image_src = imageEl.attr('src');
         image_src = image_src.split('?');
         let src = image_src[0];
         let currentDegree = 0;
-        if(typeof image_src[1] !== 'undefined') {
+        if (typeof image_src[1] !== 'undefined') {
             // does not exist
             currentDegree = Number(image_src[1].split('=')[1]);
         }
 
-        let degree = (-90 + currentDegree) % 360 ;
-        imageEl.animate({  transform: degree }, {
-            step: function() {
+        let degree = (-90 + currentDegree) % 360;
+        imageEl.animate({ transform: degree }, {
+            step: function () {
                 $(this).attr({
                     'src': src + '?rotate=' + degree
                 });
@@ -531,7 +536,7 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
         let $td = $("#Document_" + side + "_document_row_id").closest('td');
 
         $td.find('.ophco-image-container').remove();
-        $('#'+side+'_document_rotate').val(0);
+        $('#' + side + '_document_rotate').val(0);
         $td.find(".upload-box").show().find('.js-upload-box-text').text("Click to select file or DROP here");
 
         const tdEl = $td[0];
@@ -539,7 +544,7 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
 
         const documentSummarySideEl = document.querySelector(`${controller.options.documentUploadSummarySelector} div[data-side=${side}]`);
 
-        if(side === 'single'){
+        if (side === 'single') {
             $(controller.options.uploadModeSelector).attr('disabled', false);
             showElement(document.querySelector('#single_document_uploader'));
             document.querySelector('#document-event').className = "cols-11";
@@ -549,7 +554,7 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
             hideElement(document.querySelector('#document_summary'));
         } else {
             let opposite_side = side === 'right' ? 'left' : 'right';
-            if( $('#Element_OphCoDocument_Document_'+ opposite_side + '_document_id').val() === '') {
+            if ($('#Element_OphCoDocument_Document_' + opposite_side + '_document_id').val() === '') {
                 $(controller.options.uploadModeSelector).attr('disabled', false);
                 showElement(document.querySelector('#double_document_uploader'));
                 showElement(document.querySelector('#document-event-info'));
@@ -562,7 +567,7 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
 
             // hideElement(document.querySelector(`.js-document-summary-wrapper div[data-side=${side}]`));
             hideElement(documentSummarySideEl);
-            document.querySelectorAll(`.js-document-summary-wrapper div[data-side=${side}], .js-document-summary-wrapper div[data-side=${opposite_side}]`).forEach(function(element) {
+            document.querySelectorAll(`.js-document-summary-wrapper div[data-side=${side}], .js-document-summary-wrapper div[data-side=${opposite_side}]`).forEach(function (element) {
                 element.className = 'cols-half';
             });
         }
@@ -599,12 +604,12 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
         $input.prop("files", files);
     };
 
-    DocumentUploadController.prototype.setUploadStatusText = function(field, text) {
+    DocumentUploadController.prototype.setUploadStatusText = function (field, text) {
         let $label = $(field).closest('.upload-box').find('.js-upload-box-text');
         $label.text(text);
     };
 
-    DocumentUploadController.prototype.documentUpload = function(fileUploadObject, isRotationRequired) {
+    DocumentUploadController.prototype.documentUpload = function (fileUploadObject, isRotationRequired) {
         let controller = this;
 
         let $td = fileUploadObject.td;
@@ -639,7 +644,7 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
         document.querySelector('#document-event').className = "cols-full";
     };
 
-    DocumentUploadController.prototype.generatePDF = function($td, $div, value, extension, side) {
+    DocumentUploadController.prototype.generatePDF = function ($td, $div, value, extension, side) {
         let controller = this;
         let thePDF = null;
         let numPages = 0;
@@ -650,24 +655,23 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
             thePDF = pdf;
             numPages = pdf.numPages;
             //Start with first page
-            pdf.getPage( 1 ).then( handlePages.bind(this, controller, thePDF, numPages, currPage, $div, $td, side) );
+            pdf.getPage(1).then(handlePages.bind(this, controller, thePDF, numPages, currPage, $div, $td, side));
         }, function (reason) {
         });
     };
 
-    function handlePages(controller, thePDF, numPages, currPage, $div, $td, side, page)
-    {
-        let canvas = document.createElement( "canvas" );
+    function handlePages(controller, thePDF, numPages, currPage, $div, $td, side, page) {
+        let canvas = document.createElement("canvas");
         canvas.id = 'page' + currPage;
         let context = canvas.getContext('2d');
-        let viewport = page.getViewport( {scale:1} );
+        let viewport = page.getViewport({ scale: 1 });
         canvas.height = viewport.height;
         canvas.width = viewport.width;
 
         // render the page on the canvas
-        let renderTask = page.render({canvasContext: context, viewport: viewport});
-        renderTask.promise.then(function() {
-            let dataUrl = canvas.toDataURL('image/jpeg', 1.0 );
+        let renderTask = page.render({ canvasContext: context, viewport: viewport });
+        renderTask.promise.then(function () {
+            let dataUrl = canvas.toDataURL('image/jpeg', 1.0);
             let image = document.createElement('img');
             image.src = dataUrl;
             image.setAttribute('class', "page-" + currPage);
@@ -677,9 +681,8 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
             $div.appendChild(image);
 
             currPage++;
-            if ( thePDF !== null && currPage <= numPages )
-            {
-                thePDF.getPage( currPage ).then( handlePages.bind(this, controller, thePDF,numPages,currPage, $div, $td, side) );
+            if (thePDF !== null && currPage <= numPages) {
+                thePDF.getPage(currPage).then(handlePages.bind(this, controller, thePDF, numPages, currPage, $div, $td, side));
             } else {
                 $div.setAttribute('data-image-el', '.page-1');
                 $div.setAttribute('data-file-type', 'pdf');
@@ -699,7 +702,7 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
         });
     }
 
-    DocumentUploadController.prototype.generateView = function($td, value, extension, side, isRotationRequired = false) {
+    DocumentUploadController.prototype.generateView = function ($td, value, extension, side, isRotationRequired = false) {
         let controller = this;
         let result;
 
@@ -751,20 +754,20 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
             case 'ogg':
             case 'mov':
             case 'quicktime':
-           //     result = controller.createOPHCOVideoContainer(res, value, extension, index);
+                //     result = controller.createOPHCOVideoContainer(res, value, extension, index);
                 break;
         }
 
         return result;
     };
 
-    DocumentUploadController.prototype.validateFile = function($input) {
+    DocumentUploadController.prototype.validateFile = function ($input) {
         let valid = true;
         if (typeof FileReader !== "undefined") {
 
             var input_selector = $input.attr('id');
             var file = document.getElementById(input_selector).files[0];
-            if(!file){
+            if (!file) {
                 return false;
             }
             var size = file.size;
@@ -778,7 +781,7 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
                     valid = false;
                 }
 
-                if(file.name.length > window.max_document_name_length){
+                if (file.name.length > window.max_document_name_length) {
                     new OpenEyes.UI.Dialog.Alert({
                         content: 'The file you tried to upload exceeds the maximum allowed document name length, which is ' + window.max_document_name_length + ' characters'
                     }).open();
@@ -786,7 +789,7 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
                     valid = false;
                 }
 
-                var mimeType=file.type;
+                var mimeType = file.type;
 
                 if (mimeType === '' || mimeType === undefined) {
                     var reader = new FileReader();
@@ -808,7 +811,7 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
         return valid;
     };
 
-    DocumentUploadController.prototype.validateFileType = function(mimeType) {
+    DocumentUploadController.prototype.validateFileType = function (mimeType) {
         if (window.allowed_file_types.indexOf(mimeType) === -1) {
             new OpenEyes.UI.Dialog.Alert({
                 content: 'Only the following file types can be uploaded: ' + window.allowed_file_types.join(', ') +
@@ -817,12 +820,12 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
 
             return false;
         }
-        else{
+        else {
             return true;
         }
     };
 
-    DocumentUploadController.prototype.clearCanvasData = function() {
+    DocumentUploadController.prototype.clearCanvasData = function () {
         const annotateEl = document.querySelector('#js-annotate-image');
 
         if (this.imageAnnotators && this.imageAnnotators[annotateEl.dataset.imageAnnotatorId]) {
@@ -870,7 +873,7 @@ $(document).ready(function () {
     var uploader = new OpenEyes.OphCoDocument.DocumentUploadController();
     $('.js-document-upload-wrapper').data('controller', uploader);
 
-    $(this).on('click','#et_print', function (e) {
+    $(this).on('click', '#et_print', function (e) {
         e.preventDefault();
         printEvent(null);
     });

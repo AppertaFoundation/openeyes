@@ -525,7 +525,7 @@ class PatientMergeRequestController extends BaseController
             $patient_identifiers[] = [
                 'title' => $identifier->patientIdentifierType->long_title ?? $identifier->patientIdentifierType->short_title,
                 'value' => PatientIdentifierHelper::getIdentifierValue($identifier),
-                'save_value' => $identifier->equals($local_identifier) || $identifier->equals($global_identifier)
+                'save_value' => ($local_identifier && $identifier->equals($local_identifier)) || ($global_identifier && $identifier->equals($global_identifier))
             ];
         }
 

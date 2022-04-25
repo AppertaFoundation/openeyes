@@ -98,6 +98,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             e.preventDefault();
             tableRow.remove();
             controller.toggleNoOphthalmicDiagnoses();
+            controller.toggleTable();
 
 
             $(":input[name^='glaucoma_diagnoses']").trigger('change', [
@@ -183,7 +184,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         controller.$noOphthalmicDiagnosesFld.on('click', function () {
 
             if (controller.$noOphthalmicDiagnosesFld.prop('checked')) {
-                controller.toggleTableHead();
+                controller.toggleTable();
                 controller.$popup.hide();
             } else {
                 controller.$popup.show();
@@ -214,11 +215,13 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             }
         };
 
-        DiagnosesController.prototype.toggleTableHead = function () {
+        DiagnosesController.prototype.toggleTable = function () {
             if (this.$table.find('.removeDiagnosis').length === 0 && this.$table.find('.read-only').length === 0) {
-                this.$table.find('thead').hide();
+                this.$table.hide();
+            } else if (this.$table.find('.removeDiagnosis').length === 0 && this.$table.find('.read-only').length === 1) {
+                this.$table.hide();
             } else {
-                this.$table.find('thead').show();
+                this.$table.show();
             }
         };
     };
@@ -324,7 +327,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     DiagnosesController.prototype.addEntry = function (selectedItems) {
         let controller = this;
         var rows = this.createRow(selectedItems);
-        this.toggleTableHead();
+        this.toggleTable();
         this.toggleNoOphthalmicDiagnoses();
         for (var i in rows) {
             this.$table.find('tbody').append(rows[i]);
@@ -332,8 +335,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             this.selectEye(this.$table.find('tbody tr:last'), selectedItems[i].eye_id);
             this.setDatepicker();
         }
-        this.$table.find('.js-left-eye').off('click').on('click', function() { controller.compareWithTriage(); });
-        this.$table.find('.js-right-eye').off('click').on('click', function() { controller.compareWithTriage(); });
+        this.$table.find('.js-left-eye').off('click').on('click', function () { controller.compareWithTriage(); });
+        this.$table.find('.js-right-eye').off('click').on('click', function () { controller.compareWithTriage(); });
         $(":input[name^='glaucoma_diagnoses']").trigger('change', ['bybys']);
     };
 
@@ -558,15 +561,15 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             const triageEyeId = parseInt(triageEyeElement.val().trim());
 
             const rowEyeIds = $('#OphCiExamination_diagnoses > tr')
-                  .map(function () { return controller.getEyeIdFromRow($(this)); })
-                  .get()
-                  .filter((value) => value !== 0);
+                .map(function () { return controller.getEyeIdFromRow($(this)); })
+                .get()
+                .filter((value) => value !== 0);
 
             const eyeShared = rowEyeIds.length === 0 || rowEyeIds.some((value) => (value & triageEyeId) !== 0);
 
             if (!eyeShared) {
                 const warningDiv = $('<div>', { 'class': 'alert-box with-icon warning js-examination-diagnoses-triage-eye-warning' })
-                      .text('Warning: Mismatch in the Laterality of Eye selected in all Diagnoses and Triage Elements.')
+                    .text('Warning: Mismatch in the Laterality of Eye selected in all Diagnoses and Triage Elements.')
 
                 $('#OphCiExamination_diagnoses').parents('div.element-fields').after(warningDiv);
             }
