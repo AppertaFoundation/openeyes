@@ -32,7 +32,10 @@ class HL7_Patient_Visit extends BaseHL7_Section
             "Waiting for In CDU Dilating" => "CDU",
             "Waiting for In CDU Refraction" => "CDU",
             "Waiting for In Red Room Nurse" => "RR",
-            "Waiting for In Red Room Doctor" => "RR"
+            "Waiting for In Red Room Doctor" => "RR",
+            "Triage" => "WFN",
+            "Nurse" => "WFD",
+            "Doctor" => "WFDIS",
         ),
         "RDCEC" => array(
             "Waiting for RDCEC Triage" => "WFTP",
@@ -48,7 +51,10 @@ class HL7_Patient_Visit extends BaseHL7_Section
             "Waiting for In CDU Dilating" => "CDUP",
             "Waiting for In CDU Refraction" => "CDUP",
             "Waiting for In Red Room Nurse" => "RRP",
-            "Waiting for In Red Room Doctor" => "RRP"
+            "Waiting for In Red Room Doctor" => "RRP",
+            "Triage" => "WFNP",
+            "Nurse" => "WFDP",
+            "Doctor" => "WFDISP",
         )
     );
 
