@@ -131,7 +131,7 @@ class SecondaryDiagnosis extends BaseActiveRecordVersioned
      * @return string
      */
     public function getOphthalmicDescription() {
-        return $this->eye->adjective.'~'.$this->disorder->term . '~' . $this->getDateText() . '~';
+        return $this->eye ? $this->eye->adjective.'~'.$this->disorder->term . '~' . $this->getDateText() . '~' : '~'.$this->disorder->term . '~' . $this->getDateText() . '~';
     }
 
     /**

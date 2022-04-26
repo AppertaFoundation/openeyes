@@ -868,7 +868,7 @@ class Patient extends BaseActiveRecordVersioned
         // the latest modified one
         $unique_ophthalmic_diagnoses = [];
         foreach ($this->ophthalmicDiagnoses as $ophthalmic_diagnosis) {
-            $key = $ophthalmic_diagnosis->disorder_id . $ophthalmic_diagnosis->eye->adjective;
+            $key = $ophthalmic_diagnosis->eye ? $ophthalmic_diagnosis->disorder_id . $ophthalmic_diagnosis->eye->adjective : $ophthalmic_diagnosis->disorder_id;
             if (isset($unique_ophthalmic_diagnoses[$key])) {
                 if ($unique_ophthalmic_diagnoses[$key]->last_modified_date < $ophthalmic_diagnosis->last_modified_date) {
                     $unique_ophthalmic_diagnoses[$key] = $ophthalmic_diagnosis;
