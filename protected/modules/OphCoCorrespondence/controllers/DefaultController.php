@@ -25,7 +25,7 @@ class DefaultController extends BaseEventTypeController
         'getMacroData' => self::ACTION_TYPE_FORM,
         'getString' => self::ACTION_TYPE_FORM,
         'getCc' => self::ACTION_TYPE_FORM,
-        'getConsultantsBySubspecialty' => self::ACTION_TYPE_FORM,
+        'getConsultantsBySiteAndSubspecialty' => self::ACTION_TYPE_FORM,
         'getSalutationByFirm' => self::ACTION_TYPE_FORM,
         'getSiteInfo' => self::ACTION_TYPE_FORM,
         'getDocumentOutputStatus' => self::ACTION_TYPE_FORM,
@@ -856,14 +856,16 @@ class DefaultController extends BaseEventTypeController
     }
 
     /**
-     * Returns the consultants by subspecialty
+     * Returns the consultants by site & subspecialty
+     * @param $site_id
      * @param null $subspecialty_id
      */
-    public function actionGetConsultantsBySubspecialty($subspecialty_id = null, $check_service_firms_filter_setting = false)
+    public function actionGetConsultantsBySiteAndSubspecialty($site_id, $subspecialty_id = null, $check_service_firms_filter_setting = false)
     {
         $only_service_firms = $check_service_firms_filter_setting && SettingMetadata::checkSetting('filter_service_firms_internal_referral', 'on');
 
-        $firms = Firm::model()->getListWithSpecialties(Yii::app()->session['institution_id'], false, $subspecialty_id, false, $only_service_firms);
+        //$firms = Firm::model()->getListWithSpecialties(Yii::app()->session['institution_id'], false, $subspecialty_id, false, $only_service_firms);
+        $firms = InternalReferralSiteFirmMapping::findInternalReferralFirms($site_id, $subspecialty_id, $only_service_firms);
         $this->renderJSON($firms);
 
         Yii::app()->end();
@@ -938,14 +940,17 @@ class DefaultController extends BaseEventTypeController
     /**
      * @param $to_location_id
      */
-    public function actionGetSiteInfo($to_location_id)
+    public function actionGetSiteInfo($to_location_id, $subspecialty_id = null, $check_service_firms_filter_setting = false)
     {
         $to_location = OphCoCorrespondence_InternalReferral_ToLocation::model()->findByPk($to_location_id);
         $site = $to_location->site;
 
+        $only_service_firms = $check_service_firms_filter_setting && SettingMetadata::checkSetting('filter_service_firms_internal_referral', 'on');
+        $firms = InternalReferralSiteFirmMapping::findInternalReferralFirms($to_location_id, $subspecialty_id, $only_service_firms);
+
         $attributes = $site->attributes;
         $attributes['correspondence_name'] = $site->getCorrespondenceName();
-        $this->renderJSON($attributes);
+        $this->renderJSON(['site' => $attributes, 'firms' => $firms]);
 
         Yii::app()->end();
     }

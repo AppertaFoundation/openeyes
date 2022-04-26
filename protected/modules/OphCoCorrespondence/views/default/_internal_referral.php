@@ -37,21 +37,6 @@ $selected_subspecialty_id = $element->to_subspecialty_id != "" ?
                 </td>
             </tr>
             <tr>
-                <td><?= Firm::contextLabel() ?></td>
-                <td>
-                    <?php
-                    $only_service_firms = SettingMetadata::checkSetting('filter_service_firms_internal_referral', 'on');
-                    $applicable_firms = Firm::model()->getListWithSpecialties(Yii::app()->session['institution_id'], false, $selected_subspecialty_id, false, $only_service_firms);
-
-                    echo \CHtml::activeDropDownList(
-                        $element,
-                        "to_firm_id",
-                        $applicable_firms,
-                        array('empty' => '- None -', 'class' => 'cols-full')
-                    ); ?>
-                </td>
-            </tr>
-            <tr>
                 <td>Location</td>
                 <td>
                     <?php
@@ -66,6 +51,21 @@ $selected_subspecialty_id = $element->to_subspecialty_id != "" ?
                         $element->getToLocations(true),
                         array('empty' => '- None -', 'class' => 'cols-full')
                     ) ?>
+                </td>
+            </tr>
+            <tr>
+                <td><?= Firm::contextLabel() ?></td>
+                <td>
+                    <?php
+                    $only_service_firms = SettingMetadata::checkSetting('filter_service_firms_internal_referral', 'on');
+                    $applicable_firms = InternalReferralSiteFirmMapping::findInternalReferralFirms($element->to_location_id, $selected_subspecialty_id, $only_service_firms);
+
+                    echo \CHtml::activeDropDownList(
+                        $element,
+                        "to_firm_id",
+                        $applicable_firms,
+                        array('empty' => '- None -', 'class' => 'cols-full')
+                    ); ?>
                 </td>
             </tr>
             <tr>

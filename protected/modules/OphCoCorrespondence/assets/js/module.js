@@ -209,39 +209,41 @@ function resetRecipientFromInternalReferral() {
 
 }
 
-function updateConsultantDropdown(subspecialty_id) {
+function setConsultantDropdown(data) {
+    var options = [];
+
+    //remove old options
+    $('#ElementLetter_to_firm_id option:gt(0)').remove();
+
+    //create js array from obj to sort
+    for (item in data) {
+        options.push([item, data[item]]);
+    }
+
+    options.sort(function(a, b) {
+        if (a[1] > b[1]) return -1;
+        else if (a[1] < b[1]) return 1;
+        else return 0;
+    });
+    options.reverse();
+
+    //append new option to the dropdown
+    $.each(options, function(key, value) {
+        $('#ElementLetter_to_firm_id').append($("<option></option>")
+                                              .attr("value", value[0]).text(value[1]));
+    });
+}
+
+function updateConsultantDropdown(site_id, subspecialty_id) {
     $.ajax({
-        url: baseUrl + "/" + moduleName + "/Default/getConsultantsBySubspecialty",
-        data: { "subspecialty_id": subspecialty_id, "check_service_firms_filter_setting": true },
+        url: baseUrl + "/" + moduleName + "/Default/getConsultantsBySiteAndSubspecialty",
+        data: { "site_id": site_id, "subspecialty_id": subspecialty_id, "check_service_firms_filter_setting": true },
         dataType: "json",
         beforeSend: function() {
             $('button#et_saveprint, button#et_saveprint_footer').prop('disabled', true);
             $('button#et_savedraft, button#et_savedraft_footer').prop('disabled', true);
         },
-        success: function(data) {
-            var options = [];
-
-            //remove old options
-            $('#ElementLetter_to_firm_id option:gt(0)').remove();
-
-            //create js array from obj to sort
-            for (item in data) {
-                options.push([item, data[item]]);
-            }
-
-            options.sort(function(a, b) {
-                if (a[1] > b[1]) return -1;
-                else if (a[1] < b[1]) return 1;
-                else return 0;
-            });
-            options.reverse();
-
-            //append new option to the dropdown
-            $.each(options, function(key, value) {
-                $('#ElementLetter_to_firm_id').append($("<option></option>")
-                    .attr("value", value[0]).text(value[1]));
-            });
-        },
+        success: setConsultantDropdown,
         complete: function() {
             $('button#et_saveprint, button#et_saveprint_footer').prop('disabled', false);
             $('button#et_savedraft, button#et_savedraft_footer').prop('disabled', false);
@@ -322,7 +324,7 @@ function getInternalReferralOutputType() {
 
 $(document).ready(function() {
     $('#ElementLetter_to_subspecialty_id').on('change', function() {
-        updateConsultantDropdown($(this).val());
+        updateConsultantDropdown($('#ElementLetter_to_location_id').val(), $(this).val());
         updateSalutation("Dear " + $(this).find('option:selected').text() + ' service,');
         // Setting the firm_id to '' as on changing the subspecialty the first option i.e. None gets selected.
         $('#ElementLetter_to_firm_id').val('');
@@ -372,30 +374,41 @@ $(document).ready(function() {
     });
 
     $('#ElementLetter_to_location_id').on('change', function() {
+        if ($('#ElementLetter_to_location_id').val() !== '') {
+            $.ajax({
+                url: baseUrl + "/" + moduleName + "/Default/getSiteInfo",
+                data: { to_location_id: $('#ElementLetter_to_location_id').val(), subspecialty_id: $('#ElementLetter_to_subspecialty_id').val(), check_service_firms_filter_setting: true },
+                dataType: "json",
+                beforeSend: function() {
 
-        $.ajax({
-            url: baseUrl + "/" + moduleName + "/Default/getSiteInfo",
-            data: { to_location_id: $('#ElementLetter_to_location_id').val() },
-            dataType: "json",
-            beforeSend: function() {
+                    // empty the value of the address textarea because if the ajax slow the user may save a wrong address
+                    $('#Document_Target_Address_0').val('');
+                    $('button#et_saveprint, button#et_saveprint_footer').prop('disabled', true);
+                    $('button#et_savedraft, button#et_savedraft_footer').prop('disabled', true);
 
-                // empty the value of the address textarea because if the ajax slow the user may save a wrong address
-                $('#Document_Target_Address_0').val('');
-                $('button#et_saveprint, button#et_saveprint_footer').prop('disabled', true);
-                $('button#et_savedraft, button#et_savedraft_footer').prop('disabled', true);
-            },
-            success: function(data) {
-                $('#Document_Target_Address_0').val(data.correspondence_name);
-            },
-            complete: function() {
-                $('button#et_saveprint, button#et_saveprint_footer').prop('disabled', false);
-                $('button#et_savedraft, button#et_savedraft_footer').prop('disabled', false);
-            }
-        });
+                    $('#ElementLetter_to_firm_id').children('option[value!=""]').remove();
+                    $('#ElementLetter_to_firm_id').attr('disabled', true);
+                },
+                success: function(data) {
+                    $('#Document_Target_Address_0').val(data.site.correspondence_name);
+                    setConsultantDropdown(data.firms);
+                },
+                complete: function() {
+                    $('button#et_saveprint, button#et_saveprint_footer').prop('disabled', false);
+                    $('button#et_savedraft, button#et_savedraft_footer').prop('disabled', false);
 
+                    $('#ElementLetter_to_firm_id').attr('disabled', false);
+                }
+            });
+        } else {
+            $('#Document_Target_Address_0').val('');
+
+            $('#ElementLetter_to_firm_id').children('option[value!=""]').remove();
+            $('#ElementLetter_to_firm_id').attr('disabled', true);
+        }
     });
 
-
+    $('#ElementLetter_to_firm_id').attr('disabled', $('#ElementLetter_to_location_id').val() === '');
 });
 
 /** End of Internal Referral **/

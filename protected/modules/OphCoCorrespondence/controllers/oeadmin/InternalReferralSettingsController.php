@@ -119,5 +119,53 @@ class InternalReferralSettingsController extends ModuleAdminController
         Yii::app()->end();
     }
 
+    public function actionSiteFirmMapping($institution_id = null, $site_id = null, $subspecialty_id = null)
+    {
+        if (\Yii::app()->request->isPostRequest) {
+            $institution_id = \Yii::app()->request->getPost('institution_id');
+            $site_id = \Yii::app()->request->getPost('site_id');
+            $subspecialty_id = \Yii::app()->request->getPost('subspecialty_id');
 
+            $entries = \Yii::app()->request->getPost('InternalReferralSiteFirmMapping_firm_id');
+
+            $criteria = new CDbCriteria();
+            $criteria->addCondition('site_id = :site_id');
+
+            if ($subspecialty_id) {
+                $criteria->join = "JOIN firm f ON f.id = firm_id JOIN service_subspecialty_assignment ssa ON f.service_subspecialty_assignment_id = ssa.id";
+
+                $criteria->addCondition('ssa.subspecialty_id = :subspecialty_id');
+                $criteria->params = array(':site_id' => $site_id, ':subspecialty_id' => $subspecialty_id);
+            } else {
+                $criteria->params = array(':site_id' => $site_id);
+            }
+
+            InternalReferralSiteFirmMapping::model()->deleteAll($criteria);
+
+            if (!empty($entries)) {
+                foreach ($entries as $entry) {
+                    $mapping = new InternalReferralSiteFirmMapping();
+
+                    $mapping->site_id = $site_id;
+                    $mapping->firm_id = $entry;
+
+                    $mapping->save();
+                }
+            }
+        }
+
+        $institution = $this->checkAccess('admin') && $institution_id ? \Institution::model()->findByPk($institution_id) : null;
+        $institution = $institution ?? \Institution::model()->getCurrent();
+
+        $site = $site_id ?
+              \Site::model()->find('id = :site_id AND institution_id = :institution_id', [':institution_id' => $institution->id, ':site_id' => $site_id]) :
+              ($institution->sites[0] ?? null);
+        $subspecialty = $subspecialty_id ? \Subspecialty::model()->findByPk($subspecialty_id) : null;
+
+        $this->render('/admin/site_firm_mapping', array(
+            'institution' => $institution,
+            'site' => $site,
+            'subspecialty' => $subspecialty,
+        ));
+    }
 }
