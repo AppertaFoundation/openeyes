@@ -394,11 +394,21 @@ class Patient extends BaseActiveRecordVersioned
 
     public function getClinicPathwayInProgress()
     {
+        // Check if the patient was redirected by worklist
+        $pathway_id = Yii::app()->request->getQuery('pathway_id');
+        if ($pathway_id) {
+            // Get the pathway from which the patient landing page was accessed
+            return Pathway::model()->findByPk($pathway_id);
+        }
+
         $criteria = new CDbCriteria();
         $criteria->join = 'JOIN worklist_patient wp ON wp.id = t.worklist_patient_id';
         $criteria->addCondition('wp.patient_id = :patient_id');
         $criteria->params = [':patient_id' => $this->id];
-        $criteria->addInCondition('t.status', Pathway::inProgressStatuses());
+        $pathway_list = array_merge([Pathway::STATUS_LATER], Pathway::inProgressStatuses());
+        $criteria->addInCondition('t.status', $pathway_list);
+        // Get the latest pathway in case there are multiple active pathways
+        $criteria->order = 'start_time DESC, end_time DESC';
         return Pathway::model()->find($criteria);
     }
 

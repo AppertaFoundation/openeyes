@@ -128,7 +128,7 @@ $quick_filter_name = $filter->getQuickFilterTypeName();
                     <div class="code"><?= (int)$num_visits === 1 ? 'First Attendance' : null ?></div>
                 </td>
                 <td>
-                    <?php $this->renderPartial('application.widgets.views.PatientMeta', array('patient' => $wl_patient->patient, 'coreapi' => $coreapi)); ?>
+                    <?php $this->renderPartial('application.widgets.views.PatientMeta', array('patient' => $wl_patient->patient, 'coreapi' => $coreapi, 'pathway' => $wl_patient->pathway)); ?>
 
                 </td>
                 <td id="oe-patient-details" class="js-oe-patient" data-patient-id="<?= $wl_patient->patient_id ?>">
