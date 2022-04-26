@@ -891,6 +891,64 @@ class BaseEventTypeController extends BaseModuleController
                         if ($this->eventIssueCreate) {
                             $this->event->addIssue($this->eventIssueCreate);
                         }
+
+                        if (isset(Yii::app()->session['selected_institution_id'])) {
+                            $worklist_manager = new \WorklistManager();
+
+                            $user_worklists = $worklist_manager->getCurrentAutomaticWorklistsForUser(null);
+
+                            $worklist_patients = array();
+                            foreach ($user_worklists as $user_worklist) {
+                                $worklist_patients = array_merge($worklist_patients, \WorklistPatient::model()->findAllByAttributes(array('patient_id' => $this->patient->id, 'worklist_id' => $user_worklist->id)));
+                            }
+
+                            $applicable_pathstep = null;
+
+                            foreach ($worklist_patients as $worklist_patient) {
+                                $pathway = $worklist_patient->pathway;
+
+                                $pathsteps = $pathway->started_steps;
+                                foreach ($pathsteps as $pathstep) {
+                                    $pathstep_data = json_decode($pathstep->state_data);
+                                    if ($this->isEventApplicableToWorklistPathstepData($pathstep_data)) {
+                                        $applicable_pathstep = $pathstep;
+                                        break;
+                                    }
+                                }
+
+                                if (isset($applicable_pathstep)) {
+                                    $this->event->worklist_patient_id = $worklist_patient->id;
+                                    break;
+                                }
+                            }
+
+                            if (isset($applicable_pathstep)) {
+                                $applicable_pathstep->nextStatus();
+                                $applicable_pathstep->refresh();
+
+                                $pathway = $applicable_pathstep->pathway;
+
+                                $pathway->updateStatus();
+
+                                if ((int)$applicable_pathstep->status === PathwayStep::STEP_COMPLETED) {
+                                    Yii::app()->event->dispatch('step_completed', ['step' => $applicable_pathstep]);
+                                }
+
+                                $next_pathstep = $pathway->requested_steps[0];
+
+                                if ($next_pathstep->type->type == "hold") {
+                                    $next_pathstep->nextStatus();
+                                    $next_pathstep->refresh();
+
+                                    $pathway->updateStatus();
+
+                                    if ((int)$next_pathstep->status === PathwayStep::STEP_STARTED) {
+                                        Yii::app()->event->dispatch('step_started', ['step' => $next_pathstep]);
+                                    }
+                                }
+                            }
+                        }
+
                         //TODO: should not be passing event?
                         $this->afterCreateElements($this->event);
 
@@ -937,6 +995,75 @@ class BaseEventTypeController extends BaseModuleController
         } else {
             $this->setOpenElementsFromCurrentEvent('create');
             $this->updateHotlistItem($this->patient);
+
+            if (isset(Yii::app()->session['selected_institution_id'])) {
+                $worklist_manager = new \WorklistManager();
+
+                $user_worklists = $worklist_manager->getCurrentAutomaticWorklistsForUser(null);
+
+                $worklist_patients = array();
+                foreach ($user_worklists as $user_worklist) {
+                    $worklist_patients = array_merge($worklist_patients, \WorklistPatient::model()->findAllByAttributes(array('patient_id' => $this->patient->id, 'worklist_id' => $user_worklist->id)));
+                }
+
+                $applicable_pathstep = null;
+
+                foreach ($worklist_patients as $worklist_patient) {
+                    $pathway = $worklist_patient->pathway;
+
+                    if (isset($pathway)) {
+                        $pathsteps = $pathway->requested_steps;
+                        foreach ($pathsteps as $pathstep) {
+                            $pathstep_data = json_decode($pathstep->state_data);
+
+                            if ($this->isEventApplicableToWorklistPathstepData($pathstep_data)) {
+                                $applicable_pathstep = $pathstep;
+                                break;
+                            }
+                        }
+                    } else {
+                        $pathway_type = $worklist_patient->worklist->worklist_definition->pathway_type;
+                        $pathstep_types = $pathway_type->default_steps;
+                        foreach ($pathstep_types as $pathstep_type) {
+                            $pathstep_type_data = json_decode($pathstep_type->default_state_data);
+
+                            if ($this->isEventApplicableToWorklistPathstepData($pathstep_type_data)) {
+                                $pathway_type->instancePathway($worklist_patient);
+                                $worklist_patient->refresh();
+                                $worklist_patient->pathway->startPathway();
+                                $worklist_patient->refresh();
+                                $worklist_patient->pathway->refresh();
+
+                                foreach ($worklist_patient->pathway->steps as $pathstep) {
+                                    $pathstep_data = json_decode($pathstep->state_data);
+                                    if ($this->isEventApplicableToWorklistPathstepData($pathstep_data)) {
+                                        $applicable_pathstep = $pathstep;
+                                        break;
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                    }
+
+                    if (isset($applicable_pathstep)) {
+                        break;
+                    }
+                }
+
+                if (isset($applicable_pathstep)) {
+                    $applicable_pathstep->nextStatus();
+                    $applicable_pathstep->refresh();
+
+                    $pathway = $applicable_pathstep->pathway;
+
+                    $pathway->updateStatus();
+
+                    if ((int)$applicable_pathstep->status === PathwayStep::STEP_STARTED) {
+                        Yii::app()->event->dispatch('step_started', ['step' => $applicable_pathstep]);
+                    }
+                }
+            }
         }
 
         $this->editable = false;
@@ -965,6 +1092,17 @@ class BaseEventTypeController extends BaseModuleController
         }
         $params['customErrorHeaderMessage'] = $this->customErrorHeaderMessage ?? '';
         $this->render($this->action->id, $params);
+    }
+
+    public function isEventApplicableToWorklistPathstepData($pathstep_data)
+    {
+        $event_type_class_name = \EventType::model()->findByPk($this->event->event_type_id)->class_name;
+        \OELog::log(print_r($pathstep_data, true));
+
+        return isset($pathstep_data->action_type) &&
+            $pathstep_data->action_type == 'new_event' &&
+            isset($pathstep_data->event_type) &&
+            $pathstep_data->event_type == $event_type_class_name;
     }
 
     /**
@@ -1071,6 +1209,50 @@ class BaseEventTypeController extends BaseModuleController
                     $success = $this->saveEvent($_POST);
 
                     if ($success) {
+                        if (isset(Yii::app()->session['selected_institution_id'])) {
+                            $worklist_manager = new \WorklistManager();
+
+                            $user_worklists = $worklist_manager->getCurrentAutomaticWorklistsForUser(null);
+
+                            $worklist_patients = array();
+                            foreach ($user_worklists as $user_worklist) {
+                                $worklist_patients = array_merge($worklist_patients, \WorklistPatient::model()->findAllByAttributes(array('patient_id' => $this->patient->id, 'worklist_id' => $user_worklist->id)));
+                            }
+
+                            $applicable_pathstep = null;
+
+                            foreach ($worklist_patients as $worklist_patient) {
+                                $pathway = $worklist_patient->pathway;
+
+                                $pathsteps = $pathway->started_steps;
+                                foreach ($pathsteps as $pathstep) {
+                                    $pathstep_data = json_decode($pathstep->state_data);
+                                    if ($this->isEventApplicableToWorklistPathstepData($pathstep_data)) {
+                                        $applicable_pathstep = $pathstep;
+                                        break;
+                                    }
+                                }
+
+                                if (isset($applicable_pathstep)) {
+                                    $this->event->worklist_patient_id = $worklist_patient->id;
+                                    break;
+                                }
+                            }
+
+                            if (isset($applicable_pathstep)) {
+                                $applicable_pathstep->nextStatus();
+                                $applicable_pathstep->refresh();
+
+                                $pathway = $applicable_pathstep->pathway;
+
+                                $pathway->updateStatus();
+
+                                if ((int)$applicable_pathstep->status === PathwayStep::STEP_COMPLETED) {
+                                    Yii::app()->event->dispatch('step_completed', ['step' => $applicable_pathstep]);
+                                }
+                            }
+                        }
+
                         //TODO: should not be pasing event?
                         $this->afterUpdateElements($this->event);
                         $this->logActivity('updated event');
@@ -1123,6 +1305,52 @@ class BaseEventTypeController extends BaseModuleController
             // get the elements
             $this->setOpenElementsFromCurrentEvent('update');
             $this->updateHotlistItem($this->patient);
+
+            if (isset(Yii::app()->session['selected_institution_id'])) {
+                $worklist_manager = new \WorklistManager();
+
+                $user_worklists = $worklist_manager->getCurrentAutomaticWorklistsForUser(null);
+
+                $worklist_patients = array();
+                foreach ($user_worklists as $user_worklist) {
+                    $worklist_patients = array_merge($worklist_patients, \WorklistPatient::model()->findAllByAttributes(array('patient_id' => $this->patient->id, 'worklist_id' => $user_worklist->id)));
+                }
+
+                $applicable_pathstep = null;
+
+                foreach ($worklist_patients as $worklist_patient) {
+                    $pathway = $worklist_patient->pathway;
+
+                    if (isset($pathway)) {
+                        $pathsteps = $pathway->requested_steps;
+                        foreach ($pathsteps as $pathstep) {
+                            $pathstep_data = json_decode($pathstep->state_data);
+
+                            if ($this->isEventApplicableToWorklistPathstepData($pathstep_data)) {
+                                $applicable_pathstep = $pathstep;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (isset($applicable_pathstep)) {
+                        break;
+                    }
+                }
+
+                if (isset($applicable_pathstep)) {
+                    $applicable_pathstep->nextStatus();
+                    $applicable_pathstep->refresh();
+
+                    $pathway = $applicable_pathstep->pathway;
+
+                    $pathway->updateStatus();
+
+                    if ((int)$applicable_pathstep->status === PathwayStep::STEP_STARTED) {
+                        Yii::app()->event->dispatch('step_started', ['step' => $applicable_pathstep]);
+                    }
+                }
+            }
         }
 
         $this->editing = true;

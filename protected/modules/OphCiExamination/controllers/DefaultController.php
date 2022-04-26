@@ -1023,6 +1023,14 @@ class DefaultController extends \BaseEventTypeController
         }
     }
 
+    public function isEventApplicableToWorklistPathstepData($pathstep_data)
+    {
+        return
+            parent::isEventApplicableToWorklistPathstepData($pathstep_data) &&
+            (!isset($pathstep_data->workflow_step_id) ||
+            (isset($this->step) && $pathstep_data->workflow_step_id == $this->step->id));
+    }
+
     /***
      * Construct a PAS message for the specified trigger event here and send it to the PAS.
      * @param \Event $event
@@ -2765,10 +2773,10 @@ class DefaultController extends \BaseEventTypeController
 
         $latest_med_management_element = $api->getLatestElement('models\MedicationManagement', $patient);
         $latest_med_history_element =  $api->getLatestElement('models\HistoryMedications', $patient);
-        if($latest_med_management_element){
+        if ($latest_med_management_element) {
             $latest_mm_datetime = $latest_med_management_element->event ? ($latest_med_management_element->event->event_date ?? null) : null;
         }
-        if($latest_med_history_element){
+        if ($latest_med_history_element) {
             $latest_mh_datetime = $latest_med_history_element->event ? ($latest_med_history_element->event->event_date ?? null) : null;
         }
 
