@@ -355,7 +355,7 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
                     'DocumentSubCategoryCode' => 'AS12',
                     'ExternalSupersessionId' => "313|182|001|$this->letter_type_id|{$this->event->episode->patient->getHos()}|$this->event_id",
                     'Consultant' => $this->event->episode->firm->getConsultantNameReversedAndUsername($institution->id),
-                    'ConsultantCode' => $this->event->episode->firm->consultant->registration_code ?? '',
+                    'ConsultantCode' => $this->event->episode->firm->consultant ? $this->event->episode->firm->consultant->getFormattedRegistrationCode() : '',
                     'Organisation' => $institution->name,
                     'OrganisationCode' => $institution->remote_id,
                     'Site' => $site->name,
