@@ -95,6 +95,7 @@ $edit_signature_role = Yii::app()->request->getParam('edit_signature_role');
         if ($this->isSigned() && $authRules->canEditEvent($this->element->event)) { ?>
             <?php if (!$edit_signature_role) { ?>
                 <button class="js-signature-edit">Edit</button>
+                <button class="js-signature-delete">Delete</button>
             <?php } else { ?>
                 <button class="js-signature-save">Save</button>
             <?php } ?>
@@ -150,5 +151,10 @@ $edit_signature_role = Yii::app()->request->getParam('edit_signature_role');
 
     $('.js-signature-edit').on('click', function(e) {
         window.location = window.location.href+"?edit_signature_role=1";
+    });
+
+    $('.js-signature-delete').on('click', function(e) {
+        var signature_id = $(this).closest("tr").find(".js-id-field").val();
+        window.location = "/OphCoCvi/default/deleteSignature?event_id="+OE_event_id+"&signature_id="+signature_id;
     });
 </script>

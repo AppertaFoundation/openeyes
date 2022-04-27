@@ -67,7 +67,7 @@ class Element_OphCoCvi_Esign extends \BaseEsignElement
             'event' => array(self::BELONGS_TO, \Event::class, 'event_id'),
             'user' => array(self::BELONGS_TO, \User::class, 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, \User::class, 'last_modified_user_id'),
-            'signatures' => array(self::HAS_MANY, \OphCoCvi_Signature::class, 'element_id'),
+            'signatures' => array(self::HAS_MANY, \OphCoCvi_Signature::class, 'element_id', 'condition' => 'status = '.\OphCoCvi_Signature::STATUS_ACTIVE.''),
         );
     }
 

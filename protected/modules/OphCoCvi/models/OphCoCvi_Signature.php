@@ -41,6 +41,10 @@ class OphCoCvi_Signature extends BaseSignature
     const SIGNATORY_PERSON_REPRESENTATIVE = "Patient's representative";
     const SIGNATORY_PERSON_PARENT_OR_GUARDIAN = "Parent/Guardian";
     const SIGNATORY_PERSON_PATIENT = "Patient";
+
+    const STATUS_ACTIVE = 1;
+    const STATUS_DELETED = 0;
+
     /**
      * @return string the associated database table name
      */
@@ -61,7 +65,8 @@ class OphCoCvi_Signature extends BaseSignature
             array('element_id, id, type', 'numerical', 'integerOnly'=>true),
             array('signature_file_id', 'validateSignatureFile'),
             array('signatory_role, signatory_name', 'length', 'max'=>64),
-            array('last_modified_date, created_date, date, time, type, signature_file_id', 'safe'),
+            array('last_modified_date, created_date, date, time, type, signature_file_id, status', 'safe'),
+            array('delete_reason', 'length', 'max' => 200),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
             array('id, element_id, signature_file_id, signed_user_id, signatory_role, signatory_name, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
@@ -174,5 +179,18 @@ class OphCoCvi_Signature extends BaseSignature
         if (isset($this->element->event)) {
             (new OEModule\OphCoCvi\components\OphCoCvi_Manager())->updateEventInfo($this->element->event);
         }
+    }
+
+    /**
+     * Ensure that the signature is immutable once it is saved
+     *
+     * @return bool
+     */
+    public function beforeSave()
+    {
+        if (isset($this->status) && $this->status === 1) {
+            return $this->isNewRecord && parent::beforeSave();
+        }
+        return true;
     }
 }

@@ -61,6 +61,7 @@ class DefaultController extends \BaseEventTypeController
         'printInfoSheet' => self::ACTION_TYPE_PRINT,
         'printQRSignature' => self::ACTION_TYPE_PRINT,
         'updateSignatureRole' => self::ACTION_TYPE_FORM,
+        'deleteSignature' => self::ACTION_TYPE_FORM,
     );
 
     /**
@@ -1469,5 +1470,45 @@ class DefaultController extends \BaseEventTypeController
         if ($signature_element->saveAttributes(['signatory_role'])) {
             return true;
         }
+    }
+
+    public function actionDeleteSignature($event_id, $signature_id)
+    {
+        $this->layout = '//layouts/events_and_episodes';
+        $event = \Event::model()->findByPk($event_id);
+        $this->patient = $event->patient;
+        $this->event = $event;
+
+        if (!empty($_POST)) {
+            if (\Yii::app()->request->getPost('delete_reason', '') === '') {
+                \Yii::app()->user->setFlash(
+                    'warning',
+                    'Please enter a reason for deleting this signature.'
+                );
+            } else {
+                $signature = \OphCoCvi_Signature::model()->findByPk($signature_id);
+                $signature->status = \OphCoCvi_Signature::STATUS_DELETED;
+                $signature->delete_reason = \Yii::app()->request->getPost('delete_reason');
+                $signature->validate();
+
+                if ($signature->save()) {
+                    \Yii::app()->user->setFlash(
+                        'success',
+                        'An signature was deleted.'
+                    );
+                } else {
+                    \Yii::app()->user->setFlash(
+                        'warning',
+                        'Something went wrong.'
+                    );
+                }
+
+                $this->redirect('/OphCoCvi/default/view/' . $this->event->id);
+            }
+        }
+
+        $this->render('_delete_signature', [
+            "signature_id" => $signature_id
+        ]);
     }
 }
