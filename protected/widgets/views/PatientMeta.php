@@ -36,12 +36,16 @@ $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient($displa
 if (!isset($this->controller) || ($this->controller->id != "patient" && $this->controller->id != 'default')) { ?>
     <div class="oe-patient-meta">
         <div class="patient-name">
-            <a href="<?= $coreapi->generatePatientLandingPageLink($patient, ['pathway_id' => $pathway->id]); ?>">
-                <span class="patient-surname"><?= $patient->getLast_name(); ?></span>,
-                <span class="patient-firstname">
-                        <?= $patient->getFirst_name(); ?>
-                        <?= $patient->getTitle() ? "({$patient->getTitle()})" : ''; ?>
-                    </span>
+            <?php if (isset($pathway)) { ?>
+                <a href="<?= $coreapi->generatePatientLandingPageLink($patient, ['pathway_id' => $pathway->id]); ?>">
+            <?php } else { ?>
+                <a href="<?= $coreapi->generatePatientLandingPageLink($patient); ?>">
+            <?php } ?>
+            <span class="patient-surname"><?= $patient->getLast_name(); ?></span>,
+            <span class="patient-firstname">
+                <?= $patient->getFirst_name(); ?>
+                <?= $patient->getTitle() ? "({$patient->getTitle()})" : ''; ?>
+            </span>
             </a>
         </div>
         <div class="patient-details">
