@@ -65,11 +65,11 @@ $quick_filter_name = $filter->getQuickFilterTypeName();
         <h3><?= $worklist->name . ' : ' . $worklist->getDisplayDate() ?></h3>
     </header>
 <?php endif; ?>
-<?php if ($data_provider->itemCount === 0): ?>
+<?php if ($data_provider->itemCount === 0) : ?>
     <div class="result-msg">
         <?= $filter->hasQuickFilter() ? "No matches for quick filter '" . $quick_filter_name . "'" : 'No patients found' ?>
     </div>
-<?php else: ?>
+<?php else : ?>
     <table class="oec-patients">
         <thead>
         <tr>
@@ -118,7 +118,6 @@ $quick_filter_name = $filter->getQuickFilterTypeName();
                 ->bindValues([':patient_id' => $wl_patient->patient_id, ':worklist_id' => $wl_patient->worklist_id])
                 ->queryScalar();
             /** @var $wl_patient WorklistPatient */
-            $hide_add_step_btn = $wl_patient->pathway && (int)$wl_patient->pathway->status === Pathway::STATUS_DONE ? 'style="display:none;"' : null;
             ?>
             <tr class="<?= $wl_patient->pathway ? $wl_patient->pathway->getStatusString() : 'later' ?>" data-timestamp="<?= time() ?>" id="js-pathway-<?= $wl_patient->id ?>"
                   data-status="<?= $wl_patient->pathway ? $wl_patient->pathway->getStatusString() : 'later' ?>">
@@ -142,7 +141,7 @@ $quick_filter_name = $filter->getQuickFilterTypeName();
                     ); ?>
                 </td>
                 <td>
-                    <label class="patient-checkbox" <?=$hide_add_step_btn?>>
+                    <label class="patient-checkbox">
                         <input class="js-check-patient" value="<?= $wl_patient->id ?>" type="checkbox"/>
                         <div class="checkbox-btn"></div>
                     </label>
@@ -228,8 +227,14 @@ $quick_filter_name = $filter->getQuickFilterTypeName();
                                 break;
                             case Pathway::STATUS_DONE:
                                 // Done.
-                                $class .= 'undo medium-icon js-pathway-reactivate';
-                                $tooltip_text = 'Re-activate pathway to add steps';
+                                // Show undo icon only if the pathway has incomplete steps
+                                if ($wl_patient->pathway->hasIncompleteSteps()) {
+                                    $class .= 'undo medium-icon js-pathway-reactivate';
+                                    $tooltip_text = 'Re-activate pathway to add steps';
+                                } else {
+                                    $class .= 'oe-i save medium-icon pad js-tooltip';
+                                    $tooltip_text = 'Pathway complete';
+                                }
                                 break;
                             default:
                                 // Covers all 'active' statuses, including long-wait and break.
@@ -242,7 +247,7 @@ $quick_filter_name = $filter->getQuickFilterTypeName();
                         $tooltip_text = 'Pathway not started';
                     }
                     ?>
-                    <i class="<?= $class ?>" data-tooltip-content="<?= $tooltip_text ?>" data-pathway-id="<?= $wl_patient->pathway->id ?? null ?>"></i>
+                    <i class="<?= $class ?>" data-tooltip-content="<?= $tooltip_text ?>" data-visit-id="<?= $wl_patient->pathway->id ?? null ?>"></i>
                 </td>
             </tr>
         <?php endforeach; ?>
@@ -255,7 +260,7 @@ $quick_filter_name = $filter->getQuickFilterTypeName();
         </tr>
         </tfoot>
     </table>
-    <?php endif; ?>
+<?php endif; ?>
     <div class="oec-clock">
         <!-- Use JS to bind this element to the bottom of the entry closest to the current time. -->
         <?= date('H:i') ?>

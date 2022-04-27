@@ -88,9 +88,9 @@ class Pathway extends BaseActiveRecordVersioned
                 'PathwayStep',
                 'pathway_id',
                 'condition' => 'status IS NULL OR status IN (' . implode(
-                        ', ',
-                        [PathwayStep::STEP_REQUESTED, PathwayStep::STEP_CONFIG]
-                    ) . ')',
+                    ', ',
+                    [PathwayStep::STEP_REQUESTED, PathwayStep::STEP_CONFIG]
+                ) . ')',
                 'order' => 'todo_order'
             ),
             'started_steps' => array(
@@ -357,8 +357,14 @@ class Pathway extends BaseActiveRecordVersioned
                 break;
             case self::STATUS_DONE:
                 // Done.
-                $class .= 'undo medium-icon js-pathway-reactivate';
-                $tooltip_text = 'Re-activate pathway to add steps';
+                // Show undo icon only if the pathway has incomplete steps
+                if ($this->hasIncompleteSteps()) {
+                    $class .= 'undo medium-icon js-pathway-reactivate';
+                    $tooltip_text = 'Re-activate pathway to add steps';
+                } else {
+                    $class .= 'oe-i save medium-icon pad js-tooltip';
+                    $tooltip_text = 'Pathway complete';
+                }
                 break;
             default:
                 // Covers all 'active' statuses, including long-wait and break.
@@ -366,7 +372,12 @@ class Pathway extends BaseActiveRecordVersioned
                 $tooltip_text = 'Patient has left<br/>Quick complete pathway';
                 break;
         }
-        return "<i class=\"$class\" data-tooltip-content=\"$tooltip_text\" data-pathway-id=\"{$this->id}\"></i>";
+        return "<i class=\"$class\" data-tooltip-content=\"$tooltip_text\" data-visit-id=\"{$this->id}\"></i>";
+    }
+
+    public function hasIncompleteSteps(): bool
+    {
+        return (int)PathwayStep::model()->count('pathway_id = ? AND (status != ? OR status IS NULL)', [$this->id, PathwayStep::STEP_COMPLETED]) !== 0;
     }
 
     /**

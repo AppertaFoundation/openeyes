@@ -189,7 +189,7 @@ class WorklistController extends BaseController
      */
     public function actionChangePathwayStatus()
     {
-        $pathway_id = Yii::app()->request->getPost('pathway_id');
+        $pathway_id = Yii::app()->request->getPost('visit_id');
         $new_status = Yii::app()->request->getPost('new_status');
         $step_action = Yii::app()->request->getPost('step_action');
         $pathway = Pathway::model()->findByPk($pathway_id);
@@ -1535,6 +1535,15 @@ class WorklistController extends BaseController
         }
 
         if ($new_step) {
+            // Re-activate pathway in case it has been completed
+            if ((int)$wl_patient->pathway->status === Pathway::STATUS_DONE) {
+                $pathway = $wl_patient->pathway;
+                $pathway->status = Pathway::STATUS_WAITING;
+                if (!$pathway->save()) {
+                    throw new CHttpException(500, 'Unable to re-activate pathway.');
+                }
+                $wl_patient->pathway->refresh();
+            }
             $this->renderJSON(
                 [
                     'step_html' => $this->renderPartial(

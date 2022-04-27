@@ -63,8 +63,14 @@ class PathwayTest extends ActiveRecordTestCase
                 break;
             case Pathway::STATUS_DONE:
                 // Done.
-                $class .= 'undo medium-icon js-pathway-reactivate';
-                $tooltip_text = 'Re-activate pathway to add steps';
+                // Show undo icon only if the pathway has incomplete steps
+                if ($pathway->hasIncompleteSteps()) {
+                    $class .= 'undo medium-icon js-pathway-reactivate';
+                    $tooltip_text = 'Re-activate pathway to add steps';
+                } else {
+                    $class .= 'oe-i save medium-icon pad js-tooltip';
+                    $tooltip_text = 'Pathway complete';
+                }
                 break;
             default:
                 // Covers all 'active' statuses, including long-wait and break.
@@ -72,7 +78,7 @@ class PathwayTest extends ActiveRecordTestCase
                 $tooltip_text = 'Patient has left<br/>Quick complete pathway';
                 break;
         }
-        $expected = "<i class=\"$class\" data-tooltip-content=\"$tooltip_text\" data-pathway-id=\"$pathway->id\"></i>";
+        $expected = "<i class=\"$class\" data-tooltip-content=\"$tooltip_text\" data-visit-id=\"$pathway->id\"></i>";
         self::assertEquals($expected, $pathway->getPathwayStatusHTML());
     }
 
