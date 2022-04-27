@@ -258,6 +258,11 @@ class User extends BaseActiveRecordVersioned
         return implode(' ', array($this->last_name, $this->first_name));
     }
 
+    public function getFormattedRegistrationCode()
+    {
+        return 'GMC:' . preg_replace('/^[A-za-z]+[-: ]*/', '', $this->registration_code);
+    }
+
     /**
      * @param $institution_id
      * @return string
