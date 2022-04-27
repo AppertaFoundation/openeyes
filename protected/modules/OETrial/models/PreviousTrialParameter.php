@@ -11,7 +11,8 @@
  */
 class PreviousTrialParameter extends CaseSearchParameter implements DBProviderInterface
 {
-    public $trial;
+    public $interventionTrial;
+    public $nonInterventionTrial;
     public $trialTypeId;
     public $status;
     public $treatmentTypeId;
@@ -105,7 +106,7 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
             ),
             array(
                 'id' => 'trial-type-intervention-trial',
-                'field' => 'trial',
+                'field' => 'interventionTrial',
                 'hidden' => true,
                 'options' => array_merge(
                     array(
@@ -122,7 +123,7 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
             ),
             array(
                 'id' => 'trial-type-non-intervention-trial',
-                'field' => 'trial',
+                'field' => 'nonInterventionTrial',
                 'hidden' => true,
                 'options' => array_merge(
                     array(
@@ -166,7 +167,7 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
         return array_merge(
             parent::rules(),
             array(
-                array('trialType, trialTypeId,  trial, status, treatmentTypeId', 'safe'),
+                array('trialType, trialTypeId, interventionTrial, nonInterventionTrial, status, treatmentTypeId', 'safe'),
             )
         );
     }
@@ -175,8 +176,17 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
     {
         if (in_array($attribute, $this->attributeNames(), true)) {
             switch ($attribute) {
-                case 'trial':
-                    return $this->trialTypeId ? ($this->$attribute ? Trial::model()->findByPk($this->$attribute)->name : 'Any trial') : '';
+                case 'interventionTrial':
+                    if ($this->getTrialType() && $this->getTrialType()->code === TrialType::INTERVENTION_CODE) {
+                        return $this->$attribute ? Trial::model()->findByPk($this->$attribute)->name : 'Any trial';
+                    }
+                    return null;
+                    break;
+                case 'nonInterventionTrial':
+                    if ($this->getTrialType() && $this->getTrialType()->code === TrialType::NON_INTERVENTION_CODE) {
+                        return $this->$attribute ? Trial::model()->findByPk($this->$attribute)->name : 'Any trial';
+                    }
+                    return null;
                     break;
                 case 'trialTypeId':
                     return 'Participating in ' . ($this->$attribute ? $this->getTrialType()->name : 'any') . ' trial';
@@ -203,12 +213,13 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
         $condition = null;
         $joinCondition = 'JOIN';
         if ($this->trialType) {
-            if ($this->trial === '') {
+            if (($this->trialType->code === TrialType::INTERVENTION_CODE && $this->interventionTrial !== '') ||
+                ($this->trialType->code === TrialType::NON_INTERVENTION_CODE && $this->nonInterventionTrial !== '')) {
+                // Specific trial
+                $condition = $condition = "t_p.trial_id = :p_t_trial_$this->id";
+            } else {
                 // Any intervention/non-intervention trial
                 $condition = "t.trial_type_id = :p_t_trial_type_$this->id";
-            } else {
-                // specific trial
-                $condition = "t_p.trial_id = :p_t_trial_$this->id";
             }
         } else {
             // Any trial
@@ -259,10 +270,12 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
         // Construct your list of bind values here. Use the format "bind" => "value".
         $binds = array();
         if ($this->trialType) {
-            if ($this->trial === '') {
-                $binds[":p_t_trial_type_$this->id"] = $this->trialTypeId;
+            if ($this->trialType->code === TrialType::INTERVENTION_CODE && $this->interventionTrial !== '') {
+                $binds[":p_t_trial_$this->id"] = $this->interventionTrial;
+            } elseif ($this->trialType->code === TrialType::NON_INTERVENTION_CODE && $this->nonInterventionTrial !== '') {
+                $binds[":p_t_trial_$this->id"] = $this->nonInterventionTrial;
             } else {
-                $binds[":p_t_trial_$this->id"] = $this->trial;
+                $binds[":p_t_trial_type_$this->id"] = $this->trialTypeId;
             }
         }
 
@@ -294,8 +307,15 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
         $treatmentTypeList = TreatmentType::getOptions();
 
         $status = $this->status === null || $this->status === '' ? 'Included in' : $statusList[$this->status];
-        $type = !$this->trialType ? 'Any Trial Type with' : $trialTypes[$this->trialTypeId];
-        $trial = $this->trial === null || $this->trial === '' ? 'Any trial with' : $trials[$this->trial] . ' with ';
+        $type = !$this->trialType ? 'Any Trial Type with' : $trialTypes[$this->trialTypeId] . ' with ';
+        $trial = 'Any trial with';
+        if ($this->trialType) {
+            if ($this->trialType->code === TrialType::INTERVENTION_CODE && $this->interventionTrial !== null && $this->interventionTrial !== '') {
+                $trial = $trials[$this->interventionTrial] . ' with ';
+            } elseif ($this->trialType->code === TrialType::NON_INTERVENTION_CODE && $this->nonInterventionTrial !== null && $this->nonInterventionTrial !== '') {
+                $trial = $trials[$this->nonInterventionTrial] . ' with ';
+            }
+        }
         $treatment = $this->treatmentTypeId === null || $this->treatmentTypeId === '' ? 'Any Treatment' : $treatmentTypeList[$this->treatmentTypeId];
 
         return "$this->name: $this->operation $status $type $trial $treatment";
@@ -306,7 +326,8 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
         return array_merge(
             parent::saveSearch(),
             array(
-                'trial' => $this->trial,
+                'interventionTrial' => $this->interventionTrial,
+                'nonInterventionTrial' => $this->nonInterventionTrial,
                 'trialTypeId' => $this->trialTypeId,
                 'status' => $this->status,
                 'treatmentTypeId' => $this->treatmentTypeId,

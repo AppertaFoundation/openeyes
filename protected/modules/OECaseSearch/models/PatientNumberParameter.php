@@ -19,7 +19,7 @@ class PatientNumberParameter extends CaseSearchParameter implements DBProviderIn
     {
         parent::__construct($scenario);
         $this->name = 'patient_number';
-        $this->label_ = Yii::app()->params['hos_num_label'];
+        $this->label_ = Yii::app()->params['hos_num_label'] ?? 'Patient Number';
     }
 
     public function rules()

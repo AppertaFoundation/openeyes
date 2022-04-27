@@ -53,11 +53,13 @@ switch ($model->operation) {
             echo !$readonly ? CHtml::activeHiddenField($model, "[$id]value") : '';
         }
         foreach ($model->attributeNames() as $attribute) {
-            if (strpos('operation, id, name, value', $attribute) === false) { ?>
-                <br/>
-                <?= $model->getValueForAttribute($attribute) ?>
-                <?= !$readonly ? CHtml::activeHiddenField($model, "[$id]$attribute") : '' ?>
+            if (strpos('operation, id, name, value', $attribute) === false) {
+                if ($value = $model->getValueForAttribute($attribute)) { ?>
+                    <br/>
+                    <?= $value ?>
+                    <?= !$readonly ? CHtml::activeHiddenField($model, "[$id]$attribute") : '' ?>
             <?php }
+            }
         }?>
     </td>
     <?php if (!$readonly) : ?>
