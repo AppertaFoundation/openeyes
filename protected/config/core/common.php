@@ -195,9 +195,11 @@ $config = array(
         ),
         'mailer' => array(
             // Setting the mailer mode to null will suppress email
-            //'mode' => null
-            // Mail can be diverted by setting the divert array
-            //'divert' => array('foo@example.org', 'bar@example.org')
+            'mode' => getenv('MAILER_MODE') ?? null, // ('sendmail', 'smtp', 'mail')
+            'host' => getenv('MAILER_SMTP_HOST') ?? null,
+            'security' => getenv('MAILER_SMTP_SECURITY') ?? null, // ('TLS')
+            'username' => getenv('MAILER_SMTP_USERNAME') ?? null,
+            'password' => trim(@file_get_contents("/run/secrets/MAILER_SMTP_PASSWORD")) ?: (trim(getenv('MAILER_SMTP_PASSWORD')) ?: ''),
         ),
         'errorHandler' => array(
             // use 'site/error' action to display errors
