@@ -70,7 +70,7 @@ class UnbookedWorklist extends CComponent
         $tomorrow->modify('tomorrow');
 
         $criteria = new \CDbCriteria();
-        $criteria->addCondition('worklist_definition_id = :worklist_definition_id');
+        $criteria->addCondition('t.worklist_definition_id = :worklist_definition_id');
         $criteria->addCondition('start >= :start');
         $criteria->addCondition('end < :end');
         $criteria->params[':start'] = $today->format('Y-m-d H:i:s');

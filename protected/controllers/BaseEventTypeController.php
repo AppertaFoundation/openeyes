@@ -907,12 +907,15 @@ class BaseEventTypeController extends BaseModuleController
                             foreach ($worklist_patients as $worklist_patient) {
                                 $pathway = $worklist_patient->pathway;
 
-                                $pathsteps = $pathway->started_steps;
-                                foreach ($pathsteps as $pathstep) {
-                                    $pathstep_data = json_decode($pathstep->state_data);
-                                    if ($this->isEventApplicableToWorklistPathstepData($pathstep_data)) {
-                                        $applicable_pathstep = $pathstep;
-                                        break;
+                                //If pathway hasn't been instanced, it doesn't make sense to complete a started step
+                                if(isset($pathway)) {
+                                    $pathsteps = $pathway->started_steps;
+                                    foreach ($pathsteps as $pathstep) {
+                                        $pathstep_data = json_decode($pathstep->state_data);
+                                        if ($this->isEventApplicableToWorklistPathstepData($pathstep_data)) {
+                                            $applicable_pathstep = $pathstep;
+                                            break;
+                                        }
                                     }
                                 }
 
@@ -1224,12 +1227,15 @@ class BaseEventTypeController extends BaseModuleController
                             foreach ($worklist_patients as $worklist_patient) {
                                 $pathway = $worklist_patient->pathway;
 
-                                $pathsteps = $pathway->started_steps;
-                                foreach ($pathsteps as $pathstep) {
-                                    $pathstep_data = json_decode($pathstep->state_data);
-                                    if ($this->isEventApplicableToWorklistPathstepData($pathstep_data)) {
-                                        $applicable_pathstep = $pathstep;
-                                        break;
+                                //If pathway hasn't been instanced, it doesn't make sense to complete a started step
+                                if(isset($pathway)) {
+                                    $pathsteps = $pathway->started_steps;
+                                    foreach ($pathsteps as $pathstep) {
+                                        $pathstep_data = json_decode($pathstep->state_data);
+                                        if ($this->isEventApplicableToWorklistPathstepData($pathstep_data)) {
+                                            $applicable_pathstep = $pathstep;
+                                            break;
+                                        }
                                     }
                                 }
 
