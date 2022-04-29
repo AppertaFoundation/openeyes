@@ -74,7 +74,7 @@ class User extends BaseActiveRecordVersioned
             array('correspondence_sign_off_text', 'required'),
             array('correspondence_sign_off_text', 'length', 'max' => 255),
             array(
-                'first_name, last_name, email, global_firm_rights, title, qualifications, role, is_consultant, is_surgeon,
+                'first_name, last_name, email, global_firm_rights, title, role, is_consultant, is_surgeon,
                  has_selected_firms,doctor_grade_id, registration_code, signature_file_id, correspondence_sign_off_user_id',
                 'safe',
             ),
@@ -361,7 +361,7 @@ class User extends BaseActiveRecordVersioned
                 $this->title,
                 $this->first_name,
                 $this->last_name,
-            )) . ($this->qualifications ? ' ' . $this->qualifications : '');
+            )) . ($this->contact->qualifications ?? '');
     }
 
     /**

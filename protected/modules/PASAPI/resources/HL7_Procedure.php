@@ -28,7 +28,7 @@ class HL7_Procedure extends BaseHL7_Section
             $this->clinician_family_name = $clinician->last_name;
             $this->clinician_given_name = $clinician->first_name;
             $this->clinician_prefix = $clinician->title;
-            $this->clinician_degree = $clinician->qualifications;
+            $this->clinician_degree = $clinician->contact->qualifications ?? '';
         }
     }
 

@@ -688,6 +688,10 @@ class AdminController extends BaseAdminController
     public function actionEditUser($id = null)
     {
         $user = User::model()->findByPk($id);
+        $contact = $user->contact;
+        if (!$contact) {
+            $contact = new Contact();
+        }
         $invalid_entries = [];
         $invalid_existing = [];
         $errors = [];
@@ -787,7 +791,7 @@ class AdminController extends BaseAdminController
                 $contact->title = $userAtt['title'];
                 $contact->first_name = $userAtt['first_name'];
                 $contact->last_name = $userAtt['last_name'];
-                $contact->qualifications = $userAtt['qualifications'];
+                $contact->qualifications = $request->getPost('Contact')['qualifications'];
                 $contact->created_institution_id = Yii::app()->session['selected_institution_id'];
 
                 if (!$contact->save()) {
@@ -852,6 +856,7 @@ class AdminController extends BaseAdminController
 
         $this->render('/admin/edituser', array(
             'user' => $user,
+            'contact' => $contact,
             'errors' => @$errors,
             'invalid_entries' => $invalid_entries,
             'invalid_existing' => $invalid_existing,

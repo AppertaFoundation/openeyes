@@ -62,13 +62,17 @@ class ProfileController extends BaseController
             $user_out_of_office->user_id = $user->id;
         }
 
+        $contact = $user->contact;
+        if (!$contact) {
+            $contact = new Contact();
+        }
+
         if (!empty($_POST)) {
             if (Yii::app()->params['profile_user_can_edit']) {
                 $fields = [
                     'title',
                     'first_name', 'last_name',
                     'email',
-                    'qualifications',
                     'correspondence_sign_off_user_id',
                     'correspondence_sign_off_text',
                 ];
@@ -96,6 +100,18 @@ class ProfileController extends BaseController
                 }
                 $user_out_of_office->alternate_user_id = $fields['alternate_user_id'];
 
+                if (isset($_POST['Contact']['qualifications'])) {
+                    $contact->qualifications = $_POST['Contact']['qualifications'];
+                    if ($contact->isNewRecord) {
+                        $contact->first_name = $user->first_name;
+                        $contact->last_name = $user->last_name;
+                    }
+                    $contact->validate();
+                    if ($contact->save() && !$user->contact) {
+                        $user->contact_id = $contact->id;
+                    }
+                }
+
                 if (!$user->save()) {
                     $errors = $user->getErrors();
                 } elseif (!$user_out_of_office->save()) {
@@ -114,6 +130,7 @@ class ProfileController extends BaseController
 
         $this->render('/profile/info', array(
             'user' => $user,
+            'contact' => $contact,
             'user_auth' => $user_auth,
             'errors' => $errors,
             'display_theme' => $display_theme_setting ? $display_theme_setting->value : null,

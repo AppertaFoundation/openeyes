@@ -31,7 +31,6 @@ class UserTest extends ActiveRecordTestCase
 
     protected array $columns_to_skip = [
         'title',
-        'qualifications',
         'role',
         'has_selected_firms'
     ];

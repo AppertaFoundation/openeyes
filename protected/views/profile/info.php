@@ -94,7 +94,7 @@
   <tr>
     <td>
         <?php echo $form->textField(
-            $user,
+            $contact,
             'qualifications',
             array('autocomplete' => Yii::app()->params['html_autocomplete'],
                 'readonly' => $this->isUserFieldReadOnly('qualifications'),

@@ -70,7 +70,7 @@ usort(
 
             <?php
             echo \CHtml::activeHiddenField($user, 'id');
-            $personal_fields = ['title', 'first_name', 'last_name', 'email', 'qualifications', 'role'];
+            $personal_fields = ['title', 'first_name', 'last_name', 'email', 'role'];
             foreach ($personal_fields as $field) : ?>
                 <tr>
                     <td><?php echo $user->getAttributeLabel($field); ?></td>
@@ -87,6 +87,19 @@ usort(
                 </tr>
             <?php endforeach; ?>
 
+            <tr>
+                <td><?php echo $contact->getAttributeLabel("qualifications"); ?></td>
+                <td>
+                    <?= \CHtml::activeTextField(
+                        $contact,
+                        "qualifications",
+                        [
+                            'autocomplete' => Yii::app()->params['html_autocomplete'],
+                            'class' => 'cols-full'
+                        ]
+                    ); ?>
+                </td>
+            </tr>
             <tr>
                 <td>Grade</td>
                 <td>
@@ -358,5 +371,5 @@ usort(
         }
     };
 
-    
+
 </script>
