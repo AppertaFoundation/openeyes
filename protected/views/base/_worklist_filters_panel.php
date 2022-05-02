@@ -173,45 +173,92 @@
 <script type="text/javascript">
     $(document).ready(function() {
         const hidePanelWidth = 1890;
-        const button = $('#js-nav-worklist-btn');
+        const worklistButton = $('#js-nav-worklist-btn');
+        const worklistFilterPanel = $('#js-worklists-filter-panel');
+        const hotlistButton = $('#js-nav-hotlist-btn');
+        const hotlistPanel = $('#js-hotlist-panel');
 
-        let worklistsFilterPanelFunc = function() {
-                if (button.hasClass('open')) {
-                    $('#js-worklists-filter-panel').hide();
-                    button.removeClass('open');
-                } else {
-                    $('#js-hotlist-panel').hide();
-                    $('#js-worklists-filter-panel').show();
-                    button.addClass('open');
+        let worklistsFilterPanelEnterFunc = function () {
+            hotlistPanel.hide();
+            worklistFilterPanel.show();
+        };
+
+        let worklistsFilterPanelExitFunc = function () {
+            if (!worklistButton.hasClass('open')) {
+                worklistFilterPanel.hide();
+                if ($(window).width() > hidePanelWidth) {
+                    hotlistPanel.show();
                 }
-            };
-        button.click(worklistsFilterPanelFunc);
-        button.hover(worklistsFilterPanelFunc);
-
-        let hotlistPanelFunc = function() {
-            if (button.hasClass('open')) {
-                $('#js-hotlist-panel').show();
-                $('#js-worklists-filter-panel').hide();
-                button.removeClass('open');
             }
         };
-        $('#js-nav-hotlist-btn').click(hotlistPanelFunc);
-        $('#js-nav-hotlist-btn').hover(hotlistPanelFunc);
-        
+
+        let worklistsFilterPanelClickFunc = function() {
+            if (worklistButton.hasClass('open')) {
+                worklistFilterPanel.hide();
+                worklistButton.removeClass('open');
+                if ($(window).width() > hidePanelWidth) {
+                    hotlistPanel.show();
+                    hotlistButton.addClass('open');
+                }
+            } else {
+                worklistFilterPanel.show();
+                worklistButton.addClass('open');
+                hotlistPanel.hide();
+                hotlistButton.removeClass('open');
+            }
+        };
+
+        worklistButton.click(worklistsFilterPanelClickFunc);
+        worklistButton.hover(worklistsFilterPanelEnterFunc, worklistsFilterPanelExitFunc);
+
+        let hotlistPanelEnterFunc = function () {
+            hotlistPanel.show();
+            worklistFilterPanel.hide();
+        };
+
+        let hotlistPanelExitFunc = function () {
+            if (!hotlistButton.hasClass('open')) {
+                hotlistPanel.hide();
+                if ($(window).width() > hidePanelWidth) {
+                    worklistFilterPanel.show();
+                }
+            }
+        };
+
+        let hotlistPanelClickFunc = function() {
+            if (hotlistButton.hasClass('open')) {
+                hotlistPanel.hide();
+                hotlistButton.removeClass('open');
+                if ($(window).width() > hidePanelWidth) {
+                    worklistFilterPanel.show();
+                    worklistButton.addClass('open');
+                }
+            } else {
+                hotlistPanel.show();
+                hotlistButton.addClass('open');
+                worklistFilterPanel.hide();
+                worklistButton.removeClass('open');
+            }
+        };
+
+        hotlistButton.click(hotlistPanelClickFunc);
+        hotlistButton.hover(hotlistPanelEnterFunc, hotlistPanelExitFunc);
+
+        hotlistPanel.hide();
+        hotlistButton.removeClass('open');
+        worklistFilterPanel.show();
+        worklistButton.addClass('open');
+
         $(window).resize(function() {
-            if (button.hasClass('open')) {
+            if (worklistButton.hasClass('open')) {
                 if ($(this).width() > hidePanelWidth) {
-                    $('#js-worklists-filter-panel').show();
+                    worklistFilterPanel.show();
                 } else {
-                    $('#js-worklists-filter-panel').hide();
-                    button.removeClass('open');
+                    worklistFilterPanel.hide();
+                    worklistButton.removeClass('open');
                 }
             }
         });
-
-        $('#js-hotlist-panel').hide();
-        $('#js-worklists-filter-panel').show();
-        button.addClass('open');
     });
 </script>
 
