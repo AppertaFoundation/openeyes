@@ -278,9 +278,9 @@ EOL;
                 FirstName,
                 CurrentGradeId
             )
-            SELECT 
-                id AS Surgeonid, 
-                IFNULL(registration_code, '') AS GMCnumber, 
+            SELECT
+                id AS Surgeonid,
+                IFNULL(registration_code, '') AS GMCnumber,
                 IFNULL(title, '') AS Title,
                 IFNULL(first_name, '') AS FirstName,
                 IFNULL(user.doctor_grade_id, '')  AS CurrentGradeId
@@ -295,7 +295,7 @@ EOL;
     {
 
         $query = <<<EOL
-                SELECT * 
+                SELECT *
                 FROM tmp_rco_nod_Surgeon_{$this->extractIdentifier}
 EOL;
 
@@ -340,9 +340,9 @@ EOL;
                     Postcode,
                     Consultant,
                     EthnicCategory
-                  ) 
+                  )
                   SELECT
-                          p.id, 
+                          p.id,
                           TIMESTAMPDIFF(YEAR, p.dob, IFNULL(p.date_of_death, CURDATE())),
                           (SELECT CASE WHEN gender='F' THEN 'Female' WHEN gender='M' THEN 'Male' ELSE 'Unknown' END),
                           IFNULL(LEFT(a.postcode,LOCATE(' ',a.postcode) - 1), 'Unknown'),
@@ -355,7 +355,7 @@ EOL;
                     (
                         SELECT DISTINCT(c.patient_id)
                         FROM tmp_cxl_main_event_episodes_{$this->extractIdentifier} c
-                    ); 
+                    );
 EOL;
         return $query;
     }
@@ -363,7 +363,7 @@ EOL;
     private function getPatients()
     {
         $query = <<<EOL
-                SELECT * 
+                SELECT *
                 FROM tmp_cxl_patients_{$this->extractIdentifier}
 EOL;
 
@@ -668,7 +668,7 @@ EOL;
                 LEFT JOIN ophciexamination_slit_lamp_cornea slc ON slc.id = sl.right_cornea_id
                 LEFT JOIN et_ophciexamination_cxl_history h ON h.event_id = c.event_id
                 LEFT JOIN et_ophciexamination_visualacuity va ON va.event_id = c.event_id
-                LEFT JOIN ophciexamination_visual_acuity_unit vau ON vau.id = va.unit_id
+                LEFT JOIN ophciexamination_visual_acuity_unit vau ON vau.id = va.archive_unit_id
                 LEFT JOIN et_ophciexamination_refraction rf ON rf.event_id = c.event_id AND rf.eye_id IN (2, 3)
                 LEFT JOIN ophciexamination_refraction_reading rr ON rr.id = (
                     /* Need to ensure we only get one reading result, ordered by the priority of the type */
@@ -685,7 +685,8 @@ EOL;
                 LEFT JOIN ophciexamination_diagnosis dd ON dd.element_diagnoses_id = d.id AND dd.eye_id IN (2, 3) AND dd.principal = 1
                 LEFT JOIN disorder ON disorder.id = dd.disorder_id
                 LEFT JOIN et_ophciexamination_clinicoutcome o ON o.event_id = c.event_id
-                LEFT JOIN ophciexamination_clinicoutcome_status os ON os.id = o.status_id
+                LEFT JOIN ophciexamination_clinicoutcome_entry oe ON oe.element_id = o.id
+                LEFT JOIN ophciexamination_clinicoutcome_status os ON os.id = oe.status_id
                 JOIN patient p ON p.id = c.patient_id
                 UNION ALL
                 SELECT p.id,
@@ -738,7 +739,7 @@ EOL;
                 LEFT JOIN ophciexamination_slit_lamp_cornea slc ON slc.id = sl.left_cornea_id
                 LEFT JOIN et_ophciexamination_cxl_history h ON h.event_id = c.event_id
                 LEFT JOIN et_ophciexamination_visualacuity va ON va.event_id = c.event_id
-                LEFT JOIN ophciexamination_visual_acuity_unit vau ON vau.id = va.unit_id
+                LEFT JOIN ophciexamination_visual_acuity_unit vau ON vau.id = va.archive_unit_id
                 LEFT JOIN et_ophciexamination_refraction rf ON rf.event_id = c.event_id AND rf.eye_id IN (1, 3)
                 LEFT JOIN ophciexamination_refraction_reading rr ON rr.id = (
                     /* Need to ensure we only get one reading result, ordered by the priority of the type */
@@ -755,7 +756,8 @@ EOL;
                 LEFT JOIN ophciexamination_diagnosis dd ON dd.element_diagnoses_id = d.id AND dd.eye_id IN (1, 3) AND dd.principal = 1
                 LEFT JOIN disorder ON disorder.id = dd.disorder_id
                 LEFT JOIN et_ophciexamination_clinicoutcome o ON o.event_id = c.event_id
-                LEFT JOIN ophciexamination_clinicoutcome_status os ON os.id = o.status_id
+                LEFT JOIN ophciexamination_clinicoutcome_entry oe ON oe.element_id = o.id
+                LEFT JOIN ophciexamination_clinicoutcome_status os ON os.id = oe.status_id
                 JOIN patient p ON p.id = c.patient_id
                 ;
 EOL;
@@ -885,7 +887,7 @@ EOL;
                        rp.name,
                        REPLACE(REPLACE(sd.name, 'minutes', ''), 'minute', ''),
                        ui.name,
-                       ud.name,
+                       REPLACE(REPLACE(ud.name, 'seconds', ''), 'second', ''),
                        CASE WHEN uid.name = '0 seconds' THEN 'Continuous' ELSE REPLACE(REPLACE(uid.name, ' seconds', ''), ' second', '') END,
                        k.uv_total_energy_value,
                        k.cxl_comments
