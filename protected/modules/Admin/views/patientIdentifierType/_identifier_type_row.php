@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2020
  * This file is part of OpenEyes.
@@ -12,6 +13,7 @@
  * @copyright Copyright (c) 2020, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <tr data-key="<?= $key ?>">
     <td><?= \CHtml::activeHiddenField($element, "[{$key}]id", ['class' => 'js-input']); ?></td>
@@ -38,7 +40,7 @@
                 "[{$key}]{$field}",
                 [
                     'class' => 'cols-full',
-                    'autocomplete' => Yii::app()->params['html_autocomplete']
+                    'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete')
                 ]
             ); ?>
         </td>
@@ -47,4 +49,3 @@
         <i class="oe-i trash js-remove-row"></i>
     </td>
 </tr>
-

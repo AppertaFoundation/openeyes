@@ -85,7 +85,7 @@
                         ) . '<br />' .
                         CHtml::textField("OEModule_OphCiExamination_models_SurgicalHistorySetEntry[$row][operation]", $data->operation, [
                             'placeholder' => 'Select from above or type',
-                            'autocomplete' => Yii::app()->params['html_autocomplete'],
+                            'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                             'class' => 'common-operation',
                         ]) .
                         '</div>';
@@ -183,7 +183,7 @@
                 echo '<br />' .
                 CHtml::textField("OEModule_OphCiExamination_models_SurgicalHistorySetEntry[{{row}}][operation]", '', [
                         'placeholder' => 'Select from above or type',
-                        'autocomplete' => Yii::app()->params['html_autocomplete'],
+                        'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                         'class' => 'common-operation',
                     ]);
                 ?>

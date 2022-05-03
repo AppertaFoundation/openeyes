@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -47,7 +48,7 @@ $base_name = CHtml::modelName($element) . "[{$side}_values][{$index}]";
         <?= CHtml::textField(
             "{$base_name}[reading_time]",
             $time,
-            ['autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'fixed-width-small']
+            ['autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'), 'class' => 'fixed-width-small']
         ) ?>
     </td>
     <td>
@@ -56,11 +57,11 @@ $base_name = CHtml::modelName($element) . "[{$side}_values][{$index}]";
                 id="<?= CHtml::modelName($element) . '_' . $side . '_values_' . $index . '_comment_container' ?>"
                 style="<?= isset($comment) && strlen($comment) ? '' : 'display: none;' ?>"
                 data-comment-button="#<?= CHtml::modelName($element) . '_' . $side . '_values_' . $index . '_comment_button' ?>">
-                <?= CHtml::textArea($base_name . '['.$side.'_comments]', $comment, [
+                <?= CHtml::textArea($base_name . '[' . $side . '_comments]', $comment, [
                     'rows' => 1,
                     'class' => 'js-comment-field',
                     'data-hide-method' => 'display',
-                    'id' => CHtml::modelName($element) . '_' . $side . '_values_' . $index . '_'.$side.'_comments',
+                    'id' => CHtml::modelName($element) . '_' . $side . '_values_' . $index . '_' . $side . '_comments',
                 ]) ?>
 
               <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>

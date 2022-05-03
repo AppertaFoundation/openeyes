@@ -497,7 +497,7 @@ $footer_array = explode("{e-signature}", $element["footer"]);
                                     <?= CHtml::textField(
                                         "EnclosureItems[$key]",
                                         $value,
-                                        array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'cols-full')
+                                        array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'), 'class' => 'cols-full')
                                     ) ?>
                                     <i class="oe-i trash removeEnclosure"></i>
                                 </div>
@@ -509,7 +509,7 @@ $footer_array = explode("{e-signature}", $element["footer"]);
                                     <?= CHtml::textField(
                                         "EnclosureItems[enclosure$i]",
                                         $item->content,
-                                        array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'cols-full')
+                                        array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'), 'class' => 'cols-full')
                                     ) ?>
                                     <i class="oe-i trash removeEnclosure"></i>
                                 </div>

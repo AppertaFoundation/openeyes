@@ -29,7 +29,7 @@ if (isset($_POST['status']) && $_POST['status'] != '') {
 }
 $institution = Institution::model()->getCurrent();
 $selected_site_id = Yii::app()->session['selected_site_id'];
-$primary_identifier_usage_type = Yii::app()->params['display_primary_number_usage_code'];
+$primary_identifier_usage_type = SettingMetadata::model()->getSetting('display_primary_number_usage_code');
 $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(
     $primary_identifier_usage_type,
     $institution->id,
@@ -154,7 +154,7 @@ Yii::app()->clientScript->registerScriptFile($widgetPath . '/PatientPanelPopupMu
 
                     <td class="nowrap">
                         <?php $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(
-                            Yii::app()->params['display_primary_number_usage_code'],
+                            SettingMetadata::model()->getSetting('display_primary_number_usage_code'),
                             $patient->id,
                             $institution->id,
                             $selected_site_id
@@ -198,7 +198,7 @@ Yii::app()->clientScript->registerScriptFile($widgetPath . '/PatientPanelPopupMu
                                     case 'LA':
                                         echo $anaesthetic_type->name;
 
-                                        if ((!$this->module->isLACDisabled())&&$eo->is_lac_required =='1') {
+                                        if ((!$this->module->isLACDisabled()) && $eo->is_lac_required == '1') {
                                             echo '</li><li>with Cover';
                                         }
                                         break;
@@ -222,7 +222,7 @@ Yii::app()->clientScript->registerScriptFile($widgetPath . '/PatientPanelPopupMu
                             && ($eo->getDueLetter() != Element_OphTrOperationbooking_Operation::LETTER_GP
                                 || ($eo->getDueLetter() == Element_OphTrOperationbooking_Operation::LETTER_GP && $patient->practice && $patient->practice->contact->address)
                             )
-                        ) { ?>
+) { ?>
                             <div>
                                 <input <?php if ($letterStatusClass == '' && !$this->checkAccess('OprnConfirmBookingLetterPrinted')) {
                                     ?> disabled="disabled" <?php

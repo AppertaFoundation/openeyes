@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -52,7 +53,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
                         $senderEmailAddresses,
                         'host',
                         array(
-                            'autocomplete' => Yii::app()->params['html_autocomplete'],
+                            'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                             'class' => 'cols-full',
                             'nowrapper' => true,
                         )
@@ -66,8 +67,8 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
                         $senderEmailAddresses,
                         'username',
                         array(
-                            'autocomplete' => Yii::app()->params['html_autocomplete'],
-                            'class' => 'cols-full',
+                            'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
+                            'class' => 'cols - full',
                             'nowrapper' => true,
                         )
                     ) ?>
@@ -80,9 +81,9 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
                         $senderEmailAddresses,
                         'password',
                         array(
-                            'autocomplete' => Yii::app()->params['html_autocomplete'],
-                            'class' => 'cols-full',
-                            'nowrapper' => true,
+                            'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
+                        'class' => 'cols-full',
+                        'nowrapper' => true,
                         )
                     ) ?>
                 </td>
@@ -94,8 +95,8 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
                         $senderEmailAddresses,
                         'reply_to_address',
                         array(
-                            'autocomplete' => Yii::app()->params['html_autocomplete'],
-                            'class' => 'cols-full',
+                            'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
+                            'class' => 'cols - full',
                             'nowrapper' => true,
                         )
                     ) ?>
@@ -108,9 +109,9 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
                         $senderEmailAddresses,
                         'port',
                         array(
-                            'autocomplete' => Yii::app()->params['html_autocomplete'],
-                            'class' => 'cols-full',
-                            'nowrapper' => true,
+                            'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
+                        'class' => 'cols-full',
+                        'nowrapper' => true,
                         )
                     ) ?>
                 </td>
@@ -150,8 +151,8 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
                         $senderEmailAddresses,
                         'domain',
                         array(
-                            'autocomplete' => Yii::app()->params['html_autocomplete'],
-                            'class' => 'cols-full',
+                            'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
+                            'class' => 'cols - full',
                             'nowrapper' => true,
                         )
                     ) ?>
@@ -174,15 +175,15 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
                         'Cancel',
                         [
                             'class' => 'button large',
-                            'data-uri' => '/OphCoCorrespondence/admin/senderEmailAddresses',
+                            'data - uri' => ' / OphCoCorrespondence / admin / senderEmailAddresses',
                             'name' => 'cancel',
                             'id' => 'et_cancel'
                         ]
                     ) ?>
-                </td>
-            </tr>
-        </tfoot>
-    </table>
-</div>
+                    </td>
+                    </tr>
+                    </tfoot>
+                    </table>
+                    </div>
 
-<?php $this->endWidget() ?>
+                    <?php $this->endWidget() ?>

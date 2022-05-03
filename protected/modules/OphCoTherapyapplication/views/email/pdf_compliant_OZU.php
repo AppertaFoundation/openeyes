@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,10 +16,11 @@
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 $logo_helper = new LogoHelper();
 $institution_id = Institution::model()->getCurrent()->id;
-$primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $patient->id, $institution_id, Yii::app()->session['selected_site_id']);
-$secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_secondary_number_usage_code'], $patient->id, $institution_id, Yii::app()->session['selected_site_id']);
+$primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $patient->id, $institution_id, Yii::app()->session['selected_site_id']);
+$secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(SettingMetadata::model()->getSetting('display_secondary_number_usage_code'), $patient->id, $institution_id, Yii::app()->session['selected_site_id']);
 ?>
 <div class="banner clearfix">
         <?= $logo_helper->render('letter_head') ?>

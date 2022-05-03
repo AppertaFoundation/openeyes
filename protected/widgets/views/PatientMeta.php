@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -14,6 +15,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <?php
 /**
@@ -29,8 +31,8 @@ if (!isset($coreapi)) {
 $deceased = $patient->isDeceased();
 $institution = Institution::model()->getCurrent();
 $selected_site_id = Yii::app()->session['selected_site_id'];
-$display_primary_number_usage_code = Yii::app()->params['display_primary_number_usage_code'];
-$display_secondary_number_usage_code = Yii::app()->params['display_secondary_number_usage_code'];
+$display_primary_number_usage_code = SettingMetadata::model()->getSetting('display_primary_number_usage_code');
+$display_secondary_number_usage_code = SettingMetadata::model()->getSetting('display_secondary_number_usage_code');
 $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient($display_primary_number_usage_code, $patient->id, $institution->id, $selected_site_id);
 $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient($display_secondary_number_usage_code, $patient->id, $institution->id, $selected_site_id);
 if (!isset($this->controller) || ($this->controller->id != "patient" && $this->controller->id != 'default')) { ?>
@@ -60,7 +62,8 @@ if (!isset($this->controller) || ($this->controller->id != "patient" && $this->c
                             [
                                 'patient' => $patient,
                                 'show_all' => true
-                            ]); ?>
+                            ]
+                        ); ?>
                         <?php if ($display_primary_number_usage_code === 'GLOBAL' && $primary_identifier && $primary_identifier->patientIdentifierStatus) { ?>
                             <i class="oe-i <?= isset($primary_identifier->patientIdentifierStatus->icon->class_name) ? $primary_identifier->patientIdentifierStatus->icon->class_name : 'exclamation' ?> small"></i>
                         <?php } ?>
@@ -89,4 +92,3 @@ if (!isset($this->controller) || ($this->controller->id != "patient" && $this->c
         </div>
     </div>
 <?php } ?>
-

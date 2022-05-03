@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -39,12 +40,13 @@
 
 $institution = Institution::model()->getCurrent();
 $selected_site_id = Yii::app()->session['selected_site_id'];
-$display_primary_number_usage_code = Yii::app()->params['display_primary_number_usage_code'];
+$display_primary_number_usage_code = SettingMetadata::model()->getSetting('display_primary_number_usage_code');
 
 $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(
     $display_primary_number_usage_code,
-    $institution->id ,
-    $selected_site_id);
+    $institution->id,
+    $selected_site_id
+);
 
 $minutes_status = ($session->availableMinutes > 0);
 $proc_status = (!$session->isProcedureCountLimited() || $session->getAvailableProcedureCount() > 0);
@@ -137,7 +139,7 @@ $active_bookings = $session->getActiveBookingsForWard($ward_id);
                         <?php } ?>
                     </div>
                 </div>
-                <div class="session-unavailable-reason" style="display:<?=!$session->available ? 'block':'none';?>">
+                <div class="session-unavailable-reason" style="display:<?=!$session->available ? 'block' : 'none';?>">
                     <?=$session->unavailablereason->name ?? 'No reason provided';?>
                 </div>
             </div>

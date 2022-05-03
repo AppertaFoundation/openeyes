@@ -27,7 +27,7 @@ return array(
                 // the element attribute is the selector used for locating the section of the page to highlight
                 'element' => "input#query",
                 'title' => 'Finding patients',
-                'content' => 'You can open a patient record from the search box by entering a hospital number, ' . PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(Yii::app()->params['display_primary_number_usage_code'], $this->selectedInstitutionId, $this->selectedSiteId) . ' number or the patient\'s name',
+                'content' => 'You can open a patient record from the search box by entering a hospital number, ' . PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $this->selectedInstitutionId, $this->selectedSiteId) . ' number or the patient\'s name',
                 'showParent' => 'true',
                 //backdropElement can be used to highlight a different element to the one selected by 'element'
                 'backdropElement' => '.oe-find-patient:first',

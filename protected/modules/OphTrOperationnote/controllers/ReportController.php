@@ -125,7 +125,8 @@ class ReportController extends BaseReportController
             $db = 'db';
         }
 
-        foreach (Yii::app()->$db->createCommand()
+        foreach (
+            Yii::app()->$db->createCommand()
             ->select('pl.eye_id, p.dob, p.date_of_death, comp.id as comp_id, pc.id as pc_id')
             ->from('et_ophtroperationnote_procedurelist pl')
             ->join('et_ophtroperationnote_cataract c', 'pl.event_id = c.event_id')
@@ -137,7 +138,8 @@ class ReportController extends BaseReportController
             ->leftJoin('et_ophtroperationnote_cataract_complication comp', 'comp.cataract_id = c.id')
             ->leftJoin('et_ophtroperationnote_cataract_complication pc', 'pc.cataract_id = c.id and pc.complication_id = 11')
             ->where("pl.deleted = 0 and c.deleted = 0 and e.deleted = 0 and s.deleted = 0 and ep.deleted = 0 and f.deleted = 0 and p.deleted = 0 and (comp.id is null or comp.deleted = 0) and (pc.id is null or pc.deleted = 0) $where")
-            ->queryAll() as $row) {
+            ->queryAll() as $row
+        ) {
             ++$data['cataracts'];
             ($row['eye_id'] == 1) ? $data['eyes']['left']['number']++ : $data['eyes']['right']['number']++;
 
@@ -184,7 +186,8 @@ class ReportController extends BaseReportController
             $db = 'db';
         }
 
-        foreach (Yii::app()->$db->createCommand()
+        foreach (
+            Yii::app()->$db->createCommand()
             ->select('pl.eye_id, p.dob, p.date_of_death, comp.id as comp_id, pc.id as pc_id')
             ->from('et_ophtroperationnote_procedurelist pl')
             ->join('et_ophtroperationnote_cataract c', 'pl.event_id = c.event_id')
@@ -196,7 +199,8 @@ class ReportController extends BaseReportController
             ->leftJoin('et_ophtroperationnote_cataract_complication comp', 'comp.cataract_id = c.id')
             ->leftJoin('et_ophtroperationnote_cataract_complication pc', 'pc.cataract_id = c.id and pc.complication_id = 11')
             ->where('pl.deleted = 0 and c.deleted = 0 and e.deleted = 0 and s.deleted = 0 and ep.deleted = 0 and f.deleted = 0 and p.deleted = 0 and (comp.id is null or comp.deleted = 0) and (pc.id is null or pc.deleted = 0)')
-            ->queryAll() as $i => $row) {
+            ->queryAll() as $i => $row
+        ) {
             $row['pc_id'] and $data['pc_rupture_average']['number']++;
             $row['comp_id'] and $data['complication_average']['number']++;
         }
@@ -220,10 +224,10 @@ class ReportController extends BaseReportController
         $where = '';
 
         if (strtotime($params['date_from'])) {
-            $where .= " and e.created_date >= '".date('Y-m-d', strtotime($params['date_from']))." 00:00:00'";
+            $where .= " and e.created_date >= '" . date('Y-m-d', strtotime($params['date_from'])) . " 00:00:00'";
         }
         if (strtotime($params['date_to'])) {
-            $where .= " and e.created_date <= '".date('Y-m-d', strtotime($params['date_to']))." 23:59:59'";
+            $where .= " and e.created_date <= '" . date('Y-m-d', strtotime($params['date_to'])) . " 23:59:59'";
         }
 
         if ($user = User::model()->findByPk($params['surgeon_id'])) {
@@ -250,7 +254,8 @@ class ReportController extends BaseReportController
             $db = 'db';
         }
 
-        foreach (Yii::app()->$db->createCommand()
+        foreach (
+            Yii::app()->$db->createCommand()
             ->select('p.id as pid, c.first_name, c.last_name, e.created_date, s.surgeon_id, s.assistant_id, s.supervising_surgeon_id, pl.id as pl_id, e.id as event_id, cat.id as cat_id, eye.name as eye')
             ->from('patient p')
             ->join('contact c', "c.parent_class = 'Patient' and c.parent_id = p.id")
@@ -262,8 +267,9 @@ class ReportController extends BaseReportController
             ->leftJoin('et_ophtroperationnote_cataract cat', 'cat.event_id = e.id')
             ->where("p.deleted = 0 and c.deleted = 0 and ep.deleted = 0 and e.deleted = 0 and pl.deleted = 0 and s.deleted = 0 and (cat.id is null or cat.deleted = 0) $where")
             ->order('e.created_date asc')
-            ->queryAll() as $row) {
-            $patient_identifier = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $row['pid'], Institution::model()->getCurrent()->id, $this->selectedSiteId));
+            ->queryAll() as $row
+        ) {
+            $patient_identifier = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $row['pid'], Institution::model()->getCurrent()->id, $this->selectedSiteId));
 
             $operations[] = array(
                 'date' => date('j M Y', strtotime($row['created_date'])),

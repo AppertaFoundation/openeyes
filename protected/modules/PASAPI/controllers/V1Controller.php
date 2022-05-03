@@ -128,12 +128,6 @@ class V1Controller extends \CController
             $this->sendResponse(403);
         }
 
-        foreach (\SettingMetadata::model()->findAll() as $metadata) {
-            if (!$metadata->element_type && !isset(\Yii::app()->params[$metadata->key])) {
-                \Yii::app()->params[$metadata->key] = $metadata->getSetting($metadata->key);
-            }
-        }
-
         return parent::beforeAction($action);
     }
 

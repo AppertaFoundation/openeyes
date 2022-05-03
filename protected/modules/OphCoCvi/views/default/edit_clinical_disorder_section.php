@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Copyright Apperta Foundation 2021
  * This file is part of OpenEyes.
@@ -12,6 +13,7 @@
  * @copyright Copyright (C) 2021, Apperta Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <div class="box admin">
     <h2><?php echo $section->id ? 'Edit' : 'Add' ?> Clinical Disorder Section</h2>
@@ -26,7 +28,7 @@
             'field' => 5,
         ),
     )) ?>
-    <?php echo $form->textField($section, 'name', array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
+    <?php echo $form->textField($section, 'name', array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'))) ?>
     <div id="div_ClinicalInfo_Disorder_Section_consultant_id" class="row field-row">
         <div class="large-2 column">
             <label for="ClinicalInfo_Disorder_Section_active">Active:</label>

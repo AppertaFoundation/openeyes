@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <div class="element-fields full-width">
     <div class="data-group flex-layout flex-left col-gap">
@@ -37,7 +39,7 @@
                         <?= CHtml::activeTextField(
                             $element,
                             'blood_pressure_systolic',
-                            ['class' => "cols-5", 'autocomplete' => Yii::app()->params['html_autocomplete'],
+                            ['class' => "cols-5", 'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                             'style' => 'display:inline-block;',
                             'tabindex' => '1']
                         ); ?>
@@ -45,8 +47,8 @@
                         <?= CHtml::activeTextField(
                             $element,
                             'blood_pressure_diastolic',
-                            ['class' => "cols-5", 'autocomplete' => Yii::app()->params['html_autocomplete'],
-                            'style' => 'display:inline-block;',
+                            ['class' => "cols-5", 'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
+                            'style' => 'display:inline - block;',
                             'tabindex' => '2']
                         ); ?>
                     </td>
@@ -61,7 +63,7 @@
                         <?= CHtml::activeTextField(
                             $element,
                             'blood_glucose',
-                            ['class' => "cols-5", 'autocomplete' => Yii::app()->params['html_autocomplete'],
+                            ['class' => "cols-5", 'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                             'tabindex' => '5']
                         ); ?>
                     </td>
@@ -77,7 +79,7 @@
                             <?= CHtml::activeTextField(
                                 $element,
                                 'weight',
-                                ['class' => "cols-5", 'autocomplete' => Yii::app()->params['html_autocomplete'],
+                                ['class' => "cols-5", 'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                                 'tabindex' => '8']
                             ); ?>
                         </div>
@@ -102,7 +104,7 @@
                         </label>
                     </td>
                     <td>
-                        <?= CHtml::activeTextField($element, 'o2_sat', ['class' => "cols-full", 'autocomplete' => Yii::app()->params['html_autocomplete'], 'tabindex' => '3']); ?>
+                        <?= CHtml::activeTextField($element, 'o2_sat', ['class' => "cols-full", 'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'), 'tabindex' => '3']); ?>
                     </td>
                 </tr>
                 <tr>
@@ -112,7 +114,7 @@
                         </label>
                     </td>
                     <td>
-                        <?= CHtml::activeTextField($element, 'hba1c', ['class' => "cols-full", 'autocomplete' => Yii::app()->params['html_autocomplete'], 'tabindex' => '6']); ?>
+                        <?= CHtml::activeTextField($element, 'hba1c', ['class' => "cols-full", 'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'), 'tabindex' => '6']); ?>
                     </td>
                 </tr>
                 <tr>
@@ -126,7 +128,7 @@
                             <?= CHtml::activeTextField(
                                 $element,
                                 'height',
-                                ['class' => "cols-full", 'autocomplete' => Yii::app()->params['html_autocomplete'],
+                                ['class' => "cols-full", 'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                                 'tabindex' => '9']
                             ); ?>
                         </div>
@@ -153,7 +155,7 @@
                         <?= CHtml::activeTextField(
                             $element,
                             'pulse',
-                            ['class' => "cols-full", 'autocomplete' => Yii::app()->params['html_autocomplete'],
+                            ['class' => "cols-full", 'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                             'tabindex' => '4']
                         ); ?>
                     </td>
@@ -168,7 +170,8 @@
                         <?= CHtml::activeTextField(
                             $element,
                             'temperature',
-                            ['class' => "cols-full", 'autocomplete' => Yii::app()->params['html_autocomplete'],
+                            ['class' => "cols-full",
+                            'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                             'tabindex' => '7']
                         ); ?>
                     </td>
@@ -208,20 +211,21 @@
 
         function getAndSetBMI(height, weight) {
             let $bmiContainer = $('#bmi-container');
-            $bmiContainer.removeClass('highlighter good warning');
-            let bmi = 0;
-            let result = 'N/A';
-            if ((height > 0) && (weight > 0)) {
-                bmi = bmi_calculator(weight, height);
-                result = bmi.toFixed(2) || 'N/A';
-                let resultFloat = parseFloat(result);
-                if (resultFloat < 18.5 || resultFloat >= 30) {
-                    $bmiContainer.addClass('highlighter warning');
-                } else {
-                    $bmiContainer.addClass('highlighter good');
-                }
-            }
-            $bmiContainer.text(result);
-        }
-    });
-</script>
+                            $bmiContainer.removeClass('highlighter good warning');
+                            let bmi = 0;
+                            let result = 'N/A';
+                            if ((height > 0) && (weight > 0)) {
+                                bmi = bmi_calculator(weight, height);
+                                result = bmi.toFixed(2) || 'N/A';
+                                let resultFloat = parseFloat(result);
+                            if (resultFloat < 18.5 || resultFloat >= 30) {
+                                $bmiContainer.addClass('highlighter warning');
+                            } else {
+                                $bmiContainer.addClass('highlighter good');
+                            }
+                            }
+                            $bmiContainer.text(result);
+                            }
+                            }
+                        );
+                            </script>

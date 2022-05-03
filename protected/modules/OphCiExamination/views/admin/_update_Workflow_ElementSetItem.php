@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -22,14 +23,14 @@ use OEModule\OphCiExamination\models\OphCiExamination_ElementSet;
 
 $items = $step->items;
 if ($step->display_order_edited) {
-	/* Move new items at the end of the list if there is an order already saved */
-	for ($i = 0; $i < count($items); $i++) {
-		if (empty($items[$i]->display_order)) {
-			$temp = $items[$i];
-			unset($items[$i]);
-			$items[] = $temp;
-		}
-	}
+    /* Move new items at the end of the list if there is an order already saved */
+    for ($i = 0; $i < count($items); $i++) {
+        if (empty($items[$i]->display_order)) {
+            $temp = $items[$i];
+            unset($items[$i]);
+            $items[] = $temp;
+        }
+    }
 }
 
 ?>
@@ -37,7 +38,7 @@ if ($step->display_order_edited) {
 <div class="box admin">
     <div class="data-group">
         <div class="column cols-2">
-            <?=\CHtml::textField('step_name', $step->name, array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
+            <?=\CHtml::textField('step_name', $step->name, array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete')))?>
             <?=\CHtml::hiddenField('display_order_edited', $step->display_order_edited)?>
         </div>
         <div class="column cols-2 end">

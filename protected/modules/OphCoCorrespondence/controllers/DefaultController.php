@@ -163,7 +163,7 @@ class DefaultController extends BaseEventTypeController
             }
         }
 
-        if ($macro->recipient && ($macro->recipient->name === Yii::app()->params['gp_label'] || $macro->recipient->name === 'GP')) {
+        if ($macro->recipient && ($macro->recipient->name === SettingMetadata::model()->getSetting('gp_label') || $macro->recipient->name === 'GP')) {
             if ($contact = $patient->gp ?: $patient->practice) {
                 $data['sel_address_target'] = get_class($contact) . $contact->id;
             }
@@ -495,7 +495,7 @@ class DefaultController extends BaseEventTypeController
                 if ($to_recipient_gp) {
                     // print an extra copy to note
 
-                    if (Yii::app()->params['disable_print_notes_copy'] == 'off') {
+                    if (SettingMetadata::model()->getSetting('disable_print_notes_copy') == 'off') {
                         $recipients[$to_recipient_gp->id] = $to_recipient_gp->contact_name . "\n" . $to_recipient_gp->address;
                     }
                 }
@@ -509,7 +509,7 @@ class DefaultController extends BaseEventTypeController
 
                     //extra printout for note when the main recipient is NOT GP
                     if ($document_target->ToCc == 'To' && $document_target->contact_type != \SettingMetadata::model()->getSetting('gp_label')) {
-                        if (Yii::app()->params['disable_print_notes_copy'] == 'off') {
+                        if (SettingMetadata::model()->getSetting('disable_print_notes_copy') == 'off') {
                             $recipients[$document_target->id] = $document_target->contact_name . "\n" . $document_target->address;
                         }
                     }
@@ -538,7 +538,7 @@ class DefaultController extends BaseEventTypeController
             $recipients[] = $letter->getToAddress();
 
             if ($this->pdf_print_suffix === 'all' || @$_GET['all']) {
-                if (Yii::app()->params['disable_print_notes_copy'] === 'off') {
+                if (SettingMetadata::model()->getSetting('disable_print_notes_copy') === 'off') {
                     $recipients[] = $letter->getToAddress();
                 }
                 if (!$is_view) {
@@ -1241,7 +1241,7 @@ class DefaultController extends BaseEventTypeController
     protected function initAction($action)
     {
         parent::initAction($action);
-        $this->jsVars['electronic_sending_method_label'] = Yii::app()->params['electronic_sending_method_label'];
+        $this->jsVars['electronic_sending_method_label'] = SettingMetadata::model()->getSetting('electronic_sending_method_label');
 
         $this->jsVars['send_email_immediately'] = SettingInstallation::model()->findByAttributes(array('key' => 'send_email_immediately'))['value'];
         $this->jsVars['send_email_delayed'] = SettingInstallation::model()->findByAttributes(array('key' => 'send_email_delayed'))['value'];

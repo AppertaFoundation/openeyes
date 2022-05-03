@@ -36,7 +36,7 @@ class BaseModuleWidget extends BaseCWidget
             }
         }
 
-        $this->htmlOptions['autocomplete'] = Yii::app()->params['html_autocomplete'];
+        $this->htmlOptions['autocomplete'] = SettingMetadata::model()->getSetting('html_autocomplete');
     }
 
     public function getDir()

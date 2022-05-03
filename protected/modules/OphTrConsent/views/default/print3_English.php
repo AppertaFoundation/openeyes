@@ -20,8 +20,8 @@
 <?php
 $institution_id = Institution::model()->getCurrent()->id;
 $site_id = Yii::app()->session['selected_site_id'];
-$primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $this->patient->id, $institution_id, $site_id);
-$secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_secondary_number_usage_code'], $this->patient->id, $institution_id, $site_id);
+$primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $this->patient->id, $institution_id, $site_id);
+$secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(SettingMetadata::model()->getSetting('display_secondary_number_usage_code'), $this->patient->id, $institution_id, $site_id);
 $type_assessment = new OphTrConsent_Type_Assessment();
 $additional_signatures = false;
 if (isset($elements['OEModule\OphTrConsent\models\Element_OphTrConsent_AdditionalSignatures'])) {
@@ -234,7 +234,8 @@ if (isset($elements['OEModule\OphTrConsent\models\Element_OphTrConsent_Additiona
     <?php
     if (isset($elements['Element_OphTrConsent_Esign'])) {
         if ($type_assessment->existsElementInConsentForm($elements['Element_OphTrConsent_Esign']->elementType->id, Element_OphTrConsent_Type::TYPE_PATIENT_AGREEMENT_ID)) {
-            echo $this->renderPartial('_print_signature',
+            echo $this->renderPartial(
+                '_print_signature',
                 array(
                     'vi' => ($css_class == 'impaired'),
                     'element' => $elements['Element_OphTrConsent_Esign'],
@@ -337,7 +338,8 @@ if (isset($elements['OEModule\OphTrConsent\models\Element_OphTrConsent_Additiona
         <p>On behalf of the team treating the patient, I have confirmed with the patient that has no further questions
             and
             wishes the procedure to go ahead.</p>
-        <?= $this->renderPartial('_print_signature',
+        <?= $this->renderPartial(
+            '_print_signature',
             array(
                 'vi' => ($css_class === 'impaired'),
                 'element' => $elements['Element_OphTrConsent_Esign'],
@@ -360,7 +362,8 @@ if (isset($elements['OEModule\OphTrConsent\models\Element_OphTrConsent_Additiona
         <p><b>Reason for
                 withdrawal:</b> <?= isset($elements['Element_OphTrConsent_Withdrawal']->withdrawal_reason) ? $elements['Element_OphTrConsent_Withdrawal']->withdrawal_reason : '-' ?>
         </p>
-        <?= $this->renderPartial('_print_signature',
+        <?= $this->renderPartial(
+            '_print_signature',
             array(
                 'vi' => ($css_class === 'impaired'),
                 'element' => $elements['Element_OphTrConsent_Esign'],

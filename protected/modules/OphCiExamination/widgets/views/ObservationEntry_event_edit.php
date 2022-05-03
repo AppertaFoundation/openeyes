@@ -17,7 +17,11 @@
  * @var $entry ObservationEntry
  */
 ?>
-<?php use OEModule\OphCiExamination\models\AllergyEntry; ?>
+<?php
+
+use OEModule\OphCiExamination\models\AllergyEntry;
+
+?>
 
 <?php
 if (!isset($values)) {
@@ -61,7 +65,7 @@ if (!isset($values)) {
                      <?= \CHtml::textField(
                          $field_prefix . '[taken_at]',
                          strtotime($values['taken_at']) ? date('H:i', strtotime($values['taken_at'])) : $values['taken_at'],
-                         ['class' => "cols-5", 'autocomplete' => Yii::app()->params['html_autocomplete'],
+                         ['class' => "cols-5", 'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                          'style' => 'display:inline-block; width:200%']
                      ); ?>
                 </td>
@@ -76,16 +80,16 @@ if (!isset($values)) {
                     <?= CHtml::textField(
                         $field_prefix . '[blood_pressure_systolic]',
                         $values['blood_pressure_systolic'],
-                        ['class' => "cols-5", 'autocomplete' => Yii::app()->params['html_autocomplete'],
-                        'style' => 'display:inline-block;',
+                        ['class' => "cols-5", 'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
+                        'style' => 'display:inline - block;',
                         'tabindex' => '1']
                     ); ?>
                     /
                     <?= CHtml::textField(
                         $field_prefix . '[blood_pressure_diastolic]',
                         $values['blood_pressure_diastolic'],
-                        ['class' => "cols-5", 'autocomplete' => Yii::app()->params['html_autocomplete'],
-                        'style' => 'display:inline-block;',
+                        ['class' => "cols-5", 'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
+                        'style' => 'display:inline - block;',
                         'tabindex' => '2']
                     ); ?>
                 </td>
@@ -100,7 +104,7 @@ if (!isset($values)) {
                     <?= CHtml::textField(
                         $field_prefix . '[blood_glucose]',
                         $values['blood_glucose'],
-                        ['class' => "cols-5", 'autocomplete' => Yii::app()->params['html_autocomplete'],
+                        ['class' => "cols-5", 'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                         'tabindex' => '5']
                     ); ?>
                 </td>
@@ -116,7 +120,7 @@ if (!isset($values)) {
                         <?= CHtml::textField(
                             $field_prefix . '[weight]',
                             $values['weight'],
-                            ['class' => "cols-5 bmi-weight-field", 'autocomplete' => Yii::app()->params['html_autocomplete'],
+                            ['class' => "cols-5 bmi-weight-field", 'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                             'tabindex' => '8', 'data-bmi-index' => $entry_index]
                         ); ?>
                     </div>
@@ -141,7 +145,7 @@ if (!isset($values)) {
                     </label>
                 </td>
                 <td>
-                    <?= CHtml::textField($field_prefix . '[o2_sat]', $values['o2_sat'], ['class' => "cols-full", 'autocomplete' => Yii::app()->params['html_autocomplete'], 'tabindex' => '3']); ?>
+                    <?= CHtml::textField($field_prefix . '[o2_sat]', $values['o2_sat'], ['class' => "cols-full", 'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'), 'tabindex' => '3']); ?>
                 </td>
             </tr>
             <tr>
@@ -151,7 +155,7 @@ if (!isset($values)) {
                     </label>
                 </td>
                 <td>
-                    <?= CHtml::textField($field_prefix . '[rr]', $values['rr'], ['class' => 'cols-full', 'autocomplete' => Yii::app()->params['html_autocomplete'], 'tabindex' => '3']) ?>
+                    <?= CHtml::textField($field_prefix . '[rr]', $values['rr'], ['class' => 'cols - full', 'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'), 'tabindex' => '3']) ?>
                 </td>
             </tr>
             <tr>
@@ -161,7 +165,7 @@ if (!isset($values)) {
                     </label>
                 </td>
                 <td>
-                    <?= CHtml::textField($field_prefix . '[hba1c]', $values['hba1c'], ['class' => "cols-full", 'autocomplete' => Yii::app()->params['html_autocomplete'], 'tabindex' => '6']); ?>
+                    <?= CHtml::textField($field_prefix . '[hba1c]', $values['hba1c'], ['class' => "cols-full", 'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'), 'tabindex' => '6']); ?>
                 </td>
             </tr>
             <tr>
@@ -175,7 +179,7 @@ if (!isset($values)) {
                         <?= CHtml::textField(
                             $field_prefix . '[height]',
                             $values['height'],
-                            ['class' => "cols-full bmi-height-field", 'autocomplete' => Yii::app()->params['html_autocomplete'],
+                            ['class' => "cols-full bmi-height-field", 'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                             'tabindex' => '9', 'data-bmi-index' => $entry_index]
                         ); ?>
                     </div>
@@ -203,7 +207,7 @@ if (!isset($values)) {
                     <?= CHtml::textField(
                         $field_prefix . '[pulse]',
                         $values['pulse'],
-                        ['class' => "cols-full", 'autocomplete' => Yii::app()->params['html_autocomplete'],
+                        ['class' => "cols-full", 'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                         'tabindex' => '4']
                     ); ?>
                 </td>
@@ -218,9 +222,10 @@ if (!isset($values)) {
                     <?= CHtml::textField(
                         $field_prefix . '[temperature]',
                         $values['temperature'],
-                        ['class' => "cols-full", 'autocomplete' => Yii::app()->params['html_autocomplete'],
+                        ['class' => "cols-full", 'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete')
+                    ),
                         'tabindex' => '7']
-                    ); ?>
+                        ); ?>
                 </td>
             </tr>
             <tr>
@@ -233,25 +238,25 @@ if (!isset($values)) {
                     <?= CHtml::textField(
                         $field_prefix . '[other]',
                         $values['other'],
-                        ['class' => "cols-full", 'autocomplete' => Yii::app()->params['html_autocomplete'],
+                        ['class' => "cols-full", 'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                         'tabindex' => '7']
                     ); ?>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
+                    </td>
+                    </tr>
+                    <tr>
+                    <td colspan="2">
                     <label>
                         BMI
                     </label>
-                </td>
-                <td>
+                    </td>
+                    <td>
                     <div class="bmi-container" style="text-align: center" data-bmi-index="<?= $entry_index ?>">
                         <label>&nbsp;</label>
                     </div>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-    <div><i class="oe-i trash"></i></div>
-</div>
+                    </td>
+                    </tr>
+                    </tbody>
+                    </table>
+                    </div>
+                    <div><i class="oe-i trash"></i></div>
+                    </div>

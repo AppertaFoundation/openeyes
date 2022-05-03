@@ -176,7 +176,7 @@ class OETrial_ReportTrialCohortTest extends CDbTestCase
             'last_name' => $item->last_name,
             'external_trial_identifier' => $item->trials[0]->external_trial_identifier,
             'trial_patient_id' => $item->trials[0]->id,
-            'comment'=>$item->trials[0]->comment,
+            'comment' => $item->trials[0]->comment,
         );
         $this->instance->addPatientResultItem($patient);
         $this->assertEquals($baseStr, $this->instance->toCSV());

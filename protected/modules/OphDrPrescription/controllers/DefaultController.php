@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -62,12 +63,12 @@ class DefaultController extends BaseEventTypeController
     public function actionView($id)
     {
         $model = Element_OphDrPrescription_Details::model()
-            ->findBySql('SELECT * FROM et_ophdrprescription_details WHERE event_id = :id', [':id'=>$id]);
+            ->findBySql('SELECT * FROM et_ophdrprescription_details WHERE event_id = :id', [':id' => $id]);
 
         $this->showAllergyWarning();
 
         $this->editable = $model->isEditableByMedication();
-        if ( $this->editable == true ) {
+        if ($this->editable == true) {
             $this->editable = $this->userIsAdmin() || $model->draft
             || (SettingMetadata::model()->findByAttributes(array('key' => 'enable_prescriptions_edit'))->getSettingName() === 'On');
         }
@@ -199,8 +200,8 @@ class DefaultController extends BaseEventTypeController
         $cs->registerScript(
             'scr_prescription_view',
             "prescription_print_url = '"
-            .Yii::app()->createUrl('/OphDrPrescription/default/print/'.$this->event->id)
-            ."';\n",
+            . Yii::app()->createUrl('/OphDrPrescription/default/print/' . $this->event->id)
+            . "';\n",
             CClientScript::POS_READY
         );
 
@@ -228,15 +229,15 @@ class DefaultController extends BaseEventTypeController
         parent::printInit($id);
         $this->site = $this->event->site;
         if (!$prescription = Element_OphDrPrescription_Details::model()->find('event_id=?', array($id))) {
-            throw new Exception('Prescription not found: '.$id);
+            throw new Exception('Prescription not found: ' . $id);
         }
         $prescription->printed = 1;
         if (!$prescription->update(['printed'])) {
-            throw new Exception('Unable to save prescription: '.print_r($prescription->getErrors(), true));
+            throw new Exception('Unable to save prescription: ' . print_r($prescription->getErrors(), true));
         }
         $this->event->info = $prescription->infotext;
         if (!$this->event->update(["info"])) {
-            throw new Exception('Unable to save event: '.print_r($this->event->getErrors(), true));
+            throw new Exception('Unable to save event: ' . print_r($this->event->getErrors(), true));
         }
     }
 
@@ -262,9 +263,9 @@ class DefaultController extends BaseEventTypeController
         $edit_reason = OphDrPrescriptionEditReasons::model()->findByPk($reason_id);
         if ($edit_reason != null) {
             if ($reason_id > 1) {
-                Yii::app()->user->setFlash('alert.edit_reason', 'Edit reason: '.$edit_reason->caption);
+                Yii::app()->user->setFlash('alert.edit_reason', 'Edit reason: ' . $edit_reason->caption);
             } else {
-                Yii::app()->user->setFlash('alert.edit_reason', 'Edit reason: '.$reason_text);
+                Yii::app()->user->setFlash('alert.edit_reason', 'Edit reason: ' . $reason_text);
             }
         }
     }
@@ -291,7 +292,7 @@ class DefaultController extends BaseEventTypeController
 
             if (isset($_GET['term']) && strlen($term = $_GET['term']) > 0) {
                 $criteria->addCondition('id IN (SELECT medication_id FROM medication_search_index WHERE LOWER(alternative_term) LIKE :term)');
-                $params[':term'] = '%'.strtolower(strtr($term, array('%' => '\%'))).'%';
+                $params[':term'] = '%' . strtolower(strtr($term, array('%' => '\%'))) . '%';
             }
             if (isset($_GET['type_id']) && $type_id = $_GET['type_id']) {
                 $criteria->addCondition("id IN (SELECT medication_id FROM medication_set_item WHERE medication_set_id = :type_id)");
@@ -394,7 +395,7 @@ class DefaultController extends BaseEventTypeController
         $route = MedicationRoute::model()->findByPk($route_id);
         if ($route->has_laterality) {
             $options = MedicationLaterality::model()->findAll('deleted_date IS NULL');
-            echo CHtml::dropDownList('Element_OphDrPrescription_Details[items]['.$key.'][laterality]', null, CHtml::listData($options, 'id', 'name'), array('empty' => '-- Select --'));
+            echo CHtml::dropDownList('Element_OphDrPrescription_Details[items][' . $key . '][laterality]', null, CHtml::listData($options, 'id', 'name'), array('empty' => '-- Select --'));
         } else {
             echo '-';
         }
@@ -526,7 +527,7 @@ class DefaultController extends BaseEventTypeController
             Yii::app()->puppeteer->leftMargin = '8mm';
             Yii::app()->puppeteer->rightMargin = '8mm';
             $this->render('print');
-            if (Yii::app()->params['disable_print_notes_copy'] === 'off') {
+            if (SettingMetadata::model()->getSetting('disable_print_notes_copy') === 'off') {
                 $this->render('print', array('copy' => 'notes'));
             }
             if (Yii::app()->params['disable_prescription_patient_copy'] === 'off') {
@@ -555,20 +556,20 @@ class DefaultController extends BaseEventTypeController
         $prescription->printed_date = date('Y-m-d H:i:s');
 
         if (!$prescription->save()) {
-            throw new Exception('Unable to save prescription: '.print_r($prescription->getErrors(), true));
+            throw new Exception('Unable to save prescription: ' . print_r($prescription->getErrors(), true));
         }
 
         Audit::add(
             'print-prescription',
             'print',
-            Yii::app()->session['user_auth']->username .' printed the prescription.'
+            Yii::app()->session['user_auth']->username . ' printed the prescription.'
         );
 
         $event = \Event::model()->findByPk($id);
         $this->pdf_print_suffix = $event->site_id ?? \Yii::app()->session['selected_site_id'];
 
         $document_count = 1;
-        if (Yii::app()->params['disable_print_notes_copy'] === 'off') {
+        if (SettingMetadata::model()->getSetting('disable_print_notes_copy') === 'off') {
             $document_count++;
         }
 
@@ -584,7 +585,7 @@ class DefaultController extends BaseEventTypeController
             $this->print_args = '?print_mode=' . $print_mode . '&print_footer=false';
             Yii::app()->puppeteer->leftMargin = '0mm';
             Yii::app()->puppeteer->rightMargin = '0mm';
-            Yii::app()->puppeteer->topMargin= '6mm';
+            Yii::app()->puppeteer->topMargin = '6mm';
             Yii::app()->puppeteer->bottomMargin = '0mm';
             Yii::app()->puppeteer->scale = 0.998;
         } else {
@@ -619,7 +620,7 @@ class DefaultController extends BaseEventTypeController
         $prescription->draft = 0;
 
         if (!$prescription->save()) {
-            throw new Exception('Unable to save prescription: '.print_r($prescription->getErrors(), true));
+            throw new Exception('Unable to save prescription: ' . print_r($prescription->getErrors(), true));
         }
 
         if (!$event = Event::model()->findByPk($id)) {
@@ -630,7 +631,7 @@ class DefaultController extends BaseEventTypeController
         $event->info = 'Printed';
 
         if (!$event->save()) {
-            throw new Exception('Unable to save event: '.print_r($event->getErrors(), true));
+            throw new Exception('Unable to save event: ' . print_r($event->getErrors(), true));
         }
 
         echo '1';
@@ -652,14 +653,14 @@ class DefaultController extends BaseEventTypeController
         }
 
         if (!$prescription = Element_OphDrPrescription_Details::model()->find('event_id=?', array($event_id))) {
-            throw new Exception('Prescription not found for event id: '.$event_id);
+            throw new Exception('Prescription not found for event id: ' . $event_id);
         }
 
         if ($prescription->print >= 1) {
             $prescription->print = 0;
 
             if (!$prescription->update(['print', 'printed'])) {
-                throw new Exception('Unable to save prescription: '.print_r($prescription->getErrors(), true));
+                throw new Exception('Unable to save prescription: ' . print_r($prescription->getErrors(), true));
             }
         }
 
@@ -744,7 +745,8 @@ class DefaultController extends BaseEventTypeController
         $item->bound_key = substr(bin2hex(openssl_random_pseudo_bytes(10)), 0, 10);
         if (is_a($source, 'OphDrPrescription_Item')) {
             // Source is a prescription item, so we should clone it
-            foreach (array(
+            foreach (
+                array(
                          'medication_id',
                          'pgdpsd_id',
                          'duration_id',
@@ -755,7 +757,8 @@ class DefaultController extends BaseEventTypeController
                          'route_id',
                          'dispense_condition_id',
                          'dispense_location_id'
-                     ) as $field) {
+                     ) as $field
+            ) {
                 $item->$field = $source->$field;
             }
 
@@ -833,7 +836,7 @@ class DefaultController extends BaseEventTypeController
                 $medSet = $this->getCommonDrugsRefSet();
                 $item->loadDefaults($medSet);
             } else {
-                throw new CException('Invalid prescription item source: '.print_r($source));
+                throw new CException('Invalid prescription item source: ' . print_r($source));
             }
             // Populate route option from episode for Eye
             if ($episode = $this->episode) {
@@ -875,7 +878,7 @@ class DefaultController extends BaseEventTypeController
         global $reason_other_text;
 
         $model = Element_OphDrPrescription_Details::model()
-            ->findBySql('SELECT * FROM et_ophdrprescription_details WHERE event_id = :id', [':id'=>$id]);
+            ->findBySql('SELECT * FROM et_ophdrprescription_details WHERE event_id = :id', [':id' => $id]);
 
         if (!$model->isEditableByMedication()) {
             throw new CHttpException(403, 'You are not authorised to update the Prescription from this page.');
@@ -886,7 +889,7 @@ class DefaultController extends BaseEventTypeController
                 'printed'   => $model->printed
             ));
         } else {
-            if (isset($_GET['do_not_save']) && $_GET['do_not_save']==='1') {
+            if (isset($_GET['do_not_save']) && $_GET['do_not_save'] === '1') {
                 $reason_id = isset($_GET['reason']) ? $_GET['reason'] : 0;
                 $reason_other_text = isset($_GET['reason_other']) ? $_GET['reason_other'] : '';
                // $_POST=null;
@@ -1015,7 +1018,7 @@ class DefaultController extends BaseEventTypeController
                 $model->authorised_date = date('Y-m-d H:i:s');
                 $model->update();
 
-                if ($medication_management =$model->isSignedByMedication()) {
+                if ($medication_management = $model->isSignedByMedication()) {
                     $mm_signatures = $medication_management->getSignatures();
                     $index = 0;
 
@@ -1108,7 +1111,8 @@ class DefaultController extends BaseEventTypeController
             $site_theatre = $api->getElementFromLatestEvent(
                 'Element_OphTrOperationnote_SiteTheatre',
                 $this->patient,
-                true);
+                true
+            );
             if ($site_theatre && $site_theatre->event->NHSDate('event_date') === $prescribed_date && $site_theatre->event->episode->firm_id === $firm_id) {
                 return $site_theatre;
             }
@@ -1148,11 +1152,13 @@ class DefaultController extends BaseEventTypeController
     public function getSiteAndTheatreForLatestEvent()
     {
         if ($api = Yii::app()->moduleAPI->get('OphTrOperationnote')) {
-            if ($site_theatre = $api->getElementFromLatestEvent(
-                'Element_OphTrOperationnote_SiteTheatre',
-                $this->patient,
-                true
-            )) {
+            if (
+                $site_theatre = $api->getElementFromLatestEvent(
+                    'Element_OphTrOperationnote_SiteTheatre',
+                    $this->patient,
+                    true
+                )
+            ) {
                 return $site_theatre;
             }
         }

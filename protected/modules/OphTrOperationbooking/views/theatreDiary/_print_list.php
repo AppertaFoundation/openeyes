@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <?php
 $institution_id = Institution::model()->getCurrent()->id;
@@ -25,7 +27,7 @@ $site_id = Yii::app()->session['selected_site_id'];
         to <?= \CHtml::encode($_POST['date-end']) ?></div>
     <table>
         <tr>
-            <th><?= PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(Yii::app()->params['display_primary_number_usage_code'], $institution_id, $site_id) ?></th>
+            <th><?= PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $institution_id, $site_id) ?></th>
             <th>Patient name</th>
             <th>D.O.B.</th>
             <th>Age</th>
@@ -38,7 +40,7 @@ $site_id = Yii::app()->session['selected_site_id'];
         <?php foreach ($bookings as $booking) {
             if ($booking->operation->event) { ?>
                 <tr>
-                    <td><?= PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $booking->operation->event->episode->patient->id, $institution_id, $site_id)) ?></td>
+                    <td><?= PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $booking->operation->event->episode->patient->id, $institution_id, $site_id)) ?></td>
                     <td>
                         <strong><?= strtoupper($booking->operation->event->episode->patient->last_name) ?></strong>, <?= $booking->operation->event->episode->patient->first_name ?>
                     </td>

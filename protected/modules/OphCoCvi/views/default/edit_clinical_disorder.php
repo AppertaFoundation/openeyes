@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Copyright Apperta Foundation 2021
  * This file is part of OpenEyes.
@@ -31,8 +32,8 @@ $patient_type = $disorder->id ? $disorder->patient_type : Yii::app()->request->g
             'field' => 5,
         ),
     )) ?>
-    <?php echo $form->textField($disorder, 'name', array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
-    <?php echo $form->textField($disorder, 'code', array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
+    <?php echo $form->textField($disorder, 'name', array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'))) ?>
+    <?php echo $form->textField($disorder, 'code', array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'))) ?>
 
     <div id="div_OEModule_OphCoCvi_models_OphCoCvi_ClinicalInfo_Disorder_disorder_id" class="row field-row">
         <div class="large-2 column">
@@ -70,10 +71,13 @@ $patient_type = $disorder->id ? $disorder->patient_type : Yii::app()->request->g
         <div class="large-5 column end">
             <?php
             $criteria = new CDbCriteria();
-            $criteria->condition = 'event_type_version = '.$version.' AND patient_type='.$patient_type.' AND active=1';
-            echo CHtml::dropDownList('OEModule_OphCoCvi_models_OphCoCvi_ClinicalInfo_Disorder[section_id]',
+            $criteria->condition = 'event_type_version = ' . $version . ' AND patient_type=' . $patient_type . ' AND active=1';
+            echo CHtml::dropDownList(
+                'OEModule_OphCoCvi_models_OphCoCvi_ClinicalInfo_Disorder[section_id]',
                 $disorder->section_id,
-                CHtml::listData(OphCoCvi_ClinicalInfo_Disorder_Section::model()->findAll($criteria, array('patient_type' => $patient_type)), 'id', 'name'), array('empty' => '- None -'));
+                CHtml::listData(OphCoCvi_ClinicalInfo_Disorder_Section::model()->findAll($criteria, array('patient_type' => $patient_type)), 'id', 'name'),
+                array('empty' => '- None -')
+            );
             ?>
         </div>
     </div>

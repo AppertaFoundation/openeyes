@@ -13,6 +13,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <div class="cols-12">
     <h2>Edit Supplementary Consent Question Assignment</h2>
@@ -36,7 +37,7 @@
                                 $q_assign,
                                 $field,
                                 [
-                                    'autocomplete' => Yii::app()->params['html_autocomplete'],
+                                    'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                                     'class' => 'cols-full'
                                 ]
                             ); ?>
@@ -241,12 +242,12 @@
     </tbody>
 </table>
     <?= \CHtml::button(
-    'Add',
-    [
+        'Add',
+        [
         'class' => 'button large',
         'data-uri' => '/OphTrConsent/oeadmin/supplementaryConsent/editAnswer?question_assignment_id=' . $q_assign->id,
         'name' => 'Add new question type',
         'id' => 'et_add',
-    ]
+        ]
     ); ?>
 <?php endif; ?>

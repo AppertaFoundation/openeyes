@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <section class="element view full patient-info patient-contacts js-toggle-container">
     <header class="element-header">
@@ -215,7 +217,7 @@
                 <label for="title">Title:</label>
               </div>
               <div class="cols-<?= $form->columns('field'); ?>">
-                  <?=\CHtml::textField('title', '', array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
+                  <?=\CHtml::textField('title', '', array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'))) ?>
               </div>
             </div>
 
@@ -224,7 +226,7 @@
                 <label for="first_name">First name:</label>
               </div>
               <div class="cols-<?= $form->columns('field'); ?>">
-                  <?=\CHtml::textField('first_name', '', array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
+                  <?=\CHtml::textField('first_name', '', array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'))) ?>
               </div>
             </div>
 
@@ -233,7 +235,7 @@
                 <label for="last_name">Last name:</label>
               </div>
               <div class="cols-<?= $form->columns('field'); ?>">
-                  <?=\CHtml::textField('last_name', '', array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
+                  <?=\CHtml::textField('last_name', '', array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'))) ?>
               </div>
             </div>
 
@@ -242,7 +244,7 @@
                 <label for="nick_name">Nick name:</label>
               </div>
               <div class="<?= $form->columns('field'); ?>">
-                  <?=\CHtml::textField('nick_name', '', array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
+                  <?=\CHtml::textField('nick_name', '', array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'))) ?>
               </div>
             </div>
 
@@ -251,7 +253,7 @@
                 <label for="primary_phone">Primary phone:</label>
               </div>
               <div class="cols-<?= $form->columns('field'); ?>">
-                  <?=\CHtml::textField('primary_phone', '', array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
+                  <?=\CHtml::textField('primary_phone', '', array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'))) ?>
               </div>
             </div>
 
@@ -260,7 +262,7 @@
                 <label for="qualifications">Qualifications:</label>
               </div>
               <div class="cols-<?= $form->columns('field'); ?>">
-                  <?=\CHtml::textField('qualifications', '', array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
+                  <?=\CHtml::textField('qualifications', '', array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'))) ?>
               </div>
             </div>
 
@@ -372,7 +374,7 @@
                 <?=\CHtml::textField(
                     'newsite_from',
                     User::model()->findByPk(Yii::app()->user->id)->email,
-                    array('autocomplete' => Yii::app()->params['html_autocomplete'])
+                    array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'))
                 ) ?>
             </div>
           </div>
@@ -381,7 +383,11 @@
               <label for="newsite_subject">Subject:</label>
             </div>
             <div class="<?= $form->columns('field'); ?>">
-                <?=\CHtml::textField('newsite_subject', 'Please add the following site/institution', array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
+                <?=\CHtml::textField(
+                    'newsite_subject',
+                    'Please add the following site/institution',
+                    array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'))
+                ) ?>
             </div>
           </div>
           <div class="data-group">
@@ -407,248 +413,238 @@
 <script type="text/javascript">
   $(document).ready(function () {
     $('#btn-add-contact').click(function () {
-      if ($('#add_contact').is(':hidden')) {
-        $('#add_contact').slideToggle('fast');
-        $('#contact_label_id').val($('#contactfilter').val());
-        if ($('#contactfilter').val() == 'nonspecialty') {
-          $('div.contactLabel').show();
-        } else {
-          $('div.contactLabel').hide();
-        }
+                    if ($('#add_contact').is(':hidden')) {
+                        $('#add_contact').slideToggle('fast');
+                        $('#contact_label_id').val($('#contactfilter').val());
+                        if ($('#contactfilter').val() == 'nonspecialty') {
+                                $('div.contactLabel').show();
+                        } else {
+                            $('div.contactLabel').hide();
+                        }
 
-        $('#add_contact .contactType').text($('#contactfilter option:selected').text());
-        $('#add_contact #site_id').html('<option value="">- Select -</option>');
-        $('#add_contact .siteID').hide();
-        $('#add_contact #institution_id').val('');
-        $('#add_contact #title').val('');
-        $('#add_contact #first_name').val('');
-        $('#add_contact #last_name').val('');
-        $('#add_contact #nick_name').val('');
-        $('#add_contact #primary_phone').val('');
-        $('#add_contact #qualifications').val('');
-        $('#btn-add-contact').hide();
-      }
-    });
+                            $('#add_contact .contactType').text($('#contactfilter option:selected').text());
+                            $('#add_contact #site_id').html('<option value="">- Select -</option>');
+                            $('#add_contact .siteID').hide();
+                            $('#add_contact #institution_id').val('');
+                            $('#add_contact #title').val('');
+                            $('#add_contact #first_name').val('');
+                            $('#add_contact #last_name').val('');
+                            $('#add_contact #nick_name').val('');
+                            $('#add_contact #primary_phone').val('');
+                            $('#add_contact #qualifications').val('');
+                            $('#btn-add-contact').hide();
+                    }
+                    });
+                    $('#contactfilter').change(function () {
+                            if (!$('#add_contact').is(':hidden')) {
+                                $('#add_contact').slideToggle('fast');
+                            }
+                            $('#btn-add-contact').hide();
 
-    $('#contactfilter').change(function () {
-      if (!$('#add_contact').is(':hidden')) {
-        $('#add_contact').slideToggle('fast');
-      }
-      $('#btn-add-contact').hide();
+                            if ($('#contactname').val().length >= 3) {
+                                $('#contactname').focus();
+                                $('#contactname').autocomplete('search', $('#contactname').val());
+                            }
+                        });
+                    $('#add_contact #institution_id').change(function () {
+                            var institution_id = $(this).val();
 
-      if ($('#contactname').val().length >= 3) {
-        $('#contactname').focus();
-        $('#contactname').autocomplete('search', $('#contactname').val());
-      }
-    });
+                            if (institution_id != '') {
+                                $.ajax({
+                                'type': 'GET',
+                                'dataType': 'json',
+                                'url': baseUrl + '/patient/institutionSites?institution_id=' + institution_id,
+                                'success': function (data) {
+                                                  var options = '<option value="">- Select -</option>';
+                                    for (var i in data) {
+                                        options += '<option value="' + i + '">' + data[i] + '</option>';
+                                    }
+                                    $('#add_contact #site_id').html(options);
+                                    sort_selectbox($('#add_contact #site_id'));
+                                    if (i > 0) {
+                                        $('#add_contact .siteID').show();
+                                    } else {
+                                        $('#add_contact .siteID').hide();
+                                    }
+                                }
+                                });
+                            } else {
+                                $('#add_contact .siteID').hide();
+                            }
+                        });
+                    $('button.btn_cancel_contact').click(function (e) {
+                            e.preventDefault();
+                            $('#add_contact').slideToggle('fast');
+                            $('#btn-add-contact').hide();
+                        });
+                    handleButton($('button.btn_save_contact'), function (e) {
+                            e.preventDefault();
 
-    $('#add_contact #institution_id').change(function () {
-      var institution_id = $(this).val();
+                            $.ajax({
+                            'type': 'POST',
+                            'dataType': 'json',
+                            'data': $('#add-contact').serialize() + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
+                            'url': baseUrl + '/patient/validateSaveContact',
+                            'success': function (data) {
+                                $('.add_contact_form_errors').hide().html('');
+                                if (data.length == 0) {
+                                    $('img.add_contact_loader').show();
+                                    $('#add-contact').submit();
+                                    return true;
+                                } else {
+                                    for (var i in data) {
+                                                      $('.add_contact_form_errors').show().append('<div>' + data[i] + '</div>');
+                                    }
+                                    enableButtons();
+                                }
+                            }
+                            });
+                        });
+                    $('a.editContact').die('click').live('click', function (e) {
+                            e.preventDefault();
 
-      if (institution_id != '') {
-        $.ajax({
-          'type': 'GET',
-          'dataType': 'json',
-          'url': baseUrl + '/patient/institutionSites?institution_id=' + institution_id,
-          'success': function (data) {
-            var options = '<option value="">- Select -</option>';
-            for (var i in data) {
-              options += '<option value="' + i + '">' + data[i] + '</option>';
-            }
-            $('#add_contact #site_id').html(options);
-            sort_selectbox($('#add_contact #site_id'));
-            if (i > 0) {
-              $('#add_contact .siteID').show();
-            } else {
-              $('#add_contact .siteID').hide();
-            }
-          }
-        });
-      } else {
-        $('#add_contact .siteID').hide();
-      }
-    });
+                            var location_id = $(this).parent().parent().attr('data-attr-location-id');
+                            var pca_id = $(this).parent().parent().attr('data-attr-pca-id');
 
-    $('button.btn_cancel_contact').click(function (e) {
-      e.preventDefault();
-      $('#add_contact').slideToggle('fast');
-      $('#btn-add-contact').hide();
-    });
+                            $.ajax({
+                            'type': 'GET',
+                            'dataType': 'json',
+                            'url': baseUrl + '/patient/getContactLocation?location_id=' + location_id,
+                            'success': function (data) {
+                                editContactSiteID = data['site_id'];
+                                $('#edit_contact #institution_id').val(data['institution_id']);
+                                $('#edit_contact #institution_id').change();
+                                $('#edit_contact .editContactName').text(data['name']);
+                                $('#edit_contact #contact_id').val(data['contact_id']);
+                                $('#edit_contact #pca_id').val(pca_id);
+                            }
+                            });
 
-    handleButton($('button.btn_save_contact'), function (e) {
-      e.preventDefault();
+                            if ($('#edit_contact').is(':hidden')) {
+                                $('#edit_contact').slideToggle('fast');
+                            }
+                        });
+                    $('#edit_contact #institution_id').change(function () {
+                            var institution_id = $(this).val();
 
-      $.ajax({
-        'type': 'POST',
-        'dataType': 'json',
-        'data': $('#add-contact').serialize() + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
-        'url': baseUrl + '/patient/validateSaveContact',
-        'success': function (data) {
-          $('.add_contact_form_errors').hide().html('');
-          if (data.length == 0) {
-            $('img.add_contact_loader').show();
-            $('#add-contact').submit();
-            return true;
-          } else {
-            for (var i in data) {
-              $('.add_contact_form_errors').show().append('<div>' + data[i] + '</div>');
-            }
-            enableButtons();
-          }
-        }
-      });
-    });
+                            if (institution_id != '') {
+                                $.ajax({
+                                'type': 'GET',
+                                'dataType': 'json',
+                                'url': baseUrl + '/patient/institutionSites?institution_id=' + institution_id,
+                                'success': function (data) {
+                                                  var options = '<option value="">- Select -</option>';
+                                    for (var i in data) {
+                                        options += '<option value="' + i + '">' + data[i] + '</option>';
+                                    }
+                                    $('#edit_contact #site_id').html(options);
+                                    sort_selectbox($('#edit_contact #site_id'));
+                                    if (i > 0) {
+                                        $('#edit_contact .siteID').show();
+                                    } else {
+                                        $('#edit_contact .siteID').hide();
+                                    }
 
-    $('a.editContact').die('click').live('click', function (e) {
-      e.preventDefault();
+                                    if (editContactSiteID) {
+                                        $('#edit_contact #site_id').val(editContactSiteID);
+                                        editContactSiteID = null;
+                                    }
+                                }
+                                });
+                            } else {
+                                $('#edit_contact .siteID').hide();
+                            }
+                        });
+                    $('button.btn_save_editcontact').click(function (e) {
+                            e.preventDefault();
 
-      var location_id = $(this).parent().parent().attr('data-attr-location-id');
-      var pca_id = $(this).parent().parent().attr('data-attr-pca-id');
+                            $.ajax({
+                            'type': 'POST',
+                            'dataType': 'json',
+                            'data': $('#edit-contact').serialize() + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
+                            'url': baseUrl + '/patient/validateEditContact',
+                            'success': function (data) {
+                                $('div.edit_contact_form_errors').hide().html('');
+                                if (data.length == 0) {
+                                    $('img.edit_contact_loader').show();
+                                    $('#edit-contact').submit();
+                                    return true;
+                                } else {
+                                    for (var i in data) {
+                                                      $('div.edit_contact_form_errors').show().append('<div>' + data[i] + '</div>');
+                                    }
+                                    enableButtons();
+                                }
+                            }
+                            });
+                        });
+                    $('button.btn_cancel_editcontact').click(function (e) {
+                            e.preventDefault();
 
-      $.ajax({
-        'type': 'GET',
-        'dataType': 'json',
-        'url': baseUrl + '/patient/getContactLocation?location_id=' + location_id,
-        'success': function (data) {
-          editContactSiteID = data['site_id'];
-          $('#edit_contact #institution_id').val(data['institution_id']);
-          $('#edit_contact #institution_id').change();
-          $('#edit_contact .editContactName').text(data['name']);
-          $('#edit_contact #contact_id').val(data['contact_id']);
-          $('#edit_contact #pca_id').val(pca_id);
-        }
-      });
+                            if (!$('#edit_contact').is(':hidden')) {
+                                $('#edit_contact').slideToggle('fast');
+                            }
+                        });
+                    $('button.btn_add_site').click(function (e) {
+                            e.preventDefault();
 
-      if ($('#edit_contact').is(':hidden')) {
-        $('#edit_contact').slideToggle('fast');
-      }
-    });
+                            $('#newsite_from').val('<?= User::model()->findByPk(Yii::app()->user->id)->email ?>');
+                            $('#newsite_subject').val('Please add the following site/institution');
+                            $('#newsite_message').val("Please could you add the following site/institution to OpenEyes:\n\n");
 
-    $('#edit_contact #institution_id').change(function () {
-      var institution_id = $(this).val();
+                            $('#add_site_dialog').dialog({
+                            resizable: false,
+                            modal: true,
+                            width: 560
+                            });
 
-      if (institution_id != '') {
-        $.ajax({
-          'type': 'GET',
-          'dataType': 'json',
-          'url': baseUrl + '/patient/institutionSites?institution_id=' + institution_id,
-          'success': function (data) {
-            var options = '<option value="">- Select -</option>';
-            for (var i in data) {
-              options += '<option value="' + i + '">' + data[i] + '</option>';
-            }
-            $('#edit_contact #site_id').html(options);
-            sort_selectbox($('#edit_contact #site_id'));
-            if (i > 0) {
-              $('#edit_contact .siteID').show();
-            } else {
-              $('#edit_contact .siteID').hide();
-            }
+                            $('#newsite_message').focus();
+                            var length = $('#newsite_message').val().length;
+                            $('#newsite_message').selectRange(length, length);
+                        });
+                    $('button.btn_add_site_cancel').click(function (e) {
+                            e.preventDefault();
+                            $('#add_site_dialog').dialog('close');
+                        });
+                    $('button.btn_add_site_ok').click(function (e) {
+                            e.preventDefault();
 
-            if (editContactSiteID) {
-              $('#edit_contact #site_id').val(editContactSiteID);
-              editContactSiteID = null;
-            }
-          }
-        });
-      } else {
-        $('#edit_contact .siteID').hide();
-      }
-    });
+                            $.ajax({
+                            'type': 'POST',
+                            'data': $('#add_site_form').serialize() + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
+                            'url': baseUrl + '/patient/sendSiteMessage',
+                            'success': function (html) {
+                                if (html == "1") {
+                                    $('#add_site_dialog').dialog('close');
+                                    new OpenEyes.UI.Dialog.Alert({
+                                    content: "Your request has been sent, we aim to process requests within 1 working day."
+                                    }).open();
+                                } else {
+                                    new OpenEyes.UI.Dialog.Alert({
+                                    content: "There was an unexpected error sending your message, please try again or contact support for assistance."
+                                    }).open();
+                                }
+                            }
+                            });
+                        });
+                    }
+                );
 
-    $('button.btn_save_editcontact').click(function (e) {
-      e.preventDefault();
+                        $.fn.selectRange = function (start, end) {
+                            return this.each(function () {
+                                if (this.setSelectionRange) {
+                                                      this.focus();
+                                                      this.setSelectionRange(start, end);
+                                } else if (this.createTextRange) {
+                                                    var range = this.createTextRange();
+                                                    range.collapse(true);
+                                                    range.moveEnd('character', end);
+                                                    range.moveStart('character', start);
+                                                    range.select();
+                                }
+                            });
+                        };
 
-      $.ajax({
-        'type': 'POST',
-        'dataType': 'json',
-        'data': $('#edit-contact').serialize() + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
-        'url': baseUrl + '/patient/validateEditContact',
-        'success': function (data) {
-          $('div.edit_contact_form_errors').hide().html('');
-          if (data.length == 0) {
-            $('img.edit_contact_loader').show();
-            $('#edit-contact').submit();
-            return true;
-          } else {
-            for (var i in data) {
-              $('div.edit_contact_form_errors').show().append('<div>' + data[i] + '</div>');
-            }
-            enableButtons();
-          }
-        }
-      });
-    });
+                        var editContactSiteID = null;
 
-    $('button.btn_cancel_editcontact').click(function (e) {
-      e.preventDefault();
-
-      if (!$('#edit_contact').is(':hidden')) {
-        $('#edit_contact').slideToggle('fast');
-      }
-    });
-
-    $('button.btn_add_site').click(function (e) {
-      e.preventDefault();
-
-      $('#newsite_from').val('<?= User::model()->findByPk(Yii::app()->user->id)->email ?>');
-      $('#newsite_subject').val('Please add the following site/institution');
-      $('#newsite_message').val("Please could you add the following site/institution to OpenEyes:\n\n");
-
-      $('#add_site_dialog').dialog({
-        resizable: false,
-        modal: true,
-        width: 560
-      });
-
-      $('#newsite_message').focus();
-      var length = $('#newsite_message').val().length;
-      $('#newsite_message').selectRange(length, length);
-    });
-
-    $('button.btn_add_site_cancel').click(function (e) {
-      e.preventDefault();
-      $('#add_site_dialog').dialog('close');
-    });
-
-    $('button.btn_add_site_ok').click(function (e) {
-      e.preventDefault();
-
-      $.ajax({
-        'type': 'POST',
-        'data': $('#add_site_form').serialize() + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
-        'url': baseUrl + '/patient/sendSiteMessage',
-        'success': function (html) {
-          if (html == "1") {
-            $('#add_site_dialog').dialog('close');
-            new OpenEyes.UI.Dialog.Alert({
-              content: "Your request has been sent, we aim to process requests within 1 working day."
-            }).open();
-          } else {
-            new OpenEyes.UI.Dialog.Alert({
-              content: "There was an unexpected error sending your message, please try again or contact support for assistance."
-            }).open();
-          }
-        }
-      });
-    });
-  });
-
-  $.fn.selectRange = function (start, end) {
-    return this.each(function () {
-      if (this.setSelectionRange) {
-        this.focus();
-        this.setSelectionRange(start, end);
-      } else if (this.createTextRange) {
-        var range = this.createTextRange();
-        range.collapse(true);
-        range.moveEnd('character', end);
-        range.moveStart('character', start);
-        range.select();
-      }
-    });
-  };
-
-  var editContactSiteID = null;
-
-</script>
+                        </script>

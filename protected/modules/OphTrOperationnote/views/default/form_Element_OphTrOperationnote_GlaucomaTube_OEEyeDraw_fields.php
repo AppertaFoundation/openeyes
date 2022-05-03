@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -14,6 +15,7 @@
  * @copyright Copyright (c) 2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <?php
@@ -57,7 +59,7 @@ foreach ($plate_positions as $pp) {
             <?=\CHtml::activeTextField(
                 $element,
                 'plate_limbus',
-                array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'clearWithEyedraw')
+                array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'), 'class' => 'clearWithEyedraw')
             ); ?>
         <span class="field-info postfix align">
           mm

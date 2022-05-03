@@ -126,7 +126,7 @@ $default_urls = $logo_helper->getLogoURLs();
                             $field,
                             [
                                 'class' => 'cols-full',
-                                'autocomplete' => Yii::app()->params['html_autocomplete']
+                                'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete')
                             ]
                         ) ?>
                     </td>
@@ -142,8 +142,8 @@ $default_urls = $logo_helper->getLogoURLs();
                             $contact,
                             $field,
                             [
-                                'class' => 'cols-full',
-                                'autocomplete' => Yii::app()->params['html_autocomplete']
+                                'class' => 'cols - full',
+                                'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete')
                             ]
                         ); ?>
                     </td>
@@ -159,8 +159,8 @@ $default_urls = $logo_helper->getLogoURLs();
                             $address,
                             $field,
                             [
-                                'class' => 'cols-full',
-                                'autocomplete' => Yii::app()->params['html_autocomplete']
+                                'class' => 'cols - full',
+                                'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete')
                             ]
                         ); ?>
                     </td>
@@ -174,8 +174,8 @@ $default_urls = $logo_helper->getLogoURLs();
                             $site,
                             $field,
                             [
-                                'class' => 'cols-full',
-                                'autocomplete' => Yii::app()->params['html_autocomplete']
+                                'class' => 'cols - full',
+                                'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete')
                             ]
                         ); ?>
                     </td>

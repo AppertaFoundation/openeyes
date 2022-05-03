@@ -15,8 +15,8 @@
         <div class="search-examples">
             Find a patient by
             <?php
-                $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(Yii::app()->params['display_primary_number_usage_code'], $this->selectedInstitutionId, $this->selectedSiteId);
-                $secondary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(Yii::app()->params['display_secondary_number_usage_code'], $this->selectedInstitutionId, $this->selectedSiteId);
+                $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $this->selectedInstitutionId, $this->selectedSiteId);
+                $secondary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(SettingMetadata::model()->getSetting('display_secondary_number_usage_code'), $this->selectedInstitutionId, $this->selectedSiteId);
             ?>
             <strong><?= $primary_identifier_prompt ?></strong>,
             <strong><?= $secondary_identifier_prompt ?> </strong>,

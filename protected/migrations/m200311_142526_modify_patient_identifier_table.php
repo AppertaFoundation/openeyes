@@ -2,7 +2,6 @@
 
 class m200311_142526_modify_patient_identifier_table extends OEMigration
 {
-
     private static $PATIENT_IDENTIFIER_TYPES = ['hos_num' => 'local', 'nhs_num' => 'global'];
     private static $MERGED_PATIENT_STATUS = PatientMergeRequest::STATUS_MERGED;
 
@@ -34,8 +33,10 @@ class m200311_142526_modify_patient_identifier_table extends OEMigration
 
         foreach ($patient_merged_in_merge_requests as $patient_merged_in_merge_request) {
             foreach ($this::$PATIENT_IDENTIFIER_TYPES as $short_name => $type) {
-                if ($patient_merged_in_merge_request[$short_name] &&
-                    $patient_merged_in_merge_request[$short_name] !== $patient[$short_name]) {
+                if (
+                    $patient_merged_in_merge_request[$short_name] &&
+                    $patient_merged_in_merge_request[$short_name] !== $patient[$short_name]
+                ) {
                     $duplicate_identifier_found = false;
                     if (isset($added_identifiers[${$type . '_type_id'}])) {
                         foreach ($added_identifiers[${$type . '_type_id'}] as $identifier) {
@@ -152,7 +153,7 @@ class m200311_142526_modify_patient_identifier_table extends OEMigration
                 $long_title = $this->getSettingValue("hos_num_label");
             } else {
                 $institution_id = $this->getDbConnection()->createCommand("SELECT id FROM institution WHERE remote_id = 'NHS'")->queryScalar();
-                $validate_regex = isset(Yii::app()->params['nhs_num_length']) ? '/^([0-9]{' . Yii::app()->params['nhs_num_length'] . '})$/i' : '/^([0-9]{3}[- ]?[0-9]{3}[- ]?[0-9]{4})$/i';
+                $validate_regex = isset(SettingMetadata::model()->getSetting('nhs_num_length')) ? '/^([0-9]{' . SettingMetadata::model()->getSetting('nhs_num_length') . '})$/i' : '/^([0-9]{3}[- ]?[0-9]{3}[- ]?[0-9]{4})$/i';
                 $pad = null;
                 $short_title = $global_short_name;
                 $long_title = $global_name;
@@ -257,8 +258,10 @@ class m200311_142526_modify_patient_identifier_table extends OEMigration
                     // Go through all the merge requests and add identifiers to the patient
                     foreach ($patient_merged_in_merge_requests as $patient_merged_in_merge_request) {
                         foreach ($this::$PATIENT_IDENTIFIER_TYPES as $short_name => $type) {
-                            if ($patient_merged_in_merge_request[$short_name]
-                                && $patient[$short_name] !== $patient_merged_in_merge_request[$short_name]) {
+                            if (
+                                $patient_merged_in_merge_request[$short_name]
+                                && $patient[$short_name] !== $patient_merged_in_merge_request[$short_name]
+                            ) {
                                 $duplicate_identifier_found = false;
                                 if (isset($added_identifiers[${$type . '_type_id'}])) {
                                     foreach ($added_identifiers[${$type . '_type_id'}] as $identifier) {
@@ -284,12 +287,14 @@ class m200311_142526_modify_patient_identifier_table extends OEMigration
 
                         // Recursive function that will add patient identifiers from patients that was merged into
                         // secondary patients
-                        $this->insertPatientIdentifiersFromMergedPatients($patient,
+                        $this->insertPatientIdentifiersFromMergedPatients(
+                            $patient,
                             $patient_merged_in_merge_request['secondary_id'],
                             $local_type_id,
                             $global_type_id,
                             $rows,
-                            $added_identifiers);
+                            $added_identifiers
+                        );
                     }
                 }
 

@@ -24,6 +24,7 @@
 class BaseController extends Controller
 {
     use RenderJsonTrait;
+
     public $renderPatientPanel = false;
     public bool $fixedHotlist = true;
     public $selectedFirmId;
@@ -160,15 +161,6 @@ class BaseController extends Controller
         $this->onBeforeAction(new \CEvent($this, ["action" => $action]));
 
         $app = Yii::app();
-        if(!in_array($action->id, array('settings'))){
-            foreach (SettingMetadata::model()->findAll() as $metadata) {
-                if (!$metadata->element_type_id) {
-                    if (!isset(Yii::app()->params[$metadata->key])) {
-                        Yii::app()->params[$metadata->key] = $metadata->getSetting($metadata->key);
-                    }
-                }
-            }
-        }
 
         $this->setupAssetManager();
 
@@ -276,7 +268,7 @@ class BaseController extends Controller
     public function processJsVars()
     {
         // TODO: Check logged in before setting
-        $this->jsVars['element_close_warning_enabled'] = Yii::app()->params['element_close_warning_enabled'];
+        $this->jsVars['element_close_warning_enabled'] = SettingMetadata::model()->getSetting('element_close_warning_enabled');
         if (isset(Yii::app()->session['user_auth'])) {
             $user_auth = Yii::app()->session['user_auth'];
             $user = $user_auth->user;
@@ -291,8 +283,8 @@ class BaseController extends Controller
         $this->jsVars['YII_CSRF_TOKEN'] = Yii::app()->request->csrfToken;
         $this->jsVars['OE_core_asset_path'] = Yii::app()->assetManager->getPublishedPathOfAlias('application.assets');
         $this->jsVars['OE_module_name'] = $this->module ? $this->module->id : false;
-        $this->jsVars['OE_html_autocomplete'] = Yii::app()->params['html_autocomplete'];
-        $this->jsVars['OE_event_print_method'] = Yii::app()->params['event_print_method'];
+        $this->jsVars['OE_html_autocomplete'] = SettingMetadata::model()->getSetting('html_autocomplete');
+        $this->jsVars['OE_event_print_method'] = SettingMetadata::model()->getSetting('event_print_method');
         $this->jsVars['OE_module_class'] = $this->module ? $this->module->id : null;
         $this->jsVars['OE_GP_Setting'] = \SettingMetadata::model()->getSetting('gp_label');
         $this->jsVars['NHSDateFormat'] = Helper::NHS_DATE_FORMAT;

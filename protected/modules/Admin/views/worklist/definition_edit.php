@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -46,7 +47,7 @@
                         $definition,
                         'name',
                         [
-                            'autocomplete' => Yii::app()->params['html_autocomplete'],
+                            'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                             'class' => 'cols-full',
                             'field' => 2
                         ]
@@ -60,7 +61,7 @@
                         $definition,
                         'description',
                         [
-                            'autocomplete' => Yii::app()->params['html_autocomplete'],
+                            'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                             'class' => 'cols-full',
                         ]
                     ) ?>
@@ -87,7 +88,7 @@
                         $definition,
                         'start_time',
                         [
-                            'autocomplete' => Yii::app()->params['html_autocomplete'],
+                            'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                             'class' => 'cols-1',
                             'field' => 1
                         ]
@@ -101,7 +102,7 @@
                         $definition,
                         'end_time',
                         [
-                            'autocomplete' => Yii::app()->params['html_autocomplete'],
+                            'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                             'class' => 'cols-1',
                             'field' => 1,
                             'append-text' => 6,

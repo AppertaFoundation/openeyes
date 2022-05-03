@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
 *
@@ -15,57 +16,60 @@
 * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
 * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
 */
+
 $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
-$primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $patient->id, Institution::model()->getCurrent()->id, Yii::app()->session['selected_site_id']);
+$primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $patient->id, Institution::model()->getCurrent()->id, Yii::app()->session['selected_site_id']);
 ?>
 
 This email was generated from an OpenEyes Therapy Application event
 
 <?php
 if ($site = $service_info->site) {
-    echo 'Intended Site: '.$site->name;
+    echo 'Intended Site: ' . $site->name;
 }
 ?>
 
 AMD EC-Form this patient sent to Contracts for PCT approval.
-AMD EC-Form document sent by: <?= $diagnosis->user->getReportDisplay()."\n" ?>
+AMD EC-Form document sent by: <?= $diagnosis->user->getReportDisplay() . "\n" ?>
 
-The Eye to inject is: <?= $side."\n" ?>
-Drug to use is: <?= $treatment->drug->name."\n" ?>
-Diagnosis: <?= $diagnosis->getDiagnosisStringForSide($side)."\n" ?>
+The Eye to inject is: <?= $side . "\n" ?>
+Drug to use is: <?= $treatment->drug->name . "\n" ?>
+Diagnosis: <?= $diagnosis->getDiagnosisStringForSide($side) . "\n" ?>
 <?php
-if ($exam_info = $exam_api->getInjectionManagementComplexInEpisodeForDisorder(
-    $patient,
-    $use_context = true,
-    $side,
-    $diagnosis->{$side.'_diagnosis1_id'},
-    $diagnosis->{$side.'_diagnosis2_id'}
-)) {
-    foreach ($exam_info->{$side.'_answers'} as $answer) {
-        echo $answer->question->question.': ';
+if (
+    $exam_info = $exam_api->getInjectionManagementComplexInEpisodeForDisorder(
+        $patient,
+        $use_context = true,
+        $side,
+        $diagnosis->{$side . '_diagnosis1_id'},
+        $diagnosis->{$side . '_diagnosis2_id'}
+    )
+) {
+    foreach ($exam_info->{$side . '_answers'} as $answer) {
+        echo $answer->question->question . ': ';
         echo ($answer->answer) ? "Yes\n" : "No\n";
     }
-    echo 'Comments: '.$exam_info->{$side.'_comments'}."\n";
+    echo 'Comments: ' . $exam_info->{$side . '_comments'} . "\n";
 }
 ?>
 
-NICE Status: <?=($suitability->{$side.'_nice_compliance'} ? 'COMPLIANT' : 'NON-COMPLIANT')."\n" ?>
-Urgent: <?=((isset($exceptional) && $exceptional->{$side.'_start_period'}->urgent) ? 'Yes' : 'No')."\n" ?>
-<?php if ((isset($exceptional) && $exceptional->{$side.'_start_period'}->urgent)) {?>
-Reason for urgency: <?= $exceptional->{$side.'_urgency_reason'}."\n"?>
+NICE Status: <?=($suitability->{$side . '_nice_compliance'} ? 'COMPLIANT' : 'NON-COMPLIANT') . "\n" ?>
+Urgent: <?=((isset($exceptional) && $exceptional->{$side . '_start_period'}->urgent) ? 'Yes' : 'No') . "\n" ?>
+<?php if ((isset($exceptional) && $exceptional->{$side . '_start_period'}->urgent)) {?>
+Reason for urgency: <?= $exceptional->{$side . '_urgency_reason'} . "\n"?>
 <?php }?>
-Patient consents to share data: <?=(is_null($service_info->patient_sharedata_consent) ? 'Not recorded' : ($service_info->patient_sharedata_consent ? 'Yes' : 'No'))."\n"?>
+Patient consents to share data: <?=(is_null($service_info->patient_sharedata_consent) ? 'Not recorded' : ($service_info->patient_sharedata_consent ? 'Yes' : 'No')) . "\n"?>
 
 Patient Details:
-Full Name: <?= $patient->fullname."\n" ?>
-<?= PatientIdentifierHelper::getIdentifierPrompt($primary_identifier) ?>: <?= PatientIdentifierHelper::getIdentifierValue($primary_identifier) ."\n" ?>
-DoB: <?= $patient->NHSDate('dob')."\n" ?>
-Gender: <?= $patient->getGenderString()."\n" ?>
-Address: <?= ($address = $patient->getLetterAddress(array('delimiter' => ', '))) ? $address."\n" : "Unknown\n"; ?>
+Full Name: <?= $patient->fullname . "\n" ?>
+<?= PatientIdentifierHelper::getIdentifierPrompt($primary_identifier) ?>: <?= PatientIdentifierHelper::getIdentifierValue($primary_identifier) . "\n" ?>
+DoB: <?= $patient->NHSDate('dob') . "\n" ?>
+Gender: <?= $patient->getGenderString() . "\n" ?>
+Address: <?= ($address = $patient->getLetterAddress(array('delimiter' => ', '))) ? $address . "\n" : "Unknown\n"; ?>
 
 <?= \SettingMetadata::model()->getSetting('gp_label') ?> Details:
-Name: <?= ($patient->gp) ? $patient->gp->fullName."\n" : "Unknown\n"; ?>
-Address: <?= ($patient->practice && $address = $patient->practice->getLetterAddress(array('delimiter' => ', '))) ? $address."\n" : "Unknown\n"; ?>
+Name: <?= ($patient->gp) ? $patient->gp->fullName . "\n" : "Unknown\n"; ?>
+Address: <?= ($patient->practice && $address = $patient->practice->getLetterAddress(array('delimiter' => ', '))) ? $address . "\n" : "Unknown\n"; ?>
 
 <?php
 if ($link_to_attachments) {

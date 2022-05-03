@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <tr class="intraocularPressureReading" data-key="<?php echo $key ?>">
     <td>
@@ -22,10 +24,10 @@
         <input type="hidden" name="intraocularpressure_reading[<?php echo $key ?>][id]" value="<?php echo $reading->id?>" />
         <?php } ?>
         <input type="hidden" name="intraocularpressure_reading[<?php echo $key ?>][side]" value="<?php echo $side ?>" />
-        <?=\CHtml::textField('intraocularpressure_reading['.$key.'][measurement_timestamp]', isset($reading) ? substr($reading->measurement_timestamp, 0, 5) : date('H:i'), array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'small'))?>
+        <?=\CHtml::textField('intraocularpressure_reading[' . $key . '][measurement_timestamp]', isset($reading) ? substr($reading->measurement_timestamp, 0, 5) : date('H:i'), array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'), 'class' => 'small'))?>
     </td>
     <td>
-        <?=\CHtml::textField('intraocularpressure_reading['.$key.'][value]', @$reading->value, array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'small'))?>
+        <?=\CHtml::textField('intraocularpressure_reading[' . $key . '][value]', @$reading->value, array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'), 'class' => 'small'))?>
     </td>
     <td class="readingActions">
         <?php if (!isset($no_remove) || !$no_remove) {?>

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -55,7 +56,7 @@ class PatientIdentifierHelper
      * @param null $site_id
      * @return PatientIdentifierType|null
      */
-    public static function getPatientIdentifierType($usage_type, $institution_id, $site_id = null) : ?PatientIdentifierType
+    public static function getPatientIdentifierType($usage_type, $institution_id, $site_id = null): ?PatientIdentifierType
     {
         $condition = 'usage_type=:usage_type AND institution_id=:institution_id';
         $site_condition = ' AND site_id IS NULL';
@@ -78,9 +79,9 @@ class PatientIdentifierHelper
      *
      * @return int|null
      */
-    public static function getGlobalInstitutionIdFromSetting() : ?int
+    public static function getGlobalInstitutionIdFromSetting(): ?int
     {
-        $institutions = Institution::model()->findAll('remote_id=:remote_id', [':remote_id' => Yii::app()->params['global_institution_remote_id']]);
+        $institutions = Institution::model()->findAll('remote_id=:remote_id', [':remote_id' => SettingMetadata::model()->getSetting('global_institution_remote_id')]);
         $count = count($institutions);
         if (!$count || $count > 1) {
             return null;
@@ -123,7 +124,7 @@ class PatientIdentifierHelper
      * @param null $site_id
      * @return PatientIdentifier|null
      */
-    public static function getIdentifierForPatient($usage_type, $patient_id, $institution_id, $site_id = null, $disable_default_scope = false) : ?PatientIdentifier
+    public static function getIdentifierForPatient($usage_type, $patient_id, $institution_id, $site_id = null, $disable_default_scope = false): ?PatientIdentifier
     {
         $cases = $site_id ? ['site', 'institution'] : ['institution'];
         $current_site_id = $site_id;
@@ -202,7 +203,7 @@ class PatientIdentifierHelper
      * @param null $site_id
      * @return PatientIdentifier|null
      */
-    public static function getIdentifierDefaultPromptForInstitution($usage_type, $institution_id, $site_id = null) : string
+    public static function getIdentifierDefaultPromptForInstitution($usage_type, $institution_id, $site_id = null): string
     {
         $cases = $site_id ? ['site', 'institution'] : ['institution'];
         $current_site_id = $site_id;
@@ -243,7 +244,7 @@ class PatientIdentifierHelper
      * @param PatientIdentifier|null $patient_identifier
      * @return string
      */
-    public static function getIdentifierPrompt($patient_identifier = null) : string
+    public static function getIdentifierPrompt($patient_identifier = null): string
     {
         if ($patient_identifier) {
             return $patient_identifier->patientIdentifierType->short_title;
@@ -258,7 +259,7 @@ class PatientIdentifierHelper
      * @param PatientIdentifier|null $patient_identifier
      * @return string
      */
-    public static function getIdentifierValue(PatientIdentifier $patient_identifier = null) : string
+    public static function getIdentifierValue(PatientIdentifier $patient_identifier = null): string
     {
         if ($patient_identifier) {
             return $patient_identifier->getDisplayValue();
@@ -276,7 +277,7 @@ class PatientIdentifierHelper
      * @return bool
      * @throws Exception
      */
-    public static function addNumberToPatient(\Patient $patient, \PatientIdentifierType $type, string $identifier) : bool
+    public static function addNumberToPatient(\Patient $patient, \PatientIdentifierType $type, string $identifier): bool
     {
         $duplicate_identifier = \PatientIdentifier::model()->findByAttributes([
             'patient_identifier_type_id' => $type->id,
@@ -291,7 +292,7 @@ class PatientIdentifierHelper
             if ($duplicate_identifier) {
                 if ($type->usage_type == PatientIdentifierType::GLOBAL_USAGE_TYPE) {
                     $duplicate_identifier->deleted = 1;
-                    $duplicate_identifier->source_info =  \PatientIdentifierHelper::PATIENT_IDENTIFIER_DELETED_BY_STRING . $patient->id . '['.time().']';
+                    $duplicate_identifier->source_info =  \PatientIdentifierHelper::PATIENT_IDENTIFIER_DELETED_BY_STRING . $patient->id . '[' . time() . ']';
                     $duplicate_identifier->save();
                 } else {
                     return false;
@@ -322,7 +323,7 @@ class PatientIdentifierHelper
      *
      * @return PatientIdentifierHelper|null
      */
-    public static function getCurrentGlobalType() : ?PatientIdentifierType
+    public static function getCurrentGlobalType(): ?PatientIdentifierType
     {
         $global_institution_id = \PatientIdentifierHelper::getGlobalInstitutionIdFromSetting();
         return \PatientIdentifierHelper::getPatientIdentifierType("GLOBAL", $global_institution_id);

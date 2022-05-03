@@ -126,7 +126,7 @@ class GeneticsPatient extends BaseActiveRecord
             'patient_identifier' => array(self::BELONGS_TO,
                 'PatientIdentifier',
                 'patient_id',
-                'condition' => '( patient_identifier_type.usage_type ="'.Yii::app()->params['display_primary_number_usage_code'].'" )' .
+                'condition' => '( patient_identifier_type.usage_type ="' . SettingMetadata::model()->getSetting('display_primary_number_usage_code') . '" )' .
                     'AND (patient_identifier_type.id = patient_identifier_not_deleted.patient_identifier_type_id )',
                 ),
             'patient_identifier_type' => array(self::HAS_MANY, 'PatientIdentifierType', 'id'),

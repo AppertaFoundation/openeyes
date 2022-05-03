@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -53,7 +54,7 @@ $nothing_selected_text = "Nothing selected.";
                     'type_of_job',
                     array(
                         'hide' => ($element->occupation_id !== 7),//Hide if the type is not other
-                        'autocomplete' => Yii::app()->params['html_autocomplete'],
+                        'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                         'style' => 'width: 100%',
                         'nowrapper' => true,
                         'hidden' => true
@@ -134,7 +135,7 @@ $nothing_selected_text = "Nothing selected.";
                     $element,
                     'alcohol_intake',
                     array(
-                        'autocomplete' => Yii::app()->params['html_autocomplete'],
+                        'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                         'nowrapper' => true,
                         'style' => 'width: 100px; margin-right: 10px;',
                         'append-text' => (isset($element->alcohol_intake) ? 'units/week' : $nothing_selected_text),
@@ -246,8 +247,7 @@ $nothing_selected_text = "Nothing selected.";
                 new OpenEyes.UI.AdderDialog.ItemSet(
                     <?= CJSON::encode(array_map(function ($item, $label) use ($element) {
                             return ['label' => $item->name, 'id' => $item->id, 'selected' => $item->id === $element->occupation_id];
-                    }, $element->occupation_options, [])
-                    ) ?>, {'header': 'Employment', 'id': 'occupation_id'}),
+                    }, $element->occupation_options, [])) ?>, {'header': 'Employment', 'id': 'occupation_id'}),
 
                 new OpenEyes.UI.AdderDialog.ItemSet(
                     <?php
@@ -261,8 +261,7 @@ $nothing_selected_text = "Nothing selected.";
                                 'id' => $item->id,
                                 'selected' => in_array($item->id, $selected_driving_statuses),
                             ];
-                    }, $element->driving_statuses_options, [])
-                    ) ?>, {'header': 'Driving Status', 'id': 'driving_statuses'}),
+                    }, $element->driving_statuses_options, [])) ?>, {'header': 'Driving Status', 'id': 'driving_statuses'}),
 
                 new OpenEyes.UI.AdderDialog.ItemSet(
                     <?= CJSON::encode(array_map(function ($item, $label) use ($element) {
@@ -271,8 +270,7 @@ $nothing_selected_text = "Nothing selected.";
                                 'id' => $item->id,
                                 'selected' => $element->smoking_status_id === $item->id,
                             ];
-                    }, $element->smoking_status_options, [])
-                    ) ?>, {'header': 'Smoking Status', 'id': 'smoking_status_id'}),
+                    }, $element->smoking_status_options, [])) ?>, {'header': 'Smoking Status', 'id': 'smoking_status_id'}),
 
                 new OpenEyes.UI.AdderDialog.ItemSet(
                     <?= CJSON::encode(array_map(function ($item, $label) use ($element) {
@@ -281,14 +279,12 @@ $nothing_selected_text = "Nothing selected.";
                                 'id' => $item->id,
                                 'selected' => $element->accommodation_id === $item->id,
                             ];
-                    }, $element->accommodation_options, [])
-                    ) ?>, {'header': 'Accommodation', 'id': 'accommodation_id'}),
+                    }, $element->accommodation_options, [])) ?>, {'header': 'Accommodation', 'id': 'accommodation_id'}),
 
                 new OpenEyes.UI.AdderDialog.ItemSet(
                     <?= CJSON::encode(array_map(function ($item, $label) use ($element) {
                             return ['label' => $item->name, 'id' => $item->id, 'selected' => $element->carer_id === $item->id];
-                    }, $element->carer_options, [])
-                    ) ?>, {'header': 'Carer', 'id': 'carer_id'}),
+                    }, $element->carer_options, [])) ?>, {'header': 'Carer', 'id': 'carer_id'}),
 
                 new OpenEyes.UI.AdderDialog.ItemSet(
                     <?= CJSON::encode(array_map(function ($item, $label) use ($element) {
@@ -297,8 +293,7 @@ $nothing_selected_text = "Nothing selected.";
                                 'id' => $item->id,
                                 'selected' => $element->substance_misuse_id === $item->id,
                             ];
-                    }, $element->substance_misuse_options, [])
-                    ) ?>, {'header': 'Substance Misuse', 'id': 'substance_misuse_id'}),
+                    }, $element->substance_misuse_options, [])) ?>, {'header': 'Substance Misuse', 'id': 'substance_misuse_id'}),
 
                 new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
                     array_map(function ($item) use ($element) {

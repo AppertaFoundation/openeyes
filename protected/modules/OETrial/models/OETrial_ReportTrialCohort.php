@@ -85,7 +85,7 @@ class OETrial_ReportTrialCohort extends BaseReport
      */
     public function addPatientResultItem($item)
     {
-        $patient_identifier = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $item['id'], $this->user_institution_id, $this->user_selected_site_id));
+        $patient_identifier = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $item['id'], $this->user_institution_id, $this->user_selected_site_id));
         $patient_identifiers = PatientIdentifierHelper::getAllPatientIdentifiersForReports($item['id']);
 
         $this->patients[$item['id']] = array(
@@ -95,7 +95,7 @@ class OETrial_ReportTrialCohort extends BaseReport
             'last_name' => $item['last_name'],
             'external_trial_identifier' => $item['external_trial_identifier'],
             'trial_patient_id' => $item['trial_patient_id'],
-            'comment'=>$item['comment'],
+            'comment' => $item['comment'],
             'all_ids' => $patient_identifiers
         );
     }

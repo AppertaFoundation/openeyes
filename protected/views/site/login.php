@@ -36,9 +36,9 @@ $display_site = ($institution_required || $has_site_specific_auth) || $instituti
 
 <div class="oe-login">
     <div class="login multisite">
-        <?php if(isset($login_type) && $login_type === "esigndevice"):?>
+        <?php if (isset($login_type) && $login_type === "esigndevice") :?>
             <h1>OpenEyes e-Sign</h1>
-        <?php else: ?>
+        <?php else : ?>
             <h1>OpenEyes</h1>
         <?php endif; ?>
         <div class="login-details">
@@ -77,7 +77,7 @@ $display_site = ($institution_required || $has_site_specific_auth) || $instituti
             <?= $form->hiddenField($model, 'site_id', ['class' => 'js-site-id']) ?>
 
             <?php echo $form->textField($model, 'username', array(
-                'autocomplete' => Yii::app()->params['html_autocomplete'],
+                'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                 'placeholder' => 'Username',
             )); ?>
 
@@ -102,16 +102,16 @@ $display_site = ($institution_required || $has_site_specific_auth) || $instituti
             <!-- user -->
         </div>
         <div class="info">
-            <?php if(isset($login_type) && $login_type === "esigndevice"):?>
+            <?php if (isset($login_type) && $login_type === "esigndevice") :?>
                 Please login using your OpenEyes username to link with this device
-            <?php else: ?>
+            <?php else : ?>
                 <div class="flex-layout">
                 <span class="large-text"> Need Help?&nbsp;
                   <?php  $purifier = new CHtmlPurifier(); ?>
-                    <?php if (Yii::app()->params['helpdesk_phone'] || Yii::app()->params['helpdesk_email']) : ?>
-                        <?= Yii::app()->params['helpdesk_phone'] ? "<strong>" . $purifier->purify(Yii::app()->params['helpdesk_phone']) . "</strong>" : null ?></strong>
-                        <?= Yii::app()->params['helpdesk_email'] ? "<br/>" . $purifier->purify(Yii::app()->params['helpdesk_email']) : null ?>
-                        <?= Yii::app()->params['helpdesk_hours'] ? "<br/> (" . $purifier->purify(Yii::app()->params['helpdesk_hours']) . ")" : null ?>
+                    <?php if (SettingMetadata::model()->getSetting('helpdesk_phone') || SettingMetadata::model()->getSetting('helpdesk_email')) : ?>
+                        <?= SettingMetadata::model()->getSetting('helpdesk_phone') ? "<strong>" . $purifier->purify(SettingMetadata::model()->getSetting('helpdesk_phone')) . "</strong>" : null ?></strong>
+                        <?= SettingMetadata::model()->getSetting('helpdesk_email') ? "<br/>" . $purifier->purify(SettingMetadata::model()->getSetting('helpdesk_email')) : null ?>
+                        <?= SettingMetadata::model()->getSetting('helpdesk_hours') ? "<br/> (" . $purifier->purify(SettingMetadata::model()->getSetting('helpdesk_hours')) . ")" : null ?>
                     <?php elseif ($tech_support_provider) : ?>
                         <strong><a href="<?= $tech_support_url ?>" target="_blank"><?= $tech_support_provider ?></a></strong>
                     <?php endif; ?>

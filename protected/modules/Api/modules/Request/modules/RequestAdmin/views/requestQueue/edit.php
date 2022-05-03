@@ -34,7 +34,7 @@ unset($attributes['request_queue']);
                 <col class="cols-full">
             </colgroup>
             <tbody>
-            <?php $htmlOptions = ['class' => 'cols-full', 'autocomplete' => Yii::app()->params['html_autocomplete']]; ?>
+            <?php $htmlOptions = ['class' => 'cols-full', 'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete')]; ?>
             <tr>
                 <td><?= $model->getAttributeLabel('request_queue'); ?></td>
                 <td><?= \CHtml::activeTextField($model, 'request_queue', array_merge([

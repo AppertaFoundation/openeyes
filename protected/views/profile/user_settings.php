@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -14,6 +15,7 @@
  * @copyright Copyright (c) 2011-2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <h2>User Settings - Settings for Cataract op-note</h2>
     <?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
@@ -48,23 +50,23 @@
                         $array_keys = array_keys(unserialize($setting->data));
                         $setting_data = array_combine($array_keys, $array_keys);
                     }
-                    echo $form->dropDownList($setting, 'default_value', $setting_data, array('name' =>  CHtml::modelName($setting) . "[".$setting->key."]", 'label' => $setting->name, 'class' => 'cols-full'));
-                          break;
+                    echo $form->dropDownList($setting, 'default_value', $setting_data, array('name' =>  CHtml::modelName($setting) . "[" . $setting->key . "]", 'label' => $setting->name, 'class' => 'cols-full'));
+                    break;
 
                 default:
                     echo $form->textField(
-                    $setting,
-                    'default_value',
-                    array(
-                    'autocomplete' => Yii::app()->params['html_autocomplete'],
-                    'readonly' => (!Yii::app()->params['profile_user_can_edit']
-                    || !Yii::app()->params['profile_user_show_menu']),
-                    'name' =>  CHtml::modelName($setting) . "[".$setting->key."]",
-                    'label' => $setting->name
-                    ),
-                    null
+                        $setting,
+                        'default_value',
+                        array(
+                        'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
+                        'readonly' => (!Yii::app()->params['profile_user_can_edit']
+                        || !Yii::app()->params['profile_user_show_menu']),
+                        'name' =>  CHtml::modelName($setting) . "[" . $setting->key . "]",
+                        'label' => $setting->name
+                        ),
+                        null
                     );
-                          break;
+                    break;
             } ?>
             </td>
         </tr>
@@ -73,11 +75,9 @@
 </table>
 <?php if (Yii::app()->params['profile_user_can_edit']) {?>
       <div class="profile-actions">
-          <?php echo EventAction::button('Update', 'save', null, array('id' =>'user-settings-save', 'class'=>'button large hint green'))->toHtml()?>
+          <?php echo EventAction::button('Update', 'save', null, array('id' => 'user-settings-save', 'class' => 'button large hint green'))->toHtml()?>
         <i class="spinner" title="Loading..." style="display: none;"></i>
       </div>
 <?php }?>
 
     <?php $this->endWidget()?>
-
-

@@ -16,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 // this extract's execution time is more than the default 500sec
 // for 5yrs time period it can last more than 30min
 ini_set('max_execution_time', 3600);
@@ -120,7 +121,7 @@ class CxlDatasetController extends BaseController
      */
     public function actionGenerate()
     {
-        $this->patient_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(Yii::app()->params['display_primary_number_usage_code'], Institution::model()->getCurrent()->id, $this->selectedSiteId);
+        $this->patient_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), Institution::model()->getCurrent()->id, $this->selectedSiteId);
 
         $this->generateExport();
 
@@ -305,7 +306,6 @@ EOL;
         );
 
         $this->saveCSVfile($dataQuery, 'Surgeon');
-
     }
 
     /********** end of Surgeon **********/
@@ -380,7 +380,7 @@ EOL;
         $data_with_ids = [];
 
         foreach ($data as $patient) {
-            $patient_identifier = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $patient['PatientId'], Institution::model()->getCurrent()->id, $this->selectedSiteId));
+            $patient_identifier = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $patient['PatientId'], Institution::model()->getCurrent()->id, $this->selectedSiteId));
             $patient_identifiers = PatientIdentifierHelper::getAllPatientIdentifiersForReports($patient['PatientId']);
             $patient['PatientId'] = $patient_identifier;
             $patient['all_ids'] = $patient_identifiers;
@@ -912,7 +912,6 @@ EOL;
 EOL;
 
         return $query;
-
     }
 
     private function getCxlSurgery()

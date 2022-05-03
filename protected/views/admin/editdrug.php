@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2018
  * This file is part of OpenEyes.
@@ -12,6 +13,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <div class="row divider">
@@ -28,12 +30,12 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         'field' => 4,
     ),
 )) ?>
-<?php echo $form->textField($drug, 'name', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'disabled' => true)) ?>
-<?php echo $form->textField($drug, 'tallman', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'disabled' => true)) ?>
-<?php echo $form->textField($drug, 'aliases', array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
+<?php echo $form->textField($drug, 'name', array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'), 'disabled' => true)) ?>
+<?php echo $form->textField($drug, 'tallman', array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'), 'disabled' => true)) ?>
+<?php echo $form->textField($drug, 'aliases', array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'))) ?>
 <?php echo $form->dropDownList($drug, 'type_id', 'DrugType') ?>
-<?php echo $form->textField($drug, 'default_dose', array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
-<?php echo $form->textField($drug, 'dose_unit', array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
+<?php echo $form->textField($drug, 'default_dose', array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'))) ?>
+<?php echo $form->textField($drug, 'dose_unit', array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'))) ?>
 <?php echo $form->dropDownList($drug, 'default_frequency_id', 'DrugFrequency', array('empty' => '')) ?>
 <?php echo $form->dropDownList($drug, 'default_duration_id', 'MedicationDuration', array('empty' => '')) ?>
 <?php echo $form->multiSelectList(
@@ -47,4 +49,3 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 ) ?>
 <?php echo $form->formActions(array('cancel-uri' => '/admin/drugs')) ?>
 <?php $this->endWidget() ?>
-

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,9 +16,10 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-if (!Yii::app()->user->checkAccess('Super schedule operation') && Yii::app()->params['future_scheduling_limit'] && $date > date('Y-m-d', strtotime('+' . Yii::app()->params['future_scheduling_limit']))) { ?>
+
+if (!Yii::app()->user->checkAccess('Super schedule operation') && SettingMetadata::model()->getSetting('future_scheduling_limit') && $date > date('Y-m-d', strtotime('+' . SettingMetadata::model()->getSetting('future_scheduling_limit')))) { ?>
     <div class="alert-box alert with-icon" style="margin-top: 10px;">
-        This date is outside the allowed booking window of <?php echo Yii::app()->params['future_scheduling_limit'] ?>
+        This date is outside the allowed booking window of <?php echo SettingMetadata::model()->getSetting('future_scheduling_limit') ?>
         and so cannot be booked into.
     </div>
 <?php } ?>
@@ -59,10 +61,10 @@ if (!Yii::app()->user->checkAccess('Super schedule operation') && Yii::app()->pa
                                 </div>
                               <?php if ($session->isProcedureCountLimited()) { ?>
                                   <div class="available-procedures" title="Available procedures"><?= $session->getAvailableProcedureCount() ?> Procedure(s) available</div>
-                                <?php }
+                              <?php }
                               if ($session->isComplexBookingCountLimited()) { ?>
                                   <div class="available-complex-bookings" title="Available complex bookings"><?= $session->getAvailableComplexBookingCount() ?> Complex Booking(s) available</div>
-                                <?php } ?>
+                              <?php } ?>
                             </div>
                             <div class="specialists">
                                 <?php if ($session->consultant) { ?>

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Copyright Apperta Foundation 2021
  * This file is part of OpenEyes.
@@ -86,17 +87,17 @@ class Element_OphCoCvi_Consent extends \BaseEventTypeElement
 
     public static function isDocmanEnabled()
     {
-        return isset(\Yii::app()->params["cvi_docman_delivery_enabled"]) && \Yii::app()->params["cvi_docman_delivery_enabled"];
+        return ( null !== \SettingMetadata::model()->getSetting('cvi_docman_delivery_enabled')) && \SettingMetadata::model()->getSetting('cvi_docman_delivery_enabled');
     }
 
     public static function isRCOPDeliveryEnabled()
     {
-        return isset(\Yii::app()->params["cvi_rcop_delivery_enabled"]) && \Yii::app()->params["cvi_rcop_delivery_enabled"];
+        return ( null !== \SettingMetadata::model()->getSetting('cvi_rcop_delivery_enabled')) && \SettingMetadata::model()->getSetting('cvi_rcop_delivery_enabled');
     }
 
     public static function isLADeliveryEnabled()
     {
-        return isset(\Yii::app()->params["cvi_la_delivery_enabled"]) && \Yii::app()->params["cvi_la_delivery_enabled"];
+        return ( null !== \SettingMetadata::model()->getSetting('cvi_la_delivery_enabled')) && \SettingMetadata::model()->getSetting('cvi_la_delivery_enabled');
     }
 
     /**
@@ -126,7 +127,7 @@ class Element_OphCoCvi_Consent extends \BaseEventTypeElement
     {
         $items = [];
         foreach (["gp", "la", "rcop"] as $item) {
-            if($this->{"consented_to_$item"}) {
+            if ($this->{"consented_to_$item"}) {
                 $items[] = $this->getAttributeLabel("consented_to_$item");
             }
         }

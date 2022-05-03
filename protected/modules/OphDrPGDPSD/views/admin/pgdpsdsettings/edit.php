@@ -54,7 +54,7 @@
                             $pgdpsd,
                             'attributes[name]',
                             [
-                                'autocomplete' => Yii::app()->params['html_autocomplete'],
+                                'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                                 'class' => 'cols-full'
                             ]
                         ); ?>
@@ -67,7 +67,7 @@
                             $pgdpsd,
                             'attributes[description]',
                             [
-                                'autocomplete' => Yii::app()->params['html_autocomplete'],
+                                'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                                 'class' => 'cols-full'
                             ]
                         ); ?>

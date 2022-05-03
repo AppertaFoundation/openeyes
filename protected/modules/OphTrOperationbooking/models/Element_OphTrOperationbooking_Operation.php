@@ -731,7 +731,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
             for ($i = 1; $i <= date('t', mktime(0, 0, 0, $month, 1, $year)); ++$i) {
                 if (date('D', mktime(0, 0, 0, $month, $i, $year)) == $day) {
                     $date = "$year-$month-" . str_pad($i, 2, '0', STR_PAD_LEFT);
-                    if (in_array($date, $dates) && (Yii::app()->user->checkAccess('Super schedule operation') || !Yii::app()->params['future_scheduling_limit'] || $date <= date('Y-m-d', strtotime('+' . Yii::app()->params['future_scheduling_limit'])))) {
+                    if (in_array($date, $dates) && (Yii::app()->user->checkAccess('Super schedule operation') || !SettingMetadata::model()->getSetting('future_scheduling_limit') || $date <= date('Y-m-d', strtotime('+' . SettingMetadata::model()->getSetting('future_scheduling_limit'))))) {
                         $open = $full = 0;
                         $status = '';
                         if (strtotime($date) < strtotime(date('Y-m-d'))) {

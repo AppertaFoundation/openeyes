@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -34,7 +35,7 @@ class BaseCWidget extends CWidget
         $c = new ReflectionClass($this);
         $dir = dirname($c->getFileName());
 
-        if (file_exists($dir . "/js/" .get_class($this).'.js')) {
+        if (file_exists($dir . "/js/" . get_class($this) . '.js')) {
             $alias = str_replace('/', '.', substr($dir, strpos($dir, 'protected') + 10));
             $assetManager = Yii::app()->getAssetManager();
             $widgetPath = $assetManager->publish($dir . "/js", true);
@@ -42,7 +43,7 @@ class BaseCWidget extends CWidget
             $assetManager->registerScriptFile($scriptPath, "application.{$alias}", $this->scriptPriority, AssetManager::OUTPUT_ALL, true, true);
         }
 
-        $this->htmlOptions['autocomplete'] = Yii::app()->params['html_autocomplete'];
+        $this->htmlOptions['autocomplete'] = SettingMetadata::model()->getSetting('html_autocomplete');
     }
 
     public function render($view, $data = null, $return = false)

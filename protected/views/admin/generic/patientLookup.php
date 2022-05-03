@@ -34,10 +34,10 @@
 </div>
 <div class="data-group flex-layout cols-full">
   <div class="cols-7 column">
-    <label for="patient-search"><?= PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(Yii::app()->params['display_primary_number_usage_code'], $institution_id, $site_id) ?></label>
+    <label for="patient-search"><?= PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $institution_id, $site_id) ?></label>
   </div>
   <div class="cols-5 column end">
-    <input type="text" id="patient-lookup-extra-hos-num" value="<?= ($model->patient) ? PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $model->patient->id, $institution_id, $site_id)) : '' ?>" readonly>
+    <input type="text" id="patient-lookup-extra-hos-num" value="<?= ($model->patient) ? PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $model->patient->id, $institution_id, $site_id)) : '' ?>" readonly>
   </div>
 </div>
 <?php } ?>

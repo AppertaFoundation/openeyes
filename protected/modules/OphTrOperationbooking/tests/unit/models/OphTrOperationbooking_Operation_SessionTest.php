@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2014
  * This file is part of OpenEyes.
@@ -121,7 +122,7 @@ class OphTrOperationbooking_Operation_SessionTest extends ActiveRecordTestCase
         $test->unavailablereason = $reason;
         $op = new Element_OphTrOperationbooking_Operation();
 
-        $this->assertEquals($test->unbookableReason($op), OphTrOperationbooking_Operation_Session::$DEFAULT_UNAVAILABLE_REASON.': '.$reason->name);
+        $this->assertEquals($test->unbookableReason($op), OphTrOperationbooking_Operation_Session::$DEFAULT_UNAVAILABLE_REASON . ': ' . $reason->name);
     }
 
     public function testUnbookableReason_FutureScheduleLimit()

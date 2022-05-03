@@ -13,6 +13,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <div class="cols-12">
     <h2>Edit Supplementary Consent Question</h2>
@@ -38,7 +39,7 @@
                                 $suppleconsent,
                                 $field,
                                 [
-                                    'autocomplete' => Yii::app()->params['html_autocomplete'],
+                                    'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                                     'class' => 'cols-full'
                                 ]
                             ); ?>
@@ -82,7 +83,7 @@
         ); ?>
     </form>
 
-<?php if (isset($suppleconsent->id)): ?>
+<?php if (isset($suppleconsent->id)) : ?>
     <br />
     <h2>Local question version settings</h2>
     <table class="standard cols-full">
@@ -110,9 +111,9 @@
                     <?= $purifier->purify($questionAsgn->question_info); ?>
                 </td>
                 <td>
-                    <?php if ($is_text): ?>
+                    <?php if ($is_text) : ?>
                         <?= $purifier->purify($questionAsgn->default_option_text); ?>
-                    <?php elseif ($questionAsgn->default_option_selection !== null): ?>
+                    <?php elseif ($questionAsgn->default_option_selection !== null) : ?>
                         <?= $purifier->purify($questionAsgn->answers[$questionAsgn->default_option_selection]->display); ?>
                     <?php endif; ?>
                 </td>
@@ -141,5 +142,5 @@
             'id' => 'et_add',
         ]
     ); ?>
-    <?php endif; ?>
+<?php endif; ?>
 </div>

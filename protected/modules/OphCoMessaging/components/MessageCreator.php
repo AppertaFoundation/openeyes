@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -73,7 +74,7 @@ class MessageCreator
      */
     public function setMessageTemplate($template)
     {
-        if (\Yii::getPathOfAlias($template) && is_readable(\Yii::getPathOfAlias($template).'.php')) {
+        if (\Yii::getPathOfAlias($template) && is_readable(\Yii::getPathOfAlias($template) . '.php')) {
             $this->messageTemplate = $template;
         }
     }
@@ -140,8 +141,10 @@ class MessageCreator
             $messageElement->message_type_id = $this->type->id;
             if ($this->messageTemplate) {
                 $patient_identifier = \PatientIdentifierHelper::getIdentifierForPatient(
-                    \Yii::app()->params['display_primary_number_usage_code'],
-                    $this->episode->patient->id, $messageEvent->institution_id, $messageEvent->site_id
+                    \SettingMetadata::model()->getSetting('display_primary_number_usage_code'),
+                    $this->episode->patient->id,
+                    $messageEvent->institution_id,
+                    $messageEvent->site_id
                 );
                 $this->messageData['patient_identifier'] = $patient_identifier;
                 $messageElement->message_text = $this->renderTemplate();
@@ -150,10 +153,10 @@ class MessageCreator
             }
 
             if (!$messageElement->save()) {
-                throw new \CDbException('Element save failed: '.print_r($messageElement->getErrors(), true));
+                throw new \CDbException('Element save failed: ' . print_r($messageElement->getErrors(), true));
             }
         } else {
-            throw new \CDbException('Event save failed: '.print_r($messageEvent->getErrors(), true));
+            throw new \CDbException('Event save failed: ' . print_r($messageEvent->getErrors(), true));
         }
 
         return $messageElement;
@@ -182,7 +185,7 @@ class MessageCreator
     {
         $controller = new \CController('message');
 
-        return $controller->renderInternal(\Yii::getPathOfAlias($this->messageTemplate).'.php', $this->messageData, true);
+        return $controller->renderInternal(\Yii::getPathOfAlias($this->messageTemplate) . '.php', $this->messageData, true);
     }
 
     /**

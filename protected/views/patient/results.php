@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <?php
 /**
@@ -45,11 +47,12 @@ $based_on = implode(', ', $based_on);
 
 $institution = Institution::model()->getCurrent();
 $selected_site_id = Yii::app()->session['selected_site_id'];
-$primary_identifier_usage_type = Yii::app()->params['display_primary_number_usage_code'];
+$primary_identifier_usage_type = SettingMetadata::model()->getSetting('display_primary_number_usage_code');
 $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(
     $primary_identifier_usage_type,
     $institution->id,
-    $selected_site_id);
+    $selected_site_id
+);
 
 ?>
 <div class="oe-full-header flex-layout">
@@ -103,7 +106,8 @@ $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPrompt
         </colgroup>
       <thead>
       <tr>
-            <?php foreach (array(
+            <?php foreach (
+            array(
                              $primary_identifier_prompt,
                              'Title',
                              'First name',
@@ -111,7 +115,8 @@ $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPrompt
                              'Born',
                              'Age',
                              'Sex'
-                         ) as $i => $field) { ?>
+                         ) as $i => $field
+) { ?>
               <th id="patient-grid_c<?= $i ?>">
                   <?php
                     $new_sort_dir = 0;
@@ -123,7 +128,7 @@ $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPrompt
                                 'patient/search',
                                 array('term' => $term, 'sort_by' => $i, 'sort_dir' => $new_sort_dir, 'page_num' => $page_num)
                             ),
-                            array('class' => in_array($i, array(0, 2, 4, 5)) ? (($sort_dir == 0) ? 'sortable column-sort ascend ' : 'sortable column-sort descend '. 'active') : '')
+                            array('class' => in_array($i, array(0, 2, 4, 5)) ? (($sort_dir == 0) ? 'sortable column-sort ascend ' : 'sortable column-sort descend ' . 'active') : '')
                         );
                         ?>
                     <?php } elseif ($i > 0) {
@@ -150,12 +155,20 @@ $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPrompt
         ?>
         <?php foreach ($dataProvided as $i => $patient) { ?>
             <?php
-                $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(\Yii::app()->params['display_primary_number_usage_code'],
-                    $patient->id, $institution->id, $site_id);
+                $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(
+                    \SettingMetadata::model()->getSetting('display_primary_number_usage_code'),
+                    $patient->id,
+                    $institution->id,
+                    $site_id
+                );
 
             if (!$primary_identifier) {
-                $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(\Yii::app()->params['display_secondary_number_usage_code'],
-                    $patient->id, $institution->id, $site_id);
+                $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(
+                    \SettingMetadata::model()->getSetting('display_secondary_number_usage_code'),
+                    $patient->id,
+                    $institution->id,
+                    $site_id
+                );
             }
             ?>
 
@@ -179,7 +192,8 @@ $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPrompt
                     [
                         'patient' => $patient,
                         'show_all' => true
-                    ]); ?>
+                    ]
+                ); ?>
                 <?= $patient->isNewRecord ? '| From PAS' : '| From Local DB'?>
             </td>
                   <td><?php echo $patient->title ?></td>

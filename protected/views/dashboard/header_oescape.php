@@ -1,12 +1,16 @@
 <?php
 $institution_id = Institution::model()->getCurrent()->id;
 $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(
-    Yii::app()->params['display_primary_number_usage_code'],
-    $this->patient->id, $institution_id, Yii::app()->session['selected_site_id']
+    SettingMetadata::model()->getSetting('display_primary_number_usage_code'),
+    $this->patient->id,
+    $institution_id,
+    Yii::app()->session['selected_site_id']
 );
 $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(
-    Yii::app()->params['display_secondary_number_usage_code'],
-    $this->patient->id, $institution_id, Yii::app()->session['selected_site_id']
+    SettingMetadata::model()->getSetting('display_secondary_number_usage_code'),
+    $this->patient->id,
+    $institution_id,
+    Yii::app()->session['selected_site_id']
 );
 ?>
 
@@ -50,4 +54,3 @@ $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(
     <div class="mdl-layout-spacer"></div>
     <b>Glaucoma</b>
 </div>
-

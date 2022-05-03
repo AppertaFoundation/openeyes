@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
@@ -89,7 +90,7 @@ $dispense_condition_options = array(
         <?= \CHtml::textField(
             'Element_OphDrPrescription_Details[items][' . $key . '][dose]',
             $item->dose,
-            array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => $css_class)
+            array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'), 'class' => $css_class)
         )
 ?>
         <?php if ($item->dose_unit_term) { ?>
@@ -213,7 +214,7 @@ $dispense_condition_options = array(
             echo \CHtml::textField(
                 'Element_OphDrPrescription_Details[items][' . $key . '][taper][' . $count . '][dose]',
                 $taper->dose,
-                array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => $css_class)
+                array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'), 'class' => $css_class)
             ) ?>
         </td>
         <td></td>

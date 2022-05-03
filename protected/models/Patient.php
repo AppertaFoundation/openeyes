@@ -219,15 +219,15 @@ class Patient extends BaseActiveRecordVersioned
     //    Generates an auto incremented Hospital Number
     public function autoCompleteHosNum()
     {
-        if (Yii::app()->params['set_auto_increment_hospital_no'] == 'on') {
+        if (SettingMetadata::model()->getSetting('set_auto_increment_hospital_no') == 'on') {
             $query = "SELECT MAX(CAST(hos_num as INT)) AS hosnum from patient";
             $command = Yii::app()->db->createCommand($query);
             $command->prepare();
             $result = $command->queryColumn();
             $default_hos_num = $result;
 //          Checks the admin setting for the starting number for auto increment
-            if ($default_hos_num[0] < (Yii::app()->params['hos_num_start'])) {
-                $default_hos_num[0] = Yii::app()->params['hos_num_start'];
+            if ($default_hos_num[0] < (SettingMetadata::model()->getSetting('hos_num_start'))) {
+                $default_hos_num[0] = SettingMetadata::model()->getSetting('hos_num_start');
                 return $default_hos_num[0];
             } else {
                 return ($default_hos_num[0] + 1);
@@ -317,8 +317,8 @@ class Patient extends BaseActiveRecordVersioned
         $institution = Institution::model()->getCurrent();
         $site = Site::model()->getCurrent();
 
-        $local_identifier_label = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(Yii::app()->params['display_primary_number_usage_code'], $institution->id, $site->id);
-        $global_identifier_label = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(Yii::app()->params['display_secondary_number_usage_code'], $institution->id, $site->id);
+        $local_identifier_label = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $institution->id, $site->id);
+        $global_identifier_label = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(SettingMetadata::model()->getSetting('display_secondary_number_usage_code'), $institution->id, $site->id);
 
         return array(
             'id' => 'ID',
@@ -2278,7 +2278,7 @@ class Patient extends BaseActiveRecordVersioned
         $institution_id = $institution_id ?? Institution::model()->getCurrent()->id;
         $site_id = $site_id ?? Yii::app()->session['selected_site_id'];
         return PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(
-            Yii::app()->params['display_secondary_number_usage_code'],
+            SettingMetadata::model()->getSetting('display_secondary_number_usage_code'),
             $this->id,
             $institution_id,
             $site_id
@@ -2295,7 +2295,7 @@ class Patient extends BaseActiveRecordVersioned
         $institution_id = $institution_id ?? Institution::model()->getCurrent()->id;
         $site_id = $site_id ?? Yii::app()->session['selected_site_id'];
         return PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(
-            Yii::app()->params['display_primary_number_usage_code'],
+            SettingMetadata::model()->getSetting('display_primary_number_usage_code'),
             $this->id,
             $institution_id,
             $site_id

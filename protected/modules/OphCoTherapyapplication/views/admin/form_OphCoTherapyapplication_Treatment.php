@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <tr>
@@ -48,7 +50,7 @@
         </div>
         <?=\CHtml::activeTextField($model, 'template_code', [
             'class' => 'cols-full',
-            'autocomplete' => Yii::app()->params['html_autocomplete']
+            'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete')
         ])?></td>
 </tr>
 <tr>
@@ -56,15 +58,15 @@
     <td>
         <?=\CHtml::activeTextField($model, 'intervention_name', [
             'class' => 'cols-full',
-            'autocomplete' => Yii::app()->params['html_autocomplete']
+            'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete')
         ])?></td>
 </tr>
 <tr>
     <td><?=$model->getAttributeLabel('dose_and_frequency'); ?></td>
     <td>
         <?=\CHtml::activeTextArea($model, 'dose_and_frequency', [
-            'class' => 'cols-full',
-            'autocomplete' => Yii::app()->params['html_autocomplete']
+            'class' => 'cols - full',
+            'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete')
         ])?>
     </td>
 </tr>
@@ -73,7 +75,7 @@
     <td>
         <?=\CHtml::activeTextField($model, 'administration_route', [
             'class' => 'cols-full',
-            'autocomplete' => Yii::app()->params['html_autocomplete']
+            'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete')
         ])?>
     </td>
 </tr>
@@ -83,8 +85,8 @@
 
         <div class="flex-layout cols-12">
             <?=\CHtml::activeTextField($model, 'cost', [
-                'class' => 'cols-4',
-                'autocomplete' => Yii::app()->params['html_autocomplete']
+                'class' => 'cols - 4',
+                'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete')
             ])?>
             <div class="cols-2">per</div>
 
@@ -107,7 +109,7 @@
             <div class="cols-2">Every</div>
             <?=\CHtml::activeTextField($model, 'monitoring_frequency', [
                 'class' => 'cols-2',
-                'autocomplete' => Yii::app()->params['html_autocomplete']
+                'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete')
             ])?>
             <div class="cols-1"></div>
             <?=\CHtml::activeDropDownList(
@@ -115,7 +117,7 @@
                 'monitoring_frequency_period_id',
                 CHtml::listData(Period::model()->findAll(), 'id', 'name'),
                 [
-                    'class' => 'cols-8'
+                    'class' => 'cols - 8'
                 ]
             );?>
         </div>
@@ -123,11 +125,11 @@
 </tr>
 <tr>
     <td><?=$model->getAttributeLabel('duration');?></td>
-    <td class='cols-full'>
+    <td class='cols - full'>
         <?=\CHtml::activeTextArea($model, 'duration', [
             'cols' => 57,
             'class' => 'autosize',
-            'autocomplete' => Yii::app()->params['html_autocomplete']
+            'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete')
         ])?>
     </td>
 </tr>
@@ -136,8 +138,7 @@
     <td><?=\CHtml::activeTextArea($model, 'toxicity', [
             'cols' => 57,
             'class' => 'autosize',
-            'autocomplete' => Yii::app()->params['html_autocomplete']
+            'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete')
         ])?>
     </td>
-</tr>
-
+    </tr>

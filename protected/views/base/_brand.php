@@ -71,10 +71,10 @@ $training_hub_url = Yii::App()->params['training_hub_url'] ? htmlspecialchars(Yi
     <p>
     <span class="large-text"> Need Help?&nbsp;
         <?php  $purifier = new CHtmlPurifier(); ?>
-        <?php if (Yii::app()->params['helpdesk_phone'] || Yii::app()->params['helpdesk_email']) : ?>
-            <?= Yii::app()->params['helpdesk_phone'] ? $purifier->purify(Yii::app()->params['helpdesk_phone']) : null ?>
-            <?= Yii::app()->params['helpdesk_email'] ? $purifier->purify(Yii::app()->params['helpdesk_email']) : null ?>
-            <?= Yii::app()->params['helpdesk_hours'] ? "<br/>(" . $purifier->purify(Yii::app()->params['helpdesk_hours']) . ")" : null ?>
+        <?php if (SettingMetadata::model()->getSetting('helpdesk_phone') || SettingMetadata::model()->getSetting('helpdesk_email')) : ?>
+            <?= SettingMetadata::model()->getSetting('helpdesk_phone') ? $purifier->purify(SettingMetadata::model()->getSetting('helpdesk_phone')) : null ?>
+            <?= SettingMetadata::model()->getSetting('helpdesk_email') ? $purifier->purify(SettingMetadata::model()->getSetting('helpdesk_email')) : null ?>
+            <?= SettingMetadata::model()->getSetting('helpdesk_hours') ? "<br/>(" . $purifier->purify(SettingMetadata::model()->getSetting('helpdesk_hours')) . ")" : null ?>
         <?php elseif ($tech_support_provider) : ?>
           <a href="<?= $tech_support_url ?>" target="_blank"><?= $tech_support_provider ?></a>
         <?php endif; ?>

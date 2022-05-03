@@ -136,7 +136,7 @@ class PatientMerge
     private function getPatientIdentifier($patient_id)
     {
         if(is_null($this->patient_identifier_type)) {
-            return PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $patient_id, \Institution::model()->getCurrent()->id, Yii::app()->session['selected_site_id']);
+            return PatientIdentifierHelper::getIdentifierForPatient(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $patient_id, \Institution::model()->getCurrent()->id, Yii::app()->session['selected_site_id']);
         } else {
             return PatientIdentifierHelper::getPatientIdentifierByType($patient_id, $this->patient_identifier_type);
         }

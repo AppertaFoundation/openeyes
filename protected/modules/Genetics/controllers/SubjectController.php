@@ -375,7 +375,7 @@ class SubjectController extends BaseModuleController
                 }
 
                 $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(
-                    Yii::app()->params['display_primary_number_usage_code'],
+                    SettingMetadata::model()->getSetting('display_primary_number_usage_code'),
                     $patient->id,
                     \Institution::model()->getCurrent()->id,
                     Yii::app()->session['selected_site_id']

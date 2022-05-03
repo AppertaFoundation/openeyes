@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -14,6 +15,7 @@
  * @copyright Copyright (c) 2021, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <tr id="<?= $data['key']; ?>">
@@ -31,8 +33,9 @@
             "[" . $data['key'] . "]name",
             [
                 'class' => 'cols-full',
-                'autocomplete' => Yii::app()->params['html_autocomplete']
-            ]); ?>
+                'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete')
+            ]
+        ); ?>
     </td>
         <?php
         $this->widget('application.widgets.MultiSelectDropDownList', [
@@ -65,4 +68,3 @@
         ) ?>
     </td>
 </tr>
-

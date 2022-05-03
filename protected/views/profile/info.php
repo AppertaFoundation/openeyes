@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
     <h2>Basic information</h2>
     <?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
@@ -42,7 +44,7 @@
         <?php echo $form->textField(
             $user,
             'title',
-            array('autocomplete' => Yii::app()->params['html_autocomplete'],
+            array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                 'readonly' => $this->isUserFieldReadOnly('title'),
                 'style' => $this->isUserFieldReadOnly('title') ? 'opacity:0.5' : ''),
             null
@@ -54,7 +56,7 @@
         <?php echo $form->textField(
             $user,
             'first_name',
-            array('autocomplete' => Yii::app()->params['html_autocomplete'],
+            array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                 'readonly' => $this->isUserFieldReadOnly('first_name'),
                 'style' => $this->isUserFieldReadOnly('first_name') ? 'opacity:0.5' : '')
         );?>
@@ -65,7 +67,7 @@
         <?php echo $form->textField(
             $user,
             'last_name',
-            array('autocomplete' => Yii::app()->params['html_autocomplete'],
+            array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                 'readonly' => $this->isUserFieldReadOnly('last_name'),
                 'style' => $this->isUserFieldReadOnly('last_name') ? 'opacity:0.5' : '')
         );?>
@@ -85,7 +87,7 @@
         <?php echo $form->textField(
             $user,
             'email',
-            array('autocomplete' => Yii::app()->params['html_autocomplete'],
+            array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                 'readonly' => $this->isUserFieldReadOnly('email'),
                 'style' => $this->isUserFieldReadOnly('email') ? 'opacity:0.5' : '')
         );?>
@@ -96,7 +98,7 @@
         <?php echo $form->textField(
             $contact,
             'qualifications',
-            array('autocomplete' => Yii::app()->params['html_autocomplete'],
+            array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                 'readonly' => $this->isUserFieldReadOnly('qualifications'),
                 'style' => $this->isUserFieldReadOnly('qualifications') ? 'opacity:0.5' : '')
         );?>
@@ -126,7 +128,7 @@
                           'nowrapper' => true,
                           'no-label' => true,
                           'checked' => $user_out_of_office->enabled ? true : false,
-                          'style' =>'width:20px;')).'Yes' ?>
+                          'style' => 'width:20px;')) . 'Yes' ?>
                   </label>
               </div>
           </div>
@@ -234,7 +236,7 @@
 </table>
 <?php if (Yii::app()->params['profile_user_can_edit']) {?>
       <div class="profile-actions">
-          <?php echo EventAction::button('Update', 'save', null, array('class'=>'button large hint green'))->toHtml()?>
+          <?php echo EventAction::button('Update', 'save', null, array('class' => 'button large hint green'))->toHtml()?>
         <i class="spinner" title="Loading..." style="display: none;"></i>
       </div>
 <?php }?>
@@ -338,4 +340,3 @@
         }, false);
     });
 </script>
-

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2014
  * This file is part of OpenEyes.
@@ -12,6 +13,7 @@
  * @copyright Copyright (C) 2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 $base_name = CHtml::modelName($value) . "[{$side}_values][{$index}]";
 ?>
 <tr data-index="<?= $index ?>" data-side="<?= $side ?>" data-index="<?= $index ?>">
@@ -20,18 +22,18 @@ $base_name = CHtml::modelName($value) . "[{$side}_values][{$index}]";
             "{$base_name}[reading_time]",
             $time,
             [
-                'autocomplete' => Yii::app()->params['html_autocomplete'],
+                'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                 'class' => 'cols-11 js-reading-time'
               ]
         ) ?>
   </td>
-  <td style="<?=(!$value_reading_id) ? "display: none":"" ?>">
+  <td style="<?=(!$value_reading_id) ? "display: none" : "" ?>">
         <?php if ($value_reading_id) { ?>
             <?= $value_reading_name ?>
             <?= CHtml::hiddenField("{$base_name}[reading_id]", $value_reading_id) ?>
         <?php } ?>
   </td>
-  <td class="scale_values" style="<?= (!$value_qualitative_reading_id) ? "display: none":""?>">
+  <td class="scale_values" style="<?= (!$value_qualitative_reading_id) ? "display: none" : ""?>">
         <?php if ($value_qualitative_reading_id) { ?>
             <?= $value_qualitative_reading_name ?>
             <?= CHtml::hiddenField("{$base_name}[qualitative_reading_id]", $value_qualitative_reading_id) ?>

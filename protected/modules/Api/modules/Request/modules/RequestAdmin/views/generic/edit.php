@@ -31,7 +31,7 @@
                 <col class="cols-full">
             </colgroup>
             <tbody>
-            <?php $htmlOptions = ['class' => 'cols-full', 'autocomplete' => Yii::app()->params['html_autocomplete']]; ?>
+            <?php $htmlOptions = ['class' => 'cols-full', 'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete')]; ?>
             <?php foreach ($model->getAttributes() as $field => $value) : ?>
                 <tr>
                     <td><?= $model->getAttributeLabel($field); ?></td>

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2018
  * This file is part of OpenEyes.
@@ -12,6 +13,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <?php
 $institution_id = Institution::model()->getCurrent()->id;
@@ -45,7 +47,7 @@ $site_id = Yii::app()->session['selected_site_id'];
         <table class="standard">
             <thead>
             <tr>
-                <th><?= PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(Yii::app()->params['display_primary_number_usage_code'], $institution_id, $site_id) ?></th>
+                <th><?= PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $institution_id, $site_id) ?></th>
                 <th>Title</th>
                 <th>First name</th>
                 <th>Last name</th>
@@ -54,7 +56,7 @@ $site_id = Yii::app()->session['selected_site_id'];
             <tbody>
             <?php foreach ($location->patients as $i => $patient) { ?>
                 <tr class="clickable" data-id="<?= $patient->id ?>" data-uri="patient/view/<?= $patient->id ?>">
-                    <td><?= PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $patient->id, Institution::model()->getCurrent()->id, Yii::app()->session['selected_site_id'])) ?></td>
+                    <td><?= PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $patient->id, Institution::model()->getCurrent()->id, Yii::app()->session['selected_site_id'])) ?></td>
                     <td><?= $patient->title ?></td>
                     <td><?= $patient->first_name ?></td>
                     <td><?= $patient->last_name ?>&nbsp</td>

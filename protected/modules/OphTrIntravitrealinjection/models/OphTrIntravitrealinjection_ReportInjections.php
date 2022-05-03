@@ -90,7 +90,7 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
         }
 
         //If user does NOT have the RBAC role 'Report' then select the current user
-        if ( !Yii::app()->getAuthManager()->checkAccess('Report', $user_id) ) {
+        if (!Yii::app()->getAuthManager()->checkAccess('Report', $user_id)) {
             $this->given_by_id = $user_id;
         }
 
@@ -220,7 +220,7 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
                     }
                 }
 
-                $patient_identifier_value = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $row['patient_id'], $this->user_institution_id, $this->user_selected_site_id));
+                $patient_identifier_value = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $row['patient_id'], $this->user_institution_id, $this->user_selected_site_id));
                 $patient_identifiers = PatientIdentifierHelper::getAllPatientIdentifiersForReports($row['patient_id']);
 
                 $patient_data = array(
@@ -302,7 +302,7 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
         $results = array();
         foreach ($command->queryAll(true, $params) as $row) {
             $diagnosisData = $this->getDiagnosisData($row['patient_id'], $date_to . ' 23:59:59');
-            $patient_identifier_value = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $row['patient_id'], $this->user_institution_id, $this->user_selected_site_id));
+            $patient_identifier_value = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $row['patient_id'], $this->user_institution_id, $this->user_selected_site_id));
             $patient_identifiers = PatientIdentifierHelper::getAllPatientIdentifiersForReports($row['patient_id']);
 
             $record = array(
@@ -559,12 +559,14 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
     protected function appendExaminationValues(&$record, $patient_id, $event_date)
     {
         if ($this->pre_va || $this->post_va) {
-            foreach (array(
+            foreach (
+                array(
                          'left_preinjection_va',
                          'right_preinjection_va',
                          'left_postinjection_va',
                          'right_postinjection_va',
-                     ) as $k) {
+                     ) as $k
+            ) {
                 $record[$k] = 'N/A';
             }
             $vas = $this->getPatientVAElements($patient_id);

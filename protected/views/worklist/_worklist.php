@@ -35,7 +35,7 @@ $wl_attrs = array();
 $institution = Institution::model()->getCurrent();
 $selected_site_id = Yii::app()->session['selected_site_id'];
 
-$display_primary_number_usage_code = Yii::app()->params['display_primary_number_usage_code'];
+$display_primary_number_usage_code = SettingMetadata::model()->getSetting('display_primary_number_usage_code');
 
 $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(
     $display_primary_number_usage_code,

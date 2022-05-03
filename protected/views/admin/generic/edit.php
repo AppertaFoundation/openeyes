@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2018
  * This file is part of OpenEyes.
@@ -12,6 +13,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 $assetManager = Yii::app()->getAssetManager();
 ?>
 
@@ -37,7 +39,7 @@ $assetManager = Yii::app()->getAssetManager();
             'field' => 5,
         ),
     ));
-    $autoComplete = array('autocomplete' => Yii::app()->params['html_autocomplete']);
+    $autoComplete = array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'));
     echo $form->hiddenInput($admin->getModel(), 'id');
     if (Yii::app()->request->getParam('returnUri')) {
         echo CHTML::hiddenField('returnUriEdit', Yii::app()->request->getParam('returnUri'));

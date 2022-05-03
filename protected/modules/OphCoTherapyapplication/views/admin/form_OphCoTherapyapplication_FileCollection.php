@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <table class="row standard">
     <colgroup>
@@ -24,21 +26,24 @@
     <tbody>
         <tr>
             <td><?= $model->getAttributeLabel('institution') ?></td>
-            <td><?= \CHtml::activeDropDownList($model, 'institution_id',
-                    Institution::model()->getList(true),
-                    ['class' => 'cols-full', 'empty' => '- Institution -']) ?></td>
+            <td><?= \CHtml::activeDropDownList(
+                $model,
+                'institution_id',
+                Institution::model()->getList(true),
+                ['class' => 'cols-full', 'empty' => '- Institution -']
+            ) ?></td>
         </tr>
         <tr>
             <td><?=$model->getAttributeLabel('name')?></td>
             <td><?=\CHtml::activeTextField($model, 'name', [
-                    'autocomplete' => Yii::app()->params['html_autocomplete'],
+                    'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                     'class' => 'cols-full'
                     ])?></td>
         </tr>
         <tr>
             <td><?=$model->getAttributeLabel('summary')?></td>
             <td><?=\CHtml::activeTextArea($model, 'summary', [
-                    'autocomplete' => Yii::app()->params['html_autocomplete'],
+                    'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                     'maxlength' => 40,
                     'class' => 'cols-full',
                     ])?></td>

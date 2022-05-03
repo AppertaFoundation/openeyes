@@ -32,7 +32,7 @@
     $institution = Institution::model()->getCurrent();
     $selected_site_id = Yii::app()->session['selected_site_id'];
 
-    $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(Yii::app()->params['display_primary_number_usage_code'], $institution->id, $selected_site_id);
+    $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $institution->id, $selected_site_id);
 
     $dataProvider = $model->search();
     $item_count = GeneticsPatient::model()->count();
@@ -95,7 +95,7 @@
                 'value' => function ($data) {
                     $institution = Institution::model()->getCurrent();
                     $selected_site_id = Yii::app()->session['selected_site_id'];
-                    $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $data->patient->id, $institution->id, $selected_site_id);
+                    $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $data->patient->id, $institution->id, $selected_site_id);
                     $patient_identifier_widget = $this->widget('application.widgets.PatientIdentifiers', ['patient' => $data->patient, 'show_all' => true, 'tooltip_size' => 'small'], true);
                     return PatientIdentifierHelper::getIdentifierValue($primary_identifier) . $patient_identifier_widget;
                 },

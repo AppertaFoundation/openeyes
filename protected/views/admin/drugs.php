@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2018
  * This file is part of OpenEyes.
@@ -12,6 +13,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <div class="box admin">
     <div class="data-group">
@@ -27,7 +29,7 @@
                     'action' => Yii::app()->createUrl('/admin/drugs'),
                 ))?>
                 <div class="cols-12 column">
-                    <input type="text" autocomplete="<?php echo Yii::app()->params['html_autocomplete']?>" name="search" id="search" placeholder="Enter search query..." value="<?php echo strip_tags(@$_POST['search'])?>" />
+                    <input type="text" autocomplete="<?php echo SettingMetadata::model()->getSetting('html_autocomplete')?>" name="search" id="search" placeholder="Enter search query..." value="<?php echo strip_tags(@$_POST['search'])?>" />
                 </div>
             <?php $this->endWidget()?>
         </div>

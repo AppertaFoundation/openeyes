@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -14,10 +15,11 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <?php
 $form_id = 'correspondence-create';
-$this->beginContent('//patient/event_container', array('no_face'=>true , 'form_id' => $form_id));
+$this->beginContent('//patient/event_container', array('no_face' => true , 'form_id' => $form_id));
 
 $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
     'id' => $form_id,
@@ -29,8 +31,8 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 ));
 
 $actions = array('savedraft' => 'Save draft', 'saveprint' => 'Save and print');
-if (isset(Yii::app()->params['OphCoCorrespondence_event_actions']['create']) ) {
-        $actions = Yii::app()->params['OphCoCorrespondence_event_actions']['create'];
+if (( null !== SettingMetadata::model()->getSetting('OphCoCorrespondence_event_actions')['create'])) {
+        $actions = SettingMetadata::model()->getSetting('OphCoCorrespondence_event_actions')['create'];
 }
 if (!$this->checkPrintAccess()) {
     unset($actions['saveprint']);

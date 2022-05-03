@@ -54,7 +54,7 @@
             "[{$key}]username",
             [
                 'class' => 'cols-full',
-                'autocomplete' => Yii::app()->params['html_autocomplete'],
+                'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
             ]
         ); ?>
     </td>
@@ -77,7 +77,7 @@
             "[{$key}]password",
             [
                 'class' => 'cols-full js-password',
-                'autocomplete' => Yii::app()->params['html_autocomplete'],
+                'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                 'disabled' => $not_local
             ]
         ); ?>
@@ -88,7 +88,7 @@
             "[{$key}]password_repeat",
             [
                 'class' => 'cols-full js-password-repeat',
-                'autocomplete' => Yii::app()->params['html_autocomplete'],
+                'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                 'disabled' => $not_local
             ]
         ); ?>

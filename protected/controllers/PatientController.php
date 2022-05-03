@@ -13,7 +13,9 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 use OEModule\BreakGlass\BreakGlass;
+
 Yii::import('application.controllers.*');
 
 /**
@@ -513,14 +515,14 @@ class PatientController extends BaseController
                 }
 
                 $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(
-                    Yii::app()->params['display_primary_number_usage_code'],
+                    SettingMetadata::model()->getSetting('display_primary_number_usage_code'),
                     $patient->id,
                     $institution_id,
                     $site_id
                 );
 
                 $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(
-                    Yii::app()->params['display_secondary_number_usage_code'],
+                    SettingMetadata::model()->getSetting('display_secondary_number_usage_code'),
                     $patient->id,
                     $institution_id,
                     $site_id
@@ -1631,8 +1633,9 @@ class PatientController extends BaseController
         if ($this->patient) {
             $patient_identifier = PatientIdentifier::model()->find(
                 'patient_id=:patient_id AND patient_identifier_type_id=:patient_identifier_type_id',
-                [':patient_id' => $this->patient->id,
-                    ':patient_identifier_type_id' => Yii::app()->params['oelauncher_patient_identifier_type']]
+                array(':patient_id' => $this->patient->id,
+                    ':patient_identifier_type_id' => SettingMetadata::model()->getSetting('oelauncher_patient_identifier_type')
+                )
             );
             $this->jsVars['OE_patient_id'] = $this->patient->id;
             $this->jsVars['OE_patient_hosnum'] = $patient_identifier->value ?? null;
@@ -1878,7 +1881,7 @@ class PatientController extends BaseController
     {
         $message = Yii::app()->mailer->newMessage();
         $message->setFrom(array($_POST['newsite_from'] => User::model()->findByPk(Yii::app()->user->id)->fullName));
-        $message->setTo(array(Yii::app()->params['helpdesk_email']));
+        $message->setTo(array(SettingMetadata::model()->getSetting('helpdesk_email')));
         $message->setSubject($_POST['newsite_subject']);
         $message->setBody($_POST['newsite_message']);
         echo Yii::app()->mailer->sendMessage($message) ? '1' : '0';
@@ -1994,7 +1997,7 @@ class PatientController extends BaseController
         $this->fixedHotlist = true;
         $this->pageTitle = 'Add New Patient';
 
-        $patient_source = isset(Yii::app()->params['default_patient_source']) ? Yii::app()->params['default_patient_source'] : 'Referral';
+        $patient_source = (null !== SettingMetadata::model()->getSetting('default_patient_source')) ? SettingMetadata::model()->getSetting('default_patient_source') : 'Referral';
         $patient = new Patient($patient_source);
         $patient->noPas();
         $contact = new Contact('manualAddPatient');

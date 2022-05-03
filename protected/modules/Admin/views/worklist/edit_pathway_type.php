@@ -49,7 +49,7 @@ if ($pathway_type->isNewRecord) {
                         $pathway_type,
                         'name',
                         [
-                            'autocomplete' => Yii::app()->params['html_autocomplete'],
+                            'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                             'class' => 'cols-full',
                             'field' => 2,
                             'value' => $source_pathway_type->name ?? '',

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -69,10 +70,10 @@ class PatientMerge extends BaseResource
     public function setAndValidatePatients(): bool
     {
         foreach (["primary", "secondary"] as $key) {
-            $property_key = ucfirst($key)."PatientNumber";
+            $property_key = ucfirst($key) . "PatientNumber";
             if ($patient_number = $this->getAssignedProperty($property_key)) {
                 try {
-                    $this->{$key."_patient"} = $this->findPatient($patient_number);
+                    $this->{$key . "_patient"} = $this->findPatient($patient_number);
                 } catch (\Exception $e) {
                     $this->addError("$key patient not found");
                 }
@@ -103,7 +104,7 @@ class PatientMerge extends BaseResource
             }
         } else {
             $model_class = static::$model_class;
-            $model = new $model_class;
+            $model = new $model_class();
             /** @var \PatientMergeRequest $model */
             $model->primary_id = $this->primary_patient->id;
             $model->secondary_id = $this->secondary_patient->id;
@@ -133,7 +134,7 @@ class PatientMerge extends BaseResource
             if ($details_cmp["is_conflict"]) {
                 $conflicts = array_map(
                     function ($conflict) {
-                        return $conflict["column"]." mismatch";
+                        return $conflict["column"] . " mismatch";
                     },
                     $details_cmp["details"]
                 );
@@ -172,7 +173,7 @@ class PatientMerge extends BaseResource
                 // Displaying conflict messages would be misleading if
                 // auto merge strategy was set to Always
                 foreach ($conflicts as $conflict) {
-                    $this->addWarning("Merge conflict: ".$conflict);
+                    $this->addWarning("Merge conflict: " . $conflict);
                 }
             }
         }
@@ -192,11 +193,13 @@ class PatientMerge extends BaseResource
     private function checkExistingOpposite(): bool
     {
         $model_class = static::$model_class;
-        if ($existing = $model_class::model()->findByAttributes([
+        if (
+            $existing = $model_class::model()->findByAttributes([
             "primary_id" =>  $this->secondary_patient->id,
             "secondary_id" => $this->primary_patient->id,
-        ])) {
-            $this->addError("Merge request already exists in opposite direction (status: ".$existing->getStatusText().")");
+            ])
+        ) {
+            $this->addError("Merge request already exists in opposite direction (status: " . $existing->getStatusText() . ")");
             return true;
         }
 
@@ -205,6 +208,6 @@ class PatientMerge extends BaseResource
 
     private function getAutoMergeSetting(): int
     {
-        return (int)\Yii::app()->params["pasapi_automerge"];
+        return (int)\SettingMetadata::model()->getSetting('pasapi_automerge');
     }
 }

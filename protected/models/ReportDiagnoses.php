@@ -175,7 +175,7 @@ class ReportDiagnoses extends BaseReport
 
     public function addDiagnosesResultItem($item)
     {
-        $patient_identifier_value = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $item['id'], $this->user_institution_id, $this->user_selected_site_id));
+        $patient_identifier_value = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $item['id'], $this->user_institution_id, $this->user_selected_site_id));
         $patient_identifiers = PatientIdentifierHelper::getAllPatientIdentifiersForReports($item['id']);
         $diagnoses = array();
 

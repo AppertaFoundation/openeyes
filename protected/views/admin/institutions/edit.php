@@ -125,7 +125,7 @@ $default_urls = $logo_helper->getLogoURLs();
                             $field,
                             [
                                 'class' => 'cols-full',
-                                'autocomplete' => Yii::app()->params['html_autocomplete'],
+                                'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                             ]
                         ); ?>
                     </td>
@@ -143,7 +143,7 @@ $default_urls = $logo_helper->getLogoURLs();
                             'remote_id',
                             [
                                 'class' => 'cols-full',
-                                'autocomplete' => Yii::app()->params['html_autocomplete'],
+                                'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                             ]
                         );
                     } ?>
@@ -156,8 +156,8 @@ $default_urls = $logo_helper->getLogoURLs();
                         $institution,
                         'pas_key',
                         [
-                            'class' => 'cols-full',
-                            'autocomplete' => Yii::app()->params['html_autocomplete'],
+                            'class' => 'cols - full',
+                            'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete')
                         ]
                     ) ?>
                 </td>
@@ -172,8 +172,8 @@ $default_urls = $logo_helper->getLogoURLs();
                             $contact,
                             $field,
                             [
-                                'class' => 'cols-full',
-                                'autocomplete' => Yii::app()->params['html_autocomplete'],
+                                'class' => 'cols - full',
+                                'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                             ]
                         ) ?>
                     </td>
@@ -189,10 +189,10 @@ $default_urls = $logo_helper->getLogoURLs();
                             $address,
                             $field,
                             [
-                                'class' => 'cols-full',
-                                'autocomplete' => Yii::app()->params['html_autocomplete'],
+                                'class' => 'cols - full',
+                                'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                             ]
-                        ); ?>
+                            ); ?>
                     </td>
                 </tr>
             <?php endforeach; ?>
@@ -205,7 +205,7 @@ $default_urls = $logo_helper->getLogoURLs();
                         CHtml::listData(Country::model()->findAll(), 'id', 'name'),
                         [
                             'class' => 'cols-full',
-                            'autocomplete' => Yii::app()->params['html_autocomplete'],
+                            'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                         ]
                     ); ?>
                 </td>
@@ -216,29 +216,29 @@ $default_urls = $logo_helper->getLogoURLs();
                     <?php
                     echo $form->fileField($logo, 'primary_logo');
                     if (empty($default_urls['primaryLogo']) && !($logo->primary_logo)) {
-                        echo "<div class='alert-box info'>No uploaded primary logo and no default logo</div>";
+                        echo "<div class='alert - box info'>No uploaded primary logo and no default logo</div>";
                     } else {
                         if (!($logo) || !($logo->primary_logo)) {
-                            echo "<div class='alert-box info'>Currently using system default logo</div>";
-                            echo "<img src='" . $default_urls['primaryLogo'] . "' style='width:100%;'>";
+                            echo "<div class='alert - box info'>Currently using system default logo</div>";
+                            echo "<img src='" . $default_urls['primaryLogo'] . "' style='width:100 % ;'>";
                         } elseif (!$new) {
-                            echo '<div style=" margin-top: 5px; position: relative; ">';
-                            echo "<img src='" . $logo->getImageUrl() . "' style='width:100%;'>";
-                            echo '<br>' . CHtml::button(
+                            echo ' < div style = " margin-top: 5px; position: relative; " > ';
+                            echo "<img src='" . $logo->getImageUrl() . "' style='width:100 % ;'>";
+                            echo ' < br > ' . CHtml::button(
                                 '',
                                 array(
-                                    'submit' => array('admin/deletelogo/'),
+                                    'submit' => array('admin / deletelogo / '),
                                     'params' => array(
                                         'institution_id' => $institution->id,
                                         'deletePrimaryLogo' => true,
                                     ),
                                     'csrf' => true,
-                                    'class' => 'remove-logo oe-i remove-circle small',
-                                    'confirm' => 'Are you sure you want to delete the primary logo? You will lose all unsaved edits you have made to this institution.',
-                                    'data-method' => "POST"
+                                    'class' => 'remove - logo oe - i remove - circle small',
+                                    'confirm' => 'Are you sure you want to delete the primary logo ? You will lose all unsaved edits you have made to this institution . ',
+                                    'data - method' => "POST"
                                 )
                             );
-                            echo '</div>';
+                            echo ' < / div > ';
                         }
                     }
                     ?>
@@ -250,32 +250,32 @@ $default_urls = $logo_helper->getLogoURLs();
                     <?php
                     echo $form->fileField($logo, 'secondary_logo');
                     if (empty($default_urls['secondaryLogo']) && !($logo->secondary_logo)) {
-                        echo "<div class='alert-box info'>No uploaded secondary logo and no default logo</div>";
+                        echo "<div class='alert - box info'>No uploaded secondary logo and no default logo</div>";
                     } else {
                         if (!($logo) || !($logo->secondary_logo)) {
-                            echo "<div class='alert-box info'>Currently using system default logo</div>";
-                            echo "<img src='" . $default_urls['secondaryLogo'] . "' style='width:100%;'>";
+                            echo "<div class='alert - box info'>Currently using system default logo</div>";
+                            echo "<img src='" . $default_urls['secondaryLogo'] . "' style='width : 100 % ;'>";
                         } elseif (!$new) {
-                            echo '<div style="
+                            echo ' < div style = "
                         margin-top: 5px;
                         position: relative;
-                    ">';
-                            echo "<img src='" . $logo->getImageUrl(true) . "' style='width:100%;'>";
-                            echo '<br>' . CHtml::button(
+                    " > ';
+                            echo "<img src='" . $logo->getImageUrl(true) . "' style='width:100 % ;'>";
+                            echo ' < br > ' . CHtml::button(
                                 '',
                                 array(
-                                    'submit' => array('admin/deletelogo/'),
+                                    'submit' => array('admin / deletelogo / '),
                                     'params' => array(
                                         'institution_id' => $institution->id,
                                         'deleteSecondaryLogo' => true,
                                     ),
                                     'csrf' => true,
-                                    'class' => 'remove-logo oe-i remove-circle small',
-                                    'confirm' => 'Are you sure you want to delete the secondary logo? You will lose all unsaved edits you have made to this institution.',
-                                    'data-method' => "POST"
+                                    'class' => 'remove - logo oe - i remove - circle small',
+                                    'confirm' => 'Are you sure you want to delete the secondary logo ? You will lose all unsaved edits you have made to this institution . ',
+                                    'data - method' => "POST"
                                 )
                             );
-                            echo '</div>';
+                            echo ' < / div > ';
                         }
                     }
                     ?>
@@ -292,8 +292,8 @@ $default_urls = $logo_helper->getLogoURLs();
                     'first_used_site_id',
                     CHtml::listData(Site::model()->findAllByAttributes(['institution_id' => $institution->id]), 'id', 'name'),
                     [
-                            'class' => 'cols-full',
-                            'empty' => '- None -'
+                            'class' => 'cols - full',
+                            'empty' => ' - None - '
                         ]
                 ); ?></td>
             </tr>
@@ -334,7 +334,7 @@ $default_urls = $logo_helper->getLogoURLs();
             'Add Site',
             [
                 'class' => 'button large',
-                'id' => 'add-institution-sites-btn'
+                'id' => 'add - institution - sites - btn'
             ]
         ); ?>
     </div>
@@ -353,7 +353,7 @@ $default_urls = $logo_helper->getLogoURLs();
             if (isset($invalid_entries['Site'])) {
                 $row_key = 0;
                 foreach ($invalid_entries['Site'] as $key => $entry) {
-                    $this->renderPartial('/admin/sites/_site_row', [
+                    $this->renderPartial(' / admin / sites / _site_row', [
                         'key' => $row_key,
                         'site' => $entry,
                         'address' => $invalid_entries['SiteAddress'][$key]
@@ -384,10 +384,10 @@ $default_urls = $logo_helper->getLogoURLs();
             <?php foreach ($institution_authentications as $key => $institution_authentication) { ?>
                 <tr class="clickable" data-id="<?= $institution_authentication->id ?>" data-uri="admin/editinstitutionauthentication?institution_authentication_id=<?= $institution_authentication->id ?>" data-key="<?= $key ?>">
                     <td><?= $institution_authentication->id ?></td>
-                    <td><?= $institution_authentication->site ? $institution_authentication->site->name : '-' ?></td>
+                    <td><?= $institution_authentication->site ? $institution_authentication->site->name : ' - ' ?></td>
                     <td><?= $institution_authentication->userAuthenticationMethod->code ?></td>
                     <td><?= $institution_authentication->description ?></td>
-                    <td><?= $institution_authentication->ldap_config_id ? $institution_authentication->LDAPConfig->description : '-' ?></td>
+                    <td><?= $institution_authentication->ldap_config_id ? $institution_authentication->LDAPConfig->description : ' - ' ?></td>
                     <td><i class="oe-i <?= $institution_authentication->active ? 'tick' : 'remove' ?> small"></i></td>
                 </tr>
             <?php } ?>
@@ -399,7 +399,7 @@ $default_urls = $logo_helper->getLogoURLs();
             [
                 'class' => 'button large',
                 'id' => 'et_add',
-                'data-uri' => "/admin/editinstitutionauthentication?institution_id=$institution->id",
+                'data - uri' => "/admin/editinstitutionauthentication?institution_id=$institution->id",
                 'disabled' => $new ? 'disabled' : ''
             ]
         ); ?>
@@ -427,22 +427,22 @@ $default_urls = $logo_helper->getLogoURLs();
             <?php foreach ($patient_identifier_types as $key => $patient_identifier_type) { ?>
                 <tr class="clickable" data-id="<?= $patient_identifier_type->id ?>" data-uri="Admin/PatientIdentifierType/edit?patient_identifier_type_id=<?= $patient_identifier_type->id ?>" data-key="<?= $key ?>">
                     <td><?= $patient_identifier_type->id ?></td>
-                    <td><?= $patient_identifier_type->site ? $patient_identifier_type->site->name : '-' ?></td>
+                    <td><?= $patient_identifier_type->site ? $patient_identifier_type->site->name : ' - ' ?></td>
                     <td><?= $patient_identifier_type->usage_type ?></td>
                     <td><?= $patient_identifier_type->short_title ?></td>
                     <td><?= $patient_identifier_type->long_title ?></td>
-                    <td><?= $patient_identifier_type->validate_regex ? $patient_identifier_type->validate_regex : '-' ?></td>
-                    <td><?= $patient_identifier_type->value_display_prefix ? $patient_identifier_type->value_display_prefix : '-' ?></td>
-                    <td><?= $patient_identifier_type->value_display_suffix ? $patient_identifier_type->value_display_suffix : '-' ?></td>
-                    <td><?= $patient_identifier_type->pad ? $patient_identifier_type->pad : '-' ?></td>
-                    <td><?= $patient_identifier_type->spacing_rule ? $patient_identifier_type->spacing_rule : '-' ?></td>
+                    <td><?= $patient_identifier_type->validate_regex ? $patient_identifier_type->validate_regex : ' - ' ?></td>
+                    <td><?= $patient_identifier_type->value_display_prefix ? $patient_identifier_type->value_display_prefix : ' - ' ?></td>
+                    <td><?= $patient_identifier_type->value_display_suffix ? $patient_identifier_type->value_display_suffix : ' - ' ?></td>
+                    <td><?= $patient_identifier_type->pad ? $patient_identifier_type->pad : ' - ' ?></td>
+                    <td><?= $patient_identifier_type->spacing_rule ? $patient_identifier_type->spacing_rule : ' - ' ?></td>
                 </tr>
             <?php } ?>
             <?php
             if (isset($invalid_entries['PatientIdentifierType'])) {
                 $row_key = isset($key) ? $key + 1 : 0;
                 foreach ($invalid_entries['PatientIdentifierType'] as $entry) {
-                    $this->renderPartial('application.modules.Admin.views.patientIdentifierType._identifier_type_row', [
+                    $this->renderPartial('application . modules . Admin . views . patientIdentifierType . _identifier_type_row', [
                         'key' => $row_key,
                         'element' => $entry,
                         'sites' => $institution->sites
@@ -457,7 +457,7 @@ $default_urls = $logo_helper->getLogoURLs();
             'Add Patient Identifier',
             [
                 'class' => 'button large',
-                'id' => 'add-patient-identifier-btn'
+                'id' => 'add - patient - identifier - btn'
             ]
         ); ?>
     </div>
@@ -469,14 +469,14 @@ $default_urls = $logo_helper->getLogoURLs();
     <?php $patient_identifier_usage_type = $request->getParam('patient_identifier_usage_type') ?: $app->params['display_primary_number_usage_code'];
     $patient_identifier_site = $request->getParam('patient_identifier_site', null);
     $criteria = new CDbCriteria();
-    $criteria->condition = 'institution_id=:institution_id AND patient_identifier_type_id IN (SELECT id FROM patient_identifier_type WHERE usage_type=:usage_type)';
+    $criteria->condition = 'institution_id = : institution_id and patient_identifier_type_id IN(SELECT id FROM patient_identifier_type WHERE usage_type = :usage_type)';
     $criteria->params = [':institution_id' => $institution->id, 'usage_type' => $patient_identifier_usage_type];
     $criteria->order = 'display_order';
     if ($patient_identifier_site && !empty($patient_identifier_site)) {
-        $criteria->addCondition('site_id=:site_id');
+        $criteria->addCondition('site_id = :site_id');
         $criteria->params[':site_id'] = $patient_identifier_site;
     } else {
-        $criteria->addCondition('site_id IS NULL');
+        $criteria->addCondition('site_id IS null');
     }
     $identifier_rules = PatientIdentifierTypeDisplayOrder::model()->findAll($criteria);
     if ($request->isPostRequest) {
@@ -490,7 +490,7 @@ $default_urls = $logo_helper->getLogoURLs();
             }
         }
     }
-    $identifier_types = PatientIdentifierType::model()->findAll('usage_type=:usage_type', [':usage_type' => $patient_identifier_usage_type]);
+    $identifier_types = PatientIdentifierType::model()->findAll('usage_type = :usage_type', [':usage_type' => $patient_identifier_usage_type]);
     ?>
 
     <h2>Patient Identifier Display Preferences</h2>
@@ -498,12 +498,12 @@ $default_urls = $logo_helper->getLogoURLs();
     <?= \CHtml::dropDownList(
         'patient_identifier_usage_type',
         $patient_identifier_usage_type,
-        CHtml::listData(PatientIdentifierType::model()->findAll(['select' => 't.usage_type', 'distinct' => true]), 'usage_type', 'usage_type')
+        CHtml::listData(PatientIdentifierType::model()->findAll(['select' => 't . usage_type', 'distinct' => true]), 'usage_type', 'usage_type')
     ); ?>
     <?= \CHtml::dropDownList(
         'patient_identifier_site',
         $patient_identifier_site,
-        CHtml::listData(Site::model()->findAll('institution_id=:institution_id', [':institution_id' => $institution->id]), 'id', 'name'),
+        CHtml::listData(Site::model()->findAll('institution_id = :institution_id', [':institution_id' => $institution->id]), 'id', 'name'),
         ['empty' => 'NOT SITE SPECIFIC']
     ); ?>
     <table class="standard sortable" id="patient_identifiers_entry_table">
@@ -535,16 +535,16 @@ $default_urls = $logo_helper->getLogoURLs();
                             echo \CHtml::activeHiddenField($identifier_rule, "[{$row_count}]display_order");
                             ?>
                         </td>
-                        <td><?= $identifier_rule->patientIdentifierType->usage_type ?: '-' ?></td>
-                        <td><?= $identifier_rule->patientIdentifierType->long_title ?: '-' ?></td>
-                        <td><?= $identifier_rule->patientIdentifierType->short_title ?: '-' ?></td>
-                        <td><?= $identifier_rule->institution->name ?: '-' ?></td>
-                        <td><?= $identifier_rule->patientIdentifierType->site ? $identifier_rule->patientIdentifierType->site->name : '-'; ?></td>
-                        <td><?= $identifier_rule->patientIdentifierType->value_display_prefix ?: '-' ?></td>
-                        <td><?= $identifier_rule->patientIdentifierType->value_display_suffix ?: '-' ?></td>
+                        <td><?= $identifier_rule->patientIdentifierType->usage_type ?: ' - ' ?></td>
+                        <td><?= $identifier_rule->patientIdentifierType->long_title ?: ' - ' ?></td>
+                        <td><?= $identifier_rule->patientIdentifierType->short_title ?: ' - ' ?></td>
+                        <td><?= $identifier_rule->institution->name ?: ' - ' ?></td>
+                        <td><?= $identifier_rule->patientIdentifierType->site ? $identifier_rule->patientIdentifierType->site->name : ' - '; ?></td>
+                        <td><?= $identifier_rule->patientIdentifierType->value_display_prefix ?: ' - ' ?></td>
+                        <td><?= $identifier_rule->patientIdentifierType->value_display_suffix ?: ' - ' ?></td>
                         <td><?= \CHtml::activeCheckBox($identifier_rule, "[{$row_count}]searchable") ?></td>
                         <td><?= \CHtml::activeTextField($identifier_rule, "[{$row_count}]search_protocol_prefix", [
-                                'placeholder' => 'add multiple: AB|CD|EF',
+                                'placeholder' => 'add multiple: AB | CD | EF',
                             ]) ?></td>
                         <td><?= \CHtml::activeDropDownList(
                             $identifier_rule,
@@ -579,18 +579,18 @@ $default_urls = $logo_helper->getLogoURLs();
         <?= \CHtml::submitButton(
             'Save',
             [
-                'class' => 'button large',
-                'name' => 'save',
-                'id' => 'et_save'
+                'class ' => 'button large',
+                ' name' => ' save',
+                ' id' => ' et_save'
             ]
         ); ?>
         <?= \CHtml::submitButton(
-            'Cancel',
+            ' Cancel',
             [
-                'class' => 'button large',
-                'data-uri' => '/admin/institutions',
-                'name' => 'cancel',
-                'id' => 'et_cancel'
+                'class ' => ' button large',
+                ' data - uri' => ' / admin / institutions',
+                ' name' => ' cancel',
+                ' id' => ' et_cancel'
             ]
         ); ?>
     </div>
@@ -598,17 +598,23 @@ $default_urls = $logo_helper->getLogoURLs();
 <script type="x-tmpl-mustache" id="add-patient-identifier-template">
     <?php
 
-    $this->renderPartial('application.modules.Admin.views.patientIdentifierType._identifier_type_row', [
-        'key' => '{{key}}',
-        'element' => new PatientIdentifierType(),
-        'sites' => $institution->sites
+    $this->renderPartial(' application . modules . Admin . views . patientIdentifierType . _identifier_type_row', [
+        ' key' => '
+{
+                        { key}
+                            }',
+        ' element' => new PatientIdentifierType(),
+        ' sites' => $institution->sites
     ]);
     ?>
 </script>
 <script type="x-tmpl-mustache" id="add-site-template">
     <?php
-    $this->renderPartial('/admin/sites/_site_row', [
-        'key' => '{{key}}',
+    $this->renderPartial(' / admin / sites / _site_row', [
+        ' key' => '
+{
+                                {key}
+                            }',
         'site' => new Site(),
         'address' => new Address()
     ]);
@@ -663,39 +669,39 @@ $default_urls = $logo_helper->getLogoURLs();
 <script>
     $(document).ready(function() {
         let $institution_sites_table = $('#institution-sites-table');
-        $institution_sites_table.toggle($institution_sites_table.find('tbody').children().length !== 0);
+                            $institution_sites_table . toggle($institution_sites_table . find('tbody') . children() . length !== 0);
 
-        $('#add-institution-sites-btn').on('click', function() {
-            this.blur();
-            let $table = $('#institution-sites-table tbody');
-            $table.parent().show();
-            let nextDataKey = OpenEyes.Util.getNextDataKey($table.find('tr'), 'key');
-            let tr = Mustache.render($('#add-site-template').text(), {
-                key: nextDataKey
-            });
-            $table.append(tr);
-        });
+                            $('#add-institution-sites-btn') . on('click', function () {
+                                this . blur();
+                                let $table = $('#institution-sites-table tbody');
+                                $table . parent() . show();
+                                let nextDataKey = OpenEyes . Util . getNextDataKey($table . find('tr'), 'key');
+                                let tr = Mustache . render($('#add-site-template') . text(), {
+                                    key: nextDataKey
+                                });
+                                $table . append(tr);
+                            });
 
-        $('#add-patient-identifier-btn').on('click', function() {
-            this.blur();
-            let $table = $('#institution-patient-identifiers tbody');
-            let nextDataKey = OpenEyes.Util.getNextDataKey($table.find('tr'), 'key');
-            let tr = Mustache.render($('#add-patient-identifier-template').text(), {
-                key: nextDataKey
-            });
-            $table.append(tr);
-        });
+                            $('#add-patient-identifier-btn') . on('click', function () {
+                                this . blur();
+                                let $table = $('#institution-patient-identifiers tbody');
+                                let nextDataKey = OpenEyes . Util . getNextDataKey($table . find('tr'), 'key');
+                                let tr = Mustache . render($('#add-patient-identifier-template') . text(), {
+                                    key: nextDataKey
+                                });
+                                $table . append(tr);
+                            });
 
-        $('#institution-patient-identifiers, #institution-sites-table').on('click', '.js-remove-row', function() {
-            let $table = $(this).parents('table');
-            $(this).closest('tr').remove();
-            if ($table.attr('id') === 'institution-sites-table') {
-                $table.toggle($table.find('tbody').children().length !== 0);
-            }
-        });
+                            $('#institution-patient-identifiers, #institution-sites-table') . on('click', '.js-remove-row', function () {
+                                let $table = $(this) . parents('table');
+                                $(this) . closest('tr') . remove();
+                                if ($table . attr('id') === 'institution-sites-table') {
+                                    $table . toggle($table . find('tbody') . children() . length !== 0);
+                                }
+                            });
 
-        $('#patient_identifier_usage_type, #patient_identifier_site').on('change', function() {
-            window.location.href = "/admin/editinstitution?institution_id=" + <?= $institution->id ?> + "&patient_identifier_usage_type=" + $('#patient_identifier_usage_type').val() + "&patient_identifier_site=" + $('#patient_identifier_site').val();
+                            $('#patient_identifier_usage_type, #patient_identifier_site') . on('change', function () {
+                            window . location . href = "/admin/editinstitution?institution_id=" + <  ? = $institution->id ?> + "&patient_identifier_usage_type=" + $('#patient_identifier_usage_type').val() + "&patient_identifier_site=" + $('#patient_identifier_site').val();
             new OpenEyes.UI.LoadingOverlay().open();
         });
 

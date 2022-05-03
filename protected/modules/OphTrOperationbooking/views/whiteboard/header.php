@@ -3,7 +3,7 @@
 $institution = Institution::model()->getCurrent();
 
 $event = Event::model()->findByPk($data->event_id);
-$display_primary_number_usage_code = Yii::app()->params['display_primary_number_usage_code'];
+$display_primary_number_usage_code = SettingMetadata::model()->getSetting('display_primary_number_usage_code');
 $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient($display_primary_number_usage_code, $event->episode->patient->id, $institution->id, Yii::app()->session['selected_site_id']);
 
 ?>
@@ -16,7 +16,8 @@ $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient($display_
                 [
                     'patient' => $event->episode->patient,
                     'show_all' => true
-                ]); ?>
+                ]
+            ); ?>
         </li>
     </ul>
 </div>

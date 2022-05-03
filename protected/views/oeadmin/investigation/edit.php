@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2018
  * This file is part of OpenEyes.
@@ -12,6 +13,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <div class="cols-full">
@@ -30,13 +32,13 @@
             foreach ($personal_fields as $field) : ?>
                 <tr>
                     <td class="cols-3"><?php echo $investigation->getAttributeLabel($field); ?></td>
-                    <?php if ($field !== 'specialty_id'){ ?>
+                    <?php if ($field !== 'specialty_id') { ?>
                     <td class="cols-4">
                         <?=\CHtml::activeTextField(
                             $investigation,
                             $field,
                             [
-                                'autocomplete' => Yii::app()->params['html_autocomplete'],
+                                'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                                 'class' => 'cols-full'
                             ]
                         ); ?>
@@ -44,10 +46,10 @@
                     <?php } else { ?>
                     <td>
                         <?=\CHtml::activeDropDownList(
-                                $investigation,
-                                $field,
-                                CHtml::listData(Specialty::model()->findAll(array('order' => 'name asc')), 'id', 'name'),
-                                array('name' => 'specialty_id_select', 'nolabel' => true, 'empty' => '- Select -', 'class' => 'cols-full')
+                            $investigation,
+                            $field,
+                            CHtml::listData(Specialty::model()->findAll(array('order' => 'name asc')), 'id', 'name'),
+                            array('name' => 'specialty_id_select', 'nolabel' => true, 'empty' => '- Select -', 'class' => 'cols-full')
                         ); ?>
                         <input name= "OEModule_OphCiExamination_models_OphCiExamination_Investigation_Codes[specialty_id]" type='hidden' id='specialty_id' value=<?=$investigation->specialty_id ?>>
                     </td>

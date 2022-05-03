@@ -45,8 +45,8 @@ class PincodeHelper
 	}
 
     private static function isSecretaryPin($pin){
-        if(Yii::app()->params["secretary_pin"]){
-            return $pin === Yii::app()->params["secretary_pin"];
+        if(SettingMetadata::model()->getSetting("secretary_pin")){
+            return $pin === SettingMetadata::model()->getSetting("secretary_pin");
         }
         return false;
     }

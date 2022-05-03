@@ -170,8 +170,8 @@ class PatientSearch
     {
         // NHS number (assume 10 digit number is an NHS number)
         $NHS_NUMBER_REGEX_1 = '/^(N|NHS)\s*[:;]\s*([0-9\- ]+)$/i';
-        $NHS_NUMBER_REGEX_2 = isset(Yii::app()->params['nhs_num_length'])
-            ? '/^([0-9]{' . Yii::app()->params['nhs_num_length'] . '})$/i'
+        $NHS_NUMBER_REGEX_2 = ( null !== SettingMetadata::model()->getSetting('nhs_num_length'))
+            ? '/^([0-9]{' . SettingMetadata::model()->getSetting('nhs_num_length') . '})$/i'
             : '/^([0-9]{3}[- ]?[0-9]{3}[- ]?[0-9]{4})$/i';
 
         $result = null;
@@ -197,12 +197,12 @@ class PatientSearch
         $unprefixed_term = strtoupper(preg_replace('/' . self::HOSPITAL_NUMBER_SEARCH_PREFIX . '/i', '', $term));
 
         if (preg_match(self::HOSPITAL_NUMBER_REGEX, $term, $matches) || preg_match(
-                Yii::app()->params['hos_num_regex'],
+                SettingMetadata::model()->getSetting('hos_num_regex'),
                 $unprefixed_term,
                 $matches
             )) {
             $hosnum = $matches[2] ?? $matches[1];
-            $result = sprintf(Yii::app()->params['pad_hos_num'], $hosnum);
+            $result = sprintf(SettingMetadata::model()->getSetting('pad_hos_num'), $hosnum);
         }
 
         return $result;

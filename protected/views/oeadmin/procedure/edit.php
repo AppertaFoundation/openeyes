@@ -43,7 +43,7 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl
                             $procedure,
                             $field,
                             [
-                                'autocomplete' => Yii::app()->params['html_autocomplete'],
+                                'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                                 'class' => 'cols-full'
                             ]
                         ); ?>
@@ -179,7 +179,7 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl
                         $procedure,
                         'low_complexity_criteria',
                         [
-                            'autocomplete' => Yii::app()->params['html_autocomplete'],
+                            'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                             'class' => 'cols-full'
                         ]
                     ); ?>

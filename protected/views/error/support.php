@@ -1,7 +1,7 @@
 <?php
-$helpdesk_phone = isset(Yii::app()->params['helpdesk_phone']) ? Yii::app()->params['helpdesk_phone'] : '';
-$helpdesk_email = isset(Yii::app()->params['helpdesk_email']) ? Yii::app()->params['helpdesk_email'] : '';
-$helpdesk_hours = isset(Yii::app()->params['helpdesk_hours']) ? Yii::app()->params['helpdesk_hours'] : '(8:00am to 8:00pm)';
+$helpdesk_phone = ( null !== SettingMetadata::model()->getSetting('helpdesk_phone')) ? SettingMetadata::model()->getSetting('helpdesk_phone') : '';
+$helpdesk_email = ( null !== SettingMetadata::model()->getSetting('helpdesk_email')) ? SettingMetadata::model()->getSetting('helpdesk_email') : '';
+$helpdesk_hours = ( null !== SettingMetadata::model()->getSetting('helpdesk_hours')) ? SettingMetadata::model()->getSetting('helpdesk_hours') : '(8:00am to 8:00pm)';
 ?>
 <h3>Support Options</h3>
 <ul>

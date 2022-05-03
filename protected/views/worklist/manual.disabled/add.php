@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -14,6 +15,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <div class="box admin">
     <h2>Add Worklist</h2>
@@ -28,7 +30,7 @@
             'field' => 5,
         ),
     ))?>
-    <?php echo $form->textField($worklist, 'name', array('autocomplete' => Yii::app()->params['html_autocomplete']), null, array('field' => 2))?>
+    <?php echo $form->textField($worklist, 'name', array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete')), null, array('field' => 2))?>
     <?php echo $form->textArea($worklist, 'description')?>
 
     <?php echo $form->formActions(array('cancel-uri' => '/worklist/manual'))?>

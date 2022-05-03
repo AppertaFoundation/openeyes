@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <div class="data-group procedure-selection readonly" id="typeProcedure"<?php if ($hidden) {
     ?> style="display: none;"<?php
@@ -32,8 +34,8 @@
                     <div class="data-group procedureItem">
                         <div class="cols-<?php echo (!$durations) ? '12' : '10'; ?> column">
                             <?php $totalDuration += $procedure['default_duration'];
-                            echo CHtml::hiddenField('Procedures_'.$identifier.'[]', $procedure['id']);
-                            echo '<span>'.$procedure['term'].'</span>';
+                            echo CHtml::hiddenField('Procedures_' . $identifier . '[]', $procedure['id']);
+                            echo '<span>' . $procedure['term'] . '</span>';
                             ?>
                         </div>
                         <?php if ($durations) {?>
@@ -58,7 +60,7 @@
                         <th>Estimated Total Duration:</th>
                         <th>
               <input type="text"
-                     autocomplete="<?php echo Yii::app()->params['html_autocomplete']?>"
+                     autocomplete="<?php echo SettingMetadata::model()->getSetting('html_autocomplete')?>"
                      value="<?=\CHtml::encode($total_duration)?>"
                      id="<?php echo $class?>_total_duration_<?php echo $identifier?>"
                      name="<?php echo $class?>[total_duration_<?php echo $identifier?>]"

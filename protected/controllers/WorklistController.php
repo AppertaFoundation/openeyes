@@ -307,8 +307,9 @@ class WorklistController extends BaseController
                     if ($step->short_name === "Discharge") {
                         $hl7_a13 = new \OEModule\PASAPI\resources\HL7_A13();
                         $hl7_a13->setDataFromEvent(\Event::model()->find("worklist_patient_id = ?", array($step->pathway->worklist_patient->id))->id);
-                        Yii::app()->event->dispatch('emergency_care_update',
-                                                    $hl7_a13
+                        Yii::app()->event->dispatch(
+                            'emergency_care_update',
+                            $hl7_a13
                         );
                     }
                     $step->prevStatus();
@@ -637,8 +638,10 @@ class WorklistController extends BaseController
                     $step = PathwayTypeStep::model()->findByPk($pathstep_type_id);
                 }
 
-                if (($step instanceof PathwayStep && $step->type->short_name === 'drug admin')
-                    || ($step instanceof PathwayTypeStep && $step->step_type->short_name === 'drug admin')) {
+                if (
+                    ($step instanceof PathwayStep && $step->type->short_name === 'drug admin')
+                    || ($step instanceof PathwayTypeStep && $step->step_type->short_name === 'drug admin')
+                ) {
                     $psd_assignment_id = $step->getState('assignment_id');
 
                     if (!$psd_assignment_id) {
@@ -789,8 +792,8 @@ class WorklistController extends BaseController
             $deceased = $patient->isDeceased();
             $institution = Institution::model()->getCurrent();
             $selected_site_id = Yii::app()->session['selected_site_id'];
-            $display_primary_number_usage_code = Yii::app()->params['display_primary_number_usage_code'];
-            $display_secondary_number_usage_code = Yii::app()->params['display_secondary_number_usage_code'];
+            $display_primary_number_usage_code = SettingMetadata::model()->getSetting('display_primary_number_usage_code');
+            $display_secondary_number_usage_code = SettingMetadata::model()->getSetting('display_secondary_number_usage_code');
             $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient($display_primary_number_usage_code, $patient->id, $institution->id, $selected_site_id);
             $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient($display_secondary_number_usage_code, $patient->id, $institution->id, $selected_site_id);
             $patientIdentifiers = null;
@@ -1524,8 +1527,10 @@ class WorklistController extends BaseController
                 } else {
                     // Choose a default service firm
                     $service_firm = Firm::model()->with('serviceSubspecialtyAssignment')
-                                                 ->find('can_own_an_episode = 1 AND subspecialty_id = :subspecialty',
-                                                        [':subspecialty' => $service_subspecialty]);
+                                                 ->find(
+                                                     'can_own_an_episode = 1 AND subspecialty_id = :subspecialty',
+                                                     [':subspecialty' => $service_subspecialty]
+                                                 );
 
                     $step_data['service_id'] = $service_firm ? $service_firm->id : null;
                 }

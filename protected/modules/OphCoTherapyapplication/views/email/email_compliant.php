@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,13 +16,14 @@
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
 $ccg = CommissioningBodyType::model()->find('shortname=?', array('CCG'));
 $cb = $patient->getCommissioningBodyOfType($ccg);
 $gp_cb = ($patient->gp && $patient->practice) ? $patient->practice->getCommissioningBodyOfType($ccg) : null;
 $institution_id = Institution::model()->getCurrent()->id;
-$primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $patient->id, $institution_id, Yii::app()->session['selected_site_id']);
-$secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_secondary_number_usage_code'], $patient->id, $institution_id, Yii::app()->session['selected_site_id']);
+$primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $patient->id, $institution_id, Yii::app()->session['selected_site_id']);
+$secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(SettingMetadata::model()->getSetting('display_secondary_number_usage_code'), $patient->id, $institution_id, Yii::app()->session['selected_site_id']);
 ?>
 
 This email was generated from the OpenEyes Therapy Application event
@@ -42,13 +44,15 @@ VA: Right eye: <?= $exam_api->getLetterVisualAcuityRight($patient) ?>, left eye:
 NICE Status: <?= ($suitability->{$side . '_nice_compliance'} ? 'COMPLIANT' : 'NON-COMPLIANT') . "\n" ?>
 Diagnosis: <?= $diagnosis->getDiagnosisStringForSide($side) . "\n" ?>
 <?php
-if ($exam_info = $exam_api->getInjectionManagementComplexInEpisodeForDisorder(
-    $patient,
-    $use_context = true,
-    $side,
-    $diagnosis->{$side . '_diagnosis1_id'},
-    $diagnosis->{$side . '_diagnosis2_id'}
-)) {
+if (
+    $exam_info = $exam_api->getInjectionManagementComplexInEpisodeForDisorder(
+        $patient,
+        $use_context = true,
+        $side,
+        $diagnosis->{$side . '_diagnosis1_id'},
+        $diagnosis->{$side . '_diagnosis2_id'}
+    )
+) {
     foreach ($exam_info->{$side . '_answers'} as $answer) {
         echo $answer->question->question . ': ';
         echo ($answer->answer) ? "Yes\n" : "No\n";

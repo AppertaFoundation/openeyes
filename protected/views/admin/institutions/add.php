@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2018
  * This file is part of OpenEyes.
@@ -12,6 +13,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <div class="cols-7">
@@ -51,7 +53,7 @@ $form = $this->beginWidget(
                         $field,
                         [
                             'class' => 'cols-full',
-                            'autocomplete' => Yii::app()->params['html_autocomplete']
+                            'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete')
                         ]
                     ); ?>
                 </td>
@@ -68,7 +70,7 @@ $form = $this->beginWidget(
                         $field,
                         [
                             'class' => 'cols-full',
-                            'autocomplete' => Yii::app()->params['html_autocomplete']
+                            'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete')
                         ]
                     ); ?>
                 </td>
@@ -118,4 +120,3 @@ $form = $this->beginWidget(
 </div>
 
 <?php $this->endWidget() ?>
-

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -120,10 +121,12 @@ class DefaultController extends \BaseModuleController
             }
         } else {
             if ($qs_svc->isQueueSetPermissionedForUser($queueset, Yii::app()->user->id)) {
-                foreach ($qs_svc->getQueueSetQueues(
-                    $queueset,
-                    @$filter_options['closed-tickets'] ? true : false
-                ) as $queue) {
+                foreach (
+                    $qs_svc->getQueueSetQueues(
+                        $queueset,
+                        @$filter_options['closed-tickets'] ? true : false
+                    ) as $queue
+                ) {
                     $queue_ids[] = $queue->id;
                 }
             }
@@ -277,10 +280,11 @@ class DefaultController extends \BaseModuleController
             }
 
             $primary_identifier = \PatientIdentifierHelper::getIdentifierForPatient(
-                Yii::app()->params['display_primary_number_usage_code'],
+                SettingMetadata::model()->getSetting('display_primary_number_usage_code'),
                 $patient->id,
                 \Institution::model()->getCurrent()->id,
-                Yii::app()->session['selected_site_id']);
+                Yii::app()->session['selected_site_id']
+            );
 
             $result[] = array(
                 'id' => $patient->id,
@@ -387,8 +391,11 @@ class DefaultController extends \BaseModuleController
                         }
                     }
 
-                    $redir = array_merge(['/PatientTicketing/default'], $filter_options,
-                        ['cat_id' => $category->getID(), 'queueset_id' => $qs_id]);
+                    $redir = array_merge(
+                        ['/PatientTicketing/default'],
+                        $filter_options,
+                        ['cat_id' => $category->getID(), 'queueset_id' => $qs_id]
+                    );
                     $this->redirect($redir);
                 }
 

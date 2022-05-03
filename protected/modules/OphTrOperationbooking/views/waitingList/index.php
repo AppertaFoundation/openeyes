@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <div class="oe-full-header flex-layout">
   <div class="title wordcaps">Partial bookings waiting list</div>
@@ -87,13 +89,16 @@
             ); ?>
 
         <h4>Patient Identifier</h4>
-            <?=\CHtml::textField('patient_identifier_value', @$_POST['patient_identifier_value'],
+            <?=\CHtml::textField(
+                'patient_identifier_value',
+                @$_POST['patient_identifier_value'],
                 array(
-                  'autocomplete' => Yii::app()->params['html_autocomplete'],
+                  'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                   'size' => 12,
                   'class' => 'search cols-full',
                   'placeholder' => 'Enter Patient Identifier',
-              )) ?>
+                )
+            ) ?>
 
           <h4>Status</h4>
                 <?=\CHtml::dropDownList(

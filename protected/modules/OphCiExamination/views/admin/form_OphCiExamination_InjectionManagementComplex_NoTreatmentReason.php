@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -14,6 +15,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <div class="row divider">
@@ -32,7 +34,7 @@
                 'name',
                 [
                     'class' => 'cols-full',
-                    'autocomplete' => Yii::app()->params['html_autocomplete']
+                    'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete')
                 ]
             ); ?>
         </td>
@@ -45,7 +47,7 @@
                 'letter_str',
                 [
                     'class' => 'cols-full',
-                    'autocomplete' => Yii::app()->params['html_autocomplete']
+                    'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete')
                 ]
             ); ?>
         </td>

@@ -94,7 +94,7 @@ class DefaultTypePatientSearchHelper implements PatientSearchHelperInterface
             if ($usage_type === 'GLOBAL') {
                 // use global institution id from settings to query the type
                 $institution_global_id = null;
-                $institutions = Institution::model()->findAll('remote_id=:remote_id', [':remote_id' => Yii::app()->params['global_institution_remote_id']]);
+                $institutions = Institution::model()->findAll('remote_id=:remote_id', [':remote_id' => SettingMetadata::model()->getSetting('global_institution_remote_id')]);
                 $count = count($institutions);
                 if ($count === 1) {
                     $institution_global_id = $institutions[0]->id;
@@ -202,7 +202,7 @@ class DefaultTypePatientSearchHelper implements PatientSearchHelperInterface
         } elseif ($type->usage_type === 'LOCAL') {
             // We need to check if it's a global number
             $institution_global_id = null;
-            $institutions = Institution::model()->findAll('remote_id=:remote_id', [':remote_id' => Yii::app()->params['global_institution_remote_id']]);
+            $institutions = Institution::model()->findAll('remote_id=:remote_id', [':remote_id' => SettingMetadata::model()->getSetting('global_institution_remote_id')]);
 
             $count = count($institutions);
             if ($count === 1) {

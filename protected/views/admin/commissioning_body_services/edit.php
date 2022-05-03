@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2018
  * This file is part of OpenEyes.
@@ -12,6 +13,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <div class="cols-5">
@@ -106,7 +108,7 @@
                 $cbs,
                 'name',
                 ['class' => 'cols-full',
-                    'autocomplete' => Yii::app()->params['html_autocomplete']]
+                    'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete')]
             ); ?> </td>
         </tr>
         <tr>
@@ -116,7 +118,7 @@
                 'code',
                 [
                     'class' => 'cols-full',
-                    'autocomplete' => Yii::app()->params['html_autocomplete'],
+                    'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                     'field' => 2
                 ]
             ); ?> </td>
@@ -132,8 +134,8 @@
                     $cbs->contact,
                     'primary_phone',
                     [
-                        'class' => 'cols-full',
-                        'autocomplete' => Yii::app()->params['html_autocomplete'],
+                        'class' => 'cols - full',
+                        'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                         'field' => 2
                     ]
                 );
@@ -148,8 +150,8 @@
                     $cbs->contact,
                     'email',
                     [
-                        'class' => 'cols-full',
-                        'autocomplete' => Yii::app()->params['html_autocomplete']
+                        'class' => 'cols - full',
+                        'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete')
                     ]
                 ); ?>
             </td>
@@ -163,8 +165,8 @@
                     $cbs->contact,
                     'first_name',
                     [
-                        'class' => 'cols-full',
-                        'autocomplete' => Yii::app()->params['html_autocomplete']
+                        'class' => 'cols - full',
+                        'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete')
                     ]
                 ); ?>
             </td>
@@ -179,7 +181,7 @@
                     'last_name',
                     [
                         'class' => 'cols-full',
-                        'autocomplete' => Yii::app()->params['html_autocomplete']
+                        'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete')
                     ]
                 ); ?>
             </td>
@@ -195,8 +197,8 @@
                         $address,
                         $field,
                         [
-                            'class' => 'cols-full',
-                            'autocomplete' => Yii::app()->params['html_autocomplete']
+                            'class' => 'cols - full',
+                            'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete')
                         ]
                     ); ?>
                 </td>
@@ -214,7 +216,7 @@
                         'id',
                         'name'
                     ),
-                    ['class' => 'cols-full']
+                    ['class' => 'cols - full']
                 ); ?>
             </td>
         </tr>
@@ -234,16 +236,15 @@
                     'Cancel',
                     [
                         'class' => 'button large',
-                        'data-uri' => $return_url,
+                        'data - uri' => $return_url,
                         'name' => 'cancel',
                         'id' => 'et_cancel'
                     ]
                 ); ?>
-            </td>
-        </tr>
-        </tfoot>
-    </table>
+                    </td>
+                    </tr>
+                    </tfoot>
+                    </table>
 
-    <?php $this->endWidget() ?>
-</div>
-
+                    <?php $this->endWidget() ?>
+                    </div>

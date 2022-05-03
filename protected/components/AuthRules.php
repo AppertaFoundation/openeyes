@@ -159,7 +159,7 @@ class AuthRules
      */
     private function isEventUnlocked(Event $event)
     {
-        if (Yii::app()->params['event_lock_disable'] || Yii::app()->user->checkAccess('admin')) {
+        if (SettingMetadata::model()->getSetting('event_lock_disable') || Yii::app()->user->checkAccess('admin')) {
             return true;
         }
 

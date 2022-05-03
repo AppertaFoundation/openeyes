@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <?php
 $pagination = $sessions['pagination'];
@@ -39,8 +41,8 @@ if ($this->checkAccess('admin')) {
         </colgroup>
         <tbody>
         <tr>
-            <td><?=\CHtml::dropDownList('firm_id', @$_GET['firm_id'], Firm::model()->getListWithSpecialtiesAndEmergency(), array('empty' => '- ' . Firm::contextLabel() . ' -', 'class'=>'cols-full'))?></td>
-            <td><?=\CHtml::dropDownList('theatre_id', @$_GET['theatre_id'], CHtml::listData($theatres, 'id', 'name'), array('empty' => '- Theatre -', 'class'=>'cols-full'))?></td>
+            <td><?=\CHtml::dropDownList('firm_id', @$_GET['firm_id'], Firm::model()->getListWithSpecialtiesAndEmergency(), array('empty' => '- ' . Firm::contextLabel() . ' -', 'class' => 'cols-full'))?></td>
+            <td><?=\CHtml::dropDownList('theatre_id', @$_GET['theatre_id'], CHtml::listData($theatres, 'id', 'name'), array('empty' => '- Theatre -', 'class' => 'cols-full'))?></td>
             <td>From</td>
             <td>
                 <?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
@@ -50,7 +52,7 @@ if ($this->checkAccess('admin')) {
                     'options' => array(
                         'showAnim' => 'fold',
                         'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
-                        'class'=>'cols-full',
+                        'class' => 'cols-full',
                     ),
                     'value' => @$_GET['date_from'],
                 ))?>
@@ -64,7 +66,7 @@ if ($this->checkAccess('admin')) {
                     'options' => array(
                         'showAnim' => 'fold',
                         'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
-                        'class'=>'cols-full',
+                        'class' => 'cols-full',
                     ),
                     'value' => @$_GET['date_to'],
                 ))?>
@@ -77,16 +79,16 @@ if ($this->checkAccess('admin')) {
         <tr>
             <td>Seq</td>
             <td colspan="5">
-                <?=\CHtml::textField('sequence_id', @$_GET['sequence_id'], array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class'=>'cols-full'))?>
+                <?=\CHtml::textField('sequence_id', @$_GET['sequence_id'], array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'), 'class' => 'cols-full'))?>
             </td>
         </tr>
         <tr>
-            <td><?=\CHtml::dropDownList('weekday', @$_GET['weekday'], array(1 => 'Monday', 2 => 'Tuesday', 3 => 'Wednesday', 4 => 'Thursday', 5 => 'Friday', 6 => 'Saturday', 7 => 'Sunday'), array('empty' => '- Weekday ', 'class'=>'cols-full'))?></td>
-            <td><?=\CHtml::dropDownList('consultant', @$_GET['consultant'], array(1 => 'Yes', 0 => 'No'), array('empty' => '- Consultant -', 'class'=>'cols-full'))?></td>
-            <td><?=\CHtml::dropDownList('paediatric', @$_GET['paediatric'], array(1 => 'Yes', 0 => 'No'), array('empty' => '- Paediatric -', 'class'=>'cols-full'))?></td>
-            <td><?=\CHtml::dropDownList('anaesthetist', @$_GET['anaesthetist'], array(1 => 'Yes', 0 => 'No'), array('empty' => '- Anaesthetist -', 'class'=>'cols-full'))?></td>
-            <td><?=\CHtml::dropDownList('general_anaesthetic', @$_GET['general_anaesthetic'], array(1 => 'Yes', 0 => 'No'), array('empty' => '- General anaesthetic -', 'class'=>'cols-full'))?></td>
-            <td><?=\CHtml::dropDownList('available', @$_GET['available'], array(1 => 'Yes', 0 => 'No'), array('empty' => '- Available -', 'class'=>'cols-full'))?></td>
+            <td><?=\CHtml::dropDownList('weekday', @$_GET['weekday'], array(1 => 'Monday', 2 => 'Tuesday', 3 => 'Wednesday', 4 => 'Thursday', 5 => 'Friday', 6 => 'Saturday', 7 => 'Sunday'), array('empty' => '- Weekday ', 'class' => 'cols-full'))?></td>
+            <td><?=\CHtml::dropDownList('consultant', @$_GET['consultant'], array(1 => 'Yes', 0 => 'No'), array('empty' => '- Consultant -', 'class' => 'cols-full'))?></td>
+            <td><?=\CHtml::dropDownList('paediatric', @$_GET['paediatric'], array(1 => 'Yes', 0 => 'No'), array('empty' => '- Paediatric -', 'class' => 'cols-full'))?></td>
+            <td><?=\CHtml::dropDownList('anaesthetist', @$_GET['anaesthetist'], array(1 => 'Yes', 0 => 'No'), array('empty' => '- Anaesthetist -', 'class' => 'cols-full'))?></td>
+            <td><?=\CHtml::dropDownList('general_anaesthetic', @$_GET['general_anaesthetic'], array(1 => 'Yes', 0 => 'No'), array('empty' => '- General anaesthetic -', 'class' => 'cols-full'))?></td>
+            <td><?=\CHtml::dropDownList('available', @$_GET['available'], array(1 => 'Yes', 0 => 'No'), array('empty' => '- Available -', 'class' => 'cols-full'))?></td>
         </tr>
         </tbody>
         <tfoot>
@@ -236,7 +238,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
     <div class="cols-2 column">
         <label for="">Start time:</label>
     </div>
-    <div class="cols-2 column end"><?=\CHtml::textField('inline_start_time', '', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'size' => 10))?>
+    <div class="cols-2 column end"><?=\CHtml::textField('inline_start_time', '', array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'), 'size' => 10))?>
         <span class="error"></span>
     </div>
 </div>
@@ -244,7 +246,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
     <div class="cols-2 column">
         <label for="">End time:</label>
     </div>
-    <div class="cols-2 column end"><?=\CHtml::textField('inline_end_time', '', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'size' => 10))?>
+    <div class="cols-2 column end"><?=\CHtml::textField('inline_end_time', '', array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'), 'size' => 10))?>
         <span class="error"></span>
     </div>
 </div>

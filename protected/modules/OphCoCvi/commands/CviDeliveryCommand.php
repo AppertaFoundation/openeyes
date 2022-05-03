@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Copyright Apperta Foundation 2021
  * This file is part of OpenEyes.
@@ -68,10 +69,10 @@ EOH;
 
         try {
             $pending = $this->api->getPendingDeliveryEvents();
-            $this->log_info("Number of events in this batch: ".count($pending));
+            $this->log_info("Number of events in this batch: " . count($pending));
 
             foreach ($pending as $event) {
-                $this->log_info("Processing Event ID ".$event->id);
+                $this->log_info("Processing Event ID " . $event->id);
                 $info = $this->api->getManager()->getEventInfoElementForEvent($event);
                 $demographics = $this->api->getManager()->getDemographicsElementForEvent($event);
                 $this->sendToGP($event, $info);
@@ -79,9 +80,9 @@ EOH;
                 $this->sendToRCOP($event, $info);
             }
         } catch (Exception $e) {
-            $this->log_error("Early exiting due to error in file ".$e->getFile()." in line ".$e->getLine());
-            $this->log_error("Message: ".$e->getMessage());
-            $this->log_error("Trace: ".$e->getTraceAsString());
+            $this->log_error("Early exiting due to error in file " . $e->getFile() . " in line " . $e->getLine());
+            $this->log_error("Message: " . $e->getMessage());
+            $this->log_error("Trace: " . $e->getTraceAsString());
             exit(1);
         }
 
@@ -194,8 +195,8 @@ EOH;
         }
 
         $this->log_info("Sending to RCOP");
-        if (isset(Yii::app()->params['cvidelivery_rcop_to_email'])) {
-            $rco_email = Yii::app()->params['cvidelivery_rcop_to_email'];
+        if (( null !== SettingMetadata::model()->getSetting('cvidelivery_rcop_to_email'))) {
+            $rco_email = SettingMetadata::model()->getSetting('cvidelivery_rcop_to_email');
         } else {
             $this->log_error("RCOP email address has not been set in configuration");
             $info->rco_delivery_status = Element_OphCoCvi_EventInfo::DELIVERY_STATUS_ERROR;
@@ -211,10 +212,10 @@ EOH;
             return;
         }
 
-        $from_email = Yii::app()->params['cvidelivery_rcop_sender_email'];
-        $from_name = Yii::app()->params['cvidelivery_rcop_sender_name'];
-        $subject = Yii::app()->params['cvidelivery_rcop_subject'];
-        $body = Yii::app()->params['cvidelivery_rcop_body'];
+        $from_email = SettingMetadata::model()->getSetting('cvidelivery_rcop_sender_email');
+        $from_name = SettingMetadata::model()->getSetting('cvidelivery_rcop_sender_name');
+        $subject = SettingMetadata::model()->getSetting('cvidelivery_rcop_subject');
+        $body = SettingMetadata::model()->getSetting('cvidelivery_rcop_body');
 
         if (!$this->sendEmail($rco_email, $file, $from_email, $from_name, $subject, $body)) {
             $this->log_error("Failed to send email to: $rco_email");
@@ -238,8 +239,8 @@ EOH;
         $institution_id = Institution::model()->find($criteria)->id;
         $sender_address = SenderEmailAddresses::getSenderAddress($to, $institution_id, $site_id);
 
-        $subject = \Yii::app()->params['cvidelivery_la_subject'];
-        $body = \Yii::app()->params['cvidelivery_la_body'];
+        $subject = \SettingMetadata::model()->getSetting('cvidelivery_la_subject');
+        $body = \SettingMetadata::model()->getSetting('cvidelivery_la_body');
 
         if ($sender_address) {
             try {

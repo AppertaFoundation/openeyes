@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,8 +16,9 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <?php
 echo $form->dropDownList($model, 'institution_id', Institution::model()->getList(true), ['class' => 'cols-full']);
-echo $form->textField($model, 'name', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'size' => 40, 'maxlength' => 40));
+echo $form->textField($model, 'name', array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'), 'size' => 40, 'maxlength' => 40));

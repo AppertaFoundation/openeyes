@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Copyright Apperta Foundation 2021
  * This file is part of OpenEyes.
@@ -15,9 +16,9 @@
 
 namespace OEModule\OphCoCvi\controllers;
 
-use \OEModule\OphCoCvi\models;
-use \OEModule\OphCoCvi\components\OphCoCvi_Manager;
-use \OEModule\OphCoCvi\components\LabelManager;
+use OEModule\OphCoCvi\models;
+use OEModule\OphCoCvi\components\OphCoCvi_Manager;
+use OEModule\OphCoCvi\components\LabelManager;
 use OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder_Section;
 use OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Diagnosis_Not_Covered;
 use OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo;
@@ -413,11 +414,15 @@ class DefaultController extends \BaseEventTypeController
                     foreach ($data[$model_name][$key] as $idx => $data_disorder) {
                         $cvi_ass = new models\Element_OphCoCvi_ClinicalInfo_Disorder_Assignment();
                         $cvi_ass->ophcocvi_clinicinfo_disorder_id = $idx;
-                        $cvi_ass->affected = array_key_exists('affected',
-                            $data_disorder) ? $data_disorder['affected'] : false;
+                        $cvi_ass->affected = array_key_exists(
+                            'affected',
+                            $data_disorder
+                        ) ? $data_disorder['affected'] : false;
                         $cvi_ass->eye_id = $eye_id;
-                        $cvi_ass->main_cause = array_key_exists('main_cause',
-                            $data_disorder) ? $data_disorder['main_cause'] : false;
+                        $cvi_ass->main_cause = array_key_exists(
+                            'main_cause',
+                            $data_disorder
+                        ) ? $data_disorder['main_cause'] : false;
                         if ($cvi_ass->main_cause == 1) {
                             $main_cause_assignment[] = $cvi_ass;
                         }
@@ -528,7 +533,7 @@ class DefaultController extends \BaseEventTypeController
                 $element->employment_status_id = models\OphCoCvi_ClericalInfo_EmploymentStatus::defaultForSocialHistoryId($this->patient->socialhistory);
             }
         }
-        $preferred_language = \Language::model()->findByAttributes(array('pas_term'=>'eng'));
+        $preferred_language = \Language::model()->findByAttributes(array('pas_term' => 'eng'));
         $element->preferred_language_id = $element->preferred_language_id ? $element->preferred_language_id : $preferred_language->id;
     }
 
@@ -680,7 +685,7 @@ class DefaultController extends \BaseEventTypeController
     {
         $filename = 'export.csv';
 
-        $f = fopen( $this->getManager()->outDir.$filename, "w");
+        $f = fopen($this->getManager()->outDir . $filename, "w");
 
         $headers = array( array('Event Date', 'Subspeciality', 'Site', 'Name', 'Hospital No.', 'Created By', 'Consultant signed by', 'Consultant in charge', 'Status', 'Issue Date'));
         foreach ($headers as $header) {
@@ -732,10 +737,10 @@ class DefaultController extends \BaseEventTypeController
         fclose($f);
 
         header('Content-Type: application/csv');
-        header('Content-Disposition: attachment; filename="'.$filename.'";');
-        readfile( $this->getManager()->outDir.$filename );
+        header('Content-Disposition: attachment; filename="' . $filename . '";');
+        readfile($this->getManager()->outDir . $filename);
 
-        unlink( $this->getManager()->outDir.$filename );
+        unlink($this->getManager()->outDir . $filename);
     }
 
     /**
@@ -799,14 +804,16 @@ class DefaultController extends \BaseEventTypeController
         foreach ($elements as $el) {
             $cls = get_class($el);
 
-            if (in_array($cls, array('OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo'))
+            if (
+                in_array($cls, array('OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo'))
                 && $el->isNewRecord
                 && !$this->checkClinicalEditAccess()
             ) {
                 // implies no values have been recorded yet for this element
                 continue;
             }
-            if (in_array($cls, array('OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo'))
+            if (
+                in_array($cls, array('OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo'))
                 && $el->isNewRecord
                 && !$this->checkClericalEditAccess()
             ) {
@@ -1060,8 +1067,8 @@ class DefaultController extends \BaseEventTypeController
     {
         $institution_id = \Institution::model()->getCurrent()->id;
         $site_id = \Yii::app()->session['selected_site_id'];
-        $primary_identifier = \PatientIdentifierHelper::getIdentifierForPatient(\Yii::app()->params['display_primary_number_usage_code'], $this->patient->id, $institution_id, $site_id);
-        $secondary_identifier = \PatientIdentifierHelper::getIdentifierForPatient(\Yii::app()->params['display_secondary_number_usage_code'], $this->patient->id, $institution_id, $site_id);
+        $primary_identifier = \PatientIdentifierHelper::getIdentifierForPatient(\SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $this->patient->id, $institution_id, $site_id);
+        $secondary_identifier = \PatientIdentifierHelper::getIdentifierForPatient(\SettingMetadata::model()->getSetting('display_secondary_number_usage_code'), $this->patient->id, $institution_id, $site_id);
 
         $this->layout = '//layouts/print';
         $this->render($template, array_merge([
@@ -1090,7 +1097,7 @@ class DefaultController extends \BaseEventTypeController
     public function actionPDFPrint($id)
     {
         $this->redirect(
-             '/file/view/' . $this->getManager()->getEventInfoElementForEvent($this->event)->generated_document_id . '/'
+            '/file/view/' . $this->getManager()->getEventInfoElementForEvent($this->event)->generated_document_id . '/'
             . $this->getManager()->getEventInfoElementForEvent($this->event)->generated_document->name
         );
     }
@@ -1098,9 +1105,9 @@ class DefaultController extends \BaseEventTypeController
     private function outputStaticPdfFile($filename)
     {
         $dir = \Yii::getPathOfAlias("application.modules.OphCoCvi.assets");
-        $fullpath = $dir."/pdf/$filename";
+        $fullpath = $dir . "/pdf/$filename";
         header("Content-type:application/pdf");
-        header('Content-Length: '.filesize($fullpath));
+        header('Content-Length: ' . filesize($fullpath));
         readfile($fullpath);
         \Yii::app()->end();
     }
@@ -1161,7 +1168,8 @@ class DefaultController extends \BaseEventTypeController
     public function checkLabelPrintAccess()
     {
         $this->demographicsData = $this->getManager()->getDemographicsElementForEvent($this->event);
-        if ((empty($this->demographicsData['address'])) &&
+        if (
+            (empty($this->demographicsData['address'])) &&
             (empty($this->demographicsData['gp_address'])) &&
             (empty($this->demographicsData['la_address']))
         ) {
@@ -1359,7 +1367,8 @@ class DefaultController extends \BaseEventTypeController
                 event_type_version = (SELECT MAX(event_type_version) AS maxVersion FROM ophcocvi_clinicinfo_disorder)
                 AND patient_type = ' . (int)$patient_type,
                 "order"     => "display_order"
-            ));
+            )
+        );
         $this->renderPartial('ajax_load_diagnosis_list', ['disorder_sections' => $disorder_sections, 'element' => $element]);
     }
 
@@ -1390,7 +1399,8 @@ class DefaultController extends \BaseEventTypeController
         return models\OphCoCvi_ClericalInfo_PatientFactor::model()->active()->findAll(
             array(
                 "order"     => "display_order"
-        ));
+            )
+        );
     }
 
     /**
@@ -1418,14 +1428,13 @@ class DefaultController extends \BaseEventTypeController
         if (!$element = $this->event->getElementByClass($element_type->class_name)) {
             throw new \CHttpException(500, "Element not found");
         }
-        $this->redirect("/OphCoCvi/default/print/$id?html=1&auto_print=0&sign=1".
-            "&element_type_id=".\Yii::app()->request->getParam("element_type_id").
-            "&signature_type=".\Yii::app()->request->getParam("signature_type").
-            "&signatory_role=".\Yii::app()->request->getParam("signatory_role").
-            "&signature_name=".\Yii::app()->request->getParam("signatory_name").
-            "&element_id=".$element->id.
-            "&deviceSign=".\Yii::app()->request->getParam("deviceSign")
-        );
+        $this->redirect("/OphCoCvi/default/print/$id?html=1&auto_print=0&sign=1" .
+            "&element_type_id=" . \Yii::app()->request->getParam("element_type_id") .
+            "&signature_type=" . \Yii::app()->request->getParam("signature_type") .
+            "&signatory_role=" . \Yii::app()->request->getParam("signatory_role") .
+            "&signature_name=" . \Yii::app()->request->getParam("signatory_name") .
+            "&element_id=" . $element->id .
+            "&deviceSign=" . \Yii::app()->request->getParam("deviceSign"));
     }
 
     /**
@@ -1434,7 +1443,7 @@ class DefaultController extends \BaseEventTypeController
      */
     public function actionCilinicalDiagnosisAutocomplete($term)
     {
-        $search = "%".strtolower($term)."%";
+        $search = "%" . strtolower($term) . "%";
         $where = '(LOWER(term) like :search or id like :search)';
         $where .= ' and active = 1';
         $diagnosis = \Yii::app()->db->createCommand()

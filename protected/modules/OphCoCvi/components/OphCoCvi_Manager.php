@@ -525,7 +525,7 @@ class OphCoCvi_Manager extends \CComponent
         $address = $institutionInfo->name . '\n' . \Institution::model()->getCurrent()->getLetterAddress(array('include_name' => false, 'delimiter' => '\n'));
         $data['hospitalAddress'] = \Helper::lineLimit($address, 2, 1, '\n');
         $data['hospitalAddressMultiline'] = \Helper::lineLimit($address, 4, 1, '\n');
-        $data['hospitalNumber'] = \PatientIdentifierHelper::getIdentifierValue(\PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $event->episode->patient->id, \Institution::model()->getCurrent()->id, \Yii::app()->session['selected_site_id']));
+        $data['hospitalNumber'] = \PatientIdentifierHelper::getIdentifierValue(\PatientIdentifierHelper::getIdentifierForPatient(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $event->episode->patient->id, \Institution::model()->getCurrent()->id, \Yii::app()->session['selected_site_id']));
 
         return $data;
     }
@@ -1520,7 +1520,7 @@ class OphCoCvi_Manager extends \CComponent
 
         $message = \Yii::app()->mailer->newMessage();
         $message->setFrom(isset(\Yii::app()->params['from_email']) ? \Yii::app()->params['from_email'] : "noreply@openeyes.org.uk");
-        $message->setTo(\Yii::app()->params["eclo_email"]);
+        $message->setTo(\SettingMetadata::model()->getSetting('eclo_email'));
         $message->setSubject("New CVI");
         $message->setBody("Dear ECLO Team\nA new CVI has been started by {$event->user->getFullName()}\nPatient: {$event->episode->patient->getFullName()}\nHos num:{$event->episode->patient->hos_num}");
 

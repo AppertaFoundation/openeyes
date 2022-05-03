@@ -1,17 +1,16 @@
 <?php
 
-use \OEModule\PASAPI\components\PasApiObserver;
-use \OEModule\PASAPI\resources\HL7_A08;
-use \OEModule\PASAPI\resources\HL7_Patient;
-use \OEModule\PASAPI\resources\HL7_Patient_Visit;
-use \OEModule\PASAPI\resources\HL7_Patient_Visit_Additional;
-use \OEModule\PASAPI\resources\HL7_Diagnosis;
-use \OEModule\PASAPI\resources\HL7_Procedure;
-use \OEModule\PASAPI\resources\HL7_UK_Additional;
+use OEModule\PASAPI\components\PasApiObserver;
+use OEModule\PASAPI\resources\HL7_A08;
+use OEModule\PASAPI\resources\HL7_Patient;
+use OEModule\PASAPI\resources\HL7_Patient_Visit;
+use OEModule\PASAPI\resources\HL7_Patient_Visit_Additional;
+use OEModule\PASAPI\resources\HL7_Diagnosis;
+use OEModule\PASAPI\resources\HL7_Procedure;
+use OEModule\PASAPI\resources\HL7_UK_Additional;
 
 class HL7_A08Test extends PHPUnit_Framework_TestCase
 {
-
     function test_updateEmergencyCareVisit()
     {
         $hl7_a08 = new HL7_A08();

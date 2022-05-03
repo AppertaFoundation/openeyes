@@ -1,4 +1,5 @@
 <?php
+
 //namespace app\components;
 
 use yii\base\Widget;
@@ -34,8 +35,8 @@ class NewFeatureHelp extends BaseCWidget
             }
         }
 
-        $disable_auto_feature_tours = isset(\Yii::app()->params['disable_auto_feature_tours']) ? \Yii::app()->params['disable_auto_feature_tours'] : "off";
-        if ( $disable_auto_feature_tours === "on" || $disable_auto_feature_tours === true) {
+        $disable_auto_feature_tours = ( null !== \SettingMetadata::model()->getSetting('disable_auto_feature_tours')) ? \SettingMetadata::model()->getSetting('disable_auto_feature_tours') : "off";
+        if ($disable_auto_feature_tours === "on" || $disable_auto_feature_tours === true) {
             $this->auto_start = false;
         }
 

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <?php $methods = CHtml::listData(\OEModule\OphCiExamination\models\OphCiExamination_AnteriorSegment_CCT_Method::model()->activeOrPk(array($element->right_method_id, $element->left_method_id))->findAll(array('order' => 'display_order')), 'id', 'name') ?>
 <div class="element-eyes sub-element-fields">
@@ -26,16 +28,16 @@
       <div class="cols-full flex-layout">
         <?php echo $form->textField(
             $element,
-            $eye_side.'_value',
+            $eye_side . '_value',
             array('autocomplete' =>
-            Yii::app()->params['html_autocomplete'],
+            SettingMetadata::model()->getSetting('html_autocomplete'),
             'nowrapper' => true,
-            'append-text'=>'&nbsp; &micro;m, using',
+            'append-text' => '&nbsp; &micro;m, using',
             'class' => 'cct_value')
         ) ?>
         <?php echo $form->dropDownList(
             $element,
-            $eye_side.'_method_id',
+            $eye_side . '_method_id',
             $methods,
             array('nowrapper' => true, 'class' => 'inline')
         ) ?>

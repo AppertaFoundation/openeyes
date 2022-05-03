@@ -15,12 +15,13 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <?php
 $institution_id = Institution::model()->getCurrent()->id;
 $site_id = Yii::app()->session['selected_site_id'];
-$primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $this->patient->id, $institution_id, $site_id);
-$secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_secondary_number_usage_code'], $this->patient->id, $institution_id, $site_id);
+$primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $this->patient->id, $institution_id, $site_id);
+$secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(SettingMetadata::model()->getSetting('display_secondary_number_usage_code'), $this->patient->id, $institution_id, $site_id);
 $type_assessment = new OphTrConsent_Type_Assessment();
 ?>
 <body class="open-eyes print<?= isset($elements['Element_OphTrConsent_Withdrawal']) ? ' void' : ''?>">
@@ -197,17 +198,18 @@ $type_assessment = new OphTrConsent_Type_Assessment();
             </div>
         </div>
                 <?= $this->renderPartial(
-                '_print_signature',
-                array(
-                'vi' => ($css_class == 'impaired'),
-                'element' => $elements[Element_OphTrConsent_Esign::class],
-                'signature' => $elements[Element_OphTrConsent_Esign::class]
-                ->getSignatureByInitiatorAttributes(
-                    (int)$elements['OEModule\OphTrConsent\models\Element_OphTrConsent_PatientAttorneyDeputy']->getElementType()->id,
-                    (int)$contact->id),
-                'title_label' => 'Contact type',
-                'name_label' => 'Patient\'s attorney or deputy',
-        )
+                    '_print_signature',
+                    array(
+                    'vi' => ($css_class == 'impaired'),
+                    'element' => $elements[Element_OphTrConsent_Esign::class],
+                    'signature' => $elements[Element_OphTrConsent_Esign::class]
+                    ->getSignatureByInitiatorAttributes(
+                        (int)$elements['OEModule\OphTrConsent\models\Element_OphTrConsent_PatientAttorneyDeputy']->getElementType()->id,
+                        (int)$contact->id
+                    ),
+                    'title_label' => 'Contact type',
+                    'name_label' => 'Patient\'s attorney or deputy',
+                    )
                 ); ?>
             <?php } ?>
         <?php if (empty($contacts)) : ?>
@@ -268,17 +270,18 @@ $type_assessment = new OphTrConsent_Type_Assessment();
             }
             ?>
             <?= $this->renderPartial(
-            '_print_signature',
-            array(
+                '_print_signature',
+                array(
                 'vi' => ($css_class == 'impaired'),
                 'element' => $elements[Element_OphTrConsent_Esign::class],
                 'signature' => $elements[Element_OphTrConsent_Esign::class]
                     ->getSignatureByInitiatorAttributes(
                         (int)$contact_element->getElementType()->id,
-                        (int)$contact->id),
+                        (int)$contact->id
+                    ),
                 'title_label' => 'Relationship',
                 'name_label' => 'Name',
-            )
+                )
             ); ?>
         <?php } ?>
     <?php } ?>
@@ -313,7 +316,8 @@ $type_assessment = new OphTrConsent_Type_Assessment();
     <div class="group"><span class="checkbox <?= isset($elements['Element_OphTrConsent_Withdrawal']) ? 'checked' : ''?>"></span><?= isset($elements['Element_OphTrConsent_Withdrawal']) ? '<b class="highlighter">' : ''?> Patient has withdrawn consent <?= isset($elements['Element_OphTrConsent_Withdrawal']) ? '</b>' : ''?></div>
     <?php if (isset($elements['Element_OphTrConsent_Withdrawal'])) {?>
         <p><b>Reason for withdrawal:</b> <?= isset($elements['Element_OphTrConsent_Withdrawal']->withdrawal_reason) ? $elements['Element_OphTrConsent_Withdrawal']->withdrawal_reason : '-'?></p>
-        <?= $this->renderPartial('_print_signature',
+        <?= $this->renderPartial(
+            '_print_signature',
             array(
                 'vi' => ($css_class === 'impaired'),
                 'element' => $elements['Element_OphTrConsent_Esign'],

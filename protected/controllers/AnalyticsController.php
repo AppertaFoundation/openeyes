@@ -199,13 +199,15 @@ class AnalyticsController extends BaseController
             foreach ($elements as $element) {
                 $time_interval = isset($element['va_time_interval']) ? $element['va_time_interval'] : $element['other_time_interval'];
                 if ($time_interval !== 'pre') {
-                    if (!in_array(
-                        $element['patient_id'],
-                        $statistical_report["($time_interval_unit) PRE-OP"]['va']['patients']
-                    ) && !in_array(
-                        $element['patient_id'],
-                        $statistical_report["($time_interval_unit) PRE-OP"]['other']['patients']
-                    )) {
+                    if (
+                        !in_array(
+                            $element['patient_id'],
+                            $statistical_report["($time_interval_unit) PRE-OP"]['va']['patients']
+                        ) && !in_array(
+                            $element['patient_id'],
+                            $statistical_report["($time_interval_unit) PRE-OP"]['other']['patients']
+                        )
+                    ) {
                         continue;
                     }
 
@@ -215,10 +217,12 @@ class AnalyticsController extends BaseController
 
 
                     if (array_key_exists($selected_interval, $statistical_report)) {
-                        if (in_array(
-                            $element['patient_id'],
-                            $statistical_report["($time_interval_unit) PRE-OP"]['va']['patients']
-                        )) {
+                        if (
+                            in_array(
+                                $element['patient_id'],
+                                $statistical_report["($time_interval_unit) PRE-OP"]['va']['patients']
+                            )
+                        ) {
                             if (isset($va_reading)) {
                                 $statistical_report[$selected_interval]['va'] = $this->processCustomData(
                                     $statistical_report[$selected_interval]['va'],
@@ -227,10 +231,12 @@ class AnalyticsController extends BaseController
                                 );
                             }
                         }
-                        if (in_array(
-                            $element['patient_id'],
-                            $statistical_report["($time_interval_unit) PRE-OP"]['other']['patients']
-                        )) {
+                        if (
+                            in_array(
+                                $element['patient_id'],
+                                $statistical_report["($time_interval_unit) PRE-OP"]['other']['patients']
+                            )
+                        ) {
                             if (isset($other_reading)) {
                                 $statistical_report[$selected_interval]['other'] = $this->processCustomData(
                                     $statistical_report[$selected_interval]['other'],
@@ -240,10 +246,12 @@ class AnalyticsController extends BaseController
                             }
                         }
                     } else {
-                        if (in_array(
-                            $element['patient_id'],
-                            $statistical_report["($time_interval_unit) PRE-OP"]['va']['patients']
-                        )) {
+                        if (
+                            in_array(
+                                $element['patient_id'],
+                                $statistical_report["($time_interval_unit) PRE-OP"]['va']['patients']
+                            )
+                        ) {
                             $statistical_report[$selected_interval]['va'] = $this->processCustomData(
                                 null,
                                 $element['patient_id'],
@@ -259,10 +267,12 @@ class AnalyticsController extends BaseController
                             );
                         }
 
-                        if (in_array(
-                            $element['patient_id'],
-                            $statistical_report["($time_interval_unit) PRE-OP"]['other']['patients']
-                        )) {
+                        if (
+                            in_array(
+                                $element['patient_id'],
+                                $statistical_report["($time_interval_unit) PRE-OP"]['other']['patients']
+                            )
+                        ) {
                             $statistical_report[$selected_interval]['other'] = $this->processCustomData(
                                 null,
                                 $element['patient_id'],
@@ -516,10 +526,10 @@ class AnalyticsController extends BaseController
         $can_view_clinical = Yii::app()->authManager->isAssigned('View clinical', Yii::app()->user->id) ? true : false;
         $is_service_manager = Yii::app()->authManager->isAssigned('Service Manager', Yii::app()->user->id) ? true : false;
         $sidebar_params = array(
-            'specialty'=>$specialty,
-            'current_user'=>$this->current_user,
-            'common_disorders'=>$common_ophthalmic_disorders,
-            'user_list'=>$user_list,
+            'specialty' => $specialty,
+            'current_user' => $this->current_user,
+            'common_disorders' => $common_ophthalmic_disorders,
+            'user_list' => $user_list,
             'can_view_clinical' => $can_view_clinical,
             'is_service_manager' => $is_service_manager,
         );
@@ -1137,23 +1147,23 @@ class AnalyticsController extends BaseController
 
         $institution_id = Institution::model()->getCurrent()->id;
         $res = $this->getPatientsIdentifiers($res, $institution_id);
-        $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(Yii::app()->params['display_primary_number_usage_code'], $institution_id, $this->selectedSiteId);
-        $secondary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(Yii::app()->params['display_secondary_number_usage_code'], $institution_id, $this->selectedSiteId);
+        $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $institution_id, $this->selectedSiteId);
+        $secondary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(SettingMetadata::model()->getSetting('display_secondary_number_usage_code'), $institution_id, $this->selectedSiteId);
         $id_headers = $primary_identifier_prompt . ', ' . $secondary_identifier_prompt;
         return ['id_headers' => $id_headers, 'res' => $res];
     }
 
     private function getPatientsIdentifiers($data, $institution_id, $use_prompt_as_index = false)
     {
-        $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(Yii::app()->params['display_primary_number_usage_code'], $institution_id, $this->selectedSiteId);
-        $secondary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(Yii::app()->params['display_secondary_number_usage_code'], $institution_id, $this->selectedSiteId);
+        $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $institution_id, $this->selectedSiteId);
+        $secondary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(SettingMetadata::model()->getSetting('display_secondary_number_usage_code'), $institution_id, $this->selectedSiteId);
 
         $primary_identifier_index = $use_prompt_as_index ? $primary_identifier_prompt : 'primary identifier';
         $secondary_identifier_index = $use_prompt_as_index ? $secondary_identifier_prompt : 'secondary identifier';
         $result = [];
         foreach ($data as $patient) {
-            $primary_identifier = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $patient['patient_id'], $institution_id, $this->selectedSiteId));
-            $secondary_identifier = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_secondary_number_usage_code'], $patient['patient_id'], $institution_id, $this->selectedSiteId));
+            $primary_identifier = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $patient['patient_id'], $institution_id, $this->selectedSiteId));
+            $secondary_identifier = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(SettingMetadata::model()->getSetting('display_secondary_number_usage_code'), $patient['patient_id'], $institution_id, $this->selectedSiteId));
             $result[] = [$primary_identifier_index => $primary_identifier, $secondary_identifier_index => $secondary_identifier, ] + $patient + ['all ids' => PatientIdentifierHelper::getAllPatientIdentifiersForReports($patient['patient_id'])];
         }
 
@@ -1309,20 +1319,28 @@ class AnalyticsController extends BaseController
 
         if (!empty($this->filters['age_min'])) {
             if (!empty($this->filters['age_max'])) {
-                $command->andWhere('TIMESTAMPDIFF(YEAR, p.dob, IFNULL(p.date_of_death, CURDATE())) BETWEEN :age_min AND :age_max',
-                                   [':age_min' => $this->filters['age_min'], ':age_max' => $this->filters['age_max']]);
+                $command->andWhere(
+                    'TIMESTAMPDIFF(YEAR, p.dob, IFNULL(p.date_of_death, CURDATE())) BETWEEN :age_min AND :age_max',
+                    [':age_min' => $this->filters['age_min'], ':age_max' => $this->filters['age_max']]
+                );
             } else {
-                $command->andWhere('TIMESTAMPDIFF(YEAR, p.dob, IFNULL(p.date_of_death, CURDATE())) >= :age_min',
-                                   [':age_min' => $this->filters['age_min']]);
+                $command->andWhere(
+                    'TIMESTAMPDIFF(YEAR, p.dob, IFNULL(p.date_of_death, CURDATE())) >= :age_min',
+                    [':age_min' => $this->filters['age_min']]
+                );
             }
         } elseif (!empty($this->filters['age_max'])) {
-            $command->andWhere('TIMESTAMPDIFF(YEAR, p.dob, IFNULL(p.date_of_death, CURDATE())) <= :age_max',
-                               [':age_max' => $this->filters['age_max']]);
+            $command->andWhere(
+                'TIMESTAMPDIFF(YEAR, p.dob, IFNULL(p.date_of_death, CURDATE())) <= :age_max',
+                [':age_max' => $this->filters['age_max']]
+            );
         }
 
         if (!empty($this->filters['surgeon'])) {
-            $command->andWhere('ep.created_user_id = :surgeon',
-                               [':surgeon' => $this->filters['surgeon']]);
+            $command->andWhere(
+                'ep.created_user_id = :surgeon',
+                [':surgeon' => $this->filters['surgeon']]
+            );
         }
 
         $command->group('p.id');
@@ -1474,8 +1492,10 @@ class AnalyticsController extends BaseController
 
         $query_conditions[] = 'ep.deleted = 0';
 
-        if (isset($this->filters['age_min']) && isset($this->filters['age_max'])
-            && isset($this->filters['age_min']) <= isset($this->filters['age_max'])) {
+        if (
+            isset($this->filters['age_min']) && isset($this->filters['age_max'])
+            && isset($this->filters['age_min']) <= isset($this->filters['age_max'])
+        ) {
             $age_min = $this->filters['age_min'];
             $age_max = $this->filters['age_max'];
             $query_conditions[] = "p.age >= $age_min AND p.age <= $age_max";
@@ -1687,8 +1707,10 @@ class AnalyticsController extends BaseController
         if (isset($eye_side)) {
             $query_params[':side'] = $eye_side;
         }
-        if (isset($this->filters['date_from']) && isset($this->filters['date_to'])
-            && $this->filters['date_from'] < $this->filters['date_to']) {
+        if (
+            isset($this->filters['date_from']) && isset($this->filters['date_to'])
+            && $this->filters['date_from'] < $this->filters['date_to']
+        ) {
             $date_from = $this->filters['date_from'];
             $date_to = $this->filters['date_to'];
             $query_conditions[] = "UNIX_TIMESTAMP(exam.event_date) >= $date_from";
@@ -2282,15 +2304,15 @@ class AnalyticsController extends BaseController
         $ageMin = $age ? $age[0] : null;
         $ageMax = $age ? $age[1] : null;
         $this->filters = array(
-          'specialty'=>$specialty,
+          'specialty' => $specialty,
           'date_from' => $dateFrom,
           'date_to' => $dateTo,
-          'age_min'=>$ageMin,
-          'age_max'=>$ageMax,
-          'diagnosis'=>$diagnosis,
-          'user'=>$user,
-          'procedure'=>$procedure,
-          'plot_va_change'=> $plot_va_change,
+          'age_min' => $ageMin,
+          'age_max' => $ageMax,
+          'diagnosis' => $diagnosis,
+          'user' => $user,
+          'procedure' => $procedure,
+          'plot_va_change' => $plot_va_change,
           'time_interval' => $time_interval,
           'va_unit' => $va_unit,
         );
@@ -2358,7 +2380,7 @@ class AnalyticsController extends BaseController
                         'name' => 'VA',
                         'mode' => 'lines+markers',
                         'type' => 'scatter',
-                        'x' => array_keys(${$side.$va_list_name}),
+                        'x' => array_keys(${$side . $va_list_name}),
                         'y' => array_map(
                             function ($item) {
                                 if (isset($this->filters['plot_va_change_initial_va_value'])) {
@@ -2492,7 +2514,7 @@ class AnalyticsController extends BaseController
 
     private function queryDiagnosesFilteredPatientListCommand($eye_side, $caller = 'custom')
     {
-        $diagnoses = isset($this->filters['diagnosis'])? $this->filters['diagnosis']: null;
+        $diagnoses = isset($this->filters['diagnosis']) ? $this->filters['diagnosis'] : null;
         $command_principal = Yii::app()->db->createCommand()
             ->select('e.patient_id as patient_id', 'DISTINCT')
             ->from('episode e')
@@ -2516,8 +2538,8 @@ class AnalyticsController extends BaseController
             $command_secondary->andWhere('sd.eye_id IN (2,3)');
         }
         if (isset($diagnoses)) {
-            $command_principal->andWhere('e.disorder_id IN ('.$diagnoses.')');
-            $command_secondary->andWhere('sd.disorder_id IN ('.$diagnoses.')');
+            $command_principal->andWhere('e.disorder_id IN (' . $diagnoses . ')');
+            $command_secondary->andWhere('sd.disorder_id IN (' . $diagnoses . ')');
         }
         return $command_secondary->union($command_principal->getText());
     }
@@ -2656,8 +2678,10 @@ class AnalyticsController extends BaseController
             $command = $command->andWhere("ps.patient_id $command_filtered_patients");
         }
 
-        if ((isset($this->filters['date_from']) && $this->filters['date_from'])
-            || (isset($this->filters['date_to']) && $this->filters['date_to'])) {
+        if (
+            (isset($this->filters['date_from']) && $this->filters['date_from'])
+            || (isset($this->filters['date_to']) && $this->filters['date_to'])
+        ) {
             $bindValues = array();
             $command_event_filtered = Yii::app()->db->createCommand()
                 ->select('psd.id')
@@ -2676,7 +2700,7 @@ class AnalyticsController extends BaseController
                 $bindValues[':date_to'] = $date_to;
                 $command_event_filtered = $command_event_filtered->andWhere("UNIX_TIMESTAMP(e.event_date) <= :date_to");
             }
-            $command = $command->andWhere('EXISTS (' . $command_event_filtered->getText(). ')');
+            $command = $command->andWhere('EXISTS (' . $command_event_filtered->getText() . ')');
             $command = $command->bindValues($bindValues);
         }
 
@@ -2716,8 +2740,10 @@ class AnalyticsController extends BaseController
             $command = $command->andWhere("ps.patient_id $command_filtered_patients");
         }
 
-        if ((isset($this->filters['date_from']) && $this->filters['date_from'])
-            || (isset($this->filters['date_to']) && $this->filters['date_to'])) {
+        if (
+            (isset($this->filters['date_from']) && $this->filters['date_from'])
+            || (isset($this->filters['date_to']) && $this->filters['date_to'])
+        ) {
             $command_event_filtered = Yii::app()->db->createCommand()
                 ->select('psd.id')
                 ->from('patient_statistic_datapoint psd')
@@ -2735,7 +2761,7 @@ class AnalyticsController extends BaseController
                 $command_event_filtered = $command_event_filtered->andWhere("UNIX_TIMESTAMP(e.event_date) <= :date_to");
                 $bindValues[':date_to'] = $date_to;
             }
-            $command = $command->andWhere('EXISTS (' . $command_event_filtered->getText(). ')');
+            $command = $command->andWhere('EXISTS (' . $command_event_filtered->getText() . ')');
         }
 
         $bindValues[':mdr'] = $mdr;

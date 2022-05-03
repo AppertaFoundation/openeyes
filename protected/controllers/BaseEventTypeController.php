@@ -908,7 +908,7 @@ class BaseEventTypeController extends BaseModuleController
                                 $pathway = $worklist_patient->pathway;
 
                                 //If pathway hasn't been instanced, it doesn't make sense to complete a started step
-                                if(isset($pathway)) {
+                                if (isset($pathway)) {
                                     $pathsteps = $pathway->started_steps;
                                     foreach ($pathsteps as $pathstep) {
                                         $pathstep_data = json_decode($pathstep->state_data);
@@ -1228,7 +1228,7 @@ class BaseEventTypeController extends BaseModuleController
                                 $pathway = $worklist_patient->pathway;
 
                                 //If pathway hasn't been instanced, it doesn't make sense to complete a started step
-                                if(isset($pathway)) {
+                                if (isset($pathway)) {
                                     $pathsteps = $pathway->started_steps;
                                     foreach ($pathsteps as $pathstep) {
                                         $pathstep_data = json_decode($pathstep->state_data);
@@ -2675,7 +2675,7 @@ class BaseEventTypeController extends BaseModuleController
                 'patient_id=:patient_id AND patient_identifier_type_id=:patient_identifier_type_id',
                 [
                     ':patient_id' => $this->patient->id,
-                    ':patient_identifier_type_id' => Yii::app()->params['oelauncher_patient_identifier_type']
+                    ':patient_identifier_type_id' => SettingMetadata::model()->getSetting('oelauncher_patient_identifier_type')
                 ]
             );
             $this->jsVars['OE_patient_id'] = $this->patient->id;
@@ -2684,7 +2684,7 @@ class BaseEventTypeController extends BaseModuleController
         if ($this->event) {
             $this->jsVars['OE_event_id'] = $this->event->id;
 
-            if (Yii::app()->params['event_print_method'] == 'pdf') {
+            if (SettingMetadata::model()->getSetting('event_print_method') == 'pdf') {
                 $this->jsVars['OE_print_url'] = Yii::app()->createUrl(
                     $this->getModule()->name . '/default/PDFprint/' . $this->event->id
                 );
@@ -2746,9 +2746,9 @@ class BaseEventTypeController extends BaseModuleController
             } else {
                 $this->event->requestDeletion($_POST['delete_reason']);
 
-                if (Yii::app()->params['admin_email']) {
+                if (SettingMetadata::model()->getSetting('admin_email')) {
                     mail(
-                        Yii::app()->params['admin_email'],
+                        SettingMetadata::model()->getSetting('admin_email'),
                         'Request to delete an event',
                         'A request to delete an event has been submitted.  Please log in to the admin system to review the request.',
                         'From: OpenEyes'

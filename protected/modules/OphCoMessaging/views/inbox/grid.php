@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -14,6 +15,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 if ($read_check) {
     $link_label = 'View Unread';
     $check_var = 0;
@@ -26,7 +28,7 @@ if ($read_check) {
 $institution = Institution::model()->getCurrent();
 $selected_site_id = Yii::app()->session['selected_site_id'];
 
-$primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(Yii::app()->params['display_primary_number_usage_code'], $institution->id , $selected_site_id);
+$primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $institution->id, $selected_site_id);
 $sortDirection = $dp->sort->getDirections();
 $cols = array(
     array(
@@ -36,7 +38,7 @@ $cols = array(
         'value' => function ($data) {
             $institution = Institution::model()->getCurrent();
             $selected_site_id = Yii::app()->session['selected_site_id'];
-            $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $data->event->episode->patient->id, $institution->id, $selected_site_id);
+            $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $data->event->episode->patient->id, $institution->id, $selected_site_id);
             $patient_identifier_widget = $this->widget('application.widgets.PatientIdentifiers', ['patient' => $data->event->episode->patient, 'show_all' => true, 'tooltip_size' => 'small'], true);
             return PatientIdentifierHelper::getIdentifierValue($primary_identifier) . $patient_identifier_widget;
         },
@@ -71,8 +73,8 @@ $cols = array(
     ),
     array(
         'id' => 'message_type',
-        'header' => $dp->getSort()->link('message_type', 'Type', array('class' => 'column-sort '. (array_key_exists('message_type', $sortDirection)  ?
-                'active '. ($sortDirection['message_type'] ? 'descend' : 'ascend') : 'ascend'))),
+        'header' => $dp->getSort()->link('message_type', 'Type', array('class' => 'column-sort ' . (array_key_exists('message_type', $sortDirection)  ?
+                'active ' . ($sortDirection['message_type'] ? 'descend' : 'ascend') : 'ascend'))),
         'htmlOptions' => array('class' => 'message-status nowrap'),
         'value' => function ($data) {
             if (isset($data->copyto_users)) {
@@ -94,7 +96,7 @@ $cols = array(
     array(
         'id' => 'event_date',
         'class' => 'CDataColumn',
-        'header' => $dp->getSort()->link('event_date', 'Date', array('class' => 'column-sort '. (array_key_exists('event_date', $sortDirection)  ? 'active '. ($sortDirection['event_date'] ? 'descend' : 'ascend') : 'ascend'))),
+        'header' => $dp->getSort()->link('event_date', 'Date', array('class' => 'column-sort ' . (array_key_exists('event_date', $sortDirection)  ? 'active ' . ($sortDirection['event_date'] ? 'descend' : 'ascend') : 'ascend'))),
         'value' => function ($data) {
             return '<span class="oe-date">' . Helper::convertDate2HTML(Helper::convertMySQL2NHS($data->created_date)) . '</span>';
         },
@@ -102,9 +104,11 @@ $cols = array(
     ),
     array(
         'id' => 'user',
-        'header' => $dp->getSort()->link('user',
+        'header' => $dp->getSort()->link(
+            'user',
             (strpos($message_type, 'sent') !== false) ? 'Recipient' : 'Sender',
-            array('class' => 'column-sort '. (array_key_exists('user', $sortDirection)  ? 'active '. ($sortDirection['user'] ? 'descend' : 'ascend') : 'ascend'))),
+            array('class' => 'column-sort ' . (array_key_exists('user', $sortDirection)  ? 'active ' . ($sortDirection['user'] ? 'descend' : 'ascend') : 'ascend'))
+        ),
         'value' => (strpos($message_type, 'sent') !== false) ?
             '\User::model()->findByPk($data->for_the_attention_of_user_id)->getFullNameAndTitle()' :
             '\User::model()->findByPk($data->created_user_id)->getFullNameAndTitle()',

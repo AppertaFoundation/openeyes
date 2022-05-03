@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -14,6 +15,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 if (!$reschedule) {
     echo CHtml::form(Yii::app()->createUrl('/OphTrOperationbooking/booking/schedule/' . $operation->event->id . '?firm_id=' . $_GET['firm_id'] . '&date=' . $_GET['date'] . '&day=' . $_GET['day'] . '&session_id=' . $_GET['session_id']), 'post', array('id' => 'bookingForm'));
 } else {
@@ -113,7 +115,7 @@ if (!$reschedule) {
                     </td>
                     <td>
                         <input type="text" id="Booking_admission_time" name="Booking[admission_time]" class="cols-full"
-                               autocomplete="<?php echo Yii::app()->params['html_autocomplete'] ?>"
+                               autocomplete="<?php echo SettingMetadata::model()->getSetting('html_autocomplete') ?>"
                                value="<?=\CHtml::encode($_POST['Booking']['admission_time']) ?>" size="6"/>
                         <span id="Booking_admission_time_error"></span>
                     </td>
@@ -163,7 +165,7 @@ if (!$reschedule) {
                                     //how nice would be use the an activeDropDownList with cancellation_reason_id
                                     //with the built in error adding feature ... but for some reason all over the
                                     //OpBooking only "cancellation_reason" is used, this is definitely needs to be refactored
-                                    'class' => $operation->getError('cancellation_reason_id') ? 'error '.$operation->id : '',
+                                    'class' => $operation->getError('cancellation_reason_id') ? 'error ' . $operation->id : '',
                                 ]
                             ); ?>
                         </td>
@@ -202,7 +204,7 @@ if (!$reschedule) {
     </div>
     <div class="data-group">
         <button type="submit" class="large green hint" id="confirm_slot" data-there-is-place-for-complex-booking="<?= $session->isTherePlaceForComplexBooking($operation) ? "true" : "false" ?>">Confirm slot</button>
-        <button type="button" class="large red hint" id="cancel_scheduling"><?php echo 'Cancel '.($reschedule ? 're-' : '').'scheduling';?></button>
+        <button type="button" class="large red hint" id="cancel_scheduling"><?php echo 'Cancel ' . ($reschedule ? 're-' : '') . 'scheduling';?></button>
     </div>
     <?php
     echo CHtml::endForm();

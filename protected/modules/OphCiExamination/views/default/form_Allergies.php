@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <div class="element-fields flex-layout full-width ">
   <div class="cols-12 column">
@@ -62,7 +64,7 @@
                 <?= CHtml::textField(
                     'other_allergy',
                     '',
-                    array('autocomplete' => Yii::app()->params['html_autocomplete'])
+                    array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'))
                 ); ?>
             </div>
           </div>
@@ -74,7 +76,7 @@
                 <?=\CHtml::textField(
                     'comments',
                     '',
-                    array('autocomplete' => Yii::app()->params['html_autocomplete'])
+                    array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'))
                 ) ?>
             </div>
           </div>

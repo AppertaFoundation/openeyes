@@ -14,11 +14,17 @@ $cols = array(
         'urlExpression' => 'Yii::app()->createURL("/patient/view/", array("id" => $data->event->episode->patient_id))',
         'labelExpression' => function ($data) {
             $institution = Institution::model()->getCurrent();
-            $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'],
-                $data->event->episode->patient->id, $institution->id, $this->selectedSiteId);
-            $patient_identifier_widget = $this->widget('application.widgets.PatientIdentifiers',
+            $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(
+                SettingMetadata::model()->getSetting('display_primary_number_usage_code'),
+                $data->event->episode->patient->id,
+                $institution->id,
+                $this->selectedSiteId
+            );
+            $patient_identifier_widget = $this->widget(
+                'application.widgets.PatientIdentifiers',
                 ['patient' => $data->event->episode->patient, 'show_all' => true, 'tooltip_size' => 'small'],
-                true);
+                true
+            );
             return $data->event->episode->patient->getDisplayName() .
                 "<br>  (" . PatientIdentifierHelper::getIdentifierValue($primary_identifier) . ")" .
                 $patient_identifier_widget;

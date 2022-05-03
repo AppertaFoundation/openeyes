@@ -79,7 +79,7 @@ usort(
                             $user,
                             $field,
                             [
-                                'autocomplete' => Yii::app()->params['html_autocomplete'],
+                                'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                                 'class' => 'cols-full'
                             ]
                         ); ?>
@@ -94,7 +94,7 @@ usort(
                         $contact,
                         "qualifications",
                         [
-                            'autocomplete' => Yii::app()->params['html_autocomplete'],
+                            'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                             'class' => 'cols-full'
                         ]
                     ); ?>
@@ -123,7 +123,7 @@ usort(
                     'registration_code',
                     [
                             'class' => 'cols-full',
-                            'autocomplete' => Yii::app()->params['html_autocomplete']
+                            'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete')
                         ]
                 ); ?>
                 <td>

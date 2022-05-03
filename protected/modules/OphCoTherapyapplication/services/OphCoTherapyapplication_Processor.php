@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -74,13 +75,15 @@ class OphCoTherapyapplication_Processor
             $missing_sides = array();
 
             foreach ($sides as $side) {
-                if (!$api->getInjectionManagementComplexInEpisodeForDisorder(
-                    $this->event->episode->patient,
-                    true,
-                    $side,
-                    $el_diag->{$side . '_diagnosis1_id'},
-                    $el_diag->{$side.'_diagnosis2_id'}
-                )) {
+                if (
+                    !$api->getInjectionManagementComplexInEpisodeForDisorder(
+                        $this->event->episode->patient,
+                        true,
+                        $side,
+                        $el_diag->{$side . '_diagnosis1_id'},
+                        $el_diag->{$side . '_diagnosis2_id'}
+                    )
+                ) {
                     $missing_sides[] = $side;
                 }
             }
@@ -106,7 +109,7 @@ class OphCoTherapyapplication_Processor
                     'params' => array(':snomed' => $this::SNOMED_INTRAVITREAL_INJECTION, ':snomed2' => $this::SNOMED_PDT),
                 )
             );
-            $proc_ids = array_map(function($proc){
+            $proc_ids = array_map(function ($proc) {
                 return $proc->id;
             }, $procedures);
             foreach ($sides as $side) {
@@ -328,8 +331,12 @@ class OphCoTherapyapplication_Processor
                 return Yii::app()->end();
             }
 
-            $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient('LOCAL',
-                $this->event->episode->patient->id, $this->event->institution_id, $this->event->site_id);
+            $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(
+                'LOCAL',
+                $this->event->episode->patient->id,
+                $this->event->institution_id,
+                $this->event->site_id
+            );
 
             $pfile = ProtectedFile::createForWriting('ECForm - ' . $side . ' - ' .
                 PatientIdentifierHelper::getIdentifierValue($primary_identifier) . '.pdf');
@@ -438,7 +445,7 @@ class OphCoTherapyapplication_Processor
 
         $service_info = $this->getServiceInfo();
 
-        $link_to_attachments = ($attach_size > Helper::convertToBytes(Yii::app()->params['OphCoTherapyapplication_email_size_limit']));
+        $link_to_attachments = ($attach_size > Helper::convertToBytes(SettingMetadata::model()->getSetting('OphCoTherapyapplication_email_size_limit')));
 
         $template_data['link_to_attachments'] = $link_to_attachments;
         $email_text = $this->generateEmailForSide($controller, $template_data, $eye_name);
@@ -446,10 +453,10 @@ class OphCoTherapyapplication_Processor
         $message = Yii::app()->mailer->newMessage();
         if ($template_data['compliant']) {
             $recipient_type = 'Compliant';
-            $message->setSubject(Yii::app()->params['OphCoTherapyapplication_compliant_email_subject']);
+            $message->setSubject(SettingMetadata::model()->getSetting('OphCoTherapyapplication_compliant_email_subject'));
         } else {
             $recipient_type = 'Non-compliant';
-            $message->setSubject(Yii::app()->params['OphCoTherapyapplication_noncompliant_email_subject']);
+            $message->setSubject(SettingMetadata::model()->getSetting('OphCoTherapyapplication_noncompliant_email_subject'));
         }
 
         $recipient_type = $template_data['compliant'] ? 'Compliant' : 'Non-compliant';
@@ -470,14 +477,14 @@ class OphCoTherapyapplication_Processor
             $email_recipients[$recipient->recipient_email] = $recipient->recipient_name;
         }
 
-        $message->setFrom(Yii::app()->params['OphCoTherapyapplication_sender_email']);
+        $message->setFrom(SettingMetadata::model()->getSetting('OphCoTherapyapplication_sender_email'));
         $message->setTo($email_recipients);
 
         if ($notify_user && $notify_user->email) {
             $cc = true;
-            if (Yii::app()->params['restrict_email_domains']) {
+            if (SettingMetadata::model()->getSetting('restrict_email_domains')) {
                 $domain = preg_replace('/^.*?@/', '', $notify_user->email);
-                if (!in_array($domain, Yii::app()->params['restrict_email_domains'])) {
+                if (!in_array($domain, SettingMetadata::model()->getSetting('restrict_email_domains'))) {
                     Yii::app()->user->setFlash('warning.warning', 'You will not receive a copy of the submission because your email address ' . $notify_user->email . ' is not on a secure domain');
                     $cc = false;
                 }

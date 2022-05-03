@@ -18,7 +18,7 @@
                     'placeholder' => $patient_identifier->patientIdentifierType->long_title,
                     'maxlength' => 40,
                     'size' => 40,
-                    'autocomplete' => Yii::app()->params['html_autocomplete'],
+                    'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                     'name' => 'PatientIdentifier[' . $index . '][value]',
                     'onblur' => "findDuplicatesByPatientIdentifier($index);",
                 ]);
@@ -35,13 +35,14 @@
             </td>
             <td>
                 <?= $form->dropDownList(
-                        $patient_identifier,
-                        'patient_identifier_status_id',
-                        CHtml::listData($patient_identifier->patientIdentifierType->patientIdentifierStatuses, 'id', 'description'), [
+                    $patient_identifier,
+                    'patient_identifier_status_id',
+                    CHtml::listData($patient_identifier->patientIdentifierType->patientIdentifierStatuses, 'id', 'description'),
+                    [
                             'empty' => '-- select --',
                             'name' => 'PatientIdentifier[' . $index . '][patient_identifier_status_id]',
                         ],
-                    );
+                );
                 ?>
             </td>
         </tr>

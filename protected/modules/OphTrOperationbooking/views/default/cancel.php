@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,19 +16,24 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-$this->beginContent('//patient/event_container', array('no_face'=>true));
+
+$this->beginContent('//patient/event_container', array('no_face' => true));
 $institution = Institution::model()->getCurrent();
 $selected_site_id = Yii::app()->session['selected_site_id'];
-$primary_identifier_usage_type = Yii::app()->params['display_primary_number_usage_code'];
-$primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'],
-    $patient->id, $institution->id, $selected_site_id);
+$primary_identifier_usage_type = SettingMetadata::model()->getSetting('display_primary_number_usage_code');
+$primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(
+    SettingMetadata::model()->getSetting('display_primary_number_usage_code'),
+    $patient->id,
+    $institution->id,
+    $selected_site_id
+);
 ?>
 <section class="element">
   <section class="element-fields full-width">
     <?php $this->title = 'Cancel operation' ?>
 
     <?php
-    echo CHtml::form(Yii::app()->createUrl('/'.$operation->event->eventType->class_name.'/default/cancel'), 'post', array('id' => 'cancelForm', 'class' => 'edit cancel'));
+    echo CHtml::form(Yii::app()->createUrl('/' . $operation->event->eventType->class_name . '/default/cancel'), 'post', array('id' => 'cancelForm', 'class' => 'edit cancel'));
     echo CHtml::hiddenField('operation_id', $operation->id); ?>
 
     <div class="alert-box alert with-icon" style="display: none;">
@@ -43,13 +49,14 @@ $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app(
             </div>
             <div class="cols-10">
                 <div class="field-value">
-                    <?php echo $patient->getDisplayName().' ('.PatientIdentifierHelper::getIdentifierValue($primary_identifier).')'; ?>
+                    <?php echo $patient->getDisplayName() . ' (' . PatientIdentifierHelper::getIdentifierValue($primary_identifier) . ')'; ?>
                     <?php $this->widget(
                         'application.widgets.PatientIdentifiers',
                         [
                             'patient' => $this->patient,
                             'show_all' => true
-                        ]); ?>
+                        ]
+                    ); ?>
                 </div>
             </div>
         </div>

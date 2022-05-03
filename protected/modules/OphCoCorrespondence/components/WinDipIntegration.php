@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -14,7 +15,6 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-
 
 namespace OEModule\OphCoCorrespondence\components;
 
@@ -162,9 +162,10 @@ class WinDipIntegration extends \CApplicationComponent implements ExternalIntegr
         $letter = \ElementLetter::model()->findByAttributes(array('event_id' => $event->id));
 
         $primary_identifier_value = \PatientIdentifierHelper::getIdentifierValue(\PatientIdentifierHelper::getIdentifierForPatient(
-            \Yii::app()->params['display_primary_number_usage_code'],
+            \SettingMetadata::model()->getSetting('display_primary_number_usage_code'),
             $event->episode->patient->id,
-            $event->institution_id, $event->site_id
+            $event->institution_id,
+            $event->site_id
         ));
 
         $indexes = array(
@@ -248,7 +249,7 @@ class WinDipIntegration extends \CApplicationComponent implements ExternalIntegr
         $user = \User::model()->findByPk(\Yii::app()->user->id);
 
         $primary_identifier_value = \PatientIdentifierHelper::getIdentifierValue(\PatientIdentifierHelper::getIdentifierForPatient(
-            \Yii::app()->params['display_primary_number_usage_code'],
+            \SettingMetadata::model()->getSetting('display_primary_number_usage_code'),
             $patient->id,
             \Institution::model()->getCurrent()->id,
             \Yii::app()->session['selected_site_id']

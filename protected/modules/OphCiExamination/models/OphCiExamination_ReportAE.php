@@ -52,8 +52,7 @@ class OphCiExamination_ReportAE extends BaseReport
             IFNULL(priority.description, \'N/A\') as priority,
             fs.name followup_status,
             d_status.name discharge_status,
-            d_destination.name discharge_destination'
-            )
+            d_destination.name discharge_destination')
             ->from('episode ep')
             ->join('firm f', 'f.id = ep.firm_id')
             ->join('service_subspecialty_assignment ssa', 'ssa.id = f.service_subspecialty_assignment_id')
@@ -87,7 +86,7 @@ class OphCiExamination_ReportAE extends BaseReport
     {
         $items = [];
         foreach ($this->items as $item) {
-            $item['hos_num'] = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $item['patient_id'], $this->user_institution_id, $this->user_selected_site_id));
+            $item['hos_num'] = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $item['patient_id'], $this->user_institution_id, $this->user_selected_site_id));
             $items[] = $item;
         }
 
@@ -105,7 +104,7 @@ class OphCiExamination_ReportAE extends BaseReport
             $event_date = date('j M Y', strtotime($item['event_date']));
             $dob = date('j M Y', strtotime($item['dob']));
             $outcome = $item['followup_status']
-                . ($item['discharge_status'] ? (' - ' . $item['discharge_status']): '')
+                . ($item['discharge_status'] ? (' - ' . $item['discharge_status']) : '')
                 . ($item['discharge_destination'] ? (' - ' . $item['discharge_destination']) : '');
             $output .= "\"$event_date\",\"{$item['hos_num']}\",\"$dob\",\"{$item['name']}\",\"{$item['clinician']}\",\"{$item['role']}\",\"{$item['priority']}\",\"$outcome\"\n";
         }

@@ -58,7 +58,7 @@
                         'yearRange'     => '-120:+0'
                     ),
                     'htmlOptions' => array(
-                        'autocomplete' => Yii::app()->params['html_autocomplete'],
+                        'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                         'placeholder' => 'Date of Birth',
                     )
                 ));

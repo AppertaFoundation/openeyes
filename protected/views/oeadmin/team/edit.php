@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2018
  * This file is part of OpenEyes.
@@ -12,6 +13,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <?php
     $assigned_users = $team->users ? : $team->temp_users ? : array();
@@ -54,7 +56,7 @@
                                 $team,
                                 'attributes[name]',
                                 [
-                                    'autocomplete' => Yii::app()->params['html_autocomplete'],
+                                    'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                                     'class' => 'cols-full'
                                 ]
                             );?>
@@ -68,7 +70,7 @@
                                 $team->contact ? : new Contact(),
                                 'attributes[email]',
                                 [
-                                    'autocomplete' => Yii::app()->params['html_autocomplete'],
+                                    'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                                     'class' => 'cols-full'
                                 ]
                             );?>

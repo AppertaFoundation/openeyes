@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2013
  * This file is part of OpenEyes.
@@ -56,8 +57,8 @@ class OphCoTherapyapplication_Email_Recipient extends BaseActiveRecordVersioned
 
     public function isAllowed()
     {
-        if (Yii::app()->params['restrict_email_domains']) {
-            return in_array(strtolower(preg_replace('/^.*?@/', '', $this->recipient_email)), Yii::app()->params['restrict_email_domains']);
+        if (SettingMetadata::model()->getSetting('restrict_email_domains')) {
+            return in_array(strtolower(preg_replace('/^.*?@/', '', $this->recipient_email)), SettingMetadata::model()->getSetting('restrict_email_domains'));
         }
 
         return true;

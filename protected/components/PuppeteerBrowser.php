@@ -76,11 +76,11 @@ class PuppeteerBrowser extends CApplicationComponent
 
         foreach ($this->patients as $patient) {
             $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(
-                Yii::app()->params['display_primary_number_usage_code'],
+                SettingMetadata::model()->getSetting('display_primary_number_usage_code'),
                 $patient->id, $this->institution_id, $this->site_id
             );
             $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(
-                Yii::app()->params['display_secondary_number_usage_code'],
+                SettingMetadata::model()->getSetting('display_secondary_number_usage_code'),
                 $patient->id, $this->institution_id, $this->site_id
             );
             $patient_primary_identifiers[] = PatientIdentifierHelper::getIdentifierValue($primary_identifier);
@@ -153,10 +153,10 @@ class PuppeteerBrowser extends CApplicationComponent
                 '<span class="totalPages"></span>',
                 CJavaScript::encode($this->custom_tags),
                 PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(
-                    Yii::app()->params['display_secondary_number_usage_code'], $this->institution_id, $this->site_id
+                    SettingMetadata::model()->getSetting('display_secondary_number_usage_code'), $this->institution_id, $this->site_id
                 ),
                 PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(
-                    Yii::app()->params['display_primary_number_usage_code'], $this->institution_id, $this->site_id
+                    SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $this->institution_id, $this->site_id
                 ),
                 $this->_top_margin,
                 $this->_left_margin,

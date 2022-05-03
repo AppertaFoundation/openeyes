@@ -20,9 +20,13 @@
 <?php $this->beginContent('//patient/event_container', array('no_face' => true));
 $institution = Institution::model()->getCurrent();
 $selected_site_id = Yii::app()->session['selected_site_id'];
-$primary_identifier_usage_type = Yii::app()->params['display_primary_number_usage_code'];
-$primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'],
-    $this->patient->id, $institution->id, $selected_site_id);
+$primary_identifier_usage_type = SettingMetadata::model()->getSetting('display_primary_number_usage_code');
+$primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(
+    SettingMetadata::model()->getSetting('display_primary_number_usage_code'),
+    $this->patient->id,
+    $institution->id,
+    $selected_site_id
+);
 ?>
     <div>
         <?php
@@ -70,7 +74,8 @@ $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app(
                         [
                             'patient' => $this->patient,
                             'show_all' => true
-                        ]); ?>
+                        ]
+                    ); ?>
                 </div>
                 <table class="cols-full last-left">
                     <tbody>

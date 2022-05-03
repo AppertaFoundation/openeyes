@@ -156,7 +156,7 @@ class Firm extends BaseActiveRecordVersioned
      */
     public static function contextLabel()
     {
-        $label = Yii::app()->params['context_firm_label'] ? : self::getLabelSettings('context_firm_label');
+        $label = SettingMetadata::model()->getSetting('context_firm_label') ? : self::getLabelSettings('context_firm_label');
         return ucwords(strtolower($label));
     }
 
@@ -165,7 +165,7 @@ class Firm extends BaseActiveRecordVersioned
      */
     public static function serviceLabel()
     {
-        $label = Yii::app()->params['service_firm_label'] ? : self::getLabelSettings('service_firm_label');
+        $label = SettingMetadata::model()->getSetting('service_firm_label') ? : self::getLabelSettings('service_firm_label');
         return ucwords(strtolower($label));
     }
 

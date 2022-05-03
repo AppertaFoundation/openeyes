@@ -2,9 +2,10 @@
 $selected_site_id = Yii::app()->session['selected_site_id'];
 
 $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(
-        Yii::app()->params['display_primary_number_usage_code'],
-        $institution->id ,
-        $selected_site_id);
+    SettingMetadata::model()->getSetting('display_primary_number_usage_code'),
+    $institution->id,
+    $selected_site_id
+);
 ?>
 <table class="standard" id="patientMergeRequestList">
     <thead>
@@ -12,10 +13,10 @@ $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPrompt
             <th class="checkbox"><input type="checkbox" name="selectall" id="selectall" /></th>
             <th class="secondary">
                 <!--                Parameterised secondary and primary hospital number - CERA-519-->
-                <?php echo $data_provider->getSort()->link('secondary_local_identifier_value', 'Secondary<br><span class="hos_num">'. ($primary_identifier_prompt).'</span>', array('class' => 'sort-link')) ?>            </th>
+                <?php echo $data_provider->getSort()->link('secondary_local_identifier_value', 'Secondary<br><span class="hos_num">' . ($primary_identifier_prompt) . '</span>', array('class' => 'sort-link')) ?>            </th>
             <th></th>
             <th class="primary">
-                <?php echo $data_provider->getSort()->link('primary_local_identifier_value', 'Primary<br><span class="hos_num">'. ($primary_identifier_prompt).'</span>', array('class' => 'sort-link')) ?>            </th>
+                <?php echo $data_provider->getSort()->link('primary_local_identifier_value', 'Primary<br><span class="hos_num">' . ($primary_identifier_prompt) . '</span>', array('class' => 'sort-link')) ?>            </th>
             <th class="status"><?php echo $data_provider->getSort()->link('status', 'Status', array('class' => 'sort-link')); ?></th>
             <th class="created"><?php echo $data_provider->getSort()->link('created_date', 'Created', array('class' => 'sort-link')); ?></th>
             <?php if ($filters['show_merged']) :?>
@@ -54,7 +55,7 @@ $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPrompt
         <?php if ($data_provider->itemCount) : ?>
             <?php foreach ($data_provider->getData() as $i => $request) : ?>
                 <?php if ($request->status == PatientMergeRequest::STATUS_NOT_PROCESSED) : ?>
-                    <tr class="clickable" data-id="<?php echo $request->id?>" data-uri="patientMergeRequest/<?php echo 'view/'.$request->id?>">
+                    <tr class="clickable" data-id="<?php echo $request->id?>" data-uri="patientMergeRequest/<?php echo 'view/' . $request->id?>">
                 <?php else : ?>
                     <tr class="clickable" data-id="<?php echo $request->id?>" data-uri="patientMergeRequest/log/<?php echo $request->id?>">
                 <?php endif; ?>

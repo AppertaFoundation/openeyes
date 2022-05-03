@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -14,6 +15,7 @@
  * @copyright Copyright (c) 2020, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <div>
@@ -40,7 +42,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', [
                 'name',
                 [
                     'class' => 'cols-full',
-                    'autocomplete' => Yii::app()->params['html_autocomplete'],
+                    'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                     'disabled' => !Yii::app()->user->checkAccess('admin')
                 ]
             ) ?>
@@ -54,7 +56,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', [
                 'short_name',
                 [
                     'class' => 'cols-full',
-                    'autocomplete' => Yii::app()->params['html_autocomplete'],
+                    'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                     'disabled' => !Yii::app()->user->checkAccess('admin')
                 ]
             ) ?>
@@ -66,12 +68,13 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', [
             <?php if ($model->id) {
                 echo $form->multiSelectList(
                     $model,
-                    \CHtml::modelName($model).'[institutions]',
+                    \CHtml::modelName($model) . '[institutions]',
                     'institutions',
                     'id',
                     Institution::model()->getList(!\Yii::app()->user->checkAccess('admin')),
                     null,
-                    ['class' => 'cols-full', 'empty' => '-- Add --', 'nowrapper' => true]);
+                    ['class' => 'cols-full', 'empty' => '-- Add --', 'nowrapper' => true]
+                );
             } else {
                 echo Institution::model()->getCurrent()->name;
             } ?>

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -14,6 +15,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <?php Yii::app()->clientScript->registerPackage('tagsinput'); ?>
@@ -36,7 +38,7 @@
         <?php echo $form->checkbox($mapping, 'willdisplay', [], ['field' => 2]); ?>
     </div>
     <div class="row">
-        <?php echo $form->textField($mapping, 'key', array('autocomplete' => Yii::app()->params['html_autocomplete']), null, array('field' => 2))?>
+        <?php echo $form->textField($mapping, 'key', array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete')), null, array('field' => 2))?>
     </div>
     <div class="row">
         <div class="cols-full column large-push-2">
@@ -47,13 +49,13 @@
         <?php echo $form->textField(
             $mapping,
             'valuelist',
-            array('autocomplete' => Yii::app()->params['html_autocomplete']),
+            array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete')),
             null,
             array('field' => 2)
         )?>
     </div>
 
-    <?php echo $form->formActions(array('cancel-uri' => '/Admin/worklist/definitionMappings/'.$mapping->worklist_definition_id))?>
+    <?php echo $form->formActions(array('cancel-uri' => '/Admin/worklist/definitionMappings/' . $mapping->worklist_definition_id))?>
     <?php $this->endWidget()?>
 </div>
 
