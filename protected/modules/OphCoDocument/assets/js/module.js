@@ -427,33 +427,35 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
                 containerElem = document.querySelector(`.js-document-upload-wrapper td[data-side=${side}] .ophco-image-container`);
                 imageElem = containerElem.querySelector(containerElem.getAttribute('data-image-el'));
 
-                document.querySelectorAll(".js-save-annotation-action").forEach(button => {
-                    if (button.style.display === '') {
-                        button.click();
-                    }
-                });
+                const imageAnnotator = controller.imageAnnotators[imageElem.dataset.imageAnnotatorId];
+                canvasData = await imageAnnotator.getCanvasDataUrl();
+            }
 
-                let canvasData = OpenEyes.UI.ImageAnnotator.getCanvasDataUrl();
-
-                if ((typeof canvasData !== "boolean")) {
-                    const fileType = containerElem.getAttribute('data-file-type');
-                    imageElem.src = canvasData;
-                    if (fileType === 'image') {
-                        containerElem.parentElement.querySelector('.js-protected-file-content').value = canvasData;
-                    }
+            document.querySelectorAll(".js-save-annotation-action").forEach(button => {
+                if (button.style.display === '') {
+                    button.click();
                 }
-
-                // before submitting it, check if the pdf was uploaded or not
-                document.querySelectorAll('.ophco-image-container').forEach(function (element) {
-                    if ((element.getAttribute('data-file-type') === 'pdf') && (element.parentElement.querySelector('.js-canvas-modified').value === '1')) {
-                        // then generate a base64 pdf
-                        console.log('generating pdf' + element);
-                        element.parentElement.querySelector('.js-protected-file-content').value = generatePdfOutput(element);
-                    }
-                });
-
-                $('#document-create').submit();
             });
+
+            if ((typeof canvasData !== "boolean")) {
+                const fileType = containerElem.getAttribute('data-file-type');
+                imageElem.src = canvasData;
+                if (fileType === 'image') {
+                    containerElem.parentElement.querySelector('.js-protected-file-content').value = canvasData;
+                }
+            }
+
+            // before submitting it, check if the pdf was uploaded or not
+            document.querySelectorAll('.ophco-image-container').forEach(function (element) {
+                if ((element.getAttribute('data-file-type') === 'pdf') && (element.parentElement.querySelector('.js-canvas-modified').value === '1')) {
+                    // then generate a base64 pdf
+                    console.log('generating pdf' + element);
+                    element.parentElement.querySelector('.js-protected-file-content').value = generatePdfOutput(element);
+                }
+            });
+
+            $('#document-create').submit();
+        });
     };
 
     function generatePdfOutput(element, shouldSavePdf = false) {
