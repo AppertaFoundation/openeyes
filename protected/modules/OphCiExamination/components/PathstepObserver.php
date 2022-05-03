@@ -63,29 +63,29 @@ class PathstepObserver
                 $workflow_step_condition[] = [':step_id' => $step->id];
                 $event_status = 'update';       // Take the user to update associated event
             } else {
-                $workflow_step_condition = '';
+                $workflow_step_condition = '1=1';
                 $event_status = 'step';         // It is part of a workflow step, so proceed to next step of latest available event
             }
 
-            // Determine if an examination event already exists for the patient for the episode connected to the service
-            // firm. If it doesn't exist, set the URL to the event creation URL so the episode is also created.
+            // Determine if an examination event already exists for the patient visit.
+            // If it doesn't exist, set the URL to the event creation URL so the episode is also created.
             // Otherwise, set the URL to the step create URL for the existing event.
-            $latest_exam_event_for_episode = Yii::app()->db->createCommand()
+            $latest_exam_event_for_visit = Yii::app()->db->createCommand()
                 ->select('e.id')
                 ->from('event e')
                 ->join('event_type et', 'et.id = e.event_type_id')
                 ->join('episode ep', 'ep.id = e.episode_id')
-                ->where('ep.patient_id = :patient_id AND ep.firm_id = :service_id AND et.class_name = \'OphCiExamination\'')
+                ->where('e.worklist_patient_id = :worklist_patient_id AND ep.firm_id = :service_id AND et.class_name = \'OphCiExamination\'')
                 ->andWhere($workflow_step_condition)
                 ->andWhere('e.deleted = 0')
                 ->limit(1)
                 ->order('e.event_date DESC')
                 ->bindValues(
-                    [':patient_id' => $step->pathway->worklist_patient->patient_id, ':service_id' => $service_id]
+                    [':worklist_patient_id' => $step->pathway->worklist_patient_id, ':service_id' => $service_id]
                 )
                 ->queryScalar();
 
-            if ($latest_exam_event_for_episode) {
+            if ($latest_exam_event_for_visit) {
                 $params = [
                     'patient_id' => $step->pathway->worklist_patient->patient_id,
                     'step_id' => $workflow_step_id,
@@ -94,7 +94,7 @@ class PathstepObserver
                 ];
                 $step->setState(
                     'event_create_url',
-                    '/OphCiExamination/default/' . $event_status . '/' . $latest_exam_event_for_episode. '?' . http_build_query($params)
+                    '/OphCiExamination/default/' . $event_status . '/' . $latest_exam_event_for_visit . '?' . http_build_query($params)
                 );
             } else {
                 $params = [
