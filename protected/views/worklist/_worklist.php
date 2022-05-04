@@ -178,10 +178,10 @@ $quick_filter_name = $filter->getQuickFilterTypeName();
                         <?php if ($wl_patient->pathway) {
                             echo $wl_patient->pathway->getTotalDurationHTML(true);
                         } elseif ($wl_patient->when) {
-                            if ($this->worklist_patient->when instanceof DateTime) {
-                                $start_time = $this->worklist_patient->when;
+                            if ($wl_patient->when instanceof DateTime) {
+                                $start_time = $wl_patient->when;
                             } else {
-                                $start_time = DateTime::createFromFormat('Y-m-d H:i:s', $this->worklist_patient->when);
+                                $start_time = DateTime::createFromFormat('Y-m-d H:i:s', $wl_patient->when);
                             }
                             $end_time = new DateTime();
                             $wait_length = $start_time->diff($end_time);
@@ -199,15 +199,8 @@ $quick_filter_name = $filter->getQuickFilterTypeName();
                                                 <circle class="c1" cx="18" cy="6" r="6"></circle>
                                                 <circle class="c2" cx="30" cy="6" r="6"></circle>
                                                 <circle class="c3" cx="42" cy="6" r="6"></circle>
-                                            </svg>';
-                            // Show duration of the pathway
-                            $duration_graphic .= '<div class="mins">';
-                            if ((int)$this->status === self::STATUS_DONE) {
-                                $duration_graphic .= $wait_length->format('%h:%I');
-                            } else {
-                                $duration_graphic .= '<small>' . $wait_length->format('%h:%I') . '</small>';
-                            }
-                            echo $duration_graphic .= '</div>';
+                                            </svg><div class="mins"><small>' . $wait_length->format('%h:%I') . '</small></div>';
+                            echo $duration_graphic;
                         } ?>
                     </div>
                 </td>
