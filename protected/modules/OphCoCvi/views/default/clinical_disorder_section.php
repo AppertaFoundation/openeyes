@@ -18,10 +18,6 @@
     <h2>Clinical Disorder Section</h2>
 
     <form action="#" method="get">
-        <?=\CHtml::dropDownList('search[version]', $search['version'], [0, 1], [
-                'empty' => '- Version -'
-        ])?>
-
         <?=\CHtml::dropDownList('search[patient_type]', $search['patient_type'], $patient_types, [
                 'empty' => '- Select -'
         ])?>
@@ -39,17 +35,15 @@
             <tr>
                 <th>Name</th>
                 <th>Active</th>
-                <th>Event type version</th>
             </tr>
             </thead>
             <tbody>
             <?php
             foreach ($disorder_sections as $i => $section) { ?>
                 <tr class="clickable" data-id="<?=$section->id ?>"
-                    data-uri="OphCoCvi/admin/editClinicalDisorderSection/<?=$section->id?>?event_type_version=<?=$search['version']?>&patient_type=<?=$search['patient_type']?>">
+                    data-uri="OphCoCvi/admin/editClinicalDisorderSection/<?=$section->id?>?&patient_type=<?=$search['patient_type']?>">
                     <td><?=\CHtml::encode($section->name) ?></td>
                     <td><?= \OEHtml::icon($section->active ? 'tick' : 'remove', ['class' => 'small']) ?></td>
-                    <td><?=$section->event_type_version ?></td>
                 </tr>
             <?php } ?>
             </tbody>

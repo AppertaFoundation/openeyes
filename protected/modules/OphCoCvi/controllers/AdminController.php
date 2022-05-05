@@ -32,26 +32,6 @@ class AdminController extends \ModuleAdminController
     public $group = "CVI";
 
     /**
-     * Event type version search filter field
-     */
-    private function addVersionFilter($version_model, $version_field, $search)
-    {
-        $versions = $version_model::model()->findAll(['group' => $version_field, 'order' => $version_field.' DESC']);
-        if ($versions) {
-            foreach ($versions as $version) {
-                $options[$version->{$version_field}] = 'Version '.$version->{$version_field};
-            }
-        }
-
-        $search->addSearchItem($version_field, array(
-            'type' => 'dropdown',
-            'options' => $options,
-        ));
-
-        return $search;
-    }
-
-    /**
      * Admin for the disorder choices presented in the clinical element.
      */
     public function actionClinicalDisorders()
@@ -63,11 +43,6 @@ class AdminController extends \ModuleAdminController
         ]);
 
         $criteria = new \CDbCriteria();
-        if (isset($search['version'])) {
-            $criteria->addCondition('event_type_version = :version');
-            $criteria->params[':version'] = $search['version'];
-        }
-
         if (isset($search['patient_type'])) {
             $criteria->addCondition('patient_type =:patient_type');
             $criteria->params[':patient_type'] = $search['patient_type'];
@@ -141,7 +116,7 @@ class AdminController extends \ModuleAdminController
                 }
 
                 Audit::add('admin-OphCoCvi_ClinicalInfo_Disorder', 'edit', $disorder->id);
-                $this->redirect('/OphCoCvi/admin/clinicalDisorders/' . ceil($disorder->id / $this->items_per_page) . '?search[event_type_version]='.$disorder->event_type_version.'&search[patient_type]='.$disorder->patient_type);
+                $this->redirect('/OphCoCvi/admin/clinicalDisorders/' . ceil($disorder->id / $this->items_per_page) . '?search[patient_type]='.$disorder->patient_type);
             }
         } else {
             Audit::add('admin-OphCoCvi_ClinicalInfo_Disorder', 'view', $id);
@@ -210,22 +185,13 @@ class AdminController extends \ModuleAdminController
         ));
     }
 
-    public function actionAddClinicalDisorderSection($event_type_version = null, $patient_type = null)
+    public function actionAddClinicalDisorderSection($patient_type = null)
     {
         $section = new OphCoCvi_ClinicalInfo_Disorder_Section();
 
         if (!empty($_POST)) {
             $section->attributes = $_POST['OEModule_OphCoCvi_models_OphCoCvi_ClinicalInfo_Disorder_Section'];
-            if ($event_type_version) {
-                $section->event_type_version = $event_type_version;
-            } else {
-                $maxVersion = OphCoCvi_ClinicalInfo_Disorder_Section::model()->find(
-                    array(
-                        "condition" => 'event_type_version = (SELECT MAX(event_type_version) FROM ophcocvi_clinicinfo_disorder_section)',
-                    ));
-                $section->event_type_version = $maxVersion->event_type_version;
-            }
-            if ($patient_type != '') {
+            if ($patient_type) {
                 $section->patient_type = $patient_type;
             }
             $maxDisplayOrder = OphCoCvi_ClinicalInfo_Disorder_Section::model()->find(
@@ -242,7 +208,7 @@ class AdminController extends \ModuleAdminController
                 }
                 Audit::add('admin-OphCoCvi_ClinicalInfo_Disorder_Section', 'add', $section->id);
 
-                if (!is_null($event_type_version) && $patient_type != '') {
+                if ($patient_type) {
                     $this->redirect('/OphCoCvi/admin/clinicalDisorderSection/' . ceil($section->id / $this->items_per_page). '?search[event_type_version]='.$event_type_version.'&search[patient_type]='.$patient_type);
                 } else {
                     $this->redirect('/OphCoCvi/admin/clinicalDisorderSection/' . ceil($section->id / $this->items_per_page));
@@ -274,7 +240,7 @@ class AdminController extends \ModuleAdminController
                 }
 
                 Audit::add('admin-OphCoCvi_ClinicalInfo_Disorder_Section', 'edit', $section->id);
-                $this->redirect('/OphCoCvi/admin/clinicalDisorderSection/' . ceil($section->id / $this->items_per_page) . '?search[event_type_version]='.$section->event_type_version.'&search[patient_type]='.$section->patient_type);
+                $this->redirect('/OphCoCvi/admin/clinicalDisorderSection/' . ceil($section->id / $this->items_per_page) . '?search[patient_type]='.$section->patient_type);
             }
         } else {
             Audit::add('admin-OphCoCvi_ClinicalInfo_Disorder_Section', 'view', $id);
