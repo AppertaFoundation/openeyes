@@ -153,7 +153,7 @@ class m200311_142526_modify_patient_identifier_table extends OEMigration
                 $long_title = $this->getSettingValue("hos_num_label");
             } else {
                 $institution_id = $this->getDbConnection()->createCommand("SELECT id FROM institution WHERE remote_id = 'NHS'")->queryScalar();
-                $validate_regex = isset(SettingMetadata::model()->getSetting('nhs_num_length')) ? '/^([0-9]{' . SettingMetadata::model()->getSetting('nhs_num_length') . '})$/i' : '/^([0-9]{3}[- ]?[0-9]{3}[- ]?[0-9]{4})$/i';
+                $validate_regex = SettingMetadata::model()->getSetting('nhs_num_length') !== null ? '/^([0-9]{' . SettingMetadata::model()->getSetting('nhs_num_length') . '})$/i' : '/^([0-9]{3}[- ]?[0-9]{3}[- ]?[0-9]{4})$/i';
                 $pad = null;
                 $short_title = $global_short_name;
                 $long_title = $global_name;
