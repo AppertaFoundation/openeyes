@@ -70,7 +70,7 @@ class SettingMetadata extends BaseActiveRecordVersioned
         static::$sessionSiteValidated = null;
         static::$sessionFirmValidated = null;
         static::$metadataCacheStore = [];
-        Yii::app()->cache->flush();
+        Yii::app()->settingCache->flush();
     }
 
     /**
@@ -246,7 +246,7 @@ class SettingMetadata extends BaseActiveRecordVersioned
          $institution_id = $is_setting_page && $is_admin ? ($institution_id ?? null) : ($site->institution_id ?? null);
 
         // Gets the last combined updated time of the settings_tables and uses as a cache dependency. The cache will be invalidated if the tables have been updated
-        $debounce_val = Yii::app()->cache->get('SettingMetaDebounce');
+        $debounce_val = Yii::app()->settingCache->get('SettingMetaDebounce');
         if ($debounce_val === false) {
             $dependency_sql = " SELECT sha1(GROUP_CONCAT(UPDATE_TIME)) 
                                 FROM   information_schema.tables
@@ -265,17 +265,17 @@ class SettingMetadata extends BaseActiveRecordVersioned
 
             $debounce_val = Yii::app()->db->createCommand($dependency_sql)->queryScalar();
             // add a debounce of a few seconds before poling for the setting cache dependency, to avoid a DB query for every run.
-            Yii::app()->cache->set('SettingMetaDebounce', $debounce_val, 5);
+            Yii::app()->settingCache->set('SettingMetaDebounce', $debounce_val, 5);
         };
 
         // set the last update timestamp = to the latest debounce time
-        if (Yii::app()->cache->get('SettingMetaLastUpdate') != $debounce_val) {
-            Yii::app()->cache->set('SettingMetaLastUpdate', $debounce_val);
+        if (Yii::app()->settingCache->get('SettingMetaLastUpdate') != $debounce_val) {
+            Yii::app()->settingCache->set('SettingMetaLastUpdate', $debounce_val);
         }
 
         // Define the key for the cache item, then atempt to retrieve that key from the cache
-        $id = "SettingMeta_" . $key . "_e:" . $element_type_id . "_u:" . $user_id . "_f:" . $firm_id . "_ins:" . $institution_id . "_sub:" . $subspecialty_id . "_sp:" . $specialty_id . "_si:" . $site_id . "_ad:" . $is_admin . "_iset:" . $is_setting_page . "_class:" . md5(serialize($allowed_classes)) . "_obj:" . $return_object;
-        $value = Yii::app()->cache->get($id);
+        $id = $key . "_e:" . $element_type_id . "_u:" . $user_id . "_f:" . $firm_id . "_ins:" . $institution_id . "_sub:" . $subspecialty_id . "_sp:" . $specialty_id . "_si:" . $site_id . "_ad:" . $is_admin . "_iset:" . $is_setting_page . "_class:" . md5(serialize($allowed_classes)) . "_obj:" . $return_object;
+        $value = Yii::app()->settingCache->get($id);
         if ($value === false) {
             if (!$key) {
                 $key = $this->key;
@@ -345,8 +345,8 @@ class SettingMetadata extends BaseActiveRecordVersioned
             }
 
             // Set a dependency on the SettingMetaLastUpdate not changing (i.e, the cache is invalidated if any of the setting_* tables receives an update)
-            $dependency = new CExpressionDependency("Yii::app()->cache->get('SettingMetaLastUpdate') == '" . Yii::app()->cache->get('SettingMetaLastUpdate') . "'");
-            Yii::app()->cache->set($id, $value, 1000, $dependency);
+            $dependency = new CExpressionDependency("Yii::app()->settingCache->get('SettingMetaLastUpdate') == '" . Yii::app()->settingCache->get('SettingMetaLastUpdate') . "'");
+            Yii::app()->settingCache->set($id, $value, 1000, $dependency);
         }
         return $value;
     }

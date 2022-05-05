@@ -131,6 +131,12 @@ $config = array(
             'class' => 'system.caching.CFileCache',
             'directoryLevel' => 1,
         ),
+        'settingCache' => array(
+            'class' => 'system.caching.CFileCache',
+            'directoryLevel' => 1,
+            'keyPrefix' => 'SettingMetadata',
+            'cachePath' => 'protected/runtime/cache/settingmeta'
+        ),
         'cacheBuster' => array(
             'class' => 'CacheBuster',
             'time' => '202205051006',
