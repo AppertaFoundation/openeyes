@@ -26,7 +26,7 @@ $site_id = Yii::app()->session['selected_site_id'];
                   PatientIdentifierHelper::getIdentifierValue($primary_identifier),
                   Yii::app()->controller->createUrl('patient/view', array('id' => $patient->id)),
                   array('target' => '_blank')
-              );
+                  );
                   $this->widget(
                       'application.widgets.PatientIdentifiers',
                       [

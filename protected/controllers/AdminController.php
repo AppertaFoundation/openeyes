@@ -688,9 +688,10 @@ class AdminController extends BaseAdminController
     public function actionEditUser($id = null)
     {
         $user = User::model()->findByPk($id);
-        $contact = $user->contact;
-        if (!$contact) {
+        if (!isset($user->contact)) {
             $contact = new Contact();
+        } else {
+            $contact = $user->contact;
         }
         $invalid_entries = [];
         $invalid_existing = [];

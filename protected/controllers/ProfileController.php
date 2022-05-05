@@ -62,9 +62,10 @@ class ProfileController extends BaseController
             $user_out_of_office->user_id = $user->id;
         }
 
-        $contact = $user->contact;
-        if (!$contact) {
+        if (!isset($user->contact)) {
             $contact = new Contact();
+        } else {
+            $contact = $user->contact;
         }
 
         if (!empty($_POST)) {
