@@ -222,10 +222,9 @@ if (!isset($values)) {
                     <?= CHtml::textField(
                         $field_prefix . '[temperature]',
                         $values['temperature'],
-                        ['class' => "cols-full", 'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete')
-                    ),
+                        ['class' => "cols-full", 'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                         'tabindex' => '7']
-                        ); ?>
+                    ); ?>
                 </td>
             </tr>
             <tr>
