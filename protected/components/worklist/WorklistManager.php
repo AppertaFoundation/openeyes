@@ -937,10 +937,11 @@ class WorklistManager extends CComponent
                 && strtolower($start_status->attribute_value) === strtolower('Attended')) {
                 // Start the pathway immediately.
                 if (!$wp->pathway) {
-                    $wp->pathway->type->instancePathway($wp);
+                    $worklist->worklist_definition->pathway_type->instancePathway($wp);
                     $wp->refresh();
                 }
                 $wp->pathway->startPathway();
+                $wp->refresh();
             }
 
             $target = $worklist->worklist_definition_id ? self::$AUDIT_TARGET_AUTO : self::$AUDIT_TARGET_MANUAL;
