@@ -52,7 +52,7 @@ if ($pathway_type->isNewRecord) {
                             'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                             'class' => 'cols-full',
                             'field' => 2,
-                            'value' => $source_pathway_type->name ?? '',
+                            'value' => $source_pathway_type->name ?? $pathway_type->name ?? '',
                         ]
                     ) ?>
                 </td>
