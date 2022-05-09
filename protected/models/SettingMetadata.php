@@ -281,7 +281,7 @@ class SettingMetadata extends BaseActiveRecordVersioned
                 $key = $this->key;
             }
 
-        // If value is set in the config params (file config), then it always overrides anything set in the database
+            // If value is set in the config params (file config), then it always overrides anything set in the database
             if (!empty(Yii::app()->params[$key] && !$return_object && empty($element_type))) {
                 return Yii::app()->params[$key];
             }
@@ -292,8 +292,9 @@ class SettingMetadata extends BaseActiveRecordVersioned
                 return false;
             }
 
-        // only on the admin system settings page and with admin role, the user can view other institution settings
+            // only on the admin system settings page and with admin role, the user can view other institution settings
             $institution_id = $is_setting_page && $is_admin ? ($institution_id ?? null) : ($site->institution_id ?? null);
+            // Loop through all he permutations until a match is found.
             foreach (static::$CONTEXT_CLASSES as $class => $field) {
                 if ($allowed_classes && !in_array($class, $allowed_classes, true)) {
                     continue;
@@ -338,10 +339,13 @@ class SettingMetadata extends BaseActiveRecordVersioned
                 }
             }
 
-            if ($return_object) {
-                $value =  false;
-            } elseif ($value === false) {
-                $value =  $metadata->default_value;
+            // Set to the default value if no result has been found above
+            if ($value === false) {
+                if ($return_object) {
+                    $value = false;
+                } else {
+                    $value =  $metadata->default_value;
+                }
             }
 
             // Set a dependency on the SettingMetaLastUpdate not changing (i.e, the cache is invalidated if any of the setting_* tables receives an update)
