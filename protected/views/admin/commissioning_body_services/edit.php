@@ -134,7 +134,7 @@
                     $cbs->contact,
                     'primary_phone',
                     [
-                        'class' => 'cols - full',
+                        'class' => 'cols-full',
                         'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                         'field' => 2
                     ]
@@ -150,7 +150,7 @@
                     $cbs->contact,
                     'email',
                     [
-                        'class' => 'cols - full',
+                        'class' => 'cols-full',
                         'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete')
                     ]
                 ); ?>
@@ -165,7 +165,7 @@
                     $cbs->contact,
                     'first_name',
                     [
-                        'class' => 'cols - full',
+                        'class' => 'cols-full',
                         'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete')
                     ]
                 ); ?>
@@ -197,7 +197,7 @@
                         $address,
                         $field,
                         [
-                            'class' => 'cols - full',
+                            'class' => 'cols-full',
                             'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete')
                         ]
                     ); ?>
@@ -216,7 +216,7 @@
                         'id',
                         'name'
                     ),
-                    ['class' => 'cols - full']
+                    ['class' => 'cols-full']
                 ); ?>
             </td>
         </tr>
@@ -236,7 +236,7 @@
                     'Cancel',
                     [
                         'class' => 'button large',
-                        'data - uri' => $return_url,
+                        'data-uri' => $return_url,
                         'name' => 'cancel',
                         'id' => 'et_cancel'
                     ]

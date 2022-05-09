@@ -155,7 +155,7 @@ if (!isset($values)) {
                     </label>
                 </td>
                 <td>
-                    <?= CHtml::textField($field_prefix . '[rr]', $values['rr'], ['class' => 'cols - full', 'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'), 'tabindex' => '3']) ?>
+                    <?= CHtml::textField($field_prefix . '[rr]', $values['rr'], ['class' => 'cols-full', 'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'), 'tabindex' => '3']) ?>
                 </td>
             </tr>
             <tr>

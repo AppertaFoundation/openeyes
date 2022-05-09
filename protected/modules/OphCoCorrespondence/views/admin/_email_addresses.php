@@ -68,7 +68,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
                         'username',
                         array(
                             'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
-                            'class' => 'cols - full',
+                            'class' => 'cols-full',
                             'nowrapper' => true,
                         )
                     ) ?>
@@ -96,7 +96,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
                         'reply_to_address',
                         array(
                             'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
-                            'class' => 'cols - full',
+                            'class' => 'cols-full',
                             'nowrapper' => true,
                         )
                     ) ?>
@@ -152,7 +152,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
                         'domain',
                         array(
                             'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
-                            'class' => 'cols - full',
+                            'class' => 'cols-full',
                             'nowrapper' => true,
                         )
                     ) ?>
@@ -175,7 +175,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
                         'Cancel',
                         [
                             'class' => 'button large',
-                            'data - uri' => ' / OphCoCorrespondence / admin / senderEmailAddresses',
+                            'data-uri' => '/OphCoCorrespondence/admin/senderEmailAddresses',
                             'name' => 'cancel',
                             'id' => 'et_cancel'
                         ]

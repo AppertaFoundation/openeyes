@@ -65,7 +65,7 @@
     <td><?=$model->getAttributeLabel('dose_and_frequency'); ?></td>
     <td>
         <?=\CHtml::activeTextArea($model, 'dose_and_frequency', [
-            'class' => 'cols - full',
+            'class' => 'cols-full',
             'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete')
         ])?>
     </td>
@@ -125,7 +125,7 @@
 </tr>
 <tr>
     <td><?=$model->getAttributeLabel('duration');?></td>
-    <td class='cols - full'>
+    <td class='cols-full'>
         <?=\CHtml::activeTextArea($model, 'duration', [
             'cols' => 57,
             'class' => 'autosize',
