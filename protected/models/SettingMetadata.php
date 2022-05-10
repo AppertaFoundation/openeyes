@@ -598,17 +598,13 @@ class SettingMetadata extends BaseActiveRecordVersioned
         );
     }
 
-    /**
-     * @param ElementLetter|null $element_letter
-     * @return array[]
-     */
-    public static function getCorrespondenceSubstitutions($element_letter = null)
+    public static function getCorrespondenceSubstitutions($element_letter = null, $recipient_address = null)
     {
         return array(
-        'to_address' => array('label' => 'Recipient Address', 'value' => isset($element_letter) && !empty($element_letter->address_target) ? self::makeSpan($element_letter->address_target) : null),
-        'source_address' => array('label' => 'Source Address', 'value' => isset($element_letter) && !empty($element_letter->source_address) ? self::makeSpan($element_letter->source_address) : null),
-        'cc_address' => array('label' => 'CC Address', 'value' => isset($element_letter) && !empty($element_letter->cc) ? self::makeSpan($element_letter->cc) : null),
-        'correspondence_date' => array('label' => 'Correspondence Date', 'value' => isset($element_letter) && !empty($element_letter->event) ? self::makeSpan(\Helper::convertMySQL2NHS($element_letter->event->event_date)) : null),
+            'to_address' => array('label' => 'Recipient Address', 'value' => $recipient_address),
+            'source_address' => array('label' => 'Source Address', 'value' => isset($element_letter) && !empty($element_letter->source_address) ? self::makeSpan($element_letter->source_address) : null),
+            'cc_address' => array('label' => 'CC Address', 'value' => isset($element_letter) && !empty($element_letter->cc) ? self::makeSpan($element_letter->cc) : null),
+            'correspondence_date' => array('label' => 'Correspondence Date', 'value' => isset($element_letter) && !empty($element_letter->event) ? self::makeSpan(\Helper::convertMySQL2NHS($element_letter->event->event_date)) : null),
         );
     }
 

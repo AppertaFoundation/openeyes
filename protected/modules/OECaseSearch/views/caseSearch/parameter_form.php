@@ -55,11 +55,13 @@ switch ($model->operation) {
         }
         foreach ($model->attributeNames() as $attribute) {
             // Only output the attributes for the parameter that haven't yet been output.
-            if (strpos('operation, id, name, value, isSaved', $attribute) === false) { ?>
-                <br/>
-                <?= $model->getValueForAttribute($attribute) ?>
-                <?= !$readonly ? CHtml::activeHiddenField($model, "[$id]$attribute") : '' ?>
-            <?php }
+            if (strpos('operation, id, name, value, isSaved', $attribute) === false) {
+                if ($value = $model->getValueForAttribute($attribute)) { ?>
+                    <br/>
+                    <?= $value ?>
+                    <?= !$readonly ? CHtml::activeHiddenField($model, "[$id]$attribute") : '' ?>
+                <?php }
+            }
         }?>
     </td>
     <td>
@@ -68,6 +70,3 @@ switch ($model->operation) {
         <?php endif; ?>
     </td>
 </tr>
-
-
-

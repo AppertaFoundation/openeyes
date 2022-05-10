@@ -596,7 +596,7 @@ class DefaultController extends BaseEventTypeController
 
         $substitutions = array_merge(
             SettingMetadata::getSessionSubstitutions(),
-            SettingMetadata::getPatientSubstitutions($parent_patient, $parent_patient),
+            SettingMetadata::getPatientSubstitutions($parent_patient, $parent_event),
             SettingMetadata::getCorrespondenceSubstitutions($letter, $recipient_address)
         );
 
