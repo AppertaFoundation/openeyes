@@ -43,7 +43,7 @@ $logo_helper = new LogoHelper();
             for ($y = 0; $y < $add_y_pad; $y++) {?>
                 <div class="spacer"></div>
             <?php }
-            echo $x_padding . 'To:';?>            
+            echo $x_padding;?>            
             <br/>
             <div class="address-to"
                 <?= // OE-11074 This inline css is to solve the word-wrapping issue for Australia Clients
