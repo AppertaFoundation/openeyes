@@ -153,6 +153,9 @@ class DefaultPas extends BasePAS
 
             if ($data['first_name']) {
                 $query['givenname'] = $data['first_name'];
+                if (isset($data['dob']) && $data['dob']){
+                    $query['dob'] = $data['dob'];
+                }
             }
         }
 
