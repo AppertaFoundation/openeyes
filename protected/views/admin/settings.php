@@ -20,7 +20,7 @@
 
 ?>
 
-<div class="cols-7">
+<div class="cols-full">
     <div class="alert-box info">
         <b>Info</b> Settings added here will be overridden by any settings in local config files. eg common or
         core.php
@@ -41,7 +41,7 @@
     <table class="standard">
         <thead>
             <tr>
-                <th>Setting</th>
+                <th width="35%">Setting</th>
                 <th>Value</th>
                 <th></th>
             </tr>
