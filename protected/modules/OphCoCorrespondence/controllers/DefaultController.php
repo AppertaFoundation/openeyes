@@ -600,7 +600,7 @@ class DefaultController extends BaseEventTypeController
             SettingMetadata::getCorrespondenceSubstitutions($letter, $recipient_address)
         );
 
-        $letter_header_html = SettingMetadata::performSubstitutions($letter_header_raw, $substitutions);
+        $letter_header_html = SettingMetadata::performSubstitutions($letter_header_raw, $substitutions, false);
 
         $letter_header_html = self::hideTableBorders($letter_header_html);
 

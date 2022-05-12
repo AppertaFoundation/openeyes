@@ -483,7 +483,7 @@ class SettingMetadata extends BaseActiveRecordVersioned
      * @param array $substitutions
      * @return false|string
      */
-    public static function performSubstitutions($html, $substitutions = array())
+    public static function performSubstitutions($html, $substitutions = array(), $preserve_empty_substitutions = true)
     {
         $dom = new DOMDocument();
         @$dom->loadHTML($html, LIBXML_HTML_NODEFDTD | LIBXML_HTML_NOIMPLIED);
@@ -499,8 +499,10 @@ class SettingMetadata extends BaseActiveRecordVersioned
                 !empty($substitutions[$key]['value'])
             ) {
                 $sub = $substitutions[$key]['value'];
-            } else {
+            } elseif ($preserve_empty_substitutions) {
                 $sub = '<span>[' . $key . ']</span>';
+            } else {
+                $sub = '<span></span>';
             }
 
             self::substituteNode($dom, $sub, $node);
