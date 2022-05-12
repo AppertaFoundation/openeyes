@@ -277,11 +277,7 @@ class PatientMerge
             $is_merged = $is_merged && $this->updateWorkLists($this->primary_patient, $this->secondary_patient);
 
             if ($is_merged) {
-                $sql = 'SELECT patient_id, patient_identifier_type_id, `value`, source_info,
-                                deleted, last_modified_user_id, last_modified_date,
-                                 created_user_id, created_date, patient_identifier_status_id
-                        FROM patient_identifier WHERE patient_id = ?';
-                $secondary_patient_identifiers = PatientIdentifier::model()->findAllBySql($sql, [$this->secondary_patient->id]);
+                $secondary_patient_identifiers = PatientIdentifier::model()->disableDefaultScope()->findAllByAttributes(['patient_id' => $this->secondary_patient->id]);
                 foreach ($secondary_patient_identifiers as $row_id => $secondary_patient_identifier_row) {
 
                     $criteria = new CDbCriteria();
