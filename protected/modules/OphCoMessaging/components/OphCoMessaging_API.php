@@ -191,7 +191,7 @@ class OphCoMessaging_API extends \BaseAPI
         );
         $criteria->addCondition('t.for_the_attention_of_user_id = :uid OR t.created_user_id = :uid');
         // Check copyto_users table to see if uid is present, otherwise the where clause slows down all logins and homepage loads
-        $copyto_check = \OEModule\OphCoMessaging\models\OphCoMessaging_Message_CopyTo_Users::model()->exists('copyto_users.user_id = :uid',[":uid"=>$user->id]);
+        $copyto_check = \OEModule\OphCoMessaging\models\OphCoMessaging_Message_CopyTo_Users::model()->exists('user_id = :uid',[":uid"=>$user->id]);
         if ($copyto_check) {
             $criteria->addCondition('copyto_users.user_id = :uid', 'OR');
         }
