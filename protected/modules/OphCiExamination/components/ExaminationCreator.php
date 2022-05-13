@@ -247,7 +247,9 @@ class ExaminationCreator
         $refractionReading->type_id = $refractionType->id;
 
         if ($refractionElement->{"{$eyeLabel}_readings"}) {
-            $refractionElement->{"{$eyeLabel}_readings"}[] = $refractionReading;
+            $readings = $refractionElement->{"{$eyeLabel}_readings"};
+            $readings[] = $refractionReading;
+            $refractionElement->{"{$eyeLabel}_readings"} = $readings;
         } else {
             $refractionElement->{"{$eyeLabel}_readings"} = [$refractionReading];
         }

@@ -298,6 +298,13 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
                     $ws_params['location'] = Yii::app()->params['correspondence_export_location_url'];
                 }
 
+                // In a future release, these will likely be obtained dynamically from the letter type.
+                $document_type = 'Clinic Attendance';
+                $document_subtype = 'OpenEyes Assessment';
+                $document_type_code = 'CLINICATT';
+                $document_category = 'Correspondence';
+                $document_category_code = 'CO';
+
                 /** @var $user User */
                 $user = User::model()->findByPk(Yii::app()->user->id);
 
@@ -347,13 +354,13 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
 
                 $attr_list = array(
                     'Author' => $user->getReversedNameAndInstitutionUsername($institution->id),
-                    'DocumentType' => 'Medical Assessment', // New field.
-                    'DocumentSubType' => 'OpenEyes Assessment',
-                    'DocumentTypeCode' => 'MEDICALASSESSMENT',
-                    'DocumentCategory' => 'MEDICALASSESSMENT',
-                    'DocumentCategoryCode' => 'AS',
-                    'DocumentSubCategoryCode' => 'AS12',
-                    'ExternalSupersessionId' => "313|182|001|$this->letter_type_id|{$this->event->episode->patient->getHos()}|$this->event_id",
+                    'DocumentType' => $document_type, // New field.
+                    'DocumentSubType' => $document_subtype,
+                    'DocumentTypeCode' => $document_type_code,
+                    'DocumentCategory' => $document_category,
+                    'DocumentCategoryCode' => $document_category_code,
+                    'DocumentSubCategoryCode' => $document_category_code . '02',
+                    'ExternalSupersessionId' => "313|$this->letter_type_id|{$this->event->episode->patient->getHos()}|$this->event_id",
                     'Consultant' => $this->event->episode->firm->getConsultantNameReversedAndUsername($institution->id),
                     'ConsultantCode' => $this->event->episode->firm->consultant ? $this->event->episode->firm->consultant->getFormattedRegistrationCode() : '',
                     'Organisation' => $institution->name,
@@ -408,9 +415,9 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
 
                 $document_data = new stdClass();
                 $document_category = new stdClass();
-                $document_category->DocumentType = 'Medical Assessment';
-                $document_category->DocumentSubType = 'OpenEyes Assessment';
-                $document_category->DocumentSubTypeCode = 'MEDICALASSESSMENT';
+                $document_category->DocumentType = $document_type;
+                $document_category->DocumentSubType = $document_subtype;
+                $document_category->DocumentTypeCode = $document_type_code;
                 $document_data->DocumentCategory = $document_category;
                 $document_data->Sensitivity = false;
                 $header->DocumentData = $document_data;

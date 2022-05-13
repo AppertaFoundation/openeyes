@@ -113,7 +113,7 @@ class OphDrPrescription_ReportPrescribedDrugs extends BaseReport
             ->leftJoin('medication_laterality option', 'option.id = emu.laterality');
 
         if ($this->drugs) {
-            $command->andWhere(array('in', 'medication.id', $this->drugs));
+            $command->andWhere(array('in', 'm.id', $this->drugs));
         }
 
         if ($this->institution_id) {
