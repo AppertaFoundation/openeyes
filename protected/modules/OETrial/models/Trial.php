@@ -315,7 +315,10 @@ class Trial extends BaseActiveRecordVersioned
                 $sortBySql = 'ISNULL(t.external_trial_identifier), t.external_trial_identifier';
                 break;
             case 'Treatment Type':
-                $sortBySql = 'ISNULL(treatment_type_id), t.treatment_type_id';
+                $sortBySql = 'ISNULL(t.treatment_type_id), t.treatment_type_id';
+                break;
+            case 'Accepted/Rejected Date':
+                $sortBySql = 'ISNULL(t.status_update_date), t.status_update_date';
                 break;
         }
 

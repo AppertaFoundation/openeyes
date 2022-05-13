@@ -435,7 +435,7 @@ class SettingMetadata extends BaseActiveRecordVersioned
     public function setSettingValue($setting, $metadata, $value)
     {
         if (@$data = unserialize($metadata->data)) {
-            $value = self::getPurifiedValue($setting->value);
+            $value = self::getPurifiedValue($value);
 
             if ($metadata->field_type->name === 'HTML') {
                 $value = $this->stripSubstitutions($value);

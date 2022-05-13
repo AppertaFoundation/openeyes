@@ -196,7 +196,6 @@ class UserAuthentication extends BaseActiveRecordVersioned
                     // Password set and matches
                     $this->password_last_changed_date = date('Y-m-d H:i:s');
                     $this->password_failed_tries = 0;
-                    $this->password_status = "current";
                     $this->password_salt = PasswordUtils::randomSalt();
                 }
             } elseif ($this->getIsNewRecord()) {

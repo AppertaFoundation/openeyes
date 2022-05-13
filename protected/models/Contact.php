@@ -115,8 +115,8 @@ class Contact extends BaseActiveRecordVersioned
                     $this->addError('Empty Names', "First Name and Last Name cannot be both blank");
                 }
             } else {
-                // if the first name and last name are from admin contact, allow alphabets, parenthesis, and dash (-)
-                if ($this->$attribute && !preg_match("/^[a-zA-Z \(\)-]+$/", $this->$attribute)) {
+                // if the first name and last name are from admin contact, allow alphabets, parenthesis, single-quote (') and dash (-)
+                if ($this->$attribute && !preg_match("/^[a-zA-Z '\(\)-]+$/", $this->$attribute)) {
                     $this->addError($attribute, "Invalid {$this->getAttributeLabel($attribute)} entered.");
                 }
             }
