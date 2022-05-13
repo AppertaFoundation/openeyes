@@ -67,7 +67,7 @@ return array(
                 'Letter warning rules' => '/OphTrOperationbooking/admin/viewLetterWarningRules',
                 'Operation name rules' => '/OphTrOperationbooking/admin/viewOperationNameRules',
                 'Waiting list contact rules' => '/OphTrOperationbooking/admin/viewWaitingListContactRules',
-                'Patient unavailable reasons' => '/OphTrOperationbooking/admin/viewPatientUnavailableReasons',
+                'Patient unavailable reasons' => array('uri'=>'/OphTrOperationbooking/admin/viewPatientUnavailableReasons', 'restricted' => array('admin')),
                 'Session unavailable reasons' => array('uri'=>'/OphTrOperationbooking/admin/viewSessionUnavailableReasons', 'requires_setting' => array('setting_key'=>'disable_theatre_diary', 'required_value'=>'off')),
                 'Whiteboard' => '/OphTrOperationbooking/oeadmin/WhiteboardSettings/settings',
                 'Pre-assessment Types' => '/OphTrOperationbooking/admin/preassessmentType',

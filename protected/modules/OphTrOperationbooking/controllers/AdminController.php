@@ -1823,9 +1823,9 @@ class AdminController extends ModuleAdminController
             $reason->attributes = $_POST['OphTrOperationbooking_ScheduleOperation_PatientUnavailableReason'];
             //$reason->institution_id = Institution::model()->getCurrent()->id;
             if ($this->checkAccess('admin')) {
-                $saved = $reason->saveAtLevel(ReferenceData::LEVEL_INSTALLATION);
+                $saved = $reason->save();
             } else {
-                $saved = $reason->saveAtLowestLevel();
+                throw new Exception('User is not an installation level admin');
             }
             if (!$saved) {
                 $errors = $reason->getErrors();
