@@ -239,6 +239,7 @@ class AdminController extends \ModuleAdminController
 
         $this->render('create', array(
                 'model' => $model,
+                'title' => 'Add Injection Management No Treatment reason',
         ));
     }
 
