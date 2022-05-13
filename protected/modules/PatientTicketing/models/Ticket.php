@@ -68,6 +68,19 @@ class Ticket extends \BaseActiveRecordVersionedSoftDelete
         return 'patientticketing_ticket';
     }
 
+    public function defaultScope()
+    {
+        if ($this->defaultScopeDisabled) {
+            return array();
+        }
+
+        $table_alias = $this->getTableAlias(false, false);
+
+        return array(
+            'condition' => $table_alias . '.deleted = 0',
+        );
+    }
+
     /**
      * @return array validation rules for model attributes.
      */
