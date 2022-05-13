@@ -42,10 +42,11 @@ OpenEyes.UI = OpenEyes.UI || {};
                 new UI.AdderDialog.ItemSet([],
                     {
                         header: this.options.headers["horizontal_angle"],
+                        supportSigns: true,
                         generateFloatNumberColumns: {
                             decimalPlaces: 0,
-                            minValue: 0,
-                            maxValue: 40
+                            minValue: -60,
+                            maxValue: 60
                         },
                         id: "horizontal_angle"
                     }),
@@ -68,11 +69,10 @@ OpenEyes.UI = OpenEyes.UI || {};
                 new UI.AdderDialog.ItemSet([],
                     {
                         header: this.options.headers["torsion"],
-                        supportSigns: true,
                         generateFloatNumberColumns: {
                             decimalPlaces: 0,
-                            minValue: -60,
-                            maxValue: 60
+                            minValue: 0,
+                            maxValue: 40
                         },
                         id: "torsion"
                     }),
