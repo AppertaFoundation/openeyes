@@ -651,6 +651,11 @@ class DefaultController extends BaseEventTypeController
                 if ($count === '0') {
                     ProtectedFile::model()->deleteAll('id = :id', array(':id' => $data['Element_OphCoDocument_Document']['single_document_id']));
                 }
+            } elseif (!empty($data['single_document_rotate'])) {
+                $file = ProtectedFile::model()->findByPk($element->single_document_id);
+
+                $file->rotate = (int)$data['single_document_rotate'];
+                $file->save();
             }
         } else {
             if (!empty($data['ProtectedFile']['right_file_content']) && $data['right_file_canvas_modified'] === '1') {
@@ -661,6 +666,11 @@ class DefaultController extends BaseEventTypeController
                 if ($count === '0') {
                     ProtectedFile::model()->deleteAll('id = :id', array(':id' => $data['Element_OphCoDocument_Document']['right_document_id']));
                 }
+            } elseif (!empty($data['right_document_rotate'])) {
+                $file = ProtectedFile::model()->findByPk($element->right_document_id);
+
+                $file->rotate = (int)$data['right_document_rotate'];
+                $file->save();
             }
 
             if (!empty($data['ProtectedFile']['left_file_content']) && $data['left_file_canvas_modified'] === '1') {
@@ -671,6 +681,11 @@ class DefaultController extends BaseEventTypeController
                 if ($count === '0') {
                     ProtectedFile::model()->deleteAll('id = :id', array(':id' => $data['Element_OphCoDocument_Document']['left_document_id']));
                 }
+            } elseif (!empty($data['left_document_rotate'])) {
+                $file = ProtectedFile::model()->findByPk($element->left_document_id);
+
+                $file->rotate = (int)$data['left_document_rotate'];
+                $file->save();
             }
         }
     }

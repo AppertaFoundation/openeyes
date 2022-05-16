@@ -305,6 +305,8 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
                     document.querySelector(`#ProtectedFile_${side}_file_content`).value = canvasDataUrl;
                 }
 
+                $(`#${side}_document_rotate`).val('');
+
                 saveCancelAnnotation(controller, div, side);
             });
         });
@@ -516,6 +518,8 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
                 });
             }
         });
+
+        $(`#${type}_document_rotate`).val(degree);
     };
 
     DocumentUploadController.prototype.finalizeImage = function (event) {

@@ -95,6 +95,7 @@
         <div id="single_document_uploader" class="data-group js-document-upload-wrapper"
             <?= (!$element->single_document_id &&
             ($element->hasSidedAttributesSet("OR")) ? 'style="display:none"' : ''); ?>>
+            <input type="hidden" value="<?=!empty($element->single_document->rotate) ? $element->single_document->rotate : ''?>" name="single_document_rotate" id="single_document_rotate">
             <table class="last-left cols-full">
                 <colgroup>
                     <col class="cols-full">
@@ -164,6 +165,7 @@
                         $document_id = $side.'_document_id';
                         ?>
                     <td data-side="<?=$side?>">
+                        <input type="hidden" value="<?=!empty($element->{$side."_document"}->rotate) ? $element->{$side."_document"}->rotate : ''?>" name="<?=$side?>_document_rotate" id="<?=$side?>_document_rotate">
                         <div class="pdf-actions"<?= (!$element->{$side."_document_id"} ||
                         $element->{$side.'_document'}->mimetype != "application/pdf" ?
                             'style="display:none"' :
