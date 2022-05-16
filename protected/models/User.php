@@ -268,10 +268,8 @@ class User extends BaseActiveRecordVersioned
      * @return string
      * @throws Exception
      */
-    public function getReversedNameAndInstitutionUsername($institution_id): string
+    public function getNameAndInstitutionUsername($institution_id, bool $reversed = true): string
     {
-        $return = implode(' ', array($this->last_name, $this->first_name));
-
         $user_auth_id = Yii::app()->db->createCommand()
             ->select('ua.id')
             ->from('institution_authentication ia')
@@ -287,6 +285,12 @@ class User extends BaseActiveRecordVersioned
 
         if (!$user_auth) {
             throw new Exception('User authentication not found for institution ' . $institution_id);
+        }
+
+        if ($reversed) {
+            $return = $this->getReversedFullNameAndTitle();
+        } else {
+            $return = $this->getFullNameAndTitle();
         }
         return $return . " ($user_auth->username)";
     }

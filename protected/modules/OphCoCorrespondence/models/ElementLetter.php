@@ -353,7 +353,7 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
                 }
 
                 $attr_list = array(
-                    'Author' => $user->getReversedNameAndInstitutionUsername($institution->id),
+                    'Author' => $user->getNameAndInstitutionUsername($institution->id, false),
                     'DocumentType' => $document_type, // New field.
                     'DocumentSubType' => $document_subtype,
                     'DocumentTypeCode' => $document_type_code,
@@ -361,7 +361,7 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
                     'DocumentCategoryCode' => $document_category_code,
                     'DocumentSubCategoryCode' => $document_category_code . '02',
                     'ExternalSupersessionId' => "313|$this->letter_type_id|{$this->event->episode->patient->getHos()}|$this->event_id",
-                    'Consultant' => $this->event->episode->firm->getConsultantNameReversedAndUsername($institution->id),
+                    'Consultant' => $this->event->episode->firm->getConsultantNameAndUsername($institution->id, false),
                     'ConsultantCode' => $this->event->episode->firm->consultant ? $this->event->episode->firm->consultant->getFormattedRegistrationCode() : '',
                     'Organisation' => $institution->name,
                     'OrganisationCode' => $institution->remote_id,
