@@ -187,7 +187,7 @@ class PatientIdentifierHelper
 
         if ($patient) {
             foreach ($patient->identifiers as $identifier) {
-                $identifiers .= $identifier->patientIdentifierType->long_title . ' (' . $identifier->patientIdentifierType->institution->name . '): ' . $identifier->getDisplayValue() . ', ';
+                $identifiers .= $identifier->patientIdentifierType->short_title . ' (' . $identifier->patientIdentifierType->institution->short_name . '): ' . $identifier->getDisplayValue() . ', ';
             }
         }
 
