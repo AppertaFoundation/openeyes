@@ -1591,19 +1591,16 @@ class WorklistController extends BaseController
      */
     public function actionGetAssignees($term)
     {
-        $users = User::model()->with('contact')->findAll(
-            'contact.first_name LIKE CONCAT(\'%\', :term, \'%\')',
-            array(':term' => $term)
-        );
-        $this->renderJSON(array_map(
-            static function ($item) {
-                return array(
-                    'id' => $item->id,
-                    'label' => $item->getFullName(),
-                );
-            },
-            $users
-        ));
+        $users = Yii::app()->db->createCommand()
+            ->select('u.id, CONCAT(c.first_name, \' \', c.last_name) AS label')
+            ->from('user u')
+            ->join('contact c', 'c.id = u.contact_id')
+            ->join('user_authentication ua', 'ua.user_id = u.id AND ua.institution_authentication_id IN (SELECT ia.id FROM institution_authentication ia WHERE ia.institution_id = :institution_id AND ia.active = 1)')
+            ->where('CONCAT(c.first_name, \' \', c.last_name) LIKE CONCAT(\'%\', :term, \'%\') OR ua.username LIKE CONCAT(\'%\', :term, \'%\')')
+            ->group('u.id, CONCAT(c.first_name, \' \', c.last_name)')
+            ->bindValues([':institution_id' => Yii::app()->session['selected_institution_id'], ':term' => $term])
+            ->queryAll();
+        $this->renderJSON($users);
     }
 
     /**

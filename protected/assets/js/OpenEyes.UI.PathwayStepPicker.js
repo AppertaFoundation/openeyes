@@ -795,8 +795,8 @@
                 { term: search_term },
                 function (response) {
                     $(e.target).parent().find('.spinner-loader').hide();
+                    $(selectors.assigneeList).empty();
                     $.each(response, function (id, item) {
-                        $(selectors.assigneeList).empty();
                         $(selectors.assigneeList).append('<li data-id="' + item.id + '">' + item.label + '</li>');
                     });
                 }
