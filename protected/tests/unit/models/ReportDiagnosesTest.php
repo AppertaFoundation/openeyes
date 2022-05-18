@@ -914,7 +914,7 @@ class ReportDiagnosesTest extends CDbTestCase
                         12345 => 'blah',
                     ),
                     'identifier' => '12345',
-                    'all_ids' => 'ID (The Monachs Trust): 12345, National Health Service (The Monachs Trust): 54321, ',
+                    'all_ids' => 'ID (Default): 12345, ID (Default): 54321, ',
                 ),
             ), $r->diagnoses);
     }
@@ -956,7 +956,7 @@ class ReportDiagnosesTest extends CDbTestCase
                         12345 => 'blah',
                     ),
                     'identifier' => '12345',
-                    'all_ids' => 'ID (The Monachs Trust): 12345, National Health Service (The Monachs Trust): 54321, ',
+                    'all_ids' => 'ID (Default): 12345, ID (Default): 54321, ',
                 ),
             ), $r->diagnoses);
     }
@@ -998,7 +998,7 @@ class ReportDiagnosesTest extends CDbTestCase
                         12345 => 'blah',
                     ),
                     'identifier' => '12345',
-                    'all_ids' => 'ID (The Monachs Trust): 12345, National Health Service (The Monachs Trust): 54321, ',
+                    'all_ids' => 'ID (Default): 12345, ID (Default): 54321, ',
                 ),
                 12345 => 'blah',
                 12346 => 'blah2',

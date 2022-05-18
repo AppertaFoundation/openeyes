@@ -65,6 +65,8 @@ use OEModule\OphCiExamination\models\Element_OphCiExamination_CommunicationPrefe
  * @property TrialPatient[] $trials
  * @property ArchivePatientIdentifier[] $archiveIdentifiers
  * @property PatientIdentifier[] $identifiers
+ * @property PatientIdentifier[] $localIdentifiers
+ * @property PatientIdentifier $globalIdentifier
  *
  * The following are available through get methods
  * @property SecondaryDiagnosis[] $systemicDiagnoses

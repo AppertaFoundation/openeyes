@@ -3,6 +3,9 @@
 use OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses;
 use OEModule\OphCiExamination\models\OphCiExamination_Diagnosis;
 
+/**
+ * @method Patient patient($fixtureId)
+ */
 class OETrial_ReportTrialCohortTest extends CDbTestCase
 {
     protected $instance;
@@ -130,8 +133,8 @@ class OETrial_ReportTrialCohortTest extends CDbTestCase
             'external_trial_identifier' => $item->trials[0]->external_trial_identifier,
             'trial_patient_id' => $item->trials[0]->id,
             'comment' => $item->trials[0]->comment,
-            'all_ids' => $localIdentifier->patientIdentifierType->long_title . ' (' . $localIdentifier->patientIdentifierType->institution->name . '): ' . $localIdentifier->getDisplayValue() . ', ' .
-                            $globalIdentifier->patientIdentifierType->long_title . ' (' . $globalIdentifier->patientIdentifierType->institution->name . '): ' . $globalIdentifier->getDisplayValue() . ', ',
+            'all_ids' => $localIdentifier->patientIdentifierType->short_title . ' (' . $localIdentifier->patientIdentifierType->institution->short_name . '): ' . $localIdentifier->getDisplayValue() . ', ' .
+                            $globalIdentifier->patientIdentifierType->short_title . ' (' . $globalIdentifier->patientIdentifierType->institution->short_name . '): ' . $globalIdentifier->getDisplayValue() . ', ',
         );
 
         $this->instance->addPatientResultItem($patient);
@@ -166,8 +169,8 @@ class OETrial_ReportTrialCohortTest extends CDbTestCase
         $localIdentifier = $item->localIdentifiers[0];
         $globalIdentifier = $item->globalIdentifier;
 
-        $IDStr = $localIdentifier->patientIdentifierType->long_title . ' (' . $localIdentifier->patientIdentifierType->institution->name . '): ' . $localIdentifier->getDisplayValue() . ', ' .
-            $globalIdentifier->patientIdentifierType->long_title . ' (' . $globalIdentifier->patientIdentifierType->institution->name . '): ' . $globalIdentifier->getDisplayValue() . ', ';
+        $IDStr = $localIdentifier->patientIdentifierType->short_title . ' (' . $localIdentifier->patientIdentifierType->institution->short_name . '): ' . $localIdentifier->getDisplayValue() . ', ' .
+            $globalIdentifier->patientIdentifierType->short_title . ' (' . $globalIdentifier->patientIdentifierType->institution->short_name . '): ' . $globalIdentifier->getDisplayValue() . ', ';
         $baseStr = str_replace('{{IDs}}', $IDStr, $baseStr);
         $patient = array(
             'id' => $item->id,

@@ -931,18 +931,8 @@ class WorklistManager extends CComponent
                 }
             }
 
-            // If the worklist patient has a start status of 'Attended', instance and/or start the pathway.
-            $start_status = $wp->getWorklistPatientAttribute('Status'); // Could we genericise this attribute name in future?
-            if ($start_status
-                && strtolower($start_status->attribute_value) === strtolower('Attended')) {
-                // Start the pathway immediately.
-                if (!$wp->pathway) {
-                    $worklist->worklist_definition->pathway_type->instancePathway($wp);
-                    $wp->refresh();
-                }
-                $wp->pathway->startPathway();
-                $wp->refresh();
-            }
+            $this->updatePathwayStatus($wp);
+            $wp->refresh();
 
             $target = $worklist->worklist_definition_id ? self::$AUDIT_TARGET_AUTO : self::$AUDIT_TARGET_MANUAL;
 
@@ -1465,6 +1455,30 @@ class WorklistManager extends CComponent
 
     /**
      * @param WorklistPatient $worklist_patient
+     * @param string $status_attribute
+     * @param string $status_attr_value
+     * @return void
+     * @throws Exception
+     */
+    protected function updatePathwayStatus(WorklistPatient $worklist_patient, string $status_attribute = 'Status', string $status_attr_value = 'Attended')
+    {
+        $start_status = $worklist_patient->getWorklistPatientAttribute($status_attribute);
+        if ($start_status
+            && strtolower($start_status->attribute_value) === strtolower($status_attr_value)) {
+            // Start the pathway immediately.
+            if (!$worklist_patient->pathway) {
+                $worklist_patient->worklist->worklist_definition->pathway_type->instancePathway($worklist_patient);
+                $worklist_patient->refresh();
+            }
+
+            if (!$worklist_patient->pathway->status || (int)$worklist_patient->pathway->status === Pathway::STATUS_LATER) {
+                $worklist_patient->pathway->startPathway();
+            }
+        }
+    }
+
+    /**
+     * @param WorklistPatient $worklist_patient
      * @param DateTime        $when
      * @param array           $attributes
      * @param bool            $allow_worklist_change - only allow values to change that don't affect which worklist is mapped
@@ -1504,6 +1518,9 @@ class WorklistManager extends CComponent
                     throw new Exception('Could not update WorklistPatient');
                 }
             }
+
+            $this->updatePathwayStatus($worklist_patient);
+            $worklist_patient->refresh();
 
             if ($transaction) {
                 $transaction->commit();
