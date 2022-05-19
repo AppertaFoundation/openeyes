@@ -76,7 +76,7 @@ class Element_OphInBiometry_Selection extends SplitEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('event_id, eye_id, predicted_refraction_left, predicted_refraction_right, lens_id_left, lens_id_right ,formula_id_left, formula_id_right', 'safe'),
+            array('event_id, eye_id, predicted_refraction_left, predicted_refraction_right, lens_id_left, lens_id_right, formula_id_left, formula_id_right', 'safe'),
             array('iol_power_left', 'requiredIfLensSelected' , 'side' => 'left'),
             array('iol_power_right', 'requiredIfLensSelected' ,'side' => 'right'),
             array('manually_overriden_left, manually_overriden_right', 'required'),
@@ -90,7 +90,7 @@ class Element_OphInBiometry_Selection extends SplitEventTypeElement
             array('formula_id_left', 'checkSelectedLensFormula', 'selectData' => 'left_formula'),
             array('lens_id_right', 'checkSelectedLensFormula', 'selectData' => 'right_lens'),
             array('formula_id_right', 'checkSelectedLensFormula', 'selectData' => 'right_formula'),
-            array('lens_id_left, lens_id_right', 'default', 'setOnEmpty' => true, 'value' => 0),
+            array('lens_id_left, lens_id_right, formula_id_left, formula_id_right', 'default', 'setOnEmpty' => true, 'value' => 0),
 
             // Please remove those attributes that should not be searched.
             array('id, event_id ', 'safe', 'on' => 'search'),
