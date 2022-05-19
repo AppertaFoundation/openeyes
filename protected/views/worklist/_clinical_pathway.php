@@ -8,29 +8,6 @@ $pathway = $visit->pathway;
 
 <div class="pathway" data-visit-id="<?= $visit->id ?>" data-pathway-id="<?= $pathway->id ?? null ?>">
     <?php
-    // It is assumed that the checkin step is always the first step, regardless of its status.
-    if (!$pathway || (int)$pathway->status === Pathway::STATUS_LATER) {
-        $status_class = 'todo';
-    } else {
-        $status_class = 'done';
-    }
-    $time = $pathway->start_time ?? null;
-    $formatted_time = $time ? DateTime::createFromFormat('Y-m-d H:i:s', $time)->format('H:i') : null
-    ?>
-    <span class="oe-pathstep-btn <?= "$status_class process" ?>" data-pathstep-id="checkin"
-          data-pathstep-type-id="-1"
-          data-patient-id="<?= $visit->patient_id ?>"
-          data-visit-id="<?= $visit->id ?>">
-        <?php if ($pathway && $pathway->did_not_attend) { ?>
-            <span class="step">DNA</span>
-        <?php } else { ?>
-            <span class="step i-arr"></span>
-        <?php } ?>
-        <span class="info"<?= $status_class !== 'done' || ($pathway && $pathway->did_not_attend) ? 'style="display: none;"' : '' ?>>
-            <?= $formatted_time ?>
-        </span>
-    </span>
-    <?php
     if ($pathway) {
         foreach ($pathway->completed_steps as $step) {
             $status_class = $step->getStatusString();

@@ -351,28 +351,50 @@ class WorklistController extends BaseController
      */
     public function actionCheckIn()
     {
+        $step_id = Yii::app()->request->getPost('step_id');
+        $type_step_id = Yii::app()->request->getPost('step_type_id');
         $visit_id = Yii::app()->request->getPost('visit_id');
-        $wl_patient = WorklistPatient::model()->findByPk($visit_id);
 
-        if (!$wl_patient->pathway) {
-            $wl_patient->worklist->worklist_definition->pathway_type->instancePathway($wl_patient);
-            $wl_patient->refresh();
+        $step = PathwayStep::model()->find('id = :id', [':id' => $step_id]);
+
+        if (!$step) {
+            $visit = WorklistPatient::model()->findByPk($visit_id);
+            $type_step = PathwayTypeStep::model()->findByPk($type_step_id);
+
+            if ($type_step) {
+                $pathway_steps = $type_step->pathway_type->instancePathway($visit);
+                $step = $pathway_steps[$type_step_id] ?? null;
+            }
+
+            if (!$step) {
+                throw new CHttpException(404, 'Unable to retrieve step for processing or step is not a checkin step.');
+            }
         }
-        $wl_patient->pathway->startPathway();
-        $wl_patient->refresh();
+
+        $step->status = PathwayStep::STEP_COMPLETED;
+        $step->start_time = date('Y-m-d H:i:s');
+        $step->started_user_id = Yii::app()->user->id;
+        $step->end_time = date('Y-m-d H:i:s');
+        $step->completed_user_id = Yii::app()->user->id;
+
+        $pathway = $step->pathway;
+        $pathway->enqueue($step);
+        $pathway->refresh();
+
+        $pathway->updateStatus();
+
         $this->renderJSON(
             [
                 'step_html' => $this->renderPartial(
                     '_clinical_pathway',
-                    ['visit' => $wl_patient],
+                    ['visit' => $pathway->worklist_patient],
                     true
                 ),
-                'end_time' => DateTime::createFromFormat('Y-m-d H:i:s', $wl_patient->pathway->start_time)->format('H:i'),
-                'pathway_status_html' => $wl_patient->pathway->getPathwayStatusHTML(),
-                'status' => $wl_patient->pathway->getStatusString(),
+                'end_time' => DateTime::createFromFormat('Y-m-d H:i:s', $step->start_time)->format('H:i'),
+                'pathway_status_html' => $pathway->getPathwayStatusHTML(),
+                'status' => $pathway->getStatusString(),
             ]
         );
-        throw new CHttpException(404, 'Unable to retrieve step for processing or step is not a checkin step.');
     }
 
     /**
@@ -381,25 +403,37 @@ class WorklistController extends BaseController
      */
     public function actionUndoCheckIn()
     {
-        $visit_id = Yii::app()->request->getPost('visit_id');
-        $wl_patient = WorklistPatient::model()->findByPk($visit_id);
-        /**
-         * @var $wl_patient WorklistPatient
-         */
-        $pathway = $wl_patient->pathway;
+        $step_id = Yii::app()->request->getPost('step_id');
 
-        if ($pathway) {
-            $pathway->status = Pathway::STATUS_LATER;
-            $pathway->start_time = null;
-            $pathway->save();
-            $this->renderJSON(
-                [
-                    'pathway_id' => $pathway->id,
-                    'status_html' => $pathway->getPathwayStatusHTML(),
-                ]
-            );
+        $step = PathwayStep::model()->findByPk($step_id);
+
+        if (!$step) {
+            throw new CHttpException(404, 'Unable to retrieve step for processing or step is not a undo checkin step.');
         }
-        throw new CHttpException(404, 'Unable to retrieve step for processing or step is not a undo checkin step.');
+        $pathway = $step->pathway;
+
+        $step->status = PathwayStep::STEP_REQUESTED;
+        $step->start_time = null;
+        $step->end_time = null;
+        $step->started_user_id = null;
+        $step->completed_user_id = null;
+
+        $pathway->enqueue($step);
+
+        $pathway->refresh();
+        $pathway->updateStatus();
+
+        $this->renderJSON(
+            [
+                'pathway_id' => $pathway->id,
+                'step_html' => $this->renderPartial(
+                    '_clinical_pathway',
+                    ['visit' => $pathway->worklist_patient],
+                    true
+                ),
+                'status_html' => $pathway->getPathwayStatusHTML(),
+            ]
+        );
     }
 
     /**
@@ -408,15 +442,36 @@ class WorklistController extends BaseController
      */
     public function actionDidNotAttend()
     {
+        $step_id = Yii::app()->request->getPost('step_id');
+        $type_step_id = Yii::app()->request->getPost('step_type_id');
         $visit_id = Yii::app()->request->getPost('visit_id');
-        $wl_patient = WorklistPatient::model()->findByPk($visit_id);
 
-        if (!$wl_patient->pathway) {
-            $wl_patient->worklist->worklist_definition->pathway_type->instancePathway($wl_patient);
-            $wl_patient->refresh();
+        $step = PathwayStep::model()->find('id = :id', [':id' => $step_id]);
+
+        if (!$step) {
+            $visit = WorklistPatient::model()->findByPk($visit_id);
+            $type_step = PathwayTypeStep::model()->findByPk($type_step_id);
+
+            if ($type_step) {
+                $pathway_steps = $type_step->pathway_type->instancePathway($visit);
+                $step = $pathway_steps[$type_step_id] ?? null;
+            }
         }
-        $pathway = $wl_patient->pathway;
-        $pathway->start_time = date('Y-m-d H:i:s');
+
+        $step->status = PathwayStep::STEP_COMPLETED;
+        $step->start_time = date('Y-m-d H:i:s');
+        $step->started_user_id = Yii::app()->user->id;
+        $step->end_time = date('Y-m-d H:i:s');
+        $step->completed_user_id = Yii::app()->user->id;
+
+        $pathway = $step->pathway;
+
+        $pathway->enqueue($step);
+        $step->refresh();
+
+        $pathway->refresh();
+        $pathway->updateStatus();
+
         if (count($pathway->requested_steps) === 0) {
             $pathway->status = Pathway::STATUS_DONE;
             $pathway->end_time = date('Y-m-d H:i:s');
@@ -426,8 +481,13 @@ class WorklistController extends BaseController
 
         $pathway->did_not_attend = true;
         $pathway->save();
+
         // Create and save a Did Not Attend event.
         $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+
+        if (!$firm) {
+            throw new CHttpException(404, 'Unable to locate selectede firm.');
+        }
         $event_type_id = EventType::model()->find(
             'class_name = :class_name',
             [':class_name' => 'OphCiDidNotAttend']
@@ -448,8 +508,8 @@ class WorklistController extends BaseController
         $this->renderJSON(
             [
                 'redirect_url' => '/patientEvent/create?' . http_build_query($params),
-                'pathway_status_html' => $pathway->getPathwayStatusHTML(),
-                'step_html' => $this->renderPartial('_clinical_pathway', ['visit' => $wl_patient], true),
+                'pathway_status_html' => $step->pathway->getPathwayStatusHTML(),
+                'step_html' => $this->renderPartial('_clinical_pathway', ['visit' => $pathway->worklist_patient], true),
                 'status' => $pathway->getStatusString(),
             ]
         );
@@ -495,9 +555,8 @@ class WorklistController extends BaseController
     {
         $step_id = Yii::app()->request->getPost('step_id');
         $type_step_id = Yii::app()->request->getPost('step_type_id');
-        $pathway_id = Yii::app()->request->getPost('pathway_id');
         $direction = Yii::app()->request->getPost('direction');
-        $step = PathwayStep::model()->find('id = :id AND pathway_id = :pathway_id', [':id' => $step_id, ':pathway_id' => $pathway_id]);
+        $step = PathwayStep::model()->find('id = :id', [':id' => $step_id]);
         $visit_id = Yii::app()->request->getPost('visit_id');
 
         if (!$step) {
@@ -528,14 +587,12 @@ class WorklistController extends BaseController
                 $step_to_reorder->todo_order = $old_order;
                 $step_to_reorder->save();
                 $step_to_reorder->refresh();
-                $altered_steps[$step_to_reorder->id] = $step_to_reorder;
             }
             $step->todo_order = $new_order;
             if (!$step->save()) {
                 throw new CHttpException('Unable to reorder step.');
             }
             $step->refresh();
-            $altered_steps[$step->id] = $step;
         }
 
         $this->renderJSON(

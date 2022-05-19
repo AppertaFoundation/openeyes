@@ -715,9 +715,10 @@ $(function () {
                             refreshStatistics(ps.visitID, oldSteps, newSteps);
 
                             ps.resetPopup();
+                            ps.pathstepId = response.step.id;
                             ps.requestDetails({
                                 partial: 0,
-                                pathstep_id: ps.pathstepId || response.step.id,
+                                pathstep_id: ps.pathstepId,
                                 pathstep_type_id: ps.pathstepTypeId,
                                 visit_id: ps.visitID
                             });
@@ -741,7 +742,12 @@ $(function () {
                     },
                     success: function (response) {
                         // Swap the step with the step either in front or behind it (depending on the action).
-                        let $old_step = $('.oe-pathstep-btn[data-pathstep-id="' + response.step.id + '"], .oe-pathstep-btn[data-visit-id="' + ps.visitID + '"][data-pathstep-type-id="' + pathstep_type_id + '"]');
+                        let $old_step;
+                        if ($('.oe-pathstep-btn[data-pathstep-id="' + response.step.id + '"]').length > 0) {
+                            $old_step = $('.oe-pathstep-btn[data-pathstep-id="' + response.step.id + '"]');
+                        } else {
+                            $old_step = $('.oe-pathstep-btn[data-visit-id="' + ps.visitID + '"][data-pathstep-type-id="' + ps.pathstepTypeId + '"]');
+                        }
 
                         const oldSteps = collectActiveTodoStepsFrom($old_step.closest('td.js-pathway-container'));
 
@@ -753,9 +759,11 @@ $(function () {
                         refreshStatistics(ps.visitID, oldSteps, newSteps);
 
                         ps.resetPopup();
+
+                        ps.pathstepId = response.step.id;
                         ps.requestDetails({
                             partial: 0,
-                            pathstep_id: ps.pathstepId || response.step.id,
+                            pathstep_id: ps.pathstepId,
                             pathstep_type_id: ps.pathstepTypeId,
                             visit_id: ps.visitID
                         });
@@ -767,20 +775,22 @@ $(function () {
                     url: '/worklist/checkIn',
                     type: 'POST',
                     data: {
-                        visit_id: ps.visitID,
+                        visit_id: visit_id,
+                        step_id: pathstep_id,
+                        step_type_id: pathstep_type_id,
                         YII_CSRF_TOKEN: YII_CSRF_TOKEN
                     },
                     success: function (response) {
                         // This is a check-in step so it is already in the correct position.
-                        const $thisStep = $('.oe-pathstep-btn[data-pathstep-id="checkin"][data-visit-id="' + ps.visitID + '"]');
+                        let $thisStep;
+                        if ($('.oe-pathstep-btn[data-pathstep-id="' + pathstep_id + '"]').length > 0) {
+                            $thisStep = $('.oe-pathstep-btn[data-pathstep-id="' + pathstep_id + '"]');
+                        } else {
+                            $thisStep = $('.oe-pathstep-btn[data-visit-id="' + ps.visitID + '"][data-pathstep-type-id="' + pathstep_type_id + '"]');
+                        }
                         const oldSteps = collectActiveTodoStepsFrom($thisStep.closest('td.js-pathway-container'));
                         $thisStep.closest('td.js-pathway-container').html(response.step_html);
 
-                        $thisStep.addClass('done');
-                        $thisStep.removeClass('todo');
-                        $thisStep.removeClass('active');
-                        $thisStep.find('.info').text(response.end_time);
-                        $thisStep.find('.info').show();
                         // Change the icon for the pathway's completion status.
                         $thisStep.closest('tr').find('td:last').html(response.pathway_status_html);
 
@@ -807,7 +817,7 @@ $(function () {
                         ps.requestDetails({
                             partial: 0,
                             pathstep_id: ps.pathstepId,
-                            pathstep_type_id: -1,
+                            pathstep_type_id: ps.pathstepTypeId,
                             visit_id: ps.visitID
                         });
                     }
@@ -820,12 +830,15 @@ $(function () {
                     type: 'POST',
                     data: {
                         visit_id: ps.visitID,
+                        step_id: ps.pathstepId,
+                        step_type_id: ps.pathstepTypeId,
                         YII_CSRF_TOKEN: YII_CSRF_TOKEN
                     },
                     success: function (response) {
                         // This is a check-in step so it is already in the correct position.
-                        const $thisStep = $('.oe-pathstep-btn[data-pathstep-id="checkin"][data-visit-id="' + ps.visitID + '"]');
+                        let $thisStep = $('.oe-pathstep-btn[data-pathstep-id="' + ps.pathstepId + '"], .oe-pathstep-btn[data-visit-id="' + ps.visitID + '"][data-pathstep-type-id="' +  ps.pathstepTypeId + '"]');
                         const oldSteps = collectActiveTodoStepsFrom($thisStep.closest('td.js-pathway-container'));
+                        $thisStep.closest('td.js-pathway-container').html(response.step_html);
 
                         $thisStep.addClass('done');
                         $thisStep.removeClass('todo');
@@ -902,10 +915,11 @@ $(function () {
                             refreshStatistics(ps.visitID, oldSteps, newSteps);
 
                             ps.resetPopup();
+                            ps.pathstepId = response.step.id;
                             ps.requestDetails({
                                 partial: 0,
                                 pathstep_type_id: ps.pathstepTypeId,
-                                pathstep_id: response.step_id,
+                                pathstep_id: ps.pathstepId,
                                 visit_id: ps.visitID
                             });
                         } else {
@@ -961,19 +975,19 @@ $(function () {
                     type: 'POST',
                     data: {
                         visit_id: ps.visitID,
+                        step_id: ps.pathstepId,
                         YII_CSRF_TOKEN: YII_CSRF_TOKEN
                     },
                     success: function (response) {
-                        // This is a check-in step so it is already in the correct position.
-                        const $tr = $(`tr#js-pathway-${ps.visitID}`);
-                        updatePathwayTr($tr, response, 'later', ps);
-
-                        // This is a check-in step so it is already in the correct position.
-                        const $thisStep = $('.oe-pathstep-btn[data-pathstep-id="checkin"][data-visit-id="' + ps.visitID + '"]');
-                        $thisStep.removeClass('done');
-                        $thisStep.addClass('todo');
-                        $thisStep.find('.info').text('');
-                        $thisStep.siblings('.oe-pathstep-btn.buff.wait').remove();
+                        const $thisStep = $('.oe-pathstep-btn[data-pathstep-id="' + ps.pathstepId + '"]');
+                        $thisStep.closest('td.js-pathway-container').html(response.step_html);
+                        ps.resetPopup();
+                        ps.requestDetails({
+                            partial: 0,
+                            pathstep_id: ps.pathstepId,
+                            pathstep_type_id: ps.pathstepTypeId,
+                            visit_id: ps.visitID
+                        });
                     }
                 });
                 break;

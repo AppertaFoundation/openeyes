@@ -50,7 +50,7 @@ if ($is_step_instance) {
             <button 
                 class="green hint js-ps-popup-btn" 
                 data-pathstep-id="<?=$step->id?>"
-                data-pathway-id="<?=$step->pathway->id?>"
+                data-pathway-id="<?= $step instanceof PathwayStep ? $step->pathway->id : null ?>"
                 data-action="<?= $is_started ? 'checkout' : 'next' ?>"
                 <?= $is_completed ? 'style="display: none;"' : ''?>>
                 <?= $is_started ? 'Check out only' : 'Check out' ?>
@@ -58,7 +58,7 @@ if ($is_step_instance) {
             <button 
                 class="<?= $is_completed ? 'blue' : 'red' ?> hint js-ps-popup-btn" 
                 data-pathstep-id="<?=$step->id?>"
-                data-pathway-id="<?=$step->pathway->id?>"
+                data-pathway-id="<?= $step instanceof PathwayStep ? $step->pathway->id : null ?>"
                 data-action="<?=$is_completed ? 'undo_finish' : 'prev'?>"
                 <?= $is_requested ? 'style="display: none;"' : ''?>>
                 <?php if ($is_completed) {
