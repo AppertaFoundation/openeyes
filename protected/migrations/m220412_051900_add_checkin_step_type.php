@@ -1,6 +1,6 @@
 <?php
 
-class m220407_020756_add_checkin_step_type extends OEMigration
+class m220412_051900_add_checkin_step_type extends OEMigration
 {
     /**
      * @return bool|void
@@ -33,7 +33,8 @@ SELECT
     {$step_type_id} AS step_type_id,
     'checkin' AS short_name,
     'Check in' AS long_name,
-    0 AS `order`,
+    0 AS `queue_order`,
+    0 as `todo_order`,
     start_time,
     start_time AS end_time,
     IF(start_time IS NOT NULL, 2, 0) AS status
@@ -57,7 +58,7 @@ SELECT
     {$step_type_id} AS step_type_id,
     'checkin' AS short_name,
     'Check in' AS long_name,
-    0 AS `order`,
+    0 AS `queue_order`,
     0 AS status
 FROM worklist_definition wd
 JOIN pathway_type pt ON pt.id = wd.pathway_type_id
