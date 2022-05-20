@@ -382,7 +382,7 @@ $footer_array = explode("{e-signature}", $element["footer"]);
                                 <?php echo $form->dropDownListNoPost(strtolower($string_group->name), $strings, '', array(
                                     'empty' => '- ' . $string_group->name . ' -',
                                     'nowrapper' => true,
-                                    'class' => 'cols-full',
+                                    'class' => 'cols-full stringgroup',
                                     'disabled' => empty($strings),
                                 )) ?>
                             <?php } ?>
