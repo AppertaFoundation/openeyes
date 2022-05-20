@@ -1100,7 +1100,6 @@ class BaseEventTypeController extends BaseModuleController
     public function isEventApplicableToWorklistPathstepData($pathstep_data)
     {
         $event_type_class_name = \EventType::model()->findByPk($this->event->event_type_id)->class_name;
-        \OELog::log(print_r($pathstep_data, true));
 
         return isset($pathstep_data->action_type) &&
             $pathstep_data->action_type == 'new_event' &&
