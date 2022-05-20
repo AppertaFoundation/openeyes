@@ -1985,73 +1985,75 @@ EOL;
                 ComplicationTypeId,
                 ComplicationTypeDescription
             )
-            SELECT
-                c.oe_event_id
-                , (
-                /* Look up most recent operation outer query post op complication for same oe_episode */
-                SELECT eon.id
-                /* Start with same oe_episode as examination event (correlated from outer query) */
-                FROM event eon
-                JOIN event_type et
+            SELECT * FROM (
+              SELECT
+                  c.oe_event_id
+                  , (
+                  /* Look up most recent operation outer query post op complication for same oe_episode */
+                  SELECT eon.id
+                  /* Start with same oe_episode as examination event (correlated from outer query) */
+                  FROM event eon
+                  JOIN event_type et
+                      ON et.id = eon.event_type_id
+                  /* Correlated operation notes to outer query for same oe_episode */
+                  WHERE eon.episode_id = cev.episode_id
+                  AND et.class_name = 'OphTrOperationnote'
+                  AND eon.deleted = 0
+                  /* Restrict to operations on or before examination post op complication date */
+                  AND eon.event_date <= cev.event_date
+                  ORDER BY eon.event_date DESC
+                  LIMIT 1
+                  ) AS OperationId
+                  , 'L' AS Eye
+                  , poc.code AS ComplicationTypeId
+                  , poc.name AS ComplicationTypeDescription
+                  FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
+                  JOIN et_ophciexamination_postop_complications epoc
+                      ON epoc.event_id = c.oe_event_id
+                  JOIN ophciexamination_postop_et_complications epoce
+                      ON epoc.id = epoce.element_id
+                  JOIN ophciexamination_postop_complications poc
+                      ON epoce.complication_id = poc.id
+                  /* Look up original oe_events to deterine oe_episode */
+                  JOIN event cev
+                      ON cev.id = c.oe_event_id
+                  WHERE epoce.eye_id IN (1, 3) /* 1 = LEFT EYE, 3 = BOTH EYES */
+
+                  UNION ALL
+
+                  SELECT
+                  c.oe_event_id
+                  , (
+                  /* Look up most recent operation outer query post op complication for same oe_episode */
+                  SELECT eon.id
+                  /* Start with same oe_episode as examination event (correlated from outer query) */
+                  FROM event eon
+                  JOIN event_type et
                     ON et.id = eon.event_type_id
-                /* Correlated operation notes to outer query for same oe_episode */
-                WHERE eon.episode_id = cev.episode_id
-                AND et.class_name = 'OphTrOperationnote'
-                AND eon.deleted = 0
-                /* Restrict to operations on or before examination post op complication date */
-                AND eon.event_date <= cev.event_date
-                ORDER BY eon.event_date DESC
-                LIMIT 1
-                ) AS OperationId
-                , 'L' AS Eye
-                , poc.code AS ComplicationTypeId
-                , poc.name AS ComplicationTypeDescription
-                FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
-                JOIN et_ophciexamination_postop_complications epoc
-                    ON epoc.event_id = c.oe_event_id
-                JOIN ophciexamination_postop_et_complications epoce
-                    ON epoc.id = epoce.element_id
-                JOIN ophciexamination_postop_complications poc
-                    ON epoce.complication_id = poc.id
-                /* Look up original oe_events to deterine oe_episode */
-                JOIN event cev
-                    ON cev.id = c.oe_event_id
-                WHERE epoce.eye_id IN (1, 3) /* 1 = LEFT EYE, 3 = BOTH EYES */
-
-                UNION ALL
-
-                SELECT
-                c.oe_event_id
-                , (
-                 /* Look up most recent operation outer query post op complication for same oe_episode */
-                 SELECT eon.id
-                 /* Start with same oe_episode as examination event (correlated from outer query) */
-                 FROM event eon
-                 JOIN event_type et
-                   ON et.id = eon.event_type_id
-                 /* Correlated operation notes to outer query for same oe_episode */
-                 WHERE eon.episode_id = cev.episode_id
-                 AND et.class_name = 'OphTrOperationnote'
-                 AND eon.deleted = 0
-                 /* Restrict to operations on or before examination post op complication date */
-                 AND eon.event_date <= cev.event_date
-                 ORDER BY eon.event_date DESC
-                 LIMIT 1
-                 ) AS OperationId
-                , 'R' AS Eye
-                , poc.code AS ComplicationTypeId
-                , poc.name AS ComplicationTypeDescription
-                FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
-                JOIN et_ophciexamination_postop_complications epoc
-                    ON epoc.event_id = c.oe_event_id
-                JOIN ophciexamination_postop_et_complications epoce
-                    ON epoc.id = epoce.element_id
-                JOIN ophciexamination_postop_complications poc
-                    ON epoce.complication_id = poc.id
-                /* Look up original oe_events to deterine oe_episode */
-                JOIN event cev
-                    ON cev.id = c.oe_event_id
-                WHERE epoce.eye_id IN (2, 3) /* 2 = RIGHT EYE, 3 = BOTH EYES */ ;
+                  /* Correlated operation notes to outer query for same oe_episode */
+                  WHERE eon.episode_id = cev.episode_id
+                  AND et.class_name = 'OphTrOperationnote'
+                  AND eon.deleted = 0
+                  /* Restrict to operations on or before examination post op complication date */
+                  AND eon.event_date <= cev.event_date
+                  ORDER BY eon.event_date DESC
+                  LIMIT 1
+                  ) AS OperationId
+                  , 'R' AS Eye
+                  , poc.code AS ComplicationTypeId
+                  , poc.name AS ComplicationTypeDescription
+                  FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
+                  JOIN et_ophciexamination_postop_complications epoc
+                      ON epoc.event_id = c.oe_event_id
+                  JOIN ophciexamination_postop_et_complications epoce
+                      ON epoc.id = epoce.element_id
+                  JOIN ophciexamination_postop_complications poc
+                      ON epoce.complication_id = poc.id
+                  /* Look up original oe_events to deterine oe_episode */
+                  JOIN event cev
+                      ON cev.id = c.oe_event_id
+                  WHERE epoce.eye_id IN (2, 3) /* 2 = RIGHT EYE, 3 = BOTH EYES */) a
+                  WHERE a.OperationId IS NOT NULL;
 EOL;
         return $query;
     }

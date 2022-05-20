@@ -343,7 +343,7 @@ class Firm extends BaseActiveRecordVersioned
      * @param $institution_id
      * @return string
      */
-    public function getConsultantNameReversedAndUsername($institution_id): string
+    public function getConsultantNameAndUsername($institution_id, bool $reversed = true): string
     {
         if ($consultant = $this->consultant) {
             $user_auth_id = Yii::app()->db->createCommand()
@@ -360,11 +360,9 @@ class Firm extends BaseActiveRecordVersioned
             $user_auth = UserAuthentication::model()->findByPk($user_auth_id);
 
             if (!$user_auth) {
-                return $consultant->contact->last_name
-                    . ' ' . $consultant->contact->first_name;
+                return $reversed ? $consultant->getReversedFullNameAndTitle() : $consultant->getFullNameAndTitle();
             }
-            return $consultant->contact->last_name
-                . ' ' . $consultant->contact->first_name
+            return ($reversed ? $consultant->getReversedFullNameAndTitle() : $consultant->getFullNameAndTitle())
                 . " ({$user_auth->username})";
         }
 
