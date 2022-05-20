@@ -783,7 +783,7 @@ $(function () {
                     success: function (response) {
                         // This is a check-in step so it is already in the correct position.
                         let $thisStep;
-                        if ($('.oe-pathstep-btn[data-pathstep-id="' + pathstep_id + '"]').length > 0) {
+                        if (pathstep_id) {
                             $thisStep = $('.oe-pathstep-btn[data-pathstep-id="' + pathstep_id + '"]');
                         } else {
                             $thisStep = $('.oe-pathstep-btn[data-visit-id="' + ps.visitID + '"][data-pathstep-type-id="' + pathstep_type_id + '"]');
