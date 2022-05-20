@@ -1028,7 +1028,7 @@ class DefaultController extends \BaseEventTypeController
         return
             parent::isEventApplicableToWorklistPathstepData($pathstep_data) &&
             (!isset($pathstep_data->workflow_step_id) ||
-            (isset($this->step) && $pathstep_data->workflow_step_id == $this->step->id));
+            (isset($this->step->id) && $pathstep_data->workflow_step_id == $this->step->id));
     }
 
     /***
