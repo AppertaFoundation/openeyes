@@ -1088,7 +1088,11 @@ class User extends BaseActiveRecordVersioned
     {
         $criteria = new CDbCriteria();
         $criteria->condition = 'version_date > NOW() - INTERVAL 12 month';
-        return $this->pincode->getPreviousVersionsWithCriteria($criteria);
+		if( isset($this->pincode)) {
+			return $this->pincode->getPreviousVersionsWithCriteria($criteria);
+		}else {
+			return array();
+		}
     }
 
     /**
