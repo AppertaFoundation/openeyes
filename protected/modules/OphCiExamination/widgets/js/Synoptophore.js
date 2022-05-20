@@ -146,7 +146,11 @@ OpenEyes.UI = OpenEyes.UI || {};
 
         let displayElements = [];
         if (selectedValues['horizontal_angle'].length) {
-            displayElements.push("+" + selectedValues['horizontal_angle'] + "°");
+            let prefix_sign = "";
+            if (selectedValues['horizontal_angle'] > 0) {
+                prefix_sign = "+";
+            }
+            displayElements.push(prefix_sign + selectedValues['horizontal_angle'] + "°");
         }
         if (selectedValues['vertical_power'].length) {
             displayElements.push(selectedValues['vertical_power'] + "Δ");
