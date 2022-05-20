@@ -44,7 +44,7 @@ if (!empty(getenv('LOG_TO_BROWSER'))) {
 // Enable the YII debug bar (appears in top-right of browser)
 // To enable for all connections, set YII_DEBUG_BAR_IPS to 0.0.0.0/0
 // Can be set to comma separated lists, using the following formats: '127.0.0.1','192.168.1.*', 88.23.23.0/24 (note the '' when using full IPs)
-if (!empty(getenv('YII_DEBUG_BAR_IPS'))) {
+if (YII_DEBUG && !empty(getenv('YII_DEBUG_BAR_IPS'))) {
     $yiidebugbar = array(
         'preload' => array(
             'debug',
