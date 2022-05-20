@@ -441,7 +441,7 @@ if [ $migrate == "1" ]; then
     echo Performing database migrations
     bash "$SCRIPTDIR"/oe-migrate.sh "$migrateparams"
     echo "The following migrations were applied..."
-    grep applied "$WROOT"/protected/runtime/migrate.log
+    grep applied "$WROOT"/protected/runtime/migrate.log || :
 
     # Run post-migration demo scripts
     # Actual scripts are in sample module, for greater flexibility
