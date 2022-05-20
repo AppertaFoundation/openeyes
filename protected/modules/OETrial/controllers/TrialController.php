@@ -99,6 +99,7 @@ class TrialController extends BaseModuleController
 
         $sortDir = Yii::app()->request->getParam('sort_dir', '0') === '0' ? 'asc' : 'desc';
         $sortBy = Yii::app()->request->getParam('sort_by', 'Name');
+        $page = (int)Yii::app()->request->getParam('TrialPatient_page', 0);
 
         $this->render('view', array(
             'permission' => self::getCurrentUserPermission(),
@@ -107,6 +108,7 @@ class TrialController extends BaseModuleController
             'dataProviders' => $this->model->getPatientDataProviders($sortBy, $sortDir),
             'sort_by' => $sortBy,
             'sort_dir' => (int)Yii::app()->request->getParam('sort_dir', 0),
+            'page' => $page
         ));
     }
 
@@ -478,14 +480,14 @@ class TrialController extends BaseModuleController
 
     public function actionRenderPopups()
     {
-        if (isset($_POST["trialId"])) {
-            $trial = $this->loadModel($_POST["trialId"]);
+        if (isset($_GET["trialId"])) {
+            $trial = $this->loadModel($_GET["trialId"]);
             $sortDir = Yii::app()->request->getParam('sort_dir', '0') === '0' ? 'asc' : 'desc';
             $sortBy = Yii::app()->request->getParam('sort_by', 'Name');
             $dataProviders = $trial->getPatientDataProviders($sortBy, $sortDir);
             foreach ($dataProviders as $i => $dataProvider) {
-                foreach ($dataProvider->getData() as $dataProvider) {
-                    $this->renderPartial('application.widgets.views.PatientIcons', array('data' => ($dataProvider->patient), 'page' => 'trial'));
+                foreach ($dataProvider->getData() as $data) {
+                    $this->renderPartial('application.widgets.views.PatientIcons', array('data' => ($data->patient), 'page' => 'TrialPatient'));
                 }
             }
         }

@@ -140,10 +140,13 @@
 <script type="application/javascript">
     $(document).ready(function () {
         $.ajax({
-            type: "POST",
+            type: "GET",
             url: "/OETrial/trial/renderPopups",
             data: {
                 "trialId" : (<?= $trial->id?>),
+                "sort_dir" : '<?= $sort_dir ?>',
+                "sort_by" : '<?= $sort_by ?>',
+                "TrialPatient_page" : <?= $page ?>,
                 YII_CSRF_TOKEN: YII_CSRF_TOKEN
             },
             success: function (resp) {
