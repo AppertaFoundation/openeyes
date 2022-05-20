@@ -498,7 +498,7 @@ class SettingMetadata extends BaseActiveRecordVersioned
                 isset($substitutions[$key]['value']) &&
                 !empty($substitutions[$key]['value'])
             ) {
-                $sub = $substitutions[$key]['value'];
+                $sub = str_replace(array("\r\n", "\r", "\n"), "<br/>", $substitutions[$key]['value']);
             } elseif ($preserve_empty_substitutions) {
                 $sub = '<span>[' . $key . ']</span>';
             } else {
@@ -603,7 +603,7 @@ class SettingMetadata extends BaseActiveRecordVersioned
     public static function getCorrespondenceSubstitutions($element_letter = null, $recipient_address = null)
     {
         return array(
-            'to_address' => array('label' => 'Recipient Address', 'value' => $recipient_address),
+            'to_address' => array('label' => 'Recipient Address', 'value' => isset($recipient_address) ? self::makeSpan($recipient_address) : null),
             'source_address' => array('label' => 'Source Address', 'value' => isset($element_letter) && !empty($element_letter->source_address) ? self::makeSpan($element_letter->source_address) : null),
             'cc_address' => array('label' => 'CC Address', 'value' => isset($element_letter) && !empty($element_letter->cc) ? self::makeSpan($element_letter->cc) : null),
             'correspondence_date' => array('label' => 'Correspondence Date', 'value' => isset($element_letter) && !empty($element_letter->event) ? self::makeSpan(\Helper::convertMySQL2NHS($element_letter->event->event_date)) : null),

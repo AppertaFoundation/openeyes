@@ -687,7 +687,6 @@ class DefaultController extends BaseEventTypeController
         }
 
         // check if printing is necessary
-
         $this->pdf_output = new PDF_JavaScript();
         foreach ($recipients as $target_id => $recipient) {
             $recipient_query = rawurlencode($recipient);
