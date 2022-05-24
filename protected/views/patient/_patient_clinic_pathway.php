@@ -30,7 +30,6 @@ $picker_setup = $pick_behavior->setupPicker();
             <td><?= $pathway->worklist_patient->scheduledtime ?></td>
             <td>
                 <div class="list-name"><?= $pathway->worklist_patient->worklist->name ?></div>
-                <div class="code">First Attendance</div>
             </td>
             <td class="js-pathway-container">
                 <?php $this->renderPartial(

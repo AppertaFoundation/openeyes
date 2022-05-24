@@ -127,20 +127,6 @@ $config = array(
             'itemTable' => 'authitem',
             'itemChildTable' => 'authitemchild',
         ),
-        'cache' => array(
-            'class' => 'system.caching.CFileCache',
-            'directoryLevel' => 1,
-        ),
-        'settingCache' => array(
-            'class' => 'system.caching.CFileCache',
-            'directoryLevel' => 1,
-            'keyPrefix' => 'SettingMetadata',
-            'cachePath' => 'protected/runtime/cache/settingmeta'
-        ),
-        'cacheBuster' => array(
-            'class' => 'CacheBuster',
-            'time' => '20220520130530',
-        ),
         'clientScript' => array(
             'class' => 'ClientScript',
             'packages' => array(
@@ -1014,6 +1000,44 @@ $modules = array(
         'OphDrPGDPSD',
         'BreakGlass' => array('class' => '\OEModule\BreakGlass\BreakGlassModule'),
         );
+
+
+/**
+ * Setup caches
+ * Use APC Cache for some caches if APC extensions are enabled, if not, fall back to file cache
+***/
+
+$caches = array(
+        'cache' => array(
+            'class' => 'system.caching.CFileCache',
+            'directoryLevel' => 1,
+        ),
+
+        'cacheBuster' => array(
+            'class' => 'CacheBuster',
+            'time' => '20220520130530',
+        ),
+);
+
+if (extension_loaded('apcu') && ini_get('apc.enabled')) {
+    $caches['settingCache'] = array(
+            'class' => 'system.caching.CApcCache',
+            'keyPrefix' => 'SettingMetadata',
+    );
+} else {
+    $caches['settingCache'] = array(
+            'class' => 'system.caching.CFileCache',
+            'keyPrefix' => 'SettingMetadata',
+            'directoryLevel' => 1,
+            'cachePath' => 'protected/runtime/cache/settingmeta',
+    );
+}
+
+
+$config['components'] = array_merge($config['components'], $caches);
+/**
+ * End caching setup
+ */
 
 // deal with any custom modules added for the local deployment - which are set in /config/modules.conf (added via docker)
 // Gracefully ignores file if it is missing
