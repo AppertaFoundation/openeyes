@@ -53,14 +53,7 @@ $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient($displa
                     <span><?= PatientIdentifierHelper::getIdentifierPrompt($primary_identifier); ?> </span>
                     <div class="js-copy-to-clipboard hospital-number" style="cursor: pointer;">
                         <?= PatientIdentifierHelper::getIdentifierValue($primary_identifier); ?>
-                        <?php
-                        $this->widget(
-                            'application.widgets.PatientIdentifiers',
-                            [
-                                'patient' => $this->patient,
-                                'show_all' => true
-                            ]
-                        ); ?>
+                        
                         <?php if ($display_primary_number_usage_code === 'GLOBAL' && $primary_identifier && $primary_identifier->patientIdentifierStatus) { ?>
                             <i class="oe-i <?= isset($primary_identifier->patientIdentifierStatus->icon->class_name) ? $primary_identifier->patientIdentifierStatus->icon->class_name : 'exclamation' ?> small"></i>
                         <?php } ?>

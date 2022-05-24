@@ -187,6 +187,7 @@ $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPrompt
             ?>
         >
             <td><?= $primary_identifier->value ?? $patient->localIdentifiers[0]->value ?? ''; ?>
+                <span class="fade">
                 <?php $this->widget(
                     'application.widgets.PatientIdentifiers',
                     [
@@ -194,7 +195,7 @@ $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPrompt
                         'show_all' => true
                     ]
                 ); ?>
-                <?= $patient->isNewRecord ? '| From PAS' : '| From Local DB'?>
+                <small><?= $patient->isNewRecord ? '| From PAS' : ''?><small></span>
             </td>
                   <td><?php echo $patient->title ?></td>
                   <td><?php echo $patient->first_name ?></td>
