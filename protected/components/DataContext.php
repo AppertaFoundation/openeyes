@@ -14,6 +14,8 @@ class DataContext
         'subspecialties', 'support_services'
     );
 
+    protected static ?Firm $firm = null;
+
     protected $attributes = array();
 
     /**
@@ -42,26 +44,37 @@ class DataContext
      */
     private function getCurrentFirm()
     {
+        // Cache the firm from the database
+        $dependency_sql = "SELECT UPDATE_TIME 
+                           FROM   information_schema.tables
+                           WHERE  TABLE_SCHEMA = DATABASE()
+                           AND TABLE_NAME = 'firm'";
+        $dependency = new CDbCacheDependency($dependency_sql);
         return Firm::model()
+            ->cache(10000, $dependency, 3)
             ->with(array(
                 'serviceSubspecialtyAssignment' => array(
                     'subspecialty'
                 )
             ))
             ->findByPk($this->app->session['selected_firm_id']);
+
     }
 
     /**
      * Work out the appropriate settings from the current state of the Application.
      */
     protected function initialiseFromApp()
-    {
-        $firm = $this->getCurrentFirm();
-        if (!$firm) {
+    {   
+        if (!isset(static::$firm)){
+            static::$firm = $this->getCurrentFirm();
+        }
+        
+        if (static::$firm) {
             // should only arise on the command line
             return;
         }
-        if ($subspecialty = $firm->getSubspecialty()) {
+        if ($subspecialty = static::$firm->getSubspecialty()) {
             $this->setAttribute('subspecialties', $subspecialty);
         } else {
             $this->setAttribute('support_services', true);
