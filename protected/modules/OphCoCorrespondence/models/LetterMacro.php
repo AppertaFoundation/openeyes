@@ -153,9 +153,10 @@ class LetterMacro extends BaseActiveRecordVersioned
         $this->addError($attr, 'Institution, Site, Subspecialty, Firm - At least one entry is needed');
     }
 
-    // assign values to the relationships
-    public function beforeSave()
+    public function afterSave()
     {
+        // Create the mappings in afterSave to prevent an issue the letter macro
+        // id missing in beforeSave when the letter macro is being first created.
         $this->deleteMappings(ReferenceData::LEVEL_INSTITUTION);
         $this->deleteMappings(ReferenceData::LEVEL_SITE);
         $this->deleteMappings(ReferenceData::LEVEL_SUBSPECIALTY);
@@ -177,11 +178,7 @@ class LetterMacro extends BaseActiveRecordVersioned
                     break;
             }
         }
-        return parent::beforeSave();
-    }
 
-    public function afterSave()
-    {
         if (isset(
             $_POST['OEModule_OphCoCorrespondence_models_MacroInitAssociatedContent'],
             $_POST['OEModule_OphCoCorrespondence_models_OphcorrespondenceInitMethod']
