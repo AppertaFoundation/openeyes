@@ -1008,11 +1008,6 @@ $modules = array(
 ***/
 
 $caches = array(
-        'cache' => array(
-            'class' => 'system.caching.CFileCache',
-            'directoryLevel' => 1,
-        ),
-
         'cacheBuster' => array(
             'class' => 'CacheBuster',
             'time' => '20220520130530',
@@ -1020,11 +1015,18 @@ $caches = array(
 );
 
 if (extension_loaded('apcu') && ini_get('apc.enabled')) {
+    $caches['cache'] = array(
+            'class' => 'system.caching.CApcCache',
+    );
     $caches['settingCache'] = array(
             'class' => 'system.caching.CApcCache',
             'keyPrefix' => 'SettingMetadata',
     );
 } else {
+    $caches['cache'] = array(
+            'class' => 'system.caching.CFileCache',
+            'directoryLevel' => 1,
+    );
     $caches['settingCache'] = array(
             'class' => 'system.caching.CFileCache',
             'keyPrefix' => 'SettingMetadata',
