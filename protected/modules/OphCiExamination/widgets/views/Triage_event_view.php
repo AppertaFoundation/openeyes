@@ -37,7 +37,7 @@
                 <th>Time</th>
                 <td>
                     <small>at</small>
-                    <?= $triage->time ?>
+                    <?php echo date('H:i', strtotime($triage->time));?>
                 </td>
             </tr>
             <tr>
