@@ -1,6 +1,18 @@
 <!-- event-header -->
 <!-- examination event has a search facility for Left and Right Eye in edit mode -->
-<?php $this->widget('application.widgets.IndexSearch', array('event_type' => $event_name)); ?>
+<?php
+    // cache the search index panel for 1 day.
+    $cache_key = 'IndexSearch_' . $event_name;
+if ($this->beginCache($cache_key, array('duration' => 86400))) {
+    $this->widget('application.widgets.IndexSearch', array('event_type' => $event_name));
+    $this->endCache();
+} else {
+    // Script files don't get registed when the cache is loaded,
+    // so the widget's JS file must be registered manually
+    Yii::app()->getAssetManager()->registerScriptFile('js/IndexSearch.js', 'application.widgets');
+}
+?>
+
 
 <?php $this->renderPartial('//patient/episodes_sidebar'); ?>
 
