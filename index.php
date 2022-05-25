@@ -16,11 +16,20 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+if ((getenv('OE_MODE') && strtolower(getenv('OE_MODE')) !== 'live') || (isset($environment) && $environment === 'dev')) {
+    if (!defined('YII_DEBUG')) {
+        define('YII_DEBUG', true);
+    };
+}
+
 $dirname = dirname(__FILE__);
 if (file_exists($dirname . '/vendor/autoload.php')) {
     require_once($dirname . '/vendor/autoload.php');
 }
-if (extension_loaded('apcu') && ini_get('apc.enabled')) {
+if (
+    (strtolower(getenv('OE_FORCE_YIILITE')) === 'true')
+    || (!YII_DEBUG && extension_loaded('apcu') && ini_get('apc.enabled'))
+) {
     $yii = $dirname . '/vendor/yiisoft/yii/framework/yiilite.php';
 } else {
     $yii = $dirname . '/vendor/yiisoft/yii/framework/yii.php';
@@ -36,12 +45,6 @@ foreach (array($common_config, $local_common_config) as $configfile) {
             $environment = $m [1];
         }
     }
-}
-
-if ((getenv('OE_MODE') && strtolower(getenv('OE_MODE')) !== 'live') || (isset($environment) && $environment === 'dev')) {
-    if (!defined('YII_DEBUG')) {
-        define('YII_DEBUG', true);
-    };
 }
 
 // specify how many levels of call stack should be shown in each log message
