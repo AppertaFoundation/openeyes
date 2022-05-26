@@ -220,6 +220,8 @@ if [ $clearcahes = 1 ]; then
     sudo chown www-data:www-data $WROOT/protected/runtime/cache/events 2>/dev/null
     sudo rm -rf $WROOT/assets/* 2>/dev/null || :
     echo ""
+    echo "clearing APC cache..."
+    curl http://localhost/apc_clear.php || :
 fi
 
 # Fix permissions
