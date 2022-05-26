@@ -23,7 +23,7 @@ if ($this->checkPrintAccess()) {
 $device_information = DeviceInformation::model()->findByAttributes(['event_id' => $this->event->id]);
 $sop = isset($device_information->sop_instance_uid) ? $device_information->sop_instance_uid : [];
 
-if (!empty($sop) && Yii::app()->params['enable_forum_integration'] === 'on') {
+if (!empty($sop) && \SettingMetadata::model()->getSetting('enable_forum_integration') === 'on') {
     array_unshift(
         $this->event_actions,
         EventAction::link(
