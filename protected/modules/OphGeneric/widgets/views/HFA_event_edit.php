@@ -17,3 +17,11 @@
 
 ?>
 <?php ;//TODO View for the hfa element can be added later
+?>
+<div class="HFA">
+    <?php if ($this->element) :
+        echo \CHtml::activeHiddenField($this->element, "id");
+endif; ?>
+
+</div>
+<?php
