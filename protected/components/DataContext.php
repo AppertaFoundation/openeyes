@@ -70,7 +70,7 @@ class DataContext
             static::$firm = $this->getCurrentFirm();
         }
         
-        if (static::$firm) {
+        if (!static::$firm) {
             // should only arise on the command line
             return;
         }

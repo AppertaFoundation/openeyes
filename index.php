@@ -19,7 +19,9 @@
 if ((getenv('OE_MODE') && strtolower(getenv('OE_MODE')) !== 'live') || (isset($environment) && $environment === 'dev')) {
     if (!defined('YII_DEBUG')) {
         define('YII_DEBUG', true);
-    };
+    }
+} elseif (!defined('YII_DEBUG')) {
+        define('YII_DEBUG', false);
 }
 
 $dirname = dirname(__FILE__);
@@ -28,7 +30,7 @@ if (file_exists($dirname . '/vendor/autoload.php')) {
 }
 if (
     (strtolower(getenv('OE_FORCE_YIILITE')) === 'true')
-    || (!YII_DEBUG && extension_loaded('apcu') && ini_get('apc.enabled'))
+    || (YII_DEBUG === false && extension_loaded('apcu') && ini_get('apc.enabled'))
 ) {
     $yii = $dirname . '/vendor/yiisoft/yii/framework/yiilite.php';
 } else {
