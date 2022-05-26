@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -68,7 +69,7 @@ class Medication extends BaseActiveRecordVersioned
 
     protected function mappingColumn(int $level): string
     {
-        return $this->tableName().'_id';
+        return $this->tableName() . '_id';
     }
 
     const ATTR_PRESERVATIVE_FREE = "PRESERVATIVE_FREE";
@@ -108,14 +109,14 @@ class Medication extends BaseActiveRecordVersioned
         // will receive user inputs.
         return [
             ['source_type, preferred_term', 'required'],
-            ['source_type, last_modified_user_id, created_user_id', 'length', 'max'=>10],
+            ['source_type, last_modified_user_id, created_user_id', 'length', 'max' => 10],
             ['source_subtype', 'length', 'max' => 45],
-            ['preferred_term, short_term, preferred_code, vtm_term, vtm_code, vmp_term, vmp_code, amp_term, amp_code', 'length', 'max'=>255],
+            ['preferred_term, short_term, preferred_code, vtm_term, vtm_code, vmp_term, vmp_code, amp_term, amp_code', 'length', 'max' => 255],
             ['id, deleted_date, last_modified_date, created_date, medicationSearchIndexes, medicationAttributeAssignments, medicationSetItems, default_route_id, default_form_id, default_dose, default_dose_unit_term, source_old_id, is_prescribable', 'safe'],
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
             ['id, source_type, source_subtype, preferred_term, preferred_code, vtm_term, vtm_code, vmp_term, vmp_code, amp_term, amp_code,
-					deleted_date, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'],
+					deleted_date, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on' => 'search'],
         ];
     }
 
@@ -146,7 +147,7 @@ class Medication extends BaseActiveRecordVersioned
             "defaultRoute" => [self::BELONGS_TO, MedicationRoute::class, 'default_route_id'],
 
             'medicationSetAutoRuleMedication' => [self::HAS_MANY, MedicationSetAutoRuleMedication::class, 'medication_id'],
-            'institutions' => array(self::MANY_MANY, 'Institution', $this->tableName().'_institution('.$this->tableName().'_id, institution_id)'),
+            'institutions' => array(self::MANY_MANY, 'Institution', $this->tableName() . '_institution(' . $this->tableName() . '_id, institution_id)'),
         ];
     }
 
@@ -211,7 +212,7 @@ class Medication extends BaseActiveRecordVersioned
     {
         // @todo Please modify the following code to remove attributes that should not be searched.
 
-        $criteria=new CDbCriteria;
+        $criteria = new CDbCriteria();
 
         $criteria->compare('id', $this->id);
         $criteria->compare('source_type', $this->source_type, true);
@@ -231,7 +232,7 @@ class Medication extends BaseActiveRecordVersioned
         $criteria->compare('created_date', $this->created_date, true);
 
         return new CActiveDataProvider($this, [
-            'criteria'=>$criteria,
+            'criteria' => $criteria,
         ]);
     }
 
@@ -472,35 +473,64 @@ class Medication extends BaseActiveRecordVersioned
     {
         $firm_id = $this->getApp()->session->get('selected_firm_id');
         $site_id = $this->getApp()->session->get('selected_site_id');
-        /** @var Firm $firm */
-        $firm = $firm_id ? Firm::model()->findByPk($firm_id) : null;
-        if ($firm) {
-            $sets = [];
-            foreach ($this->medicationSets as $set) {
-                $relevant = false;
-                if (empty($set->medicationSetRules)) {
-                    $relevant = true;
-                } else {
-                    foreach ($set->medicationSetRules as $rule) {
-                        if ($rule->subspecialty_id === null && $rule->site_id === null) {
-                            $relevant = true;
-                        }
 
-                        if ($rule->subspecialty_id == $firm->subspecialty_id && $rule->site_id == $site_id) {
-                            $relevant = true;
+        // Gets the last combined updated time of the settings_tables and uses as a cache dependency. The cache will be invalidated if the tables have been updated
+        $debounce_val = Yii::app()->cache->get('SettingMetaDebounce');
+        if ($debounce_val === false) {
+            $dependency_sql = " SELECT UPDATE_TIME 
+                                FROM   information_schema.tables
+                                WHERE  TABLE_SCHEMA = DATABASE()
+                                AND TABLE_NAME = 'medication_set_item'
+                                ";
+
+            $debounce_val = Yii::app()->db->createCommand($dependency_sql)->queryScalar();
+            // add a debounce of a few seconds before poling for the setting cache dependency, to avoid a DB query for every run.
+            Yii::app()->cache->set('MedicationSetItemDebounce', $debounce_val, 5);
+        };
+
+        // set the last update timestamp = to the latest debounce time
+        if (Yii::app()->cache->get('medication_set_item_LastUpdate') != $debounce_val) {
+            Yii::app()->cache->set('medication_set_item_LastUpdate', $debounce_val);
+        }
+
+        $key = 'getMedicationSetsForCurrentSubspecialty_' . $firm_id . '_' . $site_id;
+        $value = Yii::app()->cache->get($key);
+        if ($value === false) {
+            /** @var Firm $firm */
+            $firm = $firm_id ? Firm::model()->cache(100)->findByPk($firm_id) : null;
+            if ($firm) {
+                $sets = [];
+                foreach ($this->medicationSets as $set) {
+                    $relevant = false;
+                    if (empty($set->medicationSetRules)) {
+                        $relevant = true;
+                    } else {
+                        foreach ($set->medicationSetRules as $rule) {
+                            if ($rule->subspecialty_id === null && $rule->site_id === null) {
+                                $relevant = true;
+                            }
+
+                            if ($rule->subspecialty_id == $firm->subspecialty_id && $rule->site_id == $site_id) {
+                                $relevant = true;
+                            }
                         }
+                    }
+
+                    if ($relevant) {
+                        $sets[] = $set;
                     }
                 }
 
-                if ($relevant) {
-                    $sets[] = $set;
-                }
+                $value = $sets;
+            } else {
+                $value = $this->medicationSets;
             }
 
-            return $sets;
-        } else {
-            return $this->medicationSets;
+            // Set a dependency on the SettingMetaLastUpdate not changing (i.e, the cache is invalidated if any of the setting_* tables receives an update)
+            $dependency = new CExpressionDependency("Yii::app()->cache->get('medication_set_item_LastUpdate') == '" . Yii::app()->cache->get('medication_set_item_LastUpdate') . "'");
+            Yii::app()->cache->set($key, $value, 10000, $dependency);
         }
+        return $value;
     }
 
     /**
