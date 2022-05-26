@@ -98,10 +98,9 @@ class EventImageController extends BaseController
         $criteria->select = 't.event_id, t.last_modified_date';
         $criteria->compare('status_id', $created_image_status_id);
         $criteria->addInCondition('event_id', $event_ids);
-        $criteria->compare('t.last_modified_date', '>= e.last_modified_date');
         $criteria->addCondition('e.deleted = 0');
         $criteria->addCondition('(t.page = 0 OR t.page IS NULL)');
-        $criteria->join = 'join event e on t.event_id = e.id ';
+        $criteria->join = 'join event e on t.event_id = e.id AND t.last_modified_date >= e.last_modified_date';
         $criteria->order = 'event_date DESC';
 
         /**
