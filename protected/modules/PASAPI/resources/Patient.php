@@ -26,6 +26,7 @@ use Gp;
 use NhsNumberVerificationStatus;
 use Practice;
 use Yii;
+use \OEModule\OphCiExamination\models\Element_OphCiExamination_CommunicationPreferences;
 
 class Patient extends BaseResource
 {
@@ -236,9 +237,27 @@ class Patient extends BaseResource
             $change_episode = \Episode::getChangeEpisode($patient);
             $change_episode->save();
 
-            $event = $this->createExamination($change_episode);
+            $event_type = \EventType::model()->find('class_name=:class_name', array(':class_name' => 'OphCiExamination'));
 
-            $communication_pref = $this->createCommunicationElement($event);
+            $event = \Event::model()->find(array(
+                'condition' => 'episode_id = :episode_id AND event_type_id = :event_type_id',
+                'params' => [':episode_id' => $change_episode->id, ':event_type_id' => $event_type->id],
+                'order' => 'id DESC',
+                'limit' => 1
+            ));
+
+            if ($event) {
+                $communication_pref = Element_OphCiExamination_CommunicationPreferences::model()->findByAttributes(array(
+                    'event_id' => $event->id
+                ));
+
+                if (!$communication_pref) {
+                    $communication_pref = $this->createCommunicationElement($event);
+                }
+            } else {
+                $event = $this->createExamination($change_episode);
+                $communication_pref = $this->createCommunicationElement($event);
+            }
 
             if (property_exists($this, 'LanguageCode')) {
                 $code = $this->getAssignedProperty('LanguageCode');
