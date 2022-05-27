@@ -1,4 +1,5 @@
  <?php
+    $dob_mandatory = \SettingMetadata::model()->checkSetting('dob_mandatory_in_search', 'on');
 
     $this->beginWidget('CActiveForm', array(
         'id' => 'patient1-search-form',
@@ -17,8 +18,10 @@
             <!--            Parameterised for CERA-519-->
             <strong><?php echo (\SettingMetadata::model()->getSetting('hos_num_label'))?></strong>,
             <strong><?php echo \SettingMetadata::model()->getSetting('nhs_num_label')?> </strong>,
-            <strong>Firstname Surname</strong> or
-            <strong>Surname, Firstname</strong>.
+            <?php if (!$dob_mandatory): ?><strong>Firstname Surname</strong> or<?php endif; ?>
+            <strong>Firstname Surname DOB</strong> or
+            <?php if (!$dob_mandatory): ?><strong>Surname, Firstname</strong> or<?php endif; ?>
+            <strong>Surname, Firstname DOB</strong>.
         </div>
 
         <div class="cols-9 column">

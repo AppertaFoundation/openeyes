@@ -115,7 +115,9 @@
             <td id="patient-search-wrapper">
                 <?php $this->widget('application.widgets.AutoCompleteSearch', [
                         'htmlOptions' => [
-                                'placeholder' => 'Patient identifier, Firstname Surname or Surname, Firstname'
+                                'placeholder' => (\SettingMetadata::model()->checkSetting('dob_mandatory_in_search', 'on')) ?
+                                    'Patient identifier, Firstname Surname DOB or Surname, Firstname DOB' :
+                                    'Patient identifier, Firstname Surname or Firstname Surname DOB or Surname, Firstname or Surname, Firstname DOB'
                         ],
                         'layoutColumns' => [
                                 'field' => '11'
