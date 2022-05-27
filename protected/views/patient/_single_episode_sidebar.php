@@ -57,21 +57,21 @@ $display_deleted_events_in_deleted_category = $display_deleted_in && $display_de
                 <option id="subspecialty" value="subspecialty">Specialty</option>
             </select>
         </div>
-        <div class="list-controls">
-            <span class="sorting-order asc">
-                <i class="oe-i arrow-up pro-theme"></i>
-            </span>
-            <span class="sorting-order desc">
-                <i class="oe-i arrow-down pro-theme"></i>
-            </span>
-            <div class="right">
-                <span class="expand-all">
-                    <i class="oe-i plus pro-theme"></i>
-                </span>
-                <span class="collapse-all">
-                    <i class="oe-i minus pro-theme"></i>
-                </span>
-            </div>
+        <div class="sidebar-list-controls">
+            <button type="button" class="sorting-order asc">
+                <i class="oe-i small direction-up"></i>
+    </button>
+            <button type="button" class="sorting-order desc">
+                <i class="oe-i small direction-down"></i>
+    </button>
+            
+                <button type="button" class="expand-all">
+                    <i class="oe-i small reduce-height"></i>
+    </button>
+                <button type="button" class="collapse-all">
+                    <i class="oe-i small increase-height"></i>
+    </button>
+         
         </div>
         <ul class="events" id="js-events-by-date">
             <?php foreach ($ordered_episodes as $specialty_episodes) {
@@ -145,7 +145,7 @@ $display_deleted_events_in_deleted_category = $display_deleted_in && $display_de
                                         $event_icon_class .= ' ready';
                                     } elseif ($eur = EUREventResults::model()->find('event_id=?', array($event->id)) && $event->hasIssue('EUR Failed')) {
                                         $event_icon_class .= ' cancelled';
-                                    } elseif($event->hasIssue('Consent Withdrawn')) {
+                                    } elseif ($event->hasIssue('Consent Withdrawn')) {
                                         $event_icon_class .= ' cancelled';
                                     } else {
                                         $event_icon_class .= ' alert';
