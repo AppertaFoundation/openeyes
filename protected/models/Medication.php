@@ -351,58 +351,66 @@ class Medication extends BaseActiveRecordVersioned
     private function listByUsageCode($usage_code, $subspecialty_id = null, $raw = false, $site_id = null, $prescribable_filter = false)
     {
 
-        $criteria = new CDbCriteria();
-        $criteria->with = ['medicationSetRules.usageCode'];
-        $criteria->together = true;
-        $criteria->compare('usageCode.usage_code', $usage_code);
-        if (!is_null($subspecialty_id)) {
-            $criteria->addCondition('medicationSetRules.subspecialty_id = :subspecialty_id OR medicationSetRules.subspecialty_id IS NULL');
-            $criteria->params[':subspecialty_id'] = $subspecialty_id;
-        } else {
-            $criteria->addCondition('medicationSetRules.subspecialty_id IS NULL');
-        }
-        if (!is_null($site_id)) {
-            $criteria->addCondition('medicationSetRules.site_id = :site_id OR medicationSetRules.site_id IS NULL');
-            $criteria->params[':site_id'] = $site_id;
-        } else {
-            $criteria->addCondition('medicationSetRules.site_id IS NULL');
-        }
-        $sets = MedicationSet::model()->findAll($criteria);
+        $key = "medication_listByUsageCode_" . $usage_code . "_" . $subspecialty_id . "_" . $site_id . "_" . $prescribable_filter;
+        $dependency_sql = "SELECT UPDATE_TIME
+                            FROM   information_schema.tables
+                            WHERE  TABLE_SCHEMA = DATABASE()
+                            AND TABLE_NAME = 'medication_set_item'";
+        $value = Yii::app()->cache->get($key);
 
-        $return = [];
-        $ids = [];
+        if ($value === false) {
+            $criteria = new CDbCriteria();
+            $criteria->with = ['medicationSetRules.usageCode'];
+            $criteria->together = true;
+            $criteria->compare('usageCode.usage_code', $usage_code);
+            if (!is_null($subspecialty_id)) {
+                $criteria->addCondition('medicationSetRules.subspecialty_id = :subspecialty_id OR medicationSetRules.subspecialty_id IS NULL');
+                $criteria->params[':subspecialty_id'] = $subspecialty_id;
+            } else {
+                $criteria->addCondition('medicationSetRules.subspecialty_id IS NULL');
+            }
+            if (!is_null($site_id)) {
+                $criteria->addCondition('medicationSetRules.site_id = :site_id OR medicationSetRules.site_id IS NULL');
+                $criteria->params[':site_id'] = $site_id;
+            } else {
+                $criteria->addCondition('medicationSetRules.site_id IS NULL');
+            }
+            $sets = MedicationSet::model()->findAll($criteria);
 
-        /** @var MedicationSet[] $sets */
+            $return = [];
+            $ids = [];
 
-        foreach ($sets as $set) {
-            foreach ($set->items as $item) {
-                if (in_array($item->medication->id, $ids)) {
-                    continue;
-                }
-                if ($prescribable_filter) {
-                    $prescribable_sets = \MedicationSet::model()->findByUsageCode('PRESCRIBABLE_DRUGS', $site_id, $subspecialty_id);
-                    $prescribable_set_ids = array_map(fn($set) => $set->id, $prescribable_sets);
-                    $item_medication_set_ids = array_map(fn($set) => $set->id, $item->medication->medicationSets);
-                    if (empty(array_intersect($item_medication_set_ids, $prescribable_set_ids))) {
+            /** @var MedicationSet[] $sets */
+
+            foreach ($sets as $set) {
+                foreach ($set->items as $item) {
+                    if (in_array($item->medication->id, $ids)) {
                         continue;
                     }
-                }
-                $route = null;
-                $is_eye_route = false;
-                if ($item->default_route_id) {
-                    $route = "$item->defaultRoute";
-                    $is_eye_route = $item->defaultRoute->isEyeRoute();
-                } elseif ($item->medication && $item->medication->default_route_id) {
-                    $route = "{$item->medication->defaultRoute}";
-                    $is_eye_route = $item->medication->defaultRoute->isEyeRoute();
-                }
-                $duration_id = null;
-                if (isset($item->duration_id) && $item->duration_id) {
-                    $duration_id = $item->duration_id;
-                } elseif (isset($item->default_duration_id) && $item->default_duration_id) {
-                    $duration_id = $item->default_duration_id;
-                }
-                $return[] = [
+                    if ($prescribable_filter) {
+                        $prescribable_sets = \MedicationSet::model()->findByUsageCode('PRESCRIBABLE_DRUGS', $site_id, $subspecialty_id);
+                        $prescribable_set_ids = array_map(fn($set) => $set->id, $prescribable_sets);
+                        $item_medication_set_ids = array_map(fn($set) => $set->id, $item->medication->medicationSets);
+                        if (empty(array_intersect($item_medication_set_ids, $prescribable_set_ids))) {
+                            continue;
+                        }
+                    }
+                    $route = null;
+                    $is_eye_route = false;
+                    if ($item->default_route_id) {
+                        $route = "$item->defaultRoute";
+                        $is_eye_route = $item->defaultRoute->isEyeRoute();
+                    } elseif ($item->medication && $item->medication->default_route_id) {
+                        $route = "{$item->medication->defaultRoute}";
+                        $is_eye_route = $item->medication->defaultRoute->isEyeRoute();
+                    }
+                    $duration_id = null;
+                    if (isset($item->duration_id) && $item->duration_id) {
+                        $duration_id = $item->duration_id;
+                    } elseif (isset($item->default_duration_id) && $item->default_duration_id) {
+                        $duration_id = $item->default_duration_id;
+                    }
+                    $return[] = [
                     'label' => $item->medication->getLabel(true),
                     'value' => $item->medication->getLabel(true),
                     'name' => $item->medication->getLabel(true),
@@ -423,16 +431,23 @@ class Medication extends BaseActiveRecordVersioned
                     'allergy_ids' => array_map(function ($e) {
                         return $e->id;
                     }, $item->medication->allergies),
-                ];
-                $ids[] = $item->medication->id;
+                    ];
+                    $ids[] = $item->medication->id;
+                }
             }
+
+            usort($return, function ($a, $b) {
+                return strcmp($a['label'], $b['label']);
+            });
+
+            $value = $raw ? $return : CHtml::listData($return, 'id', 'label');
+
+            // Cache the result
+            $dependency = new CDbCacheDependency($dependency_sql);
+            Yii::app()->cache->set($key, $value, 10000, $dependency);
         }
 
-        usort($return, function ($a, $b) {
-            return strcmp($a['label'], $b['label']);
-        });
-
-        return $raw ? $return : CHtml::listData($return, 'id', 'label');
+        return $value;
     }
 
     public function listBySubspecialtyWithCommonMedications($subspecialty_id, $raw = false, $site_id = null, $prescribable_filter = false)
@@ -474,7 +489,8 @@ class Medication extends BaseActiveRecordVersioned
         $firm_id = $this->getApp()->session->get('selected_firm_id');
         $site_id = $this->getApp()->session->get('selected_site_id');
 
-        // Gets the last combined updated time of the settings_tables and uses as a cache dependency. The cache will be invalidated if the tables have been updated
+        // Gets the last updated time of the medication_set_item table and uses as a cache dependency. The cache will be invalidated if the table has been updated
+        // Because this method gets called from inside a long loop, we add a debounce of 5 seconds, to avoid the update time being tested on every iteration!
         $debounce_val = Yii::app()->cache->get('SettingMetaDebounce');
         if ($debounce_val === false) {
             $dependency_sql = " SELECT UPDATE_TIME 
