@@ -1,4 +1,5 @@
 <?php
+    $dob_mandatory = \SettingMetadata::model()->checkSetting('dob_mandatory_in_search', 'on');
 
     $this->beginWidget('CActiveForm', array(
         'id' => 'patient1-search-form',
@@ -15,13 +16,21 @@
         <div class="search-examples">
             Find a patient by
             <?php
-                $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $this->selectedInstitutionId, $this->selectedSiteId);
-                $secondary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(SettingMetadata::model()->getSetting('display_secondary_number_usage_code'), $this->selectedInstitutionId, $this->selectedSiteId);
+            $display_primary_number_usage_code = SettingMetadata::model()->getSetting('display_primary_number_usage_code');
+            $display_secondary_number_usage_code = SettingMetadata::model()->getSetting('display_secondary_number_usage_code');
+            $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient($display_primary_number_usage_code, $this->patient->id, $institution->id, $selected_site_id);
+            $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient($display_secondary_number_usage_code, $this->patient->id, $institution->id, $selected_site_id);
             ?>
-            <strong><?= $primary_identifier_prompt ?></strong>,
-            <strong><?= $secondary_identifier_prompt ?> </strong>,
-            <strong>Firstname Surname</strong> or
-            <strong>Surname, Firstname</strong>.
+            <strong><?= $primary_identifier ?></strong>,
+            <strong><?= $secondary_identifier ?> </strong>,
+            <?php if (!$dob_mandatory) :
+                ?><strong>Firstname Surname</strong> or<?php
+            endif; ?>
+            <strong>Firstname Surname DOB</strong> or
+            <?php if (!$dob_mandatory) :
+                ?><strong>Surname, Firstname</strong> or<?php
+            endif; ?>
+            <strong>Surname, Firstname DOB</strong>.
         </div>
 
         <div class="cols-9 column">

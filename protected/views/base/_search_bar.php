@@ -17,9 +17,17 @@ $secondary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultProm
 ?>
 <!-- Splitting the UI below based on context because as of OE-8991, the search bar gets shown differently based on whether its on the homepage or search results page-->
 <?php
+$search_by_message = $primary_identifier_prompt . ', ' . $secondary_identifier_prompt;
+
+if (\SettingMetadata::model()->checkSetting('dob_mandatory_in_search', 'on')) {
+    $search_by_message .= ', Firstname Surname DOB or Surname, Firstname DOB.';
+} else {
+    $search_by_message .= ', Firstname Surname or Firstname Surname DOB or Surname, Firstname or Surname, Firstname DOB.';
+}
+
 if ($context == "sidebar") { ?>
     <div id="oe-search-patient">
-        <h4>Search by <?php echo  $primary_identifier_prompt . ', ' . $secondary_identifier_prompt?>, Firstname Surname or Surname, Firstname.</h4>
+        <h4>Search by <?= $search_by_message ?></h4>
         <div class="search-patient row">
             <?=CHtml::textField('query', isset($search_term) ? $search_term : '', [
                 'autocomplete' => 'off',
@@ -40,7 +48,7 @@ if ($context == "sidebar") { ?>
                 'placeholder' => 'Search',
           ]); ?>
         <button type="submit" id="js-find-patient" class="blue hint">Find Patient</button>
-        <div class="find-by">Search by <?php echo $primary_identifier_prompt . ', ' . $secondary_identifier_prompt?>, Firstname Surname or Surname, Firstname.</div>
+        <div class="find-by">Search by <?= $search_by_message ?></div>
       <i class="spinner" style="display: none;" title="Loading..."></i>
     </div>
 </div>

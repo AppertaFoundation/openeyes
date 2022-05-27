@@ -428,7 +428,7 @@ class PatientMergeRequestController extends BaseController
         $term = trim(\Yii::app()->request->getParam('term', ''));
         $result = array();
 
-        $patient_search = new PatientSearch();
+        $patient_search = new PatientSearch(false, true);
 
         if ($patient_search->getValidSearchTerm($term)) {
             $data_provider = $patient_search->search($term);

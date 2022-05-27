@@ -235,7 +235,7 @@ class DefaultController extends \BaseModuleController
             }
         }
 
-        $search = new \PatientSearch();
+        $search = new \PatientSearch(false, true);
         $search_terms = $search->prepareSearch($term);
 
         $patient = new Patient();

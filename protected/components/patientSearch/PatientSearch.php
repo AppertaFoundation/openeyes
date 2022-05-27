@@ -52,6 +52,14 @@ class PatientSearch
     public $use_pas = false;
 
     /**
+     * If the PatientSearch is being used for autocomplete searches
+     * such as for the Virtual Clinic and Patient Merge views
+     *
+     * @var bool
+     * */
+    public $used_for_autocomplete = false;
+
+    /**
      * Holding the search helper class, either DefaultTypePatientSearchHelper or AnyTypePatientSearchHelper
      */
     public $search_helper;
@@ -66,9 +74,10 @@ class PatientSearch
     /**
      * PatientSearch constructor.
      */
-    public function __construct($use_pas = false)
+    public function __construct($use_pas = false, $used_for_autocomplete = false)
     {
         $this->use_pas = $use_pas;
+        $this->used_for_autocomplete = $used_for_autocomplete;
     }
 
     /**
@@ -361,6 +370,9 @@ class PatientSearch
                 if($formated_dob){
                     $dob = $formated_dob->format('Y-m-d');
                 }
+            } else if (!$this->used_for_autocomplete && \SettingMetadata::model()->checkSetting('dob_mandatory_in_search', 'on')) {
+                // The autocomplete check is there to prevent the mandatory DoB check from interferring with look ahead used for autocompletion.
+                return [];
             }
             $result['dob'] = trim($dob);
         }
