@@ -235,9 +235,16 @@
     PathStep.prototype.bindExtraEvents = function () {
         const ps = this;
         ps.options.extraActions.forEach(function (item) {
-            $(document).off(item.event, item.target).on(item.event, item.target, function (e) {
-                item.callback(e, this, ps);
-            });
+            // Scroll events do not delegate correctly as they do not bubble up
+            if (item.event === 'scroll') {
+                $(item.target).off(item.event).on(item.event, function (e) {
+                    item.callback(e, this, ps);
+                });
+            } else {
+                $(document).off(item.event, item.target).on(item.event, item.target, function (e) {
+                    item.callback(e, this, ps);
+                });
+            }
         });
     };
 

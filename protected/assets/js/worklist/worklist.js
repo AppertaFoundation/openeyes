@@ -1069,7 +1069,7 @@ $(function () {
                 'callback': cancelAdmin,
             },
             {
-                'target': '.oe-worklists .oe-full-main',
+                'target': '.oe-worklists .oe-full-main, #js-clinic-manager',
                 'event': 'scroll',
                 'callback': pageScroll,
             },
