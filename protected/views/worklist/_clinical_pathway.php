@@ -9,7 +9,11 @@ $pathway = $visit->pathway;
 <div class="pathway" data-visit-id="<?= $visit->id ?>" data-pathway-id="<?= $pathway->id ?? null ?>">
     <?php
     if ($pathway) {
+        $check_in_completed = false;
+
         foreach ($pathway->completed_steps as $step) {
+            $check_in_completed = $check_in_completed || $step->short_name === 'checkin';
+
             $status_class = $step->getStatusString();
             $time = $step->start_time;
             $formatted_time = $time ? DateTime::createFromFormat('Y-m-d H:i:s', $time)->format('H:i') : null;
@@ -81,6 +85,7 @@ $pathway = $visit->pathway;
             <?php }
         }
         if (
+            $check_in_completed &&
             $pathway->start_time
             && !$pathway->end_time
             && count($pathway->started_steps) === 0
