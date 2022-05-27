@@ -1613,11 +1613,22 @@ class WorklistController extends BaseController
                         ['visit' => $new_step->pathway->worklist_patient],
                         true
                     ),
-                    'no_wait_timer' => in_array($new_step->type->short_name, PathwayStep::NO_WAIT_TIMER_AFTER_ADD)
+                    'no_wait_timer' => in_array($new_step->type->short_name, PathwayStep::NO_WAIT_TIMER_AFTER_ADD) || ($this->findCheckIn($wl_patient->pathway->completed_steps) === null)
                 ]
             );
         }
         throw new CHttpException(500, 'Unable to add step to pathway.');
+    }
+
+    private function findCheckIn($steps)
+    {
+        foreach ($steps as $step) {
+            if ($step->short_name === 'checkin') {
+                return $step;
+            }
+        }
+
+        return null;
     }
 
     /**
