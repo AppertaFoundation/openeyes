@@ -20,7 +20,7 @@ $secondary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultProm
 $search_by_message = $primary_identifier_prompt . ', ' . $secondary_identifier_prompt;
 
 if (\SettingMetadata::model()->checkSetting('dob_mandatory_in_search', 'on')) {
-    $search_by_message .= ', Firstname Surname DOB or Surname, Firstname DOB.';
+    $search_by_message .= ', Firstname Surname dd/MM/yyyy or Surname, Firstname dd/MM/yyyy.';
 } else {
     $search_by_message .= ', Firstname Surname or Firstname Surname DOB or Surname, Firstname or Surname, Firstname DOB.';
 }
