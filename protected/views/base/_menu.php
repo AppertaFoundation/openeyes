@@ -25,7 +25,7 @@
 
                         if (!$link) {
                             $param = $item['requires_setting']['setting_key'];
-                            $base_url = Yii::app()->params[$param];
+                            $base_url = \SettingMetadata::model()->getSetting($param);
 
                             switch ($param) {
                                 case 'imagenet_url':
@@ -34,7 +34,7 @@
                                         $patient_identifier = PatientIdentifier::model()->find(
                                             'patient_id=:patient_id AND patient_identifier_type_id=:patient_identifier_type_id',
                                             [':patient_id' => $this->patient->id,
-                                                ':patient_identifier_type_id' => Yii::app()->params['imagenet_patient_identifier_type']]
+                                                ':patient_identifier_type_id' => \SettingMetadata::model()->getSetting('imagenet_patient_identifier_type')]
                                         );
                                     }
                                     $link = $patient_identifier ? $base_url . 'IMAGEnet/?patientID=' . $patient_identifier->value . '&lastName=' . $this->patient->last_name . '&firstName=' . $this->patient->first_name : $base_url;
