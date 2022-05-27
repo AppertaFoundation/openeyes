@@ -12,10 +12,17 @@ $this->beginWidget('CActiveForm', array(
 )); ?>
 <!-- Splitting the UI below based on context because as of OE-8991, the search bar gets shown differently based on whether its on the homepage or search results page-->
 <?php
-$search_by_message = (\SettingMetadata::model()->getSetting('hos_num_label')) . ', ' . (\SettingMetadata::model()->getSetting('nhs_num_label'));
+$institution_id = Institution::model()->getCurrent()->id;
+$site_id = Yii::app()->session['selected_site_id'];
+$primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $institution_id, $site_id);
+$secondary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(SettingMetadata::model()->getSetting('display_secondary_number_usage_code'), $institution_id, $site_id);
+?>
+<!-- Splitting the UI below based on context because as of OE-8991, the search bar gets shown differently based on whether its on the homepage or search results page-->
+<?php
+$search_by_message = $primary_identifier_prompt . ', ' . $secondary_identifier_prompt;
 
 if (\SettingMetadata::model()->checkSetting('dob_mandatory_in_search', 'on')) {
-    $search_by_message .= ', Firstname Surname DOB or Surname, Firstname DOB.';
+    $search_by_message .= ', Firstname Surname dd/MM/yyyy or Surname, Firstname dd/MM/yyyy.';
 } else {
     $search_by_message .= ', Firstname Surname or Firstname Surname DOB or Surname, Firstname or Surname, Firstname DOB.';
 }
