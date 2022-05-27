@@ -25,7 +25,7 @@ $(document).ready(function () {
 		let loginOverlay = $('#js-overlay');
 		loginOverlay.hide();
 
-		checkLoginOverlay();
+		queueLoginOverlay();
 	}
 
 	var openeyes = new OpenEyes.UI.NavBtnPopup('logo', $('#js-openeyes-btn'), $('#js-openeyes-info')).useWrapperEvents($('.openeyes-brand'));
@@ -407,33 +407,37 @@ function showLoginOverlay() {
     }
 }
 
-function checkLoginOverlay() {
-	let authenticated = pollUserAuthenticated();
-
-	if (authenticated) {
-		queueLoginOverlay();
-	}
-	else {
-		showLoginOverlay();
-	}
-}
-
 function queueLoginOverlay() {
 	$.ajax({
-		url: '/User/getSecondsUntilSessionExpire',
-		async: false,
+		url: '/User/getSessionExpireTimestamp',
+		async: true,
 		data: {
 			"YII_CSRF_TOKEN": YII_CSRF_TOKEN,
 			"extend_session": false,
 		},
 		success: function (resp) {
-			let secondsUntilExpiry = resp + 10;
-			setTimeout(checkLoginOverlay, secondsUntilExpiry * 1000);
+			let current_unix_timestamp = Math.floor((new Date()).getTime() / 1000);
+			
+			//Add a delay to ensure the session has actually expired before we allow the user to log in again
+			let delay = 5;
+
+			if(resp === false) {
+				resp = current_unix_timestamp;
+			}
+
+			let secondsUntilExpiry = resp - current_unix_timestamp + delay;
+			setTimeout(showLoginOverlay, secondsUntilExpiry * 1000);
 		},
 		error: function (resp) {
-			new OpenEyes.UI.Dialog.Alert({
-				content: "Unable to poll user session expiry.\n\nPlease contact support for assistance."
-			}).open();
+			//If we get a forbidden, assume the user is logged out;
+			// show the overlay and ask the user to log in
+			if (resp.status === 403) {
+				showLoginOverlay();
+			} else {
+				new OpenEyes.UI.Dialog.Alert({
+					content: "Unable to poll user session expiry.\n\nPlease contact support for assistance."
+				}).open();
+			}
 		}
 	});
 }

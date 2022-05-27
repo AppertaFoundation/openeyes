@@ -23,7 +23,7 @@ class UserController extends BaseController
                 'roles' => array('OprnViewClinical'),
             ),
             array('allow',
-                'actions' => array('testAuthenticated', 'getSecondsUntilSessionExpire'),
+                'actions' => array('getSessionExpireTimestamp'),
                 'users' => array('@'),
             ),
         );
@@ -79,22 +79,20 @@ class UserController extends BaseController
         ));
     }
 
-    public function actionTestAuthenticated()
-    {
-        //If the user is not authenticated, the request will be blocked and this will not be returned
-        $this->renderJSON('Success');
-    }
-
-    public function actionGetSecondsUntilSessionExpire()
+    public function actionGetSessionExpireTimestamp()
     {
         $expire = Yii::app()->db->createCommand()
             ->select('expire')
             ->from('user_session')
             ->where('id=:id', array(':id' => $_COOKIE[session_name()]))
-            ->queryRow();
+            ->queryScalar();
 
-        $seconds_to_expire = $expire['expire'] - time();
+        //Expire will be false if the user was not found in the session table,
+        // so we return the current timestamp to treat it as expired
+        if ($expire === false) {
+            $expire = time();
+        }
 
-        $this->renderJSON($seconds_to_expire);
+        $this->renderJSON($expire);
     }
 }
