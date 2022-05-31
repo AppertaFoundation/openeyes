@@ -69,9 +69,6 @@
             <option value="{{id}}">{{name}} ({{shortName}})</option>
             {{/selectableSubspecialties}}
           </select>
-
-          <!-- <h6 style="margin-top:5px"><?= Firm::serviceLabel() ?></h6> -->
-          <!-- <div class="no-subspecialty">&nbsp;</div> -->
           <div class="fixed-service cols-10">&nbsp;</div>
           <select class="select-service cols-10" style="display: none;" data-service-firm-label="<?= Firm::serviceLabel() ?>">
           </select>

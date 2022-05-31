@@ -9,7 +9,7 @@
 
 // Note, we are ignoring the possibility of additional specialties here and only supporting the first,
 // which is expected to be opthalmology.
-$active_episodes = array();
+    $active_episodes = array();
 if (is_array($ordered_episodes)) {
     foreach ($ordered_episodes as $specialty) {
         $active_episodes = array_merge($active_episodes, $specialty['episodes']);
@@ -23,10 +23,10 @@ if (is_array($ordered_episodes)) {
 if (count($legacyepisodes)) {
     if (!is_array($ordered_episodes) || empty($ordered_episodes)) {
         $ordered_episodes = array(
-            array(
-                'specialty' => 'Ophthalmology',
-                'episodes' => array(),
-            ),
+        array(
+            'specialty' => 'Ophthalmology',
+            'episodes' => array(),
+        ),
         );
     }
     foreach ($legacyepisodes as $le) {
@@ -41,7 +41,24 @@ $episodes_list = array();
 $display_deleted_in = $this->displayDeletedEventsIn();
 // 1 for "Deleted Events" category, 2 for "Timeline"
 $display_deleted_events_in_deleted_category = $display_deleted_in && $display_deleted_in === 1;
-?>
+
+// Cache the sidebar for each patient. Refresh whenever a new event is created for the patient
+// Currently doesn't filter out change-tracker events, as that would likely add additional time to the SQL query
+$epsidebarkey = "_single_episode_sidebar_patient:" . $this->patient->id . "display_deleted:" . $display_deleted_in;
+if (
+        $this->beginCache(
+            $epsidebarkey,
+            array(
+            'dependency' => array(
+              'class' => 'system.caching.dependencies.CDbCacheDependency',
+              'sql' => "SELECT MAX(ev.last_modified_date) 
+                        FROM `event` ev 
+                          INNER JOIN episode ep ON ep.id = ev.episode_id
+                        WHERE ep.patient_id = " . $this->patient->id
+              )
+            )
+        )
+) {?>
 <div class="sidebar-eventlist">
     <?php
     if (is_array($ordered_episodes)) {
@@ -187,7 +204,10 @@ $display_deleted_events_in_deleted_category = $display_deleted_in && $display_de
     <?php } ?>
 </div>
 
-<?php
+    <?php
+
+    $this->endCache($epsidebarkey);
+}
 
 $this->renderPartial('//patient/add_new_event', array(
     'button_selector' => '#add-event',

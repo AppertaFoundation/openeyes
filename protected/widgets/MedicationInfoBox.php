@@ -33,7 +33,14 @@ class MedicationInfoBox extends \BaseCWidget
     public function init()
     {
         $this->type = $this->type ? $this->type : self::TYPE_LIGHT;
-        $this->data = $this->getViewData($this->medication_id);
+
+        // Becuase the medication metadata rarely changes, it should be safe to cache for a decent amount of time
+        $cache_key = "MedicationInfoBox_data_id:" . $this->medication_id . "_type:" . $this->type . "_firm_id:" . Yii::app()->session['selected_firm_id'] . "_site_id:" . Yii::app()->session['selected_site_id'];
+        $this->data = Yii::app()->cache->get($cache_key);
+        if ($this->data === false) {
+            $this->data = $this->getViewData($this->medication_id);
+            Yii::app()->cache->set($cache_key, $this->data, 1000);
+        }
     }
 
     public function getIcon()
@@ -57,7 +64,8 @@ class MedicationInfoBox extends \BaseCWidget
             return $data;
         }
 
-        $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+        // cache the firm for a few minutes, as this loop runs many times, and the firm data rarely changes
+        $firm = Firm::model()->cache(300, null, 2)->findByPk(Yii::app()->session['selected_firm_id'])->with('ServiceSubspecialtyAssignment');
         $subspecialty_id = $firm->serviceSubspecialtyAssignment->subspecialty_id;
         $site_id = Yii::app()->session['selected_site_id'];
 
@@ -132,7 +140,11 @@ class MedicationInfoBox extends \BaseCWidget
 
     public function run()
     {
-        echo $this->getHTML();
+        $cache_key = "MedicationInfoBox_HTML_id:" . $this->medication_id . "_type:" . $this->type . "_firm_id:" . Yii::app()->session['selected_firm_id'] . "_site_id:" . Yii::app()->session['selected_site_id'];
+        if ($this->beginCache($cache_key, array('duration' => 1000))) {
+            echo $this->getHTML();
+            $this->endCache();
+        }
     }
 
     private function getInfoBoxHTML()

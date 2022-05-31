@@ -766,7 +766,8 @@ class EventMedicationUse extends BaseElement
     {
         $data = [];
 
-        $medication = Medication::model()->findByPk($this->medication_id);
+        // As the medication data changes infrequently, it should be safe to cache for at least 5 minutes
+        $medication = Medication::model()->cache(300)->findByPk($this->medication_id);
 
         $dosage = $this->getDoseAndFrequency();
         if (!empty($dosage)) {
