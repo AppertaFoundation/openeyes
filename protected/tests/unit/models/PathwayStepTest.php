@@ -45,6 +45,7 @@ class PathwayStepTest extends ActiveRecordTestCase
             'state_data' => null,
             'start_timestamp' => null,
             'now_timestamp' => time(),
+            'pathway_id' => '1',
         ];
         $this->assertEquals($expected, $step->toJSON());
 
@@ -60,6 +61,7 @@ class PathwayStepTest extends ActiveRecordTestCase
             'state_data' => null,
             'start_timestamp' => null,
             'now_timestamp' => time(),
+            'pathway_id' => 1,
         ];
         $this->assertEquals($expected, $step->toJSON());
     }

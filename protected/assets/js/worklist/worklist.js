@@ -761,6 +761,8 @@ $(function () {
                         ps.resetPopup();
 
                         ps.pathstepId = response.step.id;
+                        ps.pathwayId = ps.pathwayId ? ps.pathwayId : response.step.pathway_id;
+
                         ps.requestDetails({
                             partial: 0,
                             pathstep_id: ps.pathstepId,

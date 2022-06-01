@@ -296,6 +296,7 @@ class PathwayStep extends BaseActiveRecordVersioned
     {
         $json = array(
             'id' => $this->id,
+            'pathway_id' => $this->pathway->id,
             'patient_id' => $this->pathway->worklist_patient->patient_id,
             'status' => $this->getStatusString(),
             'type' => $this->type->type,
