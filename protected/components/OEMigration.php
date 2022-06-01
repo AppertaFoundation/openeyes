@@ -398,7 +398,7 @@ class OEMigration extends CDbMigration
             }
         }
 
-        
+
 
         $this->insert('element_type', $row);
 
@@ -486,9 +486,9 @@ class OEMigration extends CDbMigration
             'event_type_id' => $event_type_id,
         );
 
-        $exists = !empty($this->dbConnection->createCommand("SELECT id 
-                                                            FROM element_group 
-                                                            WHERE `name` = :group_name 
+        $exists = !empty($this->dbConnection->createCommand("SELECT id
+                                                            FROM element_group
+                                                            WHERE `name` = :group_name
                                                                 AND event_type_id = :event_type_id")->queryScalar([':group_name' => $name, ':event_type_id' => $event_type_id]));
         // If the element group already exists then just update the display_order
         // Else insert the new row
@@ -1076,7 +1076,7 @@ class OEMigration extends CDbMigration
         $cols = $this->dbConnection->createCommand("SHOW COLUMNS FROM `" . $table_name . "` LIKE '" .$column_name ."'")->queryScalar([ ':table_name' => $table_name ]);
         return !empty($cols);
     }
-    
+
     /**
      * Checks if a named foreign keys exists on a named table
      * @param $table_name Name of he table to check the FK on
@@ -1084,11 +1084,11 @@ class OEMigration extends CDbMigration
      * @return bool true if the FK exists
      */
     protected function verifyForeignKeyExists($table_name, $key_name){
-        $fk_exists = $this->dbConnection->createCommand('   SELECT count(*) 
-                                                            FROM information_schema.table_constraints 
-                                                            WHERE table_schema = DATABASE() 
-                                                                AND table_name = :table_name 
-                                                                AND constraint_name = :key_name 
+        $fk_exists = $this->dbConnection->createCommand('   SELECT count(*)
+                                                            FROM information_schema.table_constraints
+                                                            WHERE table_schema = DATABASE()
+                                                                AND table_name = :table_name
+                                                                AND constraint_name = :key_name
                                                                 AND constraint_type = "FOREIGN KEY"')->queryScalar([ ':table_name' => $table_name, ':key_name' => $key_name ]);
 
         return !empty($fk_exists);
@@ -1178,5 +1178,15 @@ class OEMigration extends CDbMigration
     protected function isColumnExist(string $table, string $column): bool
     {
         return isset($this->dbConnection->schema->getTable($table, true)->columns[$column]);
+    }
+
+    public function createOrReplaceView($view_name, $select)
+    {
+        $this->dbConnection->createCommand('create or replace view ' . $view_name . ' as ' . $select)->execute();
+    }
+
+    public function dropView($view_name)
+    {
+        $this->dbConnection->createCommand('drop view ' . $view_name)->execute();
     }
 }
