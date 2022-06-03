@@ -80,7 +80,10 @@ $picker_setup = $pick_behavior->setupPicker();
                     <button id=<?= "add-next-steps-preset-" . $pathway->id?> type="button" class="green hint js-add-select-btn">Next presets</button>
                 </td>
                 <script type="text/javascript">
-                    const pathwaySetupData = <?=$picker_setup?>;
+                    // This check will prevent double-definition errors when both the next-step element and the pathway status widgets are present on the same screen.
+                    if (typeof pathwaySetupData === undefined) {
+                        const pathwaySetupData = <?=$picker_setup?>;
+                    }
 
                     $(document).ready(function () {
                         let picker = new OpenEyes.UI.PathwayStepPicker({
