@@ -127,10 +127,10 @@ $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient($displa
                   </svg>
               </div>
                     <?php }?>
-
+                    <?php $has_trial_user_role = Yii::app()->user->checkAccess('Trial User'); ?>
                     <?php if ($this->patient->isEditable() && !$this->patient->isDeleted()) : ?>
               <div class="patient-local-edit js-patient-local-edit-btn"
-                                <?php if (Yii::app()->moduleAPI->get('OETrial') && count($this->patient->trials)) {
+                                <?php if (Yii::app()->moduleAPI->get('OETrial') && $has_trial_user_role) {
                                     echo 'style ="top: 35px; right: 0px"';
                                 }?>
               >
@@ -141,8 +141,8 @@ $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient($displa
                   </a>
               </div>
                     <?php endif; ?>
-                    <?php if ((Yii::app()->moduleAPI->get('OETrial')) && (count($this->patient->trials) !== 0)) { ?>
-              <div class="patient-trials js-trials-btn">
+                    <?php if (Yii::app()->moduleAPI->get('OETrial') && $has_trial_user_role) { ?>
+              <div class="patient-extra js-trials-btn">
                   <svg viewBox="0 0 30 30" class="icon">
                       <use xlink:href="<?php echo $navIconsUrl; ?>#trials-icon"></use>
                   </svg>

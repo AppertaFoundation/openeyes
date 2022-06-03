@@ -76,18 +76,18 @@ if ($summary) {
                 <i class="oe-i patient medium pad patient-management js-management-btn" id="js-management-btn"></i>
                 <i class="oe-i eye medium pad patient-quicklook js-quicklook-btn" id="js-quicklook-btn"></i>
         <?php }?>
-
+            <?php $has_trial_user_role = Yii::app()->user->checkAccess('Trial User'); ?>
             <?php if ($this->patient->isEditable() && !$this->patient->isDeleted()) : ?>
               <a href="<?php echo $this->controller->createUrl('/patient/update/', array('id' => $this->patient->id, 'prevUrl' => Yii::app()->request->url)); ?>" >
                   <i class="patient-local-edit js-patient-local-edit-btn oe-i medium pad pencil cc_pointer"
-                    <?php if (Yii::app()->moduleAPI->get('OETrial') && count($this->patient->trials)) {
+                    <?php if (Yii::app()->moduleAPI->get('OETrial') && $has_trial_user_role) {
                         echo 'style ="top: 35px; right: 0px"';
                     }?>
                   ></i>
               </a>
             <?php endif; ?>
-            <?php if ((Yii::app()->moduleAPI->get('OETrial')) && (count($this->patient->trials) !== 0)) { ?>
-                <i class="oe-i trials medium pad patient-trials js-trials-btn" id="js-trials-btn"></i>
+            <?php if ((Yii::app()->moduleAPI->get('OETrial')) && $has_trial_user_role) { ?>
+                <i class="oe-i trials medium pad patient-extra js-trials-btn" id="js-trials-btn"></i>
             <?php } ?>
         <div class="patient-details">
             <?php if ($trialContext) {
