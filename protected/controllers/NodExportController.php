@@ -848,7 +848,7 @@ EOL;
                     ) AS DiabetesTypeId,
                     "" AS DiabetesRegimeId,
                     (
-			SELECT CASE WHEN DATE != ''
+			SELECT CASE WHEN DATE != '' AND p.dob < `converted_date`
                                     THEN IFNULL((DATE_FORMAT(`converted_date`, '%Y') - DATE_FORMAT(p.dob, '%Y') - (DATE_FORMAT(`converted_date`, '00-%m-%d') < DATE_FORMAT(p.dob, '00-%m-%d'))), "")
                                     ELSE ""
 				END
@@ -1592,6 +1592,7 @@ EOL;
                                         WHERE
                                         (m.route_id = tmp_episode_medication_route.oe_route_id AND tmp_episode_medication_route.oe_option_id = m.laterality) OR
                                         (m.route_id = tmp_episode_medication_route.oe_route_id AND tmp_episode_medication_route.oe_option_id IS NULL)
+                                        LIMIT 1
                                       )
                                END
                       ) AS MedicationRouteId,
