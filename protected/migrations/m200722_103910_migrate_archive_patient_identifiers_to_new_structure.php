@@ -22,7 +22,7 @@ class m200722_103910_migrate_archive_patient_identifiers_to_new_structure extend
 
             $primary_institution = $this->getDbConnection()->createCommand("SELECT * FROM institution WHERE remote_id = '" . Yii::app()->params['institution_code'] . "'")->queryScalar();
 
-            $archive_patient_identifiers = $this->dbConnection->createCommand('SELECT * FROM archive_patient_identifier WHERE code = "RVEEH_UR"')->queryAll();
+            $archive_patient_identifiers = $this->dbConnection->createCommand('SELECT * FROM archive_patient_identifier WHERE code = "RVEEH_UR" AND LENGTH(TRIM(value)) > 0')->queryAll();
 
             $this->insert('patient_identifier_type_display_order', array(
                 'institution_id' => $primary_institution,
