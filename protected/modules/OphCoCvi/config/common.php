@@ -31,14 +31,7 @@ return array(
         ),
         'menu_bar_items' => array(
             'admin' => array(
-                'restricted' => array(array('OprnCreateCvi', 'user_id')),
                 'sub' => array(
-                    'cvi' => array(
-                        'title' => 'CVI',
-                        'position' => 7,
-                        'restricted' => array(array('OprnCreateCvi', 'user_id')),
-                        'uri' => '/OphCoCvi/Default/list',
-                    ),
                     'la' => array(
                         'title' => 'LA Admin',
                         'uri' => '/OphCoCvi/LocalAuthoritiesAdmin/list',
@@ -46,6 +39,12 @@ return array(
                         'restricted' => array(array('OprnCreateCvi', 'user_id')),
                     ),
                 )
+            ),
+            'cvi' => array(
+                'title' => 'CVI',
+                'position' => 7,
+                'restricted' => array(array('OprnCreateCvi', 'user_id')),
+                'uri' => '/OphCoCvi/Default/list',
             ),
         ),
         'patient_summary_render' => array(
