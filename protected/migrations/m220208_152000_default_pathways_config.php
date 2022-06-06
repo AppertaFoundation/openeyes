@@ -94,7 +94,7 @@ class m220208_152000_default_pathways_config extends OEMigration
                         'pathway_type_id' => $pathway_type_id,
                         'step_type_id' => 7,
                         'order' => $step['position'],
-                        'short_name' => $step['step_name'],
+                        'short_name' => substr($step['step_name'], 0, 19),
                         'long_name' => $step['step_name'],
                         'default_state_data' => '{
                             "action_type":"new_event",
