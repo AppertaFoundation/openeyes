@@ -81,7 +81,7 @@ class Contact extends BaseActiveRecordVersioned
              contact_label_id, active, comment, national_code, fax',
                 'safe'),
             array('first_name, last_name, created_institution_id', 'required', 'on' => array('manualAddPatient', 'referral', 'self_register', 'other_register', 'manage_gp')),
-            array('title, maiden_name', 'match', 'pattern' => '/^[a-zA-Z]+(([\',. -][a-zA-Z -])?[a-zA-Z]*)*$/', 'message' => 'Invalid {attribute} entered.', 'except' => 'hscic_import'),
+            array('title, maiden_name', 'match', 'pattern' => '/^[a-zA-Z]+([\',. -]?[a-zA-Z -]*)*$/', 'message' => 'Invalid {attribute} entered.', 'except' => 'hscic_import'),
             array('first_name, last_name', 'parenthesisValidator', 'except' => 'team_contact'),
             array('first_name, last_name', 'required', 'on' => array('manage_gp_role_req', 'pasapi_import')),
             array('contact_label_id', 'required', 'on' => array('manage_gp_role_req'), 'message' => 'Please select a Role.'),
