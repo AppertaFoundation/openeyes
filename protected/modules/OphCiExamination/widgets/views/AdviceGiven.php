@@ -132,8 +132,10 @@ foreach ($this->controller->getAttributes($element, $current_firm->getSubspecial
                 }
             },
             onReturn: function (adderDialog, selectedItems) {
-                let leaflets = selectedItems;
-                leaflets.shift(); // We don't need the category returned from the adder dialog.
+                // Only get the selectedItems that are not categories.
+                let leaflets = selectedItems.filter(selectedItem => {
+                    return !selectedItem.hasOwnProperty('itemSet');
+                });
                 let existing = [];
 
                 // Get any existing entries, then remove them from the DOM (they will be reinserted below).
