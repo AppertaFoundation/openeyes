@@ -590,6 +590,16 @@ class Admin
                 }
             }
 
+            if ($this->model->hasAttribute('display_order') && !$this->model->display_order) {
+                $table = $this->model->tableName();
+
+                $max_order = (int)Yii::app()->db->createCommand()
+                    ->select('MAX(display_order)')
+                    ->from($table)
+                    ->queryScalar();
+                $this->model->display_order = ++$max_order;
+            }
+
             if (!$this->model->validate()) {
                 $errors = $this->model->getErrors();
                 if (!$redirect){
