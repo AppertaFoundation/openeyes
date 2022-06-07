@@ -54,7 +54,7 @@
             "[{$key}]username",
             [
                 'class' => 'cols-full',
-                'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
+                'autocomplete' => 'off',
             ]
         ); ?>
     </td>
@@ -77,7 +77,7 @@
             "[{$key}]password",
             [
                 'class' => 'cols-full js-password',
-                'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
+                'autocomplete' => 'new-password',
                 'disabled' => $not_local
             ]
         ); ?>
@@ -88,7 +88,7 @@
             "[{$key}]password_repeat",
             [
                 'class' => 'cols-full js-password-repeat',
-                'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
+                'autocomplete' => 'new-password',
                 'disabled' => $not_local
             ]
         ); ?>
