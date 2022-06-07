@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2020
  * This file is part of OpenEyes.
@@ -12,6 +13,7 @@
  * @copyright Copyright (c) 2020, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <tr data-key="<?= $key ?>">
     <?php
@@ -52,7 +54,7 @@
             "[{$key}]username",
             [
                 'class' => 'cols-full',
-                'autocomplete' => Yii::app()->params['html_autocomplete'],
+                'autocomplete' => 'off',
             ]
         ); ?>
     </td>
@@ -75,7 +77,7 @@
             "[{$key}]password",
             [
                 'class' => 'cols-full js-password',
-                'autocomplete' => Yii::app()->params['html_autocomplete'],
+                'autocomplete' => 'new-password',
                 'disabled' => $not_local
             ]
         ); ?>
@@ -86,7 +88,7 @@
             "[{$key}]password_repeat",
             [
                 'class' => 'cols-full js-password-repeat',
-                'autocomplete' => Yii::app()->params['html_autocomplete'],
+                'autocomplete' => 'new-password',
                 'disabled' => $not_local
             ]
         ); ?>
@@ -95,7 +97,7 @@
         <?= \CHtml::activeDropDownList(
             $user_authentication,
             "[{$key}]password_status",
-            [ 'current'=>"Current Password",'stale'=>"Stale Password",'expired'=>"Expire Password",'locked'=>"Lock Password" ],
+            [ 'current' => "Current Password",'stale' => "Stale Password",'expired' => "Expire Password",'locked' => "Lock Password" ],
             [
                 'class' => 'cols-full js-password-status',
                 'disabled' => $not_local
