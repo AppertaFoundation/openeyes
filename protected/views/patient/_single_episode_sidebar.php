@@ -83,10 +83,10 @@ if (
     </button>
             
                 <button type="button" class="expand-all">
-                    <i class="oe-i small reduce-height"></i>
+                    <i class="oe-i small increase-height"></i>
     </button>
                 <button type="button" class="collapse-all">
-                    <i class="oe-i small increase-height"></i>
+                    <i class="oe-i small reduce-height"></i>
     </button>
          
         </div>
