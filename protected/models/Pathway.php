@@ -601,6 +601,28 @@ class Pathway extends BaseActiveRecordVersioned
      */
     public function startPathway(): bool
     {
+        // Search for a check-in step. If one exists, mark it as completed.
+        $checkin_step_id = Yii::app()->db->createCommand()
+            ->select('id')
+            ->from('pathway_step_type')
+            ->where('short_name = \'checkin\'')
+            ->queryScalar();
+        // As a check-in step will only ever have two states (to-do and completed), we only want to complete the first to-do check-in step.
+        $checkin_step = PathwayStep::model()->find(
+            'pathway_id = :id AND step_type_id = :checkin_step_id AND status != ' . PathwayStep::STEP_COMPLETED,
+            [':id' => $this->id, ':checkin_step_id' => $checkin_step_id]
+        );
+
+        if ($checkin_step) {
+            $checkin_step->status = PathwayStep::STEP_COMPLETED;
+            $checkin_step->start_time = date('Y-m-d H:i:s');
+            $checkin_step->started_user_id = Yii::app()->user->id;
+            $checkin_step->end_time = date('Y-m-d H:i:s');
+            $checkin_step->completed_user_id = Yii::app()->user->id;
+            $this->enqueue($checkin_step);
+            $this->refresh();
+        }
+
         if (count($this->requested_steps) === 0) {
             $this->status = Pathway::STATUS_STUCK;
         } else {
