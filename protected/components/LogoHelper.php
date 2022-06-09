@@ -48,17 +48,18 @@ class LogoHelper
         }
 
         foreach(['primaryLogo', 'secondaryLogo'] as $logoLevel){
+            $logo_type = $logoLevel == 'primaryLogo' ? 'primary_logo' : 'secondary_logo';
             // If they requested a specific logo, give them that.
             if(isset($logo_id)) {
                 $requested_logo[$logoLevel] = SiteLogo::model()->findByPk($logo_id);
             }
             else{                
                 //get the required logo for reference
-                if (isset($site->logo_id)) {
+                if (isset($site->logo_id) && !empty($site->logo->$logo_type)) {
                     // get logos for site
                     $requested_logo[$logoLevel] = $site->logo;
                 }
-                if(isset($institution->logo_id)) {
+                if(isset($institution->logo_id) && !empty($institution->logo->$logo_type)) {
                     // get logos for institution
                     $requested_logo[$logoLevel] = $institution->logo;
                 } else {
