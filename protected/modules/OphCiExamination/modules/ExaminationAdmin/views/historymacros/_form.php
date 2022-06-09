@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -14,6 +15,7 @@
  * @copyright Copyright (c) 2020, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <?= CHtml::errorSummary($model, null, null, ['class' => 'alert-box alert with-icon']) ?>
@@ -51,7 +53,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
                 <td class="cols-4">
                     <?= $form->multiSelectList(
                         $model,
-                        CHtml::modelName($model).'[subspecialties]',
+                        CHtml::modelName($model) . '[subspecialties]',
                         'subspecialties',
                         'id',
                         CHtml::listData(Subspecialty::model()->findAll(array('order' => 'name asc')), 'id', 'name'),
@@ -63,7 +65,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
             <tr>
                 <td>Body</td>
                 <td colspan="4">
-                    <?= \CHtml::activeTextArea($model, 'body', ['class' => 'cols-8', 'rows' => 21]) ?>
+                    <?= \CHtml::activeTextArea($model, 'body', ['class' => 'cols-8 autosize', 'rows' => 21]) ?>
                     <br/>
                     <?= CHtml::button('Insert bullet list', ['class' => 'button large', 'id' => 'et_insert',]) ?>
                 </td>

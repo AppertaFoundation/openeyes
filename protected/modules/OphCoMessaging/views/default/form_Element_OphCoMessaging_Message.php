@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -14,6 +15,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <?php
@@ -58,7 +60,7 @@ if (!isset($copyto_users)) {
             </td>
             <td>
                 <?php if ($element->isNewRecord) {
-                    $this->widget('application.widgets.AutoCompleteSearch', ['field_name' => 'copyto-search', 'htmlOptions' => ['placeholder' => 'Search recipients (only '.$copyto_user_limit.' can be copied in)']]); ?>
+                    $this->widget('application.widgets.AutoCompleteSearch', ['field_name' => 'copyto-search', 'htmlOptions' => ['placeholder' => 'Search recipients (only ' . $copyto_user_limit . ' can be copied in)']]); ?>
                     <div id="copyto-field"></div>
                 <?php } else { ?>
                         <div class="data-value">
@@ -123,7 +125,7 @@ if (!isset($copyto_users)) {
             echo CHtml::activeTextArea(
                 $element,
                 'message_text',
-                array('class' => 'cols-full increase-text', 'placeholder' => 'Your Message...', 'rows' => 5)
+                array('class' => 'cols-full increase-text autosize', 'placeholder' => 'Your Message...', 'rows' => 5)
             );
         } else { ?>
             <p><?= Yii::app()->format->Ntext($element->message_text) ?></p>
@@ -199,7 +201,7 @@ if (!isset($copyto_users)) {
                 YII_CSRF_TOKEN: $('input[name="YII_CSRF_TOKEN"]').val(),
                 event_date: $('extra-info .js-event-date').val() },
             type: 'POST',
-            url: '<?php echo Yii::app()->createUrl($this->getModule()->name.'/Default/checkUserOutOfOffice/') ?>',
+            url: '<?php echo Yii::app()->createUrl($this->getModule()->name . '/Default/checkUserOutOfOffice/') ?>',
             success: function (response) {
                 if (response) {
                     var outOfOfficeDialog = new OpenEyes.UI.Dialog.Alert({

@@ -114,7 +114,7 @@
                         $pas_api = $patient_identifier_type->pas_api;
                         $pas_api_json =  $pas_api ? (is_array($pas_api) ? json_encode($pas_api) : $pas_api ) : '';
                         echo \CHtml::textArea('PatientIdentifierType[pas_api]', $pas_api_json, [
-                            'class' => 'cols-full',
+                            'class' => 'cols-full autosize',
                             'rows' => 18
                         ]);
                         ?>
