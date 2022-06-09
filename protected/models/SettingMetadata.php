@@ -233,8 +233,7 @@ class SettingMetadata extends BaseActiveRecordVersioned
         if (property_exists(Yii::app(), 'user') && isset(Yii::app()->user)) {
             $is_admin = Yii::app()->user->checkAccess('admin');
         }
-        // only on the admin system settings page and with admin role, the user can view other institution settings
-        $institution_id = $is_setting_page && $is_admin ? ($institution_id ?? null) : ($site->institution_id ?? null);
+        $institution_id = isset($institution_id) ? $institution_id : ($site->institution_id ?? null);
         foreach (static::$CONTEXT_CLASSES as $class => $field) {
             if ($allowed_classes && !in_array($class, $allowed_classes, true)) {
                 continue;

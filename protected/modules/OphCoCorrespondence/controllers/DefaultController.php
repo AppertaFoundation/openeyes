@@ -574,7 +574,7 @@ class DefaultController extends BaseEventTypeController
 
         Yii::log('Printing recipient');
 
-        $letter_header_raw = SettingMetadata::model()->getSetting('letter_header');
+        $letter_header_raw = SettingMetadata::model()->getSetting('letter_header', null, null, null, isset($letter->event->institution_id) ? $letter->event->institution_id : null);
 
         $parent_event = Event::model()->findByPk($id);
         $parent_episode = $parent_event->episode;
