@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <?php /** @var PrescriptionEsignElementWidget $this */ ?>
 <div class="element-fields">
@@ -23,7 +25,7 @@
             <div class="alert-box info"><?=CHtml::encode($msg)?></div>
         <?php endforeach; ?>
         <?php if (!$this->isSigningAllowed()) : ?>
-            <div class="alert-box warning">E-signing of this event will be available at a later stage.</div>
+            <div class="alert-box info">The event can be signed once it is saved.</div>
         <?php else : ?>
             <?php if (!$this->element->isSigned()) : ?>
                 <div class="alert-box issue"><?= $this->element->getUnsignedMessage() ?></div>
