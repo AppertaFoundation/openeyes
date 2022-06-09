@@ -416,6 +416,9 @@ class SettingMetadata extends BaseActiveRecordVersioned
         $nodes = $xpath->query("//span[@data-substitution]");
 
         foreach ($nodes as $node) {
+            if (!isset($node->nodeValue)) {
+                continue;
+            }
             $key = $node->getAttribute('data-substitution');
 
             if (
@@ -425,7 +428,7 @@ class SettingMetadata extends BaseActiveRecordVersioned
             ) {
                 $sub = $substitutions[$key]['value'];
             } else {
-                $sub = '<span>[' . $key . ']</span>';
+                $sub = '<span></span>';
             }
 
             self::substituteNode($dom, $sub, $node);
@@ -525,12 +528,34 @@ class SettingMetadata extends BaseActiveRecordVersioned
 
     public static function getCorrespondenceSubstitutions($element_letter = null, $recipient_address = null)
     {
-        return array(
-            'to_address' => array('label' => 'Recipient Address', 'value' => $recipient_address),
+        // Use the firm and site that the correspondence event was created under
+        $firm = isset($element_letter) ? $element_letter->event->firm : null;
+        $site = isset($element_letter) ? $element_letter->event->site : null;
+
+        $site_contact = isset($site) ? $site->contact : null;
+        $site_address = isset($site_contact) ? $site_contact->address : null;
+        $institution = isset($site) ? $site->institution : null;
+
+        $logo_helper = new LogoHelper();
+        $logos = $logo_helper->getLogoURLs(isset($site) ? $site->id : null);
+
+        return array_filter(array(
+            'to_address' => array('label' => 'Recipient Address', 'value' => nl2br($recipient_address)),
             'source_address' => array('label' => 'Source Address', 'value' => isset($element_letter) && !empty($element_letter->source_address) ? self::makeSpan($element_letter->source_address) : null),
             'cc_address' => array('label' => 'CC Address', 'value' => isset($element_letter) && !empty($element_letter->cc) ? self::makeSpan($element_letter->cc) : null),
             'correspondence_date' => array('label' => 'Correspondence Date', 'value' => isset($element_letter) && !empty($element_letter->event) ? self::makeSpan(\Helper::convertMySQL2NHS($element_letter->event->event_date)) : null),
-        );
+
+            'firm_name' => isset($firm) ? array('label' => 'Firm Name', 'value' => self::makeSpan($firm->name)) : null,
+            'site_name' => isset($site) ? array('label' => 'Site Name', 'value' => self::makeSpan($site->name)) : null,
+            'site_address' => isset($site) ? array('label' => 'Site Address', 'value' => !empty($site_address) ? self::makeSpan(preg_replace('~, *~', "\n", $site_address->address1)) : null) : null,
+            'site_phone' => isset($site) ? array('label' => 'Site Phone', 'value' => !empty($site->telephone) ? self::makeSpan($site->telephone) : null) : null,
+            'site_fax' => isset($site) ? array('label' => 'Site Fax', 'value' => !empty($site->fax) ? self::makeSpan($site->fax) : null) : null,
+            'site_email' => isset($site) ? array('label' => 'Site Email', 'value' => !empty($site_address->email) ? self::makeSpan($site_address->email) : null) : null,
+            'site_city' => isset($site) ? array('label' => 'Site City', 'value' => !empty($site_address->city) ? self::makeSpan($site_address->city) : null) : null,
+            'site_postcode' => isset($site) ? array('label' => 'Site Postcode', 'value' => isset($site_address) ? self::makeSpan($site_address->postcode) : null) : null,
+            'primary_logo' => array('label' => 'Primary Logo', 'value' => !empty($logos['primaryLogo']) ? self::makeImg($logos['primaryLogo']) : null),
+            'secondary_logo' => array('label' => 'Secondary Logo', 'value' => !empty($logos['secondaryLogo']) ? self::makeImg($logos['secondaryLogo']) : null),
+        ));
     }
 
     /**
@@ -557,7 +582,7 @@ class SettingMetadata extends BaseActiveRecordVersioned
 
     private static function makeSpan($text)
     {
-        return '<span>' . $text . '</span>';
+        return '<span>' . nl2br($text) . '</span>';
     }
 
     private static function makeImg($src)

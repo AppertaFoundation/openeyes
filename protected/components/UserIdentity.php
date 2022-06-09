@@ -505,6 +505,8 @@ class UserIdentity extends CUserIdentity
             throw new CException('Cannot find default site');
         }
 
+        $user->last_site_id = $app->session['selected_site_id'];
+        
         $app->session['user'] = $user;
         $app->session['user_auth'] = $user_authentication;
 
