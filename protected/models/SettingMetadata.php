@@ -243,7 +243,7 @@ class SettingMetadata extends BaseActiveRecordVersioned
             $is_admin = Yii::app()->user->checkAccess('admin');
         }
 
-         $institution_id = $is_setting_page && $is_admin ? ($institution_id ?? null) : ($site->institution_id ?? null);
+         $institution_id = isset($institution_id) ? $institution_id : ($site->institution_id ?? null);
 
         // Gets the last combined updated time of the settings_tables and uses as a cache dependency. The cache will be invalidated if the tables have been updated
         $debounce_val = Yii::app()->settingCache->get('SettingMetaDebounce');
@@ -292,8 +292,6 @@ class SettingMetadata extends BaseActiveRecordVersioned
                 return false;
             }
 
-            // only on the admin system settings page and with admin role, the user can view other institution settings
-            $institution_id = $is_setting_page && $is_admin ? ($institution_id ?? null) : ($site->institution_id ?? null);
             // Loop through all he permutations until a match is found.
             foreach (static::$CONTEXT_CLASSES as $class => $field) {
                 if ($allowed_classes && !in_array($class, $allowed_classes, true)) {
