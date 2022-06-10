@@ -390,11 +390,10 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemandEye
      */
     public function getIol_hidden()
     {
-        OELog::log($this->eyedraw);
         if ($eyedraw = @json_decode($this->eyedraw)) {
             if (is_array($eyedraw)) {
                 foreach ($eyedraw as $object) {
-                    if (in_array($object->subclass, Yii::app()->params['eyedraw_iol_classes'])) {
+                    if (isset($object->subclass) && in_array($object->subclass, Yii::app()->params['eyedraw_iol_classes'])) {
                         return false;
                     }
                 }
