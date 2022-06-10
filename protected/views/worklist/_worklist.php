@@ -53,6 +53,19 @@ if (!isset($coreapi)) {
 
 $section_classes = $data_provider->itemCount === 0 ? 'oec-group no-patients' : 'oec-group';
 $quick_filter_name = $filter->getQuickFilterTypeName();
+$ae_subspecialty_id = Yii::app()->db->createCommand()
+    ->select('id')
+    ->from('subspecialty')
+    ->where('ref_spec = \'AE\'')
+    ->queryScalar();
+
+$is_ae_worklist = (bool)Yii::app()->db->createCommand()
+    ->select('w.id')
+    ->from('worklist w')
+    ->join('worklist_definition_display_context wddc', 'wddc.worklist_definition_id = w.worklist_definition_id')
+    ->where('w.id = :worklist_id AND wddc.subspecialty_id = :ae_subspecialty')
+    ->bindValues([':worklist_id' => $worklist->id, ':ae_subspecialty' => $ae_subspecialty_id])
+    ->queryScalar();
 ?>
 <?php if ($filter->getCombineWorklistsStatus()) : ?>
 <section class="<?= $section_classes ?>" id="js-worklist-combined" data-title="Combined Worklists">
@@ -111,11 +124,13 @@ $quick_filter_name = $filter->getQuickFilterTypeName();
         <?php foreach ($data_provider->getData() as $wl_patient_data) :
             $wl_patient = WorklistPatient::model()->findByPk($wl_patient_data['id']);
 
-            $num_visits = Yii::app()->db->createCommand()
+            $num_ae_visits = (int)Yii::app()->db->createCommand()
                 ->select('COUNT(*)')
-                ->from('worklist_patient')
-                ->where('patient_id = :patient_id AND worklist_id = :worklist_id')
-                ->bindValues([':patient_id' => $wl_patient->patient_id, ':worklist_id' => $wl_patient->worklist_id])
+                ->from('worklist_patient wp')
+                ->join('worklist w', 'w.id = wp.worklist_id')
+                ->join('worklist_definition_display_context wddc', 'wddc.worklist_definition_id = w.worklist_definition_id')
+                ->where('wp.patient_id = :patient_id AND wddc.subspecialty_id = :ae_subspecialty')
+                ->bindValues([':patient_id' => $wl_patient->patient_id, ':ae_subspecialty' => $ae_subspecialty_id])
                 ->queryScalar();
             /** @var $wl_patient WorklistPatient */
             ?>
@@ -124,7 +139,7 @@ $quick_filter_name = $filter->getQuickFilterTypeName();
                 <td><?= $wl_patient->scheduledtime ?></td>
                 <td>
                     <div class="list-name"><?= $wl_patient->worklist->name ?></div>
-                    <div class="code"><?= (int)$num_visits === 1 ? 'First Attendance' : null ?></div>
+                    <div class="code"><?= $num_ae_visits === 1 && $is_ae_worklist ? 'First Attendance' : null ?></div>
                 </td>
                 <td>
                     <?php $this->renderPartial('application.widgets.views.PatientMeta', array('patient' => $wl_patient->patient, 'coreapi' => $coreapi, 'pathway' => $wl_patient->pathway)); ?>
