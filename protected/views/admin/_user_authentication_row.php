@@ -24,9 +24,6 @@
     $institution_authentication_id = $user_authentication->institution_authentication_id ?? 0;
     ?>
     <?= \CHtml::activeHiddenField($user_authentication, "[{$key}]id", ['class' => 'js-id']); ?>
-    <?= \CHtml::activeHiddenField($user_authentication, "[{$key}]user_id", [
-        'value' => $user->id
-    ]); ?>
     <td><?= $user_authentication->id ?></td>
     <td>
         <?php

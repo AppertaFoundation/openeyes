@@ -687,27 +687,24 @@ class AdminController extends BaseAdminController
      */
     public function actionEditUser($id = null)
     {
+        $request = Yii::app()->getRequest();
         $user = User::model()->findByPk($id);
-        if (!isset($user->contact)) {
-            $contact = new Contact();
-        } else {
-            $contact = $user->contact;
+
+        if ($user === null) {
+            if ($id !== null) {
+                throw new Exception("User not found: $id");
+            }
+
+            $user = new User();
+
+            $user->has_selected_firms = 0;
         }
-        $invalid_entries = [];
-        $invalid_existing = [];
+
+        $user_authentication_entries = [];
+        $contact = $user->contact ?? new Contact();
+
         $errors = [];
         $user_auth_errors = [];
-        $is_new = false;
-
-        if ($id && !$user) {
-            throw new Exception("User not found: $id");
-        } elseif (!$id) {
-            $user = new User();
-            $user->has_selected_firms = 0;
-            $is_new = true;
-        }
-
-        $request = Yii::app()->getRequest();
 
         if ($request->getIsPostRequest()) {
             $userAtt = $request->getPost('User');
@@ -715,79 +712,18 @@ class AdminController extends BaseAdminController
             if (Yii::app()->params['auth_source'] === 'BASIC' && $id && empty($userAtt['password_status'])) {
                 unset($userAtt['password_status']);
             }
+
             $user->attributes = $userAtt;
 
             $user_auths_attributes = $request->getPost('UserAuthentication', []);
 
             if (!$user->validate()) {
                 $errors = $user->getErrors();
-                foreach ($user_auths_attributes as $user_auth_attributes) {
-                    $user_auth = UserAuthentication::fromAttributes($user_auth_attributes);
-                    if (array_key_exists('id', $user_auth_attributes) && !$user_auth_attributes['id']) {
-                        $invalid_entries['UserAuthentication'][] = $user_auth_attributes;
-                    } else {
-                        $invalid_existing[] = $user_auth;
-                    }
-                }
+
+                $user_authentication_entries = array_map(['UserAuthentication', 'fromAttributes'],
+                                                         $user_auths_attributes);
             } else {
                 $transaction = Yii::app()->db->beginTransaction();
-
-                if (!$user->save(false)) {
-                    $transaction->rollback();
-
-                    throw new CHttpException(500, 'Unable to save user: ' . print_r($user->getErrors(), true));
-                }
-
-                if ($is_new) {
-                    $user->correspondence_sign_off_user_id = $user->id;
-                    $user->update(['correspondence_sign_off_user_id']);
-                }
-
-                //delete deleted auths first
-                $ids = array_filter(
-                    array_column($user_auths_attributes, 'id'),
-                    function ($id) {
-                        return !empty($id);
-                    }
-                );
-                $criteria = new CDbCriteria();
-                $criteria->addCondition('user_id=:user_id');
-                $criteria->addNotInCondition('id', array_map(function ($id) {
-                    return $id;
-                }, $ids));
-                $criteria->params[':user_id'] = $user->id;
-                UserAuthentication::model()->deleteAll($criteria);
-
-                foreach ($user_auths_attributes as $user_auth_attributes) {
-                    $user_auth = UserAuthentication::fromAttributes($user_auth_attributes);
-                    if (!$user_auth->user_id) {
-                        $user_auth->user_id = $user->id;
-                    }
-                    $special_usernames = Yii::app()->params['special_usernames'] ?? [];
-                    if (!in_array($user_auth->username, $special_usernames) && !$user_auth->validate()) {
-                        $user_auth_errors = array_merge($user_auth_errors, $user_auth->getErrors());
-                        if (array_key_exists('id', $user_auth_attributes) && !$user_auth_attributes['id']) {
-                            $invalid_entries['UserAuthentication'][] = $user_auth_attributes;
-                        } else {
-                            $invalid_existing[] = $user_auth;
-                        }
-                    } else {
-                        $user_auth->handlePassword();
-                        $user_auth->setPasswordHash();
-                        if (!$user_auth->save(false)) {
-                            $transaction->rollback();
-
-                            throw new CHttpException(500, 'Unable to save user authentication: ' . print_r($user_auth->getErrors(), true));
-                        } else {
-                            Audit::add('admin-User-Authentication', 'save', $user_auth->id);
-                        }
-                    }
-                }
-
-                $contact = $user->contact;
-                if (!$contact) {
-                    $contact = new Contact();
-                }
 
                 $contact->title = $userAtt['title'];
                 $contact->first_name = $userAtt['first_name'];
@@ -803,15 +739,20 @@ class AdminController extends BaseAdminController
 
                 if (!$user->contact) {
                     $user->contact_id = $contact->id;
-
-                    if (!$user->save()) {
-                        $transaction->rollback();
-
-                        throw new CHttpException(500, 'Unable to save user: ' . print_r($user->getErrors(), true));
-                    }
                 }
 
-                Audit::add('admin-User', 'edit', $user->id);
+                $is_new = $user->getIsNewRecord();
+
+                if (!$user->save(false)) {
+                    $transaction->rollback();
+
+                    throw new CHttpException(500, 'Unable to save user: ' . print_r($user->getErrors(), true));
+                }
+
+                if ($is_new) {
+                    $user->correspondence_sign_off_user_id = $user->id;
+                    $user->update(['correspondence_sign_off_user_id']);
+                }
 
                 if (!isset($userAtt['roles']) || (empty($userAtt['roles']))) {
                     $userAtt['roles'] = array();
@@ -830,22 +771,72 @@ class AdminController extends BaseAdminController
                     $errors = $user->getErrors();
                 }
 
+                // Delete auths removed by the admin user first
+                $ids = array_filter(
+                    array_column($user_auths_attributes, 'id'),
+                    function ($id) {
+                        return !empty($id);
+                    }
+                );
+
+                $criteria = new CDbCriteria();
+                $criteria->addCondition('user_id = :user_id');
+
+                $criteria->addNotInCondition('id', array_map(function ($id) {
+                    return $id;
+                }, $ids));
+
+                $criteria->params[':user_id'] = $user->id;
+
+                UserAuthentication::model()->deleteAll($criteria);
+
+                foreach ($user_auths_attributes as $user_auth_attributes) {
+                    $user_auth = UserAuthentication::fromAttributes($user_auth_attributes);
+
+                    $user_authentication_entries[] = $user_auth;
+
+                    if (!$user_auth->user_id) {
+                        $user_auth->user_id = $user->id;
+                    }
+
+                    $special_usernames = Yii::app()->params['special_usernames'] ?? [];
+
+                    if (!in_array($user_auth->username, $special_usernames) && !$user_auth->validate()) {
+                        $user_auth_errors = array_merge($user_auth_errors, $user_auth->getErrors());
+                    } else {
+                        $user_auth->handlePassword();
+                        $user_auth->setPasswordHash();
+
+                        if (!$user_auth->save(false)) {
+                            $transaction->rollback();
+
+                            throw new CHttpException(500, 'Unable to save user authentication: ' . print_r($user_auth->getErrors(), true));
+                        } else {
+                            Audit::add('admin-User-Authentication', 'save', $user_auth->id);
+                        }
+                    }
+                }
+
+                Audit::add('admin-User', 'edit', $user->id);
+
                 $errors = array_merge($errors, $user_auth_errors);
 
                 if (empty($errors)) {
                     $transaction->commit();
                 } else {
-                    // Kludge to prevent an exception: when creating a new user, if there is an error with the user auth data
-                    // that prevents it from saving, while the user data is okay, the stale user id will persist and cause a problem
-                    // when the user corrects the user auth error and tries to save again.
-                    // TODO: Restructure this controller action and views to avoid passing around stale user ids
-                    if ($is_new) {
-                        $user->id = null;
-                    }
-
                     $transaction->rollback();
+
+                    // The admin/useredit view displays firms in a multiselect list which only tolerates model objects,
+                    // not ids alone, thus they need to loaded in here to prevent an exception and to preserve the list
+                    // for the user when there are errors with the rest of the form data.
+                    $criteria = new CDbCriteria();
+
+                    $criteria->addInCondition('id', $userAtt['firms']);
+
+                    $user->firms = Firm::model()->findAll($criteria);
                 }
             }
+
             if (empty($errors)) {
                 $this->redirect('/admin/users/' . ceil($user->id / $this->items_per_page));
             }
@@ -853,14 +844,22 @@ class AdminController extends BaseAdminController
             if ($id) {
                 Audit::add('admin-User', 'view', $id);
             }
+
+            $user_authentication_entries = UserAuthentication::model()->findAll('user_id = :user_id', [':user_id' => $id]);
         }
+
+        usort(
+            $user_authentication_entries,
+            static function ($a, $b) {
+                return $a->id < $b->id ? -1 : 1;
+            }
+        );
 
         $this->render('/admin/edituser', array(
             'user' => $user,
             'contact' => $contact,
-            'errors' => @$errors,
-            'invalid_entries' => $invalid_entries,
-            'invalid_existing' => $invalid_existing,
+            'errors' => $errors,
+            'user_auths' => $user_authentication_entries,
         ));
     }
 
