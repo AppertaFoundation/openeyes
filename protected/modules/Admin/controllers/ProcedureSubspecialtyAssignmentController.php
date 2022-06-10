@@ -36,7 +36,7 @@ class ProcedureSubspecialtyAssignmentController extends \BaseAdminController
 
         $this->jsVars['procedure_options'] = $procedure_options;
 
-        $institutions = Institution::model()->findAll();
+        $institutions = Institution::model()->getTenanted();
         if ($this->checkAccess('admin')) {
             $institution_options = array_map(
                 static function ($institution) {

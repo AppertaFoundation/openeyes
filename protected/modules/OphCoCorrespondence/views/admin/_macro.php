@@ -72,11 +72,12 @@ $recipients_data = $recipients_data + $none_option;
             <td>Institution</td>
             <td>
             <?= $form->multiSelectList(
+
                 $macro,
                 'LetterMacro[levels][institutions]',
                 'institutions',
                 'id',
-                Institution::model()->getList(),
+                Institution::model()->getTenantedList(),
                 null,
                 ['class' => 'cols-full', 'div-class' => 'typeInstitution', 'empty' => '- Institution -', 'nowrapper' => true, 'hidden' => true],
             ) ?>

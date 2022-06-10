@@ -71,7 +71,7 @@ class AdditionalRisksController extends BaseAdminController
                 [':institution_id'=>$institution_id]
             ),
             'subspecialty' => Subspecialty::model()->findAll(),
-            'institution' => Institution::model()->findAll(),
+            'institution' => Institution::model()->getTenanted(),
             'institution_id' => $institution_id,
         ]);
     }

@@ -45,7 +45,7 @@ $form = $this->beginWidget(
                     <?= CHtml::dropDownList(
                         'institution-id',
                         $institution_id,
-                        Institution::model()->getList(false),
+                        Institution::model()->getTenantedList(false),
                         [
                             'empty' => 'Select',
                             'class' => 'cols-full',

@@ -56,7 +56,7 @@
         <tr>
             <td>Institution</td>
             <?php if ($this->checkAccess('admin')) { ?>
-                <td><?=\CHtml::activeDropDownList($firm, 'institution_id', Institution::model()->getList(false), ['class' => 'cols-full']) ?></td>
+                <td><?=\CHtml::activeDropDownList($firm, 'institution_id', Institution::model()->getTenantedList(false), ['class' => 'cols-full']) ?></td>
             <?php } elseif ($firm->institution_id) { ?>
                 <td>
                     <?= $firm->institution->name ?>

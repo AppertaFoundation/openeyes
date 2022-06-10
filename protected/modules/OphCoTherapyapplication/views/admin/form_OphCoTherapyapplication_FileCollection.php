@@ -29,7 +29,7 @@
             <td><?= \CHtml::activeDropDownList(
                 $model,
                 'institution_id',
-                Institution::model()->getList(true),
+                Institution::model()->getTenantedList(true),
                 ['class' => 'cols-full', 'empty' => '- Institution -']
             ) ?></td>
         </tr>

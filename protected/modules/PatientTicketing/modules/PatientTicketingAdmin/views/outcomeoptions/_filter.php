@@ -23,7 +23,7 @@ use OEModule\PatientTicketing\models\TicketAssignOutcomeOption;
             <td>Institution:</td>
             <td>
                 <?php if ($this->checkAccess('admin')) : ?>
-                    <?=\CHtml::dropDownList('institution_id', $institution->id, \CHtml::listData(\Institution::model()->findAll(), 'id', 'name'), [
+                    <?=\CHtml::dropDownList('institution_id', $institution->id, \CHtml::listData(\Institution::model()->getTenanted(), 'id', 'name'), [
                         'id' => 'filter_institution',
 
                     ]); ?>

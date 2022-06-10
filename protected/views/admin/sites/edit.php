@@ -103,7 +103,7 @@ $default_urls = $logo_helper->getLogoURLs();
                         echo \CHtml::activeDropDownList(
                             $site,
                             'institution_id',
-                            CHtml::listData(Institution::model()->findAll(), 'id', 'name'),
+                            CHtml::listData(Institution::model()->getTenantedOr($site->institution_id), 'id', 'name'),
                             ['class' => 'cols-full']
                         );
                     } else {

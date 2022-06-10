@@ -175,6 +175,39 @@ class Institution extends BaseActiveRecordVersioned
         return $result;
     }
 
+    public function getTenanted($condition = '', $params = array())
+    {
+        return $this->with('authenticationMethods')->findAll($condition, $params);
+    }
+
+    public function getTenantedOr($default_to_id, $condition = '', $params = array())
+    {
+        return array_merge([$this->findByPk($default_to_id)], $this->getTenanted($condition, $params));
+    }
+
+    public function getTenantedList($current_institution_only = true)
+    {
+        $result = array();
+
+        if ($current_institution_only) {
+            $current_institution = $this->getCurrent();
+            $result[$current_institution->id] = $current_institution->name;
+        } else {
+            $cmd = Yii::app()->db->createCommand()
+                ->selectDistinct('i.id, i.name')
+                ->from('institution i')
+                ->join('institution_authentication ia', 'ia.institution_id = i.id');
+
+            foreach ($cmd->queryAll() as $institution) {
+                $result[$institution['id']] = $institution['name'];
+            }
+
+            natcasesort($result);
+        }
+
+        return $result;
+    }
+
     public function getCorrespondenceName()
     {
         return $this->name;

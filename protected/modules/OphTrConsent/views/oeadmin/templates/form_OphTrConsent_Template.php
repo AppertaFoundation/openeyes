@@ -58,7 +58,7 @@
                     $model,
                     'institution_id',
                     CHtml::listData(
-                        Institution::model()->findAll(),
+                        Institution::model()->getTenanted(),
                         'id',
                         'name',
                         'institution.name'

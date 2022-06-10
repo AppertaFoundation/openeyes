@@ -19,7 +19,7 @@
 
 ?>
 <?php
-    echo $form->dropDownList($model, 'institution_id', Institution::model()->getList(true), array('empty' => '- Select Institution -', 'class' => 'cols-10'));
+    echo $form->dropDownList($model, 'institution_id', Institution::model()->getTenantedList(true), array('empty' => '- Select Institution -', 'class' => 'cols-10'));
     echo $form->dropDownList($model, 'site_id', Site::model()->getListForCurrentInstitution(), array('empty' => '- All sites -', 'class' => 'cols-10'));
     echo $form->dropDownList($model, 'type_id', CHtml::listData(OphCoTherapyapplication_Email_Recipient_Type::model()->findAll(array('order' => 'display_order asc')), 'id', 'name'), array('empty' => '- Both types -', 'class' => 'cols-10'));
     echo $form->textField($model, 'recipient_name', array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'), 'class' => 'cols-10'));

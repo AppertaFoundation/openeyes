@@ -94,7 +94,7 @@ if (isset($model)) {
                             'institution-filter',
                             $institution_id,
                             CHtml::listData(
-                                Institution::model()->findAll(),
+                                Institution::model()->getTenanted(),
                                 'id',
                                 'name',
                             ),

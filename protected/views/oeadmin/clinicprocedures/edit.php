@@ -41,7 +41,7 @@
                     <?= CHtml::activeDropDownList(
                         $clinic_procedure,
                         'institution_id',
-                        Institution::model()->getList(true),
+                        Institution::model()->getTenantedList(true),
                         ['class' => 'cols-full', 'empty' => '- All -']
                     ) ?>
                 </td>

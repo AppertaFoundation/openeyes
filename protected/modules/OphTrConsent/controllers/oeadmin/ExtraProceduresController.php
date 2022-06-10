@@ -187,7 +187,7 @@ class ExtraProceduresController extends BaseAdminController
         $this->jsVars['procedure_options'] = $procedure_options;
 
         if ($this->checkAccess('admin')) {
-            $institutions = Institution::model()->findAll();
+            $institutions = Institution::model()->getTenanted();
             $institution_options = array_map(
                 static function ($institution) {
                     return $institution->getAttributes(["id", "name"]);

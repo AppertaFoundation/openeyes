@@ -71,7 +71,7 @@ class SnippetGroupController extends ModuleAdminController
         $this->admin->setEditFields(array(
             'institution_id' => array(
                 'widget' => 'DropDownList',
-                'options' => Institution::model()->getList(true) ,
+                'options' => Institution::model()->getTenantedList(true) ,
                 'hidden' => false,
                 'layoutColumns' => null,
                 'htmlOptions' => [

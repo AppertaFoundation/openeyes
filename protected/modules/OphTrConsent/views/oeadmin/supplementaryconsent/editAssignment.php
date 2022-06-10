@@ -103,7 +103,7 @@
                     <td>Institution</td>
                     <td>
                         <?php
-                        $ins = Institution::model()->findAll(array('select' => 'id, name', 'order' => 'id'));
+                        $ins = Institution::model()->getTenanted(['order' => 't.id']);
                         $list = CHtml::listData($ins, 'id', 'name');
                         // Permit only those with an installation admin role to choose 'All institutions'
                         if ($this->checkAccess('admin')) {

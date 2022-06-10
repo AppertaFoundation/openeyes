@@ -46,7 +46,7 @@
                             'institution',
                             isset($_GET['institution']) ? $_GET['institution'] :'',
                             CHtml::listData(
-                                Institution::model()->findAll(
+                                Institution::model()->getTenanted(
                                     ['order' => 'name']
                                 ),
                                 'id',

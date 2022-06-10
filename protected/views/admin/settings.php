@@ -30,7 +30,7 @@
             echo 'Institution: ' . CHtml::dropDownList(
                 'institution_id',
                 $institution_id,
-                CHtml::listData(Institution::model()->findAll(), 'id', 'name'),
+                CHtml::listData(Institution::model()->getTenanted(), 'id', 'name'),
                 array('empty' => 'All institutions', 'id' => 'js-institution-setting-filter')
             );
         } elseif ($institution_id !== null) {

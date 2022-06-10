@@ -72,7 +72,7 @@ class ExaminationElementAttributesController extends BaseAdminController
             ),
             'institution' => array(
                 'widget' => 'DropDownList',
-                'options' => Institution::model()->getList(true),
+                'options' => Institution::model()->getTenantedList(true),
                 'htmlOptions' => ['class' => 'cols-8'],
                 'hidden' => false,
                 'layoutColumns' => null,

@@ -84,7 +84,7 @@ class RisksAdminController extends \ModuleAdminController
             'institutions' => array(
                 'widget' => 'MultiSelectList',
                 'relation_field_id' => 'id',
-                'options' => \Institution::model()->getList(!$is_admin),
+                'options' => \Institution::model()->getTenantedList(!$is_admin),
                 'htmlOptions' => [
                     'label' => 'Institutions',
                     'empty' => '-- Add --',

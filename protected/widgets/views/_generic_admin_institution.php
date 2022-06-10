@@ -19,4 +19,4 @@ $model = $params['model'];
 $htmlOptions = $params['htmlOptions'] ?? null;
 $current_institution_only = $params['current_institution_only'] ?? false;
 
-echo CHtml::dropDownList("institution_id[{$i}]", Yii::app()->session['selected_institution_id'], Institution::model()->getList($current_institution_only), $htmlOptions);
+echo CHtml::dropDownList("institution_id[{$i}]", Yii::app()->session['selected_institution_id'], Institution::model()->getTenantedList($current_institution_only), $htmlOptions);

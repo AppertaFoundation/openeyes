@@ -41,7 +41,7 @@
                 <td><?=\CHtml::dropDownList(
                     'institution_id',
                     @$_GET['institution_id'],
-                    Institution::model()->getList(!Yii::app()->user->checkAccess('admin')),
+                    Institution::model()->getTenantedList(!Yii::app()->user->checkAccess('admin')),
                     ['empty' => '- Institution -']
                 ) ?></td>
                 <td><?=\CHtml::dropDownList(

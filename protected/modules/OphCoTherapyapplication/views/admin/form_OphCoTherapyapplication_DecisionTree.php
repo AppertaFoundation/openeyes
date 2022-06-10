@@ -20,5 +20,6 @@
 ?>
 
 <?php
-echo $form->dropDownList($model, 'institution_id', Institution::model()->getList(true), ['class' => 'cols-full']);
+echo $form->dropDownList($model, 'institution_id', Institution::model()->getTenantedList(true), ['class' => 'cols-full']);
 echo $form->textField($model, 'name', array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'), 'size' => 40, 'maxlength' => 40));
+
