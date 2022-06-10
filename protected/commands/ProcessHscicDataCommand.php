@@ -671,6 +671,8 @@ EOH;
             $contact->last_name = $data['name'];
         }
 
+        $contact->contact_label_id = \ContactLabel::model()->find('name=:name', array(':name' => 'General Practitioner'))->id;
+
         $isNewRecord = $contact->isNewRecord;
         // setup the scenario to skip some of the validation to ensure all the data is imported
         $contact->setScenario(self::SCENARIO);
