@@ -1424,7 +1424,7 @@ EOL;
                 Date DATE DEFAULT NULL,
                 SurgeonId INT(10) DEFAULT NULL,
                 ConditionId INT(11) DEFAULT NULL,
-                DiagnosisTermId INT(10) DEFAULT NULL,
+                DiagnosisTermId BIGINT(20) DEFAULT NULL,
                 DiagnosisTermDescription VARCHAR(255)
             );
 EOL;
@@ -2071,7 +2071,7 @@ EOL;
                 oe_event_id INT(10) NOT NULL,
                 Eye CHAR(1) NOT NULL,
                 CoPathologyId INT(10) DEFAULT NULL,
-                DisorderId INT(10) DEFAULT NULL,
+                DisorderId BIGINT(20) DEFAULT NULL,
                 DisorderDescription VARCHAR(255) DEFAULT NULL
             );
 EOL;
