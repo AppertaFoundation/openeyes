@@ -53,13 +53,13 @@ if (!isset($coreapi)) {
 
 $section_classes = $data_provider->itemCount === 0 ? 'oec-group no-patients' : 'oec-group';
 $quick_filter_name = $filter->getQuickFilterTypeName();
-$ae_subspecialty_id = Yii::app()->db->createCommand()
+$ae_subspecialty_id = Yii::app()->db->cache(1000)->createCommand()
     ->select('id')
     ->from('subspecialty')
     ->where('ref_spec = \'AE\'')
     ->queryScalar();
 
-$is_ae_worklist = (bool)Yii::app()->db->createCommand()
+$is_ae_worklist = isset($worklist->id) && (bool)Yii::app()->db->cache(1000)->createCommand()
     ->select('w.id')
     ->from('worklist w')
     ->join('worklist_definition_display_context wddc', 'wddc.worklist_definition_id = w.worklist_definition_id')
@@ -124,7 +124,7 @@ $is_ae_worklist = (bool)Yii::app()->db->createCommand()
         <?php foreach ($data_provider->getData() as $wl_patient_data) :
             $wl_patient = WorklistPatient::model()->findByPk($wl_patient_data['id']);
 
-            $num_ae_visits = (int)Yii::app()->db->createCommand()
+            $num_ae_visits = (int)Yii::app()->db->cache(300)->createCommand()
                 ->select('COUNT(*)')
                 ->from('worklist_patient wp')
                 ->join('worklist w', 'w.id = wp.worklist_id')
