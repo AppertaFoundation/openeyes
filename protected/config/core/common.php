@@ -605,15 +605,11 @@ $config = array(
         /* injecting autoprint JS into generated PDF */
         //'docman_inject_autoprint_js' => false,
 
-        //'docman_generate_csv' => true,
+        'docman_generate_csv' => getenv('DOCMAN_GENERATE_CSV') ?: true,
 
         /*Docman ConsoleCommand can generate Internal referral XML/PDF along with it's own(Docman) XML/PDF
           In case a trust integrated engine can use the same XML to decide where to forward the document to */
-        //'docman_with_internal_referral' => false,
-
-        // xml template
-        //'docman_xml_template' => 'template_default',
-        // set this to false if you want to suppress XML output
+        'docman_with_internal_referral' => getenv('DOCMAN_WITH_INTERNAL_REFERRAL') ?:  false,
 
         /**
         * Filename format for the PDF and XML files output by the docman export. The strings that should be replaced
@@ -628,6 +624,10 @@ $config = array(
          *  Set to false to suppress XML generation for electronic correspondence
          */
         'docman_generate_xml' => getenv('DOCMAN_GENERATE_XML') ? filter_var(getenv('DOCMAN_GENERATE_XML'), FILTER_VALIDATE_BOOLEAN) : true,
+
+        // xml template
+        'docman_xml_template' => getenv('DOCMAN_XML_TEMPLATE') ?: 'default',
+        // set this to false if you want to suppress XML output
 
 
         /**
