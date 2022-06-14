@@ -9,6 +9,13 @@ $is_step_instance = $step instanceof PathwayStep;
 $is_ready_to_start = $status === PathwayStep::STEP_REQUESTED && !in_array($status, array(PathwayStep::STEP_STARTED, PathwayStep::STEP_COMPLETED));
 $is_started = $status === PathwayStep::STEP_STARTED && !in_array($status, array(PathwayStep::STEP_REQUESTED, PathwayStep::STEP_COMPLETED));
 $is_completed = $status === PathwayStep::STEP_COMPLETED;
+if ($is_step_instance) {
+    $is_last_step = $step->id === $step->pathway->requested_steps[count($step->pathway->requested_steps) - 1]->id;
+    $is_first_requested_step = $step->id === $step->pathway->requested_steps[0]->id;
+} else {
+    $is_last_step = $step->id === $step->pathway_type->default_steps[count($step->pathway_type->default_steps) - 1]->id;
+    $is_first_requested_step = $step->id === $step->pathway_type->default_steps[0]->id;
+}
 ?>
 <div class="slide-open">
     <?php if ($is_step_instance) { ?>
@@ -34,9 +41,9 @@ $is_completed = $status === PathwayStep::STEP_COMPLETED;
             Cancel timer
         </button>
         <?php } ?>
-        <button class="blue i-btn left hint js-ps-popup-btn" data-action="left"<?= !$is_ready_to_start ? 'style="display: none;"' : ''?>>
+        <button class="blue i-btn left hint js-ps-popup-btn" data-action="left"<?= !$is_ready_to_start ? 'style="display: none;"' : ''?><?= $is_first_requested_step ? ' disabled' : ''?>>
         </button>
-        <button class="blue i-btn right hint js-ps-popup-btn" data-action="right"<?= !$is_ready_to_start ? 'style="display: none;"' : ''?>>
+        <button class="blue i-btn right hint js-ps-popup-btn" data-action="right"<?= !$is_ready_to_start ? 'style="display: none;"' : ''?><?= $is_last_step ? ' disabled' : ''?>>
         <button class="red i-btn trash hint js-ps-popup-btn" data-action="remove"<?= !$is_ready_to_start ? 'style="display: none;"' : ''?>>
         </button>
     </div>

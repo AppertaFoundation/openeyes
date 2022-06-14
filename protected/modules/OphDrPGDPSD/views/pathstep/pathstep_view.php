@@ -22,6 +22,14 @@ if ($is_step_instance) {
 } else {
     $is_assignment_complete = false;
 }
+
+if ($is_step_instance) {
+    $is_last_step = $step->id === $step->pathway->requested_steps[count($step->pathway->requested_steps) - 1]->id;
+    $is_first_requested_step = $step->id === $step->pathway->requested_steps[0]->id;
+} else {
+    $is_last_step = $step->id === $step->pathway_type->default_steps[count($step->pathway_type->default_steps) - 1]->id;
+    $is_first_requested_step = $step->id === $step->pathway_type->default_steps[0]->id;
+}
 ?>
 <div class="slide-open" data-status-dict='<?=$assignment->getStatusDetails(true)?>'>
     <form id="worklist-administration-form" method="POST" action='/OphDrPGDPSD/PSD/unlockPSD'>
@@ -146,8 +154,8 @@ if ($is_step_instance) {
                     <input class="user-pin-entry" name="pincode" type="password" maxlength="6" minlength="6" inputmode="numeric" placeholder="*******">
                     <button type="submit" class="try-pin js-unlock" data-action="unlock_da" disabled>Unlock</button>
                 </div>
-                <button class="blue i-btn left hint js-ps-popup-btn" data-action="left"></button>
-                <button class="blue i-btn right hint js-ps-popup-btn" data-action="right"></button>
+                <button class="blue i-btn left hint js-ps-popup-btn" data-action="left"<?= $is_first_requested_step ? ' disabled' : ''?>></button>
+                <button class="blue i-btn right hint js-ps-popup-btn" data-action="right"<?= $is_last_step ? ' disabled' : ''?>></button>
                 <button class="red i-btn trash hint js-ps-popup-btn" data-action="remove"></button>
                 <?php } ?>
             <?php } ?>

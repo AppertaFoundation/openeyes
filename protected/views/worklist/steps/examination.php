@@ -25,6 +25,14 @@ if (!$service_firm && $subspecialty && isset($patient)) {
                                         [':subspecialty' => $subspecialty->id]);
 }
 
+if ($is_step_instance) {
+    $is_last_step = $step->id === $step->pathway->requested_steps[count($step->pathway->requested_steps) - 1]->id;
+    $is_first_requested_step = $step->id === $step->pathway->requested_steps[0]->id;
+} else {
+    $is_last_step = $step->id === $step->pathway_type->default_steps[count($step->pathway_type->default_steps) - 1]->id;
+    $is_first_requested_step = $step->id === $step->pathway_type->default_steps[0]->id;
+}
+
 ?>
 
 <div class="slide-open">
@@ -170,8 +178,8 @@ if (!$service_firm && $subspecialty && isset($patient)) {
                 </button>
             <?php } ?>
             <?php if ($is_requested) { ?>
-                <button class="blue i-btn left hint js-ps-popup-btn" data-action="left"></button>
-                <button class="blue i-btn right hint js-ps-popup-btn" data-action="right"></button>
+                <button class="blue i-btn left hint js-ps-popup-btn" data-action="left"<?= $is_first_requested_step ? ' disabled' : ''?>></button>
+                <button class="blue i-btn right hint js-ps-popup-btn" data-action="right"<?= $is_last_step ? ' disabled' : ''?>></button>
                 <button class="red i-btn trash hint js-ps-popup-btn" data-action="remove"></button>
             <?php } ?>
         </div>
