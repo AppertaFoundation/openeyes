@@ -906,6 +906,7 @@ class BaseEventTypeController extends BaseModuleController
 
                             foreach ($worklist_patients as $worklist_patient) {
                                 $pathway = $worklist_patient->pathway;
+                                $this->event->worklist_patient_id = $worklist_patient->id;
 
                                 //If pathway hasn't been instanced, it doesn't make sense to complete a started step
                                 if (isset($pathway)) {
@@ -920,7 +921,6 @@ class BaseEventTypeController extends BaseModuleController
                                 }
 
                                 if (isset($applicable_pathstep)) {
-                                    $this->event->worklist_patient_id = $worklist_patient->id;
                                     break;
                                 }
                             }
@@ -1225,6 +1225,7 @@ class BaseEventTypeController extends BaseModuleController
 
                             foreach ($worklist_patients as $worklist_patient) {
                                 $pathway = $worklist_patient->pathway;
+                                $this->event->worklist_patient_id = $worklist_patient->id;
 
                                 //If pathway hasn't been instanced, it doesn't make sense to complete a started step
                                 if (isset($pathway)) {
@@ -1239,7 +1240,6 @@ class BaseEventTypeController extends BaseModuleController
                                 }
 
                                 if (isset($applicable_pathstep)) {
-                                    $this->event->worklist_patient_id = $worklist_patient->id;
                                     break;
                                 }
                             }
