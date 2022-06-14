@@ -381,10 +381,16 @@ class WorklistController extends BaseController
         $pathway->enqueue($step);
         $pathway->refresh();
 
+        if (!$pathway->start_time) {
+            $pathway->start_time = date('Y-m-d H:i:s');
+        }
+
         $pathway->updateStatus();
 
         $this->renderJSON(
             [
+                'id' => $step->id,
+                'pathway_id' => $pathway->id,
                 'step_html' => $this->renderPartial(
                     '_clinical_pathway',
                     ['visit' => $pathway->worklist_patient],

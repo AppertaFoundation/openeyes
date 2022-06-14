@@ -10,9 +10,10 @@ $pathway = $visit->pathway;
     <?php
     if ($pathway) {
         $check_in_completed = false;
+        $checkin_step_type = PathwayStepType::model()->find('short_name = \'checkin\'');
 
         foreach ($pathway->completed_steps as $step) {
-            $check_in_completed = $check_in_completed || $step->short_name === 'checkin';
+            $check_in_completed = $check_in_completed || (int)$step->step_type_id === (int)$checkin_step_type->id;
 
             $status_class = $step->getStatusString();
             $time = $step->start_time;

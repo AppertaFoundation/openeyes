@@ -816,6 +816,9 @@ $(function () {
                         updatePathwayTr($(`tr#js-pathway-${ps.visitID}`), response);
 
                         ps.resetPopup();
+                        ps.pathstepId = response.id;
+                        ps.pathwayId = ps.pathwayId ? ps.pathwayId : response.pathway_id;
+
                         ps.requestDetails({
                             partial: 0,
                             pathstep_id: ps.pathstepId,
