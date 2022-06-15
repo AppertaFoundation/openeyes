@@ -477,12 +477,24 @@ class Pathway extends BaseActiveRecordVersioned
     public function getTotalDurationHTML($show_duration = false): string
     {
         $duration_graphic = '';
+        $start_time = null;
         if ($this->worklist_patient->when) {
             if ($this->worklist_patient->when instanceof DateTime) {
                 $start_time = $this->worklist_patient->when;
             } else {
                 $start_time = DateTime::createFromFormat('Y-m-d H:i:s', $this->worklist_patient->when);
             }
+        } else {
+            // If there is at least one completed check-in step, use the completion datetime of the first completed check-in step as the start time.
+            $completed_checkin_steps = array_filter($this->completed_steps, static function ($step) {
+                return $step->type->short_name === 'checkin' && (int)$step->status === PathwayStep::STEP_COMPLETED;
+            });
+            if (count($completed_checkin_steps) > 0) {
+                $start_time = DateTime::createFromFormat('Y-m-d H:i:s', $completed_checkin_steps[0]->end_time);
+            }
+        }
+
+        if ($start_time) {
             // find the started break steps
             $started_break_steps = array_filter($this->started_steps, static function ($step) {
                 return $step->type->short_name === 'break';
@@ -533,11 +545,11 @@ class Pathway extends BaseActiveRecordVersioned
                     $wait_color = 'red';
                 }
                 $duration_graphic = '<svg class="duration-graphic ' . $wait_color . '" viewBox="0 0 48 12" height="12" width="48">
-                                    <circle class="c0" cx="6" cy="6" r="6"></circle>
-                                    <circle class="c1" cx="18" cy="6" r="6"></circle>
-                                    <circle class="c2" cx="30" cy="6" r="6"></circle>
-                                    <circle class="c3" cx="42" cy="6" r="6"></circle>
-                                </svg>';
+                                <circle class="c0" cx="6" cy="6" r="6"></circle>
+                                <circle class="c1" cx="18" cy="6" r="6"></circle>
+                                <circle class="c2" cx="30" cy="6" r="6"></circle>
+                                <circle class="c3" cx="42" cy="6" r="6"></circle>
+                            </svg>';
             }
             // Show duration of the pathway
             $duration_graphic .= '<div class="mins">';

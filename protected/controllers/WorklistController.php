@@ -398,6 +398,7 @@ class WorklistController extends BaseController
                 ),
                 'end_time' => DateTime::createFromFormat('Y-m-d H:i:s', $step->start_time)->format('H:i'),
                 'pathway_status_html' => $pathway->getPathwayStatusHTML(),
+                'waiting_time_html' => $pathway->getTotalDurationHTML(true),
                 'status' => $pathway->getStatusString(),
             ]
         );

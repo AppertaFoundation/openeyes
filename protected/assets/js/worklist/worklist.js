@@ -547,7 +547,7 @@ $(function () {
         let status = static_status ? static_status : pathway_status;
         $tr.attr('class', '');
         $tr.addClass(status);
-        $tr.attr('data-status', status)
+        $tr.attr('data-status', status);
         $tr.find('.js-pathway-container').html(response.step_html);
         $tr.find('.js-pathway-status').html(response.status_html);
         if(response.waiting_time_html){
