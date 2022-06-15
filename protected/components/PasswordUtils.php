@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2020
  * This file is part of OpenEyes.
@@ -30,7 +31,7 @@ class PasswordUtils
     {
         $pw_restrictions = Yii::app()->params['pw_restrictions'];
 
-        if ($pw_restrictions===null) {
+        if ($pw_restrictions === null) {
             $pw_restrictions = array(
                 'min_length' => 8,
                 'min_length_message' => 'Passwords must be at least 8 characters long',
@@ -44,13 +45,13 @@ class PasswordUtils
             $pw_restrictions['min_length'] = 8;
         }
         if (!isset($pw_restrictions['min_length_message'])) {
-            $pw_restrictions['min_length_message'] = 'Passwords must be at least '.$pw_restrictions['min_length'].' characters long';
+            $pw_restrictions['min_length_message'] = 'Passwords must be at least ' . $pw_restrictions['min_length'] . ' characters long';
         }
         if (!isset($pw_restrictions['max_length'])) {
             $pw_restrictions['max_length'] = 70;
         }
         if (!isset($pw_restrictions['max_length_message'])) {
-            $pw_restrictions['max_length_message'] = 'Passwords must be at most '.$pw_restrictions['max_length'].' characters long';
+            $pw_restrictions['max_length_message'] = 'Passwords must be at most ' . $pw_restrictions['max_length'] . ' characters long';
         }
         if (!isset($pw_restrictions['strength_regex'])) {
             $pw_restrictions['strength_regex'] = "%.*%";
@@ -159,13 +160,18 @@ class PasswordUtils
 
     public static function testPasswordExpiry($user_authentication)
     {
+        $password_days = [
+            'locked' => Yii::app()->params['pw_status_checks']['pw_days_lock'] === '0' ? '1000000 days' : Yii::app()->params['pw_status_checks']['pw_days_lock'] . ' days',
+            'expired' =>  Yii::app()->params['pw_status_checks']['pw_days_expire'] === '0' ? '1000000 days' : Yii::app()->params['pw_status_checks']['pw_days_expire'] . ' days',
+            'stale' =>  Yii::app()->params['pw_status_checks']['pw_days_stale'] === '0' ? '1000000 days' : Yii::app()->params['pw_status_checks']['pw_days_stale'] . ' days',
+        ];
         // Special Local users (eg. docman_user, api, etc.) should not be subject to password expiry.
         $local_users = Yii::app()->params['local_users'] ?? [];
         if (in_array($user_authentication->username, $local_users)) {
-          return true;
+            return true;
         }
 
-        $expiry_statuses = ['lock' => '45 days', 'expire' => '30 days', 'stale' => '15 days'];
+        $expiry_statuses = ['locked' => $password_days['locked'], 'expired' => $password_days['expired'], 'stale' => $password_days['stale']];
 
         $last_changed_date = $user_authentication->password_last_changed_date ?? date("Y-m-d H:i:s");
         if (!$last_changed_date) {
@@ -186,8 +192,13 @@ class PasswordUtils
 
     public static function getDaysLeft($user_authentication)
     {
+        $password_days = [
+            'locked' => Yii::app()->params['pw_status_checks']['pw_days_lock'] === '0' ? '1000000 days' : Yii::app()->params['pw_status_checks']['pw_days_lock'] . ' days',
+            'expired' =>  Yii::app()->params['pw_status_checks']['pw_days_expire'] === '0' ? '1000000 days' : Yii::app()->params['pw_status_checks']['pw_days_expire'] . ' days',
+            'stale' =>  Yii::app()->params['pw_status_checks']['pw_days_stale'] === '0' ? '1000000 days' : Yii::app()->params['pw_status_checks']['pw_days_stale'] . ' days',
+        ];
         //same excepti
-        $expiry_statuses = ['lock' => '45 days', 'expire' => '30 days', 'stale' => '15 days'];
+        $expiry_statuses = ['locked' => $password_days['locked'], 'expired' => $password_days['expired'], 'stale' => $password_days['stale']];
 
         $last_changed_date = $user_authentication->password_last_changed_date ?? date("Y-m-d H:i:s");
         if (!$last_changed_date) {
