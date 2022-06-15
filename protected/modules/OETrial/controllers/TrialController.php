@@ -31,7 +31,7 @@ class TrialController extends BaseModuleController
         return array(
             array(
                 'allow',
-                'actions' => array('getTrialList', 'permissions', 'renderPopups'),
+                'actions' => array('getTrialList', 'permissions', 'renderPopups', 'trialAutocomplete'),
                 'users' => array('@'),
             ),
             array(
@@ -56,6 +56,13 @@ class TrialController extends BaseModuleController
                 'actions' => array('update', 'addPatient', 'removePatient'),
                 'expression' => function ($user) {
                     return $user->checkAccess('TaskViewTrial') && @TrialController::getCurrentUserPermission()->can_edit;
+                },
+            ),
+            array(
+                'allow',
+                'actions' => array('addPatientToMultipleTrials'),
+                'expression' => function ($user) {
+                    return $user->checkAccess('TaskViewTrial') && @TrialController::getCurrentUserPermissionMultiple(true, false, false);
                 },
             ),
             array(
@@ -85,6 +92,37 @@ class TrialController extends BaseModuleController
     {
         $trial = Trial::model()->findByPk(Yii::app()->getRequest()->getParam('id'));
         return $trial !== null ? $trial->getUserPermission(Yii::app()->user->id) : null;
+    }
+
+    public static function getCurrentUserPermissionMultiple($can_edit = false, $can_view = false, $can_manage = false)
+    {
+        $trial_ids = Yii::app()->getRequest()->getParam('trial_ids');
+        $criteria = new CDbCriteria();
+
+        if (!($can_edit || $can_view || $can_manage)) {
+            return false;
+        }
+
+        if ($can_edit) {
+            $criteria->addCondition('can_edit = 1');
+        }
+
+        if ($can_view) {
+            $criteria->addCondition('can_view = 1');
+        }
+
+        if ($can_manage) {
+            $criteria->addCondition('can_manage = 1');
+        }
+
+        $criteria->addCondition('user_id = :user_id');
+        $criteria->params = [':user_id' => Yii::app()->user->id];
+
+        $criteria->addInCondition('trial_id', $trial_ids);
+
+        $values = UserTrialAssignment::model()->with('trialPermission')->findAll($criteria);
+
+        return count($trial_ids) === count($values);
     }
 
     /**
@@ -291,6 +329,55 @@ class TrialController extends BaseModuleController
     }
 
     /**
+     * Adds a patient to several trials in a list
+     *
+     * @throws Exception Thrown if an error occurs when saving the TrialPatient record
+     */
+    public function actionAddPatientToMultipleTrials()
+    {
+        $trials = $_POST['trial_ids'];
+        $patient = Patient::model()->findByPk($_POST['patient_id']);
+        $status = TrialPatientStatus::model()->find('code = ?', array(TrialPatientStatus::SHORTLISTED_CODE));
+
+        $transaction = Yii::app()->db->beginTransaction();
+        $results = [];
+
+        try {
+            foreach ($trials as $trial_id) {
+                $trial = $this->loadModel($trial_id);
+
+                $trial_patient = $trial->addPatient($patient, $status);
+
+                $coordinators = array_map(
+                    static function($coordinator) { return $coordinator->user->getFullName(); },
+                    $trial->getTrialStudyCoordinators()
+                );
+
+                $results[] = [
+                    'name' => CHtml::encode($trial->name),
+                    'started-date' => $trial->getStartedDateForDisplay(),
+                    'closed-date' => $trial->getClosedDateForDisplay(),
+                    'coordinators' => implode(', ', $coordinators),
+                    'trial-type' => $trial->trialType->name,
+                    'treatment-type' => $trial_patient->treatmentType->name,
+                    'status-name' => $trial_patient->status->name,
+                    'status-update-date' => isset($trial_patient->status_update_date) ? Helper::formatFuzzyDate($trial_patient->status_update_date) : null,
+                ];
+            }
+        } catch (Exception $e) {
+            $results = null;
+        }
+
+        if ($results === null) {
+            $transaction->rollback();
+        } else {
+            $transaction->commit();
+        }
+
+        $this->renderJSON($results);
+    }
+
+    /**
      * @throws CHttpException Raised when the record cannot be found
      * @throws Exception Raised when an error occurs when removing the record
      */
@@ -390,6 +477,38 @@ class TrialController extends BaseModuleController
         foreach ($trials as $value => $key) {
             echo CHtml::tag('option', array('value' => $value), CHtml::encode($key), true);
         }
+    }
+
+    /**
+     * Get a JSON list of all trials that match the search term that the patient refered to by
+     * patient_id is not a member of. Only return those that 1) are not already associated with the patient,
+     * 2) not already been chosen by the user 3) have a 'can_edit' permission for the user
+     * @param $type string The trial type.
+     */
+    public function actionTrialAutocomplete($patient_id, $already_selected_ids, $term)
+    {
+        $already_selected_ids = json_decode($already_selected_ids);
+
+        $criteria = new CDbCriteria();
+        $criteria->select = 't.id, t.name';
+        $criteria->join = 'JOIN user_trial_assignment uta ON uta.trial_id = t.id JOIN trial_permission tp ON tp.id = uta.trial_permission_id';
+
+        $criteria->addCondition('uta.user_id = :user_id');
+        $criteria->addCondition('tp.can_edit = 1');
+        $criteria->addCondition('t.id NOT IN (SELECT trial_id FROM trial_patient WHERE patient_id = :patient_id)');
+        $criteria->params = [':user_id' => Yii::app()->user->id, ':patient_id' => $patient_id];
+
+        $criteria->addSearchCondition('LOWER(t.name)', strtolower($term));
+        $criteria->addNotInCondition('t.id', $already_selected_ids);
+
+        $trials = array_map(
+            static function ($trial) {
+                return ['id' => $trial->id, 'label' => $trial->name];
+            },
+            Trial::model()->findAll($criteria)
+        );
+
+        $this->renderJSON($trials);
     }
 
     /**
