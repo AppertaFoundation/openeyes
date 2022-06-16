@@ -539,7 +539,7 @@ class SettingMetadata extends BaseActiveRecordVersioned
         $logos = $logo_helper->getLogoURLs(isset($site) ? $site->id : null);
 
         return array_filter(array(
-            'to_address' => array('label' => 'Recipient Address', 'value' => nl2br($recipient_address)),
+            'to_address' => array('label' => 'Recipient Address', 'value' => $recipient_address),
             'source_address' => array('label' => 'Source Address', 'value' => isset($element_letter) && !empty($element_letter->source_address) ? self::makeSpan($element_letter->source_address) : null),
             'cc_address' => array('label' => 'CC Address', 'value' => isset($element_letter) && !empty($element_letter->cc) ? self::makeSpan($element_letter->cc) : null),
             'correspondence_date' => array('label' => 'Correspondence Date', 'value' => isset($element_letter) && !empty($element_letter->event) ? self::makeSpan(\Helper::convertMySQL2NHS($element_letter->event->event_date)) : null),
