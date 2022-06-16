@@ -19,6 +19,10 @@ class ExaminationElementAttributesController extends BaseAdminController
 
     public $group = 'Examination';
 
+    public function accessRules()
+    {
+        return array(array('allow', 'roles' => array('OprnInstitutionAdmin')));
+    }
     /**
      * @throws CHttpException
      */
