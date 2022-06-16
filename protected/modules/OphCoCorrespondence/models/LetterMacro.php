@@ -162,7 +162,8 @@ class LetterMacro extends BaseActiveRecordVersioned
         $this->deleteMappings(ReferenceData::LEVEL_SUBSPECIALTY);
         $this->deleteMappings(ReferenceData::LEVEL_FIRM);
         foreach ($this->levels as $level => $vals) {
-            $instances = array();
+            $vals = is_array($vals) ? $vals : [];
+
             switch ($level) {
                 case 'institutions':
                     $this->createMappings(ReferenceData::LEVEL_INSTITUTION, $vals);

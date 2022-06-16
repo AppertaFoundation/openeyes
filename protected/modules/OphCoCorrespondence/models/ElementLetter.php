@@ -803,10 +803,11 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
 
         $criteria = new CDbCriteria();
         $criteria->with = ['institutions', 'sites', 'firms', 'subspecialties'];
-        $criteria->condition = '(firms_firms.firm_id = :firm_id OR sites_sites.site_id = :site_id  OR institutions_institutions.institution_id = :institution_id';
+        $criteria->condition = '((firms_firms.firm_id = :firm_id OR firms_firms.firm_id IS NULL) AND (sites_sites.site_id = :site_id OR sites_sites.site_id IS NULL)' .
+                             ' AND (institutions_institutions.institution_id = :institution_id OR institutions_institutions.institution_id IS NULL)';
         $criteria->params = [':firm_id' => $firm->id, ':site_id' => Yii::app()->session['selected_site_id'], ':institution_id' => Yii::app()->session['selected_institution_id']];
         if ($firm->service_subspecialty_assignment_id) {
-            $criteria->condition .= ' OR subspecialties_subspecialties.subspecialty_id = :subspecialty_id';
+            $criteria->condition .= ' AND (subspecialties_subspecialties.subspecialty_id = :subspecialty_id OR subspecialties_subspecialties.subspecialty_id IS NULL)';
             $criteria->params[':subspecialty_id'] = $firm->serviceSubspecialtyAssignment->subspecialty_id;
         }
         // Ensure that only installation-level macros

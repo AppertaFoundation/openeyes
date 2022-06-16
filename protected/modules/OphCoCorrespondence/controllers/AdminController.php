@@ -279,17 +279,40 @@ class AdminController extends \ModuleAdminController
         if (!isset($_POST['id'])) {
             return null;
         }
-        //Make all the macro ids null that is equal to the macro id
-        // that is being deleted in the document instance data table
-        DocumentInstanceData::model()->updateAll(['macro_id' => null], 'macro_id IN (' . implode($_POST['id']) . ')');
 
-        $criteria = new CDbCriteria();
-        $criteria->addInCondition('id', @$_POST['id']);
-        if (LetterMacro::model()->deleteAll($criteria)) {
-            echo '1';
-        } else {
-            echo '0';
+        $transaction = Yii::app()->db->beginTransaction();
+        $result = true;
+
+        try {
+            //Make all the macro ids null that is equal to the macro id
+            // that is being deleted in the document instance data table
+            DocumentInstanceData::model()->updateAll(['macro_id' => null], 'macro_id IN (' . implode($_POST['id']) . ')');
+
+            $criteria = new CDbCriteria();
+            $criteria->addInCondition('id', $_POST['id']);
+
+            $instances = LetterMacro::model()->findAll($criteria);
+
+            foreach ($instances as $instance) {
+                // Remove mappings for each letter macro to ensure its deletion
+                $result = $result && $instance->deleteMappings(ReferenceData::LEVEL_INSTITUTION);
+                $result = $result && $instance->deleteMappings(ReferenceData::LEVEL_SITE);
+                $result = $result && $instance->deleteMappings(ReferenceData::LEVEL_SUBSPECIALTY);
+                $result = $result && $instance->deleteMappings(ReferenceData::LEVEL_FIRM);
+
+                $result = $result && $instance->delete();
+            }
+        } catch (Exception $e) {
+            $result = false;
         }
+
+        if ($result) {
+            $transaction->commit();
+        } else {
+            $transaction->rollback();
+        }
+
+        echo $result ? '1' : '0';
     }
 
     /**
