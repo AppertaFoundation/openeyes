@@ -756,6 +756,17 @@ $(function () {
                         let $current_step = $('.oe-pathstep-btn[data-pathstep-id="' + response.step.id + '"]');
                         const newSteps = collectActiveTodoStepsFrom($current_step.closest('td.js-pathway-container'));
 
+                        let special_action = $(event.target).data('special-action');
+
+                        if (special_action && special_action[response.step.status]) {
+                            const callback = special_action[response.step.status];
+                            /*
+                            * no existence check, as if the special action is required, it must be included
+                            * in special_actions dictionary
+                            */
+                            special_actions[callback].call(null, $current_step, response.step);
+                        }
+
                         refreshStatistics(ps.visitID, oldSteps, newSteps);
 
                         ps.resetPopup();

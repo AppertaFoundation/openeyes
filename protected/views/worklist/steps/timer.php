@@ -29,22 +29,28 @@ if ($is_step_instance) {
             class="green hint js-ps-popup-btn" 
             data-action="next"
             <?= $is_ready_to_start ? '' : 'style="display: none;"'?>
-            data-special-action='{"active":"startTimer"}'
-        >
+            data-special-action='{"active":"startTimer"}'>
             Start timer
         </button>
         <button 
             class="blue hint js-ps-popup-btn" 
             data-action="prev"<?= !$is_started ? 'style="display: none;"' : ''?>
-            data-special-action='{"todo": "cancelTimer", "done": "cancelTimer"}'
-        >
+            data-special-action='{"todo": "cancelTimer", "done": "cancelTimer"}'>
             Cancel timer
         </button>
         <?php } ?>
-        <button class="blue i-btn left hint js-ps-popup-btn" data-action="left"<?= !$is_ready_to_start ? 'style="display: none;"' : ''?><?= $is_first_requested_step ? ' disabled' : ''?>>
+        <button class="blue i-btn left hint js-ps-popup-btn"
+                data-action="left"
+                <?= $is_first_requested_step ? ' disabled' : ''?>
+                data-special-action='{"todo": "cancelTimer", "done": "cancelTimer"}'>
         </button>
-        <button class="blue i-btn right hint js-ps-popup-btn" data-action="right"<?= !$is_ready_to_start ? 'style="display: none;"' : ''?><?= $is_last_step ? ' disabled' : ''?>>
-        <button class="red i-btn trash hint js-ps-popup-btn" data-action="remove"<?= !$is_ready_to_start ? 'style="display: none;"' : ''?>>
+        <button class="blue i-btn right hint js-ps-popup-btn"
+                data-action="right"
+                <?= $is_last_step ? ' disabled' : ''?>
+                data-special-action='{"todo": "cancelTimer", "done": "cancelTimer"}'>
+        <button class="red i-btn trash hint js-ps-popup-btn"
+                data-action="remove"
+                data-special-action='{"todo": "cancelTimer", "done": "cancelTimer"}'>
         </button>
     </div>
     <?php } ?>

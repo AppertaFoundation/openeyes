@@ -993,7 +993,7 @@ class WorklistController extends BaseAdminController
 
             // As we're only moving one step, we should only have to reorder at most a single step.
             $step_to_reorder = PathwayTypeStep::model()->find(
-                "pathway_type_id = :pathway_id AND id != :id AND `order` = :order",
+                "pathway_type_id = :pathway_id AND id != :id AND queue_order = :order",
                 [
                     'pathway_id' => $step->pathway_type_id,
                     ':id' => $step->id,

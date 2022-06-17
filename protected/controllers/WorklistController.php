@@ -590,6 +590,11 @@ class WorklistController extends BaseController
                 ]
             );
 
+            // It should only be possible to request a reorder on requested steps or an active hold timer (which will revert its status to 'to-do').
+            if ((int)$step->status === PathwayStep::STEP_STARTED) {
+                $step->status = PathwayStep::STEP_REQUESTED;
+            }
+
             if ($step_to_reorder) {
                 $step_to_reorder->todo_order = $old_order;
                 $step_to_reorder->save();
