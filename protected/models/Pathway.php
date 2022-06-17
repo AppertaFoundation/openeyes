@@ -478,19 +478,32 @@ class Pathway extends BaseActiveRecordVersioned
     {
         $duration_graphic = '';
         $start_time = null;
+        $completed_checkin_steps = array_filter($this->completed_steps, static function ($step) {
+            return $step->type->short_name === 'checkin' && (int)$step->status === PathwayStep::STEP_COMPLETED;
+        });
+        $checkin_steps = array_filter($this->completed_steps, static function ($step) {
+            return $step->type->short_name === 'checkin';
+        });
         if ($this->worklist_patient->when) {
             if ($this->worklist_patient->when instanceof DateTime) {
-                $start_time = $this->worklist_patient->when;
+                $when = $this->worklist_patient->when;
             } else {
-                $start_time = DateTime::createFromFormat('Y-m-d H:i:s', $this->worklist_patient->when);
+                $when = DateTime::createFromFormat('Y-m-d H:i:s', $this->worklist_patient->when);
             }
-        } else {
-            // If there is at least one completed check-in step, use the completion datetime of the first completed check-in step as the start time.
-            $completed_checkin_steps = array_filter($this->completed_steps, static function ($step) {
-                return $step->type->short_name === 'checkin' && (int)$step->status === PathwayStep::STEP_COMPLETED;
-            });
-            if (count($completed_checkin_steps) > 0) {
-                $start_time = DateTime::createFromFormat('Y-m-d H:i:s', $completed_checkin_steps[0]->end_time);
+
+            $checkin_time = count($completed_checkin_steps) > 0
+                ? DateTime::createFromFormat('Y-m-d H:i:s', $completed_checkin_steps[0]->end_time)
+                : new DateTime();
+
+            $start_time = max($when, $checkin_time);
+        } elseif (count($completed_checkin_steps) > 0) {
+            $start_time = DateTime::createFromFormat('Y-m-d H:i:s', $completed_checkin_steps[0]->end_time);
+        } elseif (count($checkin_steps) === 0) {
+            // Only set the start date for the total duration to the start date of the first started step if there are no check-in steps in the pathway.
+            if (count($this->completed_steps) > 0) {
+                $start_time = $this->completed_steps[0]->start_time;
+            } elseif (count($this->started_steps) > 0) {
+                $start_time = $this->started_steps[0]->start_time;
             }
         }
 

@@ -178,10 +178,10 @@ $is_ae_worklist = isset($worklist->id) && (bool)Yii::app()->db->cache(1000)->cre
                 </td>
                 <td>
                     <span class="oe-pathstep-btn buff comments <?= $wl_patient->pathway && $wl_patient->pathway->checkForComments() ? 'comments-added' : '' ?>"
-                          data-worklist-patient-id="<?= $wl_patient->id?>"
+                          data-worklist-patient-id="<?= $wl_patient->id ?>"
                           data-pathway-id="<?= $wl_patient->pathway->id ?? null ?>"
                           data-patient-id="<?= $wl_patient->patient_id ?>"
-                          data-visit-id="<?= $wl_patient->id?>"
+                          data-visit-id="<?= $wl_patient->id ?>"
                           data-pathstep-id="comment"
                           data-pathstep-type-id="">
                         <span class="step i-comments"></span>
@@ -189,33 +189,9 @@ $is_ae_worklist = isset($worklist->id) && (bool)Yii::app()->db->cache(1000)->cre
                     </span>
                 </td>
                 <td>
-                    <div class="wait-duration<?= $wl_patient->pathway && (int)$wl_patient->pathway->status === Pathway::STATUS_DONE ? ' stopped' : ''?>">
+                    <div class="wait-duration<?= $wl_patient->pathway && (int)$wl_patient->pathway->status === Pathway::STATUS_DONE ? ' stopped' : '' ?>">
                         <?php if ($wl_patient->pathway) {
                             echo $wl_patient->pathway->getTotalDurationHTML(true);
-                        } elseif ($wl_patient->when) {
-                            if ($wl_patient->when instanceof DateTime) {
-                                $start_time = $wl_patient->when;
-                            } else {
-                                $start_time = DateTime::createFromFormat('Y-m-d H:i:s', $wl_patient->when);
-                            }
-                            $end_time = new DateTime();
-                            $wait_length = $start_time->diff($end_time);
-                            if ($wait_length->h < 2) {
-                                $wait_color = 'green';
-                            } elseif ($wait_length->h < 3) {
-                                $wait_color = 'yellow';
-                            } elseif ($wait_length->h < 4) {
-                                $wait_color = 'orange';
-                            } else {
-                                $wait_color = 'red';
-                            }
-                            $duration_graphic = '<svg class="duration-graphic ' . $wait_color . '" viewBox="0 0 48 12" height="12" width="48">
-                                                <circle class="c0" cx="6" cy="6" r="6"></circle>
-                                                <circle class="c1" cx="18" cy="6" r="6"></circle>
-                                                <circle class="c2" cx="30" cy="6" r="6"></circle>
-                                                <circle class="c3" cx="42" cy="6" r="6"></circle>
-                                            </svg><div class="mins"><small>' . $wait_length->format('%h:%I') . '</small></div>';
-                            echo $duration_graphic;
                         } ?>
                     </div>
                 </td>
