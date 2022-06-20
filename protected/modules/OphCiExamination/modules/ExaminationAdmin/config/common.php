@@ -20,7 +20,7 @@ $config = [
                 'Element Attributes' => ['uri' => '/oeadmin/ExaminationElementAttributes/list', 'restricted' => array('OprnInstitutionAdmin')],
                 'Workflows' => '/OphCiExamination/admin/viewWorkflows',
                 'Workflow rules' => '/OphCiExamination/admin/viewWorkflowRules',
-                'Allergies' => '/OphCiExamination/admin/Allergies/index',
+                'Allergies' => ['uri' => '/OphCiExamination/admin/Allergies/index', 'restricted' => array('admin')],
                 'Required Allergy Assignment' => '/OphCiExamination/admin/AllergyAssignment/index',
                 'Pupillary Abnormalities' => '/OphCiExamination/admin/PupillaryAbnormalities/index',
                 'Required Pupillary Abnormalities' => '/OphCiExamination/admin/PupillaryAbnormalityAssignment/index',
