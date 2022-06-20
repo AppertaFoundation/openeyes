@@ -447,8 +447,14 @@ class CsvController extends BaseController
             return $errors;
         }
 
+        $global_identifier_institution = Institution::model()->find('LOWER(name) = "medicare"') ?? Institution::model()->find('remote_id = "NHS"');
+
+        $local_identifier_type = PatientIdentifierHelper::getPatientIdentifierType(PatientIdentifierType::LOCAL_USAGE_TYPE, Yii::app()->session['selected_institution_id']);
+        $global_identifier_type = PatientIdentifierHelper::getPatientIdentifierType(PatientIdentifierType::GLOBAL_USAGE_TYPE, $global_identifier_institution->id);
+
         if (!empty($patient_raw_data['CERA_ID'])) {
-            $duplicate_patient = Patient::model()->findByAttributes(array('hos_num' => $patient_raw_data['CERA_ID']));
+            $duplicate_patient = PatientIdentifierHelper::getPatientByPatientIdentifier($patient_raw_data['CERA_ID'], $local_identifier_type->unique_row_string);
+
             if ($duplicate_patient !== null) {
                 $errors[] = "Duplicate CERA ID (" . $patient_raw_data['CERA_ID'] . ") found for patient: " . $patient_raw_data['first_name'] . " " . $patient_raw_data['last_name'];
                 return $errors;
@@ -456,7 +462,8 @@ class CsvController extends BaseController
         }
 
         if (!empty($patient_raw_data['medicare_id'])) {
-            $duplicate_patient = Patient::model()->findByAttributes(array('nhs_num' => $patient_raw_data['medicare_id']));
+            $duplicate_patient = PatientIdentifierHelper::getPatientByPatientIdentifier($patient_raw_data['medicare_id'], $global_identifier_type->unique_row_string);
+
             if ($duplicate_patient !== null) {
                 $errors[] = "Duplicate Medicare ID (" . $patient_raw_data['medicare_id'] . ") found for patient: " . $patient_raw_data['first_name'] . " " . $patient_raw_data['last_name'];
                 return $errors;
@@ -554,15 +561,12 @@ class CsvController extends BaseController
         $patient_cols = array(
             array('var_name' => 'dob', 'default' => null,),
             array('var_name' => 'gender', 'default' => 'U',),
-            array('var_name' => 'hos_num', 'default' => null,),
-            array('var_name' => 'nhs_num', 'default' => null,),
             array('var_name' => 'practice_id', 'default' => null,),
             array('var_name' => 'ethnic_group_id', 'default' => null,),
             array('var_name' => 'archive_no_allergies_date', 'default' => null,),
             array('var_name' => 'archive_no_family_history_date', 'default' => null,),
             array('var_name' => 'archive_no_risks_date', 'default' => null,),
             array('var_name' => 'deleted', 'default' => null,),
-            array('var_name' => 'nhs_num_status_id', 'default' => null,),
             array('var_name' => 'is_deceased', 'default' => 0,),
             array('var_name' => 'is_local', 'default' => 1,),
             array('var_name' => 'patient_source', 'default' => 0,),
@@ -574,34 +578,57 @@ class CsvController extends BaseController
         }
 
         //Set values that cannot be directly translated from csv
-        if (array_key_exists('medicare_id', $patient_raw_data) && $patient_raw_data['medicare_id']) {
-            $new_patient->nhs_num = $patient_raw_data['medicare_id'];
-        }
-
         if (array_key_exists('date_of_death', $patient_raw_data) && !empty($patient_raw_data['date_of_death'])) {
             $new_patient->date_of_death = date("Y-m-d", strtotime(str_replace('/', '-', $patient_raw_data['date_of_death'])));
         }
 
-        $new_patient->hos_num = !empty($patient_raw_data['CERA_ID']) ? $patient_raw_data['CERA_ID'] : Patient::autoCompleteHosNum();
         $new_patient->contact_id = $contact->id;
-
         $new_patient->setScenario('other_register');
+
         if(!$new_patient->save()){
             $errors[] = $new_patient->getErrors();
+
             return $errors;
+        }
+
+        // CERA ID & Medicare ID
+        if (array_key_exists('CERA_ID', $patient_raw_data) && $patient_raw_data['CERA_ID']) {
+            $local_patient_identifier = new PatientIdentifier;
+
+            $local_patient_identifier->patient_id = $new_patient->id;
+            $local_patient_identifier->patient_identifier_type_id = $local_identifier_type->id;
+            $local_patient_identifier->value = $patient_raw_data['CERA_ID'];
+
+            if (!$local_patient_identifier->save()) {
+                $errors[] = $local_patient_identifier->getErrors();
+            }
+        }
+
+        if (array_key_exists('medicare_id', $patient_raw_data) && $patient_raw_data['medicare_id']) {
+            $global_patient_identifier = new PatientIdentifier;
+
+            $global_patient_identifier->patient_id = $new_patient->id;
+            $global_patient_identifier->patient_identifier_type_id = $global_identifier_type->id;
+            $global_patient_identifier->value = $patient_raw_data['medicare_id'];
+
+            if (!$global_patient_identifier->save()) {
+                return $global_patient_identifier->getErrors();
+            }
         }
 
         //Add a RVEEH_UR value for patient
         if(array_key_exists('RVEEH_UR', $patient_raw_data) && $patient_raw_data['RVEEH_UR']) {
-            $patient_RVEEH_UR = new ArchivePatientIdentifier();
+            $rveeh_identifier_type = PatientIdentifierType::model()->find('short_title = "RVEEH_UR"');
+            $rveeh_patient_identifier = new PatientIdentifier;
 
-            $patient_RVEEH_UR->patient_id = $new_patient->id;
-            $patient_RVEEH_UR->code = 'RVEEH_UR';
-            $patient_RVEEH_UR->value = $patient_raw_data['RVEEH_UR'];
+            $rveeh_patient_identifier->patient_id = $new_patient->id;
+            $rveeh_patient_identifier->patient_identifier_type_id = $rveeh_identifier_type->id;
+            $rveeh_patient_identifier->value = $patient_raw_data['RVEEH_UR'];
 
-            if(!$patient_RVEEH_UR->save()) {
+            if (!$rveeh_patient_identifier->save()) {
                 $errors[] = "Failed to validate RHEEV_UR:";
-                $errors[] = $patient_RVEEH_UR->getErrors();
+                $errors[] = $rveeh_patient_identifier->getErrors();
+
                 return $errors;
             }
         }
@@ -766,7 +793,8 @@ class CsvController extends BaseController
                 return $errors;
             }
         }
-        if(empty($errors)) {
+
+        if (empty($errors)) {
             $import->message = "Import successful for patient: " . $contact->first_name . " " . $contact->last_name;
         }
 
@@ -775,6 +803,8 @@ class CsvController extends BaseController
 
     private function createNewTrialPatient($trial_patient, $import)
     {
+        $local_identifier_type = PatientIdentifierHelper::getPatientIdentifierType(PatientIdentifierType::LOCAL_USAGE_TYPE, Yii::app()->session['selected_institution_id']);
+
         $errors = array();
         //trial
         $trial = null;
@@ -789,7 +819,7 @@ class CsvController extends BaseController
         //patient
         $patient = null;
         if (!empty($trial_patient['CERA_number'])){
-            $patient = Patient::model()->findByAttributes(array('hos_num' => $trial_patient['CERA_number']));
+            $patient = PatientIdentifierHelper::getPatientByPatientIdentifier($trial_patient['CERA_number'], $local_identifier_type->unique_row_string);
         }
         if ($patient === null){
             $errors[] = 'patient not found, please check the CERA number';

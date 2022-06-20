@@ -540,7 +540,7 @@ if (SettingMetadata::model()->getSetting('default_country') === 'Australia') {
     $extra_practice_contact = new Contact('manage_practice');
     $extra_practice_associate = new ContactPracticeAssociate();
     $this->renderPartial(
-        ' ../patient/crud/create_contact_form',
+        '../patient/crud/create_contact_form',
         array(
                              'extra_gp_contact' => $extra_gp_contact,
                              'extra_practice' => $extra_practice,
