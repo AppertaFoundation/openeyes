@@ -2,6 +2,10 @@
 
 class m220208_152000_default_pathways_config extends OEMigration
 {
+    /**
+     * @throws JsonException
+     * @throws CException
+     */
     public function safeUp()
     {
 
@@ -96,18 +100,21 @@ class m220208_152000_default_pathways_config extends OEMigration
                         'order' => $step['position'],
                         'short_name' => substr($step['step_name'], 0, 19),
                         'long_name' => $step['step_name'],
-                        'default_state_data' => '{
-                            "action_type":"new_event",
-                            "event_label":"Manage Event",
-                            "event_type":"OphCiExamination",
-                            "default_element_list":[],
-                            "workflow_id":"' . $rule['workflow_id'] . '",
-                            "long_name":"' . $step['step_name'] . '",
-                            "short_name":"' . substr($step['step_name'], 0, 19) . '",
-                            "subspecialty_id":"' . $rule['subspecialty_id'] . '",
-                            "firm_id":"' . $rule['firm_id'] . '",
-                            "workflow_step_id":"' . $step['step_id'] . '"
-                        }']);
+                        'default_state_data' => json_encode(
+                            array(
+                                "action_type" => "new_event",
+                                "event_label" => "Manage Event",
+                                "event_type" => "OphCiExamination",
+                                "default_element_list"=> [],
+                                "workflow_id" => $rule['workflow_id'],
+                                "long_name" => $step['step_name'],
+                                "short_name" => substr($step['step_name'], 0, 19),
+                                "subspecialty_id" => $rule['subspecialty_id'],
+                                "firm_id" => $rule['firm_id'],
+                                "workflow_step_id" => $step['step_id']
+                            ), JSON_THROW_ON_ERROR
+                        )
+                ]);
             }
 
             # add a discharge step to the end (using position + 1 from the last step)
@@ -117,9 +124,13 @@ class m220208_152000_default_pathways_config extends OEMigration
                         'order' => $step['position'] + 1,
                         'short_name' => 'Discharge',
                         'long_name' => 'Check out',
-                        'default_state_data' => '{
-                            "firm_id":"' . $rule['firm_id'] . '"
-                        }']);
+                        'default_state_data' => json_encode(
+                            array(
+                                "firm_id" => $rule['firm_id']
+                            ),
+                            JSON_THROW_ON_ERROR
+                        )
+            ]);
         }
     }
 
