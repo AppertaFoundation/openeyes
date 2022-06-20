@@ -58,6 +58,7 @@ class BirthHistory extends \BaseEventTypeElement
     protected $auto_update_relations = true;
     protected $auto_validate_relations = true;
     protected $after_validation_disabled = false;
+    protected $default_from_previous = true;
 
     public static $WEIGHT_GRAMS = 'g';
     public static $WEIGHT_OZS = 'oz';
