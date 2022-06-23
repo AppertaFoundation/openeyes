@@ -126,14 +126,14 @@ OpenEyes.UI = OpenEyes.UI || {};
     {
         if (side === 'left') {
             let doodle = this.leftDrawing.addDoodle(doodleClass);
-            doodle.originX = -doodle.quadrantPoint.x;
-            doodle.originY = -doodle.quadrantPoint.y;
+            doodle.setParameterFromString('originX', (-doodle.quadrantPoint.x).toString());
+            doodle.setParameterFromString('originY', (-doodle.quadrantPoint.y).toString());
             this.leftDrawing.repaint();
         } else {
             let doodle = this.rightDrawing.addDoodle(doodleClass);
-            doodle.originX = doodle.quadrantPoint.x;
-            doodle.originY = -doodle.quadrantPoint.y;
-            this.rightDrawing.repaint();
+            doodle.setParameterFromString('originX', doodle.quadrantPoint.x.toString());
+            doodle.setParameterFromString('originY', (-doodle.quadrantPoint.y).toString());
+            this.leftDrawing.repaint();
         }
     };
 
