@@ -34,7 +34,7 @@ $field_prefix = $model_name . '[assignment][{{section_key}}][entries][{{entry_ke
             if ($is_prescriber && $is_active) {
                 $cancel_btn = array(
                     'class' => 'red js-delete-preset',
-                    'text' => 'Delete',
+                    'text' => 'Cancel remaining items',
                     'display' => ''
                 );
             }
