@@ -69,7 +69,7 @@ $default_urls = $logo_helper->getLogoURLs();
     'method' => "POST",
     'htmlOptions' => array('enctype' => 'multipart/form-data')
 ]); ?>
-<div class="cols-7">
+<div class="cols-10">
     <?= $this->renderPartial('_form_errors', array('errors' => $errors)) ?>
     <?php
     $sites_headers = [
@@ -339,7 +339,7 @@ $default_urls = $logo_helper->getLogoURLs();
         ); ?>
     </div>
 </div>
-<div class="cols-7">
+<div class="cols-10">
     <table class="standard" id="institution-sites-table" style="display: none">
         <thead>
             <tr>
@@ -364,7 +364,7 @@ $default_urls = $logo_helper->getLogoURLs();
         </tbody>
     </table>
 </div>
-<div class="cols-7">
+<div class="cols-10">
     <br>
     <h2>Authentication Methods</h2>
     <hr class="divider">
@@ -406,7 +406,7 @@ $default_urls = $logo_helper->getLogoURLs();
     </div>
     <br>
 </div>
-<div class="cols-7">
+<div class="cols-10">
     <br>
 
     <h2>Patient Identifier Numbering Systems</h2>
@@ -463,7 +463,7 @@ $default_urls = $logo_helper->getLogoURLs();
     </div>
     <br>
 </div>
-<div class="cols-7">
+<div class="cols-10">
     <br>
 
     <?php $patient_identifier_usage_type = $request->getParam('patient_identifier_usage_type') ?: $app->params['display_primary_number_usage_code'];
@@ -495,16 +495,18 @@ $default_urls = $logo_helper->getLogoURLs();
 
     <h2>Patient Identifier Display Preferences</h2>
     <hr class="divider">
+    
     <?= \CHtml::dropDownList(
         'patient_identifier_usage_type',
         $patient_identifier_usage_type,
-        CHtml::listData(PatientIdentifierType::model()->findAll(['select' => 't.usage_type', 'distinct' => true]), 'usage_type', 'usage_type')
+        CHtml::listData(PatientIdentifierType::model()->findAll(['select' => 't.usage_type', 'distinct' => true]), 'usage_type', 'usage_type'),
+        ['class' => 'cols-4']
     ); ?>
     <?= \CHtml::dropDownList(
         'patient_identifier_site',
         $patient_identifier_site,
         CHtml::listData(Site::model()->findAll('institution_id=:institution_id', [':institution_id' => $institution->id]), 'id', 'name'),
-        ['empty' => 'NOT SITE SPECIFIC']
+        ['empty' => 'NOT SITE SPECIFIC','class' => 'cols-4']
     ); ?>
     <table class="standard sortable" id="patient_identifiers_entry_table">
         <thead>
