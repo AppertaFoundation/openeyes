@@ -50,9 +50,9 @@ class m190923_094126_add_diagnosis_columns_to_disorder_section_and_disorder exte
 
         $retina_id = $this->getSectionId('Retina', 0);
 
-        $this->insertIfNotExist('ophcocvi_clinicinfo_disorder', array( 'name' => 'Age-related macular degeneration – choroidal neovascularisation (wet)', 'code' => 'H35.32', 'section_id' => $retina_id, 'active' => 1, 'display_order' => 1, 'event_type_version' => 1, 'main_cause_pdf_id' => 0));
-        $this->insertIfNotExist('ophcocvi_clinicinfo_disorder', array( 'name' => 'Age-related macular degeneration – choroidal neovascularisation (dry)', 'code' => 'H35.31', 'section_id' => $retina_id, 'active' => 1, 'display_order' => 2, 'event_type_version' => 1, 'main_cause_pdf_id' => 1));
-        $this->insertIfNotExist('ophcocvi_clinicinfo_disorder', array( 'name' => 'Age-related macular degeneration – unspecified (mixed)', 'code' => 'H35.30', 'section_id' => $retina_id, 'active' => 1, 'display_order' => 3, 'event_type_version' => 1, 'main_cause_pdf_id' => 2));
+        $this->insertIfNotExist('ophcocvi_clinicinfo_disorder', array( 'name' => 'Age-related macular degeneration - choroidal neovascularisation (wet)', 'code' => 'H35.32', 'section_id' => $retina_id, 'active' => 1, 'display_order' => 1, 'event_type_version' => 1, 'main_cause_pdf_id' => 0));
+        $this->insertIfNotExist('ophcocvi_clinicinfo_disorder', array( 'name' => 'Age-related macular degeneration - choroidal neovascularisation (dry)', 'code' => 'H35.31', 'section_id' => $retina_id, 'active' => 1, 'display_order' => 2, 'event_type_version' => 1, 'main_cause_pdf_id' => 1));
+        $this->insertIfNotExist('ophcocvi_clinicinfo_disorder', array( 'name' => 'Age-related macular degeneration - unspecified (mixed)', 'code' => 'H35.30', 'section_id' => $retina_id, 'active' => 1, 'display_order' => 3, 'event_type_version' => 1, 'main_cause_pdf_id' => 2));
 
         $this->insertIfNotExist('ophcocvi_clinicinfo_disorder', array( 'name' => 'Diabetic retinopathy', 'disorder_id' => 4855003, 'code' => 'E10.3-E14.3 H36.0', 'section_id' => $retina_id, 'active' => 1, 'display_order' => 4, 'event_type_version' => 1, 'main_cause_pdf_id' => 3));
         $this->insertIfNotExist('ophcocvi_clinicinfo_disorder', array( 'name' => 'Diabetic maculopathy', 'disorder_id' => 232020009, 'code' => 'H36.0A', 'section_id' => $retina_id, 'active' => 1, 'display_order' => 5, 'event_type_version' => 1, 'main_cause_pdf_id' => 4));
