@@ -152,6 +152,7 @@ class Patient extends BaseActiveRecordVersioned
             array('dob', 'dateOfBirthRangeValidator', 'on' => array('manual', 'self_register', 'referral', 'other_register')),
             array('date_of_death', 'deathDateFormatValidator', 'on' => array('manual', 'self_register', 'referral', 'other_register')),
             array('dob, date_of_death, deleted,is_local patient_source', 'safe', 'on' => 'search'),
+            array('is_deceased', 'default', 'setOnEmpty' => true, 'value' => 0),
         );
     }
 
