@@ -78,7 +78,7 @@
                             echo $roles ? CHtml::encode(implode(', ', $roles)) : '-';
                         ?>
                     </td>
-                    <td><?= implode(',', $user->getUserNamesWithStatuses());?></td>
+                    <td><?= implode(', ', $user->getUserNamesWithStatuses());?></td>
                 </tr>
             <?php endforeach; ?>
             </tbody>

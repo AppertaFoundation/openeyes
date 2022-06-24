@@ -1004,8 +1004,7 @@ class User extends BaseActiveRecordVersioned
         foreach ($this->authentications as $authentication) {
             $is_active = $authentication->active ? 'Active' : 'Inactive';
             $password_status = $authentication->isLocalAuth() ? $authentication->password_status : "LDAP";
-
-            $usernames_with_statuses[] = $authentication->username . " ($is_active / $password_status)";
+            $usernames_with_statuses[] = $authentication->username . " <em class='fade'>($is_active / $password_status)</em>" . '<i class="oe-i info small small-icon pro-theme pad fade js-has-tooltip" data-tooltip-content="' . $authentication->institutionAuthentication->description . '"></i>';
         }
 
         return $usernames_with_statuses;
@@ -1092,11 +1091,11 @@ class User extends BaseActiveRecordVersioned
     {
         $criteria = new CDbCriteria();
         $criteria->condition = 'version_date > NOW() - INTERVAL 12 month';
-		if( isset($this->pincode)) {
-			return $this->pincode->getPreviousVersionsWithCriteria($criteria);
-		}else {
-			return array();
-		}
+        if (isset($this->pincode)) {
+            return $this->pincode->getPreviousVersionsWithCriteria($criteria);
+        } else {
+            return array();
+        }
     }
 
     /**
