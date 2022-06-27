@@ -43,7 +43,7 @@ trait HasWithHeadPosture
 
     public function eventScopeValidation($elements)
     {
-        if ($this->with_head_posture !== static::$WITH_HEAD_POSTURE) {
+        if ($this->with_head_posture !== static::$WITH_HEAD_POSTURE || $this->with_head_posture !== static::$WITHOUT_HEAD_POSTURE) {
             return;
         }
 
