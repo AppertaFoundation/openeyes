@@ -110,6 +110,18 @@ class InvestigationController extends BaseAdminController
             $investigation->snomed_code = $user_data['snomed_code'];
             $investigation->snomed_term = $user_data['snomed_term'];
 
+            $user_comments_data = Yii::app()->request->getPost('OEModule_OphCiExamination_models_InvestigationComments');
+
+            // before saving the comments, delete all the existing comments
+            \OEModule\OphCiExamination\models\InvestigationComments::model()->deleteAll('investigation_code = :investigation_code', array(':investigation_code' => $id));
+
+            foreach ($user_comments_data['comments'] as $comment) {
+                $investigationComments = new \OEModule\OphCiExamination\models\InvestigationComments();
+                $investigationComments->investigation_code = $id;
+                $investigationComments->comments = $comment;
+                $investigationComments->save();
+            }
+
             // try saving the data
             if (!$investigation->save()) {
                 $errors = $investigation->getErrors();

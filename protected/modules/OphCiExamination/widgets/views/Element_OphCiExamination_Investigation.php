@@ -129,26 +129,11 @@ $model_name = CHtml::modelName($element);
         });
         <?php $investigations = \OEModule\OphCiExamination\models\OphCiExamination_Investigation_Codes::model()->findAll(
             [
-                    'select' => 't.name,t.id',
-                ]
+                'select' => 't.name,t.id',
+                'order' => 't.name'
+            ]
         );
                                 ?>
-
-        new OpenEyes.UI.AdderDialog({
-            openButton: $('#add-investigation-btn'),
-            itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-                array_map(function ($investigation) {
-                    return ['label' => $investigation->name, 'id' => $investigation->id];
-                }, $investigations)
-            )?>, {'multiSelect': true, 'header': "Investigations"})],
-            onReturn: function (adderDialog, selectedItems) {
-                investigationController.addEntry(selectedItems);
-                investigationController.showTable();
-                return true;
-            }
-        });
-
-
     });
 
     // Show General comments
@@ -164,4 +149,107 @@ $model_name = CHtml::modelName($element);
         $( '#<?=$model_name?>_description').val('');
         $('#remove-general-investigation-comments').hide();
     });
+
+    let ids = [];
+
+    $(document).ready(function() {
+        new OpenEyes.UI.AdderDialog({
+            id: 'investigation_popup',
+            openButton: $('#add-investigation-btn'),
+            showEmptyItemSets: true,
+            itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+                array_map(function ($investigation) {
+                    return ['label' => $investigation->name, 'id' => $investigation->id,];
+                }, $investigations)
+            )?>, {'header': "Investigations", 'id': "investigation-id", 'multiSelect': true}),
+                new OpenEyes.UI.AdderDialog.ItemSet([], {'header': "Comments", 'id': "comment-id", 'multiSelect': true})
+            ],
+            liClass: 'restrict-width extended',
+            popupClass: 'oe-add-select-search',
+            onReturn: function(adderDialog, selectedItems) {
+                // check if the user has selected a comment or not.
+                let selectedInvestigation =
+                   selectedItems.filter(selectedItem => {
+                       return selectedItem.hasOwnProperty('itemSet');
+                   });
+
+                let selectedComments =
+                   selectedItems.filter(selectedItem => {
+                       return !selectedItem.hasOwnProperty('itemSet');
+                   });
+
+                investigationController.addEntry(selectedInvestigation);
+                investigationController.showTable();
+
+                if (typeof selectedComments !== 'undefined' && selectedComments.length > 0) {
+                    // the selectedComment is defined and has at least one element
+
+                    let comments = "";
+                    for (let i = 0; i < selectedComments.length; i++) {
+                        comments += selectedComments[i].label;
+                        if (i !== selectedComments.length-1) {
+                            comments += ', '
+                        }
+                    }
+
+                    let $rows = $('#OEModule_OphCiExamination_models_Element_OphCiExamination_Investigation_entry_table').find(`input[name*='investigation_code']`).closest('tr');
+
+                    $rows = $rows.slice(-selectedInvestigation.length);
+
+                    $rows.each(function( index ) {
+                        const $divCommentContainer = $(this).find('div .js-comment-container');
+                        $divCommentContainer.show();
+                        const $buttonComment = $(this).find($divCommentContainer.attr('data-comment-button'));
+                        $buttonComment.hide();
+
+                        $(this).find('textarea').val(comments);
+                    });
+                }
+                ids = [];
+                return true;
+            },
+
+        });
+        initialiseProcedureAdder();
+    });
+
+    function initialiseProcedureAdder() {
+
+
+        $('.add-options[data-id="investigation-id"]').on('click', 'li', function() {
+            let id = $(this).data('id');
+
+            if ($(this).attr('class') === 'selected') {
+                ids = ids.filter(function(e) {
+                    return e !== id;
+                });
+            } else {
+                ids.push($(this).data('id'));
+            }
+
+            updateInvestigationDialog(ids);
+        });
+    }
+
+    function updateInvestigationDialog(investigation) {
+        if (investigation !== '' && investigation !== 'none') {
+            $.ajax({
+                'url': '<?php echo Yii::app()->createUrl('investigationComment/list') ?>',
+                'type': 'POST',
+                'data': {
+                    'investigation': investigation,
+                    'dialog': true,
+                    'YII_CSRF_TOKEN': YII_CSRF_TOKEN
+                },
+                'success': function(data) {
+                    $('.add-options[data-id="comment-id"]').each(function() {
+                        $(this).html(data).find('li').find('span').removeClass('auto-width').addClass('restrict-width extended');
+                        $(this).show();
+                    });
+                }
+            });
+        }
+    }
 </script>
+
+

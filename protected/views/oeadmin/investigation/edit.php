@@ -59,28 +59,55 @@
             <?php endforeach; ?>
 
             </tbody>
-            <tfoot>
+        </table>
+
+        <h2>Edit Investigation Comments</h2>
+
+        <table class="standard cols-full investigation_comments">
             <tr>
-                <td colspan="8">
-                    <?=\CHtml::submitButton(
-                        'Save',
-                        [
-                            'class' => 'button large',
-                            'name' => 'save',
-                            'id' => 'et_save'
-                        ]
-                    ); ?>
-                    <?=\CHtml::submitButton(
-                        'Cancel',
-                        [
-                            'class' => 'button large',
-                            'data-uri' => '/oeadmin/investigation/list',
-                            'name' => 'cancel',
-                            'id' => 'et_cancel'
-                        ]
-                    ); ?>
-                </td>
+                <th>Comments</th>
+                <th>Actions</th>
             </tr>
+            <tbody>
+            <?php foreach ($investigation->investigationComments as $investigationComment) : ?>
+                <tr>
+                    <td class="cols-6">
+                        <input autocomplete="on" class="cols-6" name="OEModule_OphCiExamination_models_InvestigationComments[comments][]" id="OEModule_OphCiExamination_models_InvestigationComments_comments" type="text" value="<?= $investigationComment->comments; ?>">
+                    </td>
+                    <td class="cols-6">
+                        <button type='button'><a href="#" class="deleteRow">delete</a></button>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+
+            <tfoot>
+                <tr>
+                    <td colspan="8">
+                        <button class='large' type='button'><a href="#" class="addRow">Add</a></button>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="8">
+                        <?=\CHtml::submitButton(
+                            'Save',
+                            [
+                                'class' => 'button large',
+                                'name' => 'save',
+                                'id' => 'et_save'
+                            ]
+                        ); ?>
+                        <?=\CHtml::submitButton(
+                            'Cancel',
+                            [
+                                'class' => 'button large',
+                                'data-uri' => '/oeadmin/investigation/list',
+                                'name' => 'cancel',
+                                'id' => 'et_cancel'
+                            ]
+                        ); ?>
+                    </td>
+                </tr>
             </tfoot>
         </table>
     </form>
@@ -89,4 +116,29 @@
     $("select[name='specialty_id_select']").change(function(){
         $("input[name='OEModule_OphCiExamination_models_OphCiExamination_Investigation_Codes[specialty_id]']").val($(this).val());
     });
+
+    $(".addRow").click((e) => {
+        e.preventDefault();
+
+        const trHtml =
+            '<tr> ' +
+                '<td class="cols-6"> ' +
+                    '<input autocomplete="on" class="cols-6" name="OEModule_OphCiExamination_models_InvestigationComments[comments][]" id="OEModule_OphCiExamination_models_InvestigationComments_comments" type="text" value="">' +
+                '</td> ' +
+                '<td class="cols-6"> ' +
+                    '<button type="button"><a href="#" class="deleteRow" onclick="deleteRow(this)">delete</a></button> ' +
+                '</td> ' +
+            '</tr>';
+
+        $('.investigation_comments tbody tr:last').after(trHtml);
+    });
+
+    $(".deleteRow").click((e) => {
+        e.preventDefault();
+        deleteRow(e.currentTarget);
+    });
+
+    function deleteRow(e) {
+        $(e).closest('tr').remove();
+    }
 </script>

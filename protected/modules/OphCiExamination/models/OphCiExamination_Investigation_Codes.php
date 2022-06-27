@@ -62,6 +62,7 @@ class OphCiExamination_Investigation_Codes extends \BaseActiveRecordVersioned
             'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'specialty' => array(self::BELONGS_TO, 'Specialty', 'specialty_id'),
             'etOphciexaminationInvestigationEntries' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_Investigation_Entry', 'investigation_code'),
+            'investigationComments' => [self::HAS_MANY, InvestigationComments::class, 'investigation_code']
         );
     }
 
