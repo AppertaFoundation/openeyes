@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Copyright Apperta Foundation 2021
  * This file is part of OpenEyes.
@@ -67,7 +68,7 @@ class Element_OphCoCvi_Esign extends \BaseEsignElement
             'event' => array(self::BELONGS_TO, \Event::class, 'event_id'),
             'user' => array(self::BELONGS_TO, \User::class, 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, \User::class, 'last_modified_user_id'),
-            'signatures' => array(self::HAS_MANY, \OphCoCvi_Signature::class, 'element_id', 'condition' => 'status = '.\OphCoCvi_Signature::STATUS_ACTIVE.''),
+            'signatures' => array(self::HAS_MANY, \OphCoCvi_Signature::class, 'element_id', 'condition' => 'status = ' . \OphCoCvi_Signature::STATUS_ACTIVE . ''),
         );
     }
 
@@ -114,7 +115,7 @@ class Element_OphCoCvi_Esign extends \BaseEsignElement
 
         if (!in_array(\BaseSignature::TYPE_LOGGEDIN_USER, $existing_types)) {
             $consultant = new \OphCoCvi_Signature();
-            $consultant->signatory_role = "Consultant";
+            $consultant->signatory_role = !empty($this->user->grade) ? $this->user->grade->grade : "Unknown grade";
             $consultant->type = \BaseSignature::TYPE_LOGGEDIN_USER;
             $signatures[] = $consultant;
         }
@@ -140,7 +141,7 @@ class Element_OphCoCvi_Esign extends \BaseEsignElement
      *
      * @return bool
      */
-    public function isSigned() : bool
+    public function isSigned(): bool
     {
         foreach ($this->getSignatures() as $signature) {
             if (!$signature->isSigned()) {
@@ -172,7 +173,7 @@ class Element_OphCoCvi_Esign extends \BaseEsignElement
     /**
      * @inheritDoc
      */
-    public function getInfoMessages() : array
+    public function getInfoMessages(): array
     {
         if (
             !$this->getSignaturesByType(\BaseSignature::TYPE_PATIENT)
