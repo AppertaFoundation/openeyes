@@ -596,9 +596,6 @@ class Pathway extends BaseActiveRecordVersioned
             ),
             JSON_THROW_ON_ERROR
         );
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new Exception(json_last_error_msg());
-        }
         return $pathway_json;
     }
 
