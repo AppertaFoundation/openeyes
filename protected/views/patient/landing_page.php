@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -163,7 +164,7 @@ $allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical');
         </div>
 
         <div class="patient-overview">
-            <?php if(!$active_events) {?>
+            <?php if (!$active_events) {?>
                 <div class="nil-recorded">No Active Event</div>
             <?php }?>
             <table class="standard">
@@ -275,7 +276,7 @@ $allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical');
         </div>
 
         <div class="cols-half">
-            <?php $this->renderPartial('landing_page_da_assignments', array('patient' => $this->patient));?>
+            
             <section class="element view full view-xxx" id="idg-ele-view-management-summaries">
                 <header class="element-header"><h3 class="element-title">Management Summaries</h3></header>
                 <div class="element-data full-width">
@@ -348,7 +349,7 @@ $allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical');
 
     $('.js-confirm-delete-patient').click(function (e) {
         e.preventDefault();
-        window.location.href = '<?= Yii::app()->createUrl('patient/delete/'.$patient->id) ?>';
+        window.location.href = '<?= Yii::app()->createUrl('patient/delete/' . $patient->id) ?>';
     });
 
     $('.js-cancel-delete-patient').click(function (e) {
