@@ -1,6 +1,8 @@
 alias oec="$SCRIPTDIR/oe-checkout.sh"
+__git_complete oec _git_checkout
 alias oemig="$SCRIPTDIR/oe-migrate.sh"
 alias oereset="$SCRIPTDIR/oe-reset.sh"
+__git_complete oereset _git_checkout
 alias oeu="$SCRIPTDIR/oe-update.sh"
 alias oefix="$SCRIPTDIR/oe-fix.sh"
 alias oewhich="$SCRIPTDIR/oe-which.sh"

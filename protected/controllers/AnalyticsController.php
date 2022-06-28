@@ -2518,8 +2518,8 @@ class AnalyticsController extends BaseController
         $command_principal = Yii::app()->db->createCommand()
             ->select('e.patient_id as patient_id', 'DISTINCT')
             ->from('episode e')
-            ->where('e.disorder_id IS NOT NULL')
             ->leftJoin('patient p', 'p.id = e.patient_id')
+            ->where('e.disorder_id IS NOT NULL')
             ->andWhere('e.deleted = 0')
             ->andWhere('p.deleted = 0');
 
@@ -2529,6 +2529,11 @@ class AnalyticsController extends BaseController
             ->leftJoin('patient p', 'p.id = sd.patient_id')
             ->where('sd.disorder_id IS NOT NULL')
             ->andWhere('p.deleted = 0');
+
+        if ($caller === 'followup') {
+            $command_principal->andWhere('p.is_deceased = 0');
+            $command_secondary->andWhere('p.is_deceased = 0');
+        }
 
         if ($eye_side == 'left') {
             $command_principal->andWhere('e.eye_id IN (1,3)');

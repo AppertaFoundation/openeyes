@@ -340,7 +340,7 @@ class FollowupAnalysisAggregate extends BaseActiveRecord
                  ->leftjoin("worklist w", "w.id = wp.worklist_id")
                  ->leftjoin('event e', 'e.id = event_id')
                  ->join('patient p', 'p.id = faa.patient_id')
-                 ->where('p.deleted = 0 AND e.deleted = 0')
+                 ->where('p.deleted = 0 AND e.deleted = 0 AND p.is_deceased = 0')
                  ->group('faa.id');
 
         if ($start_date) {

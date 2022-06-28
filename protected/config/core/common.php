@@ -1075,6 +1075,6 @@ $config["params"]["local_users"] = array_map('trim', explode(',', $local_users))
  * The OE_SPECIAL_USERS environment variable should be a comma separated string
  */
 $special_usernames = !empty(trim(getenv('OE_SPECIAL_USERS'))) ? getenv('OE_SPECIAL_USERS') : 'api, docman_user';
-$config["params"]["special_usernames"] = explode(',', $special_usernames);
+$config["params"]["special_usernames"] = array_map('trim', explode(',', $special_usernames));
 
 return $config;

@@ -25,7 +25,7 @@ $config = [
                 'Advice Leaflets' => '/OphCiExamination/admin/adviceLeaflets',
                 'Advice Leaflet Categories' => '/OphCiExamination/admin/adviceLeafletCategories',
                 'Advice Leaflet Subspecialties' => '/OphCiExamination/admin/adviceLeafletSubspecialties',
-                'Allergies' => '/OphCiExamination/admin/Allergies/index',
+                'Allergies' => ['uri' => '/OphCiExamination/admin/Allergies/index', 'restricted' => array('admin')],
                 'Allergy Reactions' => ['uri' => '/OphCiExamination/admin/AllergyReactions/index', 'restricted' => array('admin')],
                 'Required Allergy Assignment' => '/OphCiExamination/admin/AllergyAssignment/index',
                 'Pupillary Abnormalities' => '/OphCiExamination/admin/PupillaryAbnormalities/index',

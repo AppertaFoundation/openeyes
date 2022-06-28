@@ -184,7 +184,7 @@ class DrugAdministration extends BaseMedicationWidget
         );
         if(!$is_active){
             $ret['deleted_style'] = 'status-box red';
-            $ret['deleted_tag'] = "<span class='highlighter warning'>Deleted</span>";
+            $ret['deleted_tag'] = "<span class='highlighter warning'>Cancelled</span>";
         }
 
         return $ret;
