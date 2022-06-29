@@ -35,6 +35,8 @@ abstract class BasePAS
      */
     protected $type = null;
 
+    protected $cache_time;
+
     public function __construct()
     {
         if ($this->parser === null) {
@@ -64,6 +66,11 @@ abstract class BasePAS
     public function setType(\PatientIdentifierType $type)
     {
         $this->type = $type;
+    }
+
+    public function setCacheTime($cache_time)
+    {
+        $this->cache_time = $cache_time;
     }
 
     /**

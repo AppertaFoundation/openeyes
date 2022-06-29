@@ -323,6 +323,10 @@ class PasApiObserver
             $pas_class->setType($type);
             $pas_class->init($type->pas_api);
 
+            if (isset($type->pas_api['cache_time'])) {
+                $pas_class->setCacheTime($type->pas_api['cache_time']);
+            }
+
             return $pas_class;
         }
 
