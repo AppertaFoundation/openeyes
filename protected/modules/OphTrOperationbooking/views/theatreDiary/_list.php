@@ -43,7 +43,6 @@ if (empty($diary)) { ?>
                         'whiteboard_display_mode' => $whiteboard_display_mode
                     )
                 );
-                break;
             }
         } ?>
     </div>
