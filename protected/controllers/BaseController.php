@@ -297,19 +297,16 @@ class BaseController extends Controller
         }
     }
 
-    /*
+    /**
      * Convenience function for authorisation checks
      *
-     * @param string $operation
-     * @param mixed $param, ...
-     * @return boolean
+     * @param $operation
+     * @param mixed ...$params
+     * @return bool
      */
-    public function checkAccess($operation)
+    public function checkAccess($operation, ...$params): bool
     {
-        $params = func_get_args();
-        array_shift($params);
-
-        return Yii::app()->user->checkAccess($operation, $params);
+        return (bool)Yii::app()->user->checkAccess($operation, $params);
     }
 
     /**

@@ -8,7 +8,7 @@ class OphDrPGDPSD_ReportPSD extends BaseReport
     public $type;
     public $med_name;
     public $administrations;
-    public $psd_name;
+    public $preset_name;
     public $pi_value;
 
     public function attributeNames()
@@ -20,7 +20,7 @@ class OphDrPGDPSD_ReportPSD extends BaseReport
             'type',
             'med_name',
             'administrations',
-            'psd_name',
+            'preset_name',
             'pi_value',
         );
     }
@@ -52,10 +52,9 @@ class OphDrPGDPSD_ReportPSD extends BaseReport
         $date_to = strtotime($this->date_to);
         $med_name = strtolower(trim($this->med_name));
         $type = strtolower($this->type);
-        $psd_name = strtolower($this->psd_name);
+        $preset_name = strtolower($this->preset_name);
         $pi_value = preg_replace('/\s+/', '', trim($this->pi_value));
         $psd_criteria = new CDbCriteria();
-        $psd_criteria->addCondition("LOWER(pgdpsd.type) = 'psd' OR LOWER(pgdpsd.type) IS NULL");
         $psd_criteria->compare('t.active', 1);
         if ($pi_value) {
             $psd_criteria->with = ['patient', 'patient.identifiers', 'patient.identifiers.patientIdentifierType'];
@@ -67,7 +66,7 @@ class OphDrPGDPSD_ReportPSD extends BaseReport
             $psd_criteria->compare('patient_identifier_not_deleted.value', $pi_value);
         }
         switch ($type) {
-            case 'psd':
+            case 'assigned':
                 $psd_criteria->addCondition("t.visit_id IS NOT NULL");
                 break;
             case '0':
@@ -135,7 +134,7 @@ class OphDrPGDPSD_ReportPSD extends BaseReport
         foreach ($assignments as $assignment) {
             $report_data = array();
             $assignment_name_type = $assignment->getAssignmentTypeAndName();
-            if ($psd_name && strpos(strtolower($assignment_name_type['name']), $psd_name) === false) {
+            if ($preset_name && strpos(strtolower($assignment_name_type['name']), $preset_name) === false) {
                 continue;
             }
             $assignment_status_text = $assignment->getStatusDetails()['text'];

@@ -4,6 +4,7 @@
     <input type="hidden" name="<?=$model_name . "[assignment][{{key}}][assignment_id]"?>">
     <input type="hidden" name="<?=$model_name . "[assignment][{{key}}][visit_id]"?>">
     <input type="hidden" name="<?=$model_name . "[assignment][{{key}}][confirmed]"?>" value="0">
+    <input type="hidden" name="<?=$model_name . "[assignment][{{key}}][is_pgd]"?>" value="{{is_pgd}}">
     <input type="hidden" name="<?=$model_name . "[assignment][{{key}}][create_wp]"?>" value="0">
     <input type="hidden" name="<?=$model_name . "[assignment][{{key}}][active]"?>" value="1">
     <div class="flex row">
@@ -46,7 +47,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                  
+
                 </tbody>
             </table>
             <!-- user comments -->
@@ -62,7 +63,7 @@
         <div class="add-data-actions flex-item-bottom">
             <button class="button js-add-comments">
             <i class="oe-i comments small-icon "></i>
-            </button> 
+            </button>
         </div>
     </div>
     <?php $this->render(

@@ -31,12 +31,12 @@ class SetupPathwayStepPickerBehavior extends CBehavior
         $preset_criteria = new CDbCriteria();
         $preset_criteria->compare('LOWER(type)', 'psd');
         $preset_criteria->compare('active', true);
-        $preset_orders = OphDrPGDPSD_PGDPSD::model()->findAll($preset_criteria) ? : array();
-        $preset_orders = array_map(
+        $presets = OphDrPGDPSD_PGDPSD::model()->findAll($preset_criteria) ? : array();
+        $psds = array_map(
             static function ($item) {
                 return array('id' => $item->id, 'name' => 'preset_order', 'label' => $item->name);
             },
-            $preset_orders
+            $presets
         );
         $vf_presets = VisualFieldTestPreset::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION);
         $vf_test_types = VisualFieldTestType::model()->findAll();
@@ -93,7 +93,7 @@ class SetupPathwayStepPickerBehavior extends CBehavior
             'vf_test_presets' => $vf_preset_json,
             'vf_test_types' => $vf_test_type_json,
             'vf_test_options' => $vf_test_option_json,
-            'preset_orders' => $preset_orders,
+            'psds' => $psds,
             'sites' => $sites,
             'services' => $services,
             'subspecialties' => NewEventDialogHelper::structureAllSubspecialties(),

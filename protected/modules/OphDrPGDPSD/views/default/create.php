@@ -1,7 +1,7 @@
 <?php
     $form_id = 'drug-administration-create';
     $this->beginContent('//patient/event_container', array('no_face' => true, 'form_id' => $form_id));
-    $clinical = $clinical = $this->checkAccess('OprnViewClinical');
+    $clinical = $this->checkAccess('OprnViewClinical');
     $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         'id' => $form_id,
         'enableAjaxValidation' => false,

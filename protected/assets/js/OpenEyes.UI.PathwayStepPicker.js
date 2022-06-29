@@ -406,23 +406,25 @@
                 self.options.custom_booking_step = null;
                 break;
             case this.options.psd_step_type_id:
+                const onPresetSelectCbk = function (dialog, itemSet, selected_value) {
+                    self.preset_id = selected_value;
+                    let preset_name = itemSet.items.find(element => element.id === selected_value).label;
+                    $('.popup-path-step-options .js-itemset[data-itemset-id="drug-list"] tbody').empty();
+                    $('.popup-path-step-options .js-itemset[data-itemset-id="drug-list"] h3').text(preset_name);
+                    if (self.preset_id && self.laterality) {
+                        self.getPSDDrugs();
+                    }
+                }
                 new OpenEyes.UI.Dialog.PathwayStepOptions({
                     title: 'Drug Administration Preset Orders',
-                    itemSets: [{
-                        is_form: true,
-                        title: 'Presets',
-                        id: 'preset',
-                        items: this.options.preset_orders,
-                        onSelectValue: function (dialog, itemSet, selected_value) {
-                            self.preset_id = selected_value;
-                            let preset_name = itemSet.items.find(element => element.id === selected_value).label;
-                            $('.popup-path-step-options .js-itemset[data-itemset-id="drug-list"] tbody').empty();
-                            $('.popup-path-step-options .js-itemset[data-itemset-id="drug-list"] h3').text(preset_name);
-                            if (self.preset_id && self.laterality) {
-                                self.getPSDDrugs();
-                            }
-                        }
-                    },
+                    itemSets: [
+                        {
+                            is_form: true,
+                            title: 'PSDs',
+                            id: 'psds',
+                            items: this.options.psds,
+                            onSelectValue: onPresetSelectCbk
+                        },
                         {
                             is_form: true,
                             title: 'Laterality',
@@ -496,8 +498,8 @@
                     }
                 }).open();
 
-                $("div[data-itemset-id]").each(function() {
-                    $(this).find('label > input[type="radio"]').first().prop('checked', true);
+                $("div[data-itemset-id='laterality'], div[data-itemset-id='position']").each(function() {
+                    $(this).find('label > input[type="radio"]').first().trigger('click');
                 });
                 break;
             case this.options.vf_step_type_id:

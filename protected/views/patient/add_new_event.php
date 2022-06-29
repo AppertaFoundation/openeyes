@@ -21,6 +21,7 @@
 <?php
 /**
  * @var EventType[] $eventTypes
+ * @var CreateEventControllerBehavior|BaseController $this
  */
 ?>
 
@@ -87,7 +88,7 @@
             <?php foreach ($event_types as $eventType) {
                 try {
                     $args = $this->getCreateArgsForEventTypeOprn($eventType, array('episode'));
-                    if (call_user_func_array(array($this, 'checkAccess'), $args)) {
+                    if ($this->checkAccess(...$args)) {
                         ?>
                   <li id="<?php echo $eventType->class_name ?>-link" class="oe-event-type step-3"
                       data-eventType-id="<?= $eventType->id ?>"

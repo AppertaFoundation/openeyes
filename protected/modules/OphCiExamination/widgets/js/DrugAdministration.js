@@ -35,7 +35,6 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         rmCommentBtnClass: 'js-remove-add-comments',
         assignOrderCtnClass: 'js-assign-order-ctn',
         assignOrderBtnClass: 'js-assign-order',
-        recordAdminRadioClas: 'js-record-admin',
         assignmentErrorCtnClass: 'js-assignment-errors',
         appointmentDetailsCtnClass: 'js-appt-details',
         validDateCtn: 'js-validate-date',
@@ -63,11 +62,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         ]
     };
     Util.inherits(HistoryMedicationsController, DrugAdministrationController);
-    
+
     DrugAdministrationController.prototype.init = function(){
         const controller = this;
         $(`.${this.options.parentClass}`).each(function(i, block){
-            controller.orderActionControll($(block));
+            controller.orderActionControl($(block));
         });
         this.addMedsBtnsControl();
         this.bindCancelPresetBtn();
@@ -188,6 +187,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                     return new OpenEyes.UI.AdderDialog.ItemSet(data['source'], data['options']);
                 }),
                 onReturn: item['onReturn'].bind(controller),
+                onSelect: item['onSelect']?.bind(controller),
             })
         })
     }
@@ -351,7 +351,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             if(parseInt(parent_block.querySelector('input[name$="[confirmed]"]').value)
             && !parseInt(parent_block.querySelector('input[name$="[assignment_id]"]').value)
             && (parent_block.querySelector('input[name$="[visit_id]"]').value || parent_block.querySelector('input[name$="[create_wp]"]').value)
-            && (parent_block.querySelectorAll('tbody tr').length === 1 
+            && (parent_block.querySelectorAll('tbody tr').length === 1
             || parent_block.querySelectorAll(`tbody tr ${administer_btn_selector}:checked`).length === parent_block.querySelectorAll('tbody tr').length
             )){
                 $(this).attr('checked', false).prop('checked', false);
@@ -374,19 +374,24 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                 $current_tr.find(administer_time_ctn_selector).html('');
                 $parent_td.find('input').val('');
             }
-            controller.orderActionControll($(parent_block));
+            controller.orderActionControl($(parent_block));
         });
     }
 
     // before a block is confirmed, administer all meds will hide the appointment dates and disable the selections
-    DrugAdministrationController.prototype.orderActionControll = function($parent_block){
+    DrugAdministrationController.prototype.orderActionControl = function($parent_block){
+        const controller = this;
         const confirm_btn_selector = `.${this.options.confirmBtnClass}`;
         const appt_ctn_selector = `.${this.options.apptCtnClass}`;
         const administer_btn_selector = `.${this.options.administerBtnClass}`;
-        if($parent_block.find('tbody tr').length === $parent_block.find(`tbody tr ${administer_btn_selector}:checked`).length){
+
+        if($parent_block.find('tbody tr').length === $parent_block.find(`tbody tr ${administer_btn_selector}:checked`).length || controller.isPGDBlock($parent_block)){
             $parent_block.find(confirm_btn_selector).text(this.record_admin_btn_text);
             $parent_block.find(`${appt_ctn_selector} input`).prop('disabled', true);
             $parent_block.find(appt_ctn_selector).hide();
+            if (controller.isPGDBlock($parent_block)) {
+                $parent_block.find(confirm_btn_selector).trigger('click');
+            }
         } else {
             if($parent_block.find('input[name$="[pgdpsd_id]"]').val()){
                 $parent_block.find(confirm_btn_selector).text(this.assign_preset_btn_text);
@@ -410,25 +415,21 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             $admin_btn.siblings('input').val(timestamp);
         });
     }
-    
+
+    DrugAdministrationController.prototype.isPGDBlock = function($container) {
+        return $container.find('input[name$="[is_pgd]"][value="1"]').length > 0
+    }
+
     DrugAdministrationController.prototype.buildEntryTemplate = function($container ,data, laterality){
         const controller = this;
-        const administer_btn_selector = `.${controller.options.administerBtnClass}`;
-
         data['allergy_warning'] = controller.getAllergyWarning(data);
         const section_entry_template_class = `.${controller.options.sectionEntryTemplateClass}`;
         let section_entry_template = $(section_entry_template_class).html();
         Mustache.parse(section_entry_template);
         let section_entry_template_render = Mustache.render(section_entry_template, data);
         $container.find('tbody').append(section_entry_template_render);
-        if(!controller.options.is_prescriber){
-            $container.find(`tr[data-entry-key="${data['entry_key']}"] ${administer_btn_selector}`)
-            .prop('checked', true)
-            .attr('checked', true)
-            .trigger('change').closest('label').addClass('disabled');
-            controller.buildReadOnlyAdministerCell($container);
-        }
-        controller.orderActionControll($container);
+
+        controller.orderActionControl($container);
     }
 
     // bind change event on route option dropdown

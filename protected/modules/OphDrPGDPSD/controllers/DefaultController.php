@@ -2,14 +2,33 @@
 
 class DefaultController extends BaseEventTypeController
 {
+    protected function checkUserPGDPSDAssignments()
+    {
+        if (\Yii::app()->user->checkAccess('Prescribe') || \Yii::app()->user->checkAccess('Med Administer')) {
+            return true;
+        }
+        if (OphDrPGDPSD_AssignedUser::model()->exists('user_id = :user_id', [':user_id' => Yii::app()->user->id])) {
+            return true;
+        }
+        $user_teams = Yii::app()->db->createCommand()
+            ->select('team_id')
+            ->from('team_user_assign')
+            ->where('user_id = :user_id')
+            ->bindValues([':user_id' => Yii::app()->user->id])
+            ->queryColumn();
+        return OphDrPGDPSD_AssignedTeam::model()->exists('team_id IN (' . implode(', ', $user_teams) . ')');
+    }
+
     public function checkCreateAccess()
     {
-        return $this->checkAccess('OprnCreateDA', $this->firm, $this->episode, $this->event_type);
+        return $this->checkAccess('OprnCreateDA', $this->firm, $this->episode, $this->event_type)
+            || $this->checkUserPGDPSDAssignments();
     }
 
     public function checkEditAccess()
     {
-        return $this->checkAccess('OprnEditDA', $this->event);
+        return $this->checkAccess('OprnEditDA', $this->event)
+            || $this->checkUserPGDPSDAssignments();
     }
 
     public function checkDeleteAccess()

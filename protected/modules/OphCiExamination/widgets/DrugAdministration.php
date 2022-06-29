@@ -1,5 +1,9 @@
 <?php
 namespace OEModule\OphCiExamination\widgets;
+
+use CDbCriteria;
+use CException;
+use Element_DrugAdministration;
 use Helper;
 class DrugAdministration extends BaseMedicationWidget
 {
@@ -11,6 +15,23 @@ class DrugAdministration extends BaseMedicationWidget
         return true;
     }
 
+    private function hasPGDAssignments($user): bool
+    {
+        if (\OphDrPGDPSD_AssignedUser::model()->with('pgdpsd')->exists("user_id = :user_id AND LOWER(pgdpsd.type) = 'pgd'", [':user_id' => $user->id])) {
+            return true;
+        }
+        $user_teams = \Yii::app()->db->createCommand()
+            ->select('team_id')
+            ->from('team_user_assign')
+            ->where('user_id = :user_id')
+            ->bindValues([':user_id' => $user->id])
+            ->queryColumn();
+        if (count($user_teams) <= 0) {
+            return false;
+        }
+        return \OphDrPGDPSD_AssignedTeam::model()->with('pgdpsd')->exists('team_id IN (' . implode(', ', $user_teams) . ") AND LOWER(pgdpsd.type) = 'pgd'");
+    }
+
 
     /**
      * @return array
@@ -20,14 +41,18 @@ class DrugAdministration extends BaseMedicationWidget
         $current_user = \User::model()->findByPk(\Yii::app()->user->id);
         $is_prescriber = \Yii::app()->user->checkAccess('Prescribe');
         $event_date = $this->controller->event ? date('Y-m-d', strtotime($this->controller->event->event_date)) : date('Y-m-d');
+
         $is_med_admin = \Yii::app()->user->checkAccess('Med Administer');
-        $can_add_meds = $is_med_admin || $is_prescriber;
+        $has_pgd_access = $is_prescriber || $this->hasPGDAssignments($current_user);
+
+        $can_add_meds = $is_med_admin || $is_prescriber || $has_pgd_access;
         $model_name = \CHtml::modelName($this->element);
-        $class_name = $this->element::$entry_class;
+        $class_name = get_class($this->element)::$entry_class;
 
         $medication_options = array();
         $available_appointments = array();
-        $presets = array();
+        $psds = array();
+        $pgds = array();
         if(in_array($this->controller->action->id, array('removed', 'renderEventImage', 'view', 'print'))){
             return array_merge(
                 parent::getViewData(),
@@ -42,7 +67,8 @@ class DrugAdministration extends BaseMedicationWidget
                     'user_obj' => $current_user,
                     'assigned_psds' => $this->element->assignments,
                     'available_appointments' => $available_appointments,
-                    'presets' => json_encode($presets),
+                    'psds' => json_encode($psds),
+                    'pgds' => json_encode($pgds),
                     'medication_options' => $medication_options,
                     'is_prescriber' => $is_prescriber,
                     'is_med_admin' => $is_med_admin,
@@ -59,21 +85,37 @@ class DrugAdministration extends BaseMedicationWidget
         if ($can_add_meds) {
             $pgdpsd_api = \Yii::app()->moduleAPI->get('OphDrPGDPSD');
             $medication_options = $pgdpsd_api->getMedicationOptions();
-            $presets = \OphDrPGDPSD_PGDPSD::model()->findAll("active = 1 AND LOWER(type) = 'psd'");
-            $presets = array_map(function ($preset) {
-                $med_names = array_map(function ($med) {
+
+            $presets = \OphDrPGDPSD_PGDPSD::model()->findAll("active = 1 AND LOWER(type) IN ('psd', 'pgd')");
+            foreach($presets as $preset) {
+                $med_names = array_map(static function ($med) {
                     return '- ' . $med->medication->getLabel(true);
                 }, $preset->assigned_meds);
                 $med_names_string = implode('<br/>', $med_names);
-                $meds_info = "<i class='oe-i info small pad js-has-tooltip' data-tooltip-content='{$med_names_string}'></i>";
-                return array(
+                $meds_info = "<i class='oe-i info small pad js-has-tooltip' data-tooltip-content='$med_names_string'></i>";
+                $item = array(
                     'id' => $preset->id,
                     'label' => $preset->name,
                     'meds' => $preset->getAssignedMedsInJSON(),
                     'prepended_markup' => $meds_info,
                     'is_preset' => true,
+                    'preset_name' =>  $preset->name,
+                    'preset_type' => "Preset - {$preset->type}",
+                    'is_pgd' => strtolower($preset->type) === 'pgd' ? 1 : 0,
                 );
-            }, $presets);
+                if (strtolower($preset->type) === 'psd' && $is_prescriber) {
+                    $psds[] = $item;
+                }
+                if (strtolower($preset->type) === 'pgd'
+                    &&
+                    (
+                        in_array($current_user->id, $preset->getAuthedUserIDs())
+                        || $is_prescriber
+                    )
+                ) {
+                    $pgds[] = $item;
+                }
+            }
         }
         $patient_todo_assignments = \OphDrPGDPSD_Assignment::model()->todoAndActive($this->patient->id, $event_date, $is_prescriber)->findAll();
         // avoid duplicated assignments
@@ -106,7 +148,8 @@ class DrugAdministration extends BaseMedicationWidget
                 'user_obj' => $current_user,
                 'assigned_psds' => $assigned_psds,
                 'available_appointments' => $available_appointments,
-                'presets' => json_encode($presets),
+                'psds' => json_encode($psds),
+                'pgds' => json_encode($pgds),
                 'medication_options' => $medication_options,
                 'is_prescriber' => $is_prescriber,
                 'is_med_admin' => $is_med_admin,
@@ -117,7 +160,7 @@ class DrugAdministration extends BaseMedicationWidget
     /**
      * @param Element_DrugAdministration $element
      * @param $data
-     * @throws \CException
+     * @throws CException
      */
     protected function updateElementFromData($element, $data)
     {
@@ -148,7 +191,7 @@ class DrugAdministration extends BaseMedicationWidget
                 $assignment = new \OphDrPGDPSD_Assignment();
             }
             if (array_key_exists('create_wp', $assignment_data)) {
-                $assignment->create_wp = intval($assignment_data['create_wp']);
+                $assignment->create_wp = (int)$assignment_data['create_wp'];
             }
             $assignment->patient_id = $this->patient->id;
             $assignment->pgdpsd_id = $pgdpsd_id;

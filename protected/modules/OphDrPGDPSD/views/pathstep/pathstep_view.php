@@ -13,6 +13,8 @@ $assigned_meds = $assignment->getAssignedMeds();
 $eye_meds = $assigned_meds['eye'];
 $other_meds = $assigned_meds['other'];
 $top_right_icon = $partial ? 'expand small-icon' : 'remove-circle medium-icon';
+$is_first_requested_step = true;
+$is_last_step = true;
 if ($is_step_instance) {
     $assignment_status = $assignment->getStatusDetails(false, $step);
     $is_assignment_complete = (int)$step->status === PathwayStep::STEP_COMPLETED;
@@ -24,8 +26,10 @@ if ($is_step_instance) {
 }
 
 if ($is_step_instance) {
-    $is_last_step = $step->id === $step->pathway->requested_steps[count($step->pathway->requested_steps) - 1]->id;
-    $is_first_requested_step = $step->id === $step->pathway->requested_steps[0]->id;
+    if (count($step->pathway->requested_steps)) {
+        $is_last_step = $step->id === $step->pathway->requested_steps[count($step->pathway->requested_steps) - 1]->id;
+        $is_first_requested_step = $step->id === $step->pathway->requested_steps[0]->id;
+    }
 } else {
     $is_last_step = $step->id === $step->pathway_type->default_steps[count($step->pathway_type->default_steps) - 1]->id;
     $is_first_requested_step = $step->id === $step->pathway_type->default_steps[0]->id;

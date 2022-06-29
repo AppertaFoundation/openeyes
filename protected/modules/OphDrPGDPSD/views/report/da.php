@@ -1,4 +1,4 @@
-<h2>PSD Report</h2>
+<h2>Drug Administration Report</h2>
 <div>
     <?php
         $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
@@ -13,8 +13,8 @@
             <tr class="col-gap">
                 <td>
                     Date Type
-                    <i 
-                        class="oe-i info pad small js-has-tooltip" 
+                    <i
+                        class="oe-i info pad small js-has-tooltip"
                         data-tooltip-content="If date type is set to none, the date range below will be IGNORED"
                     ></i>
                 </td>
@@ -26,9 +26,9 @@
                         <option value="administration">Administration</option>
                     </select>
                 </td>
-                <td>PSD Name</td>
+                <td>Preset Name</td>
                 <td>
-                    <input type="text" name="psd_name">
+                    <input type="text" name="preset_name">
                 </td>
             </tr>
             <tr class="col-gap">
@@ -58,9 +58,9 @@
                     Type
                 </td>
                 <td>
-                    <input id="type-psd" type="radio" name="type" value="psd" checked>
+                    <input id="type-psd" type="radio" name="type" value="assigned" checked>
                     <label for="type-psd">
-                        PSD
+                        Assigned
                     </label>
                     <input id="type-direct" type="radio" name="type" value="0">
                     <label for="type-direct">

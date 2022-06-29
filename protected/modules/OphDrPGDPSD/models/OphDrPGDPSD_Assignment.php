@@ -430,7 +430,7 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
             $type = 'Custom';
         } else {
             $name = $this->pgdpsd->name;
-            $type = 'Preset';
+            $type = "Preset - {$this->pgdpsd->type}";
         }
         return array(
             'name' => $name,
@@ -481,12 +481,30 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
         $current_user = \User::model()->findByPk(\Yii::app()->user->id);
         $is_prescriber = \Yii::app()->user->checkAccess('Prescribe');
         $is_med_admin = \Yii::app()->user->checkAccess('Med Administer');
-        if ($this->worklist_patient) {
-            $appt_date = date('Y-m-d', strtotime($this->worklist_patient->when));
-            $today = date('Y-m-d');
-            if ($appt_date > $today || (!$this->checkAuth($current_user) && !$is_prescriber && !$is_med_admin)) {
-                $this->_is_relevant = false;
-            }
+        // custom order is only for med admin or prescriber
+        if (!$this->pgdpsd) {
+            return $is_prescriber || $is_med_admin;
+        }
+
+        switch (strtolower($this->pgdpsd->type)) {
+            case 'psd':
+                $is_future = false;
+                // if the psd is for an appointment, check the date
+                if ($this->worklist_patient) {
+                    $appt_date = date('Y-m-d', strtotime($this->worklist_patient->when));
+                    $today = date('Y-m-d');
+                    if ($appt_date > $today) {
+                        $is_future = true;
+                    }
+                    $this->_is_relevant = !$is_future && ($this->checkAuth($current_user) || $is_prescriber || $is_med_admin);
+                } else {
+                    $this->_is_relevant = $is_prescriber || $is_med_admin;
+                }
+
+                break;
+            case 'pgd':
+                $this->_is_relevant = $is_prescriber || $this->checkAuth($current_user);
+                break;
         }
         return $this->_is_relevant;
     }
