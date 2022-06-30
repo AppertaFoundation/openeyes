@@ -235,7 +235,6 @@ class PathwayTypeStep extends BaseActiveRecordVersioned
                 ? $initial_state_data['long_name']
                 : $this->long_name;
             $step->status = $this->status;
-            $step->todo_order = $this->queue_order;
             if (!empty($initial_state_data)) {
                 if ($this->default_state_data) {
                     $template = json_decode($this->default_state_data, true, 512, JSON_THROW_ON_ERROR);
@@ -248,11 +247,16 @@ class PathwayTypeStep extends BaseActiveRecordVersioned
                 $step->state_data = $this->default_state_data;
             }
 
-            // Enqueueing the step saves the step and also sets the order.
-            if ($queue_position !== 0 && !$pathway->enqueueAtPosition($step, $queue_position)) {
-                return false;
+            if ($queue_position !== 0) {
+                $step->todo_order = $queue_position;
+
+                // Enqueueing the step saves the step and also sets the order.
+                if (!$pathway->enqueueAtPosition($step, $queue_position)) {
+                    return false;
+                }
             }
 
+            // Enqueueing the step saves the step and also sets the order.
             if ($queue_position === 0 && !$pathway->enqueue($step)) {
                 return false;
             }

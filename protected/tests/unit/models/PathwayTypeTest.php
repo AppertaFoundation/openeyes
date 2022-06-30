@@ -44,7 +44,7 @@ class PathwayTypeTest extends ActiveRecordTestCase
         // Test duplication at the end of the queue.
         $type = PathwayType::model()->findByPk(1);
         $pathway = $this->pathways('pathway1');
-        $results = $type->duplicateStepsForPathway($pathway->id, 0);
+        $results = $type->duplicateStepsForPathway($pathway->id);
         self::assertNotEmpty($results);
 
         // Test duplication near the start of the queue.
