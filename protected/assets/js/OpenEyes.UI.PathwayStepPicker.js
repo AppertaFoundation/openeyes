@@ -414,7 +414,7 @@
                     if (self.preset_id && self.laterality) {
                         self.getPSDDrugs();
                     }
-                }
+                };
                 new OpenEyes.UI.Dialog.PathwayStepOptions({
                     title: 'Drug Administration Preset Orders',
                     itemSets: [
@@ -498,7 +498,7 @@
                     }
                 }).open();
 
-                $("div[data-itemset-id='laterality'], div[data-itemset-id='position']").each(function() {
+                $("div[data-itemset-id='psds'], div[data-itemset-id='laterality'], div[data-itemset-id='position']").each(function() {
                     $(this).find('label > input[type="radio"]').first().trigger('click');
                 });
                 break;
