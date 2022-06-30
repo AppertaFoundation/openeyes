@@ -37,7 +37,8 @@ class SearchUpdatePas extends DefaultPas
             $criteria->params[':value'] = $params['patient_identifier_value'];
             $criteria->params[':patient_identifier_type_id'] = $params['patient_identifier_type_id'];
 
-            $assignment = PasApiAssignment::model()->find($criteria);
+            $assignment = PasApiAssignment::model();
+            $assignment->find($criteria);
 
             $assignment->pas_cache_time = $this->cache_time;
 
