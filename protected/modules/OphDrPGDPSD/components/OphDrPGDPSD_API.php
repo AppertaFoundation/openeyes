@@ -1,7 +1,8 @@
 <?php
 class OphDrPGDPSD_API extends \BaseAPI
 {
-    public $createOprn = 'OprnCreateDA';
+    public $createOprn = 'OprnCreateEvent';
+    public $createOprnArgs = array('firm', 'episode', 'event_type', 'has_pgdpsd_assignments');
 
     public function setMedEventEntry($med, $element)
     {

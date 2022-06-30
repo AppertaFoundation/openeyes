@@ -38,13 +38,13 @@ class AuthRules
     }
 
     /**
-     * @param Firm      $firm
-     * @param Episode   $episode
-     * @param EventType $event_type
-     *
+     * @param Firm|null $firm
+     * @param Episode|null $episode
+     * @param EventType|null $event_type
+     * @param bool $has_pgdpsd_assignments
      * @return bool
      */
-    public function canCreateEvent(Firm $firm = null, Episode $episode = null, EventType $event_type = null)
+    public function canCreateEvent(Firm $firm = null, Episode $episode = null, EventType $event_type = null, bool $has_pgdpsd_assignments = false)
     {
         if ($event_type) {
             if ($event_type->disabled) {
@@ -59,6 +59,10 @@ class AuthRules
             if ($event_type->rbac_operation_suffix) {
                 $oprn = "OprnCreate" . $event_type->rbac_operation_suffix;
                 if (!Yii::app()->user->checkAccess($oprn)) return false;
+            }
+
+            if ($event_type->class_name === 'OphDrPGDPSD' && !Yii::app()->user->checkAccess('OprnCreateDA') && !$has_pgdpsd_assignments) {
+                return false;
             }
         }
 

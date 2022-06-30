@@ -1,5 +1,7 @@
 <?php
+
 namespace OEModule\PASAPI\components\Pases;
+
 use OEModule\PASAPI\components\XmlHelper;
 
 /**
@@ -35,6 +37,8 @@ abstract class BasePAS
      */
     protected $type = null;
 
+    protected $cache_time;
+
     public function __construct()
     {
         if ($this->parser === null) {
@@ -66,12 +70,17 @@ abstract class BasePAS
         $this->type = $type;
     }
 
+    public function setCacheTime($cache_time)
+    {
+        $this->cache_time = $cache_time;
+    }
+
     /**
      * Determinates if the PAS is available
      *
      * @return mixed
      */
-    abstract public function isAvailable() : bool;
+    abstract public function isAvailable(): bool;
 
     /**
      * Determinates if the PAS query required or not
@@ -79,7 +88,7 @@ abstract class BasePAS
      * @param $params
      * @return mixed
      */
-    abstract public function isPASqueryRequired($params) : bool;
+    abstract public function isPASqueryRequired($params): bool;
 
     /**
      * Making PAS request
@@ -87,5 +96,5 @@ abstract class BasePAS
      * @param $data
      * @return \OEModule\PASAPI\resources\Patient[]
      */
-    abstract public function request($data) : array;
+    abstract public function request($data): array;
 }

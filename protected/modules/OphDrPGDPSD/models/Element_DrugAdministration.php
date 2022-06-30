@@ -1,5 +1,8 @@
 <?php
 
+use OEModule\OphCiExamination\widgets\DrugAdministration;
+use OEModule\OphCiExamination\models\Element_OphCiExamination_DrugAdministration;
+
 /**
  * This is the model class for table "et_drug_administration".
  *
@@ -10,7 +13,6 @@
  * The followings are the available model relations:
  * @property Event $event
  */
-// namespace OEModule\OphDrPGDPSD\models;
 use OEModule\OphCiExamination\models\BaseMedicationElement;
 use OEModule\OphCiExamination\models\traits\CustomOrdering;
 
@@ -20,9 +22,9 @@ class Element_DrugAdministration extends BaseMedicationElement
     public $do_not_save_entries = true;
     protected $auto_update_relations = true;
     public $check_for_duplicate_entries = false;
-    public $patient = null;
+    public $patient;
 
-    public $widgetClass = 'OEModule\OphCiExamination\widgets\DrugAdministration';
+    public $widgetClass = DrugAdministration::class;
 
     public static $entry_class = Element_DrugAdministration_record::class;
     /**
@@ -82,16 +84,12 @@ class Element_DrugAdministration extends BaseMedicationElement
 
     protected function instantiate($attributes)
     {
-        switch (strtolower($attributes['type'])) {
-            case 'exam':
-                $class='OEModule\\OphCiExamination\\models\\Element_OphCiExamination_DrugAdministration';
-                break;
-            default:
-                $class = get_class($this);
-                break;
+        if (strtolower($attributes['type']) === 'exam') {
+            $class = Element_OphCiExamination_DrugAdministration::class;
+        } else {
+            $class = get_class($this);
         }
-        $model = new $class(null);
-        return $model;
+        return new $class(null);
     }
 
     public function getAssignmentRelations()
@@ -103,6 +101,7 @@ class Element_DrugAdministration extends BaseMedicationElement
 
     /**
      * @throws JsonException
+     * @throws Exception
      */
     public function save($runValidation = true, $attributes = null, $allow_overriding = false)
     {
@@ -112,19 +111,22 @@ class Element_DrugAdministration extends BaseMedicationElement
                 continue;
             }
             if ($assignment->create_wp) {
-                $site_id = \Yii::app()->session->get('selected_site_id');
-                $firm_id = \Yii::app()->session->get('selected_firm_id');
-                $firm = \Firm::model()->findByPk($firm_id);
-                $subspecialty = $firm->subspecialty ? $firm->subspecialty : null;
-                $unbooked_worklist_manager = new \UnbookedWorklist();
-                $unbooked_worklist = $unbooked_worklist_manager->createWorklist(new \DateTime(), $site_id, $subspecialty->id);
-                $wl_manager = new \WorklistManager();
+                $site_id = Yii::app()->session->get('selected_site_id');
+                $firm_id = Yii::app()->session->get('selected_firm_id');
+                $firm = Firm::model()->findByPk($firm_id);
+                $subspecialty = $firm->subspecialty ?: null;
+                $unbooked_worklist_manager = new UnbookedWorklist();
+                $unbooked_worklist = $unbooked_worklist_manager->createWorklist(new DateTime(), $site_id, $subspecialty->id);
+                $wl_manager = new WorklistManager();
                 $worklist_patient = $wl_manager->getWorklistPatient($unbooked_worklist, $this->event->episode->patient);
 
                 if (!$worklist_patient) {
-                    $worklist_patient = $wl_manager->addPatientToWorklist($this->event->episode->patient, $unbooked_worklist, new \DateTime());
+                    $worklist_patient = $wl_manager->addPatientToWorklist($this->event->episode->patient, $unbooked_worklist, new DateTime());
                 }
-
+                if (!$worklist_patient->pathway) {
+                    $worklist_patient->worklist->worklist_definition->pathway_type->instancePathway($worklist_patient);
+                    $worklist_patient->refresh();
+                }
                 $assignment->visit_id = $worklist_patient->id;
             }
             $assignment->save();
@@ -136,7 +138,7 @@ class Element_DrugAdministration extends BaseMedicationElement
                     array(':pathway_id' => $assignment->worklist_patient->pathway->id)
                 );
                 // try to find the pathway steps related to current psd
-                $matched_da_steps = array_filter($da_steps, function ($da_step) use ($assignment) {
+                $matched_da_steps = array_filter($da_steps, static function ($da_step) use ($assignment) {
                     return (int)$da_step->getState('assignment_id') === (int)$assignment->id;
                 });
                 // if no matched found, create a new pathway step for current psd
@@ -151,9 +153,6 @@ class Element_DrugAdministration extends BaseMedicationElement
                         'raise_event' => false
                     ));
                 }
-            }
-            if (!$assignment->isrelevant && count($this->assignments) > 1) {
-                unset($original[$key]);
             }
         }
         $this->assignments = $original;
@@ -214,7 +213,7 @@ class Element_DrugAdministration extends BaseMedicationElement
      */
     public function search()
     {
-        $criteria=new CDbCriteria;
+        $criteria = new CDbCriteria();
 
         $criteria->compare('id', $this->id);
         $criteria->compare('event_id', $this->event_id, true);
@@ -271,19 +270,21 @@ class Element_DrugAdministration extends BaseMedicationElement
 
     public function loadFromExisting($element)
     {
-        return;
     }
 
+    /**
+     * @throws JsonException
+     * @throws Exception
+     */
     public function softDelete()
     {
         $new_assignments = array();
         foreach ($this->assignments as $assignment) {
             $duplicate = new OphDrPGDPSD_Assignment();
             $assignment_attrs = $assignment->attributes;
-            unset($assignment_attrs['id']);
-            unset($assignment_attrs['comment_id']);
+            unset($assignment_attrs['id'], $assignment_attrs['comment_id']);
             $duplicate->attributes = $assignment_attrs;
-            $duplicate->assigned_meds = array_map(function ($med) {
+            $duplicate->assigned_meds = array_map(static function ($med) {
                 $med_attrs = $med->attributes;
                 unset($med_attrs['id']);
                 return $med_attrs;

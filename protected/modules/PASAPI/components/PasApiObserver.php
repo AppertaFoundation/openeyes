@@ -218,6 +218,23 @@ class PasApiObserver
             if (!$pas) {
                 continue;
             }
+
+            $request_data = [
+                'patient_identifier_value' => $global_number,
+                'patient_identifier_type_id' => $type->id,
+                'is_global_search' => true
+            ];
+
+            if (!$pas->isAvailable() || !$pas->isPASqueryRequired($request_data)) {
+                continue;
+            }
+
+            $results = $pas->request($request_data);
+
+            if ($results) {
+                // results by type
+                $pas_results[$type->id] = $results;
+            }
         }
 
         $extra_identifiers_by_type = [];
@@ -322,6 +339,10 @@ class PasApiObserver
             $pas_class = new $pas_class_name($type->pas_api);
             $pas_class->setType($type);
             $pas_class->init($type->pas_api);
+
+            if (isset($type->pas_api['cache_time'])) {
+                $pas_class->setCacheTime($type->pas_api['cache_time']);
+            }
 
             return $pas_class;
         }

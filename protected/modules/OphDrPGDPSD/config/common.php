@@ -50,7 +50,7 @@ return array(
             ]
         ],
         'reports' => array(
-            'PSD' => '/OphDrPGDPSD/report/psdReport'
+            'Drug Administration Report' => '/OphDrPGDPSD/report/daReport'
         ),
     ),
 );

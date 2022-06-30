@@ -281,10 +281,12 @@ class PathwayStepType extends BaseActiveRecordVersioned
             } else {
                 $step->state_data = $this->state_data_template;
             }
-
-            // Enqueueing the step saves the step and also sets the order.
-            if ($queue_position !== 0 && !$pathway->enqueueAtPosition($step, $queue_position)) {
-                return false;
+            if ($queue_position !== 0) {
+                $step->todo_order = $queue_position;
+                // Enqueueing the step saves the step and also sets the order.
+                if (!$pathway->enqueueAtPosition($step, $queue_position)) {
+                    return false;
+                }
             }
 
             if ($queue_position === 0 && !$pathway->enqueue($step)) {

@@ -111,24 +111,24 @@ class Element_OphDrPrescription_Esign extends BaseEsignElement
      */
     public function getSignatures(): array
     {
-        $consultant = new OphDrPrescription_Signature();
-        $consultant->signatory_role = "Consultant";
-        $consultant->type = BaseSignature::TYPE_LOGGEDIN_USER;
+        $prescriber = new OphDrPrescription_Signature();
+        $prescriber->signatory_role = !empty($this->user->grade) ? $this->user->grade->grade : "Prescriber";
+        $prescriber->type = BaseSignature::TYPE_LOGGEDIN_USER;
 
         if (!$this->isNewRecord) {
-            return [$consultant];
+            return [$prescriber];
         }
 
-        return !empty($this->signatures) ? $this->signatures : [$consultant];
+        return !empty($this->signatures) ? $this->signatures : [$prescriber];
     }
 
     public function getViewSignatures(): array
     {
-        $consultant = new OphDrPrescription_Signature();
-        $consultant->signatory_role = "Consultant";
-        $consultant->type = BaseSignature::TYPE_LOGGEDIN_USER;
+        $prescriber = new OphDrPrescription_Signature();
+        $prescriber->signatory_role = !empty($this->user->grade) ? $this->user->grade->grade : "Prescriber";
+        $prescriber->type = BaseSignature::TYPE_LOGGEDIN_USER;
 
-        return !empty($this->signatures) ? $this->signatures : [$consultant];
+        return !empty($this->signatures) ? $this->signatures : [$prescriber];
     }
 
     /**

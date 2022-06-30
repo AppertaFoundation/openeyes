@@ -5,19 +5,19 @@ class ReportController extends BaseReportController
     {
         return array(
             array('allow',
-                'actions' => array('psdReport', 'runreport', 'downloadreport'),
+                'actions' => array('daReport', 'runreport', 'downloadreport'),
             ),
         );
     }
 
     public function actionIndex()
     {
-        $this->redirect(array('psdReport'));
+        $this->redirect(array('daReport'));
     }
 
-    public function actionPSDReport()
+    public function actionDAReport()
     {
         $this->pageTitle = 'PSD Report';
-        $this->render('psd');
+        $this->render('da');
     }
 }

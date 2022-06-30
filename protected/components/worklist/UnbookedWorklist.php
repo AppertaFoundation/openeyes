@@ -33,7 +33,7 @@ class UnbookedWorklist extends CComponent
      * @param $site_id
      * @param $subspecialty_id
      * @param null $firm_id
-     * @return bool|null
+     * @return Worklist|null
      * @throws Exception
      */
     public function createWorklist(DateTime $date, $site_id, $subspecialty_id, $firm_id = null)

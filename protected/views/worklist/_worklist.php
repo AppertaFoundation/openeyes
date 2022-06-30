@@ -139,7 +139,16 @@ $is_ae_worklist = isset($worklist->id) && (bool)Yii::app()->db->cache(1000)->cre
                 <td><?= $wl_patient->scheduledtime ?></td>
                 <td>
                     <div class="list-name"><?= $wl_patient->worklist->name ?></div>
-                    <div class="code"><?= $num_ae_visits === 1 && $is_ae_worklist ? 'First Attendance' : null ?></div>
+                    <div class="code">
+                        <ul class="dot-list">
+                            <?= $num_ae_visits === 1 && $is_ae_worklist ? '<li>First Attendance</li>' : null ?>
+                            <?php if (!empty($wl_patient->worklist->displayed_mapping_attributes)) : ?>
+                                <?php foreach ($wl_patient->worklist->displayed_mapping_attributes as $attr) : ?>
+                                    <?= $wl_patient->getWorklistAttributeValue($attr) ? '<li>'.$wl_patient->getWorklistAttributeValue($attr).'</li>' : null ?>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </ul>
+                    </div>
                 </td>
                 <td>
                     <?php $this->renderPartial('application.widgets.views.PatientMeta', array('patient' => $wl_patient->patient, 'coreapi' => $coreapi, 'pathway' => $wl_patient->pathway)); ?>
