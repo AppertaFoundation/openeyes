@@ -218,6 +218,23 @@ class PasApiObserver
             if (!$pas) {
                 continue;
             }
+
+            $request_data = [
+                'patient_identifier_value' => $global_number,
+                'patient_identifier_type_id' => $type->id,
+                'is_global_search' => true
+            ];
+
+            if (!$pas->isAvailable() || !$pas->isPASqueryRequired($request_data)) {
+                continue;
+            }
+
+            $results = $pas->request($request_data);
+
+            if ($results) {
+                // results by type
+                $pas_results[$type->id] = $results;
+            }
         }
 
         $extra_identifiers_by_type = [];
