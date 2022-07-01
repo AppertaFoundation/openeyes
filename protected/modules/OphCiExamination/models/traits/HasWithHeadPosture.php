@@ -48,7 +48,7 @@ trait HasWithHeadPosture
         }
 
         if (!$this->headPostureInElements($elements)) {
-            $this->addError('with_head_posture', 'Corrective Head Posture element needs to be recorded in the examination if CHP is Used.');
+            $this->addError('with_head_posture', 'Corrective Head Posture element has not been recorded in the examination (Must be set if CHP is used).');
         }
     }
 
