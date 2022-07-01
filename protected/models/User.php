@@ -1004,7 +1004,10 @@ class User extends BaseActiveRecordVersioned
         foreach ($this->authentications as $authentication) {
             $is_active = $authentication->active ? 'Active' : 'Inactive';
             $password_status = $authentication->isLocalAuth() ? $authentication->password_status : "LDAP";
-            $usernames_with_statuses[] = $authentication->username . " <em class='fade'>($is_active / $password_status)</em>" . '<i class="oe-i info small small-icon pro-theme pad fade js-has-tooltip" data-tooltip-content="' . $authentication->institutionAuthentication->description . '"></i>';
+            $usernames_with_statuses[] = $authentication->username .
+                " <em class='fade'>($is_active / $password_status)</em>" . '<i class="oe-i info small small-icon pro-theme pad fade js-has-tooltip" data-tooltip-content="'
+                . ($authentication->institutionAuthentication ? $authentication->institutionAuthentication->description : 'SPEACIAL USER')
+                . '"> </i>';
         }
 
         return $usernames_with_statuses;
