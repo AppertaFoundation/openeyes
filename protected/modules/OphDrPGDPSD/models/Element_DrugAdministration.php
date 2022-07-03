@@ -108,6 +108,7 @@ class Element_DrugAdministration extends BaseMedicationElement
         $original = $this->assignments;
         foreach ($this->assignments as $key => $assignment) {
             if(!$assignment->active){
+                $assignment->save();
                 continue;
             }
             if ($assignment->create_wp) {
