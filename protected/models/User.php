@@ -260,7 +260,7 @@ class User extends BaseActiveRecordVersioned
 
     public function getFormattedRegistrationCode()
     {
-        return 'GMC:' . preg_replace('/^[A-za-z]+[-: ]*/', '', $this->registration_code);
+        return preg_replace('/^[A-za-z]+[-: ]*/', '', $this->registration_code);
     }
 
     /**
