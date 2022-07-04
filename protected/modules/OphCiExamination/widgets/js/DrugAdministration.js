@@ -28,7 +28,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         rmMedBtnClass: 'js-remove-med',
         delPresetBtnClass: 'js-delete-preset',
         revertDelPresetBtnClass: 'js-revert-preset-del',
-        delPresetBtnHtml: `<button class="red hint js-delete-preset js-after-confirm">Cancel order</button>`,
+        delPresetBtnHtml: `<button class="red hint js-delete-preset js-after-confirm">Cancel remaining items</button>`,
         revertDelPresetBtnHtml: `<button class="blue hint js-revert-preset-del">Revert</button>`,
         commentBtnClass: 'js-add-comments',
         commentCtnClass: 'comment-row',
@@ -303,10 +303,17 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         const $parent = $(btn).parents(parent_selector);
         const $admin_btns = $parent.find(administer_btn_selector);
         const $trash_btns = $parent.find(del_med_btn_selector);
+        let block_classes = ['status-box', 'red', 'fade'];
+        let switch_classes = 'disabled';
         $parent.find('input[name$="[active]"]').val(val);
-        $parent.toggleClass('status-box red fade');
-        $admin_btns.closest('.toggle-switch').toggleClass('disabled');
-        $trash_btns.toggleClass('disabled');
+        const is_relevant = $parent.find('input[name$="[is_relevant]"]').val();
+        if (parseInt(is_relevant) === 0) {
+            block_classes = block_classes.filter(sc => sc !== 'fade');
+            switch_classes = '';
+        }
+        $parent.toggleClass(block_classes.join(' '));
+        $admin_btns.closest('.toggle-switch').toggleClass(switch_classes);
+        $trash_btns.toggleClass(switch_classes);
         $(btn).replaceWith(btn_to_replace);
     }
     // bind click event on administer all button

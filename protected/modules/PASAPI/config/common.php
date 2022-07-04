@@ -79,13 +79,6 @@ return [
             // use 'false' to bypass any proxies
             'proxy' => getenv("OE_PASAPI_PROXY") ?: false,
 
-            // set the caching time in seconds - don't query the PAS for data that had been cached within the last X minutes
-            // set cache_time to null (never stale] to never update the object from PAS
-            // set cache_time to 0 (always stale] to update the object from PAS every time
-
-            // DEPRECATED 'cache_time', this setting moved to the Admin section
-            //'cache_time' => getenv("OE_PASAPI_CACHE_TIME") ?: 300, //sec
-
             // DEPRECATED 'allowed_params', this setting moved to the Admin section
             //'allowed_params' => [],
         ],

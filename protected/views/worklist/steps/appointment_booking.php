@@ -106,7 +106,7 @@ if ($is_step_instance) {
             array(
                 'partial' => $partial,
                 'model' => $step,
-                'pathway' => $pathway,
+                'visit' => $worklist_patient
             )
         );
     } ?>

@@ -56,7 +56,7 @@
   },
   "autoload-dev": {
     "classmap": [
-        "vendor/zhuravljov/yii2-debug/Yii2Debug.php"
+      "vendor/zhuravljov/yii2-debug/Yii2Debug.php"
     ]
   },
   "extra": {

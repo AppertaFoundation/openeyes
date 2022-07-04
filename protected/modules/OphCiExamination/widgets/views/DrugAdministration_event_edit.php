@@ -72,6 +72,7 @@ $field_prefix = $model_name . '[assignment][{{section_key}}][entries][{{entry_ke
             <input type="hidden" name="<?= $model_name . "[assignment][$key][create_wp]" ?>"
                    value="<?= $assigned_psd->create_wp ?>">
             <input type="hidden" name="<?= $model_name . "[assignment][$key][active]" ?>" value="<?= $is_active ?>">
+            <input type="hidden" name="<?= $model_name . "[assignment][$key][is_relevant]" ?>" value="<?= (int)$is_relevant ?>">
             <div class="flex row">
                 <div class="flex-l">
                     <!-- rely on pgdpsd id null or not -->

@@ -32,7 +32,7 @@ if ($is_step_instance) {
                 array(
                     'partial' => $partial,
                     'model' => $step,
-                    'pathway' => $worklist_patient->pathway,
+                    'visit' => $worklist_patient
                 )
             );
     } else { ?>
