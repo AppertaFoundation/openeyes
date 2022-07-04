@@ -466,7 +466,7 @@ $default_urls = $logo_helper->getLogoURLs();
 <div class="cols-10">
     <br>
 
-    <?php $patient_identifier_usage_type = $request->getParam('patient_identifier_usage_type') ?: $app->params['display_primary_number_usage_code'];
+    <?php $patient_identifier_usage_type = $request->getParam('patient_identifier_usage_type') ?: SettingMetadata::model()->getSetting('display_primary_number_usage_code');
     $patient_identifier_site = $request->getParam('patient_identifier_site', null);
     $criteria = new CDbCriteria();
     $criteria->condition = 'institution_id=:institution_id AND patient_identifier_type_id IN (SELECT id FROM patient_identifier_type WHERE usage_type=:usage_type)';
@@ -495,7 +495,7 @@ $default_urls = $logo_helper->getLogoURLs();
 
     <h2>Patient Identifier Display Preferences</h2>
     <hr class="divider">
-    
+
     <?= \CHtml::dropDownList(
         'patient_identifier_usage_type',
         $patient_identifier_usage_type,
