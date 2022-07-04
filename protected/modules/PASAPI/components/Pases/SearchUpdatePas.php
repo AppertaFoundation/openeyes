@@ -40,10 +40,12 @@ class SearchUpdatePas extends DefaultPas
             $assignment = PasApiAssignment::model();
             $assignment->find($criteria);
 
-            $assignment->pas_cache_time = $this->cache_time;
+            if ($assignment) {
+                $assignment->pas_cache_time = $this->cache_time;
 
-            if ($assignment && !$assignment->isStale()) {
-                return false;
+                if (!$assignment->isStale()) {
+                    return false;
+                }
             }
         }
 
