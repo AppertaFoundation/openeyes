@@ -83,7 +83,10 @@ services:
     depends_on:
      - "db"
     # hostname: oe-web-${PHP_VERSION:-7.4}
-    network_mode: service:db
+    # network_mode: service:db
+    ports:
+      - "7777:80"
+      - "7743:443"
 
 secrets:
   SSH_PRIVATE_KEY:
