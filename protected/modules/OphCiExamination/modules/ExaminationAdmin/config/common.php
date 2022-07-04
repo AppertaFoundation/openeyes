@@ -17,7 +17,7 @@ $config = [
     'params' => [
         'admin_menu' => [
             'OphCiExamination' => [
-                'Element Attributes' => ['uri' => '/oeadmin/ExaminationElementAttributes/list', 'restricted' => array('OprnInstitutionAdmin')],
+                'Element Attributes' => ['uri' => '/oeadmin/ExaminationElementAttributes/list'],
                 'Workflows' => '/OphCiExamination/admin/viewWorkflows',
                 'Workflow rules' => '/OphCiExamination/admin/viewWorkflowRules',
                 'Allergies' => ['uri' => '/OphCiExamination/admin/Allergies/index', 'restricted' => array('admin')],
