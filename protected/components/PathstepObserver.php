@@ -29,26 +29,30 @@ class PathstepObserver
      * @param EventType $event_type
      * @param int $patient_id
      * @param bool $include_active_steps
+     * @param WorklistPatient $event_wp
      * @return PathwayStep|null
      * @throws JsonException
      */
     protected function getUnassociatedStepForEvent(
         EventType $event_type,
         int $patient_id,
-        bool $include_active_steps = false
+        bool $include_active_steps = false,
+        WorklistPatient $worklist_patient = null
     ): ?PathwayStep {
         $criteria = new CDbCriteria();
-        // Assuming the latest date maps to the active worklist/visit for the patient.
-        $latest_date = Yii::app()->db->createCommand()
-            ->select('MAX(`when`)')
-            ->from('worklist_patient p')
-            ->where('p.patient_id = :id', [':id' => $patient_id])
-            ->queryScalar();
+        if (!$worklist_patient) {
+            // Assuming the latest date maps to the active worklist/visit for the patient.
+            $latest_date = Yii::app()->db->createCommand()
+                ->select('MAX(`when`)')
+                ->from('worklist_patient p')
+                ->where('p.patient_id = :id', [':id' => $patient_id])
+                ->queryScalar();
 
-        $worklist_patient = WorklistPatient::model()->find(
-            'patient_id = :id AND `when` = :when',
-            [':id' => $patient_id, ':when' => $latest_date]
-        );
+            $worklist_patient = WorklistPatient::model()->find(
+                'patient_id = :id AND `when` = :when',
+                [':id' => $patient_id, ':when' => $latest_date]
+            );
+        }
 
         $status_list = $include_active_steps ? '0, 1' : '0';
 
@@ -86,7 +90,7 @@ class PathstepObserver
 
             if (!$step) {
                 // Event is not linked to a step but should still update the first relevant step.
-                $step = $this->getUnassociatedStepForEvent($params['event_type'], $params['patient_id']);
+                $step = $this->getUnassociatedStepForEvent($params['event_type'], $params['patient_id'], false, $params['event_type']->worklist_patient);
 
                 if ($step) {
                     $params['event']->worklist_patient_id = $step->pathway->worklist_patient_id;
@@ -101,7 +105,7 @@ class PathstepObserver
             }
         } else {
             // Find the first non-completed step with an associated event type that matches the specified event type.
-            $step = $this->getUnassociatedStepForEvent($params['event_type'], $params['patient_id']);
+            $step = $this->getUnassociatedStepForEvent($params['event_type'], $params['patient_id'], false, $params['event_type']->worklist_patient);
 
             if ($step) {
                 $event_type_id = EventType::model()->find(
@@ -170,7 +174,8 @@ class PathstepObserver
                     $step = $this->getUnassociatedStepForEvent(
                         $params['event']->eventType,
                         $params['event']->episode->patient_id,
-                        true
+                        true,
+                        $params['event']->worklist_patient
                     );
 
                     if ($step) {

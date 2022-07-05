@@ -131,12 +131,17 @@ class Element_DrugAdministration extends BaseMedicationElement
                 $assignment->visit_id = $worklist_patient->id;
             }
             $assignment->save();
-            // If a new psd is attached to a worklist patient, a new pathway step will be needed as well
-            if ($assignment->worklist_patient && $assignment->worklist_patient->pathway) {
+            $assignment_wp = $assignment->worklist_patient;
+            if ($assignment_wp) {
+                if (!$assignment_wp->pathway) {
+                    $assignment_wp->worklist->worklist_definition->pathway_type->instancePathway($assignment_wp);
+                    $assignment_wp->refresh();
+                }
+                $assignment_pathway = $assignment_wp->pathway;
                 // find out all existing drug admin pathway step associated with corresponding pathway
                 $da_steps = PathwayStep::model()->findAll(
                     'pathway_id = :pathway_id AND short_name = "drug admin"',
-                    array(':pathway_id' => $assignment->worklist_patient->pathway->id)
+                    array(':pathway_id' => $assignment_pathway->id)
                 );
                 // try to find the pathway steps related to current psd
                 $matched_da_steps = array_filter($da_steps, static function ($da_step) use ($assignment) {
