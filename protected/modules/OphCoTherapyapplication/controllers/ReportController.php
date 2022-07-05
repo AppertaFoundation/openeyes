@@ -276,8 +276,12 @@ class ReportController extends BaseReportController
 
     protected $_patient_cache = array();
 
-    protected function getPatient($patient_id)
+    protected function getPatient($patient_id = null)
     {
+        if ($patient_id === null) {
+            return null;
+        }
+
         if (!@$this->_patient_cache[$patient_id]) {
             $this->_patient_cache[$patient_id] = Patient::model()->noPas()->findByPk($patient_id);
         }
