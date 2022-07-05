@@ -48,6 +48,7 @@ $field_prefix = $model_name . '[assignment][{{section_key}}][entries][{{entry_ke
         <input type="hidden" name="<?=$model_name . "[assignment][{$key}][confirmed]"?>" value="<?=$is_confirmed;?>">
         <input type="hidden" name="<?=$model_name . "[assignment][{$key}][create_wp]"?>" value="<?=$assigned_psd->create_wp;?>">
         <input type="hidden" name="<?=$model_name . "[assignment][{$key}][active]"?>" value="<?=$is_active?>">
+        <input type="hidden" name="<?= $model_name . "[assignment][$key][is_relevant]" ?>" value="<?= (int)$is_relevant ?>">
         <div class="flex row">
             <div class="flex-l">
                 <!-- rely on pgdpsd id null or not -->
@@ -120,13 +121,13 @@ $field_prefix = $model_name . '[assignment][{{section_key}}][entries][{{entry_ke
                             $disable_administer_btn = !$is_active ? 'disabled' : ($is_relevant ? ($is_prescriber ? '' : ($entry->administered ? 'disabled' : '')) : 'disabled');
                             $hide_administer_switch = ($is_confirmed && $is_record_admin && $entry->administered) || ($is_confirmed && !$is_prescriber && $entry->administered) ? true : false;
                             ?>
-                        <tr 
+                        <tr
                             data-entry-key="<?=$entry_key?>"
                             data-entry_key="<?=$entry_key?>"
-                            data-id="<?=$entry->id?>" 
-                            data-is-preset="<?=$is_preset?>" 
-                            data-preferred_term="<?=$entry->medication->getLabel(true)?>" 
-                            data-medication_id="<?=$entry->medication_id?>" 
+                            data-id="<?=$entry->id?>"
+                            data-is-preset="<?=$is_preset?>"
+                            data-preferred_term="<?=$entry->medication->getLabel(true)?>"
+                            data-medication_id="<?=$entry->medication_id?>"
                             data-dose="<?=$entry->dose?>"
                             data-dose_unit_term="<?=$entry->dose_unit_term?>"
                             data-route_id="<?=$entry->route_id?>"
@@ -145,7 +146,7 @@ $field_prefix = $model_name . '[assignment][{{section_key}}][entries][{{entry_ke
                                 <?php }?>
                                 <?=$this->widget('MedicationInfoBox', array('medication_id' => $entry->medication_id), true);?>
                                 </span>
-                            </td>                            
+                            </td>
                             <td>
                             <?php if (!$entry->dose) {?>
                                 <input class="fixed-width-small js-dose" type="text" name="<?=$model_name . "[assignment][{$key}][entries][{$entry_key}][dose]"?>" id="<?=$model_name . "_assignment_{$key}_entries_{$entry_key}_dose"?>" value="" placeholder="Dose" />
@@ -214,27 +215,27 @@ $field_prefix = $model_name . '[assignment][{{section_key}}][entries][{{entry_ke
                                 <?php if ($hide_administer_switch) {?>
                                     <i class="oe-i tick medium pad selected"></i>
                                 <?php }?>
-                                <label 
+                                <label
                                     class="toggle-switch <?=$disable_administer_btn?>"
                                     <?=$hide_administer_switch ? 'style="display:none"' : ''?>
                                 >
-                                    <input 
-                                        class="js-administer-med" 
-                                        type="checkbox" 
-                                        name="<?=$model_name . "[assignment][{$key}][entries][{$entry_key}][administered]"?>" 
+                                    <input
+                                        class="js-administer-med"
+                                        type="checkbox"
+                                        name="<?=$model_name . "[assignment][{$key}][entries][{$entry_key}][administered]"?>"
                                         value="<?=$entry->administered?>"
                                     <?=$entry->administered ? 'checked' : ''?>
                                     >
                                     <div class="toggle-btn"></div>
-                                    <input 
-                                        type="hidden" 
-                                        name="<?=$model_name . "[assignment][{$key}][entries][{$entry_key}][administered_time]"?>" 
+                                    <input
+                                        type="hidden"
+                                        name="<?=$model_name . "[assignment][{$key}][entries][{$entry_key}][administered_time]"?>"
                                         value="<?=$administered_ts * 1000;?>"
                                     >
                                 </label>
                                 <input type="hidden" name="<?=$model_name . "[assignment][{$key}][entries][{$entry_key}][administered_by]"?>" value="<?=$entry->administered_by?>">
                             </td>
-                            
+
                             <td class="js-entry-action">
                                 <?php if ($is_preset) {?>
                                 <i class="oe-i no-permissions small-icon js-has-tooltip" data-tooltip-content="Drugs within a Preset Order not be changed."></i>
@@ -263,7 +264,7 @@ $field_prefix = $model_name . '[assignment][{{section_key}}][entries][{{entry_ke
             <div class="add-data-actions flex-item-bottom" style="<?=$hide_button?>">
                 <button class="button js-add-comments">
                     <i class="oe-i comments small-icon "></i>
-                </button> 
+                </button>
             </div>
         </div>
         <?php
@@ -294,14 +295,14 @@ $field_prefix = $model_name . '[assignment][{{section_key}}][entries][{{entry_ke
     <div class="flex-r">
         <div class="add-data-actions flex-item-bottom js-add-meds-ctn">
             <?php if ($is_prescriber) {?>
-                <button 
-                    id="js-add-preset-order" 
+                <button
+                    id="js-add-preset-order"
                     class="green hint js-add-select-btn"
                 >Add Preset Order</button>&nbsp;
             <?php } ?>
             <?php if ($is_med_admin || $is_prescriber) {?>
-            <button 
-            id="js-add-medications" 
+            <button
+            id="js-add-medications"
             class="adder js-add-select-btn"
             ></button>
             <?php }?>

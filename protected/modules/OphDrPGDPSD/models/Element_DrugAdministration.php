@@ -122,9 +122,6 @@ class Element_DrugAdministration extends BaseMedicationElement
                 $assignment->visit_id = $worklist_patient->id;
             }
             $assignment->save();
-            if (!$assignment->isrelevant && count($this->assignments) > 1) {
-                unset($original[$key]);
-            }
         }
         $this->assignments = $original;
         return parent::save($runValidation, $attributes, $allow_overriding);

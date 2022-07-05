@@ -173,6 +173,9 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
 
     public function cacheMeds($meds = array())
     {
+        if (!$this->active) {
+            return;
+        }
         $assigned_meds = array();
         $orig_meds = array();
         $pair_keys = array();
