@@ -122,7 +122,7 @@ class ProcessHscicDataCommand extends CConsoleCommand
         'full' => array(
             'gp' => array(
                     'url' => 'scotgp',
-                    'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode', '', '', 'status', '', '', '', '', 'phone'),
+                    'fields' => array('code', 'first_name', 'last_name', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode', '', '', 'status', '', '', '', '', 'phone'),
              ),
             'practice' => array(
                     'url' => 'scotprac',
@@ -378,6 +378,42 @@ EXAMPLES
    Compares the full GP files with database and set models to inactive which are missing from the file
 
 EOH;
+    }
+
+
+    /**
+     * Downloads data file from url and imports it.
+     *
+     * @param string $url      Url to the data file
+     * @param string $type     gp|Practice|Ccg|CcgAssignment
+     * @param string $interval full|monthly|quarterly
+     * @param string $region   scotland|england|ni
+     */
+
+    public function actionDownloadAndImportFromUrl($url, $type, $interval = 'full', $region)
+    {
+        $pathParts = pathinfo($this->getFileFromUrl($url));
+        $permanentFile = $this->path . '/' . $pathParts['filename'] . '/' . $pathParts['basename'];
+        $permanentDirectory = $this->path . '/' . $pathParts['filename'];
+
+        if (!file_exists($permanentDirectory)) {
+            mkdir($permanentDirectory, 0777, true);
+        }
+        $this->download($url, $permanentFile);
+        switch ($region) {
+            case "scotland":
+                $this->files = static::$file_config_scotland;
+                break;
+            case "ni":
+                $this->files = static::$file_config_ni;
+                break;
+            case "england":
+                $this->files = static::$file_config_england;
+                break;
+            default:
+                throw new Exception("Can't find file config for region: $region", static::$UNKNOWN_ERROR);
+        }
+        $this->processCSV($type, $interval, $this->files[$interval][$type]['fields'], $permanentFile);
     }
 
     /**
@@ -654,6 +690,8 @@ EOH;
         $contact->primary_phone = $data['phone'];
 
         /*
+         * First checks if first name and surname are defined seperately. If not uses regex to get them from fullname.
+         *
          * Regexp
          * the first part match a word (any number of char, no whithespace)
          * than (after the first word) can follow any number of whitepace
@@ -663,7 +701,11 @@ EOH;
          *
          * Examples (egpam.zip): WELLINGS D, DONOGHUE CA, COLLOMBON MPM
          */
-        if (preg_match("/^([\S]+)\s+([A-Z]{1,4})$/i", trim($data['name']), $m)) {
+        if (isset($data['first_name']) && isset($data['last_name'])) {
+            $contact->title = 'Dr';
+            $contact->first_name = $data['first_name'];
+            $contact->last_name = $data['last_name'];
+        } elseif (preg_match("/^([\S]+)\s+([A-Z]{1,4})$/i", trim($data['name']), $m)) {
             $contact->title = 'Dr';
             $contact->first_name = $m[2];
             $contact->last_name = $this->tidy($m[1]);

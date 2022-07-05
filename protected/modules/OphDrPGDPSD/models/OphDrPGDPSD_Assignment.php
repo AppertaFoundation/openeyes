@@ -308,10 +308,15 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
             if ($med->route->isEyeRoute()) {
                 $lat_str = intval($med->laterality) === MedicationLaterality::LEFT ? 'Left' : 'Right';
                 $administerd[$loop_key] = $administerd[$loop_key] + intval($med->administered);
+                $assigned_meds['eye'][$loop_key][$lat_str] = $med;
                 $assigned_meds['eye'][$loop_key]['term'] = $term;
                 $assigned_meds['eye'][$loop_key]['dose_unit'] = $dose_unit;
-                $assigned_meds['eye'][$loop_key]['administration_status'] = $administerd[$loop_key] === $expected_administered_num ? 'tick' : 'waiting';
-                $assigned_meds['eye'][$loop_key][$lat_str] = $med;
+                if (array_key_exists('administration_status', $assigned_meds['eye'][$loop_key]) && $assigned_meds['eye'][$loop_key]['administration_status'] === 'waiting') {
+                    // This handles the condition when "waiting" symbol gets over-written by "tick" when only the second eye route has been administered
+                    // So if the first eye route (Left) has been waiting, no need to check for the other one.
+                    continue;
+                }
+                $assigned_meds['eye'][$loop_key]['administration_status'] = $administerd[$loop_key] === $expected_administered_num || $med->administered ? 'tick' : 'waiting';
             } else {
                 $assigned_meds['other'][$loop_key]['term'] = $term;
                 $assigned_meds['other'][$loop_key]['dose_unit'] = $dose_unit;
