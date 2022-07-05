@@ -48,7 +48,7 @@ trait HasWithHeadPosture
         }
 
         if (!$this->headPostureInElements($elements)) {
-            $this->addError('with_head_posture', 'CHP has not been recorded in the examination.');
+            $this->addError('with_head_posture', 'Corrective Head Posture element has not been recorded in the examination (Must be set if CHP is used).');
         }
     }
 
@@ -85,9 +85,9 @@ trait HasWithHeadPosture
     protected function convertWithHeadPostureRecordToDisplay($value)
     {
         return [
-            self::$WITH_HEAD_POSTURE => self::$DISPLAY_WITH_HEAD_POSTURE,
-            self::$WITHOUT_HEAD_POSTURE => self::$DISPLAY_WITHOUT_HEAD_POSTURE
-        ][$value] ?? null;
+                self::$WITH_HEAD_POSTURE => self::$DISPLAY_WITH_HEAD_POSTURE,
+                self::$WITHOUT_HEAD_POSTURE => self::$DISPLAY_WITHOUT_HEAD_POSTURE
+            ][$value] ?? null;
     }
 
     protected function headPostureInElements($elements)
