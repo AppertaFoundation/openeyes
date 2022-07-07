@@ -24,7 +24,8 @@ class CsvController extends BaseController
         ),
     );
 
-    
+    static $max_document_size = 2097152;
+
     static $csvMimes = array(
         'text/x-comma-separated-values',
         'text/comma-separated-values',
@@ -53,11 +54,30 @@ class CsvController extends BaseController
         return array(
             array(
                 'allow',
-                'actions' => array('upload', 'preview', 'import'),
+                'actions' => array('upload', 'preview', 'import', 'fileCheck'),
                 'expression' => 'CsvController::uploadAccess()',
                 'users' => array('@'),
             )
         );
+    }
+
+    public function actionFileCheck()
+    {
+        $file_type = $_POST['file_type'];
+        $file_size = $_POST['file_size'];
+
+        $message = null;
+
+        if ($file_size > self::$max_document_size) {
+            $message = "The file you tried to upload exceeds the maximum allowed file size, which is " . self::$max_document_size / 1048576 . " MB ";
+        }
+
+        if (false === array_search($file_type, self::$csvMimes, true)) {
+            $message = 'Only the following file types can be uploaded: ' . (implode(', ', self::$csvMimes)) . '.';
+            $message .= "\n\nFor reference, the type of the file you tried to upload is: <i>$file_type</i>";
+        }
+
+        $this->renderJSON($message);
     }
 
     public function actionUpload($context)
