@@ -195,6 +195,13 @@ class DefaultController extends BaseEventTypeController
         $doc_ids = \Yii::app()->request->getPost('doc_ids', []);
         foreach ($doc_ids as $doc_id) {
             try {
+                // check to see if document is from a template
+                $template_doc = OphCoDocument_Sub_Types::model()->find("document_id = ?", [$doc_id]);
+                if ($template_doc) {
+                    OELog::log("Document from template skip delete");
+                    continue;
+                }
+
                 $doc = ProtectedFile::model()->findByPk($doc_id);
                 if ($doc && file_exists($doc->getFilePath() . '/' . $doc->uid)) {
                     $doc->delete();
