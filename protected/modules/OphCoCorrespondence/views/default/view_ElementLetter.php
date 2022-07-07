@@ -166,7 +166,7 @@ $is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getReq
                 if (isHovered) {
                     $("#" + elementId).data("tooltip-content", data);
                     // This method is defined in the script.js
-                    showToolTip($element);
+                    showToolTip($($element));
                 }
             },
         });
