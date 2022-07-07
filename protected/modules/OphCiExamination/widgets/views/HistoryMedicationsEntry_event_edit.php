@@ -115,7 +115,7 @@ $stop_fields_validation_error = array_intersect(
                         <span class="tabspace"></span>                   
                     </div>
                     <div class="alternative-display-element" <?= !$direct_edit && !$element_errors ? 'style="display: none;"' : '' ?>>
-                        <input class="fixed-width-small js-dose " type="text" name="<?= $field_prefix ?>[dose]" value="<?= $entry->dose ?>" placeholder="Dose" />
+                        <input class="fixed-width-small js-dose input-validate numbers-only decimal" type="text" name="<?= $field_prefix ?>[dose]" value="<?= $entry->dose ?>" placeholder="Dose" />
                         <span class="js-dose-unit-term cols-2"><?php echo $entry->dose_unit_term; ?></span>
                         <input type="hidden" name="<?= $field_prefix ?>[dose_unit_term]" value="<?= $entry->dose_unit_term ?>" class="dose_unit_term" <?= $show_unit ? 'disabled' : '' ?> />
                         <?php echo CHtml::dropDownList($field_prefix . '[dose_unit_term]', null, $unit_options, array('empty' => '-Unit-', 'disabled' => $show_unit ? '' : 'disabled', 'class' => 'js-unit-dropdown cols-2', 'style' => 'display:' . ($show_unit ? '' : 'none'))); ?>

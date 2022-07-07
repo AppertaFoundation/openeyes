@@ -34,7 +34,7 @@
             <input type="hidden" name="<?=$field_prefix?>[dose]" value="{{dose}}">
         {{/dose}}
         {{^dose}}
-            <input class="fixed-width-small js-dose" id="<?=$model_name?>_assignment_{{section_key}}_entries_{{entry_key}}_dose" type="text" name="<?=$field_prefix?>[dose]" value="" placeholder="Dose"/>
+            <input class="fixed-width-small js-dose input-validate numbers-only decimal" id="<?=$model_name?>_assignment_{{section_key}}_entries_{{entry_key}}_dose" type="text" name="<?=$field_prefix?>[dose]" value="" placeholder="Dose"/>
         {{/dose}}
         {{#dose_unit_term}}
             {{dose_unit_term}}

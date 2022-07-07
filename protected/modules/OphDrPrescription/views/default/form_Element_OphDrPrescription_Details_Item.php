@@ -80,10 +80,7 @@ $dispense_condition_options = array(
         <?php
         $css_class = 'cols-4 inline';
         if ($item->dose === null || is_numeric($item->dose) || $item->dose === '') {
-            $css_class .= " input-validate numbers-only";
-            if ($item->dose_unit_term === 'mg') {
-                $css_class .= ' decimal';
-            }
+            $css_class .= " input-validate numbers-only decimal";
         }
         ?>
 
@@ -205,10 +202,7 @@ $dispense_condition_options = array(
 
             $css_class = 'cols-11';
             if ($taper->dose === null || is_numeric($taper->dose) || $item->dose === '') {
-                $css_class .= " input-validate numbers-only";
-                if ($item->dose_unit_term === 'mg') {
-                    $css_class .= ' decimal';
-                }
+                $css_class .= " input-validate numbers-only decimal";
             }
 
             echo \CHtml::textField(

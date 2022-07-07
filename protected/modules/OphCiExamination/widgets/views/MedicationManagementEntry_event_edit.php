@@ -103,7 +103,7 @@ $entry_allergy_ids = isset($entry->medication_id) ?
             array_keys($entry->errors)
         ); ?>
         <div class="flex-meds-inputs alternative-display-element" id="<?= $model_name . "_entries_" . $row_count . "_dfrl_error" ?>" >
-            <input class="fixed-width-small js-dose" id="<?= $model_name . "_entries_" . $row_count . "_dose" ?>" type="text" name="<?= $field_prefix ?>[dose]" value="<?= $entry->dose ?>" placeholder="Dose" />
+            <input class="fixed-width-small js-dose input-validate numbers-only decimal" id="<?= $model_name . "_entries_" . $row_count . "_dose" ?>" type="text" name="<?= $field_prefix ?>[dose]" value="<?= $entry->dose ?>" placeholder="Dose" />
             <input type="hidden" name="<?= $field_prefix ?>[dose_unit_term]" value="<?= $entry->dose_unit_term ?>" class="dose_unit_term" />
             <?php if ($is_template) { ?>
                 {{#has_dose_unit_term}}

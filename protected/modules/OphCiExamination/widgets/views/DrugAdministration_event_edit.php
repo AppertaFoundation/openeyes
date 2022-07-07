@@ -190,7 +190,7 @@ $field_prefix = $model_name . '[assignment][{{section_key}}][entries][{{entry_ke
                                 </td>
                                 <td>
                                     <?php if (!$entry->dose) { ?>
-                                        <input class="fixed-width-small js-dose" type="text"
+                                        <input class="fixed-width-small js-dose input-validate numbers-only decimal" type="text"
                                                name="<?= $model_name . "[assignment][$key][entries][$entry_key][dose]" ?>"
                                                id="<?= $model_name . "_assignment_{$key}_entries_{$entry_key}_dose" ?>"
                                                value="" placeholder="Dose"/>
