@@ -17,6 +17,17 @@ use \OEModule\OphCiExamination\models\OphCiExaminationAllergy;
 
 class AllergiesController extends \ModuleAdminController
 {
+    public function accessRules()
+    {
+        return array(
+            array(
+                'allow',
+                'actions' => array('index', 'update'),
+                'roles' => array('admin'),
+            ),
+        );
+    }
+
     public function actionIndex()
     {
         $this->group = 'Examination';
