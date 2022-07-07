@@ -16,8 +16,8 @@ $tech_support_url = Yii::App()->params['tech_support_url'] ? htmlspecialchars(Yi
           <td><?= $patient->getFullName(); ?></td>
         </tr>
         <tr>
-          <td>CHI</td>
-          <td><?= $patient->nhs_num; ?></td>
+          <td><?= PatientIdentifierHelper::getIdentifierPrompt($patient_identifier); ?></td>
+          <td><?= PatientIdentifierHelper::getIdentifierValue($patient_identifier); ?></td>
         </tr>
         <tr>
           <td>Date of birth</td>

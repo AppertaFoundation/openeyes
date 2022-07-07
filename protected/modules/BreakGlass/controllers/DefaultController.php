@@ -58,11 +58,15 @@ class DefaultController extends BaseModuleController
 
         $patient_created_by = User::model()->findByPk($patient->created_user_id);
         $current_user = User::model()->findByPk(Yii::app()->user->getId());
+        $institution = Institution::model()->getCurrent();
+        $display_secondary_number_usage_code = SettingMetadata::model()->getSetting('display_secondary_number_usage_code');
+        $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient($display_secondary_number_usage_code, $id, $institution->id);
 
         $this->layout = 'home';
         $this->render('index', array(
             'model' => $model,
             'patient' => $patient,
+            'patient_identifier' => $secondary_identifier,
             'user' => $current_user,
             'patient_created_by' => $patient_created_by,
             'patient_hb' => $break_glass->patientHealthboard(),
