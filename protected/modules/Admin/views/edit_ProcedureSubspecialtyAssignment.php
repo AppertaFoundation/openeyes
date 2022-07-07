@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
@@ -12,6 +13,7 @@
  * @copyright Copyright (C) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <?php
 $enable_eur = SettingMetadata::model()->getSetting('cataract_eur_switch');
@@ -19,16 +21,16 @@ $cols_size = (int)$subspecialty_id === 4 && $enable_eur === 'on' ? 'cols-9' : 'c
 ?>
 <h2>Procedure Subspecialty Assignments</h2>
 <?php $this->renderPartial('//base/_messages') ?>
-<div class="<?=$cols_size?>">
+<div class="cols-full">
     <form method="get">
-        <table class="cols-4">
+        <table class="cols-7">
             <colgroup>
                 <col class="cols-1">
                 <col class="cols-4">
             </colgroup>
             <tbody>
             <tr class="col-gap">
-                <?php if ($this->checkAccess('admin')):?>
+                <?php if ($this->checkAccess('admin')) :?>
                 <td>Institution</td>
                 <td><?=\CHtml::dropDownList('institution_id', $institution_id, \CHtml::listData($institutions, 'id', 'name'));?></td>
                 <?php endif;?>
@@ -67,8 +69,11 @@ $cols_size = (int)$subspecialty_id === 4 && $enable_eur === 'on' ? 'cols-9' : 'c
                     'name' => 'procedure.term',
                     'type' => 'raw',
                     'value' => function ($data, $row) use ($procedure_list) {
-                        return CHtml::dropDownList((get_class($data) . "[$row][procedure_id]"), $data->procedure->id,
-                            CHtml::listData($procedure_list, 'id', 'term'));
+                        return CHtml::dropDownList(
+                            (get_class($data) . "[$row][procedure_id]"),
+                            $data->procedure->id,
+                            CHtml::listData($procedure_list, 'id', 'term')
+                        );
                     }
                     ],
                 ];
