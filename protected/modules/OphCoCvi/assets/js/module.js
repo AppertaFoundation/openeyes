@@ -97,10 +97,6 @@ $(document).ready(function() {
         e.preventDefault();
     });
 
-    handleButton($('#et_deleteevent'));
-
-    handleButton($('#et_canceldelete'));
-
     handleButton($('#capture-patient-signature'), function(e) {
 
         $('#capture-patient-signature-instructions').show();

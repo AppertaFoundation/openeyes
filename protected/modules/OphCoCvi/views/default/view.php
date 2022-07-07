@@ -64,6 +64,7 @@ $this->beginContent('//patient/event_container');
 <?php endif; ?>
 
 <?php $this->renderOpenElements($this->action->id) ?>
+<?php $this->renderPartial('//default/delete');?>
 
 <?php $this->endContent() ?>
 <script>
