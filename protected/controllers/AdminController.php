@@ -790,29 +790,34 @@ class AdminController extends BaseAdminController
 
                 UserAuthentication::model()->deleteAll($criteria);
 
-                foreach ($user_auths_attributes as $user_auth_attributes) {
-                    $user_auth = UserAuthentication::fromAttributes($user_auth_attributes);
+                if (count($user_auths_attributes) === 0) {
+                    $user->addError('authentications', 'A user account must have 1 or more valid institution authentications');
+                    $errors = $user->getErrors();
+                } else {
+                    foreach ($user_auths_attributes as $user_auth_attributes) {
+                        $user_auth = UserAuthentication::fromAttributes($user_auth_attributes);
 
-                    $user_authentication_entries[] = $user_auth;
+                        $user_authentication_entries[] = $user_auth;
 
-                    if (!$user_auth->user_id) {
-                        $user_auth->user_id = $user->id;
-                    }
+                        if (!$user_auth->user_id) {
+                            $user_auth->user_id = $user->id;
+                        }
 
-                    $special_usernames = Yii::app()->params['special_usernames'] ?? [];
+                        $special_usernames = Yii::app()->params['special_usernames'] ?? [];
 
-                    if (!in_array($user_auth->username, $special_usernames) && !$user_auth->validate()) {
-                        $user_auth_errors = array_merge($user_auth_errors, $user_auth->getErrors());
-                    } else {
-                        $user_auth->handlePassword();
-                        $user_auth->setPasswordHash();
-
-                        if (!$user_auth->save(false)) {
-                            $transaction->rollback();
-
-                            throw new CHttpException(500, 'Unable to save user authentication: ' . print_r($user_auth->getErrors(), true));
+                        if (!in_array($user_auth->username, $special_usernames) && !$user_auth->validate()) {
+                            $user_auth_errors = array_merge($user_auth_errors, $user_auth->getErrors());
                         } else {
-                            Audit::add('admin-User-Authentication', 'save', $user_auth->id);
+                            $user_auth->handlePassword();
+                            $user_auth->setPasswordHash();
+
+                            if (!$user_auth->save(false)) {
+                                $transaction->rollback();
+
+                                throw new CHttpException(500, 'Unable to save user authentication: ' . print_r($user_auth->getErrors(), true));
+                            } else {
+                                Audit::add('admin-User-Authentication', 'save', $user_auth->id);
+                            }
                         }
                     }
                 }
