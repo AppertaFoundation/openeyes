@@ -484,6 +484,8 @@ class Pathway extends BaseActiveRecordVersioned
         $checkin_steps = array_filter($this->completed_steps, static function ($step) {
             return $step->type->short_name === 'checkin';
         });
+        // reset array index, because array_filter will return the indexes from the original array
+        $completed_checkin_steps = array_values($completed_checkin_steps);
         if ($this->worklist_patient->when) {
             if ($this->worklist_patient->when instanceof DateTime) {
                 $when = $this->worklist_patient->when;
