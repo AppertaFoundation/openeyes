@@ -59,7 +59,7 @@ $ae_subspecialty_id = Yii::app()->db->cache(1000)->createCommand()
     ->where('ref_spec = \'AE\'')
     ->queryScalar();
 
-$is_ae_worklist = isset($worklist->id) && (bool)Yii::app()->db->cache(1000)->createCommand()
+$is_ae_worklist = isset($worklist->id) && Yii::app()->db->cache(1000)->createCommand()
     ->select('w.id')
     ->from('worklist w')
     ->join('worklist_definition_display_context wddc', 'wddc.worklist_definition_id = w.worklist_definition_id')

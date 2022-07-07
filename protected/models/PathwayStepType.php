@@ -169,6 +169,10 @@ class PathwayStepType extends BaseActiveRecordVersioned
     {
         $criteria = self::basePathTypeCriteria();
         $criteria->addCondition('`group` = \'standard\'');
+
+        if (!Yii::app()->controller->checkAccess('Prescribe')) {
+            $criteria->addCondition('short_name != \'drug admin\'');
+        }
         return self::model()->findAll($criteria);
     }
 

@@ -42,6 +42,17 @@ class PathwayStepTypeTest extends ActiveRecordTestCase
 
     public function testGetStandardTypes(): void
     {
+        $controller = $this->getMockBuilder('BaseController')
+            ->disableOriginalConstructor()
+            ->setMethods(['checkAccess'])
+            ->getMock();
+
+        $controller->expects($this->once())
+            ->method('checkAccess')
+            ->with('Prescribe')
+            ->willReturn(true);
+
+        Yii::app()->controller = $controller;
         $standard_types = PathwayStepType::getStandardTypes();
 
         self::assertCount(8, $standard_types);
