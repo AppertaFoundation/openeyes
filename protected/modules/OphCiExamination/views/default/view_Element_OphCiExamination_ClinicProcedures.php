@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -16,6 +17,7 @@
  */
 
 use OEModule\OphCiExamination\models\OphCiExamination_ClinicProcedures_Entry;
+
 Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/ClinicProcedures.js", CClientScript::POS_HEAD);
 $past_procedures = $this->getPastClinicProcedures();
 ?>
@@ -46,7 +48,7 @@ $past_procedures = $this->getPastClinicProcedures();
                         <?= Helper::formatFuzzyDate($entry->date) ?>
                     </span>
                 </td>
-                <td>
+                <td class="nowrap">
                     <small>at</small>
                     <?= $entry->outcome_time ?>
                 </td>

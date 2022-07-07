@@ -34,7 +34,7 @@
                         <tr>
                             <td><?=\OEModule\OphCiExamination\models\OphCiExamination_Investigation_Codes::model()->findByPk($entry->investigation_code)->name ?></td>
                             <td><span class="oe-date"><?= Helper::convertMySQL2NHS($entry->date) ?></span></td>
-                            <td><small>at </small><?= $entry->time ?></td>
+                            <td class="nowrap"><small>at </small><?= $entry->time ?></td>
                             <td><i class="oe-i info small pad-right  js-has-tooltip" data-tt-type="basic"
                        data-tooltip-content="by <?=User::model()->findByPk($entry->last_modified_user_id)->getFullNameAndTitle() ?>"></i></td>
                             <td><span class="user-comment"><?= $entry->comments ?></span></td>

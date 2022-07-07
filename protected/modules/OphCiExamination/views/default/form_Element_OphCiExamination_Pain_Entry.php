@@ -45,7 +45,7 @@
             <span class="yr"><?=$datetime->format('Y')?></span>
         </span>
     </td>
-    <td>
+    <td class="nowrap">
         <small>at</small> <?=$datetime->format('H:i')?>
     </td>
     <td>

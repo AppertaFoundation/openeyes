@@ -135,7 +135,7 @@
             <span class="yr">{{year}}</span>
         </span>
     </td>
-    <td>
+    <td class="nowrap">
         <small>at</small> {{time}}
     </td>
     <td>

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -16,6 +17,7 @@
  */
 
 use OEModule\OphCiExamination\models\OphCiExamination_ClinicProcedures_Entry;
+
 ?>
 
 <table class="cols-full last-left">
@@ -47,7 +49,7 @@ use OEModule\OphCiExamination\models\OphCiExamination_ClinicProcedures_Entry;
                 <?= Helper::formatFuzzyDate($procedure->date) ?>
             </span>
         </td>
-        <td>
+        <td class="nowrap">
             <small>at</small>
             <?= $procedure->outcome_time ?>
         </td>

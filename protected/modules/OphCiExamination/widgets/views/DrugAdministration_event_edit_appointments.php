@@ -27,7 +27,7 @@
                 > 
                 <span class="highlighter good">
                     Today
-                    <span class="fade">
+                    <span class="fade nowrap">
                         <small>at</small> <?=date('H:i');?>
                     </span>Unbooked Appointment
                 </span>
@@ -59,7 +59,7 @@
                 > 
                 <span class="<?=intval($appt->id) === intval($assigned_appt) ? 'highlighter good' : '';?>">
                     <?= $appt_date;?>
-                    <span class="fade">
+                    <span class="fade nowrap">
                         <small>at</small> <?=$time;?>
                     </span><?=$appt->worklist->name;?>
                 </span>
