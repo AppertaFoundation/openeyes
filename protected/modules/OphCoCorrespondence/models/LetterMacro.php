@@ -157,10 +157,6 @@ class LetterMacro extends BaseActiveRecordVersioned
     {
         // Create the mappings in afterSave to prevent an issue the letter macro
         // id missing in beforeSave when the letter macro is being first created.
-        $this->deleteMappings(ReferenceData::LEVEL_INSTITUTION);
-        $this->deleteMappings(ReferenceData::LEVEL_SITE);
-        $this->deleteMappings(ReferenceData::LEVEL_SUBSPECIALTY);
-        $this->deleteMappings(ReferenceData::LEVEL_FIRM);
         foreach ($this->levels as $level => $vals) {
             $vals = is_array($vals) ? $vals : [];
 
