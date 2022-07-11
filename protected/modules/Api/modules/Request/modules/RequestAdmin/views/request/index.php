@@ -143,12 +143,17 @@ Yii::app()->clientScript->registerScriptFile($widgetPath . '/Attachment.js');
                                value="Show media">
                     </td>
                             <?php } ?>
-                            <?php if ($attachmentData->attachment_mnemonic === 'REQUEST_DATA' && $this->checkAccess('OprnEditRequestData')) { ?>
-                    <td>
-                        <a class="button small"
-                           href="/Api/Request/admin/attachmentData/edit/<?= $attachmentData->id; ?>">Edit</a>
-                    </td>
-                            <?php } ?>
+                <td>
+                    <?php if ($this->checkAccess('OprnEditRequestData')) { ?>
+                        <?php if ($attachmentData->attachment_mnemonic === 'REQUEST_BLOB') { ?>
+                            <a class="button small"
+                               href="/Api/Request/admin/attachmentData/download/<?= $attachmentData->id; ?>">Download</a>
+                        <?php } elseif ($attachmentData->attachment_mnemonic === 'REQUEST_DATA') { ?>
+                            <a class="button small"
+                               href="/Api/Request/admin/attachmentData/edit/<?= $attachmentData->id; ?>">Edit</a>
+                        <?php } ?>
+                    <?php } ?>
+                </td>
                 </tbody>
             </table>
         </td>

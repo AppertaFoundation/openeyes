@@ -34,7 +34,7 @@ return array(
                 'LDAP Configurations' => ['uri' => '/admin/ldapconfig', 'restricted' => array('admin')],
                 'Institutions' => ['uri' => '/admin/institutions', 'restricted' => array('admin')],
                 'Sites' => '/admin/sites',
-                'Patient Identifier Types' => '/Admin/PatientIdentifierType/index',
+                'Patient Identifier Types' => ['uri' => '/Admin/PatientIdentifierType/index', 'restricted' => array('admin')],
                 'Commissioning bodies' => ['uri' => '/admin/commissioning_bodies', 'restricted' => array('admin')],
                 'Commissioning body types' => ['uri' => '/admin/commissioning_body_types', 'restricted' => array('admin')],
                 'Commissioning body services' => ['uri' => '/admin/commissioning_body_services', 'restricted' => array('admin')],

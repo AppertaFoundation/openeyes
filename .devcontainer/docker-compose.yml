@@ -91,5 +91,5 @@ services:
 secrets:
   SSH_PRIVATE_KEY:
     file: ${SSH_PRIVATE_KEY_FILE:-~/.ssh/id_rsa}
-  GPG_KEY:
-    file: ~/.gnupg/github.pgp
+  # GPG_KEY:
+  #   file: ~/.gnupg/github.pgp
