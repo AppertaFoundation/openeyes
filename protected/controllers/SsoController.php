@@ -52,6 +52,12 @@ class SsoController extends BaseAdminController
             }
             // Initialize the SP SAML instance
             $auth = new OneLogin\Saml2\Auth($SAML_settings);
+
+            // For load balancer and https proxy, set it to true to forward response correctly
+            if (strpos($SAML_settings['sp']['entityId'], 'https') === 0) {
+                \OneLogin\Saml2\Utils::setProxyVars(true);
+            }
+
             // Process SAMLResponse
             $auth->processResponse(null);
             $userInfo = $auth->getAttributes();
