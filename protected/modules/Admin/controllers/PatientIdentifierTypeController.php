@@ -2,6 +2,11 @@
 
 class PatientIdentifierTypeController extends BaseAdminController
 {
+    public function accessRules()
+    {
+        return array(array('allow', 'roles' => array('admin')));
+    }
+
     public function actionIndex()
     {
         Audit::add('admin-PatientIdentifierType', 'list');
