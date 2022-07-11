@@ -12,7 +12,7 @@
     </div>
     <div class="assign-for" <?=$is_record_admin ? 'style="display:none"' : ''?>>
         <span class="fade">Assign order for </span>
-        <fieldset>
+        <fieldset class="restrict-data-height rows-5">
             <?php if (!$available_appointments || !$has_appointment_today) { ?>
             <label class="highlight">
                 <input 
