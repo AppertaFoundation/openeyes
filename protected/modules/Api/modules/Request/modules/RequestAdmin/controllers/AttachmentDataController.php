@@ -64,4 +64,16 @@ class AttachmentDataController extends \AdminController
             'text_data' => $json_pretty_text_data
         ));
     }
+
+    public function actionDownload($id = null)
+    {
+        $model = AttachmentData::model()->findByPK($id);
+
+        if (isset($model)) {
+            header('Content-Type: application/octet-stream');
+            echo $model->blob_data;
+        } else {
+            echo 'No file found';
+        }
+    }
 }
