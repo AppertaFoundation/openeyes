@@ -852,7 +852,13 @@ $(function () {
                     },
                     success: function (response) {
                         // This is a check-in step so it is already in the correct position.
-                        let $thisStep = $('.oe-pathstep-btn[data-pathstep-id="' + ps.pathstepId + '"], .oe-pathstep-btn[data-visit-id="' + ps.visitID + '"][data-pathstep-type-id="' +  ps.pathstepTypeId + '"]');
+                        let $thisStep;
+                        if (pathstep_id) {
+                            $thisStep = $('.oe-pathstep-btn[data-pathstep-id="' + pathstep_id + '"]');
+                        } else {
+                            $thisStep = $('.oe-pathstep-btn[data-visit-id="' + ps.visitID + '"][data-pathstep-type-id="' + pathstep_type_id + '"]');
+                        }
+
                         const oldSteps = collectActiveTodoStepsFrom($thisStep.closest('td.js-pathway-container'));
                         $thisStep.closest('td.js-pathway-container').html(response.step_html);
 
