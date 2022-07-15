@@ -371,7 +371,7 @@ class SettingMetadata extends BaseActiveRecordVersioned
 
     public static function getPurifiedValue($value)
     {
-        $purifier_options = HTMLPurifier_Config::createDefault();
+        $purifier_options = \HTMLPurifier_Config::createDefault();
         $purifier_options->set('Cache.SerializerPath', Yii::app()->getRuntimePath());
 
         $po_html = $purifier_options->getHTMLDefinition(true);

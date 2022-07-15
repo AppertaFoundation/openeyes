@@ -41,6 +41,9 @@
   "config": {
     "bin-dir": "bin"
   },
+  "replace": {
+    "ezyang/htmlpurifier": "*"
+  },
   "repositories": {
     "packagist": {
       "type": "composer",
