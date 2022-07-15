@@ -380,7 +380,7 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
                     $attribute->Attribute = $key;
                     $attribute->Namespace = self::NDR_URI;
                     $attribute->Value = $value;
-                    $attribute->ValueDomain = 'GMC';
+                    $attribute->ValueDomain = $key === 'ConsultantCode' ? 'GMC' : '';
                     $header->DocumentAttribute[$index++] = $attribute;
                 }
 
