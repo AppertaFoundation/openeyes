@@ -997,7 +997,7 @@ $initial_filter = $session_filter_info['filter'];
                             {{#managementSummaries}}
                                 <tr>
                                     <td>{{service}}</td>
-                                    <td>{{comments}}</td>
+                                    <td>{{& comments}}</td>
                                     <td class="fade">
                                         <span class="oe-date">
                                             <span class="day">{{day}}</span>
@@ -1348,7 +1348,7 @@ $initial_filter = $session_filter_info['filter'];
                                 }, $worklists)) ?>;
 
         const usersList = <?= json_encode(array_map(static function ($user) {
-            return ['id' => $user->id, 'label' => $user->getFullName() . ' (' . $user->getInitials() .')'];
+            return ['id' => $user->id, 'label' => $user->getFullName() . ' (' . $user->getInitials() . ')'];
                           }, User::model()->findAll())) ?>;
 
         const stepsList = <?= json_encode(array_map(static function ($step_type) {
