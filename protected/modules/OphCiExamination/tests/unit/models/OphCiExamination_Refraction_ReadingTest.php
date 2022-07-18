@@ -212,6 +212,9 @@ class OphCiExamination_Refraction_ReadingTest extends \ModelTestCase
             if ($attrs[$attr] > 0) {
                 $attrs[$attr] *= -1;
             }
+            elseif ($attrs[$attr] === 0) {
+                $attrs[$attr] = -1;
+            }
         }
         $type = OphCiExamination_Refraction_Type::model()->findByPk($attrs['type_id']);
 

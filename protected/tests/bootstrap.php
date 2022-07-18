@@ -33,9 +33,20 @@ require_once $yiit;
  * by which this can simply be added as a filter, but at the time of creation, no other use of
  * this autoloading filter existed.
  */
-Yii::$autoloaderFilters = ['filterTestSuiteNames' => function($className) {
+Yii::$autoloaderFilters = ['filterTestSuiteNames' => function ($className) {
     return in_array($className, ['all', 'core', 'Modules']);
 }];
+
+/**
+ * This workaround is in place to ensure that HtmlPurifier is loaded from the Yii standalone include
+ * for other packages to access, thereby preventing class loader clashes. see OE-13296 for further details.
+ *
+ * would be good to abstract autoload dependencies from root index.php to ensure running consistently
+ */
+if (!class_exists('HTMLPurifier_Bootstrap', false)) {
+    require_once(Yii::getPathOfAlias('system.vendors.htmlpurifier').DIRECTORY_SEPARATOR.'HTMLPurifier.standalone.php');
+    HTMLPurifier_Bootstrap::registerAutoload();
+}
 
 Yii::createWebApplication($config);
 

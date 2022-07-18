@@ -18,7 +18,6 @@
 
 namespace OEModule\OphCiExamination\models;
 
-
 use OEModule\OphCiExamination\widgets\PastSurgery as PastSurgeryWidget;
 
 /**

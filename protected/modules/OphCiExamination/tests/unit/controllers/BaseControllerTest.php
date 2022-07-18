@@ -19,6 +19,7 @@ use OEModule\OphCiExamination\OphCiExaminationModule;
 
 abstract class BaseControllerTest extends \OEDbTestCase
 {
+    use \MocksSession;
     use \WithTransactions;
 
     public function getController($cls, $methods = null)
@@ -66,11 +67,6 @@ abstract class BaseControllerTest extends \OEDbTestCase
 
     protected function mockSession()
     {
-        $_SESSION = [];
-        $session = $this->getMockBuilder(\CHttpSession::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        \Yii::app()->setComponent('session', $session);
+        $this->stubSession();
     }
 }

@@ -45,6 +45,7 @@ $display_deleted_events_in_deleted_category = $display_deleted_in && $display_de
 // Cache the sidebar for each patient. Refresh whenever a new event is created for the patient
 // Currently doesn't filter out change-tracker events, as that would likely add additional time to the SQL query
 $epsidebarkey = "_single_episode_sidebar_patient:" . $this->patient->id . "display_deleted:" . $display_deleted_in;
+
 if (
         $this->beginCache(
             $epsidebarkey,
@@ -109,10 +110,6 @@ if (
                          */
                         extract($event->getEventListDetails());
 
-                        if (isset($this->event) && $this->event->id == $event->id) {
-                            $current_subspecialty = $episode->subspecialty;
-                            array_push($event_li_css, 'selected');
-                        }
                         $patientTicketing_API = new \OEModule\PatientTicketing\components\PatientTicketing_API();
                         $virtual_clinic_event = $patientTicketing_API->getTicketForEvent($event);
                         ?>
@@ -208,6 +205,19 @@ if (
 
     $this->endCache($epsidebarkey);
 }
+?>
+
+<script>
+    const eventId = <?= CJSON::encode($this->event ? $this->event->id : '') ?>;
+    const sidebarEventItem = document.getElementById('js-sideEvent' + eventId);
+
+    if (sidebarEventItem) {
+        sidebarEventItem.classList.add('selected');
+    }
+</script>
+
+<?php
+$current_subspecialty = isset($this->event->episode->subspecialty) ? $this->event->episode->subspecialty : null;
 
 $this->renderPartial('//patient/add_new_event', array(
     'button_selector' => '#add-event',

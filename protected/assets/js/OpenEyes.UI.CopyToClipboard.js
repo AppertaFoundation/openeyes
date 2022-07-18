@@ -15,7 +15,7 @@ OpenEyes.UI = OpenEyes.UI || {};
 
     CopyToClipboardController._defaultOptions = {
         'selector': '.js-copy-to-clipboard',
-        'wrapper': 'body',
+        'wrapper': '.patient-details',
         'callback': function($element){
             if (!$('.js-copy-to-clipboard-copied').length) {
                 $("<span>",{"class":"js-copy-to-clipboard-copied", "style":"color:lightgreen;margin-left:5px;"}).text("copied").insertAfter($element);
