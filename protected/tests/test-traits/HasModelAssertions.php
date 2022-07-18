@@ -132,4 +132,60 @@ trait HasModelAssertions
         $this->assertEquals($cls, $defined_relation[1]);
         $this->assertEquals($attribute, $defined_relation[2]);
     }
+
+    public function assertModelArraysMatch($expected, $received)
+    {
+        $this->assertTrue(is_array($expected));
+        $this->assertTrue(is_array($received));
+        $this->assertEquals(count($expected), count($received));
+        if (!count($expected)) {
+            return;
+        }
+
+        $this->assertModelClassesMatch($expected, $received);
+
+        $this->assertEquals(
+            $this->getSortedModelListPrimaryKeys($expected),
+            $this->getSortedModelListPrimaryKeys($received)
+        );
+    }
+
+    protected function assertModelClassesMatch(array $expected, array $received): void
+    {
+        $this->assertEquals(
+            $this->getUniqueClassOfArrayItems($expected),
+            $this->getUniqueClassOfArrayItems($received)
+        );
+    }
+
+    protected function getUniqueClassOfArrayItems(array $items): string
+    {
+        $class = array_unique(
+            array_map(
+                function ($instance) {
+                    return get_class($instance);
+                },
+                $items
+            )
+        );
+        if (count($class) !== 1) {
+            throw new \RuntimeException('only expected array of single class type');
+        }
+
+        return $class[0];
+    }
+
+    protected function getSortedModelListPrimaryKeys($models)
+    {
+        $pks = array_map(
+            function ($model) {
+                return $model->getPrimaryKey();
+            },
+            $models
+        );
+
+        sort($pks);
+
+        return $pks;
+    }
 }

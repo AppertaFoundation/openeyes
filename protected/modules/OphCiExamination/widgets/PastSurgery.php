@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -19,10 +20,11 @@ namespace OEModule\OphCiExamination\widgets;
 
 use OEModule\OphCiExamination\models\PastSurgery as PastSurgeryElement;
 use OEModule\OphCiExamination\models\PastSurgery_Operation;
+use CommonPreviousOperation;
+use ReferenceData;
 
 class PastSurgery extends \BaseEventElementWidget
 {
-
     public $pro_theme;
 
     /**
@@ -35,8 +37,8 @@ class PastSurgery extends \BaseEventElementWidget
 
     public function getRequiredOperation()
     {
-        $exam_api = \Yii::app()->moduleAPI->get('OphCiExamination');
-        return $exam_api->getRequiredOphthalmicSurgicalHistory($this->patient);
+        $exam_api = $this->getApp()->moduleAPI->get('OphCiExamination');
+        return $exam_api->getRequiredOphthalmicSurgicalHistory($this->patient) ?? [];
     }
 
     public function getMissingRequiredOperation()
@@ -54,6 +56,14 @@ class PastSurgery extends \BaseEventElementWidget
         }
 
         return $missing;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPreviousOperationOptions()
+    {
+        return CommonPreviousOperation::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION, ['order' => 'display_order asc']);
     }
 
     /**
@@ -160,9 +170,7 @@ class PastSurgery extends \BaseEventElementWidget
         }
 
         // append operations from op note
-        if ($api = $this->getApp()->moduleAPI->get('OphTrOperationnote')) {
-            $operations = array_merge($operations, $api->getOperationsSummaryData($this->patient));
-        }
+        $operations = array_merge($operations, $this->getOpnoteSummaryData());
 
         // merge by sorting by date
         uasort($operations, function ($a, $b) {
@@ -172,7 +180,7 @@ class PastSurgery extends \BaseEventElementWidget
         return $operations;
     }
 
-    public function getOperationsArray()
+    public function getRecordedOperationsArray()
     {
         $operations = [];
         $required = [];
@@ -188,6 +196,18 @@ class PastSurgery extends \BaseEventElementWidget
 
         // append $required to the end of $operations
         return array_merge($operations, $required);
+    }
+
+    public function getOtherModulesOperationsSummaryData()
+    {
+        return $this->getOpnoteSummaryData();
+    }
+
+    protected function getOpnoteSummaryData()
+    {
+        /** @var \OphTrOperationnote_API $api */
+        $api = $this->getApp()->moduleAPI->get('OphTrOperationnote');
+        return $api ? $api->getOperationsSummaryData($this->patient) : [];
     }
 
     /**
@@ -207,9 +227,9 @@ class PastSurgery extends \BaseEventElementWidget
     public function postedNotChecked($row)
     {
         return \Helper::elementFinder(
-                \CHtml::modelName($this->element) . ".operation.$row.had_operation",
-                $_POST
-            )
+            \CHtml::modelName($this->element) . ".operation.$row.had_operation",
+            $_POST
+        )
             == PastSurgery_Operation::$NOT_CHECKED;
     }
 }
