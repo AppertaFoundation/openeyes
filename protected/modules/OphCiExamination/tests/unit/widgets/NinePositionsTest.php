@@ -47,10 +47,6 @@ class NinePositionsTest extends \OEDbTestCase
     public function setUp()
     {
         parent::setUp();
-        \Yii::app()
-            ->setComponent('session', $this->getMockBuilder(\CHttpSession::class)
-                ->disableOriginalConstructor()
-                ->getMock());
         $this->element_type_id = \ElementType::model()->find('class_name = ?', [NinePositionsElement::class])->id;
     }
 

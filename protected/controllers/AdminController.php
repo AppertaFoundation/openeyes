@@ -34,13 +34,13 @@ class AdminController extends BaseAdminController
     public function actionEditPreviousOperation()
     {
         $this->group = 'Examination';
-        $this->genericAdmin('Edit Ophthalmic Surgical History Choices', 'CommonPreviousOperation', array(), null, true);
+        $this->genericAdmin('Edit Ophthalmic Surgical History Choices', 'CommonPreviousOperation', ['return_url' => 'editpreviousoperation'], null, true);
     }
 
     public function actionEditPreviousSystemicOperation()
     {
         $this->group = 'Examination';
-        $this->genericAdmin('Edit Systemic Surgical History Choices', 'CommonPreviousSystemicOperation', array(), null, true);
+        $this->genericAdmin('Edit Systemic Surgical History Choices', 'CommonPreviousSystemicOperation', ['return_url' => 'editPreviousSystemicOperation'], null, true);
     }
 
     public function actionEditCommonOphthalmicDisorderGroups()
