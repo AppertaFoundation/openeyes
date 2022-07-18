@@ -63,8 +63,6 @@ class PathstepObserver
             if (!$worklist_patient->pathway) {
                 $worklist_patient->worklist->worklist_definition->pathway_type->instancePathway($worklist_patient);
                 $worklist_patient->refresh();
-                $worklist_patient->pathway->startPathway();
-                $worklist_patient->refresh();
             }
             $criteria->compare('pathway_id', $worklist_patient->pathway->id);
             $criteria->addCondition("status IS NULL OR status IN ($status_list)");
