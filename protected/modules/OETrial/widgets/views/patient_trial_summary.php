@@ -49,7 +49,7 @@ if (in_array($this->controller->id, ['caseSearch','trial','worklist'])) {
                                 <li><?= $trialPatient->treatmentType->name ?></li>
                                 <li>
                                     <div>
-                                        <?= $trialPatient->status->name; ?>
+                                        <span data-trial-patient-status="<?= $trialPatient->status->name; ?>"><?= $trialPatient->status->name; ?></span>
                                         <?php if (isset($trialPatient->status_update_date)) : ?>
                                         <small class="fade">on</small>
                                             <?= Helper::formatFuzzyDate($trialPatient->status_update_date) ?>
@@ -100,7 +100,7 @@ if (in_array($this->controller->id, ['caseSearch','trial','worklist'])) {
                     <li>{{treatment-type}}</li>
                     <li>
                         <div>
-                            {{status-name}}
+                            <span data-trial-patient-status={{status-name}}>{{status-name}}</span>
                             {{#status-update-date}}
                             <small class="fade">on</small>
                             {{status-update-date}}
@@ -130,9 +130,13 @@ if (in_array($this->controller->id, ['caseSearch','trial','worklist'])) {
                 onSelect: function () {
                     let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
 
-                    $('.js-trial-shortlist-candidates').append(`<li data-trial-id="${AutoCompleteResponse.id}">${AutoCompleteResponse.label}</li>`);
+                    $('.js-trial-shortlist-candidates').empty().append(`<li data-trial-id="${AutoCompleteResponse.id}">${AutoCompleteResponse.label}</li>`);
 
-                    $('.js-trial-shortlist-candidates li').off('click').on('click', function() { $(this).remove(); })
+                    $('.js-trial-shortlist-candidates li').off('click').on('click', function() { $(this).remove(); $('.js-shortlist-patient-btn').prop('disabled', false); })
+
+                    if ($(".js-patient-trials-table span[data-trial-patient-status='Shortlisted'], .js-patient-trials-table span[data-trial-patient-status='Accepted']").length > 0) {
+                        $('.js-shortlist-patient-btn').prop('disabled', true);
+                    }
 
                     return false;
                 }
