@@ -93,7 +93,7 @@ class WorklistController extends BaseAdminController
         $definition = $this->manager->getWorklistDefinition($id);
 
         if (!$definition) {
-            throw new CHttpException(404, 'Worklist definition could not be '.($id ? 'found' : 'created'));
+            throw new CHttpException(404, 'Worklist definition could not be ' . ($id ? 'found' : 'created'));
         }
 
         if (!$this->manager->canUpdateWorklistDefinition($definition)) {
@@ -372,7 +372,10 @@ class WorklistController extends BaseAdminController
                     'condition' => 'institution_id = :institution_id',
                     'order' => 'name asc',
                     'params' => [':institution_id' => Yii::app()->session['selected_institution_id']]
-                ]), 'name', 'id'
+                ]
+            ),
+            'name',
+            'id'
         );
         $examination_workflow_steps = OEModule\OphCiExamination\models\OphCiExamination_Workflow_Rule::model()->findWorkflowSteps(
             Yii::app()->session['selected_institution_id'],
@@ -384,14 +387,18 @@ class WorklistController extends BaseAdminController
                 'condition' => 'institutions_institutions.institution_id = :institution_id',
                 'order' => 't.name asc',
                 'params' => [':institution_id' => Yii::app()->session['selected_institution_id']]
-            ]), 'name', 'id'
+            ]),
+            'name',
+            'id'
         );
         $pgd_sets = CHtml::listData(
             OphDrPGDPSD_PGDPSD::model()->findAll([
                 'condition' => 'institution_id = :institution_id AND LOWER(type) = "pgd" AND active = 1',
                 'params' => [':institution_id' => Yii::app()->session['selected_institution_id']],
                 'order' => 'name asc',
-            ]), 'name', 'id'
+            ]),
+            'name',
+            'id'
         );
 
         $this->render('update_custom_pathstep', [
@@ -510,14 +517,16 @@ class WorklistController extends BaseAdminController
 
         if (isset($_POST['WorklistDefinitionMapping'])) {
             $mapping->attributes = $_POST['WorklistDefinitionMapping'];
-            if ($this->manager->updateWorklistDefinitionMapping(
-                $mapping,
-                $_POST['WorklistDefinitionMapping']['key'],
-                $_POST['WorklistDefinitionMapping']['valuelist'],
-                $_POST['WorklistDefinitionMapping']['willdisplay']
-            )) {
+            if (
+                $this->manager->updateWorklistDefinitionMapping(
+                    $mapping,
+                    $_POST['WorklistDefinitionMapping']['key'],
+                    $_POST['WorklistDefinitionMapping']['valuelist'],
+                    $_POST['WorklistDefinitionMapping']['willdisplay']
+                )
+            ) {
                 $this->flashMessage('success', 'Worklist Definition Mapping saved.');
-                $this->redirect(array('/Admin/worklist/definitionMappings/'.$id));
+                $this->redirect(array('/Admin/worklist/definitionMappings/' . $id));
             } else {
                 $errors = $mapping->getErrors();
                 $errors[] = $this->manager->getErrors();
@@ -549,14 +558,16 @@ class WorklistController extends BaseAdminController
 
         if (isset($_POST['WorklistDefinitionMapping'])) {
             $mapping->attributes = $_POST['WorklistDefinitionMapping'];
-            if ($this->manager->updateWorklistDefinitionMapping(
-                $mapping,
-                $_POST['WorklistDefinitionMapping']['key'],
-                $_POST['WorklistDefinitionMapping']['valuelist'],
-                $_POST['WorklistDefinitionMapping']['willdisplay']
-            )) {
+            if (
+                $this->manager->updateWorklistDefinitionMapping(
+                    $mapping,
+                    $_POST['WorklistDefinitionMapping']['key'],
+                    $_POST['WorklistDefinitionMapping']['valuelist'],
+                    $_POST['WorklistDefinitionMapping']['willdisplay']
+                )
+            ) {
                 $this->flashMessage('success', 'Worklist Definition Mapping saved.');
-                $this->redirect(array('/Admin/worklist/definitionMappings/'.$mapping->worklist_definition_id));
+                $this->redirect(array('/Admin/worklist/definitionMappings/' . $mapping->worklist_definition_id));
             } else {
                 $errors = $mapping->getErrors();
                 $errors[] = $this->manager->getErrors();
@@ -592,7 +603,7 @@ class WorklistController extends BaseAdminController
             $this->flashMessage('error', 'Cannot delete mapping.');
         }
 
-        $this->redirect(array('/Admin/worklist/definitionMappings/'.$mapping->worklist_definition_id));
+        $this->redirect(array('/Admin/worklist/definitionMappings/' . $mapping->worklist_definition_id));
     }
 
     /**
@@ -614,7 +625,7 @@ class WorklistController extends BaseAdminController
             }
         }
 
-        $this->redirect('/Admin/worklist/definitionMappings/'.$id);
+        $this->redirect('/Admin/worklist/definitionMappings/' . $id);
     }
 
     public function actionDefinitionDisplayContexts($id)
@@ -643,7 +654,7 @@ class WorklistController extends BaseAdminController
             $display_context->attributes = $_POST['WorklistDefinitionDisplayContext'];
             if ($display_context->save()) {
                 $this->flashMessage('success', 'Worklist Definition Display Context saved.');
-                $this->redirect(array('/Admin/worklist/definitionDisplayContexts/'.$id));
+                $this->redirect(array('/Admin/worklist/definitionDisplayContexts/' . $id));
             } else {
                 $errors = $display_context->getErrors();
             }
@@ -672,12 +683,12 @@ class WorklistController extends BaseAdminController
             $this->flashMessage('error', 'Cannot delete Display Context.');
         }
 
-        $this->redirect(array('/Admin/worklist/definitionDisplayContexts/'.$display_context->worklist_definition_id));
+        $this->redirect(array('/Admin/worklist/definitionDisplayContexts/' . $display_context->worklist_definition_id));
     }
 
     public function actionPresetPathways()
     {
-        $pathway_types = PathwayType::model()->findAll('is_preset = 1');
+        $pathway_types = PathwayType::model()->findAll();
         Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/OpenEyes.UI.PathStep.js'), ClientScript::POS_END);
         $worklist_js = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.assets.js.worklist') . '/worklist_admin.js', true);
         Yii::app()->clientScript->registerScriptFile($worklist_js, ClientScript::POS_END);
@@ -803,7 +814,7 @@ class WorklistController extends BaseAdminController
         // priority for firm_id: user input > template > current firm id
         $step_data['firm_id'] = $step_data['firm_id'] ?? $step->getState('firm_id') ?? Yii::app()->session['selected_firm_id'];
         // if the template has subspecialty_id, then setup for the step
-        if($step->getState('subspecialty_id')){
+        if ($step->getState('subspecialty_id')) {
             $step_data['subspecialty_id'] = $step->getState('subspecialty_id');
         }
         $new_step = null;
