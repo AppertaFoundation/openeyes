@@ -23,6 +23,8 @@ trait MocksSession
             ->getMock();
 
         \Yii::app()->setComponent('session', $session);
+
+        return $session;
     }
 
     public function mockCurrentInstitution(?Institution $institution = null): Institution
@@ -31,9 +33,24 @@ trait MocksSession
             $institution = Institution::model()->findAll()[0];
         }
 
-        Yii::app()->session['selected_institution_id'] = $institution->id;
-        
+        $this->mockCurrentContext(null, null, $institution);
         return $institution;
+    }
+
+    public function mockCurrentContext($firm = null, $site = null, $institution = null)
+    {
+        $firm ??= Firm::model()->findAll()[0];
+        $site ??= Site::model()->findAll()[0];
+        $institution ??= Institution::model()->findAll()[0];
+
+        $session = $this->stubSession();
+
+        $session->method('get')
+        ->will($this->returnValueMap([
+            ['selected_firm_id', null, $firm->id],
+            ['selected_site_id', null, $site->id],
+            ['selected_institution_id',null, $institution->id]
+        ]));
     }
 
     protected function beginMocksSession()

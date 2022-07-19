@@ -19,30 +19,11 @@ use OEModule\OphCiExamination\OphCiExaminationModule;
 
 abstract class BaseControllerTest extends \OEDbTestCase
 {
+    use \CreatesControllers;
     use \MocksSession;
     use \WithTransactions;
 
-    public function getController($cls, $methods = null)
-    {
-        if ($methods === null) {
-            $methods = ['getControllerPrefix'];
-        } else {
-            $methods = array_merge(['getControllerPrefix'], $methods);
-        }
-
-        $controller = $this->getMockBuilder($cls)
-                    ->setConstructorArgs(['default', new OphCiExaminationModule('OphCiExamination', null)])
-                    ->setMethods($methods)
-                    ->getMock();
-
-        $controller->method('getControllerPrefix')
-            ->willReturn('default');
-
-        $controller->init();
-
-        \Yii::app()->controller = $controller;
-        return $controller;
-    }
+    public string $moduleCls = 'OphCiExamination';
 
     protected function getMockAssetManager()
     {

@@ -51,7 +51,7 @@ class DefaultControllerVisualAcuityTest extends BaseDefaultControllerTest
     /** @test */
     public function saving_element_with_readings()
     {
-        $this->mockCurrentInstitution();
+        $this->mockCurrentContext();
         
         $unit = $this->getStandardVisualAcuityUnit();
 
@@ -82,7 +82,7 @@ class DefaultControllerVisualAcuityTest extends BaseDefaultControllerTest
     {
         $element = $this->generateSavedVisualAcuityElementWithReadings();
 
-        $this->setVariablesInSession($element->event->episode->firm_id);
+        $this->mockCurrentContext($element->event->episode->firm);
 
         // set up the request data for submitting values
         $_REQUEST['patient_id'] = $element->event->episode->patient_id;
@@ -111,7 +111,7 @@ class DefaultControllerVisualAcuityTest extends BaseDefaultControllerTest
 
         $episode = $patient->episodes[0];
         // enables controller to know what episode the event will be created in.
-        $this->setVariablesInSession($episode->firm_id);
+        $this->mockCurrentContext($episode->firm);
 
         ob_start();
 
