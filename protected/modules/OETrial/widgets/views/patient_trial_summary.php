@@ -31,8 +31,19 @@ if (in_array($this->controller->id, ['caseSearch','trial','worklist'])) {
                             $coordinators = implode(', ', $coordinators);
                             ?>
                     <tr class="divider">
-                        <td>Trial</td>
-                        <td><?= CHtml::encode($trialPatient->trial->name) ?></td>
+                        <td colspan="2">
+                            <?php if (!is_null($trialPatient->trial->getUserPermission(Yii::app()->user->id)) && (Yii::app()->user->checkAccess('TaskViewTrial'))) {
+                                echo CHtml::link(
+                                    CHtml::encode($trialPatient->trial->name),
+                                    Yii::app()->controller->createUrl(
+                                        '/OETrial/trial/view',
+                                        array('id' => $trialPatient->trial_id)
+                                    )
+                                );
+                            } else {
+                                echo CHtml::encode($trialPatient->trial->name);
+                            } ?>
+                        </td>
                     </tr>
                     <tr>
                         <td colspan="2">
@@ -71,7 +82,7 @@ if (in_array($this->controller->id, ['caseSearch','trial','worklist'])) {
         <div class="popup-overflow">
             <div class="subtitle">Shortlist patient for Active Trial</div>
             <div class="flex">
-                <?php $this->widget('application.widgets.AutoCompleteSearch', ['field_name' => 'select_new_trial_name']); ?>
+                <?php $this->widget('application.widgets.AutoCompleteSearch', ['field_name' => 'select_new_trial_name', 'layoutColumns' => ['outer' => 'full', 'label' => '', 'field' => 'full']]); ?>
             </div>
             <div class="flex">
                 <ul class="multi-filter-list js-trial-shortlist-candidates"></ul>
@@ -82,8 +93,7 @@ if (in_array($this->controller->id, ['caseSearch','trial','worklist'])) {
 
     <script type="text/template" id="js-patient-trial-summary-entry-template">
         <tr class="divider">
-            <td>Trial</td>
-            <td>{{name}}</td>
+            <td colspan="2">{{name}}</td>
         </tr>
         <tr>
             <td colspan="2">

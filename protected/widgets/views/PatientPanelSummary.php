@@ -131,7 +131,7 @@ $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient($displa
                     <?php if ($this->patient->isEditable() && !$this->patient->isDeleted()) : ?>
               <div class="patient-local-edit js-patient-local-edit-btn"
                                 <?php if (Yii::app()->moduleAPI->get('OETrial') && $has_trial_user_role) {
-                                    echo 'style ="top: 35px; right: 0px"';
+                                    echo 'style ="top: 34px; right: 25px"';
                                 }?>
               >
                   <a href="<?php echo $this->controller->createUrl('/patient/update/', array('id' => $this->patient->id, 'prevUrl' => Yii::app()->request->url)); ?>" >
