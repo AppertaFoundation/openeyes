@@ -63,8 +63,8 @@ class SignatureQRCodeGenerator
         imagecopy(
             $canvas,
             $qrCodeImg,
-            (imagesx($canvas) - imagesx($qrCodeImg)) - 3,
-            3,
+            (imagesx($canvas) - imagesx($qrCodeImg)) - 15,
+            15,
             0,
             0,
             imagesx($qrCodeImg),
