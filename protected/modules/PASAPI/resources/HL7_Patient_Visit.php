@@ -17,47 +17,6 @@ class HL7_Patient_Visit extends BaseHL7_Section
     public $discharge_facility;
     public $discharge_datetime;
 
-    private $mappingSteps = array(
-        "AES" => array(
-            "Waiting for Triage" => "WFT",
-            "Waiting for Nurse" => "WFN",
-            "Waiting for Doctor" => "WFD",
-            "Waiting for ENP" => "WFENP",
-            "Waiting for Discharge" => "WFDIS",
-            "Waiting for In CDU Blood Test" => "CDU",
-            "Waiting for In CDU Orthoptics" => "CDU",
-            "Waiting for In CDU Visual Fields" => "CDU",
-            "Waiting for In CDU Imaging" => "CDU",
-            "Waiting for In CDU X-ray" => "CDU",
-            "Waiting for In CDU Dilating" => "CDU",
-            "Waiting for In CDU Refraction" => "CDU",
-            "Waiting for In Red Room Nurse" => "RR",
-            "Waiting for In Red Room Doctor" => "RR",
-            "Triage" => "WFN",
-            "Nurse" => "WFD",
-            "Doctor" => "WFDIS",
-        ),
-        "RDCEC" => array(
-            "Waiting for RDCEC Triage" => "WFTP",
-            "Waiting for RDCEC Nurse" => "WFNP",
-            "Waiting for RDCEC Doctor" => "WFDP",
-            "Waiting for RDCEC ENP" => "WFENPP",
-            "Waiting for Discharge" => "WFDISP",
-            "Waiting for In CDU Blood Test" => "CDUP",
-            "Waiting for In CDU Orthoptics" => "CDUP",
-            "Waiting for In CDU Visual Fields" => "CDUP",
-            "Waiting for In CDU Imaging" => "CDUP",
-            "Waiting for In CDU X-ray" => "CDUP",
-            "Waiting for In CDU Dilating" => "CDUP",
-            "Waiting for In CDU Refraction" => "CDUP",
-            "Waiting for In Red Room Nurse" => "RRP",
-            "Waiting for In Red Room Doctor" => "RRP",
-            "Triage" => "WFNP",
-            "Nurse" => "WFDP",
-            "Doctor" => "WFDISP",
-        )
-    );
-
     public function setPatientVisitFromEvent($event_id)
     {
         $event = \Event::model()->findByPk($event_id);
@@ -88,7 +47,6 @@ class HL7_Patient_Visit extends BaseHL7_Section
                     ? \WorklistPatientAttribute::model()->find('worklist_patient_id = ? and worklist_attribute_id = ? order by id desc', [$worklist_patient->id, $visit_number->id])
                     : null;
                 $this->visit_number = ($wla ? $wla->attribute_value : '');
-
                 $pathway = \Pathway::model()->find("worklist_patient_id = ?", array($worklist_patient->id));
                 if ($pathway) {
                     $room_pathway_step = $pathway->peek(\PathwayStep::STEP_REQUESTED, array_column(\PathwayStepType::model()->findAll(), 'id'));
@@ -98,7 +56,7 @@ class HL7_Patient_Visit extends BaseHL7_Section
                         $room_pathway_step = $pathway->peek(\PathwayStep::STEP_STARTED, array_column(\PathwayStepType::model()->findAll(), 'id'));
                         if ($room_pathway_step) {
                             $prefix = "With ";
-                            if ($room_pathway_step->short_name == "Triage") {
+                            if (substr($room_pathway_step->short_name,-6) == "Triage") { //Triage, RDCEC Triage, AES Triage
                                 $prefix = "In ";
                             }
                         } else {
@@ -106,9 +64,9 @@ class HL7_Patient_Visit extends BaseHL7_Section
                             $prefix = "";
                         }
                     }
-                    if (isset($this->mappingSteps[$this->point_of_care]) && isset($this->mappingSteps[$this->point_of_care][$prefix.( $room_pathway_step->short_name ?? '')])) {
-                        $this->room = $this->mappingSteps[$this->point_of_care][$prefix.( $room_pathway_step->short_name ?? '')];
-                    }
+                    \Yii::log($this->point_of_care); // AES || RDCEC
+                    \Yii::log($prefix.( $room_pathway_step->short_name ?? '')); // Waiting for RDCEC Nurse || With RDCEC Doctor || In Triage || ...
+                    $this->room = $prefix.( $room_pathway_step->short_name ?? '');
                 }
             }
 

@@ -28,7 +28,7 @@ class HL7_Diagnosis extends BaseHL7_Section
         $this->diagnosis_code_identifier = $diag->disorder->ecds_code;
 
         $this->diagnosis_description = $diag->disorder->term; //or fully_specified_name
-        $this->diagnosis_date_time = $diag->date;
+        $this->diagnosis_date_time = $diag->date." ".date("H:i:s");
         $this->diagnosis_type = "410605003"; //Confirmed diagnosis
         $clinician = \User::model()->findByPk($diag->created_user_id);
         if ($clinician) {
