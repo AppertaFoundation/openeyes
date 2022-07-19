@@ -65,9 +65,9 @@ class MedicationInfoBox extends \BaseCWidget
         }
 
         // cache the firm for a few minutes, as this loop runs many times, and the firm data rarely changes
-        $firm = Firm::model()->cache(300, null, 2)->findByPk(Yii::app()->session['selected_firm_id'])->with('ServiceSubspecialtyAssignment');
+        $firm = Firm::model()->cache(300, null, 2)->findByPk(Yii::app()->session->get('selected_firm_id'))->with('ServiceSubspecialtyAssignment');
         $subspecialty_id = $firm->serviceSubspecialtyAssignment->subspecialty_id;
-        $site_id = Yii::app()->session['selected_site_id'];
+        $site_id = Yii::app()->session->get('selected_site_id');
 
         $alt_terms = $medication->alternativeTerms();
         if ($alt_terms !== '') {

@@ -143,13 +143,13 @@ class Institution extends BaseActiveRecordVersioned
      */
     public function getCurrent()
     {
-        if (!isset(Yii::app()->session['selected_institution_id'])) {
+        if (Yii::app()->session->get('selected_institution_id', null) === null) {
             throw new Exception('Institution id is not set');
         }
 
-        $institution = $this->findByPk(Yii::app()->session['selected_institution_id']);
+        $institution = $this->findByPk(Yii::app()->session->get('selected_institution_id'));
         if (!$institution) {
-            throw new Exception("Institution with id '".Yii::app()->session['selected_institution_id']."' not found");
+            throw new Exception("Institution with id '".Yii::app()->session->get('selected_institution_id')."' not found");
         }
 
         return $institution;
