@@ -94,31 +94,39 @@ trait MappedReferenceData
      */
     public function findAllAtLevel(int $level, $criteria = null): array
     {
-        $parent_model_name = lcfirst(__CLASS__);
+        $levelCriteria = $this->buildCriteriaForFindAllAtLevel($level);
+
+        if (isset($criteria)) {
+            $levelCriteria->mergeWith($criteria);
+        }
+
+        return static::model()->findAll($levelCriteria);
+    }
+
+    /**
+     * This abstraction allows to extend the criteria for findAllAtLevel for models 
+     * that have additional functionality (cf Medication which only applies the mappings
+     * on local instances)
+     */
+    protected function buildCriteriaForFindAllAtLevel(int $level)
+    {
+        $criteria = new CDbCriteria();
+
         $mapping_level_column_name = $this->levelIdColumn($level);
         $level_id = $this->getIdForLevel($level);
         $mapping_model = $this->mappingModelName($level)::model();
 
-        $mappings = $mapping_model->findAllByAttributes(array($mapping_level_column_name => $level_id));
-
+        if ((int) $mapping_model->countByAttributes([$mapping_level_column_name => $level_id]) === 0) {
+            // no instances mapped at this level, so no filtering to be done
+            return $criteria;
+        }
+        
         $mapping_data_column_name = $this->mappingColumn($level);
+        $mapping_model_table = $mapping_model->tableName();
+        $criteria->addCondition("t.id in (SELECT {$mapping_data_column_name} FROM {$mapping_model_table} WHERE $mapping_level_column_name = :_ref_level_id)");
+        $criteria->params['_ref_level_id'] = $level_id;
 
-        $ids = array_map(function ($item) use ($mapping_data_column_name) {
-            return $item->$mapping_data_column_name;
-        }, $mappings);
-
-        $merged_criteria = new CDbCriteria();
-        // if $ids is an empty array then the condition will look like
-        // [condition] => (0=1) AND .... which is always false
-        if ($ids) {
-            $merged_criteria->addInCondition('t.id', $ids);
-        }
-
-        if (isset($criteria)) {
-            $merged_criteria->mergeWith($criteria);
-        }
-
-        return $parent_model_name::model()->findAll($merged_criteria);
+        return $criteria;
     }
 
     public function getIdForLevel(int $level): int

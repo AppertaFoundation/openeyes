@@ -25,13 +25,15 @@ trait MocksSession
         \Yii::app()->setComponent('session', $session);
     }
 
-    public function mockCurrentInstitution(?Institution $institution = null)
+    public function mockCurrentInstitution(?Institution $institution = null): Institution
     {
         if ($institution === null) {
             $institution = Institution::model()->findAll()[0];
         }
 
         Yii::app()->session['selected_institution_id'] = $institution->id;
+        
+        return $institution;
     }
 
     protected function beginMocksSession()

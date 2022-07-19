@@ -61,6 +61,10 @@ use OEModule\OphCiExamination\models\OphCiExaminationAllergy;
 class Medication extends BaseActiveRecordVersioned
 {
     use MappedReferenceData;
+    
+    use MappedReferenceData {
+        buildCriteriaForFindAllAtLevel as baseBuildCriteriaForFindAllAtLevel;
+    }
 
     protected function getSupportedLevels(): int
     {
@@ -638,5 +642,14 @@ class Medication extends BaseActiveRecordVersioned
         $number = !$number && !is_numeric($number) ? 0 : ++$number;
 
         return "{$unmapped_string}{$number}";
+    }
+
+    protected function buildCriteriaForFindAllAtLevel(int $level)
+    {
+        $baseCriteria = $this->baseBuildCriteriaForFindAllAtLevel($level);
+        $baseCriteria->addCondition('source_type != :_localSourceType', 'OR');
+        $baseCriteria->params['_localSourceType'] = static::SOURCE_TYPE_LOCAL;
+
+        return $baseCriteria;
     }
 }
