@@ -34,6 +34,7 @@
 class LetterMacro extends BaseActiveRecordVersioned
 {
     use MappedReferenceData;
+
     protected function getSupportedLevels(): int
     {
         return ReferenceData::LEVEL_INSTITUTION | ReferenceData::LEVEL_SITE | ReferenceData::LEVEL_SUBSPECIALTY | ReferenceData::LEVEL_FIRM;
@@ -50,6 +51,7 @@ class LetterMacro extends BaseActiveRecordVersioned
     // turning on the options will automatically handle the relationships
     protected $auto_update_relations = true;
     protected $auto_validate_relations = true;
+
     /**
      * Returns the static model of the specified AR class.
      *
@@ -157,10 +159,12 @@ class LetterMacro extends BaseActiveRecordVersioned
     {
         // Create the mappings in afterSave to prevent an issue the letter macro
         // id missing in beforeSave when the letter macro is being first created.
-        $this->deleteMappings(ReferenceData::LEVEL_INSTITUTION);
-        $this->deleteMappings(ReferenceData::LEVEL_SITE);
-        $this->deleteMappings(ReferenceData::LEVEL_SUBSPECIALTY);
-        $this->deleteMappings(ReferenceData::LEVEL_FIRM);
+        if ($this->levels) {
+            $this->deleteMappings(ReferenceData::LEVEL_INSTITUTION);
+            $this->deleteMappings(ReferenceData::LEVEL_SITE);
+            $this->deleteMappings(ReferenceData::LEVEL_SUBSPECIALTY);
+            $this->deleteMappings(ReferenceData::LEVEL_FIRM);
+        }
         foreach ($this->levels as $level => $vals) {
             $vals = is_array($vals) ? $vals : [];
 

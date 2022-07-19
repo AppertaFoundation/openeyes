@@ -53,4 +53,14 @@ foreach (array($common_config, $local_common_config) as $configfile) {
 defined('YII_TRACE_LEVEL') or define('YII_TRACE_LEVEL', 3);
 
 require_once($yii);
+
+/**
+ * This workaround is in place to ensure that HtmlPurifier is loaded from the Yii standalone include
+ * for other packages to access, thereby preventing class loader clashes. see OE-13296 for further details.
+ */
+if (!class_exists('HTMLPurifier_Bootstrap', false)) {
+    require_once(Yii::getPathOfAlias('system.vendors.htmlpurifier').DIRECTORY_SEPARATOR.'HTMLPurifier.standalone.php');
+    HTMLPurifier_Bootstrap::registerAutoload();
+}
+
 Yii::createWebApplication($config)->run();

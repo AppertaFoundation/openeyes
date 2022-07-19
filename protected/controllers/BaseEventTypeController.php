@@ -921,6 +921,8 @@ class BaseEventTypeController extends BaseModuleController
                                 }
 
                                 if (isset($applicable_pathstep)) {
+                                    // bind the step id to the event, when the event_created event is dispatched, only relevant step will be marked as completed
+                                    $this->event->step_id = $applicable_pathstep->id;
                                     break;
                                 }
                             }
@@ -1033,9 +1035,6 @@ class BaseEventTypeController extends BaseModuleController
                             if ($this->isEventApplicableToWorklistPathstepData($pathstep_type_data)) {
                                 $pathway_type->instancePathway($worklist_patient);
                                 $worklist_patient->refresh();
-                                $worklist_patient->pathway->startPathway();
-                                $worklist_patient->refresh();
-                                $worklist_patient->pathway->refresh();
 
                                 foreach ($worklist_patient->pathway->steps as $pathstep) {
                                     $pathstep_data = json_decode($pathstep->state_data);

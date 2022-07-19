@@ -490,16 +490,22 @@ class TrialController extends BaseModuleController
         $already_selected_ids = json_decode($already_selected_ids);
 
         $criteria = new CDbCriteria();
-        $criteria->select = 't.id, t.name';
+        $criteria->distinct = true;
+        $criteria->select = 't.id, t.name, t.description';
         $criteria->join = 'JOIN user_trial_assignment uta ON uta.trial_id = t.id JOIN trial_permission tp ON tp.id = uta.trial_permission_id';
 
         $criteria->addCondition('uta.user_id = :user_id');
-        $criteria->addCondition('tp.can_edit = 1');
+        $criteria->addCondition('tp.can_edit = 1 OR tp.can_view = 1');
+        $criteria->addCondition('t.is_open = 1 AND t.closed_date IS NULL');
         $criteria->addCondition('t.id NOT IN (SELECT trial_id FROM trial_patient WHERE patient_id = :patient_id)');
         $criteria->params = [':user_id' => Yii::app()->user->id, ':patient_id' => $patient_id];
 
-        $criteria->addSearchCondition('LOWER(t.name)', strtolower($term));
         $criteria->addNotInCondition('t.id', $already_selected_ids);
+
+        $criteria2 = new CDbCriteria();
+        $criteria2->addSearchCondition('LOWER(t.name)', strtolower($term));
+        $criteria2->addSearchCondition('LOWER(t.description)', strtolower($term), true, 'OR');
+        $criteria->mergeWith($criteria2);
 
         $trials = array_map(
             static function ($trial) {
