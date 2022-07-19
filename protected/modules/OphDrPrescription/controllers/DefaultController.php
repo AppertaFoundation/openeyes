@@ -275,25 +275,19 @@ class DefaultController extends BaseEventTypeController
      */
     public function actionDrugList()
     {
-        if (Yii::app()->request->isAjaxRequest) {
+        if (Yii::app()->request->getIsAjaxRequest()) {
             $criteria = new CDbCriteria();
-
             $criteria->addCondition('deleted_date IS NULL');
-
-            //Will only fetch the locally sourced medications that are assigned for use in the current institution
-            $institution_assigned_ids = array_map(function ($item) {
-                return $item->id;
-            }, Medication::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION));
-            $criteria->addCondition("source_type != 'LOCAL'");
-            $criteria->addInCondition("t.id", $institution_assigned_ids, "OR");
 
             $params = [];
             $return = array();
 
             if (isset($_GET['term']) && strlen($term = $_GET['term']) > 0) {
-                $criteria->addCondition('id IN (SELECT medication_id FROM medication_search_index WHERE LOWER(alternative_term) LIKE :term)');
+                $criteria->addCondition("LOWER(t.preferred_term) LIKE :term OR LOWER(medication_search_index.alternative_term) LIKE :term");
                 $params[':term'] = '%' . strtolower(strtr($term, array('%' => '\%'))) . '%';
+                $criteria->join = 'LEFT JOIN medication_search_index ON t.id = medication_search_index.medication_id';
             }
+
             if (isset($_GET['type_id']) && $type_id = $_GET['type_id']) {
                 $criteria->addCondition("id IN (SELECT medication_id FROM medication_set_item WHERE medication_set_id = :type_id)");
                 $params[':type_id'] = $type_id;
@@ -306,13 +300,12 @@ class DefaultController extends BaseEventTypeController
             }
 
             if (!empty($criteria->condition)) {
-                $criteria->order = 'preferred_term';
+                $criteria->order = 't.preferred_term';
                 $criteria->limit = 50;
-                $criteria->select = 'id, preferred_term';
+                $criteria->select = 't.id, t.preferred_term';
                 $criteria->params = $params;
 
-                $drugs = Medication::model()->findAll($criteria);
-
+                $drugs = Medication::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION, $criteria);
 
                 foreach ($drugs as $drug) {
                     $infoBox = new MedicationInfoBox();

@@ -124,7 +124,7 @@ trait MappedReferenceData
         $mapping_data_column_name = $this->mappingColumn($level);
         $mapping_model_table = $mapping_model->tableName();
         $criteria->addCondition("t.id in (SELECT {$mapping_data_column_name} FROM {$mapping_model_table} WHERE $mapping_level_column_name = :_ref_level_id)");
-        $criteria->params['_ref_level_id'] = $level_id;
+        $criteria->params[':_ref_level_id'] = $level_id;
 
         return $criteria;
     }

@@ -166,7 +166,7 @@ class MedicationManagementController extends BaseController
         // we should find a better solution to make a restriction by source (event, element, etc)
         if ($prescribable_sets && ($source === 'prescription' || $source === 'MedicationManagement')) {
             $criteria->addInCondition('medicationSet.id', $prescribable_set_ids);
-            $criteria->with = array_merge($criteria->with, ['medicationSetItems', 'medicationSetItems.medicationSet', 'medicationSetItems.medicationSet.medicationSetRules', 'medicationSets.medicationSetRules']);
+            $criteria->with = array_merge($criteria->with, ['medicationSetItems', 'medicationSetItems.medicationSet', 'medicationSetItems.medicationSet.medicationSetRules']);
         }
 
         // use Medication::model()->prescribable()->findAll() to find only prescribable medications
