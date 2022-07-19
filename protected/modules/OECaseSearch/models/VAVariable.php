@@ -7,7 +7,7 @@ class VAVariable extends CaseSearchVariable implements DBProviderInterface
         parent::__construct($id_list);
         $this->field_name = 'va';
         $this->label = 'VA (best)';
-        $this->x_label = 'VA (LogMAR)';
+        $this->x_label = 'VA (LogMAR 1dp)';
         $this->eye_cardinality = true;
         $this->bin_size = 0.3;
         $this->min_value = -0.9;

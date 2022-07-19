@@ -3385,7 +3385,7 @@ FROM
       ON vam.id = evar.method_id
     /* Cartesian: Convenience to get logMAR single-letter unit_id only once, used in outer queries */
     CROSS JOIN ophciexamination_visual_acuity_unit u
-    WHERE u.name = 'logMAR single-letter'
+    WHERE u.name = 'logMAR 2dp'
   ) v
   /* Group by important to aggrigate multiple reading to get best reading each eye and method */
   GROUP BY

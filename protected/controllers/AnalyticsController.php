@@ -538,7 +538,7 @@ class AnalyticsController extends BaseController
             }
             $va_units = $this->getVAUnits()->queryAll();
             $reformed_va_units = array();
-            $default_va_unit = 'logMAR';
+            $default_va_unit = 'logMAR 1dp';
             foreach ($va_units as $va_unit) {
                 $reformed_va_units[$va_unit['name']] = $va_unit['id'];
             }
@@ -574,7 +574,7 @@ class AnalyticsController extends BaseController
     {
         $query_conditions = array('and');
         $query_conditions[] = 'active = 1';
-        $query_conditions[] = "name IN ('ETDRS Letters', 'Snellen Metre', 'logMAR', 'logMAR single-letter')";
+        $query_conditions[] = "name IN ('ETDRS Letters', 'Snellen Metre', 'logMAR 1dp', 'logMAR 2dp')";
 
         $query_va_units = Yii::app()->db->createCommand()
             ->select('

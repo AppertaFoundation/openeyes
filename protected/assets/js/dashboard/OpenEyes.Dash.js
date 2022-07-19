@@ -385,7 +385,7 @@
                 }
             }
             chart.layout['title'] = 'Visual Acuity (' + type_text + ')<br><sub>Total Eyes: ' + total + '</sub>';
-            chart.layout['yaxis']['title'] = 'Visual acuity ' + months + ' months' + (months > 1 ? 's' : '') + ' after surgery (LogMAR)';
+            chart.layout['yaxis']['title'] = 'Visual acuity ' + months + ' months' + (months > 1 ? 's' : '') + ' after surgery (LogMAR 1dp)';
 
             chart.data[1]['x'] = data.map(function (item) {
                 return item[0];
