@@ -78,8 +78,10 @@ if (!isset($this->controller) || ($this->controller->id != "patient" && $this->c
             <div class="patient-<?= $deceased ? 'died' : 'age' ?>">
                 <?php if ($deceased) : ?>
                     <em>Died</em> <?= Helper::convertDate2NHS($patient->date_of_death); ?>
+                <?php else : ?>
+                    <em>DOB</em> <?= Helper::convertDate2NHS($patient->dob); ?>
                 <?php endif; ?>
-                <em>Age<?= $deceased ? 'd' : '' ?></em> <?= $patient->getAge() . 'y'; ?>
+                <em>(<?= $deceased ? 'd' : '' ?></em><?= $patient->getAge() . 'y'; ?>)
             </div>
         </div>
     </div>

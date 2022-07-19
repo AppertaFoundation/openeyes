@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -19,6 +20,8 @@ namespace OEModule\OphCiExamination\widgets;
 
 use OEModule\OphCiExamination\models\SystemicSurgery as SystemicSurgeryElement;
 use OEModule\OphCiExamination\models\SystemicSurgery_Operation;
+use CommonPreviousSystemicOperation;
+use ReferenceData;
 
 class SystemicSurgery extends \BaseEventElementWidget
 {
@@ -51,6 +54,14 @@ class SystemicSurgery extends \BaseEventElementWidget
         }
 
         return $missing;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPreviousOperationOptions()
+    {
+        return CommonPreviousSystemicOperation::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION, ['order' => 'display_order asc']);
     }
 
     /**
@@ -128,7 +139,7 @@ class SystemicSurgery extends \BaseEventElementWidget
         $result = array_map(
             function ($operation) {
                 return array_key_exists('object', $operation) ?
-                    $operation['object']->getDisplayDate() . ' ' .$operation['object']->getDisplayOperation(false) :
+                    $operation['object']->getDisplayDate() . ' ' . $operation['object']->getDisplayOperation(false) :
                     $this->formatExternalOperation($operation);
             },
             $this->getMergedOperations()
