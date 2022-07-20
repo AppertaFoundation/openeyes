@@ -620,7 +620,6 @@ class DefaultController extends BaseEventTypeController
             throw new Exception("Event not found: $id");
         }
 
-        // FIXME: this should be using the info method
         $event->info = 'Printed';
 
         if (!$event->save()) {
