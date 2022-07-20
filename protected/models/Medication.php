@@ -61,7 +61,7 @@ use OEModule\OphCiExamination\models\OphCiExaminationAllergy;
 class Medication extends BaseActiveRecordVersioned
 {
     use MappedReferenceData;
-    
+
     use MappedReferenceData {
         buildCriteriaForFindAllAtLevel as baseBuildCriteriaForFindAllAtLevel;
     }

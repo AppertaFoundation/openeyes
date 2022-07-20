@@ -104,7 +104,7 @@ trait MappedReferenceData
     }
 
     /**
-     * This abstraction allows to extend the criteria for findAllAtLevel for models 
+     * This abstraction allows to extend the criteria for findAllAtLevel for models
      * that have additional functionality (cf Medication which only applies the mappings
      * on local instances)
      */
@@ -120,7 +120,7 @@ trait MappedReferenceData
             // no instances mapped at this level, so no filtering to be done
             return $criteria;
         }
-        
+
         $mapping_data_column_name = $this->mappingColumn($level);
         $mapping_model_table = $mapping_model->tableName();
         $criteria->addCondition("t.id in (SELECT {$mapping_data_column_name} FROM {$mapping_model_table} WHERE $mapping_level_column_name = :_ref_level_id)");
