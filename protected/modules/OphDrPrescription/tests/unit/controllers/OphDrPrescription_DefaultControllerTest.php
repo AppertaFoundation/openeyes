@@ -30,17 +30,54 @@ class OphDrPrescription_DefaultControllerTest extends OEDbTestCase
     {
         $medication = $this->createDMDMedication();
         
-        $requestResult = $this->performDrugListRequest(['term' => $medication->preferred_term]);
+        $returnedIds = $this->getReturnedIdsFromDrugListRequest(['term' => $medication->preferred_term]);
+
+        $this->assertContains($medication->id, $returnedIds);
+    }
+
+    /** @test */
+    public function dmd_drug_can_be_retrieved_by_search_alias()
+    {
+        $medication = $this->createDMDMedication();
+        $alternativeTerm = 'aaaaa';
+        $searchAlternative = new MedicationSearchIndex();
+        $searchAlternative->setAttributes([
+            'alternative_term' => $alternativeTerm,
+            'medication_id' => $medication->id
+        ]);
+        $searchAlternative->save();
         
-        $returnedIds = array_map(
+        $returnedIds = $this->getReturnedIdsFromDrugListRequest(['term' => $alternativeTerm]);
+
+        $this->assertContains($medication->id, $returnedIds);
+    }
+
+    /** @test */
+    public function local_drug_only_retrieved_when_mapped_to_current_context()
+    {
+        $mapped = $this->createLocalMedication();
+        $institution = $this->mockCurrentInstitution();
+        $mapped->createMapping(ReferenceData::LEVEL_INSTITUTION, $institution->id);
+        $unmapped = $this->createLocalMedication(['preferred_term' => $mapped->preferred_term]);
+
+        $returnedIds = $this->getReturnedIdsFromDrugListRequest(['term' => $mapped->preferred_term]);
+
+        $this->assertContains($mapped->id, $returnedIds);
+        $this->assertNotContains($unmapped->id, $returnedIds);
+    }
+
+    protected function getReturnedIdsFromDrugListRequest(array $params = [])
+    {
+        $requestResult = $this->performDrugListRequest($params);
+        
+        return array_map(
             function ($data) {
                 return $data['id'];
             },
             $requestResult
         );
-
-        $this->assertContains($medication->id, $returnedIds);
     }
+
 
     /**
      * Carry out the actionDrugList request with the given request ($_GET) parameters
