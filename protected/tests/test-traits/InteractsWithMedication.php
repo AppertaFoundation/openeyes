@@ -13,8 +13,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
- trait InteractsWithMedication
- {
+trait InteractsWithMedication
+{
     use WithFaker;
 
     public function generateSavedMedication(?array $attributes = []): Medication
@@ -47,4 +47,4 @@
     {
         return $this->generateSavedMedication(array_merge($attributes, ['source_type' => Medication::SOURCE_TYPE_DMD]));
     }
- }
+}

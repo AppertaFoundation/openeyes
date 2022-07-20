@@ -52,7 +52,7 @@ class DefaultControllerVisualAcuityTest extends BaseDefaultControllerTest
     public function saving_element_with_readings()
     {
         $this->mockCurrentContext();
-        
+
         $unit = $this->getStandardVisualAcuityUnit();
 
         $form_data = [

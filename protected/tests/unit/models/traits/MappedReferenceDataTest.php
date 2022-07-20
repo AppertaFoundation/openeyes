@@ -209,8 +209,6 @@ class MappedReferenceDataTest extends OEDbTestCase
         $this->mockCurrentInstitution($institution);
 
         $this->assertModelArraysMatch($expected, MappedReferenceDataTestFake::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION, $criteria));
-
-
     }
 
     protected function createFakes($count = 1)
@@ -229,8 +227,7 @@ class MappedReferenceDataTest extends OEDbTestCase
     protected function createFakesMappedToInstitution($count, $institution)
     {
         return array_map(
-            function ($fake) use ($institution)
-            {
+            function ($fake) use ($institution) {
                 $fake->createMapping(ReferenceData::LEVEL_INSTITUTION, $institution->id);
                 return $fake;
             },
@@ -444,7 +441,6 @@ class MappedReferenceDataTestFake_Institution extends \BaseActiveRecord
     {
         return 'test_mapped_reference_data_test_fake_institution';
     }
-
 }
 
 class MappedReferenceDataTestFake extends \BaseActiveRecord
@@ -456,25 +452,25 @@ class MappedReferenceDataTestFake extends \BaseActiveRecord
         return 'test_mapped_reference_data_test_fake';
     }
 
-	/**
-	 * Gets all supported levels.
-	 *
-	 * @return int a Bitwise value representing the supported mapping levels.
-	 */
-	public function getSupportedLevels(): int 
+    /**
+     * Gets all supported levels.
+     *
+     * @return int a Bitwise value representing the supported mapping levels.
+     */
+    public function getSupportedLevels(): int
     {
         return ReferenceData::LEVEL_INSTITUTION;
-	}
-	
-	/**
-	 * Gets the name of the ID column representing the reference data in the mapping table.
-	 *
-	 * @param int $level The level used for mapping.
-	 *
-	 * @return string The name of the reference data ID column in the mapping table.
-	 */
-	public function mappingColumn(int $level): string 
+    }
+
+    /**
+     * Gets the name of the ID column representing the reference data in the mapping table.
+     *
+     * @param int $level The level used for mapping.
+     *
+     * @return string The name of the reference data ID column in the mapping table.
+     */
+    public function mappingColumn(int $level): string
     {
         return 'mapped_reference_data_test_fake_id';
-	}
+    }
 }

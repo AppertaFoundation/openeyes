@@ -29,7 +29,7 @@ class OphDrPrescription_DefaultControllerTest extends OEDbTestCase
     public function dmd_drug_can_be_retrieved()
     {
         $medication = $this->createDMDMedication();
-        
+
         $returnedIds = $this->getReturnedIdsFromDrugListRequest(['term' => $medication->preferred_term]);
 
         $this->assertContains($medication->id, $returnedIds);
@@ -46,7 +46,7 @@ class OphDrPrescription_DefaultControllerTest extends OEDbTestCase
             'medication_id' => $medication->id
         ]);
         $searchAlternative->save();
-        
+
         $returnedIds = $this->getReturnedIdsFromDrugListRequest(['term' => $alternativeTerm]);
 
         $this->assertContains($medication->id, $returnedIds);
@@ -69,7 +69,7 @@ class OphDrPrescription_DefaultControllerTest extends OEDbTestCase
     protected function getReturnedIdsFromDrugListRequest(array $params = [])
     {
         $requestResult = $this->performDrugListRequest($params);
-        
+
         return array_map(
             function ($data) {
                 return $data['id'];
@@ -93,16 +93,16 @@ class OphDrPrescription_DefaultControllerTest extends OEDbTestCase
 
         $controller->method('checkFormAccess')
             ->willReturn(true);
-        
+
         $action = $controller->createAction('drugList');
-        
+
         $controller->runAction($action);
 
         return $outputCapture;
     }
 
     /**
-     * Generates a controller of the given class, and puts the json rendered content into 
+     * Generates a controller of the given class, and puts the json rendered content into
      * the provided $outputCapture reference.
      */
     protected function getControllerForJsonRenderCapture($cls, $methods = [], &$outputCapture)
@@ -136,7 +136,7 @@ class OphDrPrescription_DefaultControllerTest extends OEDbTestCase
             ->getMock();
 
         $request->method('getPost')
-            ->will($this->returnCallback(function($key, $default) {
+            ->will($this->returnCallback(function ($key, $default) {
                 return $default; // always return the default
             }));
 

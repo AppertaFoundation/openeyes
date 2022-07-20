@@ -2,10 +2,10 @@
 
 /**
  * Class MedicationWithSampleDataTest
- * 
- * This test class was added to allow testing of changes to the Medication class using 
+ *
+ * This test class was added to allow testing of changes to the Medication class using
  * sample data/transactions, and is a partner to the original MedicationTest
- * 
+ *
  * @group sample-data
  * @group medication
  */
@@ -16,8 +16,8 @@ class MedicationWithSampleDataTest extends OEDbTestCase
     use WithTransactions;
     use WithFaker;
 
-    /** 
-     * @test 
+    /**
+     * @test
      * @group mapped-reference-data
      */
     public function find_all_at_level_only_applies_to_local_medications()

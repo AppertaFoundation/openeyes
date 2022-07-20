@@ -138,7 +138,7 @@ class MedicationManagementController extends BaseController
     {
         $ret_data = [];
         $criteria = new \CDbCriteria();
-        
+
         if ($term !== '') {
             $criteria->addCondition("preferred_term LIKE :term OR medicationSearchIndexes.alternative_term LIKE :term");
             $criteria->params['term'] = "%$term%";
