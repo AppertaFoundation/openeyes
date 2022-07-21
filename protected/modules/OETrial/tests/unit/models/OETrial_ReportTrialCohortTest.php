@@ -36,6 +36,7 @@ class OETrial_ReportTrialCohortTest extends CDbTestCase
     public static function setUpBeforeClass()
     {
         Yii::app()->session['selected_institution_id'] = 1;
+        Yii::app()->session['selected_site_id'] = 1;
         Yii::app()->params['display_primary_number_usage_code'] = 'LOCAL';
         Yii::app()->getModule('OETrial');
     }
@@ -43,6 +44,7 @@ class OETrial_ReportTrialCohortTest extends CDbTestCase
     public static function tearDownAfterClass()
     {
         unset(Yii::app()->session['selected_institution_id']);
+        unset(Yii::app()->session['selected_site_id']);
         unset(Yii::app()->params['display_primary_number_usage_code']);
     }
 

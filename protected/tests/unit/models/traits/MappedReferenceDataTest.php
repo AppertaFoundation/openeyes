@@ -4,8 +4,11 @@
  * Class MappedReferenceDataTest
  * @covers MappedReferenceData
  */
-class MappedReferenceDataTest extends CTestCase
+class MappedReferenceDataTest extends OEDbTestCase
 {
+    use HasModelAssertions;
+    use MocksSession;
+    use WithFaker;
     private MappedReferenceDataMock $instance;
     private MappedReferenceDataSoftDeleteMock $softdelete_instance;
 
@@ -13,6 +16,17 @@ class MappedReferenceDataTest extends CTestCase
      */
     public function setUp()
     {
+        parent::setUp();
+
+        $this->createTestTable('test_mapped_reference_data_test_fake', [
+            'name' => 'varchar(30)'
+        ]);
+
+        $this->createTestTable('test_mapped_reference_data_test_fake_institution', [
+            'mapped_reference_data_test_fake_id' => 'int(11)',
+            'institution_id' => 'int(10) unsigned'
+        ]);
+
         $this->instance = new MappedReferenceDataMock();
         $this->softdelete_instance = new MappedReferenceDataSoftDeleteMock();
         $this->instance->id = 1;
@@ -25,6 +39,7 @@ class MappedReferenceDataTest extends CTestCase
     public function tearDown()
     {
         unset($this->instance, $this->softdelete_instance);
+        parent::tearDown();
     }
 
     public function getScenarios()
@@ -149,7 +164,7 @@ class MappedReferenceDataTest extends CTestCase
         self::assertTrue($this->instance->remapMappings(ReferenceData::LEVEL_INSTITUTION, $this->softdelete_instance->id));
     }
 
-    /**
+/**
      * @dataProvider getScenarios
      * @param bool $soft_delete
      * @param string $mapping_class
@@ -159,6 +174,65 @@ class MappedReferenceDataTest extends CTestCase
     {
         $model = $this->getModelInstance($soft_delete);
         self::assertTrue($model->createMapping(ReferenceData::LEVEL_INSTITUTION, $mappings[0]['institution_id']));
+    }
+
+    public function testAllInstancesReturnedByFindAllAtLevelWhenNoMappingDefined()
+    {
+        $this->mockCurrentInstitution();
+        $expectedCount = rand(1, 5);
+        $this->createFakes($expectedCount);
+
+        $this->assertCount($expectedCount, MappedReferenceDataTestFake::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION));
+    }
+
+    public function testOnlyMappedReturnedByFindAllAtLevel()
+    {
+        $institution = Institution::model()->findAll(new CDbCriteria(['order' => 'rand()']))[0];
+        // unmapped fakes to ensure they are not disregarded
+        $this->createFakes(rand(1, 5));
+        $expectedFakes = $this->createFakesMappedToInstitution(rand(1, 5), $institution);
+        $this->mockCurrentInstitution($institution);
+
+        $this->assertModelArraysMatch($expectedFakes, MappedReferenceDataTestFake::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION));
+    }
+
+    public function testCriteriaAreMergedWithFindAllAtLevel()
+    {
+        $institution = Institution::model()->findAll(new CDbCriteria(['order' => 'rand()']))[0];
+        $expected = $this->createFakesMappedToInstitution(1, $institution);
+        // mapped fakes that will be filtered by the specific criteria we pass
+        $this->createFakesMappedToInstitution(rand(1, 5), $institution);
+
+        $criteria = new \CDbCriteria();
+        $criteria->addCondition('id = :expectedId');
+        $criteria->params[':expectedId'] = $expected[0]->id;
+        $this->mockCurrentInstitution($institution);
+
+        $this->assertModelArraysMatch($expected, MappedReferenceDataTestFake::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION, $criteria));
+    }
+
+    protected function createFakes($count = 1)
+    {
+        return array_map(
+            function () {
+                $fake = new MappedReferenceDataTestFake();
+                $fake->name = $this->faker->word();
+                $fake->save();
+                return $fake;
+            },
+            array_fill(0, $count, null)
+        );
+    }
+
+    protected function createFakesMappedToInstitution($count, $institution)
+    {
+        return array_map(
+            function ($fake) use ($institution) {
+                $fake->createMapping(ReferenceData::LEVEL_INSTITUTION, $institution->id);
+                return $fake;
+            },
+            $this->createFakes($count)
+        );
     }
 }
 
@@ -355,5 +429,48 @@ class MockObject_Institution_SoftDelete extends BaseActiveRecordVersionedSoftDel
     public function getErrors($attribute = null)
     {
         return array();
+    }
+}
+
+class MappedReferenceDataTestFake_Institution extends \BaseActiveRecord
+{
+     /**
+     * @return string the associated database table name
+     */
+    public function tableName()
+    {
+        return 'test_mapped_reference_data_test_fake_institution';
+    }
+}
+
+class MappedReferenceDataTestFake extends \BaseActiveRecord
+{
+    use MappedReferenceData;
+
+    public function tableName()
+    {
+        return 'test_mapped_reference_data_test_fake';
+    }
+
+    /**
+     * Gets all supported levels.
+     *
+     * @return int a Bitwise value representing the supported mapping levels.
+     */
+    public function getSupportedLevels(): int
+    {
+        return ReferenceData::LEVEL_INSTITUTION;
+    }
+
+    /**
+     * Gets the name of the ID column representing the reference data in the mapping table.
+     *
+     * @param int $level The level used for mapping.
+     *
+     * @return string The name of the reference data ID column in the mapping table.
+     */
+    public function mappingColumn(int $level): string
+    {
+        return 'mapped_reference_data_test_fake_id';
     }
 }
