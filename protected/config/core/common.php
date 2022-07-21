@@ -946,13 +946,13 @@ $config = array(
 
         // enable GP letter to be sent via Docman (./yiic cvidelivery),
         // generates pdf and XML just like docman
-        'cvi_docman_delivery_enabled' => false,
+        'cvi_docman_delivery_enabled' => strtolower(getenv("CVI_DOCMAN_DELIVERY_ENABLED")) == "true" ? true : false,
 
         // enable mailing to RCOP (./yiic cvidelivery)
-        'cvi_rcop_delivery_enabled' => false,
+        'cvi_rcop_delivery_enabled' => strtolower(getenv("CVI_RCOP_DELIVERY_ENABLED")) == "true" ? true : false,
 
         // enable mailing LA (./yiic cvidelivery)
-        'cvi_la_delivery_enabled' => false,
+        'cvi_la_delivery_enabled' => strtolower(getenv("CVI_LA_DELIVERY_ENABLED")) == "true" ? true : false,
     ),
 );
 
