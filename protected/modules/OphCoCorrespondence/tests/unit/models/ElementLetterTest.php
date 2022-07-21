@@ -42,6 +42,7 @@ class ElementLetterTest extends ActiveRecordTestCase
                 )
             )
         );
+        Yii::app()->session['selected_site_id'] = 1;
         Yii::app()->session['selected_firm_id'] = 2;
         Yii::app()->session['selected_institution_id'] = 1;
         $this->letter = $this->letters('letter1');
@@ -66,6 +67,7 @@ class ElementLetterTest extends ActiveRecordTestCase
                 )
             )
         );
+        unset(Yii::app()->session['selected_site_id']);
     }
 
     public function testGetExportUrl(): void
