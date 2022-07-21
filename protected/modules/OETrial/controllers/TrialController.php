@@ -60,13 +60,6 @@ class TrialController extends BaseModuleController
             ),
             array(
                 'allow',
-                'actions' => array('addPatientToMultipleTrials'),
-                'expression' => function ($user) {
-                    return $user->checkAccess('TaskViewTrial') && @TrialController::getCurrentUserPermissionMultiple(true, false, false);
-                },
-            ),
-            array(
-                'allow',
                 'actions' => array(
                     'addPermission',
                     'removePermission',
@@ -92,37 +85,6 @@ class TrialController extends BaseModuleController
     {
         $trial = Trial::model()->findByPk(Yii::app()->getRequest()->getParam('id'));
         return $trial !== null ? $trial->getUserPermission(Yii::app()->user->id) : null;
-    }
-
-    public static function getCurrentUserPermissionMultiple($can_edit = false, $can_view = false, $can_manage = false)
-    {
-        $trial_ids = Yii::app()->getRequest()->getParam('trial_ids');
-        $criteria = new CDbCriteria();
-
-        if (!($can_edit || $can_view || $can_manage)) {
-            return false;
-        }
-
-        if ($can_edit) {
-            $criteria->addCondition('can_edit = 1');
-        }
-
-        if ($can_view) {
-            $criteria->addCondition('can_view = 1');
-        }
-
-        if ($can_manage) {
-            $criteria->addCondition('can_manage = 1');
-        }
-
-        $criteria->addCondition('user_id = :user_id');
-        $criteria->params = [':user_id' => Yii::app()->user->id];
-
-        $criteria->addInCondition('trial_id', $trial_ids);
-
-        $values = UserTrialAssignment::model()->with('trialPermission')->findAll($criteria);
-
-        return count($trial_ids) === count($values);
     }
 
     /**
@@ -322,59 +284,26 @@ class TrialController extends BaseModuleController
         $trial = $this->loadModel($_GET['id']);
         /* @var Patient $patient */
         $patient = Patient::model()->findByPk($_GET['patient_id']);
-        $trial->addPatient(
+        $trial_patient = $trial->addPatient(
             $patient,
             TrialPatientStatus::model()->find('code = ?', array(TrialPatientStatus::SHORTLISTED_CODE))
         );
-    }
 
-    /**
-     * Adds a patient to several trials in a list
-     *
-     * @throws Exception Thrown if an error occurs when saving the TrialPatient record
-     */
-    public function actionAddPatientToMultipleTrials()
-    {
-        $trials = $_POST['trial_ids'];
-        $patient = Patient::model()->findByPk($_POST['patient_id']);
-        $status = TrialPatientStatus::model()->find('code = ?', array(TrialPatientStatus::SHORTLISTED_CODE));
+        $coordinators = array_map(
+            static function($coordinator) { return $coordinator->user->getFullName(); },
+            $trial->getTrialStudyCoordinators()
+        );
 
-        $transaction = Yii::app()->db->beginTransaction();
-        $results = [];
-
-        try {
-            foreach ($trials as $trial_id) {
-                $trial = $this->loadModel($trial_id);
-
-                $trial_patient = $trial->addPatient($patient, $status);
-
-                $coordinators = array_map(
-                    static function($coordinator) { return $coordinator->user->getFullName(); },
-                    $trial->getTrialStudyCoordinators()
-                );
-
-                $results[] = [
-                    'name' => CHtml::encode($trial->name),
-                    'started-date' => $trial->getStartedDateForDisplay(),
-                    'closed-date' => $trial->getClosedDateForDisplay(),
-                    'coordinators' => implode(', ', $coordinators),
-                    'trial-type' => $trial->trialType->name,
-                    'treatment-type' => $trial_patient->treatmentType->name,
-                    'status-name' => $trial_patient->status->name,
-                    'status-update-date' => isset($trial_patient->status_update_date) ? Helper::formatFuzzyDate($trial_patient->status_update_date) : null,
-                ];
-            }
-        } catch (Exception $e) {
-            $results = null;
-        }
-
-        if ($results === null) {
-            $transaction->rollback();
-        } else {
-            $transaction->commit();
-        }
-
-        $this->renderJSON($results);
+        $this->renderJSON([
+            'name' => CHtml::encode($trial->name),
+            'started-date' => $trial->getStartedDateForDisplay(),
+            'closed-date' => $trial->getClosedDateForDisplay(),
+            'coordinators' => implode(', ', $coordinators),
+            'trial-type' => $trial->trialType->name,
+            'treatment-type' => $trial_patient->treatmentType->name,
+            'status-name' => $trial_patient->status->name,
+            'status-update-date' => isset($trial_patient->status_update_date) ? Helper::formatFuzzyDate($trial_patient->status_update_date) : null,
+        ]);
     }
 
     /**
