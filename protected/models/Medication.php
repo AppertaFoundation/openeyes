@@ -46,7 +46,6 @@ use OEModule\OphCiExamination\models\OphCiExaminationAllergy;
  * @property string $default_dose
  *
  * The followings are the available model relations:
- * @property EventMedicationUse[] $eventMedicationUses
  * @property User $lastModifiedUser
  * @property User $createdUser
  * @property MedicationSet[] $medicationSets
@@ -132,7 +131,6 @@ class Medication extends BaseActiveRecordVersioned
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return [
-            'eventMedicationUses' => [self::HAS_MANY, EventMedicationUse::class, 'medication_id'],
             'lastModifiedUser' => [self::BELONGS_TO, 'User', 'last_modified_user_id'],
             'createdUser' => [self::BELONGS_TO, 'User', 'created_user_id'],
 

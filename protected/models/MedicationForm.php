@@ -18,7 +18,6 @@
  * @property string $created_date
  *
  * The followings are the available model relations:
- * @property EventMedicationUse[] $eventMedicationUses
  * @property User $lastModifiedUser
  * @property User $createdUser
  * @property MedicationSetItem[] $medicationSetItems
@@ -58,7 +57,6 @@ class MedicationForm extends BaseActiveRecordVersioned
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'eventMedicationUses' => array(self::HAS_MANY, EventMedicationUse::class, 'form_id'),
             'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'medicationSetItems' => array(self::HAS_MANY, MedicationSetItem::class, 'default_form_id'),
