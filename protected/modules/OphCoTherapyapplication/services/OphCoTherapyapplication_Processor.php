@@ -18,12 +18,21 @@
  */
 class OphCoTherapyapplication_Processor
 {
-    const SNOMED_INTRAVITREAL_INJECTION = 231755001;
-    const SNOMED_PDT = 257891001;
-
     const STATUS_PENDING = 'pending';
     const STATUS_SENT = 'sent';
     const STATUS_REOPENED = 're-opened';
+
+    /**
+     *  A list of snomed codes that will be used to determine if a consent form has been created for a relevant injection procedure
+     *
+     * @var array
+     */
+    protected $snomed_injection_codes = array(
+        '231755001', //Intravitreal injection
+        '257891001', //PDT
+        '525991000000108', // Lucentis injection
+        '1004045004', // Intravitreal injection of anti-vascular endothelial growth factor (procedure)
+    );
 
     private $event;
 
@@ -104,14 +113,14 @@ class OphCoTherapyapplication_Processor
         }
 
         if ($api = Yii::app()->moduleAPI->get('OphTrConsent')) {
+            // note that cannot use params here, as it messes up the quoting on the list in the 'IN' block after the implode
             $procedures = Procedure::model()->findAll(
-                array('condition' => 'snomed_code = :snomed or snomed_code = :snomed2 ',
-                    'params' => array(':snomed' => $this::SNOMED_INTRAVITREAL_INJECTION, ':snomed2' => $this::SNOMED_PDT),
+                array('condition' => 'snomed_code IN (' . implode(", ", $this->snomed_injection_codes) . ') ',
                 )
             );
-            $proc_ids = array_map(function ($proc) {
-                return $proc->id;
-            }, $procedures);
+                $proc_ids = array_map(function ($proc) {
+                    return $proc->id;
+                }, $procedures);
             foreach ($sides as $side) {
                 if (!$api->hasConsentForProcedure($this->event->episode, $proc_ids, $side)) {
                     $warnings[] = 'Consent form is required for ' . $side . ' eye.';
