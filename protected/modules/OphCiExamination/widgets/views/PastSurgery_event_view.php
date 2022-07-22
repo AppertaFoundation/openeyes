@@ -52,7 +52,7 @@ $widget = $this;
                         <td>
                             <span class="oe-date">
                                 <?= array_key_exists('object', $operation) ?
-                                    $operation['object']->getHTMLformatedDate() : Helper::convertFuzzyDate2HTML($operation['date']); ?>
+                                    $operation['object']->getDisplayDate() : Helper::convertFuzzyDate2HTML($operation['date']); ?>
                             </span>
                         </td>
                         <td>
