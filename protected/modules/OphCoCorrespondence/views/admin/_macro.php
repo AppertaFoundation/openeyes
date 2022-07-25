@@ -72,7 +72,6 @@ $recipients_data = $recipients_data + $none_option;
             <td>Institution</td>
             <td>
             <?= $form->multiSelectList(
-
                 $macro,
                 'LetterMacro[levels][institutions]',
                 'institutions',

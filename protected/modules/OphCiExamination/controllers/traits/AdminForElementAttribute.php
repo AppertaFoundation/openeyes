@@ -24,12 +24,25 @@ trait AdminForElementAttribute
 {
     public function actionManageElementAttributes()
     {
+        $institution_id = !empty($_GET['attribute_element_id'])
+                        ? OphCiExamination_AttributeElement::model()->findByPk($_GET['attribute_element_id'])->attribute->institution_id
+                        : \Yii::app()->session['selected_institution_id'];
+
+        $attribute_elements_for_institution = array_reduce(
+            OphCiExamination_AttributeElement::model()->with('attribute')->findAll('institution_id = :institution_id', [':institution_id' => $institution_id]),
+            static function($choices, $attribute_element) {
+                $choices[$attribute_element->id] = $attribute_element->element_type->name . ' - ' . $attribute_element->attribute->name;
+                return $choices;
+            },
+            []
+        );
+
         $this->genericAdmin(
             'Manage Element Attributes',
             OphCiExamination_AttributeOption::class,
             [
                 'filter_fields' => [
-                    ['field' => 'attribute_element_id', 'model' => OphCiExamination_AttributeElement::class],
+                    ['field' => 'attribute_element_id', 'model' => OphCiExamination_AttributeElement::class, 'choices' => $attribute_elements_for_institution, 'no_empty' => true],
                 ],
                 'extra_fields' => [
                     ['field' => 'delimiter', 'type' => 'text'],

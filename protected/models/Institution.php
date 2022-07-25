@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -55,7 +56,7 @@ class Institution extends BaseActiveRecordVersioned
 
     public function defaultScope()
     {
-        return array('order' => $this->getTableAlias(true, false).'.name');
+        return array('order' => $this->getTableAlias(true, false) . '.name');
     }
 
     public function behaviors()
@@ -149,7 +150,7 @@ class Institution extends BaseActiveRecordVersioned
 
         $institution = $this->findByPk(Yii::app()->session->get('selected_institution_id'));
         if (!$institution) {
-            throw new Exception("Institution with id '".Yii::app()->session->get('selected_institution_id')."' not found");
+            throw new Exception("Institution with id '" . Yii::app()->session->get('selected_institution_id') . "' not found");
         }
 
         return $institution;
@@ -175,17 +176,30 @@ class Institution extends BaseActiveRecordVersioned
         return $result;
     }
 
-    public function getTenanted($condition = '', $params = array())
+    public function getTenanted($condition = '', $params = array(), $user_must_be_member = false)
     {
-        return $this->with('authenticationMethods')->findAll($condition, $params);
+        if (!$user_must_be_member) {
+            return $this->with('authenticationMethods')->findAll($condition, $params);
+        } else {
+            $criteria = $this->getCommandBuilder()->createCriteria($condition, $params);
+
+            $userCriteria = new CDbCriteria();
+            $userCriteria->join = 'JOIN institution_authentication ia ON ia.institution_id = t.id JOIN user_authentication ua ON ua.institution_authentication_id = ia.id';
+            $userCriteria->condition = 'ua.user_id = :user_id';
+            $userCriteria->params = [':user_id' => \Yii::app()->user->id];
+
+            $criteria->mergeWith($userCriteria);
+
+            return $this->findAll($criteria);
+        }
     }
 
-    public function getTenantedOr($default_to_id, $condition = '', $params = array())
+    public function getTenantedOr($default_to_id, $condition = '', $params = array(), $user_must_be_member = false)
     {
-        return array_merge([$this->findByPk($default_to_id)], $this->getTenanted($condition, $params));
+        return array_merge([$this->findByPk($default_to_id)], $this->getTenanted($condition, $params, $user_must_be_member));
     }
 
-    public function getTenantedList($current_institution_only = true)
+    public function getTenantedList($current_institution_only = true, $user_must_be_member = false)
     {
         $result = array();
 
@@ -197,6 +211,11 @@ class Institution extends BaseActiveRecordVersioned
                 ->selectDistinct('i.id, i.name')
                 ->from('institution i')
                 ->join('institution_authentication ia', 'ia.institution_id = i.id');
+
+            if ($user_must_be_member) {
+                $cmd->join('user_authentication ua', 'ua.institution_authentication_id = ia.id');
+                $cmd->where('ua.user_id = :user_id', [':user_id' => \Yii::app()->user->id]);
+            }
 
             foreach ($cmd->queryAll() as $institution) {
                 $result[$institution['id']] = $institution['name'];
@@ -218,7 +237,7 @@ class Institution extends BaseActiveRecordVersioned
      *
      * @return string
      */
-    public function __toString() : string
+    public function __toString(): string
     {
         return $this->short_name;
     }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: himanshu
@@ -40,13 +41,19 @@ class ExaminationElementAttributesController extends BaseAdminController
             'attribute_elements.name',
             'is_multiselect',
         ));
-        $criteria = new CDbCriteria;
+
+        $institution_id = !empty($_GET['institution_id']) ? $_GET['institution_id'] : \Yii::app()->session['selected_institution_id'];
+
+        $criteria = new CDbCriteria();
         $criteria->addCondition("t.institution_id = :institution_id");
-        $criteria->params = [':institution_id' => \Yii::app()->session['selected_institution_id']];
+        $criteria->params = [':institution_id' => $institution_id];
+
         $admin->getSearch()->setCriteria($criteria);
         $admin->setModelDisplayName('Element Attributes');
         $admin->div_wrapper_class = 'cols-8';
         $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
+
+        $admin->setListTemplate('//admin/generic/listInstitution');
         $admin->listModel();
     }
     /**
@@ -62,6 +69,13 @@ class ExaminationElementAttributesController extends BaseAdminController
         $admin->setCustomSaveURL('/oeadmin/ExaminationElementAttributes/update');
         if ($id) {
             $admin->setModelId($id);
+        } else {
+            $institution_id = !empty($_GET['institution_id']) ? $_GET['institution_id'] : \Yii::app()->session['selected_institution_id'];
+            $model = $admin->getModel();
+
+            $model->institution_id = $institution_id;
+
+            $admin->setModel($model);
         }
         $admin->setModelDisplayName('Element Attributes');
 
@@ -78,7 +92,7 @@ class ExaminationElementAttributesController extends BaseAdminController
             ),
             'institution' => array(
                 'widget' => 'DropDownList',
-                'options' => Institution::model()->getTenantedList(true),
+                'options' => Institution::model()->getTenantedList(false, true),
                 'htmlOptions' => ['class' => 'cols-8'],
                 'hidden' => false,
                 'layoutColumns' => null,
@@ -248,7 +262,7 @@ class ExaminationElementAttributesController extends BaseAdminController
                     array('LOWER(name) LIKE :term'),
                     'OR'
                 );
-                $params[':term'] = '%'.strtolower(strtr($term, array('%' => '\%'))).'%';
+                $params[':term'] = '%' . strtolower(strtr($term, array('%' => '\%'))) . '%';
             }
 
             $criteria->order = 'name';
@@ -280,7 +294,8 @@ class ExaminationElementAttributesController extends BaseAdminController
         $admin->sortModel();
     }
 
-    public function deleteAttributeElements(OEModule\OphCiExamination\models\OphCiExamination_AttributeElement $element){
+    public function deleteAttributeElements(OEModule\OphCiExamination\models\OphCiExamination_AttributeElement $element)
+    {
         OEModule\OphCiExamination\models\OphCiExamination_AttributeOption::model()->deleteAll('attribute_element_id = :id', [':id' => $element->id]);
     }
 }
