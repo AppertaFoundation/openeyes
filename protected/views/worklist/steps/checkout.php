@@ -59,7 +59,7 @@ if ($is_step_instance) {
                 data-pathway-id="<?= $step instanceof PathwayStep ? $step->pathway->id : null ?>"
                 data-action="<?= $is_started ? 'checkout' : 'next' ?>"
                 <?= $is_completed ? 'style="display: none;"' : ''?>>
-                <?= $is_started ? 'Check out only' : 'Check out' ?>
+                Check out
             </button>
             <button 
                 class="<?= $is_completed ? 'blue' : 'red' ?> hint js-ps-popup-btn" 
