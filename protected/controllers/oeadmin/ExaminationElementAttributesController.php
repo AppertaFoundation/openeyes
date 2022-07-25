@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: himanshu
@@ -22,7 +23,7 @@ class ExaminationElementAttributesController extends BaseAdminController
 
     public function accessRules()
     {
-        return array(array('allow', 'roles' => array('admin')));
+        return array(array('allow', 'roles' => array('admin', 'OprnInstitutionAdmin')));
     }
 
     /**
@@ -43,7 +44,7 @@ class ExaminationElementAttributesController extends BaseAdminController
 
         $institution_id = !empty($_GET['institution_id']) ? $_GET['institution_id'] : \Yii::app()->session['selected_institution_id'];
 
-        $criteria = new CDbCriteria;
+        $criteria = new CDbCriteria();
         $criteria->addCondition("t.institution_id = :institution_id");
         $criteria->params = [':institution_id' => $institution_id];
 
@@ -261,7 +262,7 @@ class ExaminationElementAttributesController extends BaseAdminController
                     array('LOWER(name) LIKE :term'),
                     'OR'
                 );
-                $params[':term'] = '%'.strtolower(strtr($term, array('%' => '\%'))).'%';
+                $params[':term'] = '%' . strtolower(strtr($term, array('%' => '\%'))) . '%';
             }
 
             $criteria->order = 'name';
@@ -293,7 +294,8 @@ class ExaminationElementAttributesController extends BaseAdminController
         $admin->sortModel();
     }
 
-    public function deleteAttributeElements(OEModule\OphCiExamination\models\OphCiExamination_AttributeElement $element){
+    public function deleteAttributeElements(OEModule\OphCiExamination\models\OphCiExamination_AttributeElement $element)
+    {
         OEModule\OphCiExamination\models\OphCiExamination_AttributeOption::model()->deleteAll('attribute_element_id = :id', [':id' => $element->id]);
     }
 }
