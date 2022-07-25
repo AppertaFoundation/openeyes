@@ -10,8 +10,8 @@ $is_ready_to_start = $status === PathwayStep::STEP_REQUESTED && !in_array($statu
 $is_started = $status === PathwayStep::STEP_STARTED && !in_array($status, array(PathwayStep::STEP_REQUESTED, PathwayStep::STEP_COMPLETED));
 $is_completed = $status === PathwayStep::STEP_COMPLETED;
 if ($is_step_instance) {
-    $is_last_step = $step->id === $step->pathway->requested_steps[count($step->pathway->requested_steps) - 1]->id;
-    $is_first_requested_step = $step->id === $step->pathway->requested_steps[0]->id;
+    $is_last_step = $step->isLastRequestedStep();
+    $is_first_requested_step = $step->isFirstRequestedStep();
 } else {
     $is_last_step = $step->id === $step->pathway_type->default_steps[count($step->pathway_type->default_steps) - 1]->id;
     $is_first_requested_step = $step->id === $step->pathway_type->default_steps[0]->id;

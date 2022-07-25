@@ -26,8 +26,8 @@ if (!$service_firm && $subspecialty && isset($patient)) {
 }
 
 if ($is_step_instance) {
-    $is_last_step = $step->id === $step->pathway->requested_steps[count($step->pathway->requested_steps) - 1]->id;
-    $is_first_requested_step = $step->id === $step->pathway->requested_steps[0]->id;
+    $is_last_step = $step->isLastRequestedStep();
+    $is_first_requested_step = $step->isFirstRequestedStep();
 } else {
     $is_last_step = $step->id === $step->pathway_type->default_steps[count($step->pathway_type->default_steps) - 1]->id;
     $is_first_requested_step = $step->id === $step->pathway_type->default_steps[0]->id;

@@ -939,16 +939,18 @@ class BaseEventTypeController extends BaseModuleController
                                     Yii::app()->event->dispatch('step_completed', ['step' => $applicable_pathstep]);
                                 }
 
-                                $next_pathstep = $pathway->requested_steps[0];
+                                if (isset($pathway->requested_steps[0])) {
+                                    $next_pathstep = $pathway->requested_steps[0];
 
-                                if ($next_pathstep->type->type == "hold") {
-                                    $next_pathstep->nextStatus();
-                                    $next_pathstep->refresh();
+                                    if ($next_pathstep->type->type == "hold") {
+                                        $next_pathstep->nextStatus();
+                                        $next_pathstep->refresh();
 
-                                    $pathway->updateStatus();
+                                        $pathway->updateStatus();
 
-                                    if ((int)$next_pathstep->status === PathwayStep::STEP_STARTED) {
-                                        Yii::app()->event->dispatch('step_started', ['step' => $next_pathstep]);
+                                        if ((int)$next_pathstep->status === PathwayStep::STEP_STARTED) {
+                                            Yii::app()->event->dispatch('step_started', ['step' => $next_pathstep]);
+                                        }
                                     }
                                 }
                             }

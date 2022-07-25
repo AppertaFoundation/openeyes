@@ -510,6 +510,11 @@ class Pathway extends BaseActiveRecordVersioned
         }
 
         if ($start_time) {
+            //start_time is a string in some cases, to be able to compare it to end_time it must be a DateTime object
+            if(gettype($start_time) === 'string') {
+                $start_time = DateTime::createFromFormat('Y-m-d H:i:s', $this->start_time);
+            }
+
             // find the started break steps
             $started_break_steps = array_filter($this->started_steps, static function ($step) {
                 return $step->type->short_name === 'break';
@@ -665,8 +670,9 @@ class Pathway extends BaseActiveRecordVersioned
             // If there are no active steps but there are requested steps, the status is 'waiting'.
             $status = self::STATUS_WAITING;
         } else {
-            // If there are only completed steps, the status is 'discharged'.
-            $status = self::STATUS_DISCHARGED;
+            // If there are only completed steps, the status is 'done'.
+            $status = self::STATUS_DONE;
+            $this->end_time = date('Y-m-d H:i:s');
         }
 
         $this->status = $status;
