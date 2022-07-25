@@ -38,7 +38,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         <label for="institution_id">Institution:</label>
     </div>
     <div class="cols-5 column end">
-        <?=\CHtml::dropDownList('institution_id', @$_POST['institution_id'], CHtml::listData(Institution::model()->active()->findAll(array('order' => 'name')), 'id', 'name'), array('empty' => 'Select')) ?>
+        <?=\CHtml::dropDownList('institution_id', @$_POST['institution_id'], CHtml::listData(Institution::model()->active()->getTenanted(array('order' => 'name')), 'id', 'name'), array('empty' => 'Select')) ?>
     </div>
 </div>
 <div class="data-group">

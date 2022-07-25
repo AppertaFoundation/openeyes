@@ -69,7 +69,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', [
                     \CHtml::modelName($model).'[institutions]',
                     'institutions',
                     'id',
-                    Institution::model()->getList(!\Yii::app()->user->checkAccess('admin')),
+                    Institution::model()->getTenantedList(!\Yii::app()->user->checkAccess('admin')),
                     null,
                     ['class' => 'cols-full', 'empty' => '-- Add --', 'nowrapper' => true]);
             } else {

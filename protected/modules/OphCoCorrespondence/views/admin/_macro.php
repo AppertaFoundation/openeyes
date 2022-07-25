@@ -74,7 +74,7 @@ $recipients_data = $recipients_data + $none_option;
                     'LetterMacro[levels][institutions]',
                     'institutions',
                     'id',
-                    Institution::model()->getList(),
+                    Institution::model()->getTenantedList(),
                     null,
                     ['class' => 'cols-full', 'div-class' => 'typeInstitution', 'empty' => '- Institution -', 'nowrapper' => true, 'hidden' => true],
                 ) ?>

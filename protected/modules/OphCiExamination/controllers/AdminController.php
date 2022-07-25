@@ -893,7 +893,7 @@ class AdminController extends \ModuleAdminController
                 'filter_fields' => [
                     ['field' => 'institution_id',
                         'value' => \Institution::model()->getCurrent()->name,
-                        'choices' => \Institution::model()->getList(true)],
+                        'choices' => \Institution::model()->getTenantedList(true)],
                 ],
                 'filters_ready' => isset($_GET['institution_id']) && $_GET['institution_id'] === Yii::app()->session['selected_institution_id'],
             ]);
@@ -1025,7 +1025,7 @@ class AdminController extends \ModuleAdminController
                 'filter_fields' => [
                     ['field' => 'institution_id',
                     'value' => \Institution::model()->getCurrent()->name,
-                    'choices' => \Institution::model()->getList(true)],
+                    'choices' => \Institution::model()->getTenantedList(true)],
                 ],
                 'filters_ready' => isset($_GET['institution_id']) && $_GET['institution_id'] === Yii::app()->session['selected_institution_id'],
             )

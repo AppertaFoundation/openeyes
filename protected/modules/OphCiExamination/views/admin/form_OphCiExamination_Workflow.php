@@ -28,7 +28,7 @@
             <?= $form->dropDownList(
                 $model,
                 'institution_id',
-                Institution::model()->getList(true),
+                Institution::model()->getTenantedList(true),
                 ['class' => 'cols-full'],
             ) ?>
         </td>

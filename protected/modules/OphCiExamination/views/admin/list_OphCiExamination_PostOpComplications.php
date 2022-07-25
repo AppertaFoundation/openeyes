@@ -29,7 +29,7 @@
                     <?= CHtml::dropDownList(
                         'institution_id',
                         $institution_id,
-                        Institution::model()->getList(true),
+                        Institution::model()->getTenantedList(true),
                         ['class' => 'cols-6']
                     ) ?>
                 </td>

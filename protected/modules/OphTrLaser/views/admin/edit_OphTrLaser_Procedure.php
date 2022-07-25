@@ -71,7 +71,7 @@
                         'OphTrLaser_LaserProcedure[institutions]',
                         'institutions',
                         'id',
-                        Institution::model()->getList(false),
+                        Institution::model()->getTenantedList(false),
                         null,
                         ['class' => 'cols-full', 'empty' => '-- Add --', 'nowrapper' => true]);
                 } elseif (!$laser_procedure->id) {

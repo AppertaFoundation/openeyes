@@ -29,7 +29,7 @@
                             $filter_field['field'],
                             $filter_field['value'],
                             $filter_field['choices'] ?? SelectionHelper::listData($filter_field['model']),
-                            array('empty' => '-- Select --', 'class' => 'generic-admin-filter')
+                            (isset($filter_field['no_empty']) && $filter_field['no_empty']) ? array('class' => 'generic-admin-filter') : array('empty' => '-- Select --', 'class' => 'generic-admin-filter')
                                                    );
                                                     ?></div>
                 </div>

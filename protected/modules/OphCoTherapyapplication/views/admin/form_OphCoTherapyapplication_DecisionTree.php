@@ -18,5 +18,5 @@
 ?>
 
 <?php
-echo $form->dropDownList($model, 'institution_id', Institution::model()->getList(true), ['class' => 'cols-full']);
+echo $form->dropDownList($model, 'institution_id', Institution::model()->getTenantedList(true), ['class' => 'cols-full']);
 echo $form->textField($model, 'name', array('autocomplete' => Yii::app()->params['html_autocomplete'], 'size' => 40, 'maxlength' => 40));

@@ -175,6 +175,57 @@ class Institution extends BaseActiveRecordVersioned
         return $result;
     }
 
+    public function getTenanted($condition = '', $params = array(), $user_must_be_member = false)
+    {
+        if (!$user_must_be_member) {
+            return $this->with('authenticationMethods')->findAll($condition, $params);
+        } else {
+            $criteria = $this->getCommandBuilder()->createCriteria($condition, $params);
+
+            $userCriteria = new CDbCriteria();
+            $userCriteria->join = 'JOIN institution_authentication ia ON ia.institution_id = t.id JOIN user_authentication ua ON ua.institution_authentication_id = ia.id';
+            $userCriteria->condition = 'ua.user_id = :user_id';
+            $userCriteria->params = [':user_id' => \Yii::app()->user->id];
+
+            $criteria->mergeWith($userCriteria);
+
+            return $this->findAll($criteria);
+        }
+    }
+
+    public function getTenantedOr($default_to_id, $condition = '', $params = array(), $user_must_be_member = false)
+    {
+        return array_merge([$this->findByPk($default_to_id)], $this->getTenanted($condition, $params, $user_must_be_member));
+    }
+
+    public function getTenantedList($current_institution_only = true, $user_must_be_member = false)
+    {
+        $result = array();
+
+        if ($current_institution_only) {
+            $current_institution = $this->getCurrent();
+            $result[$current_institution->id] = $current_institution->name;
+        } else {
+            $cmd = Yii::app()->db->createCommand()
+                ->selectDistinct('i.id, i.name')
+                ->from('institution i')
+                ->join('institution_authentication ia', 'ia.institution_id = i.id');
+
+            if ($user_must_be_member) {
+                $cmd->join('user_authentication ua', 'ua.institution_authentication_id = ia.id');
+                $cmd->where('ua.user_id = :user_id', [':user_id' => \Yii::app()->user->id]);
+            }
+
+            foreach ($cmd->queryAll() as $institution) {
+                $result[$institution['id']] = $institution['name'];
+            }
+
+            natcasesort($result);
+        }
+
+        return $result;
+    }
+
     public function getCorrespondenceName()
     {
         return $this->name;

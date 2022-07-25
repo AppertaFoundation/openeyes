@@ -40,13 +40,19 @@ class ExaminationElementAttributesController extends BaseAdminController
             'attribute_elements.name',
             'is_multiselect',
         ));
+
+        $institution_id = !empty($_GET['institution_id']) ? $_GET['institution_id'] : \Yii::app()->session['selected_institution_id'];
+
         $criteria = new CDbCriteria;
         $criteria->addCondition("t.institution_id = :institution_id");
-        $criteria->params = [':institution_id' => \Yii::app()->session['selected_institution_id']];
+        $criteria->params = [':institution_id' => $institution_id];
+
         $admin->getSearch()->setCriteria($criteria);
         $admin->setModelDisplayName('Element Attributes');
         $admin->div_wrapper_class = 'cols-8';
         $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
+
+        $admin->setListTemplate('//admin/generic/listInstitution');
         $admin->listModel();
     }
     /**
@@ -62,6 +68,13 @@ class ExaminationElementAttributesController extends BaseAdminController
         $admin->setCustomSaveURL('/oeadmin/ExaminationElementAttributes/update');
         if ($id) {
             $admin->setModelId($id);
+        } else {
+            $institution_id = !empty($_GET['institution_id']) ? $_GET['institution_id'] : \Yii::app()->session['selected_institution_id'];
+            $model = $admin->getModel();
+
+            $model->institution_id = $institution_id;
+
+            $admin->setModel($model);
         }
         $admin->setModelDisplayName('Element Attributes');
 
@@ -78,7 +91,7 @@ class ExaminationElementAttributesController extends BaseAdminController
             ),
             'institution' => array(
                 'widget' => 'DropDownList',
-                'options' => Institution::model()->getList(true),
+                'options' => Institution::model()->getTenantedList(false, true),
                 'htmlOptions' => ['class' => 'cols-8'],
                 'hidden' => false,
                 'layoutColumns' => null,
