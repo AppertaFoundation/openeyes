@@ -98,7 +98,7 @@ class Address extends BaseActiveRecordVersioned
             'address2' => 'Address2',
             'city' => 'City',
             'postcode' => 'Postcode',
-            'county' => Yii::app()->params['county_label'],
+            'county' => \SettingMetadata::model()->getSetting('county_label'),
             'country_id' => 'Country',
             'address_type_id' => 'Address Type',
         );
