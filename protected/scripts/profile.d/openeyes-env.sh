@@ -151,4 +151,7 @@
 # export PROFILE_USER_READONLY_FIELDS=''
 
 ## Number of FULL days events can be edited for (by non-admins)
-#OE_EVENT_LOCK_DAYS=1
+#export OE_EVENT_LOCK_DAYS=1
+
+## Worklist settings
+# export OE_WORKLIST_ALLOW_DEFINITION_EDIT=true

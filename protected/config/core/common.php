@@ -811,6 +811,7 @@ $config = array(
         'worklist_default_pagination_size' => 1000,
         //// days of the week to be ignored when determining which worklists to render - Mon, Tue etc
         'worklist_dashboard_skip_days' => array('NONE'),
+        'worklist_always_allow_definition_edit' => strtolower(getenv('OE_WORKLIST_ALLOW_DEFINITION_EDIT')) != 'false',
         'tech_support_provider' => !empty(trim(getenv(@'OE_TECH_SUPPORT_PROVIDER'))) ? htmlspecialchars(getenv(@'OE_TECH_SUPPORT_PROVIDER')) :  null,
         'tech_support_url' => !empty(trim(getenv('OE_TECH_SUPPORT_URL'))) ? getenv('OE_TECH_SUPPORT_URL') :  null,
         'pw_restrictions' => array(
@@ -953,6 +954,7 @@ $config = array(
 
         // enable mailing LA (./yiic cvidelivery)
         'cvi_la_delivery_enabled' => strtolower(getenv("CVI_LA_DELIVERY_ENABLED")) == "true" ? true : false,
+        /** END CVI PARAMS */
     ),
 );
 

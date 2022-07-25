@@ -22,6 +22,10 @@
     <h2><?= $definition->isNewRecord ? 'Create' : 'Edit' ?> Worklist Definition</h2>
 
     <?php echo $this->renderPartial('//admin/_form_errors', array('errors' => $errors)) ?>
+
+    <div class="alert-box with-icon info" id="edit-definition-warning">
+        Any changes to settings will only apply to new appointments. Existing appointments will keep the existing settings. Contact the support desk if you need to update existing appointments.
+    </div>
     <?php
     $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         'id' => 'worklist-form',
