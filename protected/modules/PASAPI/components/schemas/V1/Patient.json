@@ -23,6 +23,9 @@
     "type": "date",
     "required": true
   },
+  "PrimaryInstitution": {
+    "type": "string"
+  },
   "Gender": {
     "type": "choice",
     "choices": ["M", "F", "U"]

@@ -48,6 +48,7 @@ use OEModule\OphCiExamination\models\Element_OphCiExamination_CommunicationPrefe
  * @property tinyint $deleted
  * @property int $ethnic_group_id
  * @property int $patient_source
+ * @property int $primary_institution_id
  *
  * The followings are the available model relations:
  * @property Episode[] $episodes
@@ -67,6 +68,7 @@ use OEModule\OphCiExamination\models\Element_OphCiExamination_CommunicationPrefe
  * @property PatientIdentifier[] $identifiers
  * @property PatientIdentifier[] $localIdentifiers
  * @property PatientIdentifier $globalIdentifier
+ * @property Institution $primary_institution
  *
  * The following are available through get methods
  * @property SecondaryDiagnosis[] $systemicDiagnoses
@@ -205,7 +207,8 @@ class Patient extends BaseActiveRecordVersioned
             'identifiers' => array(self::HAS_MANY, 'PatientIdentifier', 'patient_id'),
             'globalIdentifier' => array(self::HAS_ONE, 'PatientIdentifier', 'patient_id', 'condition' => 'patientIdentifierType.usage_type="GLOBAL"', 'with' => 'patientIdentifierType'),
             'localIdentifiers' => array(self::HAS_MANY, 'PatientIdentifier', 'patient_id', 'condition' => 'patientIdentifierType.usage_type="LOCAL"', 'with' => 'patientIdentifierType'),
-            'patientContactAssociates' => array(self::HAS_MANY,'PatientContactAssociate','patient_id'),
+            'patientContactAssociates' => array(self::HAS_MANY, 'PatientContactAssociate', 'patient_id'),
+            'primary_institution' => array(self::BELONGS_TO, 'Institution', 'primary_institution_id'),
         );
     }
 

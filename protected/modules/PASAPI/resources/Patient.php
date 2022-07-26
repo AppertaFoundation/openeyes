@@ -131,6 +131,7 @@ class Patient extends BaseResource
         $this->mapEthnicGroup($patient);
         $this->mapGp($patient);
         $this->mapPractice($patient);
+        $this->mapInstitution($patient);
 
         if (!$patient->validate()) {
             $this->addModelErrors($patient->getErrors());
@@ -175,6 +176,19 @@ class Patient extends BaseResource
             $patient->gender = strtoupper($this->getAssignedProperty('Gender'));
         } elseif (!$this->partial_record) {
             $patient->gender = null;
+        }
+    }
+    private function mapInstitution(\Patient $patient)
+    {
+        if (property_exists($this, 'PrimaryInstitution')) {
+            $code = $this->getAssignedProperty('PrimaryInstitution');
+            if ($institution = \Institution::model()->find('remote_id = :code', [':code' => $code])) {
+                $patient->primary_institution_id = $institution->id;
+            } else {
+                $this->addWarning('Unrecognised institution code ' . $code);
+            }
+        } elseif (!$this->partial_record) {
+            $patient->primary_institution_id = null;
         }
     }
 
