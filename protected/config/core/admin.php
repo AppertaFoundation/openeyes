@@ -40,7 +40,7 @@ return array(
                 'Commissioning body types' => ['uri' => '/admin/commissioning_body_types', 'restricted' => array('admin')],
                 'Commissioning body services' => ['uri' => '/admin/commissioning_body_services', 'restricted' => array('admin')],
                 'Commissioning body service types' => ['uri' => '/admin/commissioning_body_service_types', 'restricted' => array('admin')],
-                'Event deletion requests' => ['uri' => '/admin/eventDeletionRequests', 'restricted' => array('admin')],
+                'Event deletion requests' => '/admin/eventDeletionRequests',
                 'Custom episode summaries' => ['uri' => '/admin/episodeSummaries', 'restricted' => array('admin')],
                 'Unique Codes' => ['uri' => '/oeadmin/uniqueCodes/list', 'restricted' => array('admin')],
                 'Examination Event Logs' => '/oeadmin/eventLog/list',

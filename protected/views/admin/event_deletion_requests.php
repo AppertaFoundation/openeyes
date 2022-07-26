@@ -11,11 +11,25 @@
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+ *
+ * @var $institutions array
+ * @var $selected_institution int
+ * @var $events Event[]
  */
 ?>
 
 <div class="cols-7">
     <form id="admin_event_deletion_requests">
+        <select id="select-institution">
+            <?php foreach ($institutions as $institution) {
+                if ($institution['id'] === $selected_institution) {
+                    echo "<option value=\"{$institution['id']}\" selected>{$institution['name']}</option>";
+                } else {
+                    echo "<option value=\"{$institution['id']}\">{$institution['name']}</option>";
+                }
+            } ?>
+        </select>
+
         <input type="hidden" name="YII_CSRF_TOKEN"
                value="<?php echo Yii::app()->request->csrfToken?>" />
         <table class="standard">
@@ -69,3 +83,10 @@
         </table>
     </form>
 </div>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#select-institution').change(function() {
+            window.location.href = '/admin/eventDeletionRequests?selected_institution=' + $(this).val();
+        });
+    });
+</script>

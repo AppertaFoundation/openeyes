@@ -2626,11 +2626,29 @@ class AdminController extends BaseAdminController
 
     public function actionEventDeletionRequests()
     {
+        $selected_institution = Yii::app()->request->getQuery('selected_institution', Yii::app()->session['selected_institution_id']);
+        $events = Event::model()->findAll(
+            array(
+                'order' => 'last_modified_date asc',
+                'condition' => 'delete_pending = 1 AND (institution_id IS NULL OR institution_id = :id)',
+                'params' => array(':id' => $selected_institution)
+            )
+        );
+
+        $institutions = Yii::app()->db->createCommand()
+            ->select('i.id, i.name')
+            ->from('user_authentication ua')
+            ->join('institution_authentication ia', 'ia.id = ua.institution_authentication_id')
+            ->join('institution i', 'i.id = ia.institution_id')
+            ->where('ua.user_id = :id')
+            ->group('i.id, i.name')
+            ->bindValues([':id' => Yii::app()->user->id])
+            ->queryAll();
+
         $this->render('/admin/event_deletion_requests', array(
-        'events' => Event::model()->findAll(array(
-            'order' => 'last_modified_date asc',
-            'condition' => 'delete_pending = 1',
-        )),
+            'events' => $events,
+            'institutions' => $institutions,
+            'selected_institution' => $selected_institution
         ));
     }
 
