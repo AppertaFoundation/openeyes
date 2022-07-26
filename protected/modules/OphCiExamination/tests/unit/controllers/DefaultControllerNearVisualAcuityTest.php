@@ -49,6 +49,8 @@ class DefaultControllerNearVisualAcuityTest extends BaseDefaultControllerTest
      */
     public function saving_only_one_side($side, $eye_id)
     {
+        $this->mockCurrentInstitution();
+
         // simple save to ensure full success of save to the database
         $saved_element = $this->createElementWithDataWithController([
             "eye_id" => $eye_id,

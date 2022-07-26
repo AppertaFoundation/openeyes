@@ -243,11 +243,15 @@
 
         hotlistButton.click(hotlistPanelClickFunc);
         hotlistButton.hover(hotlistPanelEnterFunc, hotlistPanelExitFunc);
-
         hotlistPanel.hide();
         hotlistButton.removeClass('open');
-        worklistFilterPanel.show();
-        worklistButton.addClass('open');
+
+        // only auto show worklist filter panel if first time opened for each user (10000 day expiry)
+        if ($.cookie('have_shown_worklist_filter_panel_<?php echo \Yii::app()->user->id ?>') !== 'yes') {
+            worklistFilterPanel.show();
+            worklistButton.addClass('open');
+            $.cookie('have_shown_worklist_filter_panel_<?php echo \Yii::app()->user->id ?>', 'yes', { expires: 10000 });
+        }
 
         $(window).resize(function() {
             if (worklistButton.hasClass('open')) {
@@ -273,9 +277,7 @@
     <tr class="js-removeable-filter" data-filter-type="{{type}}">
         <th>{{name}}</th>
         <td>{{value}}</td>
-        <td>
-              <i class="oe-i remove-circle small js-remove-filter"></i>
-        </td>
+        <td><i class="oe-i remove-circle small js-remove-filter"></i></td>
     </tr>
 </script>
 

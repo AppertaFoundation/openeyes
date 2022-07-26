@@ -213,7 +213,7 @@ $initial_filter = $session_filter_info['filter'];
     </div>
 </div>
 
-<main class="oe-full-content oe-clinic" id="js-clinic-manager" data-mode="<?= Yii::app()->controller->jsVars['popupMode'] ?>">
+<main class="oe-full-content oe-clinic" id="js-clinic-manager">
     <?php
     $this->renderPartial(
         '//worklist/pathway_step_picker',
@@ -235,7 +235,7 @@ $initial_filter = $session_filter_info['filter'];
     }
     ?>
 </main>
-<div class="oe-patient-quick-overview" style="display: none;">
+<div class="oe-patient-quick-overview" style="display: none;" data-mode="full-to-right">
     <div class="close-icon-btn" style="display: none;" onclick="closePatientPop();">
         <i class="oe-i remove-circle medium"></i>
     </div>
@@ -268,52 +268,7 @@ $initial_filter = $session_filter_info['filter'];
         <div class="patient-details">
             {{#displayPrimaryNumberUsageCode}}
                 <div class="hospital-number">
-                    <span>{{ hospitalNumberPrompt }}</span>
-                    <div class="js-copy-to-clipboard hospital-number" style="cursor: pointer;">
-                        {{ hospitalNumberValue }}
-                        {{#patientIdentifiers.length}}
-                            <i class="oe-i info small-icon pro-theme  js-has-tooltip" data-tooltip-content="
-                            {{#patientIdentifiers}}
-                                {{#longTitle}}
-                                    {{longTitle}}
-                                {{/longTitle}}
-                                {{^longTitle}}
-                                    {{shortTitle}}
-                                {{/longTitle}}
-                                {{#valueDisplayPrefix}}
-                                    {{valueDisplayPrefix}}
-                                {{/valueDisplayPrefix}}
-                                : {{value}}
-                                {{#valueDisplaySuffix}}
-                                    {{valueDisplaySuffix}}
-                                {{/valueDisplaySuffix}}
-                                </br>
-                            {{/patientIdentifiers}}
-                            {{#patientDeletedIdentifiers}}
-                                <hr>
-                                    Previous Numbers
-                                <br>
-                                {{#longTitle}}
-                                    {{longTitle}}
-                                {{/longTitle}}
-                                {{^longTitle}}
-                                    {{shortTitle}}
-                                {{/longTitle}}
-                                {{#valueDisplayPrefix}}
-                                    {{valueDisplayPrefix}}
-                                {{/valueDisplayPrefix}}
-                                : {{value}}
-                                {{#valueDisplaySuffix}}
-                                    {{valueDisplaySuffix}}
-                                {{/valueDisplaySuffix}}
-                                </br>
-                            {{/patientDeletedIdentifiers}}
-                            "></i>
-                        {{/patientIdentifiers.length}}
-                        {{#patientPrimaryIdentifierStatus}}
-                            <i class="oe-i {{ patientPrimaryIdentifierStatusClassName }} small"></i>
-                        {{/patientPrimaryIdentifierStatus}}
-                    </div>
+                    <span>{{ hospitalNumberPrompt }}</span> {{ hospitalNumberValue }}
                 </div>
             {{/displayPrimaryNumberUsageCode}}
             {{#displaySecondaryNumberUsageCode}}
@@ -1508,12 +1463,13 @@ $initial_filter = $session_filter_info['filter'];
         $patientQuickOverviewElem.append('<div class="quick-overview-content"><i class="spinner"></i></div');
         // Get the Patient Id.
         const patientId = $(element).parent().attr('data-patient-id');
-        const mode = $('.oe-clinic').attr('data-mode');
+        const mode = $patientQuickOverviewElem.attr('data-mode');
         $patientQuickOverviewElem.get(0).style.cssText = " ";
+        
+        let rect = element.getBoundingClientRect();
 
         if( mode === "float"){
             $patientQuickOverviewElem.removeClass('side-panel');
-            let rect = element.getBoundingClientRect();
             // Check not too close the bottom of the screen.
             if (window.innerHeight - rect.y > POPUP_HEIGHT_APPROXIMATION) {
                 $patientQuickOverviewElem.get(0).style.top = (rect.y + rect.height + POPUP_TOP_OFFSET) + "px";
@@ -1522,7 +1478,12 @@ $initial_filter = $session_filter_info['filter'];
             }
             $patientQuickOverviewElem.get(0).style.left = (rect.x - POPUP_LEFT_OFFSET +  rect.width/2)  + "px";
         } else {
-            $patientQuickOverviewElem.addClass("side-panel");
+            $patientQuickOverviewElem.get(0).classList.add("full-panel");
+			if( mode.endsWith("to-right")){
+				$patientQuickOverviewElem.get(0).style.left = rect.right + 20 + 'px';
+			} else {
+				$patientQuickOverviewElem.get(0).left = rect.left - (420 + 20) + 'px';
+			}
         }
 
         if ($('.js-patient-popup-data').find(`[data-patient-id=${patientId}]`).length) {
@@ -1581,4 +1542,15 @@ $initial_filter = $session_filter_info['filter'];
         isClicked = !isClicked
         showPatientQuickOverview(element, isClicked);
     }
+
+    // auto close patient quick view when scrolling
+    document.getElementById('js-clinic-manager').addEventListener('scroll', function() {
+        if(isOpen) {
+            if(isClicked) {
+                closePatientPop();
+            } else {
+                hidePatientQuickOverview();
+            }
+        }
+    });
 </script>
