@@ -1,6 +1,7 @@
 {
   "license": "AGPL-3.0-only",
   "devDependencies": {
+    "cypress": "^10.3.0",
     "decomment": "^0.8.6",
     "glob": "~7.0.3",
     "gzip-js": "0.3.2",
@@ -25,5 +26,9 @@
     "worker-loader": "^3.0.7",
     "webpack": "^5.0.0",
     "object-hash": "2.2.0"
+  },
+  "scripts": {
+    "cy:run": "cypress run",
+    "cy:open": "cypress open"
   }
 }

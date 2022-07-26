@@ -1,5 +1,8 @@
 <?php
 
+use OE\factories\DataGenerator;
+use OEModule\CypressHelper\CypressHelperModule;
+
 /**
 * OpenEyes.
 *
@@ -167,6 +170,9 @@ $config = array(
                 ),
             ),
         ),
+        'dataGenerator' => [
+            'class' => DataGenerator::class
+        ],
         'db' => array(
             'class' => 'OEDbConnection',
             'emulatePrepare' => true,
@@ -1003,6 +1009,11 @@ $modules = array(
         'BreakGlass' => array('class' => '\OEModule\BreakGlass\BreakGlassModule'),
         );
 
+if (strtolower(getenv('OE_MODE')) !== 'live') {
+    $modules['CypressHelper'] = [
+        'class' => CypressHelperModule::class
+    ];
+}
 
 /**
  * Setup caches

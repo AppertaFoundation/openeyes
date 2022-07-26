@@ -41,7 +41,10 @@
     "zhuravljov/yii2-debug": "^1.5"
   },
   "config": {
-    "bin-dir": "bin"
+    "bin-dir": "bin",
+    "allow-plugins": {
+      "wikimedia/composer-merge-plugin": true
+    }
   },
   "replace": {
     "ezyang/htmlpurifier": "*"
@@ -53,6 +56,10 @@
     }
   },
   "autoload": {
+    "psr-4": {
+      "OE\\concerns\\": "protected/concerns",
+      "OE\\factories\\": "protected/factories"
+    },
     "classmap": [
       "features/bootstrap/Pages/OpenEyesPage.php"
     ]
