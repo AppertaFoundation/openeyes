@@ -890,7 +890,14 @@ $(function () {
                     data: data,
                     success: function (response) {
                         // This is a requested step so as long as it is deleted the order of other requested steps should be correct.
-                        const $thisStep = $('.oe-pathstep-btn[data-pathstep-id="' + ps.pathstepId + '"], .oe-pathstep-btn[data-pathstep-type-id="' + ps.pathstepTypeId + '"][data-visit-id="' + ps.visitID +'"]');
+                        let $thisStep;
+
+                        if (ps.pathstepId !== ''){
+                            $thisStep = $('.oe-pathstep-btn[data-pathstep-id="' + ps.pathstepId + '"], .oe-pathstep-btn[data-pathstep-type-id="' + ps.pathstepTypeId + '"][data-visit-id="' + ps.visitID +'"]');
+                        } else {
+                            $thisStep = $('.oe-pathstep-btn[data-pathstep-type-id="' + ps.pathstepTypeId + '"][data-visit-id="' + ps.visitID +'"]');
+                        }
+
                         const $pathway = $thisStep.closest('td.js-pathway-container');
                         const oldSteps = collectActiveTodoStepsFrom($pathway);
 
