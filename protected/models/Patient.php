@@ -201,7 +201,7 @@ class Patient extends BaseActiveRecordVersioned
             'lastReferral' => array(self::HAS_ONE, 'Referral', 'patient_id', 'order' => 'received_date desc'),
             'adherence' => array(self::HAS_ONE, 'MedicationAdherence', 'patient_id'),
             'geneticsPatient' => array(self::HAS_ONE, 'GeneticsPatient', 'patient_id'),
-            'trials' => array(self::HAS_MANY, 'TrialPatient', 'patient_id'),
+            'trials' => array(self::HAS_MANY, 'TrialPatient', 'patient_id', 'order' => 'ISNULL(trials.status_update_date) DESC, trials.status_update_date DESC, trials.created_date DESC'),
             'patientuserreferral' => array(self::HAS_MANY, 'PatientUserReferral', 'patient_id','alias' => 'patient_user_referral','order' => 'patient_user_referral.created_date DESC' ),
             'archiveIdentifiers' => array(self::HAS_MANY, 'ArchivePatientIdentifier', 'patient_id'),
             'identifiers' => array(self::HAS_MANY, 'PatientIdentifier', 'patient_id'),

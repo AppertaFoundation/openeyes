@@ -295,7 +295,7 @@ class TrialController extends BaseModuleController
         );
 
         $this->renderJSON([
-            'name' => CHtml::encode($trial->name),
+            'name' => ['name' => CHtml::encode($trial->name), 'link' => Yii::app()->controller->createUrl('/OETrial/trial/view', array('id' => $trial->id))],
             'started-date' => $trial->getStartedDateForDisplay(),
             'closed-date' => $trial->getClosedDateForDisplay(),
             'coordinators' => implode(', ', $coordinators),
