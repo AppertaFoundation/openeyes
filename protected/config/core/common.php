@@ -811,13 +811,26 @@ $config = array(
         'oe_version' => '6.1.1-pre-nightly',
         'gp_label' => !empty(trim(getenv('OE_GP_LABEL'))) ? getenv('OE_GP_LABEL') : null,
         'general_practitioner_label' => !empty(trim(getenv('OE_GENERAL_PRAC_LABEL'))) ? getenv('OE_GENERAL_PRAC_LABEL') : null,
-        // number of days in the future to retrieve worklists for the automatic dashboard render (0 by default in v3)
-        'worklist_dashboard_future_days' => 0,
-        // page size of worklists - recommended to be very large by default, as paging is not generally needed here
-        'worklist_default_pagination_size' => 1000,
-        //// days of the week to be ignored when determining which worklists to render - Mon, Tue etc
-        'worklist_dashboard_skip_days' => array('NONE'),
+        // allow duplicate entries on an automatic worklist for a patient (default = false)
+        'worklist_allow_duplicate_patients' => strtolower(getenv('OE_WORKLIST_ALLOW_DUPLICATE_PATIENTS')) == 'true',
+        // override edit checks on definitions so they can always be edited (defrault = true)
         'worklist_always_allow_definition_edit' => strtolower(getenv('OE_WORKLIST_ALLOW_DEFINITION_EDIT')) != 'false',
+        // number of days in the future to retrieve worklists for the automatic dashboard render (0 by default)
+        'worklist_dashboard_future_days' => !empty(getenv('OE_WORKLIST_DASHBOARD_FUTURE_DAYS')) ? getenv('OE_WORKLIST_DASHBOARD_FUTURE_DAYS') : 0,
+        // page size of worklists - recommended to be very large by default, as paging is not generally needed here
+        'worklist_default_pagination_size' => !empty(getenv('OE_WORKLIST_DEFAULT_PAGINATION_SIZE')) ? getenv('OE_WORKLIST_DEFAULT_PAGINATION_SIZE') : 1000,
+        // days of the week to be ignored when determining which worklists to render - Mon, Tue etc
+        'worklist_dashboard_skip_days' => array('NONE'),
+        // how far in advance worklists should be generated for matching (x days, weeks, months, years)
+        'worklist_default_generation_limit' => !empty(getenv('OE_WORKLIST_DEFAULT_GENERATION_LIMIT')) ? getenv('OE_WORKLIST_DEFAULT_GENERATION_LIMIT') : '1 month',
+        // default start time used for automatic worklist definitions
+        'worklist_default_start_time' => !empty(getenv('OE_WORKLIST_DEFAULT_START_TIME')) ? getenv('OE_WORKLIST_DEFAULT_START_TIME') : '08:00',
+        // default end time used for automatic worklist definitions
+        'worklist_default_end_time' => !empty(getenv('OE_WORKLIST_DEFAULT_END_TIME')) ? getenv('OE_WORKLIST_DEFAULT_END_TIME') : '17:00',
+        // any appointments sent in before this date will not trigger errors when sent in (use YYYY-mm-dd format)
+        'worklist_ignore_date' => !empty(getenv('OE_WORKLIST_IGNORE_DATE')) ? getenv('OE_WORKLIST_IGNORE_DATE') : null,
+        // whether we should render empty worklists in the dashboard or not (default = true)
+        'worklist_show_empty' => strtolower(getenv('OE_WORKLIST_SHOW_EMPTY')) != 'false',
         'tech_support_provider' => !empty(trim(getenv(@'OE_TECH_SUPPORT_PROVIDER'))) ? htmlspecialchars(getenv(@'OE_TECH_SUPPORT_PROVIDER')) :  null,
         'tech_support_url' => !empty(trim(getenv('OE_TECH_SUPPORT_URL'))) ? getenv('OE_TECH_SUPPORT_URL') :  null,
         'pw_restrictions' => array(
