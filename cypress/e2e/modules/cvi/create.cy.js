@@ -10,7 +10,6 @@ describe('CVI creation form behaviour', () => {
             .then((patient) => {
                 return cy.getEventCreationUrl(patient.id, 'OphCoCvi')
                     .then((url) => {
-                        console.log(patient);
                         return [url, patient];
                     });
             })
