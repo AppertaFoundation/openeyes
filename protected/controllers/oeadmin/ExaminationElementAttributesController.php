@@ -23,7 +23,7 @@ class ExaminationElementAttributesController extends BaseAdminController
 
     public function accessRules()
     {
-        return array(array('allow', 'roles' => array('admin')));
+        return array(array('allow', 'roles' => array('admin', 'OprnInstitutionAdmin')));
     }
 
     /**
