@@ -37,7 +37,9 @@
                     'class' => 'small',
                 )
             );
-            $this->event_actions[] = EventAction::button('Export', 'export', null, array('id' => 'et_export', 'class' => 'small'));
+            if($elementLetter->exportUrl !== NULL) {
+                $this->event_actions[] = EventAction::button('Export', 'export', null, array('id' => 'et_export', 'class' => 'small'));
+            }
         }
     }
     ?>

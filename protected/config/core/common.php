@@ -412,7 +412,7 @@ $config = array(
         'institution_code' => !empty(trim(getenv('OE_INSTITUTION_CODE'))) ? getenv('OE_INSTITUTION_CODE') : 'NEW',
         'institution_specialty' => 130,
         'erod_lead_time_weeks' => 3,
-        'correspondence_export_url' => !empty(trim(getenv("OE_CORRESPONDENCE_EXPORT_WSDL_URL"))) ? trim(getenv("OE_CORRESPONDENCE_EXPORT_WSDL_URL")) : 'localhost',
+        'correspondence_export_url' => !empty(trim(getenv("OE_CORRESPONDENCE_EXPORT_WSDL_URL"))) ? trim(getenv("OE_CORRESPONDENCE_EXPORT_WSDL_URL")) : null,
         // In most instances the location URL is derived from the WSDL provided above,
         // but for local testing using SoapUI this will need to be manually specified.
         'correspondence_export_location_url' => !empty(trim(getenv("OE_CORRESPONDENCE_EXPORT_URL"))) ? trim(getenv("OE_CORRESPONDENCE_EXPORT_URL")) : null,
