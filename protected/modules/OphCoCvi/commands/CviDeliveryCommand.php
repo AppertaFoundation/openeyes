@@ -127,8 +127,10 @@ EOH;
             $info->gp_delivery_status = Element_OphCoCvi_EventInfo::DELIVERY_STATUS_SENT;
             $info->save();
 
+            $hos_num = PatientIdentifier::model()->find('patient_id = :patient_id and patient_identifier_type_id = 1', array('patient_id' => $event->episode->patient->id));
+
             $this->logData(array(
-                'hos_num' => $event->episode->patient->hos_num,
+                'hos_num' => $hos_num,
                 'clinician_name' => $event->user->getFullName(),
                 'letter_type' => "",
                 'letter_finalised_date' => $event->last_modified_date,
@@ -217,7 +219,7 @@ EOH;
         $subject = SettingMetadata::model()->getSetting('cvidelivery_rcop_subject');
         $body = SettingMetadata::model()->getSetting('cvidelivery_rcop_body');
 
-        if (!$this->sendEmail($rco_email, $file, $from_email, $from_name, $subject, $body)) {
+        if (!$this->sendEmail($rco_email, $file, $event->site_id)) {
             $this->log_error("Failed to send email to: $rco_email");
             $info->rco_delivery_status = Element_OphCoCvi_EventInfo::DELIVERY_STATUS_ERROR;
             $info->save();
