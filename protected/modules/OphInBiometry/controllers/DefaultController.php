@@ -31,7 +31,10 @@ class DefaultController extends BaseEventTypeController
 
             if ($unlinkedEvent->save()) {
                 $importedEvent->is_linked = 1;
-                $importedEvent->save();
+
+                if ($importedEvent->save()) {
+                    $this->updateEventStep($unlinkedEvent);
+                }
             }
 
             $transaction->commit();
