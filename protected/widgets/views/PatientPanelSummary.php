@@ -53,7 +53,7 @@ $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient($displa
                     <span><?= PatientIdentifierHelper::getIdentifierPrompt($primary_identifier); ?> </span>
                     <div class="js-copy-to-clipboard hospital-number" style="cursor: pointer;">
                         <?= PatientIdentifierHelper::getIdentifierValue($primary_identifier); ?>
-                        
+
                         <?php if ($display_primary_number_usage_code === 'GLOBAL' && $primary_identifier && $primary_identifier->patientIdentifierStatus) { ?>
                             <i class="oe-i <?= isset($primary_identifier->patientIdentifierStatus->icon->class_name) ? $primary_identifier->patientIdentifierStatus->icon->class_name : 'exclamation' ?> small"></i>
                         <?php } ?>
@@ -129,11 +129,7 @@ $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient($displa
                     <?php }?>
                     <?php $has_trial_user_role = Yii::app()->user->checkAccess('Trial User'); ?>
                     <?php if ($this->patient->isEditable() && !$this->patient->isDeleted()) : ?>
-              <div class="patient-local-edit js-patient-local-edit-btn"
-                                <?php if (Yii::app()->moduleAPI->get('OETrial') && $has_trial_user_role) {
-                                    echo 'style ="top: 34px; right: 25px"';
-                                }?>
-              >
+              <div class="patient-local-edit js-patient-local-edit-btn">
                   <a href="<?php echo $this->controller->createUrl('/patient/update/', array('id' => $this->patient->id, 'prevUrl' => Yii::app()->request->url)); ?>" >
                       <svg viewBox="0 0 30 30" class="icon">
                           <use xlink:href="<?php echo $navIconsUrl; ?>#local-edit-icon"></use>
