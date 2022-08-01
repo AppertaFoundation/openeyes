@@ -320,8 +320,9 @@ class TheatreDiaryController extends BaseModuleController
         }
 
         $criteria->addCondition('`t`.booking_cancellation_date is null');
+        $criteria->addCondition('patient_identifier_not_deleted.patient_identifier_type_id=1');
 
-        $criteria->order = 'ward.code, patient.hos_num';
+        $criteria->order = 'ward.code, patient_identifier_not_deleted.value';
 
         Yii::app()->event->dispatch('start_batch_mode');
 
@@ -347,6 +348,7 @@ class TheatreDiaryController extends BaseModuleController
                                     'with' => array(
                                         'patient' => array(
                                             'with' => 'contact',
+                                            'with' => 'identifiers'
                                         ),
                                     ),
                                 ),
