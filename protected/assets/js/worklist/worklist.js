@@ -439,7 +439,7 @@ $(function () {
             pathstep_id: ps.pathstepId,
             pathstep_type_id: ps.pathstepTypeId,
             visit_id: ps.visitID,
-        }, null, null, updatePathstepIcon);
+        }, '/OphDrPGDPSD/PSD/getPathStep', null, updatePathstepIcon);
     };
     // use timeout to handle the popup position and display
     // to avoid the popup position updated frame by frame

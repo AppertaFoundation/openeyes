@@ -305,8 +305,13 @@
     // setup the popup height after getting detailed content
     PathStep.prototype.configPopupHeight = function ($popup, popup_content_wrapper_class) {
         let popup_ctn = $popup.get(0);
-        let scrollHeight = $popup.find(popup_content_wrapper_class).get(0).scrollHeight;
-        popup_ctn.style.height = (scrollHeight + 20) + 'px';
+        let $popup_content_wrapper = $popup.find(popup_content_wrapper_class)
+        // some popups no longer have a content wrapper and cannot read the height
+        // in this case do nothing
+        if ($popup_content_wrapper.length > 0) {
+            let scrollHeight = $popup_content_wrapper.get(0).scrollHeight;
+            popup_ctn.style.height = (scrollHeight + 20) + 'px';
+        }
     };
 
     // check if there is any existed popup
