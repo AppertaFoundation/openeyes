@@ -54,7 +54,7 @@ if ($is_step_instance) {
         <?php if (isset($worklist_patient)) { ?>
             <button 
                 class="green hint js-ps-popup-btn" 
-                data-pathstep-id="<?=$step->id?>"
+                data-pathstep-id="<?= $step instanceof PathwayStep ? $step->id : null ?>"
                 data-pathway-id="<?= $step instanceof PathwayStep ? $step->pathway->id : null ?>"
                 data-action="checkout"
                 <?= $is_completed ? 'style="display: none;"' : ''?>>
@@ -62,7 +62,7 @@ if ($is_step_instance) {
             </button>
             <button 
                 class="<?= $is_completed ? 'blue' : 'red' ?> hint js-ps-popup-btn" 
-                data-pathstep-id="<?=$step->id?>"
+                data-pathstep-id="<?= $step instanceof PathwayStep ? $step->id : null ?>"
                 data-pathway-id="<?= $step instanceof PathwayStep ? $step->pathway->id : null ?>"
                 data-action="undo_finish"
                 <?= $is_requested ? 'style="display: none;"' : ''?>>
