@@ -18,6 +18,9 @@ class DefaultController extends BaseModuleController
         );
     }
 
+    /**
+     * @throws Exception
+     */
     public function actionIndex()
     {
         // If value doesn't exist redirect to homepage

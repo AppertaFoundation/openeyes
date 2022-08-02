@@ -327,8 +327,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     DiagnosesController.prototype.addEntry = function (selectedItems) {
         let controller = this;
         var rows = this.createRow(selectedItems);
-        this.toggleTable();
-        this.toggleNoOphthalmicDiagnoses();
+        
         for (var i in rows) {
             this.$table.find('tbody').append(rows[i]);
             this.appendSecondaryDiagnoses(selectedItems[i].secondary, this.$table.find('tbody tr:last'), selectedItems[i].alternate);
@@ -338,6 +337,9 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         this.$table.find('.js-left-eye').off('click').on('click', function () { controller.compareWithTriage(); });
         this.$table.find('.js-right-eye').off('click').on('click', function () { controller.compareWithTriage(); });
         $(":input[name^='glaucoma_diagnoses']").trigger('change', ['bybys']);
+
+        this.toggleTable();
+        this.toggleNoOphthalmicDiagnoses();
     };
 
     DiagnosesController.prototype.appendSecondaryDiagnoses = function (secondary_diagnoses, $tr, alternate_diagnoses) {

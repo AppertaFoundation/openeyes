@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
@@ -25,8 +26,10 @@ class ProcedureSubspecialtyAssignmentController extends \BaseAdminController
 
         // make sure only admin can accept institution_id from param
         if ($this->checkAccess('admin')) {
-            $institution_id = \Yii::app()->request->getParam('institution_id',
-                $institution_id);
+            $institution_id = \Yii::app()->request->getParam(
+                'institution_id',
+                $institution_id
+            );
         }
 
         $procedures = Procedure::model()->findAll(['order' => 'term']);
@@ -117,7 +120,7 @@ class ProcedureSubspecialtyAssignmentController extends \BaseAdminController
                 $transaction->rollback();
                 foreach ($errors as $error) {
                     foreach ($error as $attribute => $error_array) {
-                        $display_errors = '<strong>'.$assignment->getAttributeLabel($attribute) .
+                        $display_errors = '<strong>' . $assignment->getAttributeLabel($attribute) .
                           ':</strong> ' . implode(', ', $error_array);
                         Yii::app()->user->setFlash('warning.failure-' . $attribute, $display_errors);
                     }

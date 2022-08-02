@@ -27,91 +27,111 @@
             <col class="cols-full">
         </colgroup>
         <tbody>
-        <tr>
-            <td>Id</td>
-            <td class="cols-full">
-                <?php if ($this->action->id == 'edit') { ?>
-                    <?= \CHtml::activeHiddenField(
+            <tr>
+                <td>Id</td>
+                <td class="cols-full">
+                    <?php if ($this->action->id == 'edit') { ?>
+                        <?= \CHtml::activeHiddenField(
+                            $model,
+                            'id'
+                        ); ?>
+                        <?= $model->id ?>
+                    <?php } else { ?>
+                        <?= \CHtml::activeTextField(
+                            $model,
+                            'id',
+                            ['class' => 'cols-full']
+                        ); ?>
+                    <?php } ?>
+                </td>
+            </tr>
+            <tr>
+                <td>Fully Specified Name</td>
+                <td class="cols-full">
+                    <?= \CHtml::activeTextArea(
                         $model,
-                        'id'
-                    ); ?>
-                    <?= $model->id ?>
-                <?php } else { ?>
-                    <?= \CHtml::activeTextField(
-                        $model,
-                        'id',
+                        'fully_specified_name',
                         ['class' => 'cols-full']
                     ); ?>
-                <?php } ?>
-            </td>
-        </tr>
-        <tr>
-            <td>Fully Specified Name</td>
-            <td class="cols-full">
-                <?= \CHtml::activeTextArea(
-                    $model,
-                    'fully_specified_name',
-                    ['class' => 'cols-full']
-                ); ?>
-            </td>
-        </tr>
-        <tr>
-            <td>Term</td>
-            <td>
-                <?= \CHtml::activeTextArea(
-                    $model,
-                    'term',
-                    ['class' => 'cols-full']
-                ); ?>
-            </td>
-        </tr>
-        <tr>
-            <td>Aliases</td>
-            <td>
-                <?= \CHtml::activeTextArea(
-                    $model,
-                    'aliases',
-                    ['class' => 'cols-full autosize',
-                        'style' => 'overflow: hidden; ']
-                ); ?>
-            </td>
-        </tr>
-        <tr>
-            <td>Specialty</td>
-            <td>
-                <?=\CHtml::activeDropDownList(
-                    $model,
-                    'specialty_id',
-                    CHtml::listData(
-                        Specialty::model()->findAll(),
-                        'id',
-                        'name',
-                        'specialty.name'
-                    ),
-                    ['empty' => 'None', 'class' => 'cols-full']
-                ); ?>
-            </td>
-        </tr>
-        <tr>
-            <td>ECDS Code</td>
-            <td>
-                <?= \CHtml::activeTextArea(
-                    $model,
-                    'ecds_code',
-                    ['class' => 'cols-full']
-                ); ?>
-            </td>
-        </tr>
-        <tr>
-            <td>ECDS Term</td>
-            <td>
-                <?= \CHtml::activeTextArea(
-                    $model,
-                    'ecds_term',
-                    ['class' => 'cols-full']
-                ); ?>
-            </td>
-        </tr>
+                </td>
+            </tr>
+            <tr>
+                <td>Term</td>
+                <td>
+                    <?= \CHtml::activeTextArea(
+                        $model,
+                        'term',
+                        ['class' => 'cols-full']
+                    ); ?>
+                </td>
+            </tr>
+            <tr>
+                <td>Aliases</td>
+                <td>
+                    <?= \CHtml::activeTextArea(
+                        $model,
+                        'aliases',
+                        ['class' => 'cols-full autosize',
+                            'style' => 'overflow: hidden; ']
+                    ); ?>
+                </td>
+            </tr>
+            <tr>
+                <td>Specialty</td>
+                <td>
+                    <?=\CHtml::activeDropDownList(
+                        $model,
+                        'specialty_id',
+                        CHtml::listData(
+                            Specialty::model()->findAll(),
+                            'id',
+                            'name',
+                            'specialty.name'
+                        ),
+                        ['empty' => 'None', 'class' => 'cols-full']
+                    ); ?>
+                </td>
+            </tr>
+            <tr>
+                <td>ECDS Code</td>
+                <td>
+                    <?= \CHtml::activeTextArea(
+                        $model,
+                        'ecds_code',
+                        ['class' => 'cols-full']
+                    ); ?>
+                </td>
+            </tr>
+            <tr>
+                <td>ECDS Term</td>
+                <td>
+                    <?= \CHtml::activeTextArea(
+                        $model,
+                        'ecds_term',
+                        ['class' => 'cols-full']
+                    ); ?>
+                </td>
+            </tr>
+            <tr>
+                <td>ICD-10 Code</td>
+                <td>
+                    <?= \CHtml::activeTextArea(
+                        $model,
+                        'icd10_code',
+                        ['class' => 'cols-full']
+                    ); ?>
+                </td>
+            </tr>
+            <tr>
+                <td>ICD-10 Term</td>
+                <td>
+                    <?= \CHtml::activeTextArea(
+                        $model,
+                        'icd10_term',
+                        ['class' => 'cols-full']
+                    ); ?>
+                </td>
+            </tr>
         </tbody>
     </table>
 </div>

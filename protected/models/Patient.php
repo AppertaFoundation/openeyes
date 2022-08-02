@@ -48,6 +48,7 @@ use OEModule\OphCiExamination\models\Element_OphCiExamination_CommunicationPrefe
  * @property tinyint $deleted
  * @property int $ethnic_group_id
  * @property int $patient_source
+ * @property int $primary_institution_id
  *
  * The followings are the available model relations:
  * @property Episode[] $episodes
@@ -67,6 +68,7 @@ use OEModule\OphCiExamination\models\Element_OphCiExamination_CommunicationPrefe
  * @property PatientIdentifier[] $identifiers
  * @property PatientIdentifier[] $localIdentifiers
  * @property PatientIdentifier $globalIdentifier
+ * @property Institution $primary_institution
  *
  * The following are available through get methods
  * @property SecondaryDiagnosis[] $systemicDiagnoses
@@ -199,13 +201,14 @@ class Patient extends BaseActiveRecordVersioned
             'lastReferral' => array(self::HAS_ONE, 'Referral', 'patient_id', 'order' => 'received_date desc'),
             'adherence' => array(self::HAS_ONE, 'MedicationAdherence', 'patient_id'),
             'geneticsPatient' => array(self::HAS_ONE, 'GeneticsPatient', 'patient_id'),
-            'trials' => array(self::HAS_MANY, 'TrialPatient', 'patient_id'),
+            'trials' => array(self::HAS_MANY, 'TrialPatient', 'patient_id', 'order' => 'ISNULL(trials.status_update_date) DESC, trials.status_update_date DESC, trials.created_date DESC'),
             'patientuserreferral' => array(self::HAS_MANY, 'PatientUserReferral', 'patient_id','alias' => 'patient_user_referral','order' => 'patient_user_referral.created_date DESC' ),
             'archiveIdentifiers' => array(self::HAS_MANY, 'ArchivePatientIdentifier', 'patient_id'),
             'identifiers' => array(self::HAS_MANY, 'PatientIdentifier', 'patient_id'),
             'globalIdentifier' => array(self::HAS_ONE, 'PatientIdentifier', 'patient_id', 'condition' => 'patientIdentifierType.usage_type="GLOBAL"', 'with' => 'patientIdentifierType'),
             'localIdentifiers' => array(self::HAS_MANY, 'PatientIdentifier', 'patient_id', 'condition' => 'patientIdentifierType.usage_type="LOCAL"', 'with' => 'patientIdentifierType'),
-            'patientContactAssociates' => array(self::HAS_MANY,'PatientContactAssociate','patient_id'),
+            'patientContactAssociates' => array(self::HAS_MANY, 'PatientContactAssociate', 'patient_id'),
+            'primary_institution' => array(self::BELONGS_TO, 'Institution', 'primary_institution_id'),
         );
     }
 

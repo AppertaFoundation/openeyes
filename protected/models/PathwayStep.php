@@ -382,4 +382,29 @@ class PathwayStep extends BaseActiveRecordVersioned
         }
         $this->saveOnlyIfDirty(true)->save();
     }
+
+    public function isFirstRequestedStep() {
+        $pathway = $this->pathway;
+        $requested_steps = $pathway->requested_steps;
+        $requested_step_count = count($requested_steps);
+
+        if ($requested_step_count) {
+            return $this->id === $this->pathway->requested_steps[0]->id;
+        }
+
+        return false;
+    }
+
+    public function isLastRequestedStep() {
+        $pathway = $this->pathway;
+        $requested_steps = $pathway->requested_steps;
+        $requested_step_count = count($requested_steps);
+
+        if ($requested_step_count) {
+            $last_index = $requested_step_count - 1;
+            return $this->id === $requested_steps[$last_index]->id;
+        }
+
+        return false;
+    }
 }

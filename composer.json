@@ -16,8 +16,8 @@
     "ext-dom": "*",
     "ext-libxml": "*",
     "symfony/process": "4.4.*",
-    "nesk/rialto": "1.3.*",
-    "nesk/puphpeteer": "1.6.*",
+    "nesk/rialto": "1.4.*",
+    "nesk/puphpeteer": "2.0.*",
     "symfony/polyfill-ctype": "@stable",
     "wikimedia/composer-merge-plugin": "^2.0",
     "onelogin/php-saml": "^3.4",
@@ -41,7 +41,13 @@
     "zhuravljov/yii2-debug": "^1.5"
   },
   "config": {
-    "bin-dir": "bin"
+    "bin-dir": "bin",
+    "allow-plugins": {
+      "wikimedia/composer-merge-plugin": true
+    }
+  },
+  "replace": {
+    "ezyang/htmlpurifier": "*"
   },
   "repositories": {
     "packagist": {
@@ -50,6 +56,10 @@
     }
   },
   "autoload": {
+    "psr-4": {
+      "OE\\concerns\\": "protected/concerns",
+      "OE\\factories\\": "protected/factories"
+    },
     "classmap": [
       "features/bootstrap/Pages/OpenEyesPage.php"
     ]

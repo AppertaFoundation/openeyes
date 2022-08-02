@@ -18,7 +18,7 @@ $config = [
     'params' => [
         'admin_menu' => [
             'OphCiExamination' => [
-                'Element Attributes' => ['uri' => '/oeadmin/ExaminationElementAttributes/list'],
+                'Element Attributes' => ['uri' => '/oeadmin/ExaminationElementAttributes/list', 'restricted' => array('OprnInstitutionAdmin', 'admin')],
                 'Workflows' => '/OphCiExamination/admin/viewWorkflows',
                 'Workflow rules' => '/OphCiExamination/admin/viewWorkflowRules',
                 'History Macros' => '/OphCiExamination/admin/HistoryMacro/list',
@@ -36,8 +36,8 @@ $config = [
                 'Required Systemic Diagnoses Assignment' => '/OphCiExamination/admin/systemicDiagAssignment/index',
                 'Required Ophthalmic Surgical History Assignment' => '/OphCiExamination/admin/SurgicalHistoryAssignment/index',
                 'Required Systemic Surgical History Assignment' => '/OphCiExamination/admin/SystemicSurgicalHistoryAssignment/index',
-                'Ophthalmic Surgical History' => ['uri' => '/admin/editpreviousoperation'],
-                'Systemic Surgical History' => ['uri' => '/admin/editPreviousSystemicOperation'],
+                'Ophthalmic Surgical History' => ['uri' => '/admin/editpreviousoperation', 'restricted' => array('OprnInstitutionAdmin')],
+                'Systemic Surgical History' => ['uri' => '/admin/editPreviousSystemicOperation', 'restricted' => array('OprnInstitutionAdmin')],
                 'Social History' => ['uri' => '/OphCiExamination/admin/SocialHistory', 'restricted' => array('admin')],
                 'Family History' => ['uri' => '/OphCiExamination/admin/FamilyHistory', 'restricted' => array('admin')],
                 'IOP Instruments' => '/OphCiExamination/admin/ViewIOPInstruments',

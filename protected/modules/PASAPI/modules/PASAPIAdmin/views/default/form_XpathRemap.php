@@ -46,7 +46,7 @@
         <?=\CHtml::activeTextField(
             $model,
             'name',
-            ['autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'), 'class' => 'cols-full']
+            ['class' => 'cols-full']
         ); ?>
     </td>
 </tr>

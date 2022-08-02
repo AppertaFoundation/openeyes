@@ -304,24 +304,30 @@ class TheatreDiaryController extends BaseModuleController
         if (@$data['emergency_list']) {
             $criteria->addCondition('firm.id IS NULL');
         } else {
-            $criteria->addCondition('theatre.site_id = :siteId and subspecialty_id = :subspecialtyId');
-            $criteria->params[':siteId'] = $data['site-id'];
-            $criteria->params[':subspecialtyId'] = $data['subspecialty-id'];
+            if ($data['site-id'] !== 'All') {
+                $criteria->addCondition('theatre.site_id = :siteId');
+                $criteria->params[':siteId'] = $data['site-id'];
+            }
+            if ($data['subspecialty-id'] !== 'All') {
+                $criteria->addCondition('subspecialty_id = :subspecialtyId');
+                $criteria->params[':subspecialtyId'] = $data['subspecialty-id'];
+            }
         }
 
-        if (@$data['ward-id']) {
+        if (@$data['ward-id'] && $data['ward-id'] !== 'All' ) {
             $criteria->addCondition('ward.id = :wardId');
             $criteria->params[':wardId'] = $data['ward-id'];
         }
 
-        if (@$data['firm-id']) {
+        if (@$data['firm-id'] && $data['firm-id'] !== 'All') {
             $criteria->addCondition('firm.id = :firmId');
             $criteria->params[':firmId'] = $data['firm-id'];
         }
 
         $criteria->addCondition('`t`.booking_cancellation_date is null');
+        $criteria->addCondition('patient_identifier_not_deleted.patient_identifier_type_id=1');
 
-        $criteria->order = 'ward.code, patient.hos_num';
+        $criteria->order = 'ward.code, patient_identifier_not_deleted.value';
 
         Yii::app()->event->dispatch('start_batch_mode');
 
@@ -347,6 +353,7 @@ class TheatreDiaryController extends BaseModuleController
                                     'with' => array(
                                         'patient' => array(
                                             'with' => 'contact',
+                                            'with' => 'identifiers'
                                         ),
                                     ),
                                 ),

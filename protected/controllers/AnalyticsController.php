@@ -583,7 +583,7 @@ class AnalyticsController extends BaseController
     {
         $query_conditions = array('and');
         $query_conditions[] = 'active = 1';
-        $query_conditions[] = "LOWER(name) IN ('etdrs letters', 'snellen metre', 'logmar', 'logmar single-letter')";
+        $query_conditions[] = "name IN ('ETDRS Letters', 'Snellen Metre', 'logMAR 1dp', 'logMAR 2dp')";
 
         $query_va_units = Yii::app()->db->createCommand()
             ->select('

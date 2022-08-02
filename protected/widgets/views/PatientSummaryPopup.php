@@ -73,6 +73,12 @@
                             <td>Unknown</td>
                         </tr>
                     <?php endif; ?>
+                    <?php if ($this->patient->primary_institution) { ?>
+                        <tr>
+                            <td><?= \SettingMetadata::model()->getSetting('primary_institution_label') ?></td>
+                            <td><?= $this->patient->primary_institution->name ?></td>
+                        </tr>
+                    <?php } ?>
                     </tbody>
                 </table>
             </div><!-- .popup-overflow -->

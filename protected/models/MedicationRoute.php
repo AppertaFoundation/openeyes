@@ -18,7 +18,6 @@
  * @property int $is_active
  *
  * The followings are the available model relations:
- * @property EventMedicationUse[] $eventMedicationUses
  * @property User $createdUser
  * @property User $lastModifiedUser
  * @property MedicationSetItem[] $medicationSets
@@ -63,7 +62,6 @@ class MedicationRoute extends BaseActiveRecordVersioned
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'eventMedicationUses' => array(self::HAS_MANY, EventMedicationUse::class, 'route_id'),
             'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'medicationSets' => array(self::HAS_MANY, MedicationSetItem::class, 'default_route_id'),

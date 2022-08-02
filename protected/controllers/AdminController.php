@@ -34,13 +34,13 @@ class AdminController extends BaseAdminController
     public function actionEditPreviousOperation()
     {
         $this->group = 'Examination';
-        $this->genericAdmin('Edit Ophthalmic Surgical History Choices', 'CommonPreviousOperation', array('return_url' => '/admin/editpreviousoperation'), null, true);
+        $this->genericAdmin('Edit Ophthalmic Surgical History Choices', 'CommonPreviousOperation', ['return_url' => 'editpreviousoperation'], null, true);
     }
 
     public function actionEditPreviousSystemicOperation()
     {
         $this->group = 'Examination';
-        $this->genericAdmin('Edit Systemic Surgical History Choices', 'CommonPreviousSystemicOperation', array(), null, true);
+        $this->genericAdmin('Edit Systemic Surgical History Choices', 'CommonPreviousSystemicOperation', ['return_url' => 'editPreviousSystemicOperation'], null, true);
     }
 
     public function actionEditCommonOphthalmicDisorderGroups()
@@ -720,8 +720,10 @@ class AdminController extends BaseAdminController
             if (!$user->validate()) {
                 $errors = $user->getErrors();
 
-                $user_authentication_entries = array_map(['UserAuthentication', 'fromAttributes'],
-                                                         $user_auths_attributes);
+                $user_authentication_entries = array_map(
+                    ['UserAuthentication', 'fromAttributes'],
+                    $user_auths_attributes
+                );
             } else {
                 $transaction = Yii::app()->db->beginTransaction();
 
@@ -1318,13 +1320,13 @@ class AdminController extends BaseAdminController
                             }
                         }
                         // if no error uploading use uploaded image
-                        if (($_FILES['SiteLogo']['error']['primary_logo'])==0) {
+                        if (($_FILES['SiteLogo']['error']['primary_logo']) == 0) {
                             $logo->primary_logo = $pl_file;
                         }
                     }
                     if (!empty($_FILES['SiteLogo']['tmp_name']['secondary_logo'])) {
                         $secondary_logo = $_FILES['SiteLogo']['tmp_name']['secondary_logo'];
-                        $sl_file=file_get_contents($secondary_logo);
+                        $sl_file = file_get_contents($secondary_logo);
                         if (strtolower(SettingMetadata::model()->getSetting('enable_virus_scanning')) === 'on') {
                             try {
                                 $file_clean = VirusScanController::stringIsClean($sl_file);
@@ -1768,13 +1770,13 @@ class AdminController extends BaseAdminController
                         }
                     }
                     // if no error uploading use uploaded image
-                    if (($_FILES['SiteLogo']['error']['primary_logo'])==0) {
+                    if (($_FILES['SiteLogo']['error']['primary_logo']) == 0) {
                         $logo->primary_logo = $pl_file;
                     }
                 }
                 if (!empty($_FILES['SiteLogo']['tmp_name']['secondary_logo'])) {
                     $secondary_logo = $_FILES['SiteLogo']['tmp_name']['secondary_logo'];
-                    $sl_file=file_get_contents($secondary_logo);
+                    $sl_file = file_get_contents($secondary_logo);
                     if (strtolower(SettingMetadata::model()->getSetting('enable_virus_scanning')) === 'on') {
                         try {
                             $file_clean = VirusScanController::stringIsClean($sl_file);
@@ -1875,13 +1877,13 @@ class AdminController extends BaseAdminController
                     }
                 }
                 // if no error uploading use uploaded image
-                if (($_FILES['SiteLogo']['error']['primary_logo'])==0) {
+                if (($_FILES['SiteLogo']['error']['primary_logo']) == 0) {
                     $logo->primary_logo = $pl_file;
                 }
             }
             if (!empty($_FILES['SiteLogo']['tmp_name']['secondary_logo'])) {
                 $secondary_logo = $_FILES['SiteLogo']['tmp_name']['secondary_logo'];
-                $sl_file=file_get_contents($secondary_logo);
+                $sl_file = file_get_contents($secondary_logo);
                 if (strtolower(SettingMetadata::model()->getSetting('enable_virus_scanning')) === 'on') {
                     try {
                         $file_clean = VirusScanController::stringIsClean($sl_file);
@@ -2512,15 +2514,15 @@ class AdminController extends BaseAdminController
 
                     if (!$cbs->save()) {
                         throw new CHttpException(500, 'Unable to save CommissioningBodyService: ' . print_r(
-                        $cbs->getErrors(),
-                        true
+                            $cbs->getErrors(),
+                            true
                         ));
                     }
 
                     if (!$address->save()) {
                         throw new CHttpException(500, 'Unable to save CommissioningBodyService address: ' . print_r(
-                        $address->getErrors(),
-                        true
+                            $address->getErrors(),
+                            true
                         ));
                     }
 
@@ -2604,8 +2606,8 @@ class AdminController extends BaseAdminController
             if (empty($errors)) {
                 if (!$cbs->save()) {
                     throw new CHttpException(500, 'Unable to save CommissioningBodyServiceType: ' . print_r(
-                    $cbs->getErrors(),
-                    true
+                        $cbs->getErrors(),
+                        true
                     ));
                 }
 
@@ -2655,11 +2657,29 @@ class AdminController extends BaseAdminController
 
     public function actionEventDeletionRequests()
     {
+        $selected_institution = Yii::app()->request->getQuery('selected_institution', Yii::app()->session['selected_institution_id']);
+        $events = Event::model()->findAll(
+            array(
+                'order' => 'last_modified_date asc',
+                'condition' => 'delete_pending = 1 AND (institution_id IS NULL OR institution_id = :id)',
+                'params' => array(':id' => $selected_institution)
+            )
+        );
+
+        $institutions = Yii::app()->db->createCommand()
+            ->select('i.id, i.name')
+            ->from('user_authentication ua')
+            ->join('institution_authentication ia', 'ia.id = ua.institution_authentication_id')
+            ->join('institution i', 'i.id = ia.institution_id')
+            ->where('ua.user_id = :id')
+            ->group('i.id, i.name')
+            ->bindValues([':id' => Yii::app()->user->id])
+            ->queryAll();
+
         $this->render('/admin/event_deletion_requests', array(
-        'events' => Event::model()->findAll(array(
-            'order' => 'last_modified_date asc',
-            'condition' => 'delete_pending = 1',
-        )),
+            'events' => $events,
+            'institutions' => $institutions,
+            'selected_institution' => $selected_institution
         ));
     }
 
@@ -2711,12 +2731,12 @@ class AdminController extends BaseAdminController
     public function actionEpisodeSummaries($subspecialty_id = null)
     {
         $this->render(
-        '/admin/episodeSummaries',
-        array(
+            '/admin/episodeSummaries',
+            array(
             'subspecialty_id' => $subspecialty_id,
             'enabled_items' => EpisodeSummaryItem::model()->enabled($subspecialty_id)->findAll(),
             'available_items' => EpisodeSummaryItem::model()->available($subspecialty_id)->findAll(),
-        )
+            )
         );
     }
 
@@ -2840,14 +2860,14 @@ class AdminController extends BaseAdminController
         }
 
         $this->render(
-        '/admin/edit_setting',
-        array(
+            '/admin/edit_setting',
+            array(
             'metadata' => $metadata,
             'errors' => $errors,
             'allowed_classes' => [$class],
             'institution_id' => $institution_id,
             'is_admin' => $is_admin,
-        )
+            )
         );
     }
 

@@ -104,6 +104,9 @@ class CorrespondenceCreator extends \EventCreator
         $element->date = date("Y-m-d");
         $element->letter_type_id = $this->letter_type_id;
 
+        $esign = new \Element_OphCoCorrespondence_Esign();
+        $esign->event_id = $event_id;
+
         //in $element->setDefaultOptions() there is a check for if action->id == create
         //at the moment it is fine but later we might need to extend
         $element->setDefaultOptions($this->episode->patient);
@@ -115,6 +118,10 @@ class CorrespondenceCreator extends \EventCreator
 
         if (!$element->save()) {
             $this->addErrors($element->getErrors());
+        }
+
+        if (!$esign->save(false)) {
+            $this->addErrors($esign->getErrors());
         }
 
         if ($this->documents) {

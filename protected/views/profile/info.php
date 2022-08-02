@@ -157,6 +157,26 @@
           </div>
       </td>
   </tr>
+  <tr id="alternate_user_row" style="<?php echo $user_out_of_office->enabled ? '' : 'display: none' ?>">
+      <td>
+          <div class="data-group flex-layout cols-full">
+              <div class="cols-3">
+                  <label for="alternate_user">Alternate User:</label>
+                  <br />
+                  <small class="fade"><em>Required when out-of-office is enabled</em></small>
+              </div>
+              <div class="cols-5">
+                  <?php $this->widget('application.widgets.AutoCompleteSearch', ['field_name' => 'alternate_user']); ?>
+                  <span id="alternate_user_display">
+                      <?php if ($user_out_of_office->alternate_user) { ?>
+                          <ul class="oe-multi-select inline"><li> <?= $user_out_of_office->alternate_user->getFullnameAndTitle() ?> <i class="oe-i remove-circle small-icon pad-left"></i></li></ul>
+                      <?php } ?>
+                  </span>
+                  <?php echo $form->hiddenField($user_out_of_office, 'alternate_user_id') ?>
+              </div>
+          </div>
+      </td>
+  </tr>
   <tr>
       <td>
           <div class="data-group flex-layout cols-full js-correspondence-sign-off">
@@ -204,25 +224,6 @@
                           </ul>
                       </div>
                   </div>
-              </div>
-          </div>
-      </td>
-  </tr>
-
-  <tr id="alternate_user_row" style="<?php echo $user_out_of_office->enabled ? '' : 'display: none' ?>">
-      <td>
-          <div class="data-group flex-layout cols-full">
-              <div class="cols-2">
-                  <label for="alternate_user">Alternate User:</label>
-              </div>
-              <div class="cols-5">
-                  <?php $this->widget('application.widgets.AutoCompleteSearch', ['field_name' => 'alternate_user']); ?>
-                  <span id="alternate_user_display">
-                      <?php if ($user_out_of_office->alternate_user) { ?>
-                          <ul class="oe-multi-select inline"><li> <?= $user_out_of_office->alternate_user->getFullnameAndTitle() ?> <i class="oe-i remove-circle small-icon pad-left"></i></li></ul>
-                      <?php } ?>
-                  </span>
-                  <?php echo $form->hiddenField($user_out_of_office, 'alternate_user_id') ?>
               </div>
           </div>
       </td>

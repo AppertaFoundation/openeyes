@@ -51,7 +51,7 @@ class PSDController extends DefaultController
      * @throws CHttpException
      * @throws Exception
      */
-    public function actionGetPathStep($partial, $pathstep_id, $visit_id, $pathstep_type_id, $for_administer, $interactive = 1)
+    public function actionGetPathStep($partial, $pathstep_id, $visit_id, $pathstep_type_id, $for_administer = false, $interactive = 1)
     {
         $step = PathwayStep::model()->findByPk($pathstep_id);
         $wl_patient = WorklistPatient::model()->findByPk($visit_id);

@@ -139,13 +139,6 @@ class MedicationManagementController extends BaseController
         $ret_data = [];
         $criteria = new \CDbCriteria();
 
-        //Will only fetch the locally sourced medications that are assigned for use in the current institution
-        $institution_assigned_ids = array_map(function ($item) {
-            return $item->id;
-        }, Medication::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION));
-        $criteria->addCondition("source_type != 'LOCAL'");
-        $criteria->addInCondition("t.id", $institution_assigned_ids, "OR");
-
         if ($term !== '') {
             $criteria->addCondition("preferred_term LIKE :term OR medicationSearchIndexes.alternative_term LIKE :term");
             $criteria->params['term'] = "%$term%";
@@ -157,7 +150,7 @@ class MedicationManagementController extends BaseController
 
         $criteria->limit = $limit > 1000 ? 1000 : $limit;
         $criteria->order = "preferred_term";
-        $criteria->with = array('medicationSearchIndexes');
+        $criteria->with = array('medicationSearchIndexes', 'allergies', 'medicationSets.medicationSetRules');
         $criteria->addCondition("t.deleted_date IS NULL");
         $criteria->together = true;
 
@@ -178,7 +171,7 @@ class MedicationManagementController extends BaseController
 
         // use Medication::model()->prescribable()->findAll() to find only prescribable medications
         // this will need to be used in prescription Adder dialog
-        foreach (Medication::model()->findAll($criteria) as $med) {
+        foreach (Medication::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION, $criteria) as $med) {
             $info_box = new MedicationInfoBox();
             $info_box->medication_id = $med->id;
             $info_box->init();

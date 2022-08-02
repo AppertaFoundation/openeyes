@@ -220,8 +220,7 @@ class WorklistManager extends CComponent
      */
     protected function getAppParam($name)
     {
-        return isset($this->yii->params[$name]) ?
-            $this->yii->params[$name] : null;
+        return SettingMetadata::model()->getSetting($name) !== null ? SettingMetadata::model()->getSetting($name) : null;
     }
 
     /**

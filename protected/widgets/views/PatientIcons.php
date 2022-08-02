@@ -28,7 +28,7 @@
     if ($patient_overview_popup_mode == 'side') {
         $patientSummaryPopup->render('application.widgets.views.PatientSummaryPopupSide', []);
     } elseif ($patient_overview_popup_mode == 'float') {
-        $patientSummaryPopup->render('application.widgets.views.PatientSummaryPopupFloat', []);
+        $patientSummaryPopup->render('application.widgets.views.PatientSummaryPopupMultiFloat', []);
     }
     ?>
 

@@ -114,7 +114,8 @@ $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPrompt
                              'Last name',
                              'Born',
                              'Age',
-                             'Sex'
+                             'Sex',
+                             SettingMetadata::model()->getSetting('primary_institution_label')
                          ) as $i => $field
 ) { ?>
               <th id="patient-grid_c<?= $i ?>">
@@ -203,6 +204,10 @@ $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPrompt
                   <td><?php echo $patient->dob ? (date('d/m/Y', strtotime($patient->dob))) : ''; ?></td>
                   <td><?php echo $patient->getAge(); ?></td>
                   <td><?php echo $patient->gender ?></td>
+                  <td>
+                      <?php if ($patient->primary_institution) {
+                            echo $patient->primary_institution->name;
+                      } ?></td>
                 </tr>
         <?php } ?>
       </tbody>

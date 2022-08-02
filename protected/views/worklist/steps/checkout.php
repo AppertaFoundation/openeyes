@@ -6,16 +6,16 @@
 $is_step_instance = $step instanceof PathwayStep;
 $is_requested = true;
 $is_completed = false;
-$is_started = false;
+
 if ($is_step_instance) {
     $hide_non_requested_buttons = (int)$step->status !== PathwayStep::STEP_REQUESTED;
     $hide_non_active_buttons = (int)$step->status !== PathwayStep::STEP_STARTED;
     $hide_non_complete_buttons = (int)$step->status !== PathwayStep::STEP_COMPLETED;
     $is_requested = (int)$step->status === PathwayStep::STEP_REQUESTED || !$step->status;
     $is_completed = (int)$step->status === PathwayStep::STEP_COMPLETED;
-    $is_started = (int)$step->status === PathwayStep::STEP_STARTED;
-    $is_last_step = $step->id === $step->pathway->requested_steps[count($step->pathway->requested_steps) - 1]->id;
-    $is_first_requested_step = $step->id === $step->pathway->requested_steps[0]->id;
+
+    $is_last_step = $step->isLastRequestedStep();
+    $is_first_requested_step = $step->isFirstRequestedStep();
 } else {
     $is_last_step = $step->id === $step->pathway_type->default_steps[count($step->pathway_type->default_steps) - 1]->id;
     $is_first_requested_step = $step->id === $step->pathway_type->default_steps[0]->id;
@@ -54,23 +54,19 @@ if ($is_step_instance) {
         <?php if (isset($worklist_patient)) { ?>
             <button 
                 class="green hint js-ps-popup-btn" 
-                data-pathstep-id="<?=$step->id?>"
+                data-pathstep-id="<?= $step instanceof PathwayStep ? $step->id : null ?>"
                 data-pathway-id="<?= $step instanceof PathwayStep ? $step->pathway->id : null ?>"
-                data-action="<?= $is_started ? 'checkout' : 'next' ?>"
+                data-action="checkout"
                 <?= $is_completed ? 'style="display: none;"' : ''?>>
-                <?= $is_started ? 'Check out only' : 'Check out' ?>
+                Check out
             </button>
             <button 
                 class="<?= $is_completed ? 'blue' : 'red' ?> hint js-ps-popup-btn" 
-                data-pathstep-id="<?=$step->id?>"
+                data-pathstep-id="<?= $step instanceof PathwayStep ? $step->id : null ?>"
                 data-pathway-id="<?= $step instanceof PathwayStep ? $step->pathway->id : null ?>"
-                data-action="<?=$is_completed ? 'undo_finish' : 'prev'?>"
+                data-action="undo_finish"
                 <?= $is_requested ? 'style="display: none;"' : ''?>>
-                <?php if ($is_completed) {
-                    echo 'Undo check out';
-                } else {
-                    echo 'Cancel';
-                } ?>
+                Undo check out
             </button>
         <?php } ?>
         <button class="blue i-btn left hint js-ps-popup-btn" data-action="left"<?= !$is_requested ? 'style="display: none;"' : ''?><?= $is_first_requested_step ? ' disabled' : ''?>>

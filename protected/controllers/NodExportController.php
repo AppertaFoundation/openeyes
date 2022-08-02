@@ -45,8 +45,9 @@ class NodExportController extends BaseController
     public function accessRules()
     {
         return array(
-            array('allow',
-                'roles' => array('NOD Export'),
+          array(
+            'allow',
+            'roles' => array('NOD Export'),
             ),
         );
     }
@@ -59,7 +60,12 @@ class NodExportController extends BaseController
         $this->zipName = $this->institutionCode . '_' . $date . '_NOD_Export.zip';
 
         if (!file_exists($this->exportPath)) {
-            mkdir($this->exportPath, 0777, true);
+            if (isset($_POST['nod_choice']['cataract'])) {
+                mkdir($this->exportPath . '/Cataract', 0777, true);
+            }
+            if (isset($_POST['nod_choice']['amd'])) {
+                mkdir($this->exportPath . '/AMD', 0777, true);
+            }
         }
 
         $startDate = Yii::app()->request->getParam("date_from", '');
@@ -114,8 +120,18 @@ class NodExportController extends BaseController
      */
     public function actionGenerate()
     {
-
-        $this->generateExport();
+        if (!isset($_POST['nod_choice']['cataract']) and  !isset($_POST['nod_choice']['amd'])) {
+            $this->render('//nodexport/index');
+            echo "<script>new OpenEyes.UI.Dialog.Alert({
+          content: 'Please select at least one NOD Audit type.'
+        }).open();</script>";
+        }
+        if (isset($_POST['nod_choice']['cataract'])) {
+            $this->generateCataractExport();
+        }
+        if (isset($_POST['nod_choice']['amd'])) {
+            $this->generateAMDExport();
+        }
 
         $this->createZipFile();
 
@@ -147,11 +163,11 @@ class NodExportController extends BaseController
     /**
      * Generates the CSV files
      */
-    public function generateExport()
+    public function generateCataractExport()
     {
 
         // Concatinate sequence of statements to create and load working tables
-        $query = $this->createAllTempTables();
+        $query = $this->createCataractTempTables();
 
         $this->populateAllTempTables();
 
@@ -184,6 +200,11 @@ class NodExportController extends BaseController
 
 
         $this->clearAllTempTables();
+    }
+
+    public function generateAMDExport()
+    {
+        $this->createAMDCSV();
     }
 
     /**
@@ -228,7 +249,7 @@ class NodExportController extends BaseController
         return $resultIds;
     }
 
-    private function createAllTempTables()
+    private function createCataractTempTables()
     {
         // DROP all tables if exist before creating them
         $this->clearAllTempTables();
@@ -615,6 +636,182 @@ EOL;
         return '';
     }
 
+    private function createAMDCSV()
+    {
+        $subquery = <<<EOL
+        SELECT patient_id FROM v_patient_intravitreal_injections WHERE 1=1
+      EOL;
+        if ($this->startDate) {
+            $subquery .= " AND DATE(event_date) >= STR_TO_DATE('{$this->startDate}', '%Y-%m-%d') ";
+        }
+        if ($this->endDate) {
+            $subquery .= " AND DATE(event_date) <= STR_TO_DATE('{$this->endDate}', '%Y-%m-%d') ";
+        }
+
+        $query = <<<EOL
+        SELECT patient_id,
+        eye,
+        event_date,
+        pre_antisept_drug,
+        pre_skin_drug,
+        drug,
+        number,
+        injection_given_by,
+        injection_time,
+        pre_ioplowering_required,
+        post_ioplowering_required,
+        lens_status,
+        complication,
+        administrator,
+        doctor_grade,
+        site,
+        institution
+        FROM v_patient_intravitreal_injections
+        WHERE patient_id IN (${subquery})
+      EOL;
+        $dataQuery = array(
+        'query' => $query,
+        'header' => array('patient_id', 'eye', 'event_date', 'pre_antisept_drug', 'pre_skin_drug', 'drug', 'number', 'injection_given_by', 'injection_time', 'pre_ioplowering_required', 'post_ioplowering_required', 'lens_status', 'complication', 'administrator', 'doctor_grade', 'site', 'institution'),
+        );
+        $this->saveCSVfile($dataQuery, 'AMD/IntravitrealInjections');
+
+        $query = <<<EOL
+        SELECT ev.patient_id AS patient_id,
+        ev.event_id AS event_id,
+        ev.event_date AS event_date,
+        ecoe.followup_quantity AS followup_quantity,
+        p.name AS followup_period,
+        ecoe.followup_comments AS followup_comments
+        FROM v_patient_events ev
+        JOIN et_ophciexamination_clinicoutcome eco ON eco.event_id=ev.event_id
+        JOIN ophciexamination_clinicoutcome_entry ecoe ON ecoe.element_id=eco.id
+        JOIN period p ON p.id=ecoe.followup_period_id
+        WHERE ev.patient_id IN (${subquery})
+      EOL;
+        $dataQuery = array(
+        'query' => $query,
+        'header' => array('patient_id', 'event_id', 'event_date', 'followup_quantity', 'followup_period', 'followup_comments'),
+        );
+        $this->saveCSVfile($dataQuery, 'AMD/Followup');
+
+        $query = <<<EOL
+        SELECT patient_id,
+        gender,
+        dob,
+        age,
+        ethnic_group,
+        ltim.imd_score AS IMDScore,
+        ltim.imd_rank AS IMDRank,
+        ltim.imd_decile AS IMDDecile,
+        ii.country AS IMDCountry
+        FROM v_patient_details p
+        INNER JOIN postcode_to_lsoa_mapping ptlm ON ptlm.postcode = p.postcode
+        INNER JOIN lsoa_to_imd_mapping ltim ON ltim.lsoa = ptlm.lsoa
+        INNER JOIN imd_import ii ON ltim.imd_import_id = ii.id
+        WHERE patient_id IN (${subquery})
+      EOL;
+        $dataQuery = array(
+        'query' => $query,
+        'header' => array('patient_id', 'gender', 'dob', 'age', 'ethnic_group', 'IMDScore', 'IMDRank', 'IMDDecile', 'IMDCountry'),
+        );
+        $this->saveCSVfile($dataQuery, 'AMD/PatientDetails');
+
+        $query = <<<EOL
+        SELECT patient_id,
+        Reading_date,
+        Eye,
+        Original_unit_name,
+        Original_value,
+        Method,
+        Snellen_value,
+        ETDRS_value,
+        LogMAR_value
+        FROM v_patient_va_converted
+        WHERE patient_id IN (${subquery})
+      EOL;
+        $dataQuery = array(
+        'query' => $query,
+        'header' => array('patient_id', 'reading_date', 'eye', 'original_unit_name', 'original_value', 'method', 'snellen_value', 'ETDRS_value', 'LogMAR_value'),
+        );
+        $this->saveCSVfile($dataQuery, 'AMD/VisualAcuity');
+
+        $query = <<<EOL
+        SELECT *
+        FROM v_patient_crt
+        WHERE patient_id IN (${subquery})
+      EOL;
+        $dataQuery = array(
+        'query' => $query,
+        'header' => array('patient_id', 'event_id', 'event_date', 'value', 'method', 'side', 'eye'),
+        );
+        $this->saveCSVfile($dataQuery, 'AMD/CRT');
+
+        $query = <<<EOL
+        SELECT *
+        FROM v_patient_oct
+        WHERE patient_id IN (${subquery})
+      EOL;
+        $dataQuery = array(
+        'query' => $query,
+        'header' => array('patient_id', 'event_date', 'eye', 'crt', 'avg_thickness', 'total_vol', 'irf', 'srf', 'cysts', 'retinal_thickening', 'ped', 'cmo', 'dmo', 'heamorrhage', 'exudates', 'avg_rnfl', 'cct', 'cd_ratio', 'cst'),
+        );
+        $this->saveCSVfile($dataQuery, 'AMD/OCT');
+
+        $query = <<<EOL
+        SELECT patient_id,
+        event_date,
+        cvi_status,
+        registration_date
+        FROM v_patient_cvi_status
+        WHERE patient_id IN (${subquery})
+      EOL;
+        $dataQuery = array(
+        'query' => $query,
+        'header' => array('patient_id', 'event_date', 'cvi_status', 'registration_date'),
+        );
+        $this->saveCSVfile($dataQuery, 'AMD/CVI');
+
+        $query = <<<EOL
+        SELECT patient_id,
+        side,
+        disorder_id,
+        disorder_term,
+        disorder_date,
+        specialty
+        FROM v_patient_diagnoses
+        WHERE patient_id IN (${subquery})
+      EOL;
+        $dataQuery = array(
+        'query' => $query,
+        'header' => array('patient_id', 'side', 'disorder_id', 'disorder_term', 'disorder_date', 'specialty'),
+        );
+        $this->saveCSVfile($dataQuery, 'AMD/Diagnoses');
+
+        $query = <<<EOL
+        SELECT patient_id,
+        event_date,
+        smoking_status
+        FROM v_patient_social_history
+        WHERE patient_id IN (${subquery})
+      EOL;
+        $dataQuery = array(
+        'query' => $query,
+        'header' => array('patient_id', 'event_date', 'smoking_status'),
+        );
+        $this->saveCSVfile($dataQuery, 'AMD/SmokingStatus');
+
+        $query = <<<EOL
+        SELECT *
+        FROM v_patient_laser_procedure
+        WHERE patient_id IN (${subquery})
+      EOL;
+        $dataQuery = array(
+        'query' => $query,
+        'header' => array('patient_id', 'procedure_id', 'term', 'short_term', 'snomed_code', 'snomed_term', 'ecds_code', 'ecds_term', 'eye', 'event_date'),
+        );
+        $this->saveCSVfile($dataQuery, 'AMD/Laser');
+    }
+
     // Refactoring :
     /**
      * This function will call the functions one by one to populate each tmp tables belongs to a csv file
@@ -782,7 +979,7 @@ EOL;
             'header' => array('Surgeonid', 'GMCnumber', 'Title', 'FirstName', 'CurrentGradeId'),
         );
 
-        $this->saveCSVfile($dataQuery, 'Surgeon');
+        $this->saveCSVfile($dataQuery, 'Cataract/Surgeon');
     }
 
     /********** end of Surgeon **********/
@@ -823,9 +1020,8 @@ EOL;
                     )
                     SELECT
                     c.oe_event_id,
-                    (SELECT CASE WHEN d.id IN ( $disorder_ids ) THEN 1 ELSE 0 END) AS IsDiabetic,
-                    (
-                            SELECT CASE
+                    CASE WHEN d.id IN ( $disorder_ids ) THEN 1 ELSE 0 END AS IsDiabetic,
+                    CASE
                                     WHEN d.id IN (23045005,28032008,46635009,190368000,190369008,190371008,190372001,199229001,237618001,290002008,313435000,314771006,314893005,
                                                                314894004,401110002,420270002,420486006,420514000,420789003,420825003,420868002,420918009,421165007,421305000,421365002,421468001,
                                                                421893009,421920002,422228004,422297002,425159004,425442003,426907004,427571000,428896009,11530004) THEN 1
@@ -845,15 +1041,12 @@ EOL;
                                     ELSE ""
                                     END
 
-                    ) AS DiabetesTypeId,
+                    AS DiabetesTypeId,
                     "" AS DiabetesRegimeId,
-                    (
-			SELECT CASE WHEN DATE != '' AND p.dob < `converted_date`
+                    CASE WHEN DATE != '' AND p.dob < `converted_date`
                                     THEN IFNULL((DATE_FORMAT(`converted_date`, '%Y') - DATE_FORMAT(p.dob, '%Y') - (DATE_FORMAT(`converted_date`, '00-%m-%d') < DATE_FORMAT(p.dob, '00-%m-%d'))), "")
                                     ELSE ""
-				END
-                    )
-		    AS AgeAtDiagnosis
+				END AS AgeAtDiagnosis
             FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
             JOIN patient p ON c.patient_id = p.id
             JOIN (select *,
@@ -885,7 +1078,7 @@ EOL;
             'header' => array('EpisodeId', 'IsDiabetic', 'DiabetesTypeId', 'DiabetesRegimeId', 'AgeAtDiagnosis'),
         );
 
-        $output = $this->saveCSVfile($dataQuery, 'EpisodeDiabeticDiagnosis');
+        $output = $this->saveCSVfile($dataQuery, 'Cataract/EpisodeDiabeticDiagnosis');
 
         return $output;
     }
@@ -912,6 +1105,9 @@ EOL;
                 DateOfBirth DATE NOT NULL,
                 DateOfDeath DATE DEFAULT NULL,
                 IMDScore FLOAT DEFAULT NULL,
+                IMDDecile INT DEFAULT NULL,
+                IMDRank INT DEFAULT NULL,
+                IMDCountry VARCHAR(50) DEFAULT NULL,
                 IsPrivate TINYINT(1) DEFAULT NULL,
                 PRIMARY KEY (PatientId)
             );
@@ -932,17 +1128,27 @@ EOL;
                     DateOfBirth,
                     DateOfDeath,
                     IMDScore,
+                    IMDRank,
+                    IMDDecile,
+                    IMDCountry,
                     IsPrivate
                   )
                   SELECT
-                          p.id AS PatientId,
-                          (SELECT CASE WHEN gender='F' THEN 2 WHEN gender='M' THEN 1 ELSE 9 END) AS GenderId,
-                          IFNULL((SELECT ethnic_group.code FROM ethnic_group WHERE ethnic_group.id = p.ethnic_group_id), 'Z') AS EthnicityId,
-                          IFNULL( DATE_ADD(dob, INTERVAL ROUND((RAND() * (3-1))+1) MONTH) , '') AS DateOfBirth,
-                          IFNULL(DATE(date_of_death), NULL) AS DateOfDeath,
-                          NULL AS IMDScore,
-                          NULL AS IsPrivate
-                  FROM patient p
+                    p.id AS PatientId,
+                    (CASE WHEN gender='F' THEN 2 WHEN gender='M' THEN 1 ELSE 9 END) AS GenderId,
+                    IFNULL((SELECT ethnic_group.code FROM ethnic_group WHERE ethnic_group.id = p.ethnic_group_id), 'Z') AS EthnicityId,
+                    IFNULL( DATE_ADD(dob, INTERVAL ROUND((RAND() * (3-1))+1) MONTH) , '') AS DateOfBirth,
+                    IFNULL(DATE(date_of_death), NULL) AS DateOfDeath,
+                    ltim.imd_score AS IMDScore,
+                    ltim.imd_rank AS IMDRank,
+                    ltim.imd_decile AS IMDDecile,
+                    ii.country AS IMDCountry,
+                    NULL AS IsPrivate
+                    FROM patient p
+                    INNER JOIN address a ON a.contact_id = p.contact_id
+                    INNER JOIN postcode_to_lsoa_mapping ptlm ON ptlm.postcode = a.postcode
+                    INNER JOIN lsoa_to_imd_mapping ltim ON ltim.lsoa = ptlm.lsoa
+                    INNER JOIN imd_import ii ON ltim.imd_import_id = ii.id
                   WHERE p.id IN
                     (
                         SELECT DISTINCT(c.patient_id)
@@ -965,10 +1171,10 @@ EOL;
 
         $dataQuery = array(
             'query' => $query,
-            'header' => array('PatientId', 'GenderId', 'EthnicityId', 'DateOfBirth', 'DateOfDeath', 'IMDScore', 'IsPrivate'),
+            'header' => array('PatientId', 'GenderId', 'EthnicityId', 'DateOfBirth', 'DateOfDeath', 'IMDScore', 'IMDDecile', 'IMDRank', 'IMDCountry', 'IsPrivate'),
         );
 
-        $this->saveCSVfile($dataQuery, 'Patient');
+        $this->saveCSVfile($dataQuery, 'Cataract/Patient');
     }
 
     /********** end of Patient **********/
@@ -1054,7 +1260,7 @@ EOL;
             'header' => array('PatientId', 'Date', 'IsDateApprox', 'IsCVIBlind', 'IsCVIPartial'),
         );
 
-        $this->saveCSVfile($dataQuery, 'PatientCVIStatus');
+        $this->saveCSVfile($dataQuery, 'Cataract/PatientCVIStatus');
     }
 
     /********** end of PatientCVIStatus **********/
@@ -1217,7 +1423,7 @@ EOL;
             'header' => array('PatientId', 'EpisodeId', 'Date', 'Seq' , 'Responsible_Institution_ODS_Code', 'Site_ODS_Code'),
         );
 
-        $this->saveCSVfile($dataQuery, 'Episode');
+        $this->saveCSVfile($dataQuery, 'Cataract/Episode');
     }
 
     /********** end of Episode **********/
@@ -1304,7 +1510,7 @@ EOL;
             'header' => array('EpisodeId', 'Eye', 'IsAbleToLieFlat', 'IsInabilityToCooperate'),
         );
 
-        return $this->saveCSVfile($dataQuery, 'EpisodePreOpAssessment');
+        return $this->saveCSVfile($dataQuery, 'Cataract/EpisodePreOpAssessment');
     }
 
     /********** end of EpisodePreOpAssessment **********/
@@ -1426,7 +1632,7 @@ EOL;
             'header' => array('EpisodeId', 'Eye', 'RefractionTypeId', 'Sphere', 'Cylinder', 'Axis', 'ReadingAdd'),
         );
 
-        return $this->saveCSVfile($dataQuery, 'EpisodeRefraction');
+        return $this->saveCSVfile($dataQuery, 'Cataract/EpisodeRefraction');
     }
 
     /********** end of EpisodeRefraction **********/
@@ -1534,7 +1740,7 @@ EOL;
             'header' => array('EpisodeId', 'Eye', 'Date', 'SurgeonId', 'ConditionId', 'DiagnosisTermId', 'DiagnosisTermDescription'),
         );
 
-        $output =  $this->saveCSVfile($dataQuery, 'EpisodeDiagnosis');
+        $output =  $this->saveCSVfile($dataQuery, 'Cataract/EpisodeDiagnosis');
 
         return $output;
     }
@@ -1583,10 +1789,9 @@ EOL;
                     IsStartDateApprox,
                     inner_event_id
                   ) SELECT t.oe_event_id AS EpisodeId,
-                        (SELECT CASE WHEN m.route_id = 1 THEN 'L' WHEN m.route_id = 2 THEN 'R' WHEN m.route_id = 3 THEN 'B'  ELSE 'N' END) AS Eye,
-                        (SELECT CASE WHEN m.medication_id IS NOT NULL THEN (SELECT preferred_term from medication where id = m.medication_id) END) AS MedicationId,
-
-                      ( SELECT CASE
+                      CASE WHEN m.route_id = 1 THEN 'L' WHEN m.route_id = 2 THEN 'R' WHEN m.route_id = 3 THEN 'B'  ELSE 'N' END AS Eye,
+                      CASE WHEN m.medication_id IS NOT NULL THEN (SELECT preferred_term from medication where id = m.medication_id) END AS MedicationId,
+                      CASE
                                  WHEN m.id IS NOT NULL
                                  THEN ( SELECT nod_id FROM tmp_episode_medication_route
                                         WHERE
@@ -1594,11 +1799,10 @@ EOL;
                                         (m.route_id = tmp_episode_medication_route.oe_route_id AND tmp_episode_medication_route.oe_option_id IS NULL)
                                         LIMIT 1
                                       )
-                               END
-                      ) AS MedicationRouteId,
+                               END AS MedicationRouteId,
 
-                        (SELECT CASE WHEN ev2.event_date IS NULL THEN '' ELSE DATE_FORMAT(ev2.event_date,'%Y-%m-%d') END) AS StartDate,
-                        (SELECT CASE
+                        CASE WHEN ev2.event_date IS NULL THEN '' ELSE DATE_FORMAT(ev2.event_date,'%Y-%m-%d') END AS StartDate,
+                        CASE
                             WHEN LOCATE('day', dd.name) > 0 THEN
                                 DATE_FORMAT(DATE_ADD(DATE_FORMAT(ev2.event_date, '%Y-%m-%d'), INTERVAL SUBSTR(dd.name, 1, LOCATE('day', dd.name)-1) DAY), '%Y-%m-%d')
                             WHEN LOCATE('month', dd.name) > 0 THEN
@@ -1606,11 +1810,11 @@ EOL;
                             WHEN LOCATE('week', dd.name) > 0 THEN
                                 DATE_FORMAT(DATE_ADD(DATE_FORMAT(ev2.event_date, '%Y-%m-%d'), INTERVAL SUBSTR(dd.name, 1, LOCATE('week', dd.name)-1) WEEK), '%Y-%m-%d')
                            ELSE ''
-                        END) AS StopDate,
+                        END AS StopDate,
 
-                        (SELECT CASE WHEN m.usage_type = "OphDrPrescription" THEN 1 ELSE 0 END ) AS IsAddedByPrescription,
-                        (SELECT CASE WHEN lower(dd.name) = 'ongoing' THEN 1 ELSE 0 END) AS IsContinueIndefinitely,
-                        (SELECT CASE WHEN DAYNAME(m.start_date) IS NULL THEN 1 ELSE 0 END) AS IsStartDateApprox,
+                        CASE WHEN m.usage_type = "OphDrPrescription" THEN 1 ELSE 0 END AS IsAddedByPrescription,
+                        CASE WHEN lower(dd.name) = 'ongoing' THEN 1 ELSE 0 END AS IsContinueIndefinitely,
+                        CASE WHEN DAYNAME(m.start_date) IS NULL THEN 1 ELSE 0 END AS IsStartDateApprox,
                         ev2.id
 
                     FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} t
@@ -1632,7 +1836,7 @@ EOL;
     private function getEpisodeDrug()
     {
         $query = <<<EOL
-                SELECT d.oe_event_id as EpisodeId, (SELECT CASE WHEN d.MedicationRouteId = 1 THEN 'L' WHEN d.MedicationRouteId = 2 THEN 'R' WHEN d.MedicationRouteId = 4 THEN 'B'  ELSE 'N' END), d.MedicationId, d.MedicationRouteId, d.StartDate, d.StopDate, d.IsAddedByPrescription, d.IsContinueIndefinitely, d.IsStartDateApprox
+                SELECT d.oe_event_id as EpisodeId, CASE WHEN d.MedicationRouteId = 1 THEN 'L' WHEN d.MedicationRouteId = 2 THEN 'R' WHEN d.MedicationRouteId = 4 THEN 'B'  ELSE 'N' END, d.MedicationId, d.MedicationRouteId, d.StartDate, d.StopDate, d.IsAddedByPrescription, d.IsContinueIndefinitely, d.IsStartDateApprox
                 FROM tmp_rco_nod_EpisodeMedication_{$this->extractIdentifier} d
 EOL;
         $dataQuery = array(
@@ -1640,7 +1844,7 @@ EOL;
             'header' => array('EpisodeId', 'Eye', 'DrugId', 'DrugRouteId', 'StartDate', 'StopDate', 'IsAddedByPrescription', 'IsContinueIndefinitely', 'IsStartDateApprox'),
         );
 
-        $output = $this->saveCSVfile($dataQuery, 'EpisodeDrug');
+        $output = $this->saveCSVfile($dataQuery, 'Cataract/EpisodeDrug');
 
         return $output;
     }
@@ -1701,12 +1905,12 @@ EOL;
                     'L' AS Eye,
                     axial_length_left AS AxialLength,
                     '' AS BiometryAScanId,
-                    (   SELECT CASE
+                    CASE
                                 WHEN ophinbiometry_imported_events.device_model = 'IOLMaster 500'  THEN 1
                                 WHEN ophinbiometry_imported_events.device_model = 'Haag-Streit LensStar' THEN 2
                                 WHEN ophinbiometry_imported_events.device_model = 'Other' THEN 9
                         END
-                    ) AS BiometryKeratometerId,
+                    AS BiometryKeratometerId,
                     (
                         SELECT code
                         FROM tmp_biometry_formula
@@ -1754,11 +1958,11 @@ EOL;
                     'R' AS Eye,
                     axial_length_left AS AxialLength,
                     '' AS BiometryAScanId,
-                    (SELECT CASE
+                    CASE
                     WHEN ophinbiometry_imported_events.device_model = 'IOLmaster 500'  THEN 1
                     WHEN ophinbiometry_imported_events.device_model = 'Haag-Streit LensStar' THEN 2
                     WHEN ophinbiometry_imported_events.device_model = 'Other' THEN 9
-                    END) AS BiometryKeratometerId,
+                    END AS BiometryKeratometerId,
                     ( SELECT code FROM tmp_biometry_formula WHERE tmp_biometry_formula.desc = ophinbiometry_calculation_formula.name COLLATE utf8_general_ci) AS BiometryFormulaId,
                     k1_left AS K1PreOperative,
                     k2_left AS K2PreOperative,
@@ -1823,7 +2027,7 @@ EOL;
             ),
         );
 
-        $output = $this->saveCSVfile($dataQuery, 'EpisodeBiometry');
+        $output = $this->saveCSVfile($dataQuery, 'Cataract/EpisodeBiometry');
 
 
         return $output;
@@ -1927,7 +2131,7 @@ EOL;
             'header' => array('EpisodeId', 'Eye', 'Type', 'GlaucomaMedicationStatusId', 'Value'),
         );
 
-        $output = $this->saveCSVfile($dataQuery, 'EpisodeIOP');
+        $output = $this->saveCSVfile($dataQuery, 'Cataract/EpisodeIOP');
 
         return $output;
     }
@@ -2073,7 +2277,7 @@ EOL;
             'header' => array('EpisodeId', 'OperationId', 'Eye', 'ComplicationTypeId', 'ComplicationTypeDescription'),
         );
 
-        $output = $this->saveCSVfile($dataQuery, 'EpisodePostOpComplication');
+        $output = $this->saveCSVfile($dataQuery, 'Cataract/EpisodePostOpComplication');
 
         return $output;
     }
@@ -2138,7 +2342,7 @@ LEFT OUTER JOIN tmp_rco_nod_pathology_type np
   ON np.snomed_disorder_id = edl.disorder_id
 /* Restrict: only OE_event occuring on or prior to operation "Listed Date" */
 WHERE ev.event_date <= op.ListedDate
-/* Restrict: Relevant Eye or Both as per SELECT CASE Clause */
+/* Restrict: Relevant Eye or Both as per CASE Clause */
 AND edl.eye_id IN (1, 3)
 UNION
 /* CoPathology: RIGHT Previous Examination Diagnoses XX – on or prior to operation "Listed Date" */
@@ -2167,7 +2371,7 @@ LEFT OUTER JOIN tmp_rco_nod_pathology_type np
   ON np.snomed_disorder_id = edl.disorder_id
 /* Restrict: only OE_event occuring on or prior to operation "Listed Date" */
 WHERE ev.event_date <= op.ListedDate
-/* Restrict: Relevant Eye or Both as per SELECT CASE Clause */
+/* Restrict: Relevant Eye or Both as per CASE Clause */
 AND edl.eye_id IN (2, 3)
 UNION
 /* CoPathology: LEFT This Operation Booking Diagnosis*/
@@ -2191,7 +2395,7 @@ JOIN et_ophtroperationbooking_diagnosis opd
 /* Lookup: RCO NOD CoPathology Code from SnomedCT Diagnosis_id (LOJ used to cause error if values not mapped (but they should be above) */
 LEFT OUTER JOIN tmp_rco_nod_pathology_type np
   ON np.snomed_disorder_id = opd.disorder_id
-/* Restrict: Relevant Eye or Both as per SELECT CASE Clause */
+/* Restrict: Relevant Eye or Both as per CASE Clause */
 WHERE pl.eye_id IN (1, 3)
 UNION
 /* CoPathology: RIGHT This Operation Booking Diagnosis*/
@@ -2215,7 +2419,7 @@ JOIN et_ophtroperationbooking_diagnosis opd
 /* Lookup: RCO NOD CoPathology Code from SnomedCT Diagnosis_id (LOJ used to cause error if values not mapped (but they should be above) */
 LEFT OUTER JOIN tmp_rco_nod_pathology_type np
   ON np.snomed_disorder_id = opd.disorder_id
-/* Restrict: Relevant Eye or Both as per SELECT CASE Clause */
+/* Restrict: Relevant Eye or Both as per CASE Clause */
 WHERE pl.eye_id IN (2, 3)
 UNION
 /* CoPathology: LEFT This OE_Episode Diagnosis*/
@@ -2236,7 +2440,7 @@ JOIN episode ep
 /* Lookup: RCO NOD CoPathology Code from SnomedCT Diagnosis_id (LOJ used to cause error if values not mapped (but they should be above) */
 LEFT OUTER JOIN tmp_rco_nod_pathology_type np
   ON np.snomed_disorder_id = ep.disorder_id
-/* Restrict: Relevant Eye or Both as per SELECT CASE Clause */
+/* Restrict: Relevant Eye or Both as per CASE Clause */
 WHERE ep.eye_id IN (1, 3)
 /* Restrict: Diagnosis made */
 AND ep.disorder_id IS NOT NULL
@@ -2259,7 +2463,7 @@ JOIN episode ep
 /* Lookup: RCO NOD CoPathology Code from SnomedCT Diagnosis_id (LOJ used to cause error if values not mapped (but they should be above) */
 LEFT OUTER JOIN tmp_rco_nod_pathology_type np
   ON np.snomed_disorder_id = ep.disorder_id
-/* Restrict: Relevant Eye or Both as per SELECT CASE Clause */
+/* Restrict: Relevant Eye or Both as per CASE Clause */
 WHERE ep.eye_id IN (2, 3)
 /* Restrict: Diagnosis made */
 AND ep.disorder_id IS NOT NULL
@@ -2279,7 +2483,7 @@ JOIN secondary_diagnosis sd
 /* Lookup: RCO NOD CoPathology Code from SnomedCT Diagnosis_id (LOJ used to cause error if values not mapped (but they should be above) */
 LEFT OUTER JOIN tmp_rco_nod_pathology_type np
   ON np.snomed_disorder_id = sd.disorder_id
-/* Restrict: Relevant Eye or Both as per SELECT CASE Clause */
+/* Restrict: Relevant Eye or Both as per CASE Clause */
 WHERE (sd.eye_id IN (1, 3) OR sd.eye_id IS NULL /* other Systemic Diagnoses*/)
 UNION
 /* CoPathology: LEFT Other Opthalmic + Systemic Diagnoses */
@@ -2297,7 +2501,7 @@ JOIN secondary_diagnosis sd
 /* Lookup: RCO NOD CoPathology Code from SnomedCT Diagnosis_id (LOJ used to cause error if values not mapped (but they should be above) */
 LEFT OUTER JOIN tmp_rco_nod_pathology_type np
   ON np.snomed_disorder_id = sd.disorder_id
-/* Restrict: Relevant Eye or Both as per SELECT CASE Clause */
+/* Restrict: Relevant Eye or Both as per CASE Clause */
 WHERE (sd.eye_id IN (2, 3) OR sd.eye_id IS NULL /* other Systemic Diagnoses*/)
 UNION
 /* CoPathology: LEFT-DIAGNOSIS-1 Previous Injection management – on or prior to operation "Listed Date" */
@@ -2411,7 +2615,7 @@ JOIN proc ON proc_list_asgn.proc_id = proc.id
 JOIN ophtroperationnote_procedure_element ON ophtroperationnote_procedure_element.procedure_id = proc.id
 JOIN element_type ON ophtroperationnote_procedure_element.element_type_id = element_type.id
 WHERE element_type.name IN ('Vitrectomy', 'Trabeculectomy')
-/* Restrict: Relevant Eye or Both as per SELECT CASE Clause */
+/* Restrict: Relevant Eye or Both as per CASE Clause */
 AND proc_list.eye_id IN (1, 3)
 AND c.nod_date < op.ListedDate  /* Do NOT include operations on same day. */
 UNION
@@ -2430,7 +2634,7 @@ JOIN proc ON proc_list_asgn.proc_id = proc.id
 JOIN ophtroperationnote_procedure_element ON ophtroperationnote_procedure_element.procedure_id = proc.id
 JOIN element_type ON ophtroperationnote_procedure_element.element_type_id = element_type.id
 WHERE element_type.name IN ('Vitrectomy', 'Trabeculectomy')
-/* Restrict: Relevant Eye or Both as per SELECT CASE Clause */
+/* Restrict: Relevant Eye or Both as per CASE Clause */
 AND proc_list.eye_id IN (2, 3)
 AND c.nod_date < op.ListedDate  /* Do NOT include operations on same day. */
 UNION
@@ -2449,7 +2653,7 @@ JOIN proc ON proc_list_asgn.proc_id = proc.id
 JOIN procedure_benefit ON procedure_benefit.proc_id = proc.id
 JOIN benefit ON procedure_benefit.benefit_id = benefit.id
 WHERE benefit.name = 'to prevent retinal detachment'
-/* Restrict: Relevant Eye or Both as per SELECT CASE Clause */
+/* Restrict: Relevant Eye or Both as per CASE Clause */
 AND proc_list.eye_id IN (1, 3)
 AND c.nod_date < op.ListedDate  /* Do NOT include operations on same day. */
 UNION
@@ -2468,7 +2672,7 @@ JOIN proc ON proc_list_asgn.proc_id = proc.id
 JOIN procedure_benefit ON procedure_benefit.proc_id = proc.id
 JOIN benefit ON procedure_benefit.benefit_id = benefit.id
 WHERE benefit.name = 'to prevent retinal detachment'
-/* Restrict: Relevant Eye or Both as per SELECT CASE Clause */
+/* Restrict: Relevant Eye or Both as per CASE Clause */
 AND proc_list.eye_id IN (2, 3)
 AND c.nod_date < op.ListedDate  /* Do NOT include operations on same day. */
 UNION
@@ -2518,7 +2722,7 @@ EOL;
             'header' => array('OperationId', 'Eye', 'CoPathologyId', 'DisorderId', 'DisorderDescription'),
         );
 
-        $output = $this->saveCSVfile($dataQuery, 'EpisodeOperationCoPathology');
+        $output = $this->saveCSVfile($dataQuery, 'Cataract/EpisodeOperationCoPathology');
 
         return $output;
     }
@@ -2693,7 +2897,7 @@ EOL;
             ),
         );
 
-        return $this->saveCSVfile($dataQuery, 'EpisodeTreatmentCataract');
+        return $this->saveCSVfile($dataQuery, 'Cataract/EpisodeTreatmentCataract');
     }
 
     /********** end of EpisodeTreatmentCataract **********/
@@ -2815,7 +3019,7 @@ FROM   ( SELECT    a.event_id oe_event_id
             'header' => array('OperationId', 'AnaesthesiaTypeId', 'AnaesthesiaNeedle', 'Sedation', 'SurgeonId', 'ComplicationId'),
         );
 
-        return $this->saveCSVfile($dataQuery, 'EpisodeOperationAnaesthesia');
+        return $this->saveCSVfile($dataQuery, 'Cataract/EpisodeOperationAnaesthesia');
     }
 
     /********* end of EpisodeOperationAnaesthesia***********/
@@ -2945,7 +3149,7 @@ EOL;
             'header' => array('TreatmentId', 'OperationId', 'Eye', 'TreatmentTypeId', 'TreatmentTypeDescription'),
         );
 
-        $this->saveCSVfile($dataQuery, 'EpisodeTreatment');
+        $this->saveCSVfile($dataQuery, 'Cataract/EpisodeTreatment');
 
         $query = <<<EOL
 
@@ -2958,7 +3162,7 @@ EOL;
             'header' => array('TreatmentTypeId', 'TreatmentTypeDescription'),
         );
 
-        return $this->saveCSVfile($dataQuery, 'TreatmentCodeLookup');
+        return $this->saveCSVfile($dataQuery, 'Cataract/TreatmentCodeLookup');
     }
 
     /********** EpisodeOperationIndication **********/
@@ -3054,7 +3258,7 @@ EOL;
             'header' => array('OperationId', 'Eye', 'IndicationId', 'IndicationDescription'),
         );
 
-        $this->saveCSVfile($dataQuery, 'EpisodeOperationIndication');
+        $this->saveCSVfile($dataQuery, 'Cataract/EpisodeOperationIndication');
 
         $query = <<<EOL
 
@@ -3067,7 +3271,7 @@ EOL;
             'header' => array('IndicationId', 'IndicationDescription'),
         );
 
-        return $this->saveCSVfile($dataQuery, 'OperationIndicationCodeLookup');
+        return $this->saveCSVfile($dataQuery, 'Cataract/OperationIndicationCodeLookup');
     }
 
     /********** end of EpisodeOperationIndication **********/
@@ -3198,7 +3402,7 @@ EOL;
             'header' => array('OperationId', 'Eye', 'ComplicationTypeId', 'ComplicationTypeDescription'),
         );
 
-        $this->saveCSVfile($dataQuery, 'EpisodeOperationComplication');
+        $this->saveCSVfile($dataQuery, 'Cataract/EpisodeOperationComplication');
 
         $query = <<<EOL
 
@@ -3212,7 +3416,7 @@ EOL;
             'header' => array('ComplicationTypeId', 'ComplicationTypeDescription'),
         );
 
-        return $this->saveCSVfile($dataQuery, 'OperationComplicationCodeLookup');
+        return $this->saveCSVfile($dataQuery, 'Cataract/OperationComplicationCodeLookup');
     }
 
     /********** end of EpisodeOperationComplication **********/
@@ -3317,7 +3521,7 @@ EOL;
             'query' => $query,
             'header' => array('OperationId', 'EpisodeId', 'Description', 'IsHypertensive', 'ListedDate', 'SurgeonId', 'SurgeonGradeId', 'AssistantId', 'AssistantGradeId', 'ConsultantId', 'SiteName', 'SiteODS'),
         );
-        return $this->saveCSVfile($dataQuery, 'EpisodeOperation');
+        return $this->saveCSVfile($dataQuery, 'Cataract/EpisodeOperation');
     }
 
     /********** end of EpisodeOperation **********/
@@ -3408,7 +3612,7 @@ FROM
       ON vam.id = evar.method_id
     /* Cartesian: Convenience to get logMAR single-letter unit_id only once, used in outer queries */
     CROSS JOIN ophciexamination_visual_acuity_unit u
-    WHERE u.name = 'logMAR single-letter'
+    WHERE u.name = 'logMAR 2dp'
   ) v
   /* Group by important to aggrigate multiple reading to get best reading each eye and method */
   GROUP BY
@@ -3449,7 +3653,7 @@ EOL;
             'header' => array('EpisodeId', 'Eye', 'NotationRecordedId', 'BestMeasure', 'Unaided', 'Pinhole', 'BestCorrected'),
         );
 
-        return $this->saveCSVfile($dataQuery, 'EpisodeVisualAcuity');
+        return $this->saveCSVfile($dataQuery, 'Cataract/EpisodeVisualAcuity');
     }
 
     /********** end of EpisodeVisualAcuity **********/
@@ -3469,8 +3673,11 @@ EOL;
             exit("cannot open <$name>\n");
         }
 
-        foreach (glob($this->exportPath . "/*.csv") as $filename) {
-            $zip->addFile($filename, basename($filename));
+        foreach (glob($this->exportPath . "/Cataract/*.csv") as $filename) {
+            $zip->addFile($filename, "Cataract/" . basename($filename));
+        }
+        foreach (glob($this->exportPath . "/AMD/*.csv") as $filename) {
+            $zip->addFile($filename, "AMD/" . basename($filename));
         }
         $zip->close();
     }

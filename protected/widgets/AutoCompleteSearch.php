@@ -33,6 +33,7 @@ class AutoCompleteSearch extends BaseCWidget
         'placeholder' => 'Type to search'
     );
     public $layoutColumns = array(
+        'outer' => '',
         'label' => '',
         'field' => 'full',
     );

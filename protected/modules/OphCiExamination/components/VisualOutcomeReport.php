@@ -61,7 +61,7 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
         'family' => 'Roboto,Helvetica,Arial,sans-serif',
       ),
       'xaxis' => array(
-        'title' => 'Visual acuity at surgery (LogMAR)',
+        'title' => 'Visual acuity at surgery (LogMAR 1dp)',
         'showline' => true,
         'showgrid' => true,
         'range' => [-1,6],
@@ -71,7 +71,7 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
         'zeroline' => false,
       ),
       'yaxis' => array(
-        'title' => 'Visual acuity 4 months after surgery (LogMAR)',
+        'title' => 'Visual acuity 4 months after surgery (LogMAR 1dp)',
         'showline' => true,
         'showgrid' => true,
         'range' => [-1,6],
@@ -413,7 +413,7 @@ class VisualOutcomeReport extends \Report implements \ReportInterface
      */
     protected function convertVisualAcuity($baseValue)
     {
-        $logMar = OphCiExamination_VisualAcuityUnit::model()->find('name = "logMAR"');
+        $logMar = OphCiExamination_VisualAcuityUnit::model()->find('name = "logMAR 1dp"');
         $reading = new OphCiExamination_VisualAcuity_Reading();
 
         return (float) $reading->convertTo($baseValue, $logMar['id']);

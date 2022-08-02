@@ -128,7 +128,7 @@ class VAVariableTest extends CDbTestCase
     {
         self::assertEquals('va', $this->variable->field_name);
         self::assertEquals('VA (best)', $this->variable->label);
-        self::assertEquals('VA (LogMAR)', $this->variable->x_label);
+        self::assertEquals('VA (LogMAR 1dp)', $this->variable->x_label);
         self::assertNotEmpty($this->variable->id_list);
         $variables = array($this->variable);
         $query = 'SELECT

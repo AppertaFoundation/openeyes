@@ -304,14 +304,6 @@ class WorklistController extends BaseController
                     }
                     $step->nextStatus($extra_form_data);
                 } else {
-                    if ($step->short_name === "Discharge") {
-                        $hl7_a13 = new \OEModule\PASAPI\resources\HL7_A13();
-                        $hl7_a13->setDataFromEvent(\Event::model()->find("worklist_patient_id = ?", array($step->pathway->worklist_patient->id))->id);
-                        Yii::app()->event->dispatch(
-                            'emergency_care_update',
-                            $hl7_a13
-                        );
-                    }
                     $step->prevStatus();
                 }
                 $step->refresh();
@@ -1823,13 +1815,32 @@ class WorklistController extends BaseController
      * @return array instances of Pathway, PathwayStep
      * @throws CHttpException
      */
-    private function getStepAndPathway($pathstep_id)
+    private function getStepAndPathway($pathstep_id, $visit_id = null, $type_step_id = null)
     {
         $step = PathwayStep::model()->findByPk($pathstep_id);
-        $pathway = $step->pathway;
+
         if (!$step) {
-            throw new CHttpException(404, 'Step not found.');
+            // Potentially instantiate step if relevant parameters are passed
+            if ($visit_id && $type_step_id) {
+                $visit = WorklistPatient::model()->findByPk($visit_id);
+                $type_step = PathwayTypeStep::model()->findByPk($type_step_id);
+
+                if ($type_step) {
+                    $pathway_steps = $type_step->pathway_type->instancePathway($visit);
+
+                    $step = $pathway_steps[$type_step_id] ?? null;
+                }
+
+                if (!$step) {
+                    throw new CHttpException(404, 'Unable to retrieve step for processing or step is not the required type of step.');
+                }
+            } else {
+                throw new CHttpException(404, 'Step not found.');
+            }
         }
+
+        $pathway = $step->pathway;
+
         if (!$pathway) {
             throw new CHttpException(404, 'Pathway not found.');
         }
@@ -1845,13 +1856,25 @@ class WorklistController extends BaseController
     public function actionCheckout()
     {
         $pathstep_id = Yii::app()->request->getPost('step_id');
-        extract($this->getStepAndPathway($pathstep_id));
-        // push the step to next status
+        $type_step_id = Yii::app()->request->getPost('step_type_id');
+        $visit_id = Yii::app()->request->getPost('visit_id');
+
+        extract($this->getStepAndPathway($pathstep_id, $visit_id, $type_step_id));
+
+        // push the step to completed status
         $step->nextStatus();
+        $step->status = PathwayStep::STEP_COMPLETED;
+        $step->start_time = date('Y-m-d H:i:s');
+        $step->started_user_id = Yii::app()->user->id;
+        $step->end_time = date('Y-m-d H:i:s');
+        $step->completed_user_id = Yii::app()->user->id;
+
         // set the pathway as done
+        $pathway->enqueue($step);
         $pathway->status = Pathway::STATUS_DONE;
         $pathway->end_time = date('Y-m-d H:i:s');
         $pathway->save();
+
         $this->renderJSON(
             [
                 'status' => $pathway->getStatusString(),
@@ -1883,10 +1906,25 @@ class WorklistController extends BaseController
         if (!$pathway->save()) {
             throw new CHttpException(500, 'Unable to update the pathway status');
         }
+
+        if (isset($pathway->worklist_patient_id)) {
+            $event = \Event::model()->find("worklist_patient_id = ?", [$pathway->worklist_patient->id]);
+
+            if ($event !== null) {
+                $hl7_a13 = new \OEModule\PASAPI\resources\HL7_A13();
+                $hl7_a13->setDataFromEvent($event->id);
+
+                Yii::app()->event->dispatch(
+                    'emergency_care_update',
+                    $hl7_a13
+                );
+            }
+        }
+
         $this->renderJSON(
             [
                 'status' => $pathway->getStatusString(),
-                'step_html' => $this->renderPartial('_clinical_pathway', ['pathway' => $pathway->worklist_patient], true),
+                'step_html' => $this->renderPartial('_clinical_pathway', ['visit' => $pathway->worklist_patient], true),
                 'status_html' => $pathway->getPathwayStatusHTML(),
                 'pathway_id' => $pathway->id,
                 'waiting_time_html' => $pathway->getTotalDurationHTML(true),

@@ -42,6 +42,7 @@ class ElementLetterTest extends ActiveRecordTestCase
                 )
             )
         );
+        Yii::app()->session['selected_site_id'] = 1;
         Yii::app()->session['selected_firm_id'] = 2;
         Yii::app()->session['selected_institution_id'] = 1;
         $this->letter = $this->letters('letter1');
@@ -66,6 +67,7 @@ class ElementLetterTest extends ActiveRecordTestCase
                 )
             )
         );
+        unset(Yii::app()->session['selected_site_id']);
     }
 
     public function testGetExportUrl(): void
@@ -96,6 +98,7 @@ class ElementLetterTest extends ActiveRecordTestCase
             ->willReturn(new ExportResult(false, null, null));
 
         // Simulate a successful upload.
+        Yii::app()->params['correspondence_export_url'] = 'localhost';
         $result = $this->letter->export($path, 'SOAP', $client);
         self::assertInstanceOf('ExportResult', $result);
         self::assertTrue($result->StoreDocumentResponse['Success']);

@@ -1,13 +1,14 @@
 {
   "license": "AGPL-3.0-only",
   "devDependencies": {
+    "cypress": "^10.3.0",
     "decomment": "^0.8.6",
     "glob": "~7.0.3",
     "gzip-js": "0.3.2",
     "shellcheck": "*"
   },
   "dependencies": {
-    "@nesk/puphpeteer": "^1.6.0",
+    "@nesk/puphpeteer": "^2.0.0",
     "autosize": "^4.0.0",
     "cropper": "^2.3.4",
     "fabric": "^3.6.6",
@@ -23,6 +24,11 @@
     "tinymce": "^4.8.2",
     "video.js": "^7.7.5",
     "worker-loader": "^3.0.7",
+    "webpack": "^5.0.0",
     "object-hash": "2.2.0"
+  },
+  "scripts": {
+    "cy:run": "cypress run",
+    "cy:open": "cypress open"
   }
 }

@@ -46,7 +46,6 @@ use OEModule\OphCiExamination\models\OphCiExaminationAllergy;
  * @property string $default_dose
  *
  * The followings are the available model relations:
- * @property EventMedicationUse[] $eventMedicationUses
  * @property User $lastModifiedUser
  * @property User $createdUser
  * @property MedicationSet[] $medicationSets
@@ -61,6 +60,10 @@ use OEModule\OphCiExamination\models\OphCiExaminationAllergy;
 class Medication extends BaseActiveRecordVersioned
 {
     use MappedReferenceData;
+
+    use MappedReferenceData {
+        buildCriteriaForFindAllAtLevel as baseBuildCriteriaForFindAllAtLevel;
+    }
 
     protected function getSupportedLevels(): int
     {
@@ -128,7 +131,6 @@ class Medication extends BaseActiveRecordVersioned
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return [
-            'eventMedicationUses' => [self::HAS_MANY, EventMedicationUse::class, 'medication_id'],
             'lastModifiedUser' => [self::BELONGS_TO, 'User', 'last_modified_user_id'],
             'createdUser' => [self::BELONGS_TO, 'User', 'created_user_id'],
 
@@ -311,7 +313,7 @@ class Medication extends BaseActiveRecordVersioned
 
     public function getLabel($short = false)
     {
-        $name =  $short ? ($this->short_term != "" ? $this->short_term : $this->preferred_term) : $this->preferred_term;
+        $name = $short ? ($this->short_term != "" ? $this->short_term : $this->preferred_term) : $this->preferred_term;
 
         if ($this->isAMP() && $this->vtm_term) {
             $name .= " (" . $this->vtm_term . ")";
@@ -350,14 +352,12 @@ class Medication extends BaseActiveRecordVersioned
 
     private function listByUsageCode($usage_code, $subspecialty_id = null, $raw = false, $site_id = null, $prescribable_filter = false)
     {
-
         $key = "medication_listByUsageCode_" . $usage_code . "_" . $subspecialty_id . "_" . $site_id . "_" . $prescribable_filter;
         $dependency_sql = "SELECT UPDATE_TIME
                             FROM   information_schema.tables
                             WHERE  TABLE_SCHEMA = DATABASE()
                             AND TABLE_NAME = 'medication_set_item'";
         $value = Yii::app()->cache->get($key);
-
         if ($value === false) {
             $criteria = new CDbCriteria();
             $criteria->with = ['medicationSetRules.usageCode'];
@@ -411,26 +411,26 @@ class Medication extends BaseActiveRecordVersioned
                         $duration_id = $item->default_duration_id;
                     }
                     $return[] = [
-                    'label' => $item->medication->getLabel(true),
-                    'value' => $item->medication->getLabel(true),
-                    'name' => $item->medication->getLabel(true),
-                    'id' => $item->medication->id,
-                    'dose_unit_term' => $item->default_dose_unit_term != "" ? $item->default_dose_unit_term : $item->medication->default_dose_unit_term,
-                    'dose' => $item->default_dose ? $item->default_dose : $item->medication->default_dose,
-                    'default_form' => $item->default_form_id ? $item->default_form_id : $item->medication->default_form_id,
-                    'frequency_id' => $item->default_frequency_id,
-                    'route_id' => $item->default_route_id ? $item->default_route_id : $item->medication->default_route_id,
-                    'route' => $route,
-                    'duration_id' => $duration_id,
-                    'is_eye_route' => $is_eye_route,
-                    'source_subtype' => $item->medication ? $item->medication->source_subtype : "",
-                    'will_copy' => $item->medication->getToBeCopiedIntoMedicationManagement(),
-                    'set_ids' =>  array_map(function ($e) {
-                        return $e->id;
-                    }, $item->medication->getMedicationSetsForCurrentSubspecialty()),
-                    'allergy_ids' => array_map(function ($e) {
-                        return $e->id;
-                    }, $item->medication->allergies),
+                        'label' => $item->medication->getLabel(true),
+                        'value' => $item->medication->getLabel(true),
+                        'name' => $item->medication->getLabel(true),
+                        'id' => $item->medication->id,
+                        'dose_unit_term' => $item->default_dose_unit_term != "" ? $item->default_dose_unit_term : $item->medication->default_dose_unit_term,
+                        'dose' => $item->default_dose ? $item->default_dose : $item->medication->default_dose,
+                        'default_form' => $item->default_form_id ? $item->default_form_id : $item->medication->default_form_id,
+                        'frequency_id' => $item->default_frequency_id,
+                        'route_id' => $item->default_route_id ? $item->default_route_id : $item->medication->default_route_id,
+                        'route' => $route,
+                        'duration_id' => $duration_id,
+                        'is_eye_route' => $is_eye_route,
+                        'source_subtype' => $item->medication ? $item->medication->source_subtype : "",
+                        'will_copy' => $item->medication->getToBeCopiedIntoMedicationManagement(),
+                        'set_ids' => array_map(function ($e) {
+                            return $e->id;
+                        }, $item->medication->getMedicationSetsForCurrentSubspecialty()),
+                        'allergy_ids' => array_map(function ($e) {
+                            return $e->id;
+                        }, $item->medication->allergies),
                     ];
                     $ids[] = $item->medication->id;
                 }
@@ -441,7 +441,6 @@ class Medication extends BaseActiveRecordVersioned
             });
 
             $value = $raw ? $return : CHtml::listData($return, 'id', 'label');
-
             // Cache the result
             $dependency = new CDbCacheDependency($dependency_sql);
             Yii::app()->cache->set($key, $value, 10000, $dependency);
@@ -459,10 +458,12 @@ class Medication extends BaseActiveRecordVersioned
     {
         return $this->listByUsageCode("COMMON_SYSTEMIC", $subspecialty_id, $raw, $site_id, $prescribable_filter);
     }
+
     public function listCommonDrops($raw = false, $prescribable_filter = false)
     {
         return $this->listByUsageCode("COMMON_EYE_DROPS", null, $raw, null, $prescribable_filter);
     }
+
     public function listCommonOralMedications($raw = false, $prescribable_filter = false)
     {
         return $this->listByUsageCode("COMMON_ORAL_MEDS", null, $raw, null, $prescribable_filter);
@@ -484,16 +485,29 @@ class Medication extends BaseActiveRecordVersioned
         return $ids;
     }
 
+    /**
+     * Returns the data-set_ids that the current medication is a member of, based on the current working context
+     * This is used in, e.g, some of the front end javascript to determine if a medication is associated with a risk, etc.
+     *
+     * @return array
+     */
     public function getMedicationSetsForCurrentSubspecialty()
     {
+
         $firm_id = $this->getApp()->session->get('selected_firm_id');
         $site_id = $this->getApp()->session->get('selected_site_id');
 
+        /**
+         * Processing the nested foreach loops adds quite a bit of time to each page load. Therefore we cache the value
+         * It is debateable how much time this saves compared to the overhead of caching.
+         * It may be possible to optimise the processing and therefore remove the need for data caching
+         **/
+
         // Gets the last updated time of the medication_set_item table and uses as a cache dependency. The cache will be invalidated if the table has been updated
-        // Because this method gets called from inside a long loop, we add a debounce of 5 seconds, to avoid the update time being tested on every iteration!
+        // Because this method gets called from inside a loop that gets called many, many times, we add a debounce of 7 seconds, to avoid the update time being tested on every iteration!
         $debounce_val = Yii::app()->cache->get('SettingMetaDebounce');
         if ($debounce_val === false) {
-            $dependency_sql = " SELECT UPDATE_TIME 
+            $dependency_sql = " SELECT UPDATE_TIME
                                 FROM   information_schema.tables
                                 WHERE  TABLE_SCHEMA = DATABASE()
                                 AND TABLE_NAME = 'medication_set_item'
@@ -501,7 +515,7 @@ class Medication extends BaseActiveRecordVersioned
 
             $debounce_val = Yii::app()->db->createCommand($dependency_sql)->queryScalar();
             // add a debounce of a few seconds before poling for the setting cache dependency, to avoid a DB query for every run.
-            Yii::app()->cache->set('MedicationSetItemDebounce', $debounce_val, 5);
+            Yii::app()->cache->set('MedicationSetItemDebounce', $debounce_val, 7);
         };
 
         // set the last update timestamp = to the latest debounce time
@@ -509,9 +523,11 @@ class Medication extends BaseActiveRecordVersioned
             Yii::app()->cache->set('medication_set_item_LastUpdate', $debounce_val);
         }
 
-        $key = 'getMedicationSetsForCurrentSubspecialty_' . $firm_id . '_' . $site_id;
+        $key = 'getMedicationSetsForCurrentSubspecialty_' . $firm_id . '_' . $site_id . '_' . $this->id;
         $value = Yii::app()->cache->get($key);
+
         if ($value === false) {
+
             /** @var Firm $firm */
             $firm = $firm_id ? Firm::model()->cache(100)->findByPk($firm_id) : null;
             if ($firm) {
@@ -541,7 +557,6 @@ class Medication extends BaseActiveRecordVersioned
             } else {
                 $value = $this->medicationSets;
             }
-
             // Set a dependency on the SettingMetaLastUpdate not changing (i.e, the cache is invalidated if any of the setting_* tables receives an update)
             $dependency = new CExpressionDependency("Yii::app()->cache->get('medication_set_item_LastUpdate') == '" . Yii::app()->cache->get('medication_set_item_LastUpdate') . "'");
             Yii::app()->cache->set($key, $value, 10000, $dependency);
@@ -581,7 +596,7 @@ class Medication extends BaseActiveRecordVersioned
     /**
      * Returns all attributes as [['attr_name'=> $attr_name, 'value'=> $value, 'description' => $description], [...]]
      *
-     * @param string $attr_name     If set, the result will be filtered to this attribute
+     * @param string $attr_name If set, the result will be filtered to this attribute
      * @return array
      */
 
@@ -625,5 +640,14 @@ class Medication extends BaseActiveRecordVersioned
         $number = !$number && !is_numeric($number) ? 0 : ++$number;
 
         return "{$unmapped_string}{$number}";
+    }
+
+    protected function buildCriteriaForFindAllAtLevel(int $level)
+    {
+        $baseCriteria = $this->baseBuildCriteriaForFindAllAtLevel($level);
+        $baseCriteria->addCondition('source_type != :_localSourceType', 'OR');
+        $baseCriteria->params[':_localSourceType'] = static::SOURCE_TYPE_LOCAL;
+
+        return $baseCriteria;
     }
 }
