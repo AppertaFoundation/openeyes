@@ -331,7 +331,7 @@ class FollowupAnalysisAggregate extends BaseActiveRecord
                  ->select('type, faa.patient_id AS patient_id,
                            UNIX_TIMESTAMP(made_at_date) AS made_at_date,
                            UNIX_TIMESTAMP(due_date) AS due_date,
-                           CAST(DATEDIFF(due_date, current_date()) / 7 AS INT) AS weeks,
+                           CAST(DATEDIFF(due_date, current_date()) / 7 AS SIGNED) AS weeks,
                            MIN(UNIX_TIMESTAMP(`when`)) AS `when`,
                            MAX(UNIX_TIMESTAMP(w.start)) AS start,
                            UNIX_TIMESTAMP(e.event_date) AS event_date')
