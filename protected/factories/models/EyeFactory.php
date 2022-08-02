@@ -17,27 +17,16 @@
 namespace OE\factories\models;
 
 use OE\factories\ModelFactory;
-use OE\factories\models\traits\HasFirm;
 
-class EpisodeFactory extends ModelFactory
+/**
+ * It should not be necessary to instantiate a new Eye, this factory
+ * is provided to allow the useExisting method to be called consistent with
+ * other factory definitions.
+ */
+class EyeFactory extends ModelFactory
 {
-    use HasFirm;
-
     public function definition(): array
     {
-        return [
-            'patient_id' => ModelFactory::factoryFor(\Patient::class),
-            'firm_id' => ModelFactory::factoryFor(Firm::class)->useExisting()
-        ];
-    }
-
-    public function withPrincipleDiagnosis($disorder_id = null, $eye_id = null)
-    {
-        return $this->state(function () use ($disorder_id, $eye_id) {
-            return [
-                'eye_id' => $disorder_id ?? ModelFactory::factoryFor(Eye::class)->useExisting(),
-                'disorder_id' => $eye_id ?? ModelFactory::factoryFor(Disorder::class)
-            ];
-        });
+        return [];
     }
 }

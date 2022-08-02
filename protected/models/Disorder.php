@@ -86,15 +86,17 @@ class Disorder extends BaseActiveRecordVersioned
     {
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
-        return array(
-            array('id, fully_specified_name, term', 'required'),
-            array('id, ecds_code', 'length', 'max' => 20),
-            array('id', 'checkDisorderExists'),
-            array('fully_specified_name, term , aliases , specialty_id, ecds_term', 'length', 'max' => 255),
+        return [
+            ['id, fully_specified_name, term', 'required'],
+            ['id, ecds_code', 'length', 'max' => 20],
+            ['icd10_code', 'length', 'max' => 10],
+            ['id', 'checkDisorderExists'],
+            ['id', 'numerical', 'integerOnly' => true],
+            ['fully_specified_name, term, aliases, specialty_id, ecds_term, icd10_term', 'length', 'max' => 255],
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, fully_specified_name, term, systemic , aliases, ecds_code, ecds_term', 'safe', 'on' => 'search'),
-        );
+            ['id, fully_specified_name, term, systemic, aliases, ecds_code, ecds_term, icd10_code, icd10_term', 'safe', 'on' => 'search'],
+        ];
     }
 
     /**

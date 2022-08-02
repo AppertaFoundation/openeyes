@@ -16,28 +16,20 @@
 
 namespace OE\factories\models;
 
+use Disorder;
+use Eye;
 use OE\factories\ModelFactory;
-use OE\factories\models\traits\HasFirm;
+use Patient;
 
-class EpisodeFactory extends ModelFactory
+class SecondaryDiagnosisFactory extends ModelFactory
 {
-    use HasFirm;
-
     public function definition(): array
     {
         return [
-            'patient_id' => ModelFactory::factoryFor(\Patient::class),
-            'firm_id' => ModelFactory::factoryFor(Firm::class)->useExisting()
+            'patient_id' => ModelFactory::factoryFor(Patient::class),
+            'disorder_id' => ModelFactory::factoryFor(Disorder::class),
+            'eye_id' => ModelFactory::factoryFor(Eye::class)->useExisting(),
+            'date' => $this->faker->date()
         ];
-    }
-
-    public function withPrincipleDiagnosis($disorder_id = null, $eye_id = null)
-    {
-        return $this->state(function () use ($disorder_id, $eye_id) {
-            return [
-                'eye_id' => $disorder_id ?? ModelFactory::factoryFor(Eye::class)->useExisting(),
-                'disorder_id' => $eye_id ?? ModelFactory::factoryFor(Disorder::class)
-            ];
-        });
     }
 }
