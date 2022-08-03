@@ -46,6 +46,10 @@ abstract class ModelFactory
 
     public static function resolveFactoryName(string $modelName)
     {
+        if (method_exists($modelName, 'importNonNamespacedFactories')) {
+            $modelName::importNonNamespacedFactories();
+        }
+
         if (method_exists($modelName, 'factoryName')) {
             return $modelName::factoryName();
         }
