@@ -311,8 +311,10 @@ abstract class ModelFactory
     protected function persist(array $instances)
     {
         foreach ($instances as $instance) {
-            // might be receiving an existing model, we don't need to save
-            if ($instance->isNewRecord && !$instance->save()) {
+            // as a lower level interaction with the models, we assume that the eventual
+            // set of data being created will be valid. Therefore we don't perform validation
+            // during the model saves.
+            if ($instance->isNewRecord && !$instance->save(false)) {
                 throw new CannotSaveModelException($instance->getErrors(), $instance->getAttributes());
             }
         }
