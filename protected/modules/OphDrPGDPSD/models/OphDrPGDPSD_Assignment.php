@@ -270,8 +270,8 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
                 'css' => 'done'
             ),
         );
-
-        return $get_dict ? json_encode(array_values($status_dict)) : $status_dict[$this->status];
+        $status = (bool)$this->active ? $this->status : $this::STATUS_COMPLETE;
+        return $get_dict ? json_encode(array_values($status_dict)) : $status_dict[$status];
     }
 
     public function getAssignedMeds()
@@ -477,5 +477,31 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
             }
         }
         return $this->_is_relevant;
+    }
+
+    /**
+     * @param bool $assignment
+     * @return array - $deleted_style, $deleted_tag
+     * returns the style for deleted psd order block, and a deleted tag
+     */
+    public function getDeletedUI(){
+        $deleted_tag = null;
+        if(!(bool)$this->active){
+            $assigned_meds_count = count($this->assigned_meds);
+            $administerd_meds_count = $this->getAdministeredMedsCount();
+            $tag_txt = $administerd_meds_count > 0 ? ($assigned_meds_count === $administerd_meds_count ? "Cancelled" : "Cancelled, partially administered") : "Cancelled";
+            $deleted_tag = "<small class='highlighter issue'>$tag_txt</small>";
+        }
+
+        return $deleted_tag;
+    }
+    /**
+     * @return int - number of administered medications
+     */
+    public function getAdministeredMedsCount() {
+        $administered_meds = array_filter($this->assigned_meds, function($med) {
+            return $med->administered;
+        });
+        return count($administered_meds);
     }
 }

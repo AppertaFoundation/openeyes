@@ -20,11 +20,11 @@ $field_prefix = $model_name . '[assignment][{{section_key}}][entries][{{entry_ke
         $is_confirmed = $assigned_psd->confirmed ? $assigned_psd->confirmed : 0;
 
         $grey_out_section = !$is_relevant || !$is_active ? 'fade' : null;
-
-        extract($this->getDeletedUI($is_active));
-
+        $deleted_tag = $assigned_psd->getDeletedUI();
+        $entries = $assigned_psd->assigned_meds;
+        $is_all_administered = $assigned_psd->getAdministeredMedsCount() === count($entries);
         $cancel_btn = null;
-        if(!$is_existing){
+        if (!$is_existing) {
             $cancel_btn = array(
                 'class' => 'red js-cancel-preset',
                 'text' => 'Remove Block',
@@ -35,12 +35,12 @@ $field_prefix = $model_name . '[assignment][{{section_key}}][entries][{{entry_ke
                 $cancel_btn = array(
                     'class' => 'red js-delete-preset',
                     'text' => 'Cancel remaining items',
-                    'display' => ''
+                    'display' => $is_all_administered ? 'display:none;' : '',
                 );
             }
         }
         ?>
-    <div class="order-block <?=$grey_out_section;?> <?=$deleted_style?>" data-key="<?=$key?>"  data-section-name="<?=$assignment_type_name['name']?>">
+    <div class="order-block" data-key="<?=$key?>"  data-section-name="<?=$assignment_type_name['name']?>">
         <input type="hidden" name="<?=$model_name . "[assignment][{$key}][assignment_id]"?>" value="<?=$assigned_psd->id?>">
         <input type="hidden" name="<?=$model_name . "[assignment][{$key}][pgdpsd_name]"?>" value="<?=$assignment_type_name['name']?>">
         <input type="hidden" name="<?=$model_name . "[assignment][{$key}][visit_id]"?>" value="<?=$assigned_psd->visit_id;?>">
@@ -55,24 +55,25 @@ $field_prefix = $model_name . '[assignment][{{section_key}}][entries][{{entry_ke
                 <!-- Preset | Custom -->
                 <div class="drug-admin-box inline <?=$assigned_psd->getStatusDetails()['css']?>">
                     <?=$assignment_type_name['type']?>
-                </div>
+                </div>&emsp;
                 <div class="large-text">
                     <!-- preset name -->
                     <?=$assignment_type_name['name']?>
                     <span class="js-appt-details">
                         <?=$appointment_details['appt_details_dom']?>
                     </span>
-                    <?=$deleted_tag?>
                 </div>
             </div>
             <div class="flex-r">
-                <?php if($cancel_btn) {?>
+                <?php if ($cancel_btn) {?>
                     <button class="hint <?=$cancel_btn['class']?> js-after-confirm" style="<?=$cancel_btn['display']?>">
                         <?=$cancel_btn['text']?>
                     </button>
+                <?php } else {?>
+                    <?=$deleted_tag?>
                 <?php }?>
                 <!-- rely on worklist -->
-                <?=$appointment_details['valid_date_dom']?>
+                &emsp;<?=$appointment_details['valid_date_dom']?>
             </div>
         </div>
         <div class="flex">
@@ -80,8 +81,11 @@ $field_prefix = $model_name . '[assignment][{{section_key}}][entries][{{entry_ke
                 <table class="cols-full js-entry-table">
                     <colgroup>
                         <col class="cols-4">
-                        <col class="cols-2">
                         <col class="cols-1">
+                        <col class="cols-1">
+                        <col class="cols-2">
+                        <col class="cols-2">
+                        <col class="cols-2">
                     </colgroup>
                     <thead>
                         <tr>
@@ -91,35 +95,33 @@ $field_prefix = $model_name . '[assignment][{{section_key}}][entries][{{entry_ke
                             <th>Administered by</th>
                             <th>Date</th>
                             <th>Time</th>
-                            <th class="js-administer-all" style="cursor:pointer;"><i class="oe-i tick small no-click pad"></i></th>
+                            <th class="js-administer-all" style="cursor:pointer;"></th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php
-                            $entries = $assigned_psd->assigned_meds;
+
                         foreach ($entries as $entry_key => $entry) {
-                            extract($entry->getAdministerDetails());
-                            $row_action = array(
-                                'can_remove' => !$is_existing,
-                                'msg' => 'No Permission to Remove',
-                            );
-                            if ($is_prescriber) {
-                                if ($entry->administered && $is_existing) {
-                                    $row_action['msg'] = 'Can not remove a drug already administered';
-                                } else {
-                                    $row_action['can_remove'] = true;
+                            list(
+                                "administered_ts" => $administered_ts,
+                                "administered_nhs" => $administered_nhs,
+                                "administered_time" => $administered_time,
+                                "administered_time_ui" => $administered_time_ui,
+                                "administered_user" => $administered_user,
+                                "state_css" => $state_css,
+                                "action_icon" => $action_icon,
+                            ) = $entry->getAdministerDetails(true);
+                            $can_interact = false;
+                            if ($is_relevant) {
+                                if ((bool)$assigned_psd->active) {
+                                    if ($entry->administered && !$is_prescriber) {
+                                        $can_interact = false;
+                                    } else {
+                                        $can_interact = true;
+                                    }
                                 }
                             }
-
-                            $can_remove = $is_prescriber ? ($entry->administered ? false : true) : false;
-                            /**
-                             * if is not active, disable the buttons
-                             * if is relevant, not prescriber and the med is administered, disabled the button
-                             * if not relevant, disable the button
-                             */
-                            $disable_administer_btn = !$is_active ? 'disabled' : ($is_relevant ? ($is_prescriber ? '' : ($entry->administered ? 'disabled' : '')) : 'disabled');
-                            $hide_administer_switch = ($is_confirmed && $is_record_admin && $entry->administered) || ($is_confirmed && !$is_prescriber && $entry->administered) ? true : false;
                             ?>
                         <tr
                             data-entry-key="<?=$entry_key?>"
@@ -135,10 +137,14 @@ $field_prefix = $model_name . '[assignment][{{section_key}}][entries][{{entry_ke
                             data-right="<?=intval($entry->laterality) === MedicationLaterality::RIGHT ? 'R' : 'NA';?>"
                             data-left="<?=intval($entry->laterality) === MedicationLaterality::LEFT ? 'L' : 'NA';?>"
                             data-route="<?=$entry->route;?>"
+                            class="<?=$grey_out_section;?>"
                         >
                             <input type="hidden" name="<?=$model_name . "[assignment][{$key}][entries][{$entry_key}][id]"?>" value="<?=$entry->id?>">
                             <input type="hidden" name="<?=$model_name . "[assignment][{$key}][entries][{$entry_key}][medication_id]"?>" value="<?=$entry->medication_id?>">
                             <td>
+                            <?php if (!$is_active && !$entry->administered) {?>
+                                <del>
+                            <?php } ?>
                             <?=$entry->medication->getLabel(true)?>
                                 <span class="js-prepended_markup">
                                 <?php if ($this->patient->hasDrugAllergy($entry->medication_id)) {?>
@@ -146,6 +152,9 @@ $field_prefix = $model_name . '[assignment][{{section_key}}][entries][{{entry_ke
                                 <?php }?>
                                 <?=$this->widget('MedicationInfoBox', array('medication_id' => $entry->medication_id), true);?>
                                 </span>
+                            <?php if (!$is_active && !$entry->administered) {?>
+                                </del>
+                            <?php } ?>
                             </td>
                             <td>
                             <?php if (!$entry->dose) {?>
@@ -197,13 +206,7 @@ $field_prefix = $model_name . '[assignment][{{section_key}}][entries][{{entry_ke
                                 <?php } ?>
                             </td>
                             <td class="js-administer-user">
-
-                                <?php if ($entry->administered) {?>
-                                    <?=$entry->administered_user->getFullName();?>
-                                <?php } else { ?>
-                                    <!-- rely on administered field -->
-                                    <small class="fade">Waiting to administer</small>
-                                <?php } ?>
+                                <?= $administered_user; ?>
                             </td>
                             <td class="js-administer-date">
                                 <?=$administered_nhs;?>
@@ -212,12 +215,11 @@ $field_prefix = $model_name . '[assignment][{{section_key}}][entries][{{entry_ke
                                 <?=$administered_time_ui;?>
                             </td>
                             <td>
-                                <?php if ($hide_administer_switch) {?>
-                                    <i class="oe-i tick medium pad selected"></i>
-                                <?php }?>
+                                <?php if (!$can_interact) {?>
+                                    <i class="oe-i medium pad <?=$state_css?>"></i>
+                                <?php } else { ?>
                                 <label
-                                    class="toggle-switch <?=$disable_administer_btn?>"
-                                    <?=$hide_administer_switch ? 'style="display:none"' : ''?>
+                                    class="toggle-switch <?=!$is_relevant ? 'disabled' : ''?>"
                                 >
                                     <input
                                         class="js-administer-med"
@@ -233,19 +235,12 @@ $field_prefix = $model_name . '[assignment][{{section_key}}][entries][{{entry_ke
                                         value="<?=$administered_ts * 1000;?>"
                                     >
                                 </label>
+                                <?php }?>
                                 <input type="hidden" name="<?=$model_name . "[assignment][{$key}][entries][{$entry_key}][administered_by]"?>" value="<?=$entry->administered_by?>">
                             </td>
 
                             <td class="js-entry-action">
-                                <?php if ($is_preset) {?>
-                                <i class="oe-i no-permissions small-icon js-has-tooltip" data-tooltip-content="Drugs within a Preset Order not be changed."></i>
-                                <?php } else {?>
-                                    <?php if ($row_action['can_remove']) {?>
-                                        <i class="oe-i trash js-remove-med <?=$disable_administer_btn?>"></i>
-                                    <?php } else {?>
-                                        <i class="oe-i no-permissions small-icon js-has-tooltip" data-tooltip-content="<?=$row_action['msg']?>"></i>
-                                    <?php }?>
-                                <?php }?>
+                                <i class="oe-i <?=$action_icon['class']?>" <?=$action_icon['attribute']?>></i>
                             </td>
                         </tr>
                         <?php } ?>

@@ -22,7 +22,7 @@
         <div class="flex-r">
             <button class="red hint js-cancel-preset js-after-confirm" style="display:none;">Remove Block</button>
             <!-- rely on worklist -->
-            <span class="js-validate-date"></span>
+            &emsp;<span class="js-validate-date"></span>
         </div>
     </div>
     <div class="flex">
@@ -30,8 +30,11 @@
             <table class="cols-full js-entry-table">
                 <colgroup>
                     <col class="cols-4">
-                    <col class="cols-2">
                     <col class="cols-1">
+                    <col class="cols-1">
+                    <col class="cols-2">
+                    <col class="cols-2">
+                    <col class="cols-2">
                 </colgroup>
                 <thead>
                     <tr>
@@ -46,7 +49,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                  
+
                 </tbody>
             </table>
             <!-- user comments -->
@@ -62,7 +65,7 @@
         <div class="add-data-actions flex-item-bottom">
             <button class="button js-add-comments">
             <i class="oe-i comments small-icon "></i>
-            </button> 
+            </button>
         </div>
     </div>
     <?php $this->render(
