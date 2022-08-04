@@ -18,13 +18,13 @@ use OE\factories\ModelFactory;
 
 class ContactLabelFactory extends ModelFactory
 {
-	/**
-	 * @return array
-	 */
-	public function definition(): array 
+    /**
+     * @return array
+     */
+    public function definition(): array
     {
         return [
             'name' => $this->faker->words(2, true)
         ];
-	}
+    }
 }

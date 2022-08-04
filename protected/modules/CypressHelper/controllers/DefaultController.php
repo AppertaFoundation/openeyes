@@ -94,10 +94,10 @@ class DefaultController extends \CController
     }
 
     /**
-     * This action relies on a ModelFactory having been defined for the required Model, 
+     * This action relies on a ModelFactory having been defined for the required Model,
      * and it will either find an existing instance of the model with the given attributes
      * or create it.
-     * 
+     *
      * It will not return any relations defined on the model
      */
     public function actionLookupOrCreateModel()
