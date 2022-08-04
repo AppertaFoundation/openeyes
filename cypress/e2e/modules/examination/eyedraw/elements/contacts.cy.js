@@ -20,7 +20,6 @@ describe('contacts widget behaviour', () => {
 
         cy.intercept('/OphCiExamination/contact/saveNewContact').as('saveNewContact')
 
-
         cy.get('#add-contacts-btn').click();
 
         cy.get('#contacts-popup')
@@ -51,6 +50,8 @@ describe('contacts widget behaviour', () => {
 
         cy.wait('@saveNewContact');
 
-        cy.get('@saveNewContact').its('callCount').should('equal', 1);
+        cy.get('@saveNewContact.all').then((interceptions) => {
+            expect(interceptions).to.have.length(1);
+        });
     });
 });
