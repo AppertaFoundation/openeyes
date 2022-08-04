@@ -36,7 +36,7 @@ describe('macula element behaviour', () => {
             ['Vitreous haemorrhage', 'Vitreous haemorrhage', true],
             ['Parafoveal telangiectasia', 'Parafoveal telangiectasia'],
             ['Choroidal haemorrhage', 'Choroidal haemorrhage'],
-            ['Choroidal mass/pignment', 'Naevus of choroid'],
+            ['Choroidal mass/pigment', 'Naevus of choroid'],
             ['Polypoidal choroidal vasculopathy', 'Idiopathic polypoidal choroidal vasculopathy'],
             ['Macular dystrophy', 'Hereditary macular dystrophy'],
             ['Central Serous Retinopathy', 'Central serous chorioretinopathy']
