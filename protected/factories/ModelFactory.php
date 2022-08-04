@@ -34,7 +34,7 @@ abstract class ModelFactory
 
     public static function new($attributes = [])
     {
-        return (new static)->state($attributes)->configure();
+        return (new static())->state($attributes)->configure();
     }
 
     public static function factoryFor(string $modelName)
