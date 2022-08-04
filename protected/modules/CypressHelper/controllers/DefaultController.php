@@ -93,6 +93,35 @@ class DefaultController extends \CController
         ]);
     }
 
+    /**
+     * This action relies on a ModelFactory having been defined for the required Model, 
+     * and it will either find an existing instance of the model with the given attributes
+     * or create it.
+     * 
+     * It will not return any relations defined on the model
+     */
+    public function actionLookupOrCreateModel()
+    {
+        $model_class = $_POST['model_class'] ?? null;
+        $lookup_attributes = $_POST['attributes'] ?? [];
+
+        if (!$model_class) {
+            throw new \CHttpException(400, 'model class must be provided');
+        }
+        $model_instance = ModelFactory::factoryFor($model_class)
+            ->useExisting($lookup_attributes)
+            ->create();
+
+        $this->sendJsonResponse(200, [
+            'model' => array_merge(
+                [
+                    'id' => $model_instance->id
+                ],
+                $model_instance->getAttributes()
+            )
+            ]);
+    }
+
     protected function sendJsonResponse($status = 200, array $data = [])
     {
         header('HTTP/1.1 ' . $status);
