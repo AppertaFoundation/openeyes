@@ -12,11 +12,11 @@ describe('contacts widget behaviour', () => {
             })
             .then(([url, patient]) => {
                 cy.visit(url);
-                cy.addExaminationElement('Contacts');
+                return cy.addExaminationElement('Contacts');
             });
     });
 
-    it('adding new contact correctly calls endpoint', () => {
+    it('adding new contact correctly calls endpoint', () =>{
 
         cy.intercept('/OphCiExamination/contact/saveNewContact').as('saveNewContact')
 
@@ -25,15 +25,19 @@ describe('contacts widget behaviour', () => {
         cy.get('#contacts-popup')
             .should('be.visible') 
             .within(() => {
-                // Select next of kin
-                cy.get('li[data-id="96"]').should('be.visible');
-                cy.get('li[data-id="96"]').click();
+                return cy.getModelByAttributes('ContactLabel', {name: 'Next of Kin'})
+                    .then((contactLabel) => {
+                        // Select next of kin
+                        cy.get(`li[data-id="${contactLabel.id}"]`).scrollIntoView();
+                        cy.get(`li[data-id="${contactLabel.id}"]`).click();
 
-                // Select add new
-                cy.get('li[data-type="custom"]').should('be.visible');
-                cy.get('li[data-type="custom"]').click();
+                        // Select add new
+                        cy.get('li[data-type="custom"]').should('be.visible');
+                        cy.get('li[data-type="custom"]').click();
 
-                cy.get('.add-icon-btn').click();
+                        cy.get('.add-icon-btn').click();
+                    })
+                
             })
             .then(() => {
                 cy.get('.oe-popup')
