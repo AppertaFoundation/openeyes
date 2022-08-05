@@ -30,6 +30,7 @@ if (in_array($this->controller->id, ['caseSearch','trial','worklist'])) {
                         $coordinators = implode(', ', $coordinators);
                         ?>
                 <tr class="divider">
+                    <td style="display: none"></td>
                     <td colspan="2">
                         <?php if (!is_null($trialPatient->trial->getUserPermission(Yii::app()->user->id)) && (Yii::app()->user->checkAccess('TaskViewTrial'))) {
                             echo CHtml::link(
@@ -89,6 +90,7 @@ if (in_array($this->controller->id, ['caseSearch','trial','worklist'])) {
 
     <script type="text/template" id="js-patient-trial-summary-entry-template">
         <tr class="divider">
+            <td style="display: none"></td>
             <td colspan="2"><a href="{{name.link}}">{{name.name}}</a></td>
         </tr>
         <tr>

@@ -1,6 +1,6 @@
 <?php
 
-class OphDrPGDPSD_ReportPSD extends BaseReport
+class OphDrPGDPSD_ReportDa extends BaseReport
 {
     public $date_type;
     public $date_from;
