@@ -53,6 +53,25 @@ class DrugAdministration extends BaseMedicationWidget
         $available_appointments = array();
         $psds = array();
         $pgds = array();
+        $presets = array();
+        $patient_todo_assignments = \OphDrPGDPSD_Assignment::model()->todoAndActive($this->patient->id, $event_date, $is_prescriber)->findAll();
+        // avoid duplicated assignments
+        $assigned_psds = array_unique(array_merge($patient_todo_assignments, $this->element->assignments));
+        $relevant_psds = array();
+        $irrelevant_psds = array();
+        foreach ($assigned_psds as $assigned_psd) {
+            if (!$assigned_psd->isrelevant || !$assigned_psd->active) {
+                $irrelevant_psds[] = $assigned_psd;
+                continue;
+            }
+            $relevant_psds[] = $assigned_psd;
+        }
+        // sort the irrelevent ones by date
+        usort($irrelevant_psds, function ($assignment1, $assignment2) {
+            $appointment_date_order = $assignment1->worklist_patient && $assignment2->worklist_patient && $assignment1->worklist_patient->when > $assignment1->worklist_patient->when ? 1 : 0;
+            return $appointment_date_order;
+        });
+        $assigned_psds = array_merge($relevant_psds, $irrelevant_psds);
         if(in_array($this->controller->action->id, array('removed', 'renderEventImage', 'view', 'print'))){
             return array_merge(
                 parent::getViewData(),
@@ -65,7 +84,7 @@ class DrugAdministration extends BaseMedicationWidget
                         'id' => $current_user->id,
                     ),
                     'user_obj' => $current_user,
-                    'assigned_psds' => $this->element->assignments,
+                    'assigned_psds' => $assigned_psds,
                     'available_appointments' => $available_appointments,
                     'psds' => json_encode($psds),
                     'pgds' => json_encode($pgds),
@@ -117,24 +136,7 @@ class DrugAdministration extends BaseMedicationWidget
                 }
             }
         }
-        $patient_todo_assignments = \OphDrPGDPSD_Assignment::model()->todoAndActive($this->patient->id, $event_date, $is_prescriber)->findAll();
-        // avoid duplicated assignments
-        $assigned_psds = array_unique(array_merge($patient_todo_assignments, $this->element->assignments));
-        $relevant_psds = array();
-        $irrelevant_psds = array();
-        foreach ($assigned_psds as $assigned_psd) {
-            if (!$assigned_psd->isrelevant) {
-                $irrelevant_psds[] = $assigned_psd;
-                continue;
-            }
-            $relevant_psds[] = $assigned_psd;
-        }
-        // sort the irrelevent ones by date
-        usort($irrelevant_psds, function ($assignment1, $assignment2) {
-            $appointment_date_order = $assignment1->worklist_patient && $assignment2->worklist_patient && $assignment1->worklist_patient->when > $assignment1->worklist_patient->when ? 1 : 0;
-            return $appointment_date_order;
-        });
-        $assigned_psds = array_merge($relevant_psds, $irrelevant_psds);
+
         return array_merge(
             parent::getViewData(),
             array(
@@ -213,23 +215,5 @@ class DrugAdministration extends BaseMedicationWidget
             }
         }
         $element->assignments = $assignment_entries;
-    }
-
-    /**
-     * @param bool $assignment
-     * @return array
-     * returns the style for deleted psd order block, and a deleted tag
-     */
-    public function getDeletedUI(bool $is_active){
-        $ret = array(
-            'deleted_style' => null,
-            'deleted_tag' => null,
-        );
-        if(!$is_active){
-            $ret['deleted_style'] = 'status-box red';
-            $ret['deleted_tag'] = "<span class='highlighter warning'>Cancelled</span>";
-        }
-
-        return $ret;
     }
 }

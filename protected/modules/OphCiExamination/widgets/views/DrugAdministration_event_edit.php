@@ -35,9 +35,9 @@ $field_prefix = $model_name . '[assignment][{{section_key}}][entries][{{entry_ke
         $is_confirmed = $assigned_psd->confirmed ?: 0;
 
         $grey_out_section = !$is_relevant || !$is_active ? 'fade' : null;
-
-        extract($this->getDeletedUI($is_active));
-
+        $deleted_tag = $assigned_psd->getDeletedUI();
+        $entries = $assigned_psd->assigned_meds;
+        $is_all_administered = $assigned_psd->getAdministeredMedsCount() === count($entries);
         $cancel_btn = null;
         if (!$is_existing) {
             $cancel_btn = array(
@@ -50,65 +50,60 @@ $field_prefix = $model_name . '[assignment][{{section_key}}][entries][{{entry_ke
                 $cancel_btn = array(
                     'class' => 'red js-delete-preset',
                     'text' => 'Cancel remaining items',
-                    'display' => ''
+                    'display' => $is_all_administered ? 'display:none;' : '',
                 );
             }
         }
         ?>
-        <div class="order-block <?= $grey_out_section ?> <?= $deleted_style ?>" data-key="<?= $key ?>"
-             data-section-name="<?= $assignment_type_name['name'] ?>">
-            <input type="hidden" name="<?= $model_name . "[assignment][$key][assignment_id]" ?>"
-                   value="<?= $assigned_psd->id ?>">
-            <input type="hidden" name="<?= $model_name . "[assignment][$key][pgdpsd_name]" ?>"
-                   value="<?= $assignment_type_name['name'] ?>">
-            <input type="hidden" name="<?= $model_name . "[assignment][$key][visit_id]" ?>"
-                   value="<?= $assigned_psd->visit_id ?>">
-            <input type="hidden" name="<?= $model_name . "[assignment][$key][pgdpsd_id]" ?>"
-                   value="<?= $assigned_psd->pgdpsd->id ?? null ?>">
-            <input type="hidden" name="<?= $model_name . "[assignment][$key][confirmed]" ?>"
-                   value="<?= $is_confirmed ?>">
-            <input type="hidden" name="<?= $model_name . "[assignment][$key][is_pgd]" ?>"
-                   value="<?= $is_pgd ?>">
-            <input type="hidden" name="<?= $model_name . "[assignment][$key][create_wp]" ?>"
-                   value="<?= $assigned_psd->create_wp ?>">
-            <input type="hidden" name="<?= $model_name . "[assignment][$key][active]" ?>" value="<?= $is_active ?>">
-            <input type="hidden" name="<?= $model_name . "[assignment][$key][is_relevant]" ?>" value="<?= (int)$is_relevant ?>">
-            <div class="flex row">
-                <div class="flex-l">
-                    <!-- rely on pgdpsd id null or not -->
-                    <!-- Preset | Custom -->
-                    <div class="drug-admin-box inline <?= $assigned_psd->getStatusDetails()['css'] ?>">
-                        <?= $assignment_type_name['type'] ?>
-                    </div>
-                    <div class="large-text">
-                        <!-- preset name -->
-                        <?= $assignment_type_name['name'] ?>
-                        <span class="js-appt-details">
-                        <?= $appointment_details['appt_details_dom'] ?>
+    <div class="order-block" data-key="<?=$key?>"  data-section-name="<?=$assignment_type_name['name']?>">
+        <input type="hidden" name="<?=$model_name . "[assignment][{$key}][assignment_id]"?>" value="<?=$assigned_psd->id?>">
+        <input type="hidden" name="<?=$model_name . "[assignment][{$key}][pgdpsd_name]"?>" value="<?=$assignment_type_name['name']?>">
+        <input type="hidden" name="<?=$model_name . "[assignment][{$key}][visit_id]"?>" value="<?=$assigned_psd->visit_id;?>">
+        <input type="hidden" name="<?=$model_name . "[assignment][{$key}][pgdpsd_id]"?>" value="<?=$assigned_psd->pgdpsd ? $assigned_psd->pgdpsd->id : null;?>">
+        <input type="hidden" name="<?=$model_name . "[assignment][{$key}][confirmed]"?>" value="<?=$is_confirmed;?>">
+        <input type="hidden" name="<?=$model_name . "[assignment][{$key}][create_wp]"?>" value="<?=$assigned_psd->create_wp;?>">
+        <input type="hidden" name="<?= $model_name . "[assignment][$key][is_pgd]" ?>" value="<?= $is_pgd ?>">
+        <input type="hidden" name="<?=$model_name . "[assignment][{$key}][active]"?>" value="<?=$is_active?>">
+        <input type="hidden" name="<?= $model_name . "[assignment][$key][is_relevant]" ?>" value="<?= (int)$is_relevant ?>">
+        <div class="flex row">
+            <div class="flex-l">
+                <!-- rely on pgdpsd id null or not -->
+                <!-- Preset | Custom -->
+                <div class="drug-admin-box inline <?=$assigned_psd->getStatusDetails()['css']?>">
+                    <?=$assignment_type_name['type']?>
+                </div>&emsp;
+                <div class="large-text">
+                    <!-- preset name -->
+                    <?=$assignment_type_name['name']?>
+                    <span class="js-appt-details">
+                        <?=$appointment_details['appt_details_dom']?>
                     </span>
-                        <?= $deleted_tag ?>
-                    </div>
-                </div>
-                <div class="flex-r">
-                    <?php if ($cancel_btn) { ?>
-                        <button class="hint <?= $cancel_btn['class'] ?> js-after-confirm"
-                                style="<?= $cancel_btn['display'] ?>">
-                            <?= $cancel_btn['text'] ?>
-                        </button>
-                    <?php } ?>
-                    <!-- rely on worklist -->
-                    <?= $appointment_details['valid_date_dom'] ?>
                 </div>
             </div>
-            <div class="flex">
-                <div class="cols-11">
-                    <table class="cols-full js-entry-table">
-                        <colgroup>
-                            <col class="cols-4">
-                            <col class="cols-2">
-                            <col class="cols-1">
-                        </colgroup>
-                        <thead>
+            <div class="flex-r">
+                <?php if ($cancel_btn) {?>
+                    <button class="hint <?=$cancel_btn['class']?> js-after-confirm" style="<?=$cancel_btn['display']?>">
+                        <?=$cancel_btn['text']?>
+                    </button>
+                <?php } else {?>
+                    <?=$deleted_tag?>
+                <?php }?>
+                <!-- rely on worklist -->
+                &emsp;<?=$appointment_details['valid_date_dom']?>
+            </div>
+        </div>
+        <div class="flex">
+            <div class="cols-11">
+                <table class="cols-full js-entry-table">
+                    <colgroup>
+                        <col class="cols-4">
+                        <col class="cols-1">
+                        <col class="cols-1">
+                        <col class="cols-2">
+                        <col class="cols-2">
+                        <col class="cols-2">
+                    </colgroup>
+                    <thead>
                         <tr>
                             <th>Drug</th>
                             <th>Dose</th>
@@ -116,212 +111,153 @@ $field_prefix = $model_name . '[assignment][{{section_key}}][entries][{{entry_ke
                             <th>Administered by</th>
                             <th>Date</th>
                             <th>Time</th>
-                            <th class="js-administer-all" style="cursor:pointer;"><i class="oe-i tick small no-click pad"></i></th>
+                            <th class="js-administer-all" style="cursor:pointer;"></th>
                             <th></th>
                         </tr>
                         </thead>
                         <tbody>
                         <?php
-                        $entries = $assigned_psd->assigned_meds;
                         foreach ($entries as $entry_key => $entry) {
-                            extract($entry->getAdministerDetails());
-                            $row_action = array(
-                                'can_remove' => !$is_existing,
-                                'msg' => 'No Permission to Remove',
-                            );
-                            if ($is_prescriber) {
-                                if ($entry->administered && $is_existing) {
-                                    $row_action['msg'] = 'Can not remove a drug already administered';
-                                } else {
-                                    $row_action['can_remove'] = true;
+                            list(
+                                "administered_ts" => $administered_ts,
+                                "administered_nhs" => $administered_nhs,
+                                "administered_time" => $administered_time,
+                                "administered_time_ui" => $administered_time_ui,
+                                "administered_user" => $administered_user,
+                                "state_css" => $state_css,
+                                "action_icon" => $action_icon,
+                            ) = $entry->getAdministerDetails(true);
+                            $can_interact = false;
+                            if ($is_relevant) {
+                                if ((bool)$assigned_psd->active) {
+                                    if ($entry->administered && !$is_prescriber) {
+                                        $can_interact = false;
+                                    } else {
+                                        $can_interact = true;
+                                    }
                                 }
                             }
-
-                            $can_remove = $is_prescriber && !$entry->administered;
-                            /**
-                             * if is not active, disable the buttons
-                             * if is relevant, not prescriber and the med is administered, disabled the button
-                             * if not relevant, disable the button
-                             */
-                            $disable_administer_btn = '';
-                            if (!$is_active || !$is_relevant || !$is_prescriber && $entry->administered) {
-                                $disable_administer_btn = 'disabled';
-                            }
-
-                            $hide_administer_switch = !$is_prescriber && $entry->administered;
                             ?>
-                            <tr
-                                    data-entry-key="<?= $entry_key ?>"
-                                    data-entry_key="<?= $entry_key ?>"
-                                    data-id="<?= $entry->id ?>"
-                                    data-is-preset="<?= $is_preset ?>"
-                                    data-preferred_term="<?= $entry->medication->getLabel(true) ?>"
-                                    data-medication_id="<?= $entry->medication_id ?>"
-                                    data-dose="<?= $entry->dose ?>"
-                                    data-dose_unit_term="<?= $entry->dose_unit_term ?>"
-                                    data-route_id="<?= $entry->route_id ?>"
-                                    data-laterality="<?= $entry->laterality ?>"
-                                    data-right="<?= (int)$entry->laterality === MedicationLaterality::RIGHT ? 'R' : 'NA' ?>"
-                                    data-left="<?= (int)$entry->laterality === MedicationLaterality::LEFT ? 'L' : 'NA' ?>"
-                                    data-route="<?= $entry->route ?>"
-                            >
-                                <td>
-                                    <input type="hidden"
-                                           name="<?= $model_name . "[assignment][$key][entries][$entry_key][id]" ?>"
-                                           value="<?= $entry->id ?>">
-                                    <input type="hidden"
-                                           name="<?= $model_name . "[assignment][$key][entries][$entry_key][medication_id]" ?>"
-                                           value="<?= $entry->medication_id ?>">
-                                    <?= $entry->medication->getLabel(true) ?>
-                                    <span class="js-prepended_markup">
-                                <?php if ($this->patient->hasDrugAllergy($entry->medication_id)) { ?>
-                                    <i class="oe-i warning small pad js-has-tooltip js-allergy-warning"
-                                       data-tooltip-content="Allergic to <?= implode(
-                                           ',',
-                                           $this->patient->getPatientDrugAllergy($entry->medication_id)
-                                                                         ) ?>"></i>
-                                <?php } ?>
-                                        <?= $this->widget(
-                                            'MedicationInfoBox',
-                                            array('medication_id' => $entry->medication_id),
-                                            true
-                                        ) ?>
+                        <tr
+                            data-entry-key="<?=$entry_key?>"
+                            data-entry_key="<?=$entry_key?>"
+                            data-id="<?=$entry->id?>"
+                            data-is-preset="<?=$is_preset?>"
+                            data-preferred_term="<?=$entry->medication->getLabel(true)?>"
+                            data-medication_id="<?=$entry->medication_id?>"
+                            data-dose="<?=$entry->dose?>"
+                            data-dose_unit_term="<?=$entry->dose_unit_term?>"
+                            data-route_id="<?=$entry->route_id?>"
+                            data-laterality="<?=$entry->laterality?>"
+                            data-right="<?=(int)$entry->laterality === MedicationLaterality::RIGHT ? 'R' : 'NA';?>"
+                            data-left="<?=(int)$entry->laterality === MedicationLaterality::LEFT ? 'L' : 'NA';?>"
+                            data-route="<?=$entry->route;?>"
+                            class="<?=$grey_out_section;?>"
+                        >
+                            <input type="hidden" name="<?=$model_name . "[assignment][{$key}][entries][{$entry_key}][id]"?>" value="<?=$entry->id?>">
+                            <input type="hidden" name="<?=$model_name . "[assignment][{$key}][entries][{$entry_key}][medication_id]"?>" value="<?=$entry->medication_id?>">
+                            <td>
+                            <?php if (!$is_active && !$entry->administered) {?>
+                                <del>
+                            <?php } ?>
+                            <?=$entry->medication->getLabel(true)?>
+                                <span class="js-prepended_markup">
+                                <?php if ($this->patient->hasDrugAllergy($entry->medication_id)) {?>
+                                    <i class="oe-i warning small pad js-has-tooltip js-allergy-warning" data-tooltip-content="Allergic to <?=implode(',', $this->patient->getPatientDrugAllergy($entry->medication_id))?>"></i>
+                                <?php }?>
+                                <?=$this->widget('MedicationInfoBox', array('medication_id' => $entry->medication_id), true);?>
                                 </span>
-                                </td>
-                                <td>
-                                    <?php if (!$entry->dose) { ?>
-                                        <input class="fixed-width-small js-dose input-validate numbers-only decimal" type="text"
-                                               name="<?= $model_name . "[assignment][$key][entries][$entry_key][dose]" ?>"
-                                               id="<?= $model_name . "_assignment_{$key}_entries_{$entry_key}_dose" ?>"
-                                               value="" placeholder="Dose"/>
-                                    <?php } else { ?>
-                                        <input type="hidden"
-                                               name="<?= $model_name . "[assignment][$key][entries][$entry_key][dose]" ?>"
-                                               value="<?= $entry->dose ?>">
-                                        <?= $entry->dose ?>
-                                    <?php } ?>
-                                    <?php
-                                    $dose_field_name = $model_name . "[assignment][$key][entries][$entry_key][dose_unit_term]";
-                                    $dose_field_value = $entry->dose_unit_term;
-                                    if (!$dose_field_value) {
-                                        $dose_dropdown_data = CHtml::listData(
-                                            MedicationAttribute::model()->find(
-                                                "name='UNIT_OF_MEASURE'"
-                                            )->medicationAttributeOptions,
-                                            'description',
-                                            'description'
-                                        );
-                                        $dose_dropdown_htmloptions = array(
-                                            'empty' => '-Unit-',
-                                            'class' => 'js-unit-dropdown cols-5',
-                                        );
-                                        ?>
-                                        <?= CHtml::dropDownList(
-                                            $dose_field_name,
-                                            $dose_field_value,
-                                            $dose_dropdown_data,
-                                            $dose_dropdown_htmloptions
-                                        ) ?>
-                                    <?php } else { ?>
-                                        <input type="hidden" name="<?= $dose_field_name ?>"
-                                               value="<?= $dose_field_value ?>">
-                                        <?= $dose_field_value ?>
-                                    <?php } ?>
-                                </td>
-                                <td>
-                                    <?php
-                                    $route_field_name = $model_name . "[assignment][$key][entries][$entry_key][route_id]";
-                                    $route_field_value = $entry->route_id;
-                                    if (!$route_field_value) {
-                                        $route_dropdown_data = CHtml::listData(
-                                            $element->getRouteOptions(),
-                                            'id',
-                                            'term'
-                                        );
-                                        $route_dropdown_htmloptions = array(
-                                            'empty' => '-Route-',
-                                            'class' => 'js-route cols-10'
-                                        );
-                                        echo CHtml::dropDownList(
-                                            $route_field_name,
-                                            $route_field_value,
-                                            $route_dropdown_data,
-                                            $route_dropdown_htmloptions
-                                        );
-                                        ?>
-                                    <?php } else { ?>
-                                        <input type="hidden" name="<?= $route_field_name ?>"
-                                               value="<?= $route_field_value ?>">
-                                        <?php if ($entry->route->isEyeRoute()) { ?>
-                                            <!-- rely on med route -->
-                                            <span class="oe-eye-lat-icons">
-                                        <input type="hidden"
-                                               name="<?= $model_name . "[assignment][$key][entries][$entry_key][laterality]" ?>"
-                                               value="<?= $entry->laterality ?>">
-                                        <i class="oe-i laterality <?= (int)$entry->laterality === MedicationLaterality::RIGHT ? 'R' : 'NA' ?> small pad"></i>
-                                        <i class="oe-i laterality <?= (int)$entry->laterality === MedicationLaterality::LEFT ? 'L' : 'NA' ?> small pad"></i>
+                            <?php if (!$is_active && !$entry->administered) {?>
+                                </del>
+                            <?php } ?>
+                            </td>
+                            <td>
+                            <?php if (!$entry->dose) {?>
+                                <input class="fixed-width-small js-dose" type="text" name="<?=$model_name . "[assignment][{$key}][entries][{$entry_key}][dose]"?>" id="<?=$model_name . "_assignment_{$key}_entries_{$entry_key}_dose"?>" value="" placeholder="Dose" />
+                            <?php } else {?>
+                                <input type="hidden" name="<?=$model_name . "[assignment][{$key}][entries][{$entry_key}][dose]"?>" value="<?=$entry->dose?>">
+                                <?=$entry->dose?>
+                            <?php }?>
+                            <?php
+                            $dose_field_name = $model_name . "[assignment][{$key}][entries][{$entry_key}][dose_unit_term]";
+                            $dose_field_value = $entry->dose_unit_term;
+                            if (!$dose_field_value) {
+                                $dose_dropdown_data = CHtml::listData(MedicationAttribute::model()->find("name='UNIT_OF_MEASURE'")->medicationAttributeOptions, 'description', 'description');
+                                $dose_dropdown_htmloptions = array(
+                                    'empty' => '-Unit-',
+                                    'class' => 'js-unit-dropdown cols-5',
+                                );
+                                ?>
+                                <?=CHtml::dropDownList($dose_field_name, $dose_field_value, $dose_dropdown_data, $dose_dropdown_htmloptions);?>
+                            <?php } else {?>
+                                <input type="hidden" name="<?=$dose_field_name?>" value="<?=$dose_field_value?>">
+                                <?=$dose_field_value?>
+                            <?php } ?>
+                            </td>
+                            <td>
+                                <?php
+                                $route_field_name = $model_name . "[assignment][{$key}][entries][{$entry_key}][route_id]";
+                                $route_field_value = $entry->route_id;
+                                if (!$route_field_value) {
+                                    $route_dropdown_data = CHtml::listData($element->getRouteOptions(), 'id', 'term');
+                                    $route_dropdown_htmloptions = array(
+                                        'empty' => '-Route-',
+                                        'class' => 'js-route cols-10'
+                                    );
+                                    echo CHtml::dropDownList($route_field_name, $route_field_value, $route_dropdown_data, $route_dropdown_htmloptions);
+                                    ?>
+                                <?php } else {?>
+                                    <input type="hidden" name="<?=$route_field_name?>" value="<?=$route_field_value?>">
+                                    <?php if ($entry->route->isEyeRoute()) {?>
+                                    <!-- rely on med route -->
+                                    <span class="oe-eye-lat-icons">
+                                        <input type="hidden" name="<?=$model_name . "[assignment][{$key}][entries][{$entry_key}][laterality]"?>" value="<?=$entry->laterality?>">
+                                        <i class="oe-i laterality <?=(int)$entry->laterality === MedicationLaterality::RIGHT ? 'R' : 'NA';?> small pad"></i>
+                                        <i class="oe-i laterality <?=(int)$entry->laterality === MedicationLaterality::LEFT ? 'L' : 'NA';?> small pad"></i>
                                     </span>
-                                        <?php } else { ?>
-                                            <?= $entry->route ?>
-                                        <?php } ?>
-                                    <?php } ?>
-                                </td>
-                                <td class="js-administer-user">
-
-                                    <?php if ($entry->administered) { ?>
-                                        <?= $entry->administered_user->getFullName() ?>
-                                    <?php } else { ?>
-                                        <!-- rely on administered field -->
-                                        <small class="fade">Waiting to administer</small>
-                                    <?php } ?>
-                                </td>
-                                <td class="js-administer-date">
-                                    <?= $administered_nhs ?>
-                                </td>
-                                <td class="js-administer-time">
-                                    <?= $administered_time_ui ?>
-                                </td>
-                                <td>
-                                    <?php if ($hide_administer_switch) { ?>
-                                        <i class="oe-i tick medium pad selected"></i>
-                                    <?php } ?>
-                                    <label
-                                            class="toggle-switch <?= $disable_administer_btn ?>"
-                                        <?= $hide_administer_switch ? 'style="display:none"' : '' ?>
+                                    <?php } else {?>
+                                        <?=$entry->route;?>
+                                    <?php }?>
+                                <?php } ?>
+                            </td>
+                            <td class="js-administer-user">
+                                <?= $administered_user; ?>
+                            </td>
+                            <td class="js-administer-date">
+                                <?=$administered_nhs;?>
+                            </td>
+                            <td class="js-administer-time">
+                                <?=$administered_time_ui;?>
+                            </td>
+                            <td>
+                                <?php if (!$can_interact) {?>
+                                    <i class="oe-i medium pad <?=$state_css?>"></i>
+                                <?php } else { ?>
+                                <label
+                                    class="toggle-switch <?=!$is_relevant ? 'disabled' : ''?>"
+                                >
+                                    <input
+                                        class="js-administer-med"
+                                        type="checkbox"
+                                        name="<?=$model_name . "[assignment][{$key}][entries][{$entry_key}][administered]"?>"
+                                        value="<?=$entry->administered?>"
+                                    <?=$entry->administered ? 'checked' : ''?>
                                     >
-                                        <input
-                                                class="js-administer-med"
-                                                type="checkbox"
-                                                name="<?= $model_name . "[assignment][$key][entries][$entry_key][administered]" ?>"
-                                                value="<?= $entry->administered ?>"
-                                            <?= $entry->administered ? 'checked' : '' ?>
-                                        >
-                                        <div class="toggle-btn"></div>
-                                        <input
-                                                type="hidden"
-                                                name="<?= $model_name . "[assignment][$key][entries][$entry_key][administered_time]" ?>"
-                                                value="<?= $administered_ts * 1000 ?>"
-                                        >
-                                    </label>
-                                    <input type="hidden"
-                                           name="<?= $model_name . "[assignment][$key][entries][$entry_key][administered_by]" ?>"
-                                           value="<?= $entry->administered_by ?>">
-                                </td>
+                                    <div class="toggle-btn"></div>
+                                    <input
+                                        type="hidden"
+                                        name="<?=$model_name . "[assignment][{$key}][entries][{$entry_key}][administered_time]"?>"
+                                        value="<?=$administered_ts * 1000;?>"
+                                    >
+                                </label>
+                                <?php }?>
+                                <input type="hidden" name="<?=$model_name . "[assignment][{$key}][entries][{$entry_key}][administered_by]"?>" value="<?=$entry->administered_by?>">
+                            </td>
 
-                                <td class="js-entry-action">
-                                    <?php if ($is_preset) { ?>
-                                        <i class="oe-i no-permissions small-icon js-has-tooltip"
-                                           data-tooltip-content="Drugs within a Preset Order not be changed."></i>
-                                    <?php } else { ?>
-                                        <?php if ($row_action['can_remove']) { ?>
-                                            <i class="oe-i trash js-remove-med <?= $disable_administer_btn ?>"></i>
-                                        <?php } else { ?>
-                                            <i class="oe-i no-permissions small-icon js-has-tooltip"
-                                               data-tooltip-content="<?= $row_action['msg'] ?>"></i>
-                                        <?php } ?>
-                                    <?php } ?>
-                                </td>
-                            </tr>
+                            <td class="js-entry-action">
+                                <i class="oe-i <?=$action_icon['class']?>" <?=$action_icon['attribute']?>></i>
+                            </td>
+                        </tr>
                         <?php } ?>
                         </tbody>
                     </table>

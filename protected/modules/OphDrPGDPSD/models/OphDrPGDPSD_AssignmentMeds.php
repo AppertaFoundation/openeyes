@@ -17,6 +17,10 @@
  */
 class OphDrPGDPSD_AssignmentMeds extends BaseActiveRecordVersioned
 {
+    const ADMINISTERED = 1;
+    const ADMINISTERED_CANCELLED = 2;
+    const FOR_FUTURE = 3;
+    const CANCELLED = 4;
     private $save_only_if_dirty = true;
     /**
      * @return string the associated database table name
@@ -129,20 +133,105 @@ class OphDrPGDPSD_AssignmentMeds extends BaseActiveRecordVersioned
         }
         return $completed_time;
     }
-    public function getAdministerDetails(){
-        $administered_ts = $this->administered_time ? strtotime($this->administered_time) : null;
-        $administered_nhs = \Helper::convertDate2NHS($this->administered_time, ' ');
-        $administered_time = $this->administered_time ? date('H:i', strtotime($this->administered_time)) : null;
-        $administered_time_ui = $administered_time ? ($this->isNewRecord ? "<input type='time' value='{$administered_time}'>" : $administered_time ): null;
-        $administered_user = $this->administered_by ? $this->administered_user->getFullName() : '<small class="fade">Waiting to administer</small>';
-        $css = $this->administered ? 'tick' : 'waiting selected';
+
+    public function getState()
+    {
+        $assignment = $this->assignment;
+        if ($assignment && !(bool)$assignment->active) {
+            return $this->administered ? self::ADMINISTERED_CANCELLED : self::CANCELLED;
+        }
+        if ($assignment && $this->administered) {
+            return self::ADMINISTERED;
+        }
+
+        if ($assignment) {
+            $appointment = $assignment->worklist_patient;
+            $appointment_time = $appointment ? ($appointment->when ?? $appointment->worklist->start) : null;
+            if ($appointment_time) {
+                $date = date("Y-m-d", strtotime($appointment_time));
+                if (strtotime($date) > strtotime(date("Y-m-d"))) {
+                    return self::FOR_FUTURE;
+                }
+            }
+        }
+
+        return 0;
+    }
+
+    /**
+     * @return array - $administered_ts, $administered_nhs, $administered_time, $administered_time_ui, $administered_user, $state_css
+     */
+    public function getAdministerDetails($is_edit = false)
+    {
+        $administered_ts = null;
+        $administered_nhs = null;
+        $administered_time = null;
+        $administered_time_ui = null;
+        $administered_user = null;
+        $is_prescriber = \Yii::app()->user->checkAccess('Prescribe');
+        $is_med_admin = \Yii::app()->user->checkAccess('Med Administer');
+        switch ($this->state) {
+            case self::ADMINISTERED:
+            case self::ADMINISTERED_CANCELLED:
+                $is_cancelled = $this->state === self::ADMINISTERED_CANCELLED;
+                $css = "tick-green";
+                $administered_user = $this->administered_user->getFullName();
+                $administered_ts = strtotime($this->administered_time);
+                $administered_nhs = \Helper::convertDate2NHS($this->administered_time, ' ');
+                $administered_time = date('H:i', strtotime($this->administered_time));
+                $administered_time_ui = $is_prescriber && $is_edit && !$is_cancelled ? "<input type='time' value='{$administered_time}'>" : $administered_time;
+                break;
+            case self::FOR_FUTURE:
+                $css = $is_edit ? "waiting selected" : "start";
+                $administered_user = "<small class='fade'>Assigned to date/clinic</small>";
+                break;
+            case self::CANCELLED:
+                $css = "cross-red no-click";
+                $administered_user = "<small class='fade'>Cancelled</small>";
+                break;
+            default:
+                $css = "waiting selected";
+                $administered_user = "<small class='fade'>Waiting to administer</small>";
+                break;
+        }
+        $action_icon = array(
+            'class' => '',
+            'attribute' => ''
+        );
+        if ($this->state === self::FOR_FUTURE) {
+            $action_icon['class'] = " small-icon start";
+            $action_icon['attribute'] = "";
+        } elseif ($this->state === self::CANCELLED) {
+            $action_icon['class'] = " info small-icon js-has-tooltip";
+            $action_icon['attribute'] = "data-tooltip-content='Block has been cancelled, this drug was not administered'";
+        } elseif ($this->state === self::ADMINISTERED_CANCELLED) {
+            $action_icon['class'] = " no-permissions small-icon js-has-tooltip";
+            $action_icon['attribute'] = "data-tooltip-content='Can not remove administered drugs'";
+        } elseif (!$this->assignment->pgdpsd && !$this->assignment->worklist_patient) {
+            if ($this->administered) {
+                $action_icon['class'] = " no-permissions small-icon js-has-tooltip";
+                $action_icon['attribute'] = "data-tooltip-content='Can not remove administered drugs'";
+            } else {
+                if ($is_prescriber || $is_med_admin) {
+                    $action_icon['class'] = " trash js-remove-med";
+                    $action_icon['attribute'] = "";
+                } else {
+                    $action_icon['class'] = " no-permissions small-icon js-has-tooltip";
+                    $action_icon['attribute'] = "data-tooltip-content='No Permission'";
+                }
+            }
+        } else {
+            $action_icon['class'] = " no-permissions small-icon js-has-tooltip";
+            $action_icon['attribute'] = "data-tooltip-content='Drugs within a Preset Order not be changed'";
+        }
         return array(
             'administered_ts' => $administered_ts,
             'administered_nhs' => $administered_nhs,
             'administered_time' => $administered_time,
             'administered_time_ui' => $administered_time_ui,
             'administered_user' => $administered_user,
-            'css' => $css,
+            'state_css' => $css,
+            'action_icon' => $action_icon,
         );
     }
 }
