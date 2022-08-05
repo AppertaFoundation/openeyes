@@ -46,6 +46,7 @@ class ExaminationElementAttributesController extends BaseAdminController
 
         $criteria = new CDbCriteria();
         $criteria->addCondition("t.institution_id = :institution_id");
+        $criteria->order = 't.display_order asc';
         $criteria->params = [':institution_id' => $institution_id];
 
         $admin->getSearch()->setCriteria($criteria);
