@@ -123,3 +123,7 @@ buildinfo.txt
 .devcontainer/.env
 
 .history
+
+# Cypress artifacts
+cypress/videos/**
+cypress/screenshots/**
