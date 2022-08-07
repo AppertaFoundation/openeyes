@@ -150,7 +150,7 @@ class MedicationManagementController extends BaseController
 
         $criteria->limit = $limit > 1000 ? 1000 : $limit;
         $criteria->order = "preferred_term";
-        $criteria->with = array('medicationSearchIndexes', 'allergies', 'medicationSets.medicationSetRules');
+        $criteria->with = array('medicationSearchIndexes', 'allergies');
         $criteria->addCondition("t.deleted_date IS NULL");
         $criteria->together = true;
 
@@ -166,7 +166,7 @@ class MedicationManagementController extends BaseController
         // we should find a better solution to make a restriction by source (event, element, etc)
         if ($prescribable_sets && ($source === 'prescription' || $source === 'MedicationManagement')) {
             $criteria->addInCondition('medicationSet.id', $prescribable_set_ids);
-            $criteria->with = array_merge($criteria->with, ['medicationSetItems', 'medicationSetItems.medicationSet', 'medicationSetItems.medicationSet.medicationSetRules']);
+            $criteria->with = array_merge($criteria->with, ['medicationSetItems.medicationSet.medicationSetRules']);
         }
 
         // use Medication::model()->prescribable()->findAll() to find only prescribable medications
