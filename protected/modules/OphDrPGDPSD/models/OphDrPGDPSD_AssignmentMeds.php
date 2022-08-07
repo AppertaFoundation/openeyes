@@ -207,7 +207,7 @@ class OphDrPGDPSD_AssignmentMeds extends BaseActiveRecordVersioned
         } elseif ($this->state === self::ADMINISTERED_CANCELLED) {
             $action_icon['class'] = " no-permissions small-icon js-has-tooltip";
             $action_icon['attribute'] = "data-tooltip-content='Can not remove administered drugs'";
-        } elseif (!$this->assignment->pgdpsd && !$this->assignment->worklist_patient) {
+        } elseif ($this->assignment && !$this->assignment->pgdpsd && !$this->assignment->worklist_patient) {
             if ($this->administered) {
                 $action_icon['class'] = " no-permissions small-icon js-has-tooltip";
                 $action_icon['attribute'] = "data-tooltip-content='Can not remove administered drugs'";
