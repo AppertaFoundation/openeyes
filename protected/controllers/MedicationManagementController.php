@@ -153,6 +153,7 @@ class MedicationManagementController extends BaseController
         $criteria->with = array('medicationSearchIndexes', 'allergies');
         $criteria->addCondition("t.deleted_date IS NULL");
         $criteria->together = true;
+        $criteria->distinct = true;
 
         $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
         $subspecialty_id = $firm->serviceSubspecialtyAssignment->subspecialty_id;
