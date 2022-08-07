@@ -214,12 +214,10 @@ EOH;
             return;
         }
 
-        $from_email = SettingMetadata::model()->getSetting('cvidelivery_rcop_sender_email');
-        $from_name = SettingMetadata::model()->getSetting('cvidelivery_rcop_sender_name');
         $subject = SettingMetadata::model()->getSetting('cvidelivery_rcop_subject');
         $body = SettingMetadata::model()->getSetting('cvidelivery_rcop_body');
 
-        if (!$this->sendEmail($rco_email, $file, $event->site_id)) {
+        if (!$this->sendEmail($rco_email, $file, $event->site_id, $subject, $body)) {
             $this->log_error("Failed to send email to: $rco_email");
             $info->rco_delivery_status = Element_OphCoCvi_EventInfo::DELIVERY_STATUS_ERROR;
             $info->save();
@@ -233,7 +231,7 @@ EOH;
     /**
      * @throws Exception
      */
-    private function sendEmail(string $to, string $filepath, int $site_id)
+    private function sendEmail(string $to, string $filepath, int $site_id, $subject = null, $body = null)
     {
         $criteria = new \CDbCriteria();
         $criteria->compare('remote_id', \Yii::app()->params['institution_code']);
@@ -241,8 +239,12 @@ EOH;
         $institution_id = Institution::model()->find($criteria)->id;
         $sender_address = SenderEmailAddresses::getSenderAddress($to, $institution_id, $site_id);
 
-        $subject = \SettingMetadata::model()->getSetting('cvidelivery_la_subject');
-        $body = \SettingMetadata::model()->getSetting('cvidelivery_la_body');
+        if (!$subject) {
+            $subject = \SettingMetadata::model()->getSetting('cvidelivery_la_subject');
+        }
+        if (!$body) {
+            $body = \SettingMetadata::model()->getSetting('cvidelivery_la_body');
+        }
 
         if ($sender_address) {
             try {
