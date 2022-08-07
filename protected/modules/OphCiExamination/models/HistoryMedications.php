@@ -200,7 +200,7 @@ class HistoryMedications extends BaseMedicationElement
                 self::HAS_MANY,
                 EventMedicationUse::class,
                 array('id' => 'event_id'),
-                'on' => "$usage_type_condition AND (current_entries.end_date > NOW() OR ( current_entries.end_date is NULL OR current_entries.end_date = ''))",
+                'on' => "$usage_type_condition AND (current_entries.end_date > NOW() OR current_entries.end_date is NULL)",
                 'through' => 'event',
                 'order' => 'current_entries.start_date DESC, current_entries.end_date DESC, current_entries.last_modified_date'
             ),
@@ -208,7 +208,7 @@ class HistoryMedications extends BaseMedicationElement
                 self::HAS_MANY,
                 EventMedicationUse::class,
                 array('id' => 'event_id'),
-                'on' => "$usage_type_condition AND (closed_entries.end_date < NOW() AND ( closed_entries.end_date is NOT NULL OR closed_entries.end_date != '') )",
+                'on' => "$usage_type_condition AND (closed_entries.end_date < NOW() AND closed_entries.end_date is NOT NULL)",
                 'through' => 'event',
                 'order' => 'closed_entries.start_date ASC, closed_entries.end_date ASC, closed_entries.last_modified_date'
             ),
