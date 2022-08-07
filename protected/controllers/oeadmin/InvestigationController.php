@@ -115,11 +115,13 @@ class InvestigationController extends BaseAdminController
             // before saving the comments, delete all the existing comments
             \OEModule\OphCiExamination\models\InvestigationComments::model()->deleteAll('investigation_code = :investigation_code', array(':investigation_code' => $id));
 
-            foreach ($user_comments_data['comments'] as $comment) {
-                $investigationComments = new \OEModule\OphCiExamination\models\InvestigationComments();
-                $investigationComments->investigation_code = $id;
-                $investigationComments->comments = $comment;
-                $investigationComments->save();
+            if (isset($user_comments_data['comments'])) {
+                foreach ($user_comments_data['comments'] as $comment) {
+                    $investigationComments = new \OEModule\OphCiExamination\models\InvestigationComments();
+                    $investigationComments->investigation_code = $id;
+                    $investigationComments->comments = $comment;
+                    $investigationComments->save();
+                }
             }
 
             // try saving the data
