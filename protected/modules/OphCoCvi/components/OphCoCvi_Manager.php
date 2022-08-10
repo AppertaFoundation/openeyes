@@ -628,7 +628,7 @@ class OphCoCvi_Manager extends \CComponent
 
             \Yii::app()->controller->print_args = "?issue=1";
 
-            $pdf_route = \Yii::app()->controller->setPDFprintData($event->id, false, false);
+            $pdf_route = \Yii::app()->controller->setPDFprintData($event->id, false);
             $pdf = $event->getPDF($pdf_route);
 
             $cvi_certificate = \ProtectedFile::createFromFile($pdf);
