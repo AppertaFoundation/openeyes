@@ -269,9 +269,12 @@ class Pathway extends BaseActiveRecordVersioned
      */
     public function peek(int $queue, array $step_type_id_list = array()): ?PathwayStep
     {
+        $order_direction = 'ASC';
+
         switch ($queue) {
             case PathwayStep::STEP_COMPLETED:
                 $prefix = 'completed';
+                $order_direction = 'DESC';
                 break;
             case PathwayStep::STEP_STARTED:
                 $prefix = 'started';
@@ -285,7 +288,7 @@ class Pathway extends BaseActiveRecordVersioned
             $criteria->compare('pathway_id', $this->id);
             $criteria->compare('status', $queue);
             $criteria->addInCondition('step_type_id', $step_type_id_list);
-            $criteria->order = 'queue_order, todo_order';
+            $criteria->order = 'queue_order '.$order_direction.', todo_order';
             $criteria->limit = 1;
             return PathwayStep::model()->find($criteria);
         }

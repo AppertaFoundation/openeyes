@@ -11,13 +11,11 @@ $(document).ready(function() {
         let role = $(".js-print-postal-form-btn").closest('tr').find('.js-signatory_role-field').val();
         let signatory = $(".js-print-postal-form-btn").closest('tr').find('.js-signatory_name-field').val();
         let _url = '/OphCoCvi/default/printQRSignature?event_id='
-            +OE_event_id+'&role='+encodeURIComponent(role.replace(/'/g, '%27'))
+            +OE_event_id
+            +'&role='+encodeURIComponent(role.replace(/'/g, '%27'))
             +'&signatory='+encodeURIComponent(signatory.replace(/'/g, '%27'));
 
-        $frame = $("<iframe src='"+_url+"' style='position:fixed;left:-1000px;'></iframe>");
-        $frame.appendTo("body");
-        $frame.get(0).contentWindow.print();
-        setTimeout(enableButtons, 2000);
+        printIFrameUrl(_url);
     });
 
     handleButton($("#et_print_empty_consent"), function (e) {
@@ -35,10 +33,7 @@ $(document).ready(function() {
     });
 
     handleButton($("#et_print_consent"), function (e) {
-        $frame = $("<iframe src='/OphCoCvi/default/printConsent?event_id="+OE_event_id+"' style='position:fixed;left:-1000px;'></iframe>");
-        $frame.appendTo("body");
-        $frame.get(0).contentWindow.print();
-        setTimeout(enableButtons, 2000);
+        printIFrameUrl('/OphCoCvi/default/printConsent?event_id='+OE_event_id);
     });
 
     handleButton($("#et_print_out"), function (e) {

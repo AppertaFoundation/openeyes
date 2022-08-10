@@ -57,10 +57,12 @@ class DefaultController extends \BaseEventTypeController
         'esignDevicePopup' => self::ACTION_TYPE_FORM,
         'postSignRequest' => self::ACTION_TYPE_FORM,
         'printEmptyConsent' => self::ACTION_TYPE_PRINT,
-        'printConsent' => self::ACTION_TYPE_PRINT,
+        'printConsent' => self::ACTION_TYPE_FORM,
+        'consentPage' => self::ACTION_TYPE_PRINT,
         'printVisualyImpaired' => self::ACTION_TYPE_PRINT,
         'printInfoSheet' => self::ACTION_TYPE_PRINT,
-        'printQRSignature' => self::ACTION_TYPE_PRINT,
+        'printQRSignature' => self::ACTION_TYPE_FORM,
+        'renderQRSignature' => self::ACTION_TYPE_PRINT,
         'updateSignatureRole' => self::ACTION_TYPE_FORM,
         'deleteSignature' => self::ACTION_TYPE_FORM,
     );
@@ -90,12 +92,13 @@ class DefaultController extends \BaseEventTypeController
     protected static $FILTER_LIST_KEY = 'OphCoCvi_list_filter';
 
 
-    public function actionPrintQRSignature($event_id)
+    public function actionRenderQRSignature($event_id)
     {
         $request = \Yii::app()->getRequest();
         $this->printInit($event_id);
 
         $this->layout = '//layouts/print';
+        $this->pdf_print_suffix = 'qr_signature';
 
         $unique_code = \UniqueCodes::codeForEventId($event_id);
 
@@ -110,7 +113,7 @@ class DefaultController extends \BaseEventTypeController
             "@key:" . "1" .
             "@x_i:" . json_encode(['e_id' => $esign_element_id, 'e_t_id' => $esign_element_type_id]);
 
-        $this->render(
+        $this->pdf_print_html =$this->render(
             "print_Element_OphCoCvi_QRSignature",
             [
                 'qr_code_data' => $qr_code_data,
@@ -120,8 +123,38 @@ class DefaultController extends \BaseEventTypeController
                 'role' => urldecode($request->getQuery('role')),
                 'signatory' => urldecode($request->getQuery('signatory')),
             ],
-            false
+            true
         );
+        echo $this->pdf_print_html;
+    }
+
+    /**
+     * @param $id
+     * @return mixed|void
+     */
+    public function actionPrintQRSignature($event_id)
+    {
+        $this->printInit($event_id);
+        $wk = \Yii::app()->puppeteer;
+        $wk->setDocRef($this->event->docref);
+        $wk->setPatient($this->event->episode->patient);
+        $wk->setBarcode($this->event->barcodeSVG);
+        $wk->savePageToPDF(
+            $this->event->imageDirectory,
+            $this->pdf_print_suffix,
+            '',
+            'http://localhost/OphCoCvi/default/renderQRSignature?event_id='.$event_id.
+            '&role='.\Yii::app()->request->getParam('role')
+            .'&signatory='.\Yii::app()->request->getParam('signatory')
+        );
+
+        $pdf = $this->event->imageDirectory."/$this->pdf_print_suffix.pdf";
+
+        header('Content-Type: application/pdf');
+        header('Content-Length: '.filesize($pdf));
+
+        readfile($pdf);
+        @unlink($pdf);
     }
 
     /**
@@ -1140,18 +1173,48 @@ class DefaultController extends \BaseEventTypeController
         $this->outputStaticPdfFile("CVI_info_sheet.pdf");
     }
 
-    public function actionPrintConsent($event_id)
+    public function actionConsentPage($event_id)
     {
         $this->printInit($event_id);
         $this->layout = '//layouts/print';
-        $this->render('_consent', [
-            'elements' => $this->open_elements,
-            'eventId' => $this->event->id,
-            'print_empty' => false,
-            'patient' => $this->patient,
-        ]);
+        $this->pdf_print_suffix = 'consent_page';
+        echo $this->render(
+            '_consent',
+            [
+                'elements' => $this->open_elements,
+                'eventId' => $this->event->id,
+                'print_empty' => false,
+                'patient' => $this->patient,
+            ],
+            true
+        );
+    }
 
-        \Yii::app()->end();
+    /**
+     * @param $id
+     * @return mixed|void
+     */
+    public function actionPrintConsent($event_id)
+    {
+        $this->printInit($event_id);
+        $wk = \Yii::app()->puppeteer;
+        $wk->setDocRef($this->event->docref);
+        $wk->setPatient($this->event->episode->patient);
+        $wk->setBarcode($this->event->barcodeSVG);
+        $wk->savePageToPDF(
+            $this->event->imageDirectory,
+            $this->pdf_print_suffix,
+            '',
+            'http://localhost/OphCoCvi/default/consentPage?event_id='.$event_id
+        );
+
+        $pdf = $this->event->imageDirectory."/$this->pdf_print_suffix.pdf";
+
+        header('Content-Type: application/pdf');
+        header('Content-Length: '.filesize($pdf));
+
+        readfile($pdf);
+        @unlink($pdf);
     }
 
     /**

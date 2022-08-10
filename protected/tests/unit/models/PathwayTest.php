@@ -131,11 +131,11 @@ class PathwayTest extends ActiveRecordTestCase
         $pathway = $this->pathways($fixture_id);
         $first_requested = empty($pathway->requested_steps) ? null : $pathway->requested_steps[0];
         $first_active = empty($pathway->started_steps) ? null : $pathway->started_steps[0];
-        $first_completed = empty($pathway->completed_steps) ? null : $pathway->completed_steps[0];
+        $last_completed = empty($pathway->completed_steps) ? null : $pathway->completed_steps[count($pathway->completed_steps)-1];
 
         $this->assertEquals($first_requested, $pathway->peek(PathwayStep::STEP_REQUESTED));
         $this->assertEquals($first_active, $pathway->peek(PathwayStep::STEP_STARTED));
-        $this->assertEquals($first_completed, $pathway->peek(PathwayStep::STEP_COMPLETED));
+        $this->assertEquals($last_completed, $pathway->peek(PathwayStep::STEP_COMPLETED));
     }
 
     /**
