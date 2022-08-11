@@ -49,7 +49,7 @@ class ModuleAdmin
                         if (isset($uri['requires_setting'])) {
                             $setting_key = $uri['requires_setting']['setting_key'];
                             $required_value = $uri['requires_setting']['required_value'];
-                            $item_enabled = Yii::app()->params[$setting_key];
+                            $item_enabled = SettingMetadata::model()->getSetting($setting_key);
 
                             if ($has_access && isset($item_enabled) && $item_enabled === $required_value && preg_match(
                                     '/^\/' . $event_type->class_name . '\//',
@@ -68,7 +68,7 @@ class ModuleAdmin
                 }
             }
         }
-
+        
         foreach (Yii::app()->modules as $module => $stuff) {
             if (!in_array($module, $module_classes)) {
                 if (array_key_exists($module, Yii::app()->params['admin_menu'])) {
