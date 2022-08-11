@@ -40,7 +40,8 @@ if (empty($diary)) { ?>
                         'assetPath' => $assetPath,
                         'ward_id' => $ward_id,
                         'coreapi' => $coreapi,
-                        'whiteboard_display_mode' => $whiteboard_display_mode
+                        'whiteboard_display_mode' => $whiteboard_display_mode,
+                        'show_patient_summary_popup' => $show_patient_summary_popup
                     )
                 );
             }
