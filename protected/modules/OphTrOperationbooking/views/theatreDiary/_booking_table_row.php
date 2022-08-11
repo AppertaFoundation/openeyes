@@ -53,10 +53,11 @@ $patientSummaryPopup = $this->createWidget(
             </div>
         </div><!-- .oe-patient-meta -->
         <div class="theatre-patient-icons">
-
+<?php if ($show_patient_summary_popup) : ?>
             <div id="oe-patient-details" class="js-oe-patient" data-patient-id="<?= $patient->id ?>">
                 <i class="js-patient-quick-overview eye-circle medium pad  oe-i js-worklist-btn" id="js-worklist-btn"></i>
             </div>
+<?php endif; ?>
             <?php
             $warnings = $booking->operation->event->episode->patient->getWarnings();
             if ($warnings) {
@@ -89,8 +90,8 @@ $patientSummaryPopup = $this->createWidget(
                     <?php endif; ?>
                 </li>
                     <?php foreach ($operation->anaesthetic_type as $type) :
-                        echo '<li>' . $type->name .'</li>';
-                        if ((!$this->module->isLACDisabled())&&$type->code === 'LA' && $operation->is_lac_required == '1') :
+                        echo '<li>' . $type->name . '</li>';
+                        if ((!$this->module->isLACDisabled()) && $type->code === 'LA' && $operation->is_lac_required == '1') :
                             echo '<li>with Cover</li>';
                         endif;
                     endforeach; ?>
@@ -172,4 +173,3 @@ if ($show_patient_summary_popup) {
 </script>
 
 <?php } ?>
-

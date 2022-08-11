@@ -18,7 +18,7 @@ class m220811_111200_add_theatre_management_role extends OEMigration
 {
     public function safeUp()
     {
-        if ($this->dbConnection->createCommand("SELECT `name` FROM authitem WHERE `name` LIKE 'Theatre Management';")->queryScalar() !== false) {
+        if ($this->dbConnection->createCommand("SELECT `name` FROM authitem WHERE `name` LIKE 'Theatre Management';")->queryScalar() === false) {
             $this->addRole("Theatre Management");
         }
 
