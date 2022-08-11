@@ -69,7 +69,7 @@ $patientSummaryPopup = $this->createWidget(
             <?php } ?>
         </div>
 
-        <?= $patientSummaryPopup->render('application.widgets.views.PatientSummaryPopup' . 'WorklistSide', []); ?>
+        <?= $show_patient_summary_popup ? $patientSummaryPopup->render('application.widgets.views.PatientSummaryPopup' . 'WorklistSide', []) : '' ?>
     </td>
     <td>
         <i class="oe-i circle-<?= $operation->getComplexityColor() ?> small pad js-has-tooltip" data-tt-type="basic"
@@ -160,13 +160,16 @@ $patientSummaryPopup = $this->createWidget(
 </tr>
 
 <?php
-$assetManager = Yii::app()->getAssetManager();
-$widgetPath = $assetManager->publish('protected/widgets/js');
-Yii::app()->clientScript->registerScriptFile($widgetPath . '/PatientPanelPopupMulti.js');
-
-?>
+if ($show_patient_summary_popup) {
+    $assetManager = Yii::app()->getAssetManager();
+    $widgetPath = $assetManager->publish('protected/widgets/js');
+    Yii::app()->clientScript->registerScriptFile($widgetPath . '/PatientPanelPopupMulti.js');
+    ?>
 <script>
     $(function () {
         PatientPanel.patientPopups.init(false,<?= $patient->id?>);
     });
 </script>
+
+<?php } ?>
+

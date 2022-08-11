@@ -144,6 +144,7 @@ class TheatreDiaryController extends BaseModuleController
             'diary' => $this->getDiaryTheatres($_POST),
             'assetPath' => $this->assetPath,
             'ward_id' => @$_POST['ward-id'],
+            'show_patient_summary_popup' => (SettingMetadata::model()->getSetting('ophtroperation_booking_theatre_diary_show_patient_popup') ?? 'on') === 'on'
         ), true, true);
         $this->renderJSON(array('status' => 'success', 'data' => $list));
     }
