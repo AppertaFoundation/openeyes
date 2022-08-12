@@ -646,13 +646,17 @@ $(document).ready(function() {
 		date: $('#date-end').val()
 	});
 
-	return getDiary();
+	if ($('#theatreList').data('autoload')) {
+		getDiary();
+	}
+	
 });
 
 function getDiary() {
 
 	var button = $('#theatre-filter button[type="submit"]');
 	var loadingMessage = $('#theatre-search-loading');
+	var autoloadMessage = $('#theatre-search-autoload-message');
 	var noResultsMessage = $('#theatre-search-no-results');
 	var theatreList = $('#theatreList');
 
@@ -660,6 +664,7 @@ function getDiary() {
 		disableButtons();
 
 		theatreList.empty();
+		autoloadMessage.hide();
 		loadingMessage.show();
 		noResultsMessage.hide();
 

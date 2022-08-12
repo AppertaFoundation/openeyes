@@ -7,7 +7,7 @@
             'layoutColumns' => array('label' => 2, 'field' => 10),
             'action' => Yii::app()->createUrl('/' . $this->module->id . '/report/downloadReport'),
         )) ?>
-    <input type="hidden" name="report-name" value="PSD"/>
+    <input type="hidden" name="report-name" value="DA"/>
     <table class="standard cols-full">
         <tbody>
             <tr class="col-gap">
