@@ -14,7 +14,7 @@ while [ true ]; do
     echo "Running garbage collection..."
     beforeP="Before-Processes: $(ps waxu | grep chrome | wc -l)"
     beforeF="Before-Files: $(find /tmp -name 'puppeteer_dev_chrome_profile-*' | wc -l)"
-    killall --older-than 20m chrome
+    killall --older-than ${stalemins}m chrome
     find /tmp -maxdepth 1 -name "puppeteer_dev_chrome_profile-*" -mmin +$stalemins -type d -exec rm -rf {} \;
     afterP="After-Processes: $(ps waxu | grep chrome | wc -l)"
     afterF="After-Files: $(find /tmp -name 'puppeteer_dev_chrome_profile-*' | wc -l)"
