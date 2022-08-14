@@ -978,7 +978,7 @@ class DefaultController extends \BaseEventTypeController
         // Change this if it is a different value.
         if ($event->episode->getSubspecialty()->getTreeName() === 'AE') {
             $clinical_outcome_entry = null;
-            $discharge_status = \OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Status::model()->find("name = 'Discharge'");
+            $discharge_status = \OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Status::model()->find("name like 'Discharge%'");
 
             $clinical_outcome = \OEModule\OphCiExamination\models\Element_OphCiExamination_ClinicOutcome::model()->find("event_id = ?", array($event->id));
             if ($clinical_outcome) {
@@ -999,7 +999,7 @@ class DefaultController extends \BaseEventTypeController
         // Change this if it is a different value.
         if ($event->episode->getSubspecialty()->getTreeName() === 'AE') {
             $clinical_outcome_entry = null;
-            $discharge_status = \OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Status::model()->find("name = 'Discharge'");
+            $discharge_status = \OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Status::model()->find("name like 'Discharge%'");
 
             $clinical_outcome = \OEModule\OphCiExamination\models\Element_OphCiExamination_ClinicOutcome::model()->find("event_id = ?", array($event->id));
             if ($clinical_outcome) {

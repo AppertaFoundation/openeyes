@@ -175,6 +175,7 @@ $active_bookings = $session->getActiveBookingsForWard($ward_id);
                 'time' => substr($booking->admission_time, 0, 5),
                 'total_duration' => $booking->operation->total_duration,
                 'patient' => $patient,
+                'show_patient_summary_popup' => $show_patient_summary_popup,
                 'operation' => $booking->operation,
                 'session' => $session,
                 'event' => $booking->operation->event,

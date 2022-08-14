@@ -105,7 +105,12 @@ class TheatreDiaryController extends BaseModuleController
         $this->jsVars['NHSDateFormat'] = Helper::NHS_DATE_FORMAT;
 
         $used_firms = CHtml::listData(OphTrOperationbooking_Operation_Session::model()->getFirmsBeenUsed(@$_POST['subspecialty-id']), "id", "name");
-        $this->render('index', array('wards' => $wards, 'theatres' => $theatres, 'used_firms' => $used_firms));
+        $this->render('index', [
+            'wards' => $wards,
+            'theatres' => $theatres,
+            'used_firms' => $used_firms,
+            'autoload' => (SettingMetadata::model()->getSetting('ophtroperation_booking_autoload_theatre_diary') ?? 'off') === 'on'
+        ]);
     }
 
     /**
@@ -139,6 +144,7 @@ class TheatreDiaryController extends BaseModuleController
             'diary' => $this->getDiaryTheatres($_POST),
             'assetPath' => $this->assetPath,
             'ward_id' => @$_POST['ward-id'],
+            'show_patient_summary_popup' => (SettingMetadata::model()->getSetting('ophtroperation_booking_theatre_diary_show_patient_popup') ?? 'on') === 'on'
         ), true, true);
         $this->renderJSON(array('status' => 'success', 'data' => $list));
     }

@@ -1,0 +1,9 @@
+{
+    "recommendations": [
+        "atlassian.atlascode",
+        "bmewburn.vscode-intelephense-client",
+        "valeryanm.vscode-phpsab",
+        "neilbrayfield.php-docblocker",
+        "eamodio.gitlens"
+    ]
+}
