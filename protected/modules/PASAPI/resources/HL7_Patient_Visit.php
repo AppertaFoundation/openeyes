@@ -70,7 +70,7 @@ class HL7_Patient_Visit extends BaseHL7_Section
                 }
             }
 
-            $discharge_status = \OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Status::model()->find("name = 'Discharge'");
+            $discharge_status = \OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Status::model()->find("name like 'Discharge%'");
             $clinical_outcome = \OEModule\OphCiExamination\models\Element_OphCiExamination_ClinicOutcome::model()->find("event_id = ?", array($event->id));
 
             if ($clinical_outcome) {
