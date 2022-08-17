@@ -38,6 +38,12 @@ if (!isset($values)) {
         'risk_status_id' => $entry->risk_status_id,
         'risk_status_class' => $risk_status_info['class'],
         'risk_status_content' => $risk_status_info['content'],
+        'site_id' => $entry->site_id,
+        'service_id' => $entry->service_id,
+        'context_id' => $entry->context_id,
+        'site' => $entry->getSiteLabel(),
+        'service' => $entry->getServiceLabel(),
+        'context' => $entry->getContextLabel(),
     );
 }
 ?>
@@ -66,6 +72,13 @@ if (!isset($values)) {
                    value="<?= $values['role_id'] ?>"/>
             <input type="hidden" name="<?= $field_prefix ?>[risk_status_id]"
                    value="<?= $values['risk_status_id'] ?>"/>
+
+            <input type="hidden" name="<?= $field_prefix ?>[site_id]"
+                   value="<?= $values['site_id'] ?>"/>
+            <input type="hidden" name="<?= $field_prefix ?>[service_id]"
+                   value="<?= $values['service_id'] ?>"/>
+            <input type="hidden" name="<?= $field_prefix ?>[context_id]"
+                   value="<?= $values['context_id'] ?>"/>
         <?php } ?>
         <?= isset($condition_text) ? $condition_text : "{{condition_text}}"; ?>
     </td>
@@ -74,16 +87,25 @@ if (!isset($values)) {
             <?=$values['status']
             . ' '
             . $values['discharge_status']
-            . ' '
+            . ', '
             . $values['discharge_destination'] . ($values['transfer_to'] ?? null)
             . ' '
             . $values['followup_quantity']
             . ' '
             . $values['followup_period']
             . $values['role']
-            . $values['followup_comments_display']?>
+            . $values['followup_comments_display']
+            . '. Site: '
+            . $values['site']
+            . ', Service: '
+            . $values['service']
+            . ', Context: '
+            . $values['context']
+
+
+            ?>
             <?php if ($values['risk_status_id']) { ?>
-                <i 
+                <i
                 class="<?=$values['risk_status_class']?>"
                 data-tooltip-content="<?=$values['risk_status_content']?>"
                 ></i>

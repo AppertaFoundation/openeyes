@@ -19,6 +19,8 @@ use OEModule\CypressHelper\CypressHelperModule;
 * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
 */
 
+use OEModule\OphCiExamination\components\PathstepObserver;
+
 // If the old db.conf file (pre docker) exists, use it. Else read environment variable, else read docker secrets
 // Note, docker secrets are the recommended approach for docker environments
 
@@ -210,7 +212,7 @@ $config = array(
                     'complete_step' => [
                         'class' => 'PathstepObserver',
                         'method' => 'completeStep'
-                    ]
+                    ],
                 ],
                 'event_updated' => [
                     'complete_step' => [
