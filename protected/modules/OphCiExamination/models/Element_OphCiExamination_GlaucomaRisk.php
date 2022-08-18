@@ -113,4 +113,9 @@ class Element_OphCiExamination_GlaucomaRisk extends \BaseEventTypeElement
                 'criteria' => $criteria,
         ));
     }
+
+    public function __toString()
+    {
+        return $this->risk->name;
+    }
 }
