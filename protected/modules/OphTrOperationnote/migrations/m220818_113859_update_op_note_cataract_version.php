@@ -16,15 +16,15 @@
 class m220818_113859_update_op_note_cataract_version extends OEMigration
 {
     //this was missed in m170321_183126_predicted_refraction_nullable_in_element_ophtroperationnote_cataract
-	public function safeUp()
-	{
+    public function safeUp()
+    {
         $this->alterColumn('et_ophtroperationnote_cataract_version', 'predicted_refraction', 'decimal(4,2) NULL');
         $this->alterColumn('et_ophtroperationnote_cataract_version', 'iol_power', 'VARCHAR(5) NULL');
-	}
+    }
 
-	public function safeDown()
-	{
+    public function safeDown()
+    {
         $this->alterColumn('et_ophtroperationnote_cataract_version', 'predicted_refraction', 'decimal(4,2) NOT NULL');
         $this->alterColumn('et_ophtroperationnote_cataract_version', 'iol_power', 'VARCHAR(5) NOT NULL');
-	}
+    }
 }
