@@ -28,7 +28,7 @@ if ($search->getSearchItems() && is_array($search->getSearchItems())) :
         $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
             'id' => 'generic-search-form',
             'enableAjaxValidation' => false,
-            'method' => 'post',
+            'method' => 'get',
             'action' => '#',
         ));
     endif; ?>
@@ -164,7 +164,7 @@ if ($search->getSearchItems() && is_array($search->getSearchItems())) :
         endforeach;
         ?>
         <td class="submit-row">
-            <button class="button small primary event-action blue hint" name="save" formmethod="post" type="submit">Search</button>
+            <button class="button small primary event-action blue hint" name="save" formmethod="get" type="submit">Search</button>
         </td>
         </tr>
     </table>
