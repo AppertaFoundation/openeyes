@@ -35,7 +35,6 @@
                 <thead>
                     <tr>
                         <th></th>
-                        <th>Role</th>
                         <th>Signatory</th>
                         <th>Signature</th>
                     </tr>
@@ -52,6 +51,7 @@
                             "element" => $this->element,
                             "signature" => $signature,
                             "mode" => "edit",
+                            "hide_role" => true,
                         ]
                     );
                 }
