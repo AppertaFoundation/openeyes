@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -14,6 +15,7 @@
  * @copyright Copyright (c) 2021, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <?php
 /**  @var \OEModule\OphTrConsent\widgets\EsignUsernamePINField $this */
@@ -22,7 +24,9 @@ $el_class = get_class($this->element);
 $widget_class = get_class($this);
 $uid = \CHtml::modelName($el_class) . "_" . \CHtml::modelName($widget_class) . "_" . $row_id;
 ?>
-<tr id="<?= $uid ?>" data-row_id="<?= $row_id ?>" <?php if(isset($hidden) && $hidden): ?>style="display: none"<?php endif ?>>
+<tr id="<?= $uid ?>" data-row_id="<?= $row_id ?>" <?php if (isset($hidden) && $hidden) :
+    ?>style="display: none"<?php
+        endif ?>>
     <?php $this->renderHiddenFields(); ?>
     <!-- Row num -->
     <?php if (!$this->isSigned()) { ?>
@@ -32,22 +36,23 @@ $uid = \CHtml::modelName($el_class) . "_" . \CHtml::modelName($widget_class) . "
     <?php } else { ?>
         <td><span class="highlighter js-row-num"></span></td>
     <?php } ?>
+    <?php if (!$hide_role) : ?>
     <!-- Role -->
     <td><span class="js-signatory-label"><?= CHtml::encode($this->signature->signatory_role) ?></span></td>
+    <?php endif; ?>
     <!-- Name -->
     <td>
         <span class="js-signatory-name">
-            <?php if($this->isSigned()) {
+            <?php if ($this->isSigned()) {
                 echo CHtml::encode($this->signature->signatory_name);
-            }
-            else {
+            } else {
                 echo CHtml::hiddenField(
-                    'signatory_id_'.$uid,
+                    'signatory_id_' . $uid,
                     $this->signature->signed_user_id ?? "",
                     array('class' => "user-user_id-entry js-user_id-input")
                 );
-                $this->widget('application.widgets.AutoCompleteSearch',array(
-                    'field_name' => 'signatory_name_'.$uid,
+                $this->widget('application.widgets.AutoCompleteSearch', array(
+                    'field_name' => 'signatory_name_' . $uid,
                     'htmlOptions' => array(
                         'class' => 'js-user-autocomplete',
                         'placeholder' => 'Type a name to search',
@@ -60,12 +65,16 @@ $uid = \CHtml::modelName($el_class) . "_" . \CHtml::modelName($widget_class) . "
     </td>
     <!-- Date -->
     <td>
-        <div class="js-signature-date" <?php if(!$this->isSigned()) { echo 'style="display:none"'; }?>>
+        <div class="js-signature-date" <?php if (!$this->isSigned()) {
+            echo 'style="display:none"';
+                                       }?>>
             <?php $this->displaySignatureDate() ?>
         </div>
-        <div class="js-signature-control" <?php if($this->isSigned()) { echo 'style="display:none"'; }?>>
+        <div class="js-signature-control" <?php if ($this->isSigned()) {
+            echo 'style="display:none"';
+                                          }?>>
             <div class="oe-user-pin">
-                <?php echo CHtml::passwordField('pin_'.$uid, '', array(
+                <?php echo CHtml::passwordField('pin_' . $uid, '', array(
                     'placeholder' => "******",
                     'maxlength' => 6,
                     'inputmode' => "numeric",
@@ -77,7 +86,9 @@ $uid = \CHtml::modelName($el_class) . "_" . \CHtml::modelName($widget_class) . "
     </td>
     <!-- Signature -->
     <td>
-        <div class="js-signature-wrapper flex-l" <?php if(!$this->isSigned()) { echo 'style="display:none"'; }?>>
+        <div class="js-signature-wrapper flex-l" <?php if (!$this->isSigned()) {
+            echo 'style="display:none"';
+                                                 }?>>
             <?php $this->displaySignature() ?>
             <div class="esigned-at">
                 <i class="oe-i tick-green small pad-right"></i>Signed <small>at</small> <span class="js-signature-time"><?php $this->displaySignatureTime() ?></span>
