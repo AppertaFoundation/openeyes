@@ -131,8 +131,8 @@ class Worklist extends BaseActiveRecordVersioned
                 ':cd' => $check_date,
             ));
         } elseif ($this->on) {
-            $sdate = $this->on->format('Y-m-d').' 00:00:00';
-            $edate = $this->on->format('Y-m-d').' 23:59:59';
+            $sdate = $this->on->format('Y-m-d') . ' 00:00:00';
+            $edate = $this->on->format('Y-m-d') . ' 23:59:59';
             $criteria->addCondition(':sd <= start AND :ed >= end');
             $criteria->params = array_merge($criteria->params, array(
                 ':sd' => $sdate,
@@ -210,6 +210,6 @@ class Worklist extends BaseActiveRecordVersioned
         $criteria->params = [':worklist_id' => $this->id];
         $criteria->order = 'wdm.display_order ASC';
 
-        return WorklistAttribute::model()->findAll($criteria);
+        return WorklistAttribute::model()->cache(30)->findAll($criteria);
     }
 }
