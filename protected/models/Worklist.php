@@ -92,8 +92,6 @@ class Worklist extends BaseActiveRecordVersioned
         // class name for the relations automatically generated below.
         return array(
             'mapping_attributes' => array(self::HAS_MANY, 'WorklistAttribute', 'worklist_id'),
-            'displayed_mapping_attributes' => array(self::HAS_MANY, 'WorklistAttribute', 'worklist_id',
-                'on' => 'display_order is NOT NULL', 'order' => 'display_order ASC', ),
             'worklist_patients' => array(self::HAS_MANY, 'WorklistPatient', 'worklist_id'),
             'worklist_definition' => array(self::BELONGS_TO, 'WorklistDefinition', 'worklist_definition_id'),
         );
@@ -199,5 +197,19 @@ class Worklist extends BaseActiveRecordVersioned
         }
 
         return $res;
+    }
+
+    public function getDisplayed_mapping_attributes()
+    {
+        $criteria = new CDbCriteria();
+
+        $criteria->join = 'JOIN worklist w ON t.worklist_id = w.id JOIN worklist_definition_mapping wdm ON wdm.worklist_definition_id = w.worklist_definition_id';
+
+        $criteria->addCondition('t.worklist_id = :worklist_id');
+        $criteria->addCondition('wdm.display_order IS NOT NULL');
+        $criteria->params = [':worklist_id' => $this->id];
+        $criteria->order = 'wdm.display_order ASC';
+
+        return WorklistAttribute::model()->findAll($criteria);
     }
 }
