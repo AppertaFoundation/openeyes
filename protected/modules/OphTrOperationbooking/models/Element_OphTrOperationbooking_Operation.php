@@ -150,7 +150,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
             array('cancellation_comment', 'length', 'max' => 200),
             array('procedures', 'required', 'message' => 'At least one procedure must be entered'),
             array('total_duration', 'validateDuration'),
-            array('referral_id', 'validateReferral'),
+            array('referral_id', 'validateReferral', 'on' => 'insert'),
             array('decision_date', 'OEDateValidatorNotFuture'),
             array('eye_id, consultant_required, overnight_stay_required_id', 'required'),
             array('anaesthetic_choice_id, stop_medication', 'required', 'on' => 'insert'),
