@@ -23,10 +23,11 @@ use OE\factories\ModelFactory;
  */
 class PatientDiagnosesTest extends \OEDbTestCase
 {
-    use WithTransactions;
+    use \HasDatabaseAssertions;
+    use \WithTransactions;
 
     /** @test */
-    public function db_view_contains_principle_diagnosis()
+    public function db_view_contains_principal_diagnosis()
     {
         $patient = ModelFactory::factoryFor(Patient::class)->create();
         $disorder = ModelFactory::factoryFor(Disorder::class)->withICD10()->create();
@@ -44,7 +45,9 @@ class PatientDiagnosesTest extends \OEDbTestCase
 
         $episode = ModelFactory::factoryFor(Episode::class)
             ->withPrincipalDiagnosis($disorder->id, $eye->id)
-            ->create();
+            ->create([
+                'patient_id' => $patient->id
+            ]);
 
         $this->assertDatabaseHas('v_patient_diagnoses', $view_attributes);
     }
@@ -72,36 +75,5 @@ class PatientDiagnosesTest extends \OEDbTestCase
             'eye_id' => $eye->id
         ]);
         $this->assertDatabaseHas('v_patient_diagnoses', $view_attributes);
-    }
-
-    protected function assertDatabaseHas(string $table, array $attributes)
-    {
-        $cmd = $this->generateDatabaseCountQuery($table, $attributes);
-
-        $this->assertGreaterThanOrEqual(1, $cmd->queryScalar());
-    }
-
-    protected function assertDatabaseDoesntHave(string $table, array $attributes)
-    {
-        $cmd = $this->generateDatabaseCountQuery($table, $attributes);
-
-        $this->assertEquals(0, $cmd->queryScalar());
-    }
-
-    protected function generateDatabaseCountQuery(string $table, array $attributes)
-    {
-        $db = $this->getFixtureManager()->dbConnection;
-
-        $wheres = [];
-        $params = [];
-        foreach ($attributes as $col => $val) {
-            $wheres[] = "$col = :_$col";
-            $params[":_$col"] = $val;
-        }
-
-        return $db->createCommand()
-            ->select('COUNT(*)')
-            ->from($table)
-            ->where(implode(' AND ', $wheres), $params);
     }
 }
