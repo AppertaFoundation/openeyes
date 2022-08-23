@@ -63,7 +63,7 @@ class CommonPreviousSystemicOperation extends BaseActiveRecordVersioned
         // will receive user inputs.
         return [
             ['name, display_order', 'safe'],
-            ['name', 'required'],
+            ['name, display_order', 'required'],
             ['name', 'length', 'max' => 1024],
             // The following rule is used by search().
             ['id, name', 'safe', 'on' => 'search'],

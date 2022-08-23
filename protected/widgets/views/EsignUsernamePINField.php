@@ -26,8 +26,10 @@ $uid = \CHtml::modelName($el_class) . "_" . $widget_class . "_" . $row_id;
     <?php $this->renderHiddenFields(); ?>
     <!-- Row num -->
     <td><span class="highlighter js-row-num"></span></td>
+    <?php if (!$hide_role) : ?>
     <!-- Role -->
     <td><span class="js-signatory-label"><?= CHtml::encode($this->signature->signatory_role) ?></span></td>
+    <?php endif; ?>
     <!-- Name -->
     <td>
         <span class="js-signatory-name">

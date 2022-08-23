@@ -33,6 +33,13 @@ class GetSignatureByPinAction extends \CAction
         if (!$this->user) {
             throw new Exception("An error occurred while trying to fetch your signature. Please contact support.");
         }
+
+        // Check if the user has the Prescribe role, if not throw an exception.
+        $user_roles = Yii::app()->user->getRole(Yii::app()->user->id);
+        $can_prescribe = in_array('Prescribe', array_values($user_roles));
+        if (!$can_prescribe) {
+            throw new Exception("You do not have the necessary user rights to sign this prescription.");
+        }
     }
 
     protected function getSignatureFile() : void
