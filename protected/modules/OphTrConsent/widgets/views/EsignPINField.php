@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -14,6 +15,7 @@
  * @copyright Copyright (c) 2021, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <?php
 /** @var \OEModule\OphTrConsent\widgets\EsignPINField $this */
@@ -26,18 +28,24 @@ $uid = \CHtml::modelName($el_class) . "_" . \CHtml::modelName($widget_class) . "
     <?php $this->renderHiddenFields(); ?>
     <!-- Row num -->
     <td><span class="highlighter js-row-num"></span></td>
+    <?php if (!$hide_role) : ?>
     <!-- Role -->
     <td><span class="js-signatory-label"><?= $this->signature->signatory_role ?></span></td>
+    <?php endif; ?>
     <!-- Name -->
     <td><span class="js-signatory-name"><?= $this->signature->signatory_name ?></span></td>
     <!-- Date -->
     <td>
-        <div class="js-signature-date" <?php if(!$this->isSigned()) { echo 'style="display:none"'; }?>>
+        <div class="js-signature-date" <?php if (!$this->isSigned()) {
+            echo 'style="display:none"';
+                                       }?>>
             <?php $this->displaySignatureDate() ?>
         </div>
-        <div class="js-signature-control" <?php if($this->isSigned()) { echo 'style="display:none"'; }?>>
+        <div class="js-signature-control" <?php if ($this->isSigned()) {
+            echo 'style="display:none"';
+                                          }?>>
             <div class="oe-user-pin">
-                <?php echo CHtml::passwordField('pin_'.$uid, '', array(
+                <?php echo CHtml::passwordField('pin_' . $uid, '', array(
                     'placeholder' => "********",
                     'maxlength' => 8,
                     'inputmode' => "numeric",
@@ -49,7 +57,9 @@ $uid = \CHtml::modelName($el_class) . "_" . \CHtml::modelName($widget_class) . "
     </td>
     <!-- Signature -->
     <td>
-        <div class="js-signature-wrapper flex-l" <?php if(!$this->isSigned()) { echo 'style="display:none"'; }?>>
+        <div class="js-signature-wrapper flex-l" <?php if (!$this->isSigned()) {
+            echo 'style="display:none"';
+                                                 }?>>
             <?php $this->displaySignature() ?>
             <div class="esigned-at">
                 <i class="oe-i tick-green small pad-right"></i>Signed <small>at</small> <span class="js-signature-time"><?php $this->displaySignatureTime() ?></span>
