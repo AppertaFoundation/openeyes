@@ -283,7 +283,7 @@ $form = $this->beginWidget(
                 'success': res => {
                     if (res === 'LOCAL') {
                         $row.find('.js-password,.js-password-repeat,.js-password-status').prop('disabled', false);
-                    } else if (res === 'LDAP') {
+                    } else {
                         $row.find('.js-password,.js-password-repeat,.js-password-status').prop('disabled', true);
                     }
                     $row.find('.js-remove-row').show();
