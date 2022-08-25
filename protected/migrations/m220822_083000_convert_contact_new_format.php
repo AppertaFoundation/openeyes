@@ -6,7 +6,7 @@ class m220822_083000_convert_contact_new_format extends OEMigration
     {
         $this->dbConnection->createCommand("
         INSERT INTO address (contact_id, address_type_id , address1, address2, city, postcode, county, country_id)
-        SELECT c.id AS 'contact_id', a.address_type_id, a.address1 , a.address2 , a.city, a.postcode , a.county , a.country_id
+        SELECT c.id AS 'contact_id', a.address_type_id, s.name AS address1, IF(a.address2 IS NULL OR a.address2='', a.address1, CONCAT(a.address1 , ', ', a.address2)) AS address2 , a.city, a.postcode , a.county , a.country_id
         FROM contact c 
             INNER JOIN contact_location cl ON cl.contact_id = c.id
             INNER JOIN site s ON s.id = cl.site_id 

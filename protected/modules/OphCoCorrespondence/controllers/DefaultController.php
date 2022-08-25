@@ -577,13 +577,6 @@ class DefaultController extends BaseEventTypeController
     {
         $letter = ElementLetter::model()->find('event_id=?', array($id));
         $recipient_address = Yii::app()->request->getParam('recipient_address');
-
-        /*
-        * <span> tags have to be added because the protected/models/SettingMetadata.php file
-        * substituteNode() method would put it between <p> tags, if no tag is added.
-        */
-        $recipient_address = '<span>' . $recipient_address . '</span>';
-
         $target_id = Yii::app()->request->getParam('target_id');
 
         $contact_type = null;
