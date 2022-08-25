@@ -12,7 +12,9 @@ class m220822_083000_convert_contact_new_format extends OEMigration
             INNER JOIN site s ON s.id = cl.site_id 
             INNER JOIN address a ON a.contact_id = s.contact_id 
         WHERE c.id NOT IN (SELECT contact_id from address)
-            AND a.date_end is NULL 
+            AND a.date_end is NULL
+        GROUP BY c.id
+        HAVING MAX(a.last_modified_date)
         ")->execute();
 
         $this->dbConnection->createCommand("
