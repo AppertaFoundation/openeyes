@@ -55,7 +55,7 @@ class PathwayStepTypeTest extends ActiveRecordTestCase
         Yii::app()->controller = $controller;
         $standard_types = PathwayStepType::getStandardTypes();
 
-        self::assertCount(8, $standard_types);
+        self::assertCount(7, $standard_types);
     }
 
     /**

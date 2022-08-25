@@ -154,6 +154,11 @@ class BaseController extends Controller
     public function afterAction($action)
     {
         $this->onAfterAction(new \CEvent($this, ["action" => $action]));
+        $puppeteer = $this->getApp()->getComponent('puppeteer', false);
+
+        if ($puppeteer) {
+            $puppeteer->close();
+        }
     }
 
     protected function beforeAction($action)

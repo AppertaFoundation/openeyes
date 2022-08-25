@@ -241,7 +241,7 @@
                         <?php
                             $gp_contact_id = $this->patient->gp ? $this->patient->gp->contact->id : null;
                         foreach ($this->patient->contactAssignments as $contactAssignment) {
-                            $contact = $contactAssignment->contact;
+                            $contact = $contactAssignment->location ? $contactAssignment->location->contact : $contactAssignment->contact;
                             if (isset($contact) && $contact->id != $gp_contact_id) { ?>
                                     <tr>
                                         <td><?= $contact->label ? $contact->label->name : "" ?></td>

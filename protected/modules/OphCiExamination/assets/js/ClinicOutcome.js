@@ -19,6 +19,7 @@ var OpenEyes = OpenEyes || {};
 OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
 (function (exports) {
+
     function ClinicOutcomeController(options) {
         this.options = $.extend(true, {}, ClinicOutcomeController._defaultOptions, options);
         this.$element = $('.' + this.options.model_name);
@@ -27,6 +28,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         this.entry_table_selector = '#' + this.options.model_name + '_entry_table';
         this.status_options_selector = '#followup-outcome-options li';
         this.$status_options = $(this.status_options_selector);
+
         this.discharge_status_options_selector = '#discharge-status-options li';
         this.destination_options_selector = '#discharge-destination-options li';
         this.$destination_options = $(this.destination_options_selector);
@@ -41,6 +43,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         // risk status column items selector
         this.risk_status_options_selector = '#follow-up-risk-status-options li';
         this.$risk_status_options = $(this.risk_status_options_selector);
+
+        this.service_options_selector = '#followup-outcome-service_options li';
+        this.site_options_selector = '#follow-up-site-options li';
+        this.context_options_selector = '#follow-up-context-options li';
+
 
         this.initialiseTriggers();
     }
@@ -73,6 +80,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             $('.follow-up-options-discharge-transfer-only').hide();
         });
 
+
         this.$destination_options.on('click', function () {
             let institution_required = !!$(this).data('institution-required');
             $('.follow-up-options-discharge-transfer-only').toggle(institution_required);
@@ -82,6 +90,38 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             e.preventDefault();
             controller.deleteRow($(this).closest('tr'));
         });
+
+        $(this.service_options_selector).on('click', (e) => {
+            e.preventDefault();
+            let context_options_selector = '#follow-up-context-options';
+
+            let service_id = $(e.target).data('service_id');
+            let contexts = (this.getContextFromService(service_id));
+            let html = '';
+
+            if(contexts){
+                $(contexts).each( (i,obj) => {
+                    html += `<li data-context_id="${obj.id}" data-label="${obj.name}" ${obj.id == 0 ? 'class="selected"' : ''}>${obj.name}</li>`;
+                });
+            } else {
+                html = '<li class="disabled">- empty set -</li>';
+            }
+
+            $(context_options_selector).html(html);
+        });
+    };
+
+    ClinicOutcomeController.prototype.getContextFromService = function(service_id) {
+        let contexts = $(jQuery.parseJSON( this.options.contexts ));
+        let result;
+        contexts.each( (idx, i) => {
+            if (i.id == service_id) {
+                result = i.contexts;
+                return;
+            }
+        });
+        result.unshift({id: 0, name: "N/A", selected: true});
+        return result;
     };
 
     ClinicOutcomeController.prototype.onAdderDialogReturn = function () {
@@ -93,6 +133,10 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         let $selected_role = $(this.role_options_selector + '.selected');
         let selected_quantity = $(this.quantity_options_selector + '.selected').data('quantity');
 
+        let $selected_site = $(this.site_options_selector + '.selected');
+        let $selected_service = $(this.service_options_selector + '.selected');
+        let $selected_context = $(this.context_options_selector + '.selected');
+
         if (this.validateInputs(
             $selected_status,
             $selected_period,
@@ -100,7 +144,10 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             selected_quantity,
             $selected_discharge_status,
             $selected_discharge_destination,
-            $selected_transfer_to
+            $selected_transfer_to,
+            $selected_site,
+            $selected_service,
+            $selected_context
         )) {
             this.createRow(
                 $selected_status,
@@ -109,7 +156,10 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                 selected_quantity,
                 $selected_discharge_status,
                 $selected_discharge_destination,
-                $selected_transfer_to
+                $selected_transfer_to,
+                $selected_site,
+                $selected_service,
+                $selected_context
             );
             $('#followup_comments').val('');
         }
@@ -122,7 +172,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         selected_quantity,
         $selected_discharge_status,
         $selected_discharge_destination,
-        $selected_transfer_to
+        $selected_transfer_to,
+
+        $selected_site,
+        $selected_service,
+        $selected_context
     ) {
         let alert_message = '';
         let validation_passed = true;
@@ -130,6 +184,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             alert_message = "Please select a status";
             validation_passed = false;
         }
+
         if ($selected_status.data('followup') && (!$selected_period.length || !$selected_role.length || typeof selected_quantity === "undefined")) {
             alert_message = "Please select a value for quantity, period and role.";
             validation_passed = false;
@@ -164,7 +219,10 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         selected_quantity,
         $selected_discharge_status,
         $selected_discharge_destination,
-        $selected_transfer_to
+        $selected_transfer_to,
+        $selected_site,
+        $selected_service,
+        $selected_context
     ) {
         let data = {};
 
@@ -172,7 +230,9 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         data.condition_text = data.row_count ? "AND" : "";
         data.status_id = $selected_status.data('id');
         data.status = $selected_status.data('label');
+
         let template = $selected_status.data('patient-ticket') ? this.patient_ticket_template_text : this.followup_template_text;
+
         if ($selected_status.data('followup')) {
             let $selected_risk_status = $(this.risk_status_options_selector + '.selected');
             let selected_risk_status_class = $selected_risk_status.find('.js-risk-status-details').attr('class');
@@ -190,6 +250,14 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             data.risk_status_id = $selected_risk_status.data('risk-status-id');
             data.risk_status_class = selected_risk_status_class;
             data.risk_status_content = $selected_risk_status.data('display');
+
+            data.site_id = $selected_site.data('site_id');
+            data.site = $selected_site.data('label');
+            data.service_id = $selected_service.data('service_id');
+            data.service = $selected_service.data('label');
+            data.context_id = $selected_context.data('context_id');
+            data.context = $selected_context.data('label');
+
         } else if ($selected_status.data('discharge')) {
             data.discharge_status_id = $selected_discharge_status.data('discharge-status-id');
             data.discharge_status = $selected_discharge_status.data('label');
@@ -248,8 +316,3 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     exports.ClinicOutcomeController = ClinicOutcomeController;
 
 })(OpenEyes.OphCiExamination);
-
-$(document).ready(function () {
-    let controller = new OpenEyes.OphCiExamination.ClinicOutcomeController();
-    $(controller.$element).data('controller', controller);
-});

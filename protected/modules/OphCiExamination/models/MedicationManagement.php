@@ -56,6 +56,7 @@ class MedicationManagement extends BaseMedicationElement
     use traits\CustomOrdering;
     public $do_not_save_entries = false;
     public bool $save_draft_prescription = false;
+    public bool $no_entries_prescribed = false;
 
     protected $widgetClass = MedicationManagementWidget::class;
 
@@ -709,7 +710,7 @@ class MedicationManagement extends BaseMedicationElement
      */
     public function getUnsignedMessage(): string
     {
-        if (!$this->save_draft_prescription) {
+        if (!($this->save_draft_prescription || $this->no_entries_prescribed)) {
             return "This Medication Management must be signed.";
         }
 
@@ -741,7 +742,7 @@ class MedicationManagement extends BaseMedicationElement
         );
 
         if (!empty($elements)) {
-            if (!$this->isSigned() && !$this->save_draft_prescription) {
+            if (!$this->isSigned() && !($this->save_draft_prescription || $this->no_entries_prescribed)) {
                 $this->addError(
                     "id",
                     "Signature must be provided to finalize this Prescription."

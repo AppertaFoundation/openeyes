@@ -19,6 +19,8 @@ use OEModule\CypressHelper\CypressHelperModule;
 * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
 */
 
+use OEModule\OphCiExamination\components\PathstepObserver;
+
 // If the old db.conf file (pre docker) exists, use it. Else read environment variable, else read docker secrets
 // Note, docker secrets are the recommended approach for docker environments
 
@@ -210,7 +212,7 @@ $config = array(
                     'complete_step' => [
                         'class' => 'PathstepObserver',
                         'method' => 'completeStep'
-                    ]
+                    ],
                 ],
                 'event_updated' => [
                     'complete_step' => [
@@ -808,7 +810,7 @@ $config = array(
         'default_patient_import_subspecialty' => 'GL',
         //        Add elements that need to be excluded from the admin sidebar in settings
         'exclude_admin_structure_param_list' => getenv('OE_EXCLUDE_ADMIN_STRUCT_LIST') ? explode(",", getenv('OE_EXCLUDE_ADMIN_STRUCT_LIST')) : array(''),
-        'oe_version' => 'pre-6.2.5-nightly',
+        'oe_version' => '6.2.13',
         'gp_label' => !empty(trim(getenv('OE_GP_LABEL'))) ? getenv('OE_GP_LABEL') : null,
         'general_practitioner_label' => !empty(trim(getenv('OE_GENERAL_PRAC_LABEL'))) ? getenv('OE_GENERAL_PRAC_LABEL') : null,
         // allow duplicate entries on an automatic worklist for a patient (default = false)
@@ -1036,7 +1038,7 @@ if (strtolower(getenv('OE_MODE')) !== 'live') {
 $caches = array(
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '20220808163719',
+            'time' => '20220822164237',
         ),
 );
 
