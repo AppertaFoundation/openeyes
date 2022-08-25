@@ -19,9 +19,9 @@ use OE\factories\models\EventFactory;
 class Element_OphTrOperationbooking_ContactDetailsFactory extends ModelFactory
 {
     /**
-	 * @return array
-	 */
-	public function definition(): array 
+     * @return array
+     */
+    public function definition(): array
     {
         return [
             'event_id' => EventFactory::forModule('OphTrOperationbooking')

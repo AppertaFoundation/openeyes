@@ -19,15 +19,15 @@ use OE\factories\models\EventFactory;
 class Element_OphTrOperationbooking_DiagnosisFactory extends ModelFactory
 {
     /**
-	 *
-	 * @return array
-	 */
-	public function definition(): array 
+     *
+     * @return array
+     */
+    public function definition(): array
     {
         return [
             'event_id' => EventFactory::forModule('OphTrOperationbooking'),
             'eye_id' => ModelFactory::factoryFor(\Eye::class)->useExisting(),
             'disorder_id' => ModelFactory::factoryFor(\Disorder::class)->useExisting()
         ];
-	}
+    }
 }

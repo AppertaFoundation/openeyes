@@ -18,12 +18,12 @@ use OE\factories\ModelFactory;
 class OphTrOperationbooking_Operation_StatusFactory extends ModelFactory
 {
     /**
-	 * @return array
-	 */
-	public function definition(): array 
+     * @return array
+     */
+    public function definition(): array
     {
         return [
             'name' => $this->faker->word()
         ];
-	}
+    }
 }
