@@ -14,13 +14,14 @@
  */
 
 use OE\factories\ModelFactory;
+use OE\factories\models\EventFactory;
 
 class Element_OphTrOperationbooking_OperationFactory extends ModelFactory
 {
     /**
 	 * @return array
 	 */
-	public function definition(): array 
+	public function definition(): array
     {
         return [
             'event_id' => EventFactory::forModule('OphTrOperationbooking'),

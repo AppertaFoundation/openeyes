@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Apperta Foundation, 2022
  * This file is part of OpenEyes.
@@ -13,17 +14,19 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+namespace OEModule\OphTrOperationbooking\factories;
+
 use OE\factories\models\EventFactory;
 use OE\factories\ModelFactory;
 
-class OphTrOperationBookingFactory extends EventFactory
+class OphTrOperationbookingFactory extends EventFactory
 {
     protected static $requiredElements = [
-        Element_OphTrOperationbooking_ContactDetails::class,
-        Element_OphTrOperationbooking_Diagnosis::class,
-        Element_OphTrOperationbooking_Operation::class,
-        Element_OphTrOperationbooking_PreAssessment::class,
-        Element_OphTrOperationbooking_ScheduleOperation::class
+        \Element_OphTrOperationbooking_ContactDetails::class,
+        \Element_OphTrOperationbooking_Diagnosis::class,
+        \Element_OphTrOperationbooking_Operation::class,
+        \Element_OphTrOperationbooking_PreAssessment::class,
+        \Element_OphTrOperationbooking_ScheduleOperation::class
     ];
 
     protected array $elementStates = [];
