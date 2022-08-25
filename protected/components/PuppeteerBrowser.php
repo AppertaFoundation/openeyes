@@ -52,9 +52,27 @@ class PuppeteerBrowser extends CApplicationComponent
     public function init()
     {
         parent::init();
+
+        $this->initBrowser();
+    }
+
+    /**
+     * Should be called to close the browser process that has been created
+     * ONLY call
+     */
+    public function close(): void
+    {
+        if ($this->_browser) {
+            $this->_browser->close();
+        }
+    }
+
+    protected function initBrowser()
+    {
         $puppeteer = new Puppeteer(
             ['read_timeout' => $this->readTimeout, 'log_browser_console' => $this->logBrowserConsole]
         );
+
         $this->browser = $puppeteer->launch(
             array('headless' => true, 'args' => array('--no-sandbox', '--window-size=1280,720'))
         );
@@ -181,6 +199,9 @@ class PuppeteerBrowser extends CApplicationComponent
      */
     protected function getBrowser()
     {
+        if (!$this->_browser) {
+            $this->initBrowser();
+        }
         return $this->_browser;
     }
 

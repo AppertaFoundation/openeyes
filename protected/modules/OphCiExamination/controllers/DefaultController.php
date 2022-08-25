@@ -985,6 +985,7 @@ class DefaultController extends \BaseEventTypeController
                 $clinical_outcome_entry = \OEModule\OphCiExamination\models\ClinicOutcomeEntry::model()->find("element_id = ? and status_id = ? ", array($clinical_outcome->id, $discharge_status->id));
             }
             if ($clinical_outcome_entry) {
+                $this->pasCallout($event, 'A08');
                 $this->pasCallout($event, 'A03');
             } else {
                 $this->pasCallout($event, 'A08');
@@ -1006,6 +1007,7 @@ class DefaultController extends \BaseEventTypeController
                 $clinical_outcome_entry = \OEModule\OphCiExamination\models\ClinicOutcomeEntry::model()->find("element_id = ? and status_id = ? ", array($clinical_outcome->id, $discharge_status->id));
             }
             if ($clinical_outcome_entry) {
+                $this->pasCallout($event, 'A08');
                 $this->pasCallout($event, 'A03');
             } else {
                 $this->pasCallout($event, 'A08');

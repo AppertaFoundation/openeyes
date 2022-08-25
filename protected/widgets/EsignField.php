@@ -26,6 +26,9 @@ abstract class EsignField extends BaseCWidget
     /** @var BaseSignature The model that holds all information of the signature */
     public BaseSignature $signature;
 
+    /** @var bool */
+    public bool $hide_role = false;
+
     /**
      * @return string   The action within the module's controller that will be called
      *                  to validate user input and save the signature if passed validation

@@ -176,7 +176,7 @@ class OphCoCorrespondence_Signature extends BaseSignature
      */
     public function getPrintout() : string
     {
-        return ($this->secretary ? self::LBL_ELECTRONIC_VERIFIED : $this->getSignatureImage())
+        return ($this->secretary ? self::LBL_ELECTRONIC_VERIFIED . "<br/>" : $this->getSignatureImage())
             . nl2br(CHtml::encode($this->getSignatureText()));
     }
 

@@ -35,14 +35,19 @@
         ),
     ))?>
     <div class="row">
+    <div class="cols-full alert-box info">
+            Note that it may take up to 1 minute for changes to display to take effect due to caching.
+    </div>
+    </div>
+    <div class="row">
         <?php echo $form->checkbox($mapping, 'willdisplay', [], ['field' => 2]); ?>
     </div>
     <div class="row">
         <?php echo $form->textField($mapping, 'key', array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete')), null, array('field' => 2))?>
     </div>
     <div class="row">
-        <div class="cols-full column large-push-2">
-            <i>If no values are provided for a mapping, any value will be accepted. <br/> This is useful for adding information to each worklist entry without restricting matches.</i>
+        <div class="cols-full alert-box info">
+        If no values are provided for a mapping, any value will be accepted. This is useful for adding information to each worklist entry without restricting matches.
         </div>
     </div>
     <div class="row">
