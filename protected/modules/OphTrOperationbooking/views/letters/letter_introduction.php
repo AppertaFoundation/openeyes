@@ -36,7 +36,7 @@ $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Setting
     <strong><?= PatientIdentifierHelper::getIdentifierPrompt($primary_identifier) ?>
         : <?= PatientIdentifierHelper::getIdentifierValue($primary_identifier) ?>
         <?php if ($secondary_identifier) { ?>
-            <br/><?= PatientIdentifierHelper::getIdentifierPrompt($secondary_identifier) ?> Number: <?= PatientIdentifierHelper::getIdentifierValue($primary_identifier) ?>
+            <br/><?= PatientIdentifierHelper::getIdentifierPrompt($secondary_identifier) ?> Number: <?= PatientIdentifierHelper::getIdentifierValue($secondary_identifier) ?>
         <?php } ?>
         <?php if (@$patient_ref) { ?>
             <br/><?= $patient->getLetterAddress(array('delimiter' => ', ')) ?>
