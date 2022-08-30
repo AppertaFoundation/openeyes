@@ -207,22 +207,28 @@ class Element_DrugAdministration extends BaseMedicationElement
     protected function afterSave()
     {
         $pgdpsd_api = \Yii::app()->moduleAPI->get('OphDrPGDPSD');
+        $audit_message = [];
         foreach ($this->assignments as $assignment) {
+            $is_assignment_active = $assignment->active ? "Yes" : "No";
+            $_audit_message = "Assignment id: $assignment; Is Active: $is_assignment_active<br />";
             foreach ($assignment->assigned_meds as $med) {
                 if ($med->administered && !$med->event_entry) {
                     $med = $pgdpsd_api->setMedEventEntry($med, $this);
-                    $med->save();
                 } elseif (!$med->administered && $med->event_entry) {
-                    $event_entry = $med->event_entry;
                     $med->administered_id = null;
                     $med->administered = 0;
                     $med->administered_time = null;
                     $med->administered_by = null;
-                    $med->save();
                 }
+                $med->save();
+                $med->refresh();
+                $_audit_message .= "$med<br />";
             }
+            $audit_message[] = $_audit_message;
         }
         parent::afterSave();
+        $messages = implode("<br />", $audit_message);
+        Audit::add('Drug Administration', 'save', "Element Id: {$this->id} Event Id: {$this->event->id}<br />{$messages}");
     }
 
     public function updateAssignmentList($assignment)

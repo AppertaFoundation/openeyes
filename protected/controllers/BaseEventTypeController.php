@@ -1491,7 +1491,6 @@ class BaseEventTypeController extends BaseModuleController
      */
     public function saveEvent($data)
     {
-
         if (!$this->event->isNewRecord) {
             // this is an edit, so need to work out what we are deleting
             $oe_ids = array();
@@ -1540,7 +1539,6 @@ class BaseEventTypeController extends BaseModuleController
 
         // update the information attribute on the event
         $this->updateEventInfo();
-
         return true;
     }
 
