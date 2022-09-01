@@ -109,10 +109,12 @@ class Element_DrugAdministration extends BaseMedicationElement
         foreach ($this->assignments as $key => $assignment) {
             if(!$assignment->active){
                 $assignment->save();
-                $matched_da_steps = $this->getDAPathwaySteps($assignment, $assignment->worklist->pathway ?? null);
-                array_map(function($step) {
-                    $step->delete();
-                }, $matched_da_steps);
+                if ($assignment->worklist_patient->pathway ?? null) {
+                    $matched_da_steps = $this->getDAPathwaySteps($assignment, $assignment->worklist_patient->pathway);
+                    array_map(function($step) {
+                        $step->delete();
+                    }, $matched_da_steps);
+                }
                 continue;
             }
             if ($assignment->create_wp) {
