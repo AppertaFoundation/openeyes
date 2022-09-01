@@ -519,9 +519,8 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
     }
 
     /**
-     * @param bool $assignment
-     * @return array - $deleted_style, $deleted_tag
-     * returns the style for deleted psd order block, and a deleted tag
+     * Get the deleted info box html element for deleted assignment
+     * @return null|string deleted info box html element
      */
     public function getDeletedUI(){
         $deleted_tag = null;

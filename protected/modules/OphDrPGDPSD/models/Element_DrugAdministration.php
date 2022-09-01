@@ -109,6 +109,10 @@ class Element_DrugAdministration extends BaseMedicationElement
         foreach ($this->assignments as $key => $assignment) {
             if(!$assignment->active){
                 $assignment->save();
+                $matched_da_steps = $this->getDAPathwaySteps($assignment, $assignment->worklist->pathway ?? null);
+                array_map(function($step) {
+                    $step->delete();
+                }, $matched_da_steps);
                 continue;
             }
             if ($assignment->create_wp) {
@@ -138,15 +142,8 @@ class Element_DrugAdministration extends BaseMedicationElement
                     $assignment_wp->refresh();
                 }
                 $assignment_pathway = $assignment_wp->pathway;
-                // find out all existing drug admin pathway step associated with corresponding pathway
-                $da_steps = PathwayStep::model()->findAll(
-                    'pathway_id = :pathway_id AND short_name = "drug admin"',
-                    array(':pathway_id' => $assignment_pathway->id)
-                );
-                // try to find the pathway steps related to current psd
-                $matched_da_steps = array_filter($da_steps, static function ($da_step) use ($assignment) {
-                    return (int)$da_step->getState('assignment_id') === (int)$assignment->id;
-                });
+
+                $matched_da_steps = $this->getDAPathwaySteps($assignment,  $assignment_pathway);
                 // if no matched found, create a new pathway step for current psd
                 if (!$matched_da_steps) {
                     Yii::app()->event->dispatch('psd_created', array(
@@ -163,6 +160,29 @@ class Element_DrugAdministration extends BaseMedicationElement
         }
         $this->assignments = $original;
         return parent::save($runValidation, $attributes, $allow_overriding);
+    }
+
+    /**
+     * Get the pathway step that associated with the assignment
+     * @param OphDrPGDPSD_Assignment $assignment
+     * @param Pathway $pathway
+     * @return PathwayStep[]
+     */
+    private function getDAPathwaySteps(OphDrPGDPSD_Assignment $assignment, Pathway $pathway) {
+        if (!$pathway) {
+            return [];
+        }
+        // find out all existing drug admin pathway step associated with corresponding pathway
+        $da_steps = PathwayStep::model()->findAll(
+            'pathway_id = :pathway_id AND short_name = "drug admin"',
+            array(':pathway_id' => $pathway->id)
+        );
+        // try to find the pathway steps related to current psd
+        $matched_da_steps = array_filter($da_steps, static function ($da_step) use ($assignment) {
+            return (int)$da_step->getState('assignment_id') === (int)$assignment->id;
+        });
+
+        return array_values($matched_da_steps);
     }
 
     public function getEntryRelations()
