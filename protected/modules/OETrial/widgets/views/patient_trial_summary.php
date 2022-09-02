@@ -30,6 +30,7 @@ if (in_array($this->controller->id, ['caseSearch','trial','worklist'])) {
                         $coordinators = implode(', ', $coordinators);
                         ?>
                 <tr class="divider">
+                    <td style="display: none"></td>
                     <td colspan="2">
                         <?php if (!is_null($trialPatient->trial->getUserPermission(Yii::app()->user->id)) && (Yii::app()->user->checkAccess('TaskViewTrial'))) {
                             echo CHtml::link(
@@ -48,16 +49,6 @@ if (in_array($this->controller->id, ['caseSearch','trial','worklist'])) {
                     <td colspan="2">
                         <ul class="dot-list">
                             <li>
-                                <div class="flex-l">
-                                    <?= $trialPatient->trial->getStartedDateForDisplay() ?>
-                                    <i class="oe-i range small pad disabled"></i>
-                                    <?= $trialPatient->trial->getClosedDateForDisplay() ?>
-                                </div>
-                            </li>
-                            <li><?= $coordinators ?></li>
-                            <li><?= $trialPatient->trial->trialType->name ?></li>
-                            <li><?= $trialPatient->treatmentType->name ?></li>
-                            <li>
                                 <div>
                                     <span data-trial-patient-status="<?= $trialPatient->status->name; ?>"><?= $trialPatient->status->name; ?></span>
                                     <?php if (isset($trialPatient->status_update_date)) : ?>
@@ -66,6 +57,16 @@ if (in_array($this->controller->id, ['caseSearch','trial','worklist'])) {
                                     <?php endif; ?>
                                 </div>
                             </li>
+                            <li><?= $trialPatient->trial->trialType->name ?></li>
+                            <li><?= $trialPatient->treatmentType->name ?></li>
+                            <li>
+                                <div class="flex-l">
+                                    <?= $trialPatient->trial->getStartedDateForDisplay() ?>
+                                    <i class="oe-i range small pad disabled"></i>
+                                    <?= $trialPatient->trial->getClosedDateForDisplay() ?>
+                                </div>
+                            </li>
+                            <li><?= $coordinators ?></li>
                         </ul>
                     </td>
                 </tr>
@@ -89,21 +90,12 @@ if (in_array($this->controller->id, ['caseSearch','trial','worklist'])) {
 
     <script type="text/template" id="js-patient-trial-summary-entry-template">
         <tr class="divider">
-            <td colspan="2">{{name}}</td>
+            <td style="display: none"></td>
+            <td colspan="2"><a href="{{name.link}}">{{name.name}}</a></td>
         </tr>
         <tr>
             <td colspan="2">
                 <ul class="dot-list">
-                    <li>
-                        <div class="flex-l">
-                            {{started-date}}
-                            <i class="oe-i range small pad disabled"></i>
-                            {{closed-date}}
-                        </div>
-                    </li>
-                    <li>{{coordinators}}</li>
-                    <li>{{trial-type}}</li>
-                    <li>{{treatment-type}}</li>
                     <li>
                         <div>
                             <span data-trial-patient-status={{status-name}}>{{status-name}}</span>
@@ -113,6 +105,16 @@ if (in_array($this->controller->id, ['caseSearch','trial','worklist'])) {
                             {{/status-update-date}}
                         </div>
                     </li>
+                    <li>{{trial-type}}</li>
+                    <li>{{treatment-type}}</li>
+                    <li>
+                        <div class="flex-l">
+                            {{started-date}}
+                            <i class="oe-i range small pad disabled"></i>
+                            {{closed-date}}
+                        </div>
+                    </li>
+                    <li>{{coordinators}}</li>
                 </ul>
             </td>
         </tr>
@@ -157,7 +159,7 @@ if (in_array($this->controller->id, ['caseSearch','trial','worklist'])) {
                             const template = $('#js-patient-trial-summary-entry-template').text();
                             const into = $('.js-patient-trials-table tbody');
 
-                            into.append(Mustache.render(template, result));
+                            into.prepend(Mustache.render(template, result));
 
                             $('.js-patient-trials-empty').remove();
                             $('.js-trial-shortlist-candidates li').remove();

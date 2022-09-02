@@ -1001,4 +1001,31 @@ class OphCoCorrespondence_API extends BaseAPI
 
         return $macro;
     }
+
+
+     /**
+     * Gets current address
+     *
+     * Shortcode: pad
+     *
+     *
+     * @param Patient $patient
+     * @param bool $use_context
+     * @returns string
+     */
+
+    public function getCurrentPatientAddress(\Patient $patient, $use_context = false)
+    {
+        if (!$patient->contact) {
+            return;
+        }
+
+        $patient_address = $patient->contact->correspondAddress ?? $patient->contact->address ?? null;
+
+        if (!$patient_address) {
+            return;
+        } else {
+            return implode('<br>', $patient_address->getLetterArray());
+        }
+    }
 }

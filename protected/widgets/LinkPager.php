@@ -102,7 +102,11 @@ class LinkPager extends CLinkPager
             $class .= ' ' . ($hidden ? $this->hiddenPageCssClass : $this->selectedPageCssClass);
         }
 
-        return CHtml::link($label, $selected ? '' : $this->createPageUrl($page), ['class' => $class]);
+        $currentAppendBehaviour = Yii::app()->urlManager->appendParams;
+        Yii::app()->urlManager->appendParams = false;
+        $button = CHtml::link($label, $selected ? '' : $this->createPageUrl($page), ['class' => $class]);
+        Yii::app()->urlManager->appendParams = $currentAppendBehaviour;
+        return $button;
     }
 
     /**

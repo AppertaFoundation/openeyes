@@ -892,69 +892,7 @@ class BaseEventTypeController extends BaseModuleController
                             $this->event->addIssue($this->eventIssueCreate);
                         }
 
-                        if (isset(Yii::app()->session['selected_institution_id'])) {
-                            $worklist_manager = new \WorklistManager();
-
-                            $user_worklists = $worklist_manager->getCurrentAutomaticWorklistsForUser(null);
-
-                            $worklist_patients = array();
-                            foreach ($user_worklists as $user_worklist) {
-                                $worklist_patients = array_merge($worklist_patients, \WorklistPatient::model()->findAllByAttributes(array('patient_id' => $this->patient->id, 'worklist_id' => $user_worklist->id)));
-                            }
-
-                            $applicable_pathstep = null;
-
-                            foreach ($worklist_patients as $worklist_patient) {
-                                $pathway = $worklist_patient->pathway;
-                                $this->event->worklist_patient_id = $worklist_patient->id;
-
-                                //If pathway hasn't been instanced, it doesn't make sense to complete a started step
-                                if (isset($pathway)) {
-                                    $pathsteps = $pathway->started_steps;
-                                    foreach ($pathsteps as $pathstep) {
-                                        $pathstep_data = json_decode($pathstep->state_data);
-                                        if ($this->isEventApplicableToWorklistPathstepData($pathstep_data)) {
-                                            $applicable_pathstep = $pathstep;
-                                            break;
-                                        }
-                                    }
-                                }
-
-                                if (isset($applicable_pathstep)) {
-                                    // bind the step id to the event, when the event_created event is dispatched, only relevant step will be marked as completed
-                                    $this->event->step_id = $applicable_pathstep->id;
-                                    break;
-                                }
-                            }
-
-                            if (isset($applicable_pathstep)) {
-                                $applicable_pathstep->nextStatus();
-                                $applicable_pathstep->refresh();
-
-                                $pathway = $applicable_pathstep->pathway;
-
-                                $pathway->updateStatus();
-
-                                if ((int)$applicable_pathstep->status === PathwayStep::STEP_COMPLETED) {
-                                    Yii::app()->event->dispatch('step_completed', ['step' => $applicable_pathstep]);
-                                }
-
-                                if (isset($pathway->requested_steps[0])) {
-                                    $next_pathstep = $pathway->requested_steps[0];
-
-                                    if ($next_pathstep->type->type == "hold") {
-                                        $next_pathstep->nextStatus();
-                                        $next_pathstep->refresh();
-
-                                        $pathway->updateStatus();
-
-                                        if ((int)$next_pathstep->status === PathwayStep::STEP_STARTED) {
-                                            Yii::app()->event->dispatch('step_started', ['step' => $next_pathstep]);
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                        $this->updateEventStep();
 
                         //TODO: should not be passing event?
                         $this->afterCreateElements($this->event);
@@ -3299,6 +3237,79 @@ class BaseEventTypeController extends BaseModuleController
         $this->initWithEventId(@$_GET['id']);
         if (!$this->event->deleted) {
             $this->redirect($this->event->getEventViewPath());
+        }
+    }
+
+    /**
+     * Find and then associate an appropriate step to the supplied event before updating that step
+     * @param $event - The event to use; if not supplied, defaults to $this->event from the controller
+     */
+    protected function updateEventStep($event = null)
+    {
+        $event ??= $this->event;
+
+        if (isset(Yii::app()->session['selected_institution_id'])) {
+            $worklist_manager = new \WorklistManager();
+
+            $user_worklists = $worklist_manager->getCurrentAutomaticWorklistsForUser(null);
+
+            $worklist_patients = array();
+            foreach ($user_worklists as $user_worklist) {
+                $worklist_patients = array_merge($worklist_patients, \WorklistPatient::model()->findAllByAttributes(array('patient_id' => $this->patient->id, 'worklist_id' => $user_worklist->id)));
+            }
+
+            $applicable_pathstep = null;
+
+            foreach ($worklist_patients as $worklist_patient) {
+                $pathway = $worklist_patient->pathway;
+                $event->worklist_patient_id = $worklist_patient->id;
+
+                //If pathway hasn't been instanced, it doesn't make sense to complete a started step
+                if (isset($pathway)) {
+                    $pathsteps = $pathway->started_steps;
+                    foreach ($pathsteps as $pathstep) {
+                        $pathstep_data = json_decode($pathstep->state_data);
+                        if ($this->isEventApplicableToWorklistPathstepData($pathstep_data)) {
+                            $applicable_pathstep = $pathstep;
+                            break;
+                        }
+                    }
+                }
+
+                if (isset($applicable_pathstep)) {
+                    // bind the step id to the event, when the event_created event is dispatched, only relevant step will be marked as completed
+                    $event->step_id = $applicable_pathstep->id;
+                    break;
+                }
+            }
+
+            if (isset($applicable_pathstep)) {
+                $applicable_pathstep->nextStatus();
+                $applicable_pathstep->refresh();
+
+                $pathway = $applicable_pathstep->pathway;
+
+                $pathway->updateStatus();
+
+                if ((int)$applicable_pathstep->status === PathwayStep::STEP_COMPLETED) {
+                    Yii::app()->event->dispatch('step_completed', ['step' => $applicable_pathstep]);
+                }
+
+                if (isset($pathway->requested_steps[0])) {
+                    $next_pathstep = $pathway->requested_steps[0];
+
+                    if ($next_pathstep->type->type == "hold") {
+                        $next_pathstep->nextStatus();
+                        $next_pathstep->refresh();
+
+                        $pathway->updateStatus();
+
+                        if ((int)$next_pathstep->status === PathwayStep::STEP_STARTED) {
+                            Yii::app()->event->dispatch('step_started', ['step' => $next_pathstep]);
+                        }
+                    }
+                }
+            }
         }
     }
 

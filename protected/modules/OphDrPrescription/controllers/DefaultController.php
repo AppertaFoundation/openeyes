@@ -548,7 +548,7 @@ class DefaultController extends BaseEventTypeController
         $prescription->printed_by_user = Yii::app()->session['user'] ? Yii::app()->session['user']->id : null;
         $prescription->printed_date = date('Y-m-d H:i:s');
 
-        if (!$prescription->save()) {
+        if (!$prescription->save(false)) {
             throw new Exception('Unable to save prescription: ' . print_r($prescription->getErrors(), true));
         }
 

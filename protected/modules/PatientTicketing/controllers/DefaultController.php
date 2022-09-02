@@ -31,7 +31,7 @@ class DefaultController extends \BaseModuleController
     public $layout = '//layouts/main';
     public $renderPatientPanel = false;
     public bool $fixedHotlist = false;
-    protected $page_size = 20;
+    protected $page_size = 25;
     public static $QUEUESETCATEGORY_SERVICE = 'PatientTicketing_QueueSetCategory';
     public static $QUEUESET_SERVICE = 'PatientTicketing_QueueSet';
     public static $TICKET_SERVICE = 'PatientTicketing_Ticket';
@@ -280,7 +280,7 @@ class DefaultController extends \BaseModuleController
             }
 
             $primary_identifier = \PatientIdentifierHelper::getIdentifierForPatient(
-                SettingMetadata::model()->getSetting('display_primary_number_usage_code'),
+                \SettingMetadata::model()->getSetting('display_primary_number_usage_code'),
                 $patient->id,
                 \Institution::model()->getCurrent()->id,
                 Yii::app()->session['selected_site_id']

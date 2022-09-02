@@ -46,7 +46,15 @@
         <?php $this->renderPartial('//base/_messages'); ?>
 
         <!--<div class="alert-box info"><strong><span id="result_count">99</span> Results</strong></div>-->
-        <div id="theatreList" class="theatre-diary-list"></div>
+        <div id="theatreList" class="theatre-diary-list" data-autoload="<?= $autoload ? 'true' : 'false' ?>">
+            <?php if (!$autoload) { ?>
+                <div id="theatre-search-no-autoload">
+                    <div class="cols-12 column">
+                        <div class="alert-box"><strong>Please make your selection from the filter options to begin searching.</strong></div>
+                    </div>
+                </div>
+            <?php } ?>
+        </div>
         <div class="printable" id="printable"></div>
         <div id="iframeprintholder" style="display: none;"></div>
 

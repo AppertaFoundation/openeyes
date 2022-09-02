@@ -98,6 +98,7 @@ class ElementLetterTest extends ActiveRecordTestCase
             ->willReturn(new ExportResult(false, null, null));
 
         // Simulate a successful upload.
+        Yii::app()->params['correspondence_export_url'] = 'localhost';
         $result = $this->letter->export($path, 'SOAP', $client);
         self::assertInstanceOf('ExportResult', $result);
         self::assertTrue($result->StoreDocumentResponse['Success']);

@@ -439,7 +439,7 @@ $(function () {
             pathstep_id: ps.pathstepId,
             pathstep_type_id: ps.pathstepTypeId,
             visit_id: ps.visitID,
-        }, null, null, updatePathstepIcon);
+        }, '/OphDrPGDPSD/PSD/getPathStep', null, updatePathstepIcon);
     };
     // use timeout to handle the popup position and display
     // to avoid the popup position updated frame by frame
@@ -976,7 +976,7 @@ $(function () {
                         YII_CSRF_TOKEN: YII_CSRF_TOKEN
                     },
                     success: function (response) {
-                        const $tr = $(`tr#js-pathway-${response.pathway_id}`);
+                        const $tr = $(`tr#js-pathway-${ps.visitID}`);
                         const time = $tr.find('.wait-duration small').text();
                         updatePathwayTr($tr, response, 'done', ps);
                         $tr.find('.wait-duration').addClass('stopped');
@@ -993,7 +993,7 @@ $(function () {
                         YII_CSRF_TOKEN: YII_CSRF_TOKEN
                     },
                     success: function (response) {
-                        const $tr = $(`tr#js-pathway-${response.pathway_id}`);
+                        const $tr = $(`tr#js-pathway-${ps.visitID}`);
                         updatePathwayTr($tr, response, null, ps);
                     }
                 });

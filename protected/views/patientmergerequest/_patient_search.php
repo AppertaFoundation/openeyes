@@ -16,14 +16,23 @@
         <div class="search-examples">
             Find a patient by
             <?php
+
+            $institution_id = \Yii::app()->session['selected_institution_id'];
+            $selected_site_id = \Yii::app()->session['selected_site_id'];
+
             $display_primary_number_usage_code = SettingMetadata::model()->getSetting('display_primary_number_usage_code');
             $display_secondary_number_usage_code = SettingMetadata::model()->getSetting('display_secondary_number_usage_code');
-            $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient($display_primary_number_usage_code, $this->patient->id, $institution->id, $selected_site_id);
-            $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient($display_secondary_number_usage_code, $this->patient->id, $institution->id, $selected_site_id);
-            ?>
-            <strong><?= $primary_identifier ?></strong>,
-            <strong><?= $secondary_identifier ?> </strong>,
-            <?php if (!$dob_mandatory) :
+            $primary_identifier = PatientIdentifierHelper::getPatientIdentifierType($display_primary_number_usage_code, $institution_id);
+            $secondary_identifier = PatientIdentifierHelper::getPatientIdentifierType($display_secondary_number_usage_code, $institution_id);
+            if ($primary_identifier) :
+                ?> <strong><?= $primary_identifier->long_title ?></strong>,
+                <?php
+            endif;
+            if ($secondary_identifier) :
+                ?> <strong><?= $secondary_identifier->long_title ?> </strong>,
+                <?php
+            endif;
+            if (!$dob_mandatory) :
                 ?><strong>Firstname Surname</strong> or<?php
             endif; ?>
             <strong>Firstname Surname DOB</strong> or

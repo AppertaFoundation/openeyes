@@ -32,39 +32,43 @@ class NodExportControllerTest extends \OEDbTestCase
     ];
 
     // some files contain randomised data so cannot be consistently compared
-    protected const INCONSISTENT_FILES = ['Patient.csv'];
+    protected const INCONSISTENT_FILES = ['Patient.csv', 'Surgeon.csv','PatientDetails.csv'];
 
     public function test_export()
     {
-        $this->markTestSkipped('The nod export report cannot be generated, skip the test for now.');
         $controller = new NodExportController('foo');
         $tmpdir = "/tmp/nodexporttest/" . date('Ymdhis');
-        mkdir($tmpdir, 0777, true);
+        mkdir($tmpdir . '/Cataract', 0777, true);
+        mkdir($tmpdir . '/AMD', 0777, true);
         $controller->setExportPath($tmpdir);
         $tmpFilename = date('Ymdhis');
         $controller->setZipName($tmpFilename);
         $controller->setStartDate('2016-03-04');
         $controller->setEndDate('2018-03-04');
 
-        $controller->generateExport();
+        $controller->generateCataractExport();
+        $controller->generateAMDExport();
         $createdFiles = $this->getFilesInDirectory($tmpdir);
 
-        $expectedFilesPath = __DIR__ . "/NodExport/expected/";
+        foreach (array("Cataract", "AMD") as $nodType) {
+            $createdFiles = $this->getFilesInDirectory($tmpdir . '/' . $nodType);
+            $expectedFilesPath = __DIR__ . "/NodExport/expected/" . $nodType;
 
-        foreach ($this->getFilesInDirectory($expectedFilesPath) as $expectedFile) {
-            $this->assertContains($expectedFile, $createdFiles);
-            if (in_array($expectedFile, self::INCONSISTENT_FILES)) {
-                continue;
+            foreach ($this->getFilesInDirectory($expectedFilesPath) as $expectedFile) {
+                $this->assertContains($expectedFile, $createdFiles);
+                if (in_array($expectedFile, self::INCONSISTENT_FILES)) {
+                    continue;
+                }
+                $expectedFileContentString = file_get_contents("$expectedFilesPath/$expectedFile");
+                $expectedContentArray = explode(PHP_EOL, $expectedFileContentString);
+
+                $createdFileContentString = file_get_contents($tmpdir. "/" . $nodType . "/" . $expectedFile);
+                $createdContentArray = explode(PHP_EOL, $createdFileContentString);
+
+                $compare_res = !array_diff($createdContentArray, $expectedContentArray) && !array_diff($expectedContentArray, $createdContentArray);
+
+                $this->assertTrue($compare_res, "Export for $expectedFile did not match");
             }
-            $expectedFileContentString = file_get_contents("$expectedFilesPath/$expectedFile");
-            $expectedContentArray = explode(PHP_EOL, $expectedFileContentString);
-
-            $createdFileContentString = file_get_contents("$tmpdir/$expectedFile");
-            $createdContentArray = explode(PHP_EOL, $createdFileContentString);
-
-            $compare_res = !array_diff($createdContentArray, $expectedContentArray) && !array_diff($expectedContentArray, $createdContentArray);
-
-            $this->assertTrue($compare_res, "Export for $expectedFile did not match");
         }
     }
 

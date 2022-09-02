@@ -129,7 +129,9 @@ class WorklistController extends BaseController
             $prescriber_dom_data = $this->prescriberDomData(false);
 
             $picker_setup = $this->setupPicker();
+
             $path_step_type_ids = json_encode($this->getPathwayStepTypesRequirePicker());
+
             $this->render(
                 'index',
                 array(
@@ -304,14 +306,6 @@ class WorklistController extends BaseController
                     }
                     $step->nextStatus($extra_form_data);
                 } else {
-                    if ($step->short_name === "Discharge") {
-                        $hl7_a13 = new \OEModule\PASAPI\resources\HL7_A13();
-                        $hl7_a13->setDataFromEvent(\Event::model()->find("worklist_patient_id = ?", array($step->pathway->worklist_patient->id))->id);
-                        Yii::app()->event->dispatch(
-                            'emergency_care_update',
-                            $hl7_a13
-                        );
-                    }
                     $step->prevStatus();
                 }
                 $step->refresh();
@@ -865,40 +859,6 @@ class WorklistController extends BaseController
             $display_secondary_number_usage_code = SettingMetadata::model()->getSetting('display_secondary_number_usage_code');
             $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient($display_primary_number_usage_code, $patient->id, $institution->id, $selected_site_id);
             $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient($display_secondary_number_usage_code, $patient->id, $institution->id, $selected_site_id);
-            $patientIdentifiers = null;
-            foreach ($patient->identifiers as $patientIdentifier) {
-                $patientIdentifiers[] = [
-                    'longTitle' => $patientIdentifier->patientIdentifierType->long_title,
-                    'shortTitle' => $patientIdentifier->patientIdentifierType->short_title,
-                    'value' => $patientIdentifier->value,
-                    'valueDisplayPrefix' => $patientIdentifier->patientIdentifierType->value_display_prefix,
-                    'valueDisplaySuffix' => $patientIdentifier->patientIdentifierType->value_display_suffix,
-                    'patientIdentifierStatus' => $patientIdentifier->patientIdentifierStatus,
-                    'description' => $patientIdentifier->patientIdentifierStatus ? $patientIdentifier->patientIdentifierStatus->description : null,
-                    'iconBannerClassName' => $patientIdentifier->patientIdentifierStatus ? $patientIdentifier->patientIdentifierStatus->icon->banner_class_name : null,
-                ];
-            }
-
-            $patientDeletedIdentifiers = null;
-            foreach (PatientIdentifier::model()->resetScope(true)->findAll('deleted = 1 AND patient_id = ?', [$patient->id]) as $patientDeletedIdentifier) {
-                $patientDeletedIdentifiers[] = [
-                    'identifier' => $patientDeletedIdentifier,
-                    'longTitle' => $patientDeletedIdentifier->patientIdentifierType->long_title,
-                    'shortTitle' => $patientDeletedIdentifier->patientIdentifierType->short_title,
-                    'value' => $patientDeletedIdentifier->value,
-                    'valueDisplayPrefix' => $patientDeletedIdentifier->patientIdentifierType->value_display_prefix,
-                    'valueDisplaySuffix' => $patientDeletedIdentifier->patientIdentifierType->value_display_suffix,
-                ];
-            }
-
-            $patientLocalIdentifiers = null;
-            foreach ($patient->localIdentifiers as $patientLocalIdentifier) {
-                $patientLocalIdentifiers[] = [
-                    'hasValue' => $patientLocalIdentifier->hasValue(),
-                    'shortTitle' => $patientLocalIdentifier->patientIdentifierType->short_title,
-                    'displayValue' => $patientLocalIdentifier->getDisplayValue(),
-                ];
-            }
 
             $patientData['href'] = (new CoreAPI())->generatePatientLandingPageLink($patient);
             $patientData['lastname'] = $patient->getLast_name();
@@ -909,9 +869,9 @@ class WorklistController extends BaseController
             $patientData['displayPrimaryNumberUsageCode'] = $display_primary_number_usage_code;
             $patientData['patientPrimaryIdentifierStatus'] = $display_primary_number_usage_code === 'GLOBAL' && $primary_identifier && $primary_identifier->patientIdentifierStatus;
             $patientData['patientPrimaryIdentifierStatusClassName'] = $primary_identifier->patientIdentifierStatus->icon->class_name ?? 'exclamation';
-            $patientData['patientIdentifiers'] = $patientIdentifiers;
-            $patientData['patientDeletedIdentifiers'] = $patientDeletedIdentifiers;
-            $patientData['patientLocalIdentifiers'] = $patientLocalIdentifiers;
+            $patientData['patientIdentifiers'] = $this->structurePatientIdentifiers($patient);
+            $patientData['patientDeletedIdentifiers'] = $this->structureDeletedPatientIdentifiers($patient);
+            $patientData['patientLocalIdentifiers'] = $this->structureLocalPatientIdentifiers($patient);
 
             $patientData['patientGlobalIdentifier'] = $patient->globalIdentifier;
             $patientData['patientGlobalIdentifierPrompt'] = PatientIdentifierHelper::getIdentifierPrompt($patient->globalIdentifier);
@@ -928,328 +888,561 @@ class WorklistController extends BaseController
 
             $patientData['patientAge'] = $patient->getAge();
 
-            // Get Allergies data.
-            $allergiesWidget = $this->widget(\OEModule\OphCiExamination\widgets\Allergies::class, array(
-                'patient' => $patient,
-                'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE_OUTPUT,
-            ), false);
+            $patientData['patientAllergies'] = $this->structurePatientAllergyData($patient);
 
-            $patientData['patientAllergies']['hasAllergyStatus'] = boolval(!$patient->hasAllergyStatus());
-            $patientData['patientAllergies']['noAllergiesDate'] = !boolval(!$patient->hasAllergyStatus()) && $allergiesWidget->element->no_allergies_date;
-            $patientData['patientAllergies']['data'] = !boolval(!$patient->hasAllergyStatus()) && !$allergiesWidget->element->no_allergies_date;
-            if (!boolval(!$patient->hasAllergyStatus()) && !$allergiesWidget->element->no_allergies_date) {
-                $patientData['patientAllergies']['entries'] = null;
-                foreach ($allergiesWidget->element->entries as $i => $entry) {
-                    if ($entry->getDisplayHasAllergy() === 'Present') {
-                        $patientData['patientAllergies']['entries'][] = [
-                            'displayAllergy' => $entry->getDisplayAllergy(),
-                            'reactionString' => ' ' . $entry->getReactionString(),
-                            'comments' => $entry->comments,
-                            'lastModifiedUser' => User::model()->findByPk($entry->last_modified_user_id)->getFullName(),
-                        ];
-                    }
-                }
+            $patientData['patientRisks'] = $this->structurePatientRiskData($patient);
+
+            $patientVAData = $this->structurePatientVAData($patient, $exam_api);
+            if(isset($patientVAData)){
+                $patientData['vaData'] = $patientVAData;
             }
 
-            // Get risks data
-            $historyRisksWidget = $this->widget(\OEModule\OphCiExamination\widgets\HistoryRisks::class, array(
-                'patient' => $patient,
-                'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE_OUTPUT,
-            ), false);
+            $patientRefractionData = $this->structurePatientRefractionData($patient, $exam_api);
+            if(isset($patientRefractionData)){
+                $patientData['refractionData'] = $patientRefractionData;
+            }
 
-            $riskAlertInfo = false;
-            $noRisksDate = false;
-            if (boolval(!$patient->hasRiskStatus()) && boolval(!$patient->getDiabetes())) {
-                $riskAlertInfo = true;
-            } elseif ($historyRisksWidget->element->no_risks_date) {
-                $noRisksDate = true;
-            } else {
-                $patientData['patientRisks']['entries'] = null;
-                foreach ($historyRisksWidget->element->entries as $i => $entry) {
-                    if ($entry->getDisplayHasRisk() === 'Present') {
-                        $patientData['patientRisks']['entries'][] = [
-                            'displayRisk' => $entry->getDisplayRisk(),
-                            'comments' => $entry->comments,
-                        ];
-                    }
-                }
-                foreach ($patient->getDisordersOfType(Disorder::$SNOMED_DIABETES_SET) as $disorder) {
-                    $patientData['patientRisks']['disorders'][] = [
-                        'disorderTerm' => $disorder->term,
+            $patientCCTData = $this->structurePatientCCTData($patient, $exam_api);
+            if(isset($patientCCTData)){
+                $patientData['cctData'] = $patientCCTData;
+            }
+
+            $patientCVIData = $this->structurePatientCVIData($patient, $exam_api);
+            if(isset($patientCVIData)){
+                $patientData['cviData'] = $patientCVIData;
+            }
+
+            $patientData['ophthalmicDiagnoses'] = $this->structurePatientOphthalmicDiagnosesData($patient);
+
+            $patientData['systemicDiagnoses'] = $this->structurePatientSystemicDiagnosesData($patient);
+
+            $patientData['pastSurgery'] = $this->structurePatientPastSurgeryData($patient);
+
+            $structuredMedicationsData = $this->structurePatientMedicationsData($patient);
+            if(isset($structuredMedicationsData['systemicMedications'])) {
+                $patientData['systemicMedications'] = $structuredMedicationsData['systemicMedications'];
+            }
+            if(isset($structuredMedicationsData['historyMedications'])) {
+                $patientData['historyMedications'] = $structuredMedicationsData['historyMedications'];
+            }
+            if(isset($structuredMedicationsData['eyeMedications'])) {
+                $patientData['eyeMedications'] = $structuredMedicationsData['eyeMedications'];
+            }
+
+            $patientData['familyHistory'] = $this->structurePatientFamilyHistoryData($patient);
+            $patientData['socialHistory'] = $this->structurePatientSocialHistoryData($patient);
+
+            $patientData['managementSummaries'] = $this->structurePatientManagementSummaryData($patient, $exam_api);
+
+            $structuredWorklistData = $this->structurePatientWorklistData($patient);
+            if(isset($structuredWorklistData['worklistPatients'])) {
+                $patientData['worklistPatients'] = $structuredWorklistData['worklistPatients'];
+            }
+            if(isset($structuredWorklistData['pastWorklistPatients'])) {
+                $patientData['pastWorklistPatients'] = $structuredWorklistData['pastWorklistPatients'];
+            }
+
+            $structuredPlansProblemsData = $this->structurePatientPlansProblemsData($patient);
+            $patientData['currentPlanProblems'] = $structuredPlansProblemsData['currentPlanProblems'];
+            $patientData['pastPlanProblems'] = $structuredPlansProblemsData['pastPlanProblems'];
+
+            $currentTrials = $this->structurePatientTrialsData($patient);
+            if (isset($currentTrials)) {
+                $patientData['currentTrials'] = $currentTrials;
+            }
+
+            $this->renderJSON($patientData);
+        }
+    }
+
+    private function structurePatientIdentifiers($patient)
+    {
+        $patientIdentifiers = null;
+        foreach ($patient->identifiers as $patientIdentifier) {
+            $patientIdentifiers[] = [
+                'longTitle' => $patientIdentifier->patientIdentifierType->long_title,
+                'shortTitle' => $patientIdentifier->patientIdentifierType->short_title,
+                'value' => $patientIdentifier->value,
+                'valueDisplayPrefix' => $patientIdentifier->patientIdentifierType->value_display_prefix,
+                'valueDisplaySuffix' => $patientIdentifier->patientIdentifierType->value_display_suffix,
+                'patientIdentifierStatus' => $patientIdentifier->patientIdentifierStatus,
+                'description' => $patientIdentifier->patientIdentifierStatus ? $patientIdentifier->patientIdentifierStatus->description : null,
+                'iconBannerClassName' => $patientIdentifier->patientIdentifierStatus ? $patientIdentifier->patientIdentifierStatus->icon->banner_class_name : null,
+            ];
+        }
+        return $patientIdentifiers;
+    }
+
+    private function structureDeletedPatientIdentifiers($patient)
+    {
+        $patientDeletedIdentifiers = null;
+        foreach (PatientIdentifier::model()->resetScope(true)->findAll('deleted = 1 AND patient_id = ?', [$patient->id]) as $patientDeletedIdentifier) {
+            $patientDeletedIdentifiers[] = [
+                'identifier' => $patientDeletedIdentifier,
+                'longTitle' => $patientDeletedIdentifier->patientIdentifierType->long_title,
+                'shortTitle' => $patientDeletedIdentifier->patientIdentifierType->short_title,
+                'value' => $patientDeletedIdentifier->value,
+                'valueDisplayPrefix' => $patientDeletedIdentifier->patientIdentifierType->value_display_prefix,
+                'valueDisplaySuffix' => $patientDeletedIdentifier->patientIdentifierType->value_display_suffix,
+            ];
+        }
+        return $patientDeletedIdentifiers;
+    }
+
+    private function structureLocalPatientIdentifiers($patient)
+    {
+        $patientLocalIdentifiers = null;
+        foreach ($patient->localIdentifiers as $patientLocalIdentifier) {
+            $patientLocalIdentifiers[] = [
+                'hasValue' => $patientLocalIdentifier->hasValue(),
+                'shortTitle' => $patientLocalIdentifier->patientIdentifierType->short_title,
+                'displayValue' => $patientLocalIdentifier->getDisplayValue(),
+            ];
+        }
+        return $patientLocalIdentifiers;
+    }
+
+    private function structurePatientAllergyData($patient)
+    {
+        $patientAllergies = [];
+        // Get Allergies data.
+        $allergiesWidget = $this->widget(\OEModule\OphCiExamination\widgets\Allergies::class, array(
+            'patient' => $patient,
+            'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE_OUTPUT,
+        ), false);
+
+        $patientAllergies['hasAllergyStatus'] = boolval(!$patient->hasAllergyStatus());
+        $patientAllergies['noAllergiesDate'] = !boolval(!$patient->hasAllergyStatus()) && $allergiesWidget->element->no_allergies_date;
+        $patientAllergies['data'] = !boolval(!$patient->hasAllergyStatus()) && !$allergiesWidget->element->no_allergies_date;
+        if (!boolval(!$patient->hasAllergyStatus()) && !$allergiesWidget->element->no_allergies_date) {
+            $patientAllergies['entries'] = null;
+            foreach ($allergiesWidget->element->entries as $i => $entry) {
+                if ($entry->getDisplayHasAllergy() === 'Present') {
+                    $patientAllergies['entries'][] = [
+                        'displayAllergy' => $entry->getDisplayAllergy(),
+                        'reactionString' => ' ' . $entry->getReactionString(),
+                        'comments' => $entry->comments,
+                        'lastModifiedUser' => User::model()->findByPk($entry->last_modified_user_id)->getFullName(),
                     ];
                 }
             }
+        }
 
-            $patientData['patientRisks']['riskAlertInfo'] = $riskAlertInfo;
-            $patientData['patientRisks']['noRisksDate'] = $noRisksDate;
+        return $patientAllergies;
+    }
 
-            //Patient Quicklook popup. Show Risks, Medical Data, Management Summary and Problem and Plans
-            $vaData = $exam_api->getMostRecentVADataStandardised($patient);
-            if ($vaData) {
-                $patientData['vaData'] = [
-                    'has_beo' => $vaData['has_beo'],
-                    'beo_result' => $vaData['has_beo'] ? $vaData['beo_result'] : null,
-                    'beo_method_abbr' => $vaData['has_beo'] ? $vaData['beo_method_abbr'] : null,
-                    'has_right' => $vaData['has_right'],
-                    'right_result' => $vaData['has_right'] ? $vaData['right_result'] : null,
-                    'right_method_abbr' => $vaData['has_right'] ? $vaData['right_method_abbr'] : null,
-                    'has_left' => $vaData['has_left'],
-                    'left_result' => $vaData['has_left'] ? $vaData['left_result'] : null,
-                    'left_method_abbr' => $vaData['has_left'] ? $vaData['left_method_abbr'] : null,
-                    'event_date' => Helper::convertDate2NHS($vaData['event_date'])
+    private function structurePatientRiskData($patient)
+    {
+        $patientRisks = [];
+
+        // Get risks data
+        $historyRisksWidget = $this->widget(\OEModule\OphCiExamination\widgets\HistoryRisks::class, array(
+            'patient' => $patient,
+            'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE_OUTPUT,
+        ), false);
+
+        $riskAlertInfo = false;
+        $noRisksDate = false;
+        if (boolval(!$patient->hasRiskStatus()) && boolval(!$patient->getDiabetes())) {
+            $riskAlertInfo = true;
+        } elseif ($historyRisksWidget->element->no_risks_date) {
+            $noRisksDate = true;
+        } else {
+            $patientRisks['entries'] = null;
+            foreach ($historyRisksWidget->element->entries as $i => $entry) {
+                if ($entry->getDisplayHasRisk() === 'Present') {
+                    $patientRisks['entries'][] = [
+                        'displayRisk' => $entry->getDisplayRisk(),
+                        'comments' => $entry->comments,
+                    ];
+                }
+            }
+            foreach ($patient->getDisordersOfType(Disorder::$SNOMED_DIABETES_SET) as $disorder) {
+                $patientRisks['disorders'][] = [
+                    'disorderTerm' => $disorder->term,
                 ];
             }
-            $refractionData = $exam_api->getLatestRefractionReadingFromAnyElementType($patient);
-            if ($refractionData) {
-                $patientData['refractionData'] = [
-                    'has_left' => (bool)$refractionData['left'],
-                    'left' => $refractionData['left'],
-                    'has_right' => (bool)$refractionData['right'],
-                    'right' => $refractionData['right'],
-                    'event_date' => Helper::convertDate2NHS($refractionData['event_date'])
-                ];
-            }
-            $leftCCT = $exam_api->getCCTLeft($patient);
-            $rightCCT = $exam_api->getCCTRight($patient);
-            if ($leftCCT !== null || $rightCCT !== null) {
-                $patientData['cct'] = [
-                    'has_left' => (bool)$leftCCT ,
-                    'left' => $leftCCT,
-                    'has_right' => (bool)$rightCCT,
-                    'right' => $rightCCT,
-                    'event_date' => Helper::convertDate2NHS($exam_api->getCCTDate($patient))
-                ];
-            }
-            $cviStatus = $patient->getCviSummary();
-            if ($cviStatus[0] !== 'Unknown') {
-                $patientData['cvi'] = [
-                    'data' => $cviStatus[0],
-                    'date' => ($cviStatus[1] && $cviStatus[1] !== '0000-00-00') ? Helper::convertDate2HTML($cviStatus[1]) : 'N/A',
-                ];
-            }
-            foreach ($patient->getOphthalmicDiagnosesSummary() as $ophthalmic_diagnosis) {
-                list($side, $name, $date) = explode('~', $ophthalmic_diagnosis);
+        }
+
+        $patientRisks['riskAlertInfo'] = $riskAlertInfo;
+        $patientRisks['noRisksDate'] = $noRisksDate;
+
+        return $patientRisks;
+    }
+
+    private function structurePatientVAData($patient, $exam_api)
+    {
+        //Patient Quicklook popup. Show Risks, Medical Data, Management Summary and Problem and Plans
+        $vaData = $exam_api->getMostRecentVADataStandardised($patient);
+        if ($vaData) {
+            return [
+                'has_beo' => $vaData['has_beo'],
+                'beo_result' => $vaData['has_beo'] ? $vaData['beo_result'] : null,
+                'beo_method_abbr' => $vaData['has_beo'] ? $vaData['beo_method_abbr'] : null,
+                'has_right' => $vaData['has_right'],
+                'right_result' => $vaData['has_right'] ? $vaData['right_result'] : null,
+                'right_method_abbr' => $vaData['has_right'] ? $vaData['right_method_abbr'] : null,
+                'has_left' => $vaData['has_left'],
+                'left_result' => $vaData['has_left'] ? $vaData['left_result'] : null,
+                'left_method_abbr' => $vaData['has_left'] ? $vaData['left_method_abbr'] : null,
+                'event_date' => Helper::convertDate2NHS($vaData['event_date'])
+            ];
+        }
+
+        return null;
+    }
+
+    private function structurePatientRefractionData($patient, $exam_api)
+    {
+        $refractionData = $exam_api->getLatestRefractionReadingFromAnyElementType($patient);
+        if ($refractionData) {
+            return [
+                'has_left' => (bool)$refractionData['left'],
+                'left' => $refractionData['left'],
+                'has_right' => (bool)$refractionData['right'],
+                'right' => $refractionData['right'],
+                'event_date' => Helper::convertDate2NHS($refractionData['event_date'])
+            ];
+        }
+
+        return null;
+    }
+
+    private function structurePatientCCTData($patient, $exam_api)
+    {
+        $leftCCT = $exam_api->getCCTLeft($patient);
+        $rightCCT = $exam_api->getCCTRight($patient);
+        if ($leftCCT !== null || $rightCCT !== null) {
+            return [
+                'has_left' => (bool)$leftCCT ,
+                'left' => $leftCCT,
+                'has_right' => (bool)$rightCCT,
+                'right' => $rightCCT,
+                'event_date' => Helper::convertDate2NHS($exam_api->getCCTDate($patient))
+            ];
+        }
+
+        return null;
+    }
+
+    private function structurePatientCVIData($patient, $exam_api)
+    {
+        $cviStatus = $patient->getCviSummary();
+        if ($cviStatus[0] !== 'Unknown') {
+            return [
+                'data' => $cviStatus[0],
+                'date' => ($cviStatus[1] && $cviStatus[1] !== '0000-00-00') ? Helper::convertDate2HTML($cviStatus[1]) : 'N/A',
+            ];
+        }
+
+        return null;
+    }
+
+    private function structurePatientOphthalmicDiagnosesData($patient)
+    {
+        $diagnoses = [];
+
+        foreach ($patient->getOphthalmicDiagnosesSummary() as $ophthalmic_diagnosis) {
+            list($side, $name, $date) = explode('~', $ophthalmic_diagnosis);
+            $temp = [];
+            $temp['name'] = $name;
+            $temp['date'] = $date;
+
+            $laterality = $this->getLaterality(null, $side);
+            $temp['left'] = $laterality['left'];
+            $temp['right'] = $laterality['right'];
+
+            $diagnoses[] = $temp;
+        }
+
+        return $diagnoses;
+    }
+
+    private function structurePatientSystemicDiagnosesData($patient)
+    {
+        $diagnoses = [];
+
+        foreach ($patient->systemicDiagnoses as $diagnosis) {
+            $temp = [];
+            $temp['term'] = $diagnosis->disorder->term;
+            $temp['date'] = $diagnosis->getFormatedDate();
+
+            $eye = $diagnosis->eye;
+            $laterality = $this->getLaterality($eye, null);
+            $temp['left'] = $laterality['left'];
+            $temp['right'] = $laterality['right'];
+
+            $diagnoses[] = $temp;
+        }
+
+        return $diagnoses;
+    }
+
+    private function structurePatientPastSurgeryData($patient)
+    {
+        $pastSurgery = [];
+
+        // Get Past Surgery data.
+        $pastSurgeryWidget = $this->createWidget(\OEModule\OphCiExamination\widgets\PastSurgery::class, array(
+            'patient' => $patient,
+            'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE_OUTPUT,
+            'popupListSeparator' => '<br/>',
+        ));
+        $pastSurgeryData = $pastSurgeryWidget->getViewData();
+        $operations = is_array($pastSurgeryData) ? $pastSurgeryData['operations'] : false;
+        $pastSurgery['nilRecord'] = (!$operations || sizeof($operations) == 0) && !$pastSurgeryWidget->element->no_pastsurgery_date;
+        $pastSurgery['noPreviousData'] = !((!$operations || sizeof($operations) == 0) && !$pastSurgeryWidget->element->no_pastsurgery_date) && $pastSurgeryWidget->element->no_pastsurgery_date;
+        $pastSurgeryDataExists = !((!$operations || sizeof($operations) == 0) && !$pastSurgeryWidget->element->no_pastsurgery_date) && !($pastSurgeryWidget->element->no_pastsurgery_date);
+        if ($pastSurgeryDataExists) {
+            foreach ($operations as $operation) {
                 $temp = [];
-                $temp['name'] = $name;
-                $temp['date'] = $date;
-
+                $temp['operation'] = isset($operation['object']) ? $operation['object']->operation : $operation['operation'];
+                $temp['date'] = isset($operation['object']) ? $operation['object']->getDisplayDate() : Helper::formatFuzzyDate($operation['date']);
+                $temp['has_link'] = isset($operation['link']);
+                $temp['link'] = $operation['link'] ?? false;
+                $side = $operation['side'] ?? (isset($operation['object']) ? $operation['object']->side : '');
                 $laterality = $this->getLaterality(null, $side);
                 $temp['left'] = $laterality['left'];
                 $temp['right'] = $laterality['right'];
 
-                $patientData['ophthalmicDiagnosis'][] = $temp;
+                $pastSurgery['operation'][] = $temp;
             }
-            foreach ($patient->systemicDiagnoses as $diagnosis) {
-                $temp = [];
-                $temp['term'] = $diagnosis->disorder->term;
-                $temp['date'] = $diagnosis->getFormatedDate();
+        }
 
-                $eye = $diagnosis->eye;
-                $laterality = $this->getLaterality($eye, null);
-                $temp['left'] = $laterality['left'];
-                $temp['right'] = $laterality['right'];
+        return $pastSurgery;
+    }
 
-                $patientData['systemicDiagnoses'][] = $temp;
-            }
-            // Get Past Surgery data.
-            $pastSurgeryWidget = $this->createWidget(\OEModule\OphCiExamination\widgets\PastSurgery::class, array(
+    private function structurePatientMedicationsData($patient)
+    {
+        $structuredMedicationsData = [];
+
+        $historyMedicationsWidget = $this->createWidget(
+            \OEModule\OphCiExamination\widgets\HistoryMedications::class,
+            [
                 'patient' => $patient,
                 'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE_OUTPUT,
-                'popupListSeparator' => '<br/>',
-            ));
-            $pastSurgeryData = $pastSurgeryWidget->getViewData();
-            $operations = is_array($pastSurgeryData) ? $pastSurgeryData['operations'] : false;
-            $patientData['pastSurgery']['nilRecord'] = (!$operations || sizeof($operations) == 0) && !$pastSurgeryWidget->element->no_pastsurgery_date;
-            $patientData['pastSurgery']['noPreviousData'] = !((!$operations || sizeof($operations) == 0) && !$pastSurgeryWidget->element->no_pastsurgery_date) && $pastSurgeryWidget->element->no_pastsurgery_date;
-            $pastSurgeryDataExists = !((!$operations || sizeof($operations) == 0) && !$pastSurgeryWidget->element->no_pastsurgery_date) && !($pastSurgeryWidget->element->no_pastsurgery_date);
-            if ($pastSurgeryDataExists) {
-                foreach ($operations as $operation) {
+            ]
+        );
+        $historyMedicationsData = $historyMedicationsWidget->getViewData();
+        $current_systemic_meds = null;
+        $stopped_systemic_meds = null;
+        $current_eye_meds = null;
+        $stopped_eye_meds = null;
+        $element = null;
+        if (is_array($historyMedicationsData)) {
+            $current_filter = function ($e) {
+                /** @var EventMedicationUse $e */
+                return !$e->isStopped();
+            };
+            $stopped_filter = function ($e) {
+                /** @var EventMedicationUse $e */
+                return !$e->isChangedMedication();
+            };
+            $systemic_filter = function ($med) {
+                return $med->laterality === null;
+            };
+            $eye_filter = function ($e) {
+                /** @var EventMedicationUse $e */
+                return !is_null($e->route_id) && $e->route->has_laterality;
+            };
+
+            $element = $historyMedicationsData['element'];
+            $current = $historyMedicationsData['current'];
+            $stopped = $historyMedicationsData['stopped'];
+            $current = $element->mergeMedicationEntries($current);
+            $current = array_filter($current, $current_filter);
+            $current = $historyMedicationsWidget->sortEntriesByDate($current);
+            $stopped = array_filter($stopped, $stopped_filter);
+            $stopped = $historyMedicationsWidget->sortEntriesByDate($stopped, false);
+            $current_systemic_meds = array_filter($current, $systemic_filter);
+            $stopped_systemic_meds = array_filter($stopped, $systemic_filter);
+            $current_eye_meds = array_filter($current, $eye_filter);
+            $stopped_eye_meds = array_filter($stopped, $eye_filter);
+        }
+        $nilRecord = false;
+        $noPreviousData = false;
+        if (empty($current_systemic_meds) && empty($stopped_systemic_meds) && is_null($element->no_systemic_medications_date)) {
+            $nilRecord = true;
+        } elseif (empty($current_systemic_meds) && empty($stopped_systemic_meds) && !is_null($element->no_systemic_medications_date)) {
+            $noPreviousData = true;
+        } else {
+            if ($current_systemic_meds) {
+                $structuredMedicationsData['systemicMedications']['currentSystemicMeds'] = $this->patientHistoryMedicationsData($historyMedicationsWidget, $current_systemic_meds, true, false, true, false);
+            }
+            if ($stopped_systemic_meds) {
+                $structuredMedicationsData['systemicMedications']['stoppedSystemicMedsSize'] = sizeof($stopped_systemic_meds);
+                $structuredMedicationsData['systemicMedications']['stoppedSystemicMeds'] = $this->patientHistoryMedicationsData($historyMedicationsWidget, $stopped_systemic_meds, false, false, false, false);
+            }
+            $structuredMedicationsData['historyMedications']['id'] = CHtml::modelName($element);
+        }
+
+        $structuredMedicationsData['systemicMedications']['nilRecord'] = $nilRecord;
+        $structuredMedicationsData['systemicMedications']['noPreviousData'] = $noPreviousData;
+
+        $nilRecord = false;
+        $noPreviousData = false;
+        if (empty($current_eye_meds) && empty($stopped_eye_meds) && is_null($element->no_ophthalmic_medications_date)) {
+            $nilRecord = true;
+        } elseif (empty($current_eye_meds) && empty($stopped_eye_meds) && !is_null($element->no_ophthalmic_medications_date)) {
+            $noPreviousData = true;
+        } else {
+            if ($current_eye_meds) {
+                $structuredMedicationsData['eyeMedications']['currentEyeMeds'] = $this->patientHistoryMedicationsData($historyMedicationsWidget, $current_eye_meds, true, true, true, true);
+            }
+            if ($stopped_eye_meds) {
+                $structuredMedicationsData['eyeMedications']['stoppedEyeMedsSize'] = sizeof($stopped_eye_meds);
+                $structuredMedicationsData['eyeMedications']['stoppedEyeMeds'] = $this->patientHistoryMedicationsData($historyMedicationsWidget, $stopped_eye_meds, false, true, false, true);
+            }
+        }
+        $structuredMedicationsData['eyeMedications']['nilRecord'] = $nilRecord;
+        $structuredMedicationsData['eyeMedications']['noPreviousData'] = $noPreviousData;
+
+        return $structuredMedicationsData;
+    }
+
+    private function structurePatientFamilyHistoryData($patient)
+    {
+        $familyHistory = [];
+
+        $familyHistoryWidget = $this->createWidget(
+            \OEModule\OphCiExamination\widgets\FamilyHistory::class,
+            [
+                'patient' => $patient,
+                'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE_OUTPUT,
+            ]
+        );
+        $familyHistoryData = $familyHistoryWidget->getViewData();
+        $element = $familyHistoryData['element'];
+        if (empty($element->entries) && empty($element->no_family_history_date)) {
+            $familyHistory['nilRecord'] = true;
+        } else {
+            $familyHistory['noFamilyHistory'] = empty($element->no_family_history_date) && !empty($element->entries);
+            if (!empty($element->entries)) {
+                $familyHistory['modelName'] = CHtml::modelName($element);
+                foreach ($element->entries as $i => $entry) {
                     $temp = [];
-                    $temp['operation'] = isset($operation['object']) ? $operation['object']->operation : $operation['operation'];
-                    $temp['date'] = isset($operation['object']) ? $operation['object']->getDisplayDate() : Helper::formatFuzzyDate($operation['date']);
-                    $temp['has_link'] = isset($operation['link']);
-                    $temp['link'] = $operation['link'] ?? false;
-                    $side = $operation['side'] ?? (isset($operation['object']) ? $operation['object']->side : '');
-                    $laterality = $this->getLaterality(null, $side);
-                    $temp['left'] = $laterality['left'];
-                    $temp['right'] = $laterality['right'];
-
-                    $patientData['pastSurgery']['operation'][] = $temp;
+                    $temp['relativeDisplay'] = $entry->displayrelative;
+                    $temp['sideDisplay'] = $entry->side->name;
+                    $temp['conditionDisplay'] = $entry->displaycondition;
+                    $temp['comments'] = $entry->comments;
+                    $familyHistory['entries'][] = $temp;
                 }
             }
+        }
 
-            $historyMedicationsWidget = $this->createWidget(
-                \OEModule\OphCiExamination\widgets\HistoryMedications::class,
-                [
-                    'patient' => $patient,
-                    'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE_OUTPUT,
-                ]
+        return $familyHistory;
+    }
+
+    private function structurePatientSocialHistoryData($patient)
+    {
+        $socialHistory = [];
+
+        $socialHistoryWidget = $this->createWidget(
+            \OEModule\OphCiExamination\widgets\SocialHistory::class,
+            [
+                'patient' => $patient,
+                'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE_OUTPUT,
+            ]
+        );
+        $socialHistoryData = $socialHistoryWidget->getViewData();
+        $element = $socialHistoryData['element'];
+        if (!$element || !$element->id) {
+            $socialHistory['nilRecord'] = true;
+        } else {
+            if ($element->occupation) {
+                $socialHistory['occupation']['label'] = CHtml::encode($element->getAttributeLabel('occupation_id'));
+                $socialHistory['occupation']['value'] = \CHtml::encode($element->getDisplayOccupation());
+            }
+            if ($element->driving_statuses) {
+                $socialHistory['drivingStatuses']['label'] = CHtml::encode($element->getAttributeLabel('driving_statuses'));
+                $temp = '';
+                foreach ($element->driving_statuses as $item) {
+                    $temp .= $item->name . '<br/>';
+                }
+                $socialHistory['drivingStatuses']['value'] = $temp;
+            }
+            if ($element->smoking_status) {
+                $socialHistory['smokingStatus']['label'] = CHtml::encode($element->getAttributeLabel('smoking_status_id'));
+                $socialHistory['smokingStatus']['value'] = \CHtml::encode($element->smoking_status->name);
+            }
+            if ($element->accommodation) {
+                $socialHistory['accommodation']['label'] = CHtml::encode($element->getAttributeLabel('accommodation_id'));
+                $socialHistory['accommodation']['value'] = \CHtml::encode($element->accommodation->name);
+            }
+            if ($element->comments) {
+                $socialHistory['comments']['label'] = CHtml::encode($element->getAttributeLabel('comments'));
+                $socialHistory['comments']['value'] = \CHtml::encode($element->comments);
+            }
+            if (isset($element->carer)) {
+                $socialHistory['carer']['label'] = CHtml::encode($element->getAttributeLabel('carer_id'));
+                $socialHistory['carer']['value'] = \CHtml::encode($element->carer);
+            }
+            if (isset($element->alcohol_intake)) {
+                $socialHistory['alcoholIntake']['label'] = CHtml::encode($element->getAttributeLabel('alcohol_intake'));
+                $socialHistory['alcoholIntake']['value'] = \CHtml::encode($element->alcohol_intake) . ' units/week';
+            }
+            if (isset($element->substance_misuse)) {
+                $socialHistory['substanceMisuse']['label'] = CHtml::encode($element->getAttributeLabel('substance_misuse'));
+                $socialHistory['substanceMisuse']['value'] = \CHtml::encode($element->substance_misuse->name);
+            }
+        }
+
+        return $socialHistory;
+    }
+
+    private function structurePatientManagementSummaryData($patient, $exam_api)
+    {
+        $managementSummary = [];
+
+        $summaries = $exam_api->getManagementSummaries($patient);
+        foreach ($summaries as $summary) {
+            $temp = [];
+            $temp['service'] = $summary->service;
+            $temp['comments'] = $summary->comments;
+            $temp['day'] = $summary->date[0];
+            $temp['month'] = $summary->date[1];
+            $temp['year'] = $summary->date[2];
+            $temp['user'] = $summary->user;
+            $managementSummaries[] = $temp;
+        }
+
+        return $managementSummary;
+    }
+
+    private function structurePatientWorklistData($patient)
+    {
+        $structuredWorklistData = [];
+
+        $appointment = $this->createWidget('Appointment', ['patient' => $patient, 'pro_theme' => 'pro-theme', 'is_popup' => true]);
+
+        foreach ($appointment->worklist_patients as $worklistPatient) {
+            $temp = [];
+            $temp['time'] = date('H:i', strtotime($worklistPatient->when));
+            $temp['date'] = \Helper::convertDate2NHS($worklistPatient->worklist->start);
+            $temp['name'] = $worklistPatient->worklist->name;
+            $worklistStatus = $worklistPatient->getWorklistPatientAttribute('Status');
+            $event = Event::model()->findByAttributes(['worklist_patient_id' => $worklistPatient->id]);
+
+            if (isset($worklistStatus)) {
+                $temp['status'] = $worklistStatus->attribute_value;
+            } elseif ($event && $event->eventType && $event->eventType->class_name === "OphCiDidNotAttend") {
+                $temp['status'] = 'Did not attend.';
+            }
+            $structuredWorklistData['worklistPatients'][] = $temp;
+        }
+        if ($appointment->past_worklist_patients_count != 0) {
+            $structuredWorklistData['pastWorklistPatientsCount'] = $appointment->past_worklist_patients_count;
+            $criteria = new \CDbCriteria();
+            $criteria->join = " JOIN worklist w ON w.id = t.worklist_id";
+            $start_of_today = date("Y-m-d");
+            $criteria->addCondition('t.when < "' . $start_of_today . '"');
+            $criteria->order = 't.when desc';
+
+            $past_worklist_patients = WorklistPatient::model()->findAllByAttributes(
+                ['patient_id' => $patient->id],
+                $criteria
             );
-            $historyMedicationsData = $historyMedicationsWidget->getViewData();
-            $current_systemic_meds = null;
-            $stopped_systemic_meds = null;
-            $current_eye_meds = null;
-            $stopped_eye_meds = null;
-            $element = null;
-            if (is_array($historyMedicationsData)) {
-                $current_filter = function ($e) {
-                    /** @var EventMedicationUse $e */
-                    return !$e->isStopped();
-                };
-                $stopped_filter = function ($e) {
-                    /** @var EventMedicationUse $e */
-                    return !$e->isChangedMedication();
-                };
-                $systemic_filter = function ($med) {
-                    return $med->laterality === null;
-                };
-                $eye_filter = function ($e) {
-                    /** @var EventMedicationUse $e */
-                    return !is_null($e->route_id) && $e->route->has_laterality;
-                };
-
-                $element = $historyMedicationsData['element'];
-                $current = $historyMedicationsData['current'];
-                $stopped = $historyMedicationsData['stopped'];
-                $current = $element->mergeMedicationEntries($current);
-                $current = array_filter($current, $current_filter);
-                $current = $historyMedicationsWidget->sortEntriesByDate($current);
-                $stopped = array_filter($stopped, $stopped_filter);
-                $stopped = $historyMedicationsWidget->sortEntriesByDate($stopped, false);
-                $current_systemic_meds = array_filter($current, $systemic_filter);
-                $stopped_systemic_meds = array_filter($stopped, $systemic_filter);
-                $current_eye_meds = array_filter($current, $eye_filter);
-                $stopped_eye_meds = array_filter($stopped, $eye_filter);
-            }
-            $nilRecord = false;
-            $noPreviousData = false;
-            if (empty($current_systemic_meds) && empty($stopped_systemic_meds) && is_null($element->no_systemic_medications_date)) {
-                $nilRecord = true;
-            } elseif (empty($current_systemic_meds) && empty($stopped_systemic_meds) && !is_null($element->no_systemic_medications_date)) {
-                $noPreviousData = true;
-            } else {
-                if ($current_systemic_meds) {
-                    $patientData['systemicMedications']['currentSystemicMeds'] = $this->patientHistoryMedicationsData($historyMedicationsWidget, $current_systemic_meds, true, false, true, false);
-                }
-                if ($stopped_systemic_meds) {
-                    $patientData['systemicMedications']['stoppedSystemicMedsSize'] = sizeof($stopped_systemic_meds);
-                    $patientData['systemicMedications']['stoppedSystemicMeds'] = $this->patientHistoryMedicationsData($historyMedicationsWidget, $stopped_systemic_meds, false, false, false, false);
-                }
-                $patientData['historyMedications']['id'] = CHtml::modelName($element);
-            }
-
-            $patientData['systemicMedications']['nilRecord'] = $nilRecord;
-            $patientData['systemicMedications']['noPreviousData'] = $noPreviousData;
-
-            $nilRecord = false;
-            $noPreviousData = false;
-            if (empty($current_eye_meds) && empty($stopped_eye_meds) && is_null($element->no_ophthalmic_medications_date)) {
-                $nilRecord = true;
-            } elseif (empty($current_eye_meds) && empty($stopped_eye_meds) && !is_null($element->no_ophthalmic_medications_date)) {
-                $noPreviousData = true;
-            } else {
-                if ($current_eye_meds) {
-                    $patientData['eyeMedications']['currentEyeMeds'] = $this->patientHistoryMedicationsData($historyMedicationsWidget, $current_eye_meds, true, true, true, true);
-                }
-                if ($stopped_eye_meds) {
-                    $patientData['eyeMedications']['stoppedEyeMedsSize'] = sizeof($stopped_eye_meds);
-                    $patientData['eyeMedications']['stoppedEyeMeds'] = $this->patientHistoryMedicationsData($historyMedicationsWidget, $stopped_eye_meds, false, true, false, true);
-                }
-            }
-            $patientData['eyeMedications']['nilRecord'] = $nilRecord;
-            $patientData['eyeMedications']['noPreviousData'] = $noPreviousData;
-
-            $familyHistoryWidget = $this->createWidget(
-                \OEModule\OphCiExamination\widgets\FamilyHistory::class,
-                [
-                    'patient' => $patient,
-                    'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE_OUTPUT,
-                ]
-            );
-            $familyHistoryData = $familyHistoryWidget->getViewData();
-            $element = $familyHistoryData['element'];
-            if (empty($element->entries) && empty($element->no_family_history_date)) {
-                $patientData['familyHistory']['nilRecord'] = true;
-            } else {
-                $patientData['familyHistory']['noFamilyHistory'] = empty($element->no_family_history_date) && !empty($element->entries);
-                if (!empty($element->entries)) {
-                    $patientData['familyHistory']['modelName'] = CHtml::modelName($element);
-                    foreach ($element->entries as $i => $entry) {
-                        $temp = [];
-                        $temp['relativeDisplay'] = $entry->displayrelative;
-                        $temp['sideDisplay'] = $entry->side->name;
-                        $temp['conditionDisplay'] = $entry->displaycondition;
-                        $temp['comments'] = $entry->comments;
-                        $patientData['familyHistory']['entries'][] = $temp;
-                    }
-                }
-            }
-
-            $socialHistoryWidget = $this->createWidget(
-                \OEModule\OphCiExamination\widgets\SocialHistory::class,
-                [
-                    'patient' => $patient,
-                    'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE_OUTPUT,
-                ]
-            );
-            $socialHistoryData = $socialHistoryWidget->getViewData();
-            $element = $socialHistoryData['element'];
-            if (!$element || !$element->id) {
-                $patientData['socialHistory']['nilRecord'] = true;
-            } else {
-                if ($element->occupation) {
-                    $patientData['socialHistory']['occupation']['label'] = CHtml::encode($element->getAttributeLabel('occupation_id'));
-                    $patientData['socialHistory']['occupation']['value'] = \CHtml::encode($element->getDisplayOccupation());
-                }
-                if ($element->driving_statuses) {
-                    $patientData['socialHistory']['drivingStatuses']['label'] = CHtml::encode($element->getAttributeLabel('driving_statuses'));
-                    $temp = '';
-                    foreach ($element->driving_statuses as $item) {
-                        $temp .= $item->name . '<br/>';
-                    }
-                    $patientData['socialHistory']['drivingStatuses']['value'] = $temp;
-                }
-                if ($element->smoking_status) {
-                    $patientData['socialHistory']['smokingStatus']['label'] = CHtml::encode($element->getAttributeLabel('smoking_status_id'));
-                    $patientData['socialHistory']['smokingStatus']['value'] = \CHtml::encode($element->smoking_status->name);
-                }
-                if ($element->accommodation) {
-                    $patientData['socialHistory']['accommodation']['label'] = CHtml::encode($element->getAttributeLabel('accommodation_id'));
-                    $patientData['socialHistory']['accommodation']['value'] = \CHtml::encode($element->accommodation->name);
-                }
-                if ($element->comments) {
-                    $patientData['socialHistory']['comments']['label'] = CHtml::encode($element->getAttributeLabel('comments'));
-                    $patientData['socialHistory']['comments']['value'] = \CHtml::encode($element->comments);
-                }
-                if (isset($element->carer)) {
-                    $patientData['socialHistory']['carer']['label'] = CHtml::encode($element->getAttributeLabel('carer_id'));
-                    $patientData['socialHistory']['carer']['value'] = \CHtml::encode($element->carer);
-                }
-                if (isset($element->alcohol_intake)) {
-                    $patientData['socialHistory']['alcoholIntake']['label'] = CHtml::encode($element->getAttributeLabel('alcohol_intake'));
-                    $patientData['socialHistory']['alcoholIntake']['value'] = \CHtml::encode($element->alcohol_intake) . ' units/week';
-                }
-                if (isset($element->substance_misuse)) {
-                    $patientData['socialHistory']['substanceMisuse']['label'] = CHtml::encode($element->getAttributeLabel('substance_misuse'));
-                    $patientData['socialHistory']['substanceMisuse']['value'] = \CHtml::encode($element->substance_misuse->name);
-                }
-            }
-
-            $summaries = $exam_api->getManagementSummaries($patient);
-            foreach ($summaries as $summary) {
-                $temp = [];
-                $temp['service'] = $summary->service;
-                $temp['comments'] = $summary->comments;
-                $temp['day'] = $summary->date[0];
-                $temp['month'] = $summary->date[1];
-                $temp['year'] = $summary->date[2];
-                $temp['user'] = $summary->user;
-                $patientData['managementSummaries'][] = $temp;
-            }
-
-            $appointment = $this->createWidget('Appointment', ['patient' => $patient, 'pro_theme' => 'pro-theme', 'is_popup' => true]);
-
-            foreach ($appointment->worklist_patients as $worklistPatient) {
+            foreach ($past_worklist_patients as $worklistPatient) {
                 $temp = [];
                 $temp['time'] = date('H:i', strtotime($worklistPatient->when));
                 $temp['date'] = \Helper::convertDate2NHS($worklistPatient->worklist->start);
@@ -1262,95 +1455,82 @@ class WorklistController extends BaseController
                 } elseif ($event && $event->eventType && $event->eventType->class_name === "OphCiDidNotAttend") {
                     $temp['status'] = 'Did not attend.';
                 }
-                $patientData['worklistPatients'][] = $temp;
+                $structuredWorklistData['pastWorklistPatients'][] = $temp;
             }
-            if ($appointment->past_worklist_patients_count != 0) {
-                $patientData['pastWorklistPatientsCount'] = $appointment->past_worklist_patients_count;
-                $criteria = new \CDbCriteria();
-                $criteria->join = " JOIN worklist w ON w.id = t.worklist_id";
-                $start_of_today = date("Y-m-d");
-                $criteria->addCondition('t.when < "' . $start_of_today . '"');
-                $criteria->order = 't.when desc';
+        }
 
-                $past_worklist_patients = WorklistPatient::model()->findAllByAttributes(
-                    ['patient_id' => $patientId],
-                    $criteria
-                );
-                foreach ($past_worklist_patients as $worklistPatient) {
-                    $temp = [];
-                    $temp['time'] = date('H:i', strtotime($worklistPatient->when));
-                    $temp['date'] = \Helper::convertDate2NHS($worklistPatient->worklist->start);
-                    $temp['name'] = $worklistPatient->worklist->name;
-                    $worklistStatus = $worklistPatient->getWorklistPatientAttribute('Status');
-                    $event = Event::model()->findByAttributes(['worklist_patient_id' => $worklistPatient->id]);
+        return $structuredWorklistData;
+    }
 
-                    if (isset($worklistStatus)) {
-                        $temp['status'] = $worklistStatus->attribute_value;
-                    } elseif ($event && $event->eventType && $event->eventType->class_name === "OphCiDidNotAttend") {
-                        $temp['status'] = 'Did not attend.';
-                    }
-                    $patientData['pastWorklistPatients'][] = $temp;
-                }
-            }
+    private function structurePatientPlansProblemsData($patient) {
+        $structuredPlansProblemsData = ['currentPlanProblems' => [], 'pastPlanProblems' => []];
 
-            $plansProblemsWidget = $this->createWidget('application.widgets.PlansProblemsWidget', [
-                'patient_id' => $patient->id
-            ]);
-            foreach ($plansProblemsWidget->current_plans_problems as $planProblem) {
+        $plansProblemsWidget = $this->createWidget('application.widgets.PlansProblemsWidget', [
+            'patient_id' => $patient->id
+        ]);
+        foreach ($plansProblemsWidget->current_plans_problems as $planProblem) {
+            $temp = [];
+            $temp['name'] = $planProblem->name;
+            $temp['tooltipContent'] = 'Created: ' . \Helper::convertDate2NHS($planProblem->created_date) . ($planProblem->createdUser ? ' by ' . $planProblem->createdUser->getFullNameAndTitle() : '');
+            $temp['id'] = $planProblem->id;
+            $structuredPlansProblemsData['currentPlanProblems'][] = $temp;
+        }
+        if ($plansProblemsWidget->past_plans_problems != 0) {
+            foreach ($plansProblemsWidget->past_plans_problems as $planProblem) {
                 $temp = [];
                 $temp['name'] = $planProblem->name;
-                $temp['tooltipContent'] = 'Created: ' . \Helper::convertDate2NHS($planProblem->created_date) . ($planProblem->createdUser ? ' by ' . $planProblem->createdUser->getFullNameAndTitle() : '');
+                $temp['tooltipContent'] = 'Created:' . \Helper::convertDate2NHS($planProblem->created_date) . ($planProblem->createdUser ? ' by ' . $planProblem->createdUser->getFullNameAndTitle() : '') .
+                '<br /> Closed:' . Helper::convertDate2NHS($planProblem->last_modified_date) . ($planProblem->lastModifiedUser ? ' by ' . $planProblem->lastModifiedUser->getFullNameAndTitle() : '');
                 $temp['id'] = $planProblem->id;
-                $temp['currentPlanProblems'][] = $temp;
+                $temp['lastModifiedDate'] = \Helper::convertDate2NHS($planProblem->last_modified_date);
+                $structuredPlansProblemsData['pastPlanProblems'][] = $temp;
             }
-            if ($plansProblemsWidget->past_plans_problems != 0) {
-                foreach ($plansProblemsWidget->past_plans_problems as $planProblem) {
-                    $temp = [];
-                    $temp['name'] = $planProblem->name;
-                    $temp['tooltipContent'] = 'Created:' . \Helper::convertDate2NHS($planProblem->created_date) . ($planProblem->createdUser ? ' by ' . $planProblem->createdUser->getFullNameAndTitle() : '') .
-                    '<br /> Closed:' . Helper::convertDate2NHS($planProblem->last_modified_date) . ($planProblem->lastModifiedUser ? ' by ' . $planProblem->lastModifiedUser->getFullNameAndTitle() : '');
-                    $temp['id'] = $planProblem->id;
-                    $temp['lastModifiedDate'] = \Helper::convertDate2NHS($planProblem->last_modified_date);
-                    $temp['pastPlanProblems'][] = $temp;
-                }
-            }
-
-            if (Yii::app()->getModule('OETrial')) {
-                foreach ($patient->trials as $trialPatient) {
-                    $temp = [];
-                    if (Yii::app()->user->checkAccess('TaskViewTrial')) {
-                        $temp['trial'] = CHtml::link(
-                            CHtml::encode($trialPatient->trial->name),
-                            Yii::app()->controller->createUrl(
-                                '/OETrial/trial/permissions',
-                                array('id' => $trialPatient->trial_id)
-                            )
-                        );
-                    } else {
-                        $temp['trial'] = CHtml::encode($trialPatient->trial->name);
-                    }
-                    $temp['date'] = $trialPatient->trial->getStartedDateForDisplay() . ' - ' . $trialPatient->trial->getClosedDateForDisplay();
-                    $coordinators = $trialPatient->trial->getTrialStudyCoordinators();
-                    if (sizeof($coordinators)) {
-                        $studyCoordinators = '';
-                        foreach ($coordinators as $item) {
-                            $studyCoordinators .= $item->user->getFullName() . "<br />";
-                        }
-                        $temp['studyCoordinator'] = $studyCoordinators;
-                    } else {
-                        $temp['studyCoordinator'] = 'N/A';
-                    }
-
-                    $temp['treatment'] = $trialPatient->treatmentType->name;
-                    $temp['type'] = $trialPatient->trial->trialType->name;
-                    $temp['status'] = $trialPatient->status->name;
-
-                    $patientData['currentTrails'][] = $temp;
-                }
-            }
-
-            $this->renderJSON($patientData);
         }
+
+        return $structuredPlansProblemsData;
+    }
+
+    private function structurePatientTrialsData($patient)
+    {
+        if (Yii::app()->getModule('OETrial')) {
+            $currentTrials = [];
+
+            foreach ($patient->trials as $trialPatient) {
+                $temp = [];
+                if (Yii::app()->user->checkAccess('TaskViewTrial')) {
+                    $temp['trial'] = CHtml::link(
+                        CHtml::encode($trialPatient->trial->name),
+                        Yii::app()->controller->createUrl(
+                            '/OETrial/trial/permissions',
+                            array('id' => $trialPatient->trial_id)
+                        )
+                    );
+                } else {
+                    $temp['trial'] = CHtml::encode($trialPatient->trial->name);
+                }
+                $temp['date'] = $trialPatient->trial->getStartedDateForDisplay() . ' - ' . $trialPatient->trial->getClosedDateForDisplay();
+                $coordinators = $trialPatient->trial->getTrialStudyCoordinators();
+                if (sizeof($coordinators)) {
+                    $studyCoordinators = '';
+                    foreach ($coordinators as $item) {
+                        $studyCoordinators .= $item->user->getFullName() . "<br />";
+                    }
+                    $temp['studyCoordinator'] = $studyCoordinators;
+                } else {
+                    $temp['studyCoordinator'] = 'N/A';
+                }
+
+                $temp['treatment'] = $trialPatient->treatmentType->name;
+                $temp['type'] = $trialPatient->trial->trialType->name;
+                $temp['status'] = $trialPatient->status->name;
+
+                $currentTrials[] = $temp;
+            }
+
+            return $currentTrials;
+        }
+
+        return null;
     }
 
     protected function patientHistoryMedicationsData($historyMedicationsWidget, $history_meds, $current, $getComments = false, $showLink = false, $getLaterality = false): array
@@ -1823,13 +2003,32 @@ class WorklistController extends BaseController
      * @return array instances of Pathway, PathwayStep
      * @throws CHttpException
      */
-    private function getStepAndPathway($pathstep_id)
+    private function getStepAndPathway($pathstep_id, $visit_id = null, $type_step_id = null)
     {
         $step = PathwayStep::model()->findByPk($pathstep_id);
-        $pathway = $step->pathway;
+
         if (!$step) {
-            throw new CHttpException(404, 'Step not found.');
+            // Potentially instantiate step if relevant parameters are passed
+            if ($visit_id && $type_step_id) {
+                $visit = WorklistPatient::model()->findByPk($visit_id);
+                $type_step = PathwayTypeStep::model()->findByPk($type_step_id);
+
+                if ($type_step) {
+                    $pathway_steps = $type_step->pathway_type->instancePathway($visit);
+
+                    $step = $pathway_steps[$type_step_id] ?? null;
+                }
+
+                if (!$step) {
+                    throw new CHttpException(404, 'Unable to retrieve step for processing or step is not the required type of step.');
+                }
+            } else {
+                throw new CHttpException(404, 'Step not found.');
+            }
         }
+
+        $pathway = $step->pathway;
+
         if (!$pathway) {
             throw new CHttpException(404, 'Pathway not found.');
         }
@@ -1845,13 +2044,26 @@ class WorklistController extends BaseController
     public function actionCheckout()
     {
         $pathstep_id = Yii::app()->request->getPost('step_id');
-        extract($this->getStepAndPathway($pathstep_id));
-        // push the step to next status
+        $type_step_id = Yii::app()->request->getPost('step_type_id');
+        $visit_id = Yii::app()->request->getPost('visit_id');
+
+        extract($this->getStepAndPathway($pathstep_id, $visit_id, $type_step_id));
+
+        // push the step to completed status
         $step->nextStatus();
-        // set the pathway as done
-        $pathway->status = Pathway::STATUS_DONE;
+        $step->status = PathwayStep::STEP_COMPLETED;
+        $step->start_time = date('Y-m-d H:i:s');
+        $step->started_user_id = Yii::app()->user->id;
+        $step->end_time = date('Y-m-d H:i:s');
+        $step->completed_user_id = Yii::app()->user->id;
+
+        $pathway->enqueue($step);
+
+        // discharge the patient
+        $pathway->status = Pathway::STATUS_DISCHARGED;
         $pathway->end_time = date('Y-m-d H:i:s');
         $pathway->save();
+
         $this->renderJSON(
             [
                 'status' => $pathway->getStatusString(),
@@ -1877,16 +2089,31 @@ class WorklistController extends BaseController
         if (!$step->save()) {
             throw new CHttpException(500, 'Unable to update the step status');
         }
-        // revert the pathway back to discharged
-        $pathway->status = Pathway::STATUS_DISCHARGED;
+        // revert the pathway back to active
+        $pathway->status = Pathway::STATUS_ACTIVE;
         $pathway->end_time = null;
         if (!$pathway->save()) {
             throw new CHttpException(500, 'Unable to update the pathway status');
         }
+
+        if (isset($pathway->worklist_patient_id)) {
+            $event = \Event::model()->find("worklist_patient_id = ?", [$pathway->worklist_patient->id]);
+
+            if ($event !== null) {
+                $hl7_a13 = new \OEModule\PASAPI\resources\HL7_A13();
+                $hl7_a13->setDataFromEvent($event->id);
+
+                Yii::app()->event->dispatch(
+                    'emergency_care_update',
+                    $hl7_a13
+                );
+            }
+        }
+
         $this->renderJSON(
             [
                 'status' => $pathway->getStatusString(),
-                'step_html' => $this->renderPartial('_clinical_pathway', ['pathway' => $pathway->worklist_patient], true),
+                'step_html' => $this->renderPartial('_clinical_pathway', ['visit' => $pathway->worklist_patient], true),
                 'status_html' => $pathway->getPathwayStatusHTML(),
                 'pathway_id' => $pathway->id,
                 'waiting_time_html' => $pathway->getTotalDurationHTML(true),

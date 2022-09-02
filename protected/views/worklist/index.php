@@ -392,7 +392,7 @@ $initial_filter = $session_filter_info['filter'];
 
             {{#patientRisks.entries.length}}
                 <div class="alert-box patient">
-                    <strong>Allergies</strong>
+                    <strong>Alerts</strong>
                 </div>
                 <div class="popup-overflow">
                     <table class="risks">
@@ -1069,12 +1069,12 @@ $initial_filter = $session_filter_info['filter'];
                         </tbody>
                     </table>
                 {{/pastPlanProblems.length}}
-                {{#currentTrails.length}}
+                {{#currentTrials.length}}
                     <div class="data-group">
                         <h3>Current Trials</h3>
                         <table class="patient-trials">
                             <tbody>
-                                {{#currentTrails}}
+                                {{#currentTrials}}
                                     <tr>
                                         <td>Trial</td>
                                         <td>{{&trial}}</td>
@@ -1100,11 +1100,11 @@ $initial_filter = $session_filter_info['filter'];
                                         <td>{{status}}</td>
                                     </tr>
                                     <tr class="divider"></tr>
-                                {{/currentTrails}}
+                                {{/currentTrials}}
                             </tbody>
                         </table>
                     </div>
-                {{/currentTrails.length}}
+                {{/currentTrials.length}}
             </div>
         </div>
     </div>

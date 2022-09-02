@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2013
  * This file is part of OpenEyes.
@@ -56,7 +57,7 @@ class Element_OphTrOperationbooking_OperationTest extends ActiveRecordTestCase
     protected function assertOrderedAssocArrayEqual($expected, $res)
     {
         $this->assertEquals($expected, $res);
-        $this->assertEquals(array_keys($expected), array_keys($res), 'Response key order does not match expected'.print_r($res, true));
+        $this->assertEquals(array_keys($expected), array_keys($res), 'Response key order does not match expected' . print_r($res, true));
     }
 
     protected function getMalePatient($is_stub = true)
@@ -500,6 +501,8 @@ class Element_OphTrOperationbooking_OperationTest extends ActiveRecordTestCase
 
     public function testReferralValidatorMustBeCalled()
     {
+        // Skipping this [OE-13545] as the validator is only run on insert
+        $this->markTestSkipped('The referral model is no longer used');
         $op = $this->getOperationForPatient($this->patients('patient1'), array('validateReferral'));
         $op->referral_id = 1;
         $op->expects($this->once())
@@ -769,15 +772,15 @@ class Element_OphTrOperationbooking_OperationTest extends ActiveRecordTestCase
         $calculated = $test->calculateEROD($this->firms($firm_key));
 
         if ($expected_erod_session_key) {
-            $this->assertNotNull($calculated, $description.' should return an EROD');
+            $this->assertNotNull($calculated, $description . ' should return an EROD');
             $this->assertInstanceOf(\OphTrOperationbooking_Operation_EROD::class, $calculated, $description . ' not returning EROD');
             $this->assertEquals(
                 $this->sessions($expected_erod_session_key)->id,
                 $calculated->session_id,
-                $description.' - incorrect session picked for EROD'
+                $description . ' - incorrect session picked for EROD'
             );
         } else {
-            $this->assertNull($calculated, $description.' should not have an EROD');
+            $this->assertNull($calculated, $description . ' should not have an EROD');
         }
     }
 

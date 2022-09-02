@@ -27,6 +27,7 @@ interface SidedData
 {
     const LEFT = 1;
     const RIGHT = 2;
+    const BOTH = 3;
 
     /**
      * An array of field suffixes that we should treat as "sided".

@@ -51,8 +51,8 @@
     <LocationName><?=$data['site_name'];?></LocationName>
     <SubLocation></SubLocation>
     <SubLocationName></SubLocationName>
-    <LetterType><?=$data['letter_type'];?></LetterType>
-    <LetterTypeId><?=$data['letter_type_id'];?></LetterTypeId>
+    <LetterType><?php if (isset($data['letter_type'])) { echo $data['letter_type']; } ?></LetterType>
+    <LetterTypeId><?php if (isset($data['letter_type_id'])) { echo $data['letter_type_id']; } ?></LetterTypeId>
 <?php if (isset($data['with_internal_referral']) && $data['with_internal_referral']):?>
     <!--Internal Referral-->
     <ServiceTo><?=$data['service_to'];?></ServiceTo>

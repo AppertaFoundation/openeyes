@@ -19,6 +19,8 @@ use OEModule\CypressHelper\CypressHelperModule;
 * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
 */
 
+use OEModule\OphCiExamination\components\PathstepObserver;
+
 // If the old db.conf file (pre docker) exists, use it. Else read environment variable, else read docker secrets
 // Note, docker secrets are the recommended approach for docker environments
 
@@ -56,8 +58,9 @@ $db_test = array(
     $ssoRedirectURL = getenv('SSO_REDIRECT_URL') ?: 'http://localhost';
     $ssoResponseType = array(getenv('SSO_RESPONSE_TYPE')) ?: array('code');
     $ssoImplicitFLow = strtolower(getenv('SSO_IMPLICIT_FLOW')) === 'true';
-    $ssoUserAttributes = getenv('SSO_USER_ATTRIBUTES') ?: '';
-    $ssoCustomClaims = getenv('SSO_CUSTOM_CLAIMS') ?: '';
+
+    $ssoUserFields = getenv('SSO_USER_FIELDS') ?: '';
+    $ssoOIDCFields = getenv('SSO_OIDC_FIELDS') ?: '';
 
     $ssoMappingsCheck = strtolower(getenv('STRICT_SSO_ROLES_CHECK')) === 'true';
     $ssoLoginURL = getenv('SSO_LOGIN_URL') ?: null;
@@ -210,7 +213,7 @@ $config = array(
                     'complete_step' => [
                         'class' => 'PathstepObserver',
                         'method' => 'completeStep'
-                    ]
+                    ],
                 ],
                 'event_updated' => [
                     'complete_step' => [
@@ -412,7 +415,7 @@ $config = array(
         'institution_code' => !empty(trim(getenv('OE_INSTITUTION_CODE'))) ? getenv('OE_INSTITUTION_CODE') : 'NEW',
         'institution_specialty' => 130,
         'erod_lead_time_weeks' => 3,
-        'correspondence_export_url' => !empty(trim(getenv("OE_CORRESPONDENCE_EXPORT_WSDL_URL"))) ? trim(getenv("OE_CORRESPONDENCE_EXPORT_WSDL_URL")) : 'localhost',
+        'correspondence_export_url' => !empty(trim(getenv("OE_CORRESPONDENCE_EXPORT_WSDL_URL"))) ? trim(getenv("OE_CORRESPONDENCE_EXPORT_WSDL_URL")) : null,
         // In most instances the location URL is derived from the WSDL provided above,
         // but for local testing using SoapUI this will need to be manually specified.
         'correspondence_export_location_url' => !empty(trim(getenv("OE_CORRESPONDENCE_EXPORT_URL"))) ? trim(getenv("OE_CORRESPONDENCE_EXPORT_URL")) : null,
@@ -808,16 +811,29 @@ $config = array(
         'default_patient_import_subspecialty' => 'GL',
         //        Add elements that need to be excluded from the admin sidebar in settings
         'exclude_admin_structure_param_list' => getenv('OE_EXCLUDE_ADMIN_STRUCT_LIST') ? explode(",", getenv('OE_EXCLUDE_ADMIN_STRUCT_LIST')) : array(''),
-        'oe_version' => '6.1.1-pre-nightly',
+        'oe_version' => '6.2.14',
         'gp_label' => !empty(trim(getenv('OE_GP_LABEL'))) ? getenv('OE_GP_LABEL') : null,
         'general_practitioner_label' => !empty(trim(getenv('OE_GENERAL_PRAC_LABEL'))) ? getenv('OE_GENERAL_PRAC_LABEL') : null,
-        // number of days in the future to retrieve worklists for the automatic dashboard render (0 by default in v3)
-        'worklist_dashboard_future_days' => 0,
-        // page size of worklists - recommended to be very large by default, as paging is not generally needed here
-        'worklist_default_pagination_size' => 1000,
-        //// days of the week to be ignored when determining which worklists to render - Mon, Tue etc
-        'worklist_dashboard_skip_days' => array('NONE'),
+        // allow duplicate entries on an automatic worklist for a patient (default = false)
+        'worklist_allow_duplicate_patients' => strtolower(getenv('OE_WORKLIST_ALLOW_DUPLICATE_PATIENTS')) == 'true',
+        // override edit checks on definitions so they can always be edited (defrault = true)
         'worklist_always_allow_definition_edit' => strtolower(getenv('OE_WORKLIST_ALLOW_DEFINITION_EDIT')) != 'false',
+        // number of days in the future to retrieve worklists for the automatic dashboard render (0 by default)
+        'worklist_dashboard_future_days' => !empty(getenv('OE_WORKLIST_DASHBOARD_FUTURE_DAYS')) ? getenv('OE_WORKLIST_DASHBOARD_FUTURE_DAYS') : 0,
+        // page size of worklists - recommended to be very large by default, as paging is not generally needed here
+        'worklist_default_pagination_size' => !empty(getenv('OE_WORKLIST_DEFAULT_PAGINATION_SIZE')) ? getenv('OE_WORKLIST_DEFAULT_PAGINATION_SIZE') : 1000,
+        // days of the week to be ignored when determining which worklists to render - Mon, Tue etc
+        'worklist_dashboard_skip_days' => array('NONE'),
+        // how far in advance worklists should be generated for matching (x days, weeks, months, years)
+        'worklist_default_generation_limit' => !empty(getenv('OE_WORKLIST_DEFAULT_GENERATION_LIMIT')) ? getenv('OE_WORKLIST_DEFAULT_GENERATION_LIMIT') : '1 month',
+        // default start time used for automatic worklist definitions
+        'worklist_default_start_time' => !empty(getenv('OE_WORKLIST_DEFAULT_START_TIME')) ? getenv('OE_WORKLIST_DEFAULT_START_TIME') : '08:00',
+        // default end time used for automatic worklist definitions
+        'worklist_default_end_time' => !empty(getenv('OE_WORKLIST_DEFAULT_END_TIME')) ? getenv('OE_WORKLIST_DEFAULT_END_TIME') : '17:00',
+        // any appointments sent in before this date will not trigger errors when sent in (use YYYY-mm-dd format)
+        'worklist_ignore_date' => !empty(getenv('OE_WORKLIST_IGNORE_DATE')) ? getenv('OE_WORKLIST_IGNORE_DATE') : null,
+        // whether we should render empty worklists in the dashboard or not (default = true)
+        'worklist_show_empty' => strtolower(getenv('OE_WORKLIST_SHOW_EMPTY')) != 'false',
         'tech_support_provider' => !empty(trim(getenv(@'OE_TECH_SUPPORT_PROVIDER'))) ? htmlspecialchars(getenv(@'OE_TECH_SUPPORT_PROVIDER')) :  null,
         'tech_support_url' => !empty(trim(getenv('OE_TECH_SUPPORT_URL'))) ? getenv('OE_TECH_SUPPORT_URL') :  null,
         'pw_restrictions' => array(
@@ -938,8 +954,20 @@ $config = array(
             'authParams' => array('response_mode' => 'form_post'),
             // Generates random encryption key for openssl
             'encryptionKey' => $ssoClientSecret,
-            // Configure custom claims with the user attributes that the claims are for
-            'custom_claims' => array_combine(explode(",", $ssoCustomClaims), explode(",", $ssoUserAttributes)),
+            'field_mapping_allow_list_with_defaults' => array(
+                'username' => '',
+                'email' => '',
+                'first_name' => '',
+                'last_name' => '',
+                'title' => '',
+                'role' => '',
+                'doctor_grade_id' => '',
+                'registration_code' => '',
+                'is_consultant' => 0,
+                'is_surgeon' => 0
+            ),
+            // Field mapping for (user_field, oidc_field). user_field must be in field_mapping_allow_list
+            'field_mapping' => array_combine(explode(",", $ssoUserFields), explode(",", $ssoOIDCFields)),
             // URL to redirect users to SSO portal to login again after session timeout
             'portal_login_url' => $ssoLoginURL,
         ),
@@ -1023,7 +1051,7 @@ if (strtolower(getenv('OE_MODE')) !== 'live') {
 $caches = array(
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '20220714165000',
+            'time' => '20220823162603',
         ),
 );
 

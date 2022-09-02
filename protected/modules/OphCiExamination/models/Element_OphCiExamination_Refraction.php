@@ -125,6 +125,14 @@ class Element_OphCiExamination_Refraction extends \BaseEventTypeElement implemen
                 'on' => 'left_priority_reading.eye_id = ' . SidedData::LEFT,
                 'with' => ['type'],
                 'order' => '-type.priority desc limit 1'
+            ],
+            'both_priority_reading' => [
+                self::HAS_ONE,
+                OphCiExamination_Refraction_Reading::class,
+                'element_id',
+                'on' => 'both_priority_reading.eye_id = ' . SidedData::BOTH,
+                'with' => ['type'],
+                'order' => '-type.priority desc limit 1'
             ]
         ];
     }

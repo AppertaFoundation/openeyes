@@ -160,10 +160,7 @@ class MenuHelper
         }
 
         usort($menu, function ($a, $b) {
-            if ($a['position'] == $b['position']){
-                return strcasecmp($a['title'], $b['title']);
-            }
-            return $a['position'] - $b['position'];
+            return strcmp($a["title"], $b["title"]);
         });
 
         return $menu;

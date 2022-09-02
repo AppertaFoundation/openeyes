@@ -160,7 +160,7 @@ $entry_allergy_ids = isset($entry->medication_id) ?
                 array('class' => 'laterality-input')
             ); ?>
         </div>
-        
+
     </div>
     </td>
     <td>
@@ -223,7 +223,7 @@ $entry_allergy_ids = isset($entry->medication_id) ?
         <?php $tooltip_content_comes_from_history = "This item comes from medication history. " .
             "If you wish to delete it, it must be deleted from the Medication History element. " .
             "Alternatively, mark this item as stopped."; ?>
-        <span data-tooltip-content-comes-from-history="<?= $tooltip_content_comes_from_history ?>">
+        <span data-tooltip-content="<?= $tooltip_content_comes_from_history ?>">
             <i class="oe-i trash js-remove"></i>
         </span>
     </td>

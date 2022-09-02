@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -19,6 +20,9 @@ namespace OEModule\OphTrConsent\widgets;
 
 class EsignPINField extends \EsignField
 {
+    /** @var bool */
+    public bool $hide_role = false;
+
     /**
      * @inheritDoc
      */

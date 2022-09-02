@@ -25,13 +25,11 @@
  * @property int $disorder_id
  * @property int $eye_id
  * @property int $patient_id
- * @property int $episode_id
  *
  * The followings are the available model relations:
  * @property Disorder $disorder
  * @property Eye $eye
  * @property Patient $patient
- * @property Episode $episode
  */
 class SecondaryDiagnosis extends BaseActiveRecordVersioned
 {
