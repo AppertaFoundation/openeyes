@@ -129,7 +129,9 @@ class WorklistController extends BaseController
             $prescriber_dom_data = $this->prescriberDomData(false);
 
             $picker_setup = $this->setupPicker();
+
             $path_step_type_ids = json_encode($this->getPathwayStepTypesRequirePicker());
+
             $this->render(
                 'index',
                 array(

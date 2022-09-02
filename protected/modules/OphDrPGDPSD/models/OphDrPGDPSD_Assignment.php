@@ -153,7 +153,13 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
                     'params' => array(
                         ':event_date' => $event_date
                     ),
-
+                ),
+                'elements' => array(
+                    'with' => array(
+                        'event' => array(
+                            'condition' => "deleted != 1",
+                        )
+                    )
                 )
             ),
             'order' => 'worklist_patient.`when`'
