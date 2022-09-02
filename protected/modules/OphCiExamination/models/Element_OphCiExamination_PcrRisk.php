@@ -19,6 +19,19 @@ class Element_OphCiExamination_PcrRisk extends \SplitEventTypeElement
         return parent::model($className);
     }
 
+    public function __toString()
+    {
+        $result = [];
+        if ($this->hasRight()) {
+            $result[] = "R: {$this->right_pcr_risk}%";
+        }
+        if ($this->hasLeft()) {
+            $result[] = "L: {$this->left_pcr_risk}%";
+        }
+
+        return implode(", ", $result);
+    }
+
     /**
      * @return string the associated database table name
      */
