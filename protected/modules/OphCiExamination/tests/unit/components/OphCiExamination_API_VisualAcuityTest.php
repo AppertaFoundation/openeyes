@@ -223,7 +223,7 @@ class OphCiExamination_API_VisualAcuityTest extends \OEDbTestCase
     {
         $test_api = new APIWithVisualAcuityAPITraitWithLatestElementStub();
 
-        $va_element = $this->generateVisualAcuityElementWithReadings(0, 0, 0, false);
+        $va_element = $this->generateVisualAcuityElementWithReadings(0, 0, 1, true);
         $this->saveElement($va_element);
 
         $test_api->setLatestElement($va_element);
@@ -311,7 +311,11 @@ class OphCiExamination_API_VisualAcuityTest extends \OEDbTestCase
     {
         $test_api = new APIWithVisualAcuityAPITraitWithLatestElementStub();
 
-        $va_element = $this->saveElement($this->generateVAElementWithReadingsForSide($side, 0));
+        $va_element = $this->saveElement(
+            $this->generateVisualAcuityElementWithReadings(
+                $side === 'right' ? 0 : 1,
+                $side === 'right' ? 1 : 0,
+            ));
 
         $test_api->setLatestElement($va_element);
 
@@ -346,7 +350,7 @@ class OphCiExamination_API_VisualAcuityTest extends \OEDbTestCase
         $test_api = new APIWithVisualAcuityAPITraitWithLatestElementStub();
 
         $va_element = $this->saveElement(
-            $this->generateVAElementWithReadingsForSide("left", 0)
+            $this->generateVisualAcuityElementWithReadings(1)
         );
 
         $test_api->setLatestElement($va_element);
@@ -363,7 +367,7 @@ class OphCiExamination_API_VisualAcuityTest extends \OEDbTestCase
         $test_api = new APIWithVisualAcuityAPITraitWithLatestElementStub();
 
         $va_element = $this->saveElement(
-            $this->generateVAElementWithReadingsForSide("right", 0)
+            $this->generateVisualAcuityElementWithReadings(0, 1)
         );
 
         $test_api->setLatestElement($va_element);
