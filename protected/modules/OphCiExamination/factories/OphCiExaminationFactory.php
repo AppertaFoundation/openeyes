@@ -1,6 +1,6 @@
 <?php
 /**
- * (C) Copyright Apperta Foundation 2022
+ * (C) Apperta Foundation, 2022
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -13,29 +13,18 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-namespace OE\factories\models\traits;
+namespace OEModule\OphCiExamination\factories;
+use OE\factories\models\EventFactory;
 
-trait HasFactory
+class OphCiExaminationFactory extends EventFactory
 {
-    public static function factoryName()
+    public function definition(): array
     {
-        return static::class . 'Factory';
-    }
-
-    /**
-     * This ensures that the factories/models path is imported
-     * for instantiation in non-namespaced modules
-     */
-    public static function importNonNamespacedFactories()
-    {
-        if (!preg_match('/OEModule/', static::class)) {
-            // not a namespaced model class
-            $rc = new \ReflectionClass(static::class);
-            $class_path = dirname($rc->getFileName());
-            $path_segments = explode(DIRECTORY_SEPARATOR, $class_path);
-            // get the module name from the file path (assumes models directory)
-            $module_name = $path_segments[count($path_segments) - 2];
-            \Yii::import("{$module_name}.factories.models.*");
-        }
+        return array_merge(
+            parent::definition(),
+            [
+                'event_type_id' => $this->getEventTypeByName('Examination')
+            ]
+        );
     }
 }

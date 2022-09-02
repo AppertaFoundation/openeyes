@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Apperta Foundation, 2020
  * This file is part of OpenEyes.
@@ -39,9 +40,12 @@ abstract class BaseControllerTest extends \OEDbTestCase
             ->getMock();
 
         $request->method('getPost')
-            ->will($this->returnCallback(function($key, $default) {
+            ->will($this->returnCallback(function ($key, $default) {
                 return $default; // always return the default
             }));
+
+        $request->method('getCookies')
+            ->will($this->returnValue($this->createMock(\CCookieCollection::class)));
 
         return $request;
     }
