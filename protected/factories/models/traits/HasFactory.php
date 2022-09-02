@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Copyright Apperta Foundation 2022
  * This file is part of OpenEyes.
@@ -13,25 +14,29 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-namespace OE\factories\models;
+namespace OE\factories\models\traits;
 
-use OE\factories\ModelFactory;
-
-class SiteFactory extends ModelFactory
+trait HasFactory
 {
+    public static function factoryName()
+    {
+        return static::class . 'Factory';
+    }
 
     /**
-     * @return array
+     * This ensures that the factories/models path is imported
+     * for instantiation in non-namespaced modules
      */
-
-    public function definition(): array
+    public static function importNonNamespacedFactories()
     {
-        return [
-            'name' => $this->faker->company(),
-            'remote_id' => $this->faker->regexify('\w\w\w\d'),
-            'short_name' => $this->faker->word(),
-            'fax' => $this->faker->phoneNumber(),
-            'telephone' => $this->faker->phoneNumber()
-        ];
+        if (!preg_match('/OEModule/', static::class)) {
+            // not a namespaced model class
+            $rc = new \ReflectionClass(static::class);
+            $class_path = dirname($rc->getFileName());
+            $path_segments = explode(DIRECTORY_SEPARATOR, $class_path);
+            // get the module name from the file path (assumes models directory)
+            $module_name = $path_segments[count($path_segments) - 2];
+            \Yii::import("{$module_name}.factories.models.*");
+        }
     }
 }
