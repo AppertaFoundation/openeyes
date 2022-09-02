@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Copyright Apperta Foundation 2022
  * This file is part of OpenEyes.
@@ -13,29 +14,21 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-namespace OE\factories\models\traits;
+namespace OE\factories\models;
 
-trait HasFactory
+use OE\factories\ModelFactory;
+use UserAuthenticationMethod;
+use Institution;
+
+class InstitutionAuthenticationFactory extends ModelFactory
 {
-    public static function factoryName()
+    public function definition(): array
     {
-        return static::class . 'Factory';
-    }
-
-    /**
-     * This ensures that the factories/models path is imported
-     * for instantiation in non-namespaced modules
-     */
-    public static function importNonNamespacedFactories()
-    {
-        if (!preg_match('/OEModule/', static::class)) {
-            // not a namespaced model class
-            $rc = new \ReflectionClass(static::class);
-            $class_path = dirname($rc->getFileName());
-            $path_segments = explode(DIRECTORY_SEPARATOR, $class_path);
-            // get the module name from the file path (assumes models directory)
-            $module_name = $path_segments[count($path_segments) - 2];
-            \Yii::import("{$module_name}.factories.models.*");
-        }
+        return [
+            'institution_id' => ModelFactory::factoryFor(Institution::class),
+            'user_authentication_method' => ModelFactory::factoryFor(UserAuthenticationMethod::class)->useExisting(),
+            'description' => $this->faker->word(),
+            'active' => true
+        ];
     }
 }

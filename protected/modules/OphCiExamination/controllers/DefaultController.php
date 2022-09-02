@@ -1068,6 +1068,7 @@ class DefaultController extends \BaseEventTypeController
                 );
             }
             if ($clinical_outcome_entry) {
+                $this->pasCallout($event, 'A08');
                 $this->pasCallout($event, 'A03');
             } else {
                 $this->pasCallout($event, 'A08');
@@ -1095,6 +1096,7 @@ class DefaultController extends \BaseEventTypeController
                 );
             }
             if ($clinical_outcome_entry) {
+                $this->pasCallout($event, 'A08');
                 $this->pasCallout($event, 'A03');
             } else {
                 $this->pasCallout($event, 'A08');
