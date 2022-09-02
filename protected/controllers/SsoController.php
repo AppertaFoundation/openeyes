@@ -66,16 +66,6 @@ class SsoController extends BaseAdminController
                 $error = $auth->getLastErrorReason();
                 throw new Exception("Error in SAML authentication: ".$error);
             }
-
-            // Save the new user into the OE database
-            try {
-                $identity = $user->setSAMLSSOUserInformation($userInfo);
-            } catch (Exception $e) {
-                $this->render('/sso/invalid_role', array(
-                        'error' => $e->getMessage()
-                ));
-                Yii::app()->end();
-            }
         }
         // The user accessing through OpenID-Connect Authorization
         elseif (Yii::app()->params['auth_source'] === 'OIDC') {
@@ -88,9 +78,9 @@ class SsoController extends BaseAdminController
             $client_secret = $OIDC_settings['client_secret'];
             $issuer = $OIDC_settings['issuer'];
             $encryptionKey = $OIDC_settings['encryptionKey'];
+
             // SsoOpenIDConnect model that overrides certain functions of Jumbojett/OpenIDConnectClient
             $oidc = new SsoOpenIDConnect($provider_url, $client_id, $client_secret, $issuer, $encryptionKey);
-
             $oidc->setRedirectUrl($OIDC_settings['redirect_url']);
             $oidc->setResponseTypes($OIDC_settings['response_type']);
             $oidc->addScope($OIDC_settings['scopes']);
@@ -102,64 +92,116 @@ class SsoController extends BaseAdminController
                 throw $e;
             }
 
-            // Create an array of user attributes
-            $userAttributes = ['email', 'given_name', 'family_name'];
-
-            foreach ($userAttributes as $attribute) {
-                $userInfo[$attribute] = $oidc->requestUserInfo($attribute);
+            // Create an array of required user attributes (can be overidden from field_mapping)
+            $requiredUserFields = [
+                'username' => 'email',
+                'email' => 'email',
+                'first_name' => 'given_name',
+                'last_name' => 'family_name'
+            ];
+            foreach ($requiredUserFields as $userField => $oidcField) {
+                $userInfo[$userField] = $oidc->requestUserInfo($oidcField);
             }
 
-            // Get custom claims from OIDC ID Token
-            $customClaims = $OIDC_settings['custom_claims'];
             $token = (array)$oidc->getIdTokenPayload();
-            foreach ($customClaims as $claim => $attribute) {
-                if ($attribute === 'roles' && !is_array($token[$claim])) {
-                    // Get the string value for roles and make it an array
-                    $token[$claim] = explode(",", $token[$claim]);
+            $claimsMapping = $OIDC_settings['field_mapping'];
+            foreach ($claimsMapping as $userField => $oidcField) {
+                if (!isset($token[$oidcField])) {
+                    continue; //Don't add to user info if it doesn't come from claims
                 }
-                $userInfo[$attribute] = $token[$claim];
-            }
-
-            if (!isset($userInfo['username'])) {
-                throw new Exception('Source for Username is not defined: '.print_r($this->getErrors(), true));
-            }
-
-            // If user already exists based on username, then update that user, otherwise create new user.
-            $existingUser = User::model()->find('username = :username', array(':username' => $userInfo['username']));
-            if ($existingUser !== null) {
-                $user = $existingUser;
-            }
-            try {
-                $identity = $user->setOIDCSSOUserInformation($userInfo);
-            } catch (Exception $e) {
-                $this->render('/sso/invalid_role', array(
-                        'error' => $e->getMessage()
-                ));
-                Yii::app()->end();
+                if ($userField === 'roles' && !is_array($token[$oidcField])) {
+                    // Get the string value for roles and make it an array
+                    if (strlen($token[$oidcField]) > 0) {
+                        $userInfo[$userField] = explode(",", $token[$oidcField]);
+                    } else {
+                        $userInfo[$userField] = [];
+                    }
+                } else {
+                    $userInfo[$userField] = $token[$oidcField];
+                }
             }
         }
 
-        // Set the user into the session then login
-        $userIdentity = new UserIdentity($identity['username'], $identity['password']);
-        if ($userIdentity->authenticate(true)) {
-            if (Yii::app()->user->login($userIdentity, 0)) {
-                // The login was sucessful so redirect to home page
-                $this->render('/sso/login');
-                return true;
-            }
-            throw new Exception('The user cannot be logged in');
+        // Username is required regardless of authentication process
+        // For SAML authentication, username will be the email of the user
+        if (!isset($userInfo['username'])) {
+            throw new Exception('Source for Username is not defined: ' . print_r($this->getErrors(), true));
         }
-        throw new Exception('User Authentication failed');
+
+        try {
+            // Authenticate user credentials
+            $user_id = (new User())->setSSOUserInformation($userInfo);
+
+            // Get institution and site for authentication
+            $institution_id = $this->getInstitutionForAuthentication($userInfo);
+            $site_id = $this->getSiteForAuthentication($userInfo, $institution_id);
+
+            // Set user to default site if not provided
+            if (!$site_id) {
+                if (isset(Institution::model()->findByPk($institution_id)->first_used_site_id)) {
+                    $site_id = Institution::model()->findByPk($institution_id)->first_used_site_id;
+                } else {
+                    throw new Exception('Site ID needs to be provided for user to login');
+                }
+            }
+
+            // Authenticate user in institution and site
+            $identity = (new UserAuthentication())->setSSOUserAuthentication($user_id, $userInfo['username'], $institution_id, $site_id);
+
+            // Set the user into the session then login
+            $userIdentity = new UserIdentity($identity, null, $institution_id, $site_id);
+            if ($userIdentity->authenticate()) {
+                if (Yii::app()->user->login($userIdentity, 0)) {
+                    // The login was successful so redirect to home page
+                    $this->render('/sso/login');
+                    return true;
+                }
+                throw new Exception('The user cannot be logged in');
+            }
+            throw new Exception('User Authentication failed');
+        } catch (Exception $e) {
+            $this->render('/sso/invalid_role', array(
+                'error' => $e->getMessage()
+            ));
+            Yii::app()->end();
+        }
+    }
+
+    public function getInstitutionForAuthentication($userInfo)
+    {
+        // Check if user can select an institution to login into
+        if (SettingMetadata::model()->getSetting('institution_required') === 'on') {
+            if (array_key_exists('institution_id', $userInfo)) {
+                return $userInfo['institution_id'];
+            } else {
+                throw new Exception('Institution ID needs to be provided for user to login');
+            }
+        }
+
+        // User can only login to pre-configured institution
+        if (!isset(Yii::app()->params['institution_code'])) {
+            throw new Exception('Default institution code must be set');
+        }
+
+        return Institution::model()->findByAttributes(['remote_id' => Yii::app()->params['institution_code']])->id;
+    }
+
+    public function getSiteForAuthentication($userInfo, $institution_id)
+    {
+        // Check if user can select an institution to login to
+        if (SettingMetadata::model()->getSetting('institution_required') === 'on') {
+            if (array_key_exists('site_id', $userInfo)) {
+                return $userInfo['site_id'];
+            }
+        }
+
+        return null;
     }
 
     public function actionredirectToSSOPortal()
     {
-        $portalURL = Yii::app()->params['OIDC_settings']['portal_login_url'];
-        if ($portalURL !== null) {
-            $this->renderJSON($portalURL);
-            return true;
-        }
-        return false;
+        $this->renderJSON(Yii::app()->createUrl('sso/login'));
+        return true;
     }
 
     public function actiondefaultSSOPermissions()
@@ -205,7 +247,6 @@ class SsoController extends BaseAdminController
         } else {
             $ssoRoles = SsoRoles::model()->findByPk($id);
         }
-
         if ($request->getIsPostRequest()) {
             $ssoAttributes = $request->getPost('SsoRoles');
             if (!array_key_exists('sso_roles_assignment', $ssoAttributes)) {

@@ -1,6 +1,6 @@
 <?php
 /**
- * (C) Copyright Apperta Foundation 2022
+ * (C) Apperta Foundation, 2022
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -13,25 +13,32 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-namespace OE\factories\models;
+namespace OEModule\OphCiExamination\factories\models;
 
 use OE\factories\ModelFactory;
+use OE\factories\models\EventFactory;
+use OEModule\OphCiExamination\models\Allergies;
 
-class SiteFactory extends ModelFactory
+class AllergiesFactory extends ModelFactory
 {
-
     /**
      * @return array
      */
-
     public function definition(): array
     {
         return [
-            'name' => $this->faker->company(),
-            'remote_id' => $this->faker->regexify('\w\w\w\d'),
-            'short_name' => $this->faker->word(),
-            'fax' => $this->faker->phoneNumber(),
-            'telephone' => $this->faker->phoneNumber()
+            'event_id' => EventFactory::forModule('OphCiExamination')
         ];
+    }
+
+    public function withEntries(int $count = 1)
+    {
+        return $this->afterCreating(function (Allergies $allergies_element) use ($count) {
+            $allergies_element->entries = ModelFactory::factoryFor(AllergyEntry::class)
+                ->count($count)
+                ->create([
+                    'element_id' => $allergies_element->id
+                ]);
+        });
     }
 }

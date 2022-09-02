@@ -1,10 +1,7 @@
 <?php
 
 /**
- * OpenEyes.
- *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2013
+ * (C) Copyright Apperta Foundation 2022
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -13,9 +10,10 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @copyright Copyright (C) 2022, Apperta Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 class AdminController extends \ModuleAdminController
 {
     public $group = 'Correspondence';
@@ -46,10 +44,15 @@ class AdminController extends \ModuleAdminController
         $assetManager->registerScriptFile('/js/oeadmin/OpenEyes.admin.js');
         $assetManager->registerScriptFile('/js/oeadmin/list.js');
 
+        $institution_id = $this->request->getParam('institution_id')
+                            ? $this->request->getParam('institution_id')
+                            : Institution::model()->getCurrent()->id;
+
         $this->render('letter_macros', array(
             'macros' => $macros,
             'unique_names' => $unique_names,
             'episode_statuses' => $this->getUniqueEpisodeStatuses($macros),
+            'default_institution_id' => $institution_id
         ));
     }
 
@@ -212,18 +215,26 @@ class AdminController extends \ModuleAdminController
      */
     public function actionAddMacro()
     {
-        $macro = new LetterMacro();
+        // if no institution id parameter passed, or an invalid one, default to current institution
+        $institution = Institution::model()->findByAttributes(['id' => $this->request->getParam('institution_id')])
+                                    ?? Institution::model()->getCurrent();
 
+        $macro = new LetterMacro();
         $errors = $this->processPOST('create', $macro);
 
         $init_method = new OphcorrespondenceInitMethod();
 
-        $this->render('_macro', array(
-            'macro' => $macro,
-            'init_method' => $init_method,
-            'associated_content' => array(),
-            'errors' => $errors,
-        ));
+        $this->render('_macro', [
+                                'macro' => $macro,
+                                'init_method' => $init_method,
+                                'associated_content' => array(),
+                                'errors' => $errors,
+                                'institution' => $institution,
+                                'site_options' => Site::model()->getListForInstitutionId($institution['id']),
+                                'default_sites' => null,
+                                'firm_options' => Firm::model()->getListWithSpecialties($institution['id'], true),
+                                'default_firms' => null
+                            ]);
     }
 
     public function actionEditMacro($id)
@@ -241,12 +252,35 @@ class AdminController extends \ModuleAdminController
 
         $errors = $this->processPOST('update', $macro);
 
-        $this->render('_macro', array(
-            'macro' => $macro,
-            'init_method' => $init_method,
-            'associated_content' => $associated_content_saved,
-            'errors' => $errors,
-        ));
+        // Get institutions
+        // Only one institution is allowed so if there is more than one then select just the first.
+        $institution = count($macro->institutions) > 0 ? $macro->institutions[0] : [Institution::model()->getCurrent()];
+
+        // Get sites
+        $siteOptions = [];
+        foreach ($macro->sites as $siteOption) {
+            $siteOptions[$siteOption['id']] = $siteOption['name'];
+        }
+        $siteOptions = $siteOptions + Site::model()->getListForInstitutionById($institution['id']);
+
+        // Get firms
+        $firmOptions = [];
+        foreach ($macro->firms as $firmOption) {
+            $firmOptions[$firmOption['id']] = $firmOption['name'];
+        }
+        $firmOptions = $firmOptions + Firm::model()->getListWithSpecialties($institution['id'], true);
+
+        $this->render('_macro', [
+                                'macro' => $macro,
+                                'init_method' => $init_method,
+                                'associated_content' => $associated_content_saved,
+                                'errors' => $errors,
+                                'institution' => $institution,
+                                'site_options' => $siteOptions,
+                                'default_sites' => null,
+                                'firm_options' => $firmOptions,
+                                'default_firms' => null
+                            ]);
     }
 
 
@@ -258,6 +292,12 @@ class AdminController extends \ModuleAdminController
             $macro->attributes = $post;
 
             if (!$macro->validate()) {
+                foreach ($macro->levels as $level => $referenceAttribute) {
+                    if ($referenceAttribute && !is_array($referenceAttribute)) {
+                        $referenceAttribute = [$referenceAttribute];
+                    }
+                    $macro->$level = $referenceAttribute;
+                }
                 $errors = $macro->errors;
             } else {
                 if (!$macro->save()) {

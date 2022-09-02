@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Apperta Foundation, 2020
  * This file is part of OpenEyes.
@@ -15,6 +16,32 @@
 
 trait HasModelAssertions
 {
+    /**
+     * Test that the given $instance has $relation_name relationship defined
+     * that belongs to $relation_class
+     */
+    protected function assertBelongsToRelationDefined($instance, $relation_name, $relation_class)
+    {
+        $relations = $instance->relations();
+
+        $this->assertArrayHasKey($relation_name, $relations);
+        $this->assertEquals(\CBelongsToRelation::class, $relations[$relation_name][0]);
+        $this->assertEquals($relation_class, $relations[$relation_name][1]);
+    }
+
+    /**
+     * Test that the given $instance has a many to many relation of $relation_name to
+     * the given $relation_class
+     */
+    protected function assertManyToManyRelationDefined($instance, $relation_name, $relation_class)
+    {
+        $relations = $instance->relations();
+
+        $this->assertArrayHasKey($relation_name, $relations);
+        $this->assertEquals(\CManyManyRelation::class, $relations[$relation_name][0]);
+        $this->assertEquals($relation_class, $relations[$relation_name][1]);
+    }
+
     /**
      * Simple abstraction for testing validation error on a model attribute
      *

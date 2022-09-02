@@ -58,8 +58,9 @@ $db_test = array(
     $ssoRedirectURL = getenv('SSO_REDIRECT_URL') ?: 'http://localhost';
     $ssoResponseType = array(getenv('SSO_RESPONSE_TYPE')) ?: array('code');
     $ssoImplicitFLow = strtolower(getenv('SSO_IMPLICIT_FLOW')) === 'true';
-    $ssoUserAttributes = getenv('SSO_USER_ATTRIBUTES') ?: '';
-    $ssoCustomClaims = getenv('SSO_CUSTOM_CLAIMS') ?: '';
+
+    $ssoUserFields = getenv('SSO_USER_FIELDS') ?: '';
+    $ssoOIDCFields = getenv('SSO_OIDC_FIELDS') ?: '';
 
     $ssoMappingsCheck = strtolower(getenv('STRICT_SSO_ROLES_CHECK')) === 'true';
     $ssoLoginURL = getenv('SSO_LOGIN_URL') ?: null;
@@ -810,7 +811,7 @@ $config = array(
         'default_patient_import_subspecialty' => 'GL',
         //        Add elements that need to be excluded from the admin sidebar in settings
         'exclude_admin_structure_param_list' => getenv('OE_EXCLUDE_ADMIN_STRUCT_LIST') ? explode(",", getenv('OE_EXCLUDE_ADMIN_STRUCT_LIST')) : array(''),
-        'oe_version' => '6.2.13',
+        'oe_version' => '6.2.14',
         'gp_label' => !empty(trim(getenv('OE_GP_LABEL'))) ? getenv('OE_GP_LABEL') : null,
         'general_practitioner_label' => !empty(trim(getenv('OE_GENERAL_PRAC_LABEL'))) ? getenv('OE_GENERAL_PRAC_LABEL') : null,
         // allow duplicate entries on an automatic worklist for a patient (default = false)
@@ -953,8 +954,20 @@ $config = array(
             'authParams' => array('response_mode' => 'form_post'),
             // Generates random encryption key for openssl
             'encryptionKey' => $ssoClientSecret,
-            // Configure custom claims with the user attributes that the claims are for
-            'custom_claims' => array_combine(explode(",", $ssoCustomClaims), explode(",", $ssoUserAttributes)),
+            'field_mapping_allow_list_with_defaults' => array(
+                'username' => '',
+                'email' => '',
+                'first_name' => '',
+                'last_name' => '',
+                'title' => '',
+                'role' => '',
+                'doctor_grade_id' => '',
+                'registration_code' => '',
+                'is_consultant' => 0,
+                'is_surgeon' => 0
+            ),
+            // Field mapping for (user_field, oidc_field). user_field must be in field_mapping_allow_list
+            'field_mapping' => array_combine(explode(",", $ssoUserFields), explode(",", $ssoOIDCFields)),
             // URL to redirect users to SSO portal to login again after session timeout
             'portal_login_url' => $ssoLoginURL,
         ),
@@ -1038,7 +1051,7 @@ if (strtolower(getenv('OE_MODE')) !== 'live') {
 $caches = array(
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '20220822164237',
+            'time' => '20220823162603',
         ),
 );
 

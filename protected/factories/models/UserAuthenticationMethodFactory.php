@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Copyright Apperta Foundation 2022
  * This file is part of OpenEyes.
@@ -17,21 +18,15 @@ namespace OE\factories\models;
 
 use OE\factories\ModelFactory;
 
-class SiteFactory extends ModelFactory
+/**
+ * It should not be necessary to instantiate a new UserAuthenticationMethod, this factory
+ * is provided to allow the useExisting method to be called consistent with
+ * other factory definitions.
+ */
+class UserAuthenticationMethodFactory extends ModelFactory
 {
-
-    /**
-     * @return array
-     */
-
     public function definition(): array
     {
-        return [
-            'name' => $this->faker->company(),
-            'remote_id' => $this->faker->regexify('\w\w\w\d'),
-            'short_name' => $this->faker->word(),
-            'fax' => $this->faker->phoneNumber(),
-            'telephone' => $this->faker->phoneNumber()
-        ];
+        return [];
     }
 }

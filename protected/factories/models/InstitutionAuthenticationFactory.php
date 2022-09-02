@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Copyright Apperta Foundation 2022
  * This file is part of OpenEyes.
@@ -16,22 +17,18 @@
 namespace OE\factories\models;
 
 use OE\factories\ModelFactory;
+use UserAuthenticationMethod;
+use Institution;
 
-class SiteFactory extends ModelFactory
+class InstitutionAuthenticationFactory extends ModelFactory
 {
-
-    /**
-     * @return array
-     */
-
     public function definition(): array
     {
         return [
-            'name' => $this->faker->company(),
-            'remote_id' => $this->faker->regexify('\w\w\w\d'),
-            'short_name' => $this->faker->word(),
-            'fax' => $this->faker->phoneNumber(),
-            'telephone' => $this->faker->phoneNumber()
+            'institution_id' => ModelFactory::factoryFor(Institution::class),
+            'user_authentication_method' => ModelFactory::factoryFor(UserAuthenticationMethod::class)->useExisting(),
+            'description' => $this->faker->word(),
+            'active' => true
         ];
     }
 }
