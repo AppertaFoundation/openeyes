@@ -13,12 +13,14 @@ use OEModule\OphCiExamination\models\Element_OphCiExamination_DrugAdministration
  * The followings are the available model relations:
  * @property Event $event
  */
+
 use OEModule\OphCiExamination\models\BaseMedicationElement;
 use OEModule\OphCiExamination\models\traits\CustomOrdering;
 
 class Element_DrugAdministration extends BaseMedicationElement
 {
     use CustomOrdering;
+
     public $do_not_save_entries = true;
     protected $auto_update_relations = true;
     public $check_for_duplicate_entries = false;
@@ -69,10 +71,10 @@ class Element_DrugAdministration extends BaseMedicationElement
         // will receive user inputs.
         return array(
             array('assignments', 'required', 'message' => 'At least one assignment must be recorded, or the element should be removed.'),
-            array('event_id, last_modified_user_id, created_user_id', 'length', 'max'=>10),
+            array('event_id, last_modified_user_id, created_user_id', 'length', 'max' => 10),
             array('last_modified_date, created_date, type, event_id, assignments', 'safe'),
             // The following rule is used by search().
-            array('id, event_id', 'safe', 'on'=>'search'),
+            array('id, event_id', 'safe', 'on' => 'search'),
             array('type', 'default', 'value' => $this::getType(), 'on' => 'insert'),
         );
     }
@@ -107,11 +109,11 @@ class Element_DrugAdministration extends BaseMedicationElement
     {
         $original = $this->assignments;
         foreach ($this->assignments as $key => $assignment) {
-            if(!$assignment->active){
+            if (!$assignment->active) {
                 $assignment->save();
                 if ($assignment->worklist_patient->pathway ?? null) {
                     $matched_da_steps = $this->getDAPathwaySteps($assignment, $assignment->worklist_patient->pathway);
-                    array_map(function($step) {
+                    array_map(function ($step) {
                         $step->delete();
                     }, $matched_da_steps);
                 }
@@ -145,7 +147,7 @@ class Element_DrugAdministration extends BaseMedicationElement
                 }
                 $assignment_pathway = $assignment_wp->pathway;
 
-                $matched_da_steps = $this->getDAPathwaySteps($assignment,  $assignment_pathway);
+                $matched_da_steps = $this->getDAPathwaySteps($assignment, $assignment_pathway);
                 // if no matched found, create a new pathway step for current psd
                 if (!$matched_da_steps) {
                     Yii::app()->event->dispatch('psd_created', array(
@@ -170,7 +172,8 @@ class Element_DrugAdministration extends BaseMedicationElement
      * @param Pathway $pathway
      * @return PathwayStep[]
      */
-    private function getDAPathwaySteps(OphDrPGDPSD_Assignment $assignment, Pathway $pathway) {
+    private function getDAPathwaySteps(OphDrPGDPSD_Assignment $assignment, Pathway $pathway)
+    {
         if (!$pathway) {
             return [];
         }
@@ -248,7 +251,7 @@ class Element_DrugAdministration extends BaseMedicationElement
         $criteria->compare('type', $this->type, true);
 
         return new CActiveDataProvider($this, array(
-            'criteria'=>$criteria,
+            'criteria' => $criteria,
         ));
     }
 
@@ -267,21 +270,28 @@ class Element_DrugAdministration extends BaseMedicationElement
     protected function afterSave()
     {
         $pgdpsd_api = \Yii::app()->moduleAPI->get('OphDrPGDPSD');
+        $audit_message = [];
         foreach ($this->assignments as $assignment) {
+            $is_assignment_active = $assignment->active ? "Yes" : "No";
+            $_audit_message = "Assignment id: $assignment; Is Active: $is_assignment_active<br />";
             foreach ($assignment->assigned_meds as $med) {
                 if ($med->administered && !$med->event_entry) {
                     $med = $pgdpsd_api->setMedEventEntry($med, $this);
                 } elseif (!$med->administered && $med->event_entry) {
-                    $event_entry = $med->event_entry;
                     $med->administered_id = null;
                     $med->administered = 0;
                     $med->administered_time = null;
                     $med->administered_by = null;
                 }
                 $med->save();
+                $med->refresh();
+                $_audit_message .= "$med<br />";
             }
+            $audit_message[] = $_audit_message;
         }
         parent::afterSave();
+        $messages = implode("<br />", $audit_message);
+        Audit::add('Drug Administration', 'save', "Element Id: {$this->id} Event Id: {$this->event->id}<br />{$messages}");
     }
 
     public function updateAssignmentList($assignment)

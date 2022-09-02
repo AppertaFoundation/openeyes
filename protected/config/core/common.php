@@ -961,21 +961,21 @@ $config = array(
         'training_hub_url' => !empty(trim(getenv('OE_TRAINING_HUB_URL'))) ? getenv('OE_TRAINING_HUB_URL') : null,
         'breakglass_enabled' => $breakGlassEnabled,
         'user_breakglass_field' => $userBreakGlassField,
-
-        /** CVI */
-
-        // enable GP letter to be sent via Docman (./yiic cvidelivery),
-        // generates pdf and XML just like docman
-        'cvi_docman_delivery_enabled' => strtolower(getenv("CVI_DOCMAN_DELIVERY_ENABLED")) == "true" ? true : false,
-
-        // enable mailing to RCOP (./yiic cvidelivery)
-        'cvi_rcop_delivery_enabled' => strtolower(getenv("CVI_RCOP_DELIVERY_ENABLED")) == "true" ? true : false,
-
-        // enable mailing LA (./yiic cvidelivery)
-        'cvi_la_delivery_enabled' => strtolower(getenv("CVI_LA_DELIVERY_ENABLED")) == "true" ? true : false,
-        /** END CVI PARAMS */
     ),
 );
+
+// Enable logging of php errors to brwser console
+// Can be either "true", or can provide the error levels to output (e.g, one or more of trace, error, warning, info, notice)
+if (!empty(getenv('LOG_TO_BROWSER'))) {
+    $browserlog = array(
+                    'browser' => array(
+                        'class' => 'CWebLogRoute',
+                        'levels' => strtolower(trim(getenv('LOG_TO_BROWSER'))) == "true" ? 'error, warning, notice' : trim(getenv('LOG_TO_BROWSER')),
+                        'showInFireBug' => true,
+                    ),
+    );
+    $config['components']['log']['routes'] = array_merge_recursive($config['components']['log']['routes'], $browserlog);
+}
 
 $modules = array(
         // Gii tool

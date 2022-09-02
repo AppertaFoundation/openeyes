@@ -58,7 +58,7 @@ class OphDrPGDPSD_AssignmentMeds extends BaseActiveRecordVersioned
         return array(
             'medication' => array(self::BELONGS_TO, 'Medication', 'medication_id'),
             'assignment' => array(self::BELONGS_TO, 'OphDrPGDPSD_Assignment', 'assignment_id'),
-            'medicationLaterality' => array(self::BELONGS_TO, 'MedicationLaterality', 'laterality_id'),
+            'medicationLaterality' => array(self::BELONGS_TO, 'MedicationLaterality', 'laterality'),
             "route" => array(self::BELONGS_TO, 'MedicationRoute', 'route_id'),
             "administered_user" => array(self::BELONGS_TO, 'User', 'administered_by'),
             "event_entry" => array(self::BELONGS_TO, 'Element_DrugAdministration_record', 'administered_id'),
@@ -207,7 +207,7 @@ class OphDrPGDPSD_AssignmentMeds extends BaseActiveRecordVersioned
         } elseif ($this->state === self::ADMINISTERED_CANCELLED) {
             $action_icon['class'] = " no-permissions small-icon js-has-tooltip";
             $action_icon['attribute'] = "data-tooltip-content='Can not remove administered drugs'";
-        } elseif (!$this->assignment->pgdpsd && !$this->assignment->worklist_patient) {
+        } elseif ($this->assignment && !$this->assignment->pgdpsd && !$this->assignment->worklist_patient) {
             if ($this->administered) {
                 $action_icon['class'] = " no-permissions small-icon js-has-tooltip";
                 $action_icon['attribute'] = "data-tooltip-content='Can not remove administered drugs'";
@@ -233,5 +233,19 @@ class OphDrPGDPSD_AssignmentMeds extends BaseActiveRecordVersioned
             'state_css' => $css,
             'action_icon' => $action_icon,
         );
+    }
+
+    public function __toString()
+    {
+        $route = "Route: $this->route";
+        $laterality = "";
+        if ($this->route->isEyeRoute()) {
+            $laterality = "Laterality: $this->medicationLaterality";
+        }
+        $administer_details = "Not Administered";
+        if ($this->administered) {
+            $administer_details = "Administered by {$this->administered_user->getFullName()} at {$this->administered_time}";
+        }
+        return "Medication: {$this->medication->getLabel(true)} Dose: {$this->dose} Unit: {$this->dose_unit_term} {$route} {$laterality} - {$administer_details}";
     }
 }

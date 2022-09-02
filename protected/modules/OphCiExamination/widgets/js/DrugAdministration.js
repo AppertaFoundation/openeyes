@@ -164,7 +164,13 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         }
         if(!add_meds_btn_disabled && !add_preset_btn_disabled){
             $(parent_selector).each(function(i, section){
-                if(controller.isAllMedicationAdministered($(this))) {
+                // if the assignment_id has value, that means it is a saved record
+                const has_assignment_id_value = $(section).find('input[name$="[assignment_id]"]').val() ? true : false;
+
+                const is_all_meds_administered = controller.isAllMedicationAdministered($(this));
+
+                // hide the after confirm elements only when it is a saved record and its medications are administered
+                if(has_assignment_id_value && is_all_meds_administered) {
                     $(this).find('.js-after-confirm').hide();
                 } else {
                     $(this).find('.js-after-confirm').show();
@@ -177,6 +183,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         $(add_meds_btn_ctn_selector).find('button#js-add-preset-order').prop('disabled', add_preset_btn_disabled);
         $(add_meds_btn_ctn_selector).find('button#js-add-medications').prop('disabled', add_meds_btn_disabled);
     }
+
     DrugAdministrationController.prototype.isAllMedicationAdministered = function($parent_block) {
         const administer_btn_selector = `.${this.options.administerBtnClass}`;
         return $parent_block.find('tbody tr').length === $parent_block.find(`tbody tr ${administer_btn_selector}:checked`).length

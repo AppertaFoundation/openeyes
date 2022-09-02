@@ -13,7 +13,7 @@
             <!-- Preset | Custom -->
             <div class="drug-admin-box inline todo">
                 {{preset_type}}
-            </div>
+            </div>&emsp;
             <div class="large-text">
                 <!-- preset name -->
                 {{preset_name}}
@@ -45,7 +45,7 @@
                         <th>Administered by</th>
                         <th>Date</th>
                         <th>Time</th>
-                        <th class="js-administer-all" style="cursor:pointer;"><i class="oe-i tick small no-click pad"></i></th>
+                        <th class="js-administer-all" style="cursor:pointer;"></th>
                         <th></th>
                     </tr>
                 </thead>

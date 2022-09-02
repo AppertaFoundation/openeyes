@@ -232,6 +232,16 @@ $field_prefix = $model_name . '[assignment][{{section_key}}][entries][{{entry_ke
                             <td>
                                 <?php if (!$can_interact) {?>
                                     <i class="oe-i medium pad <?=$state_css?>"></i>
+                                    <input
+                                        type="hidden"
+                                        name="<?=$model_name . "[assignment][{$key}][entries][{$entry_key}][administered_time]"?>"
+                                        value="<?=$administered_ts * 1000;?>"
+                                    >
+                                    <input
+                                        type="hidden"
+                                        name="<?=$model_name . "[assignment][{$key}][entries][{$entry_key}][administered]"?>"
+                                        value="<?=$entry->administered?>"
+                                    >
                                 <?php } else { ?>
                                 <label
                                     class="toggle-switch <?=!$is_relevant ? 'disabled' : ''?>"
