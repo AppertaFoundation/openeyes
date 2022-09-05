@@ -2161,6 +2161,10 @@ class DefaultController extends \BaseEventTypeController
             $errors = $this->setAndValidateObservationsFromData($data, $errors);
         }
 
+        if (isset($data['OEModule_OphCiExamination_models_Element_OphCiExamination_ClinicOutcome'])) {
+            $errors = $this->setAndValidateClinicOutcomeFromData($data, $errors);
+        }
+
         return $errors;
     }
 
@@ -2433,6 +2437,18 @@ class DefaultController extends \BaseEventTypeController
         // if there is any duplicate, add error message
         if ($duplicate_exists) {
             $errors[$et_name][] = "You have 1 or more duplicate diagnoses. Each combination of diagnosis, eye side and date must be unique.";
+        }
+
+        return $errors;
+    }
+
+    protected function setAndValidateClinicOutcomeFromData($data, $errors)
+    {
+        $entries = $data['OEModule_OphCiExamination_models_Element_OphCiExamination_ClinicOutcome']['entries'] ?? [];
+        $element = $this->getOpenElementByClassName('OEModule_OphCiExamination_models_Element_OphCiExamination_ClinicOutcome');
+
+        if (empty($entries)) {
+            unset($element->entries);
         }
 
         return $errors;
