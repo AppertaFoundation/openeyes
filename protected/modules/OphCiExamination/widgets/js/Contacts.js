@@ -297,7 +297,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                     let row;
                     $('.js-contact-error-box').hide();
                     row = controller.createRows(response);
-                    controller.$table.append(row);
+                    controller.$table.find('tbody').append(row);
                     autosize($('.autosize'));
                     $('.oe-popup-wrap').not('#js-overlay').remove();
                 }
