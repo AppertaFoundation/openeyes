@@ -416,7 +416,6 @@ class PcrRisk
         if ($existing) {
             $pcrRiskValues = $existing;
         }
-
         $pcrRiskValues->glaucoma = (isset($data['glaucoma']) && $data['glaucoma'] !== 'NK') ? $data['glaucoma'] : null;
         $pcrRiskValues->pxf = (isset($data['pxf_phako']) && $data['pxf_phako'] !== 'NK') ? $data['pxf_phako'] : null;
         $pcrRiskValues->diabetic = (isset($data['diabetic']) && $data['diabetic'] !== 'NK') ? $data['diabetic'] : null;
