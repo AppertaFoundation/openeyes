@@ -13,7 +13,7 @@
             <!-- Preset | Custom -->
             <div class="drug-admin-box inline todo">
                 {{preset_type}}
-            </div>
+            </div>&emsp;
             <div class="large-text">
                 <!-- preset name -->
                 {{preset_name}}
@@ -23,7 +23,7 @@
         <div class="flex-r">
             <button class="red hint js-cancel-preset js-after-confirm" style="display:none;">Remove Block</button>
             <!-- rely on worklist -->
-            <span class="js-validate-date"></span>
+            &emsp;<span class="js-validate-date"></span>
         </div>
     </div>
     <div class="flex">
@@ -31,8 +31,11 @@
             <table class="cols-full js-entry-table">
                 <colgroup>
                     <col class="cols-4">
-                    <col class="cols-2">
                     <col class="cols-1">
+                    <col class="cols-1">
+                    <col class="cols-2">
+                    <col class="cols-2">
+                    <col class="cols-2">
                 </colgroup>
                 <thead>
                     <tr>
@@ -42,7 +45,7 @@
                         <th>Administered by</th>
                         <th>Date</th>
                         <th>Time</th>
-                        <th class="js-administer-all" style="cursor:pointer;"><i class="oe-i tick small no-click pad"></i></th>
+                        <th class="js-administer-all" style="cursor:pointer;"></th>
                         <th></th>
                     </tr>
                 </thead>

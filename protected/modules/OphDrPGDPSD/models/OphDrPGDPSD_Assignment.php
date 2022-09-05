@@ -256,7 +256,7 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
     public function getStatusDetails(bool $get_dict = false, PathwayStep $step = null)
     {
         $todo_next = $this->worklist_patient && $this->worklist_patient->pathway && $this->worklist_patient->pathway->start_time ? 'todo-next' : 'todo';
-
+        $status = null;
         if ($step) {
             $status_dict = array(
                 PathwayStep::STEP_REQUESTED => array(
@@ -272,6 +272,7 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
                     'css' => 'done'
                 ),
             );
+            $status = $step->status;
         } else {
             $status_dict = array(
                 self::STATUS_TODO => array(
@@ -287,11 +288,11 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
                     'css' => 'done'
                 ),
             );
+            $status = (bool)$this->active ? $this->status : $this::STATUS_COMPLETE;
         }
-
         return $get_dict
             ? json_encode(array_values($status_dict))
-            : $status_dict[($step->status ?? $this->status)];
+            : $status_dict[$status];
     }
 
     public function getAssignedMeds()
@@ -521,5 +522,30 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
                 break;
         }
         return $this->_is_relevant;
+    }
+
+    /**
+     * Get the deleted info box html element for deleted assignment
+     * @return null|string deleted info box html element
+     */
+    public function getDeletedUI(){
+        $deleted_tag = null;
+        if(!(bool)$this->active){
+            $assigned_meds_count = count($this->assigned_meds);
+            $administerd_meds_count = $this->getAdministeredMedsCount();
+            $tag_txt = $administerd_meds_count > 0 ? ($assigned_meds_count === $administerd_meds_count ? "Cancelled" : "Cancelled, partially administered") : "Cancelled";
+            $deleted_tag = "<small class='highlighter issue'>$tag_txt</small>";
+        }
+
+        return $deleted_tag;
+    }
+    /**
+     * @return int - number of administered medications
+     */
+    public function getAdministeredMedsCount() {
+        $administered_meds = array_filter($this->assigned_meds, function($med) {
+            return $med->administered;
+        });
+        return count($administered_meds);
     }
 }

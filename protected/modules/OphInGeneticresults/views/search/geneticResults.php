@@ -248,7 +248,7 @@
                         </td>
                         <td colspan="6">
                             <?php
-                            $this->widget('CLinkPager', array(
+                            $this->widget('LinkPager', array(
                                 'currentPage' => $pagination->getCurrentPage(),
                                 'itemCount' => $pagination->getItemCount(),
                                 'pageSize' => $pagination->getPageSize(),
