@@ -185,7 +185,6 @@ class DrugAdministration extends BaseMedicationWidget
             $visit_id = array_key_exists('visit_id', $assignment_data) ? $assignment_data['visit_id'] : null;
             $comment = array_key_exists('comment', $assignment_data) ? ($assignment_data['comment'] ? : null) : null;
             $confirmed = array_key_exists('confirmed', $assignment_data) ? ($assignment_data['confirmed'] ? : null) : null;
-            $active = array_key_exists('active', $assignment_data) ? $assignment_data['active'] : null;
             $assignment_data_entries = array_key_exists('entries', $assignment_data) ? $assignment_data['entries'] : array();
             if ($assignment_id) {
                 $assignment = isset($assignment_by_id[$assignment_id]) ? $assignment_by_id[$assignment_id] : \OphDrPGDPSD_Assignment::model()->findByPk($assignment_id);
@@ -199,7 +198,7 @@ class DrugAdministration extends BaseMedicationWidget
             $assignment->pgdpsd_id = $pgdpsd_id;
             $assignment->visit_id = $visit_id;
             $assignment->confirmed = $is_prescriber ? $confirmed : 1;
-            $assignment->active = $active;
+            $assignment->active = (int)$assignment_data['active'] ?? 0;
             if ($comment) {
                 $assignment->saveComment($comment);
             }

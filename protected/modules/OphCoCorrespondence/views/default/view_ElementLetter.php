@@ -111,7 +111,7 @@ $is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getReq
         <?php if ($is_mobile_or_tablet) { ?>
             <div class="js-correspondence-image-overlay" style="position: relative;"></div>
         <?php } else { ?>
-            <iframe id="pdf-js-viewer" src="<?= Yii::app()->assetManager->createUrl('components/pdfjs/web/viewer.html?file=/OphCoCorrespondence/default/PDFprint/' .  $element->event_id .  '?auto_print= ' . $element->checkPrint()  . '&is_view=1#zoom=100')?>" title="webviewer" data-eventid="<?= $element->event_id ?>"
+            <iframe id="pdf-js-viewer" src="/OphCoCorrespondence/default/PDFprint/<?= $element->event_id; ?>?auto_print=<?= $element->checkPrint() ?>&is_view=1#view=FitH&toolbar=0"
                     style="width: <?= Yii::app()->params['lightning_viewer']['blank_image_template']['width'] ?>px; height: <?= Yii::app()->params['lightning_viewer']['blank_image_template']['height'] ?>px; border: 0; position: relative;"></iframe>
         <?php } ?>
     </div>
