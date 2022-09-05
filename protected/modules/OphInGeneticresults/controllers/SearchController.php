@@ -94,37 +94,37 @@ class SearchController extends BaseController
             $whereParams = array(':zero' => 0);
 
             if (@$_GET['gene-id']) {
-                $where .= ' and gene_id = :gene_id';
+                $where .= ' and gt.gene_id = :gene_id';
                 $whereParams[':gene_id'] = $_GET['gene-id'];
             }
 
             if (@$_GET['method-id']) {
-                $where .= ' and method_id = :method_id';
+                $where .= ' and gt.method_id = :method_id';
                 $whereParams[':method_id'] = $_GET['method-id'];
             }
 
             if (strlen(@$_GET['homo']) > 0) {
-                $where .= ' and homo = :homo';
+                $where .= ' and gt.homo = :homo';
                 $whereParams[':homo'] = $_GET['homo'];
             }
 
             if (@$_GET['effect-id']) {
-                $where .= ' and effect_id = :effect_id';
+                $where .= ' and gt.effect_id = :effect_id';
                 $whereParams[':effect_id'] = $_GET['effect-id'];
             }
 
             if (@$_GET['date-from'] && strtotime($_GET['date-from'])) {
-                $where .= ' and result_date >= :date_from';
+                $where .= ' and gt.result_date >= :date_from';
                 $whereParams[':date_from'] = Helper::convertNHS2MySQL($_GET['date-from']);
             }
 
             if (@$_GET['date-to'] && strtotime($_GET['date-to'])) {
-                $where .= ' and result_date <= :date_to';
+                $where .= ' and gt.result_date <= :date_to';
                 $whereParams[':date_to'] = Helper::convertNHS2MySQL($_GET['date-to']);
             }
 
             if (strlen(@$_GET['query']) > 0) {
-                $where .= ' and ( comments like :query or exon like :query or base_change like :query or amino_acid_change like :query or assay like :query or result like :query)';
+                $where .= ' and ( gt.comments like :query or gt.exon like :query or gt.base_change like :query or gt.amino_acid_change like :query or gt.assay like :query or gt.result like :query)';
                 $whereParams[':query'] = '%' . $_GET['query'] . '%';
             }
 
@@ -166,7 +166,7 @@ class SearchController extends BaseController
 
             switch (@$_GET['sortby']) {
                 case 'date':
-                    $order = "result_date $dir";
+                    $order = "gt.result_date $dir";
                     break;
                 case 'hos_num':
                     $order = "hos_num $dir";
@@ -178,16 +178,16 @@ class SearchController extends BaseController
                     $order = "m.name $dir";
                     break;
                 case 'homo':
-                    $order = "homo $dir";
+                    $order = "gt.homo $dir";
                     break;
                 case 'base_change':
-                    $order = "base_change $dir";
+                    $order = "gt.base_change $dir";
                     break;
                 case 'amino_acid_change':
-                    $order = "amino_acid_change $dir";
+                    $order = "gt.amino_acid_change $dir";
                     break;
                 case 'result':
-                    $order = "result $dir";
+                    $order = "gt.result $dir";
                     break;
                 case 'genetics-patient-id':
                     $order = "genetics_patient.id $dir";
