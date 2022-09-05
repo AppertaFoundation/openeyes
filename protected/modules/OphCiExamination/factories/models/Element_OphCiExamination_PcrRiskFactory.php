@@ -26,7 +26,7 @@ use SplitEventTypeElement;
  */
 class Element_OphCiExamination_PcrRiskFactory extends ModelFactory
 {
-    // risk values must always be recorded, and doctor_grade/pupil size are required by PcrRisk model 
+    // risk values must always be recorded, and doctor_grade/pupil size are required by PcrRisk model
     // which is auto-saved when this element is populated
     protected array $selected_sided_attributes = ['pupil_size', 'doctor_grade_id', 'pcr_risk', 'excess_risk'];
 
@@ -74,10 +74,10 @@ class Element_OphCiExamination_PcrRiskFactory extends ModelFactory
             ];
         });
     }
-    
+
     public function withAllAnswers()
     {
-        
+
         $this->selected_sided_attributes = $this->newModel()->sidedFields();
 
         return $this;
@@ -91,7 +91,7 @@ class Element_OphCiExamination_PcrRiskFactory extends ModelFactory
     protected function addSelectedSidedAttribute($attribute)
     {
         $this->selected_sided_attributes = array_unique(array_merge($this->selected_sided_attributes, [$attribute]));
-        
+
         return $this;
     }
 
@@ -103,10 +103,9 @@ class Element_OphCiExamination_PcrRiskFactory extends ModelFactory
             },
             ARRAY_FILTER_USE_KEY
         );
-        
-        
+
+
         foreach ($attributes as $attribute => $value) {
-            
             $instance->{"$prefix$attribute"} ??= $value;
         }
     }

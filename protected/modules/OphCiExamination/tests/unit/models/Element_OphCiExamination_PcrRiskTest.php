@@ -30,7 +30,7 @@ class Element_OphCiExamination_PcrRiskTest extends \ModelTestCase
     use WithTransactions;
 
     protected $element_cls = Element_OphCiExamination_PcrRisk::class;
-    
+
     /** @test */
     public function right_sided_instance_stringifies_pcr_risk_value()
     {
