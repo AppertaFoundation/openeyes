@@ -15,7 +15,7 @@
         <fieldset class="restrict-data-height rows-5">
             <?php if (!$available_appointments || !$has_appointment_today) { ?>
             <label class="highlight">
-                <input 
+                <input
                     type="radio"
                     class="js-assignment-options unbooked is-order"
                     data-for-today="1"
@@ -24,7 +24,7 @@
                     data-appt-time="<?=date('H:i');?>"
                     data-appt-clinic="Unbooked Appointment"
                     checked
-                > 
+                >
                 <span class="highlighter good">
                     Today
                     <span class="fade nowrap">
@@ -45,7 +45,7 @@
                 }
                 ?>
             <label class="highlight">
-                <input 
+                <input
                     type="radio"
                     class="js-assignment-options is-order"
                     value="<?=$appt->id?>"
@@ -56,7 +56,7 @@
                     data-appt-clinic="<?=$appt->worklist->name;?>"
                     <?=intval($appt->id) === intval($assigned_appt) ? 'checked' : ''?>
                     <?=intval($appt->id) === intval($assigned_appt) ? 'data-assigned=1' : ''?>
-                > 
+                >
                 <span class="<?=intval($appt->id) === intval($assigned_appt) ? 'highlighter good' : '';?>">
                     <?= $appt_date;?>
                     <span class="fade nowrap">
