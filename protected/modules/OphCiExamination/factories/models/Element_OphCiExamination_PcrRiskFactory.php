@@ -38,16 +38,6 @@ class Element_OphCiExamination_PcrRiskFactory extends ModelFactory
         ];
     }
 
-    public function configure()
-    {
-        return $this->afterMaking(function (Element_OphCiExamination_PcrRisk $instance) {
-            // NB. Because PcrRisk is broken, we have to store data for both sides
-            // regardless of whether or not that side has explicitly been recorded
-            $this->setDataForPrefix($instance, 'right_');
-            $this->setDataForPrefix($instance, 'left_');
-        });
-    }
-
     public function rightSideOnly()
     {
         return $this->state(function ($attributes) {
@@ -88,6 +78,29 @@ class Element_OphCiExamination_PcrRiskFactory extends ModelFactory
         return $this->addSelectedSidedAttribute('diabetic');
     }
 
+    protected function getUnresolvedAttributes()
+    {
+        // as a final state, we are getting generated data for the selected sided keys
+        // this pattern may be abstracted to a final state definition in the future
+        // if it transpires it's useful
+        $this->state(
+            function (array $attributes) {
+                return array_merge(
+                    // NB. Because PcrRisk is broken, we have to store data for both sides
+                    // regardless of whether or not that side has explicitly been recorded
+                    // a future improvement will only do this if the given side is selected
+                    $this->getDataForPrefix('right_'),
+                    $this->getDataForPrefix('left_'),
+                    // provide the given attributes last, because this ensures specific values
+                    // provided for the definition take precedence
+                    $attributes
+                );
+            }
+        );
+
+        return parent::getUnresolvedAttributes();
+    }
+
     protected function addSelectedSidedAttribute($attribute)
     {
         $this->selected_sided_attributes = array_unique(array_merge($this->selected_sided_attributes, [$attribute]));
@@ -95,10 +108,11 @@ class Element_OphCiExamination_PcrRiskFactory extends ModelFactory
         return $this;
     }
 
-    protected function setDataForPrefix(Element_OphCiExamination_PcrRisk $instance, $prefix)
+    protected function getDataForPrefix($prefix)
     {
         $attributes = array_filter(
-            $this->getSidedAttributeDefinitions(), function ($key) {
+            $this->getSidedAttributeDefinitions(),
+            function ($key) {
                 return in_array($key, $this->selected_sided_attributes);
             },
             ARRAY_FILTER_USE_KEY
@@ -106,8 +120,11 @@ class Element_OphCiExamination_PcrRiskFactory extends ModelFactory
 
 
         foreach ($attributes as $attribute => $value) {
-            $instance->{"$prefix$attribute"} ??= $value;
+            $attributes[$prefix . $attribute] = $value;
+            unset($attributes[$attribute]);
         }
+
+        return $attributes;
     }
 
     protected function getSidedAttributeDefinitions()
