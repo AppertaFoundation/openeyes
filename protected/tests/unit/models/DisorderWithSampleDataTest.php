@@ -14,7 +14,6 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-use Disorder;
 use OE\factories\ModelFactory;
 
  /**
@@ -38,7 +37,7 @@ class DisorderWithSampleDataTest extends \ModelTestCase
     public function attribute_values()
     {
         return [
-            'empty should fail with required keys' =>[
+            'empty should fail with required keys' => [
                 function ($testCase) {
                     return [
                         [],

@@ -16,6 +16,7 @@
 namespace OEModule\OphCiExamination\models;
 
 use OEModule\OphCiExamination\models\AllergyEntry;
+use OE\factories\models\traits\HasFactory;
 
 /**
  * This is the model class for table "allergy_reaction".
@@ -36,6 +37,8 @@ use OEModule\OphCiExamination\models\AllergyEntry;
  */
 class OphCiExaminationAllergyReaction extends \BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     /**
      * @return string the associated database table name
      */

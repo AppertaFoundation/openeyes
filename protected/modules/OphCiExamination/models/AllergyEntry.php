@@ -17,6 +17,7 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use OE\factories\models\traits\HasFactory;
 
 /**
  * Class FamilyHistory_Entry
@@ -35,6 +36,8 @@ namespace OEModule\OphCiExamination\models;
  */
 class AllergyEntry extends \BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     public static $PRESENT = 1;
     public static $NOT_PRESENT = 0;
     public static $NOT_CHECKED = -9;

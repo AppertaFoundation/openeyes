@@ -39,8 +39,8 @@ class DefaultControllerAllergiesTest extends BaseDefaultControllerTest
     /** @test */
     public function ensure_reactions_are_saved_correctly_for_entries()
     {
-        $reactions = ModelFactory::factoryFor(OphCiExaminationAllergyReaction::class)->count(2)->create();
-        $allergy = ModelFactory::factoryFor(OphCiExaminationAllergy::class)->create();
+        $reactions = OphCiExaminationAllergyReaction::factory()->count(2)->create();
+        $allergy = OphCiExaminationAllergy::factory()->create();
 
         $entry_data = [
             'allergy_id' => $allergy->id,
@@ -60,10 +60,10 @@ class DefaultControllerAllergiesTest extends BaseDefaultControllerTest
     /** @test */
     public function entry_reaction_change_is_stored_correctly_for_an_entry()
     {
-        $allergies_element = ModelFactory::factoryFor(Allergies::class)->create();
-        $reactions = ModelFactory::factoryFor(OphCiExaminationAllergyReaction::class)->count(2)->create();
-        $allergies = ModelFactory::factoryFor(OphCiExaminationAllergy::class)->count(2)->create();
-        $entry = ModelFactory::factoryFor(AllergyEntry::class)->withReaction($reactions[0])->create([
+        $allergies_element = Allergies::factory()->create();
+        $reactions = OphCiExaminationAllergyReaction::factory()->count(2)->create();
+        $allergies = OphCiExaminationAllergy::factory()->count(2)->create();
+        $entry = AllergyEntry::factory()->withReaction($reactions[0])->create([
             'element_id' => $allergies_element->id,
             'allergy_id' => $allergies[0]->id
         ]);

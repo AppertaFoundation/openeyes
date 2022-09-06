@@ -15,10 +15,28 @@
 
 namespace OE\factories\models\traits;
 
+use OE\factories\ModelFactory;
+
+/**
+ * This trait should be attached to any Model for which a factory is defined. It allows the following pattern
+ *
+ * ModelClass::factory()->create()
+ *
+ * to be called, irrespective of whether the model is namespaced or not.
+ */
 trait HasFactory
 {
+    public static function factory()
+    {
+        return ModelFactory::factoryFor(get_called_class());
+    }
+
     public static function factoryName()
     {
+        if (preg_match('/OEModule/', static::class)) {
+            return ModelFactory::buildModuleFactoryName(get_called_class());
+        }
+
         return static::class . 'Factory';
     }
 
@@ -29,10 +47,11 @@ trait HasFactory
     public static function importNonNamespacedFactories()
     {
         if (!preg_match('/OEModule/', static::class)) {
-            // not a namespaced model class
+            // assumed to not be a namespaced model class
             $rc = new \ReflectionClass(static::class);
             $class_path = dirname($rc->getFileName());
             $path_segments = explode(DIRECTORY_SEPARATOR, $class_path);
+
             // get the module name from the file path (assumes models directory)
             $module_name = $path_segments[count($path_segments) - 2];
             \Yii::import("{$module_name}.factories.models.*");

@@ -1,6 +1,6 @@
 <?php
 /**
- * (C) Copyright Apperta Foundation 2022
+ * (C) Apperta Foundation, 2022
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -13,19 +13,24 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-namespace OE\factories\models;
+namespace OEModule\OphCiExamination\factories\models;
 
+use ElementType;
 use OE\factories\ModelFactory;
+use OEModule\OphCiExamination\models\OphCiExamination_Attribute;
 
-/**
- * It should not be necessary to instantiate a new UserAuthenticationMethod, this factory
- * is provided to allow the useExisting method to be called consistent with
- * other factory definitions.
- */
-class UserAuthenticationMethodFactory extends ModelFactory
+class OphCiExamination_AttributeElementFactory extends ModelFactory
 {
+
+    /**
+     *
+     * @return array
+     */
     public function definition(): array
     {
-        return [];
+        return [
+            'attribute_id' => ModelFactory::factoryFor(OphCiExamination_Attribute::class),
+            'element_type_id' => ModelFactory::factoryFor(ElementType::class)->useExisting(['class_name' => 'OphCiExamination'])
+        ];
     }
 }

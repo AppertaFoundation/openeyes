@@ -49,3 +49,16 @@ Cypress.Commands.add('getEventCreationUrl', (patientId, moduleName) => {
     })
     .its('body.url');
 });
+
+Cypress.Commands.add('getModelByAttributes', (className, attributes) => {
+    return cy.request({
+        method: 'POST',
+        form: true,
+        url: '/CypressHelper/Default/lookupOrCreateModel',
+        body: {
+            model_class: className,
+            attributes: attributes
+        }
+    })
+    .its('body.model')
+})

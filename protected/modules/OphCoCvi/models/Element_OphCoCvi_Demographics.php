@@ -50,10 +50,6 @@ use PatientIdentifierHelper;
  */
 class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
 {
-    const GENDER_MALE = 5;
-    const GENDER_FEMALE = 6;
-    const GENDER_UNSPECIFIED = 7;
-
     const PDF_ETHNIC_GROUP_MAPPING = [
         1 => 0,
         2 => 1,
@@ -217,20 +213,8 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
         $gender_string = $patient->getGenderString();
 
         $gender = \Gender::model()->findByAttributes(array('name' => $gender_string));
-        if ($gender) {
-            switch ($gender->id) {
-                case 1:
-                    $this->gender_id = self::GENDER_MALE;
-                    break;
-                case 2:
-                    $this->gender_id = self::GENDER_FEMALE;
-                    break;
-                case 3:
-                case 4:
-                    $this->gender_id = self::GENDER_UNSPECIFIED;
-                    break;
-            }
-        }
+
+        $this->gender_id = $gender ? $gender->id : null;
     }
 
     private function getEthnicIdForCVI(\Patient $patient)
@@ -266,6 +250,7 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
         $this->telephone = $patient->getPrimary_phone();
 
         $this->mapNamesFromPatient($patient);
+
         $this->mapGenderFromPatient($patient);
 
         $this->getEthnicIdForCVI( $patient );

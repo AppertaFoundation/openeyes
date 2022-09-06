@@ -328,6 +328,11 @@ abstract class ModelFactory
      */
     protected function persist(array $instances)
     {
+        if (method_exists($this, 'mapDisplayOrderAttributes')) {
+            // @see OE\factories\models\traits\MapsDisplayOrderForFactory
+            $instances = $this->mapDisplayOrderAttributes($instances);
+        }
+
         foreach ($instances as $instance) {
             // as a lower level interaction with the models, we assume that the eventual
             // set of data being created will be valid. Therefore we don't perform validation

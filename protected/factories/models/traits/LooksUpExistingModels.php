@@ -1,6 +1,7 @@
 <?php
 
 namespace OE\factories\models\traits;
+
 use OE\factories\ModelFactory;
 
 trait LooksUpExistingModels

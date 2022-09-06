@@ -58,7 +58,7 @@ class Element_OphCoMessaging_MessageTest extends \ModelTestCase
 
         // reload event
         $event = Event::model()->findByPk($this->instance->event_id);
-        $this->assertNull($event->firstEventSubtypeItem->event_subtype);
+        $this->assertNull($event->firstEventSubtypeItem);
     }
 
     /** @test */
@@ -86,12 +86,12 @@ class Element_OphCoMessaging_MessageTest extends \ModelTestCase
     public function getMessageType(bool $has_event_subtype = false)
     {
         $message_type = new OphCoMessaging_Message_MessageType();
-        $message_type->name = $this->faker->word();
+        $message_type->name = $this->faker->unique()->word();
         $message_type->display_order = 1;
 
         if ($has_event_subtype) {
             $event_subtype = new EventSubtype();
-            $event_subtype->event_subtype = $this->faker->word();
+            $event_subtype->event_subtype = $this->faker->unique()->word();
             $event_subtype->dicom_modality_code = "Foo";
             $event_subtype->icon_name = $this->faker->word();
             $event_subtype->display_name = $this->faker->word();
