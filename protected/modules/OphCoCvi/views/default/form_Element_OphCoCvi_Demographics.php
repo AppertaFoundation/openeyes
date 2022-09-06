@@ -68,7 +68,8 @@ if ($element->isNewRecord) {
                     <td>Sex</td>
                     <td>
                         <?= CHtml::activeDropDownList($element, 'gender_id', CHtml::listData(Gender::model()->findAll(), 'id', 'name'), [
-                            'class' => 'cols-full'
+                            'class' => 'cols-full',
+                            'empty' => '- Please select -'
                         ]); ?>
                     </td>
                 </tr>
