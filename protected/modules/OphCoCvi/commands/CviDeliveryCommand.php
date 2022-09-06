@@ -159,7 +159,7 @@ EOH;
 
         $this->log_info("Sending to LA");
         $la_email = $demographics->la_email;
-        if (is_null($la_email)) {
+        if (empty($la_email)) {
             $this->log_error("Local Authority email address has not been set in event");
             $info->la_delivery_status = Element_OphCoCvi_EventInfo::DELIVERY_STATUS_ERROR;
             $info->save();
@@ -231,7 +231,7 @@ EOH;
     /**
      * @throws Exception
      */
-    private function sendEmail(string $to, string $filepath, int $site_id, $subject = null, $body = null)
+    private function sendEmail(string $to, string $filepath, int $site_id = null, $subject = null, $body = null)
     {
         $criteria = new \CDbCriteria();
         $criteria->compare('remote_id', \Yii::app()->params['institution_code']);
@@ -290,8 +290,8 @@ EOH;
     {
         $data = $this->getGeneralDataForTemplate($filename, $event);
         $extra_data = [
-            'site_short_name' => $event->site->name,
-            'site_name' => $event->site->short_name
+            'site_short_name' => ($event->site ? $event->site->name : ''),
+            'site_name' => ($event->site ? $event->site->short_name : '')
         ];
 
         $xml = $this->renderFile($this->xml_template, ['data' => ($extra_data + $data)], true);
