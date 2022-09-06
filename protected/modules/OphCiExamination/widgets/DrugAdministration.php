@@ -39,13 +39,11 @@ class DrugAdministration extends BaseMedicationWidget
     public function getViewData()
     {
         $current_user = \User::model()->findByPk(\Yii::app()->user->id);
-        $is_prescriber = \Yii::app()->user->checkAccess('Prescribe');
+        $is_prescriber = \Yii::app()->user->checkAccess('TaskPrescribe');
         $event_date = $this->controller->event ? date('Y-m-d', strtotime($this->controller->event->event_date)) : date('Y-m-d');
 
-        $is_med_admin = \Yii::app()->user->checkAccess('Med Administer');
-        $has_pgd_access = $is_prescriber || $this->hasPGDAssignments($current_user);
-
-        $can_add_meds = $is_med_admin || $is_prescriber || $has_pgd_access;
+        $can_add_presets = \Yii::app()->user->checkAccess('OprnAddPresets') || $this->hasPGDAssignments($current_user);
+        $can_add_meds = \Yii::app()->user->checkAccess('OprnAddMeds');
         $model_name = \CHtml::modelName($this->element);
         $class_name = get_class($this->element)::$entry_class;
 
@@ -88,9 +86,10 @@ class DrugAdministration extends BaseMedicationWidget
                     'available_appointments' => $available_appointments,
                     'psds' => json_encode($psds),
                     'pgds' => json_encode($pgds),
+                    'can_add_presets' => $can_add_presets,
+                    'can_add_meds' => $can_add_meds,
                     'medication_options' => $medication_options,
                     'is_prescriber' => $is_prescriber,
-                    'is_med_admin' => $is_med_admin,
                 )
             );
         }
@@ -101,7 +100,7 @@ class DrugAdministration extends BaseMedicationWidget
                 return strtotime($appt1->when) > strtotime($appt2->when);
             });
         }
-        if ($can_add_meds) {
+        if ($can_add_presets) {
             $pgdpsd_api = \Yii::app()->moduleAPI->get('OphDrPGDPSD');
             $medication_options = $pgdpsd_api->getMedicationOptions();
 
@@ -152,9 +151,10 @@ class DrugAdministration extends BaseMedicationWidget
                 'available_appointments' => $available_appointments,
                 'psds' => json_encode($psds),
                 'pgds' => json_encode($pgds),
+                'can_add_presets' => $can_add_presets,
+                'can_add_meds' => $can_add_meds,
                 'medication_options' => $medication_options,
                 'is_prescriber' => $is_prescriber,
-                'is_med_admin' => $is_med_admin,
             )
         );
     }
@@ -178,7 +178,7 @@ class DrugAdministration extends BaseMedicationWidget
         }
         $assignment_entries = array();
         $errors = array();
-        $is_prescriber = \Yii::app()->user->checkAccess('Prescribe');
+        $is_prescriber = \Yii::app()->user->checkAccess('TaskPrescribe');
         foreach ($assignments_data as $key => $assignment_data) {
             $assignment_id = array_key_exists('assignment_id', $assignment_data) ? $assignment_data['assignment_id'] : 0;
             $pgdpsd_id = array_key_exists('pgdpsd_id', $assignment_data) ? $assignment_data['pgdpsd_id'] : null;

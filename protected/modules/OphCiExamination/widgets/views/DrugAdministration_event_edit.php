@@ -324,10 +324,10 @@ $field_prefix = $model_name . '[assignment][{{section_key}}][entries][{{entry_ke
     <!-- rely on RBAC -->
     <div class="flex-r">
         <div class="add-data-actions flex-item-bottom js-add-meds-ctn">
-            <?php if (!$is_med_admin) { ?>
+            <?php if ($can_add_presets) { ?>
                 <button id="js-add-preset-order" class="green hint js-add-select-btn">Add Preset Order</button>
             <?php } ?>
-            <?php if ($is_prescriber || $is_med_admin) { ?>
+            <?php if ($can_add_meds) { ?>
                 <button id="js-add-medications" class="adder js-add-select-btn"></button>
             <?php } ?>
         </div>
