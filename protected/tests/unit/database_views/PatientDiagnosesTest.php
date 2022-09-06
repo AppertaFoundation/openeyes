@@ -25,6 +25,7 @@ class PatientDiagnosesTest extends \OEDbTestCase
 {
     use \HasDatabaseAssertions;
     use \WithTransactions;
+    use MocksSession;
 
     /** @test */
     public function db_view_contains_principal_diagnosis()

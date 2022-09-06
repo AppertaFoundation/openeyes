@@ -19,10 +19,6 @@ use Institution;
 use ModelCollection;
 use OEDbTestCase;
 use OEModule\OphCiExamination\models\OphCiExamination_Attribute;
-use OEWebUser;
-use UserIdentity;
-use Yii;
-use Symfony\Component\DomCrawler\Crawler;
 use OE\factories\ModelFactory;
 use User;
 
