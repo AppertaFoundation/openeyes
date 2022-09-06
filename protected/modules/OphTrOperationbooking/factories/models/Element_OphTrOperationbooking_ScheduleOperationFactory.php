@@ -24,7 +24,7 @@ class Element_OphTrOperationbooking_ScheduleOperationFactory extends ModelFactor
     {
         return [
             'event_id' => EventFactory::forModule('OphTrOperationbooking'),
-            'schedule_options_id' => ModelFactory::factoryFor(OphTrOperationbooking_ScheduleOperation_Options::class)->useExisting()
+            'schedule_options_id' => OphTrOperationbooking_ScheduleOperation_Options::factory()->useExisting()
         ];
     }
 }

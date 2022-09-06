@@ -22,8 +22,8 @@ class Element_OphTrOperationbooking_PreAssessmentFactory extends ModelFactory
     {
         return [
             'event_id' => EventFactory::forModule('OphTrOperationbooking'),
-            'type_id' => ModelFactory::factoryFor(OphTrOperationbooking_PreAssessment_Type::class)->useExisting(),
-            'location_id' => ModelFactory::factoryFor(OphTrOperationbooking_PreAssessment_Location::class)->useExisting()
+            'type_id' => OphTrOperationbooking_PreAssessment_Type::factory()->useExisting(),
+            'location_id' => OphTrOperationbooking_PreAssessment_Location::factory()->useExisting()
         ];
     }
 }

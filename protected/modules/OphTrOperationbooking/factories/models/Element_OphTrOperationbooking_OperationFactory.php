@@ -26,10 +26,10 @@ class Element_OphTrOperationbooking_OperationFactory extends ModelFactory
         return [
             'event_id' => EventFactory::forModule('OphTrOperationbooking'),
             'eye_id' => ModelFactory::factoryFor(\Eye::class)->useExisting(),
-            'priority_id' => ModelFactory::factoryFor(OphTrOperationbooking_Operation_Priority::class)->useExisting(),
+            'priority_id' => OphTrOperationbooking_Operation_Priority::factory()->useExisting(),
             'site_id' => ModelFactory::factoryFor(Site::class)->useExisting(),
             'total_duration' => $this->faker->numberBetween(10, 150),
-            'status_id' => ModelFactory::factoryFor(OphTrOperationbooking_Operation_Status::class)->useExisting(),
+            'status_id' => OphTrOperationbooking_Operation_Status::factory()->useExisting(),
         ];
     }
 }
