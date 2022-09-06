@@ -646,7 +646,7 @@ class WorklistManager extends CComponent
         return $worklists;
     }
 
-    public function getCurrentAutomaticWorklistsForUser($user, $start_date = null, $end_date = null, $filter = null)
+    public function getAllCurrentUniqueAutomaticWorklistsForUser($user, $start_date = null, $end_date = null, $filter = null)
     {
         $worklists = [];
 
@@ -660,7 +660,7 @@ class WorklistManager extends CComponent
             $site = $this->getModelForClass('Site')->findByPk($filter->getSiteId());
 
             $firm = $filter->coversAllContexts()
-                  ? $this->getCurrentFirm()
+                  ? null
                   : $this->getModelForClass('Firm')->findByPk($filter->getContextId());
         } else {
             $site = $this->getCurrentSite();
@@ -681,28 +681,48 @@ class WorklistManager extends CComponent
         $unique_ids = array();
         $unique_worklists = array();
 
-        if (!$filter || $filter->coversAllWorklists()){
-            foreach ($worklists as $wl) {
-                if(!in_array($wl->id, $unique_ids)) {
-                    $unique_worklists[] = $wl;
-                    $unique_ids[] = $wl->id;
-                }
-            }
-        } else {
-            $selected_ids = $filter->getWorklists();
-
-            foreach ($worklists as $wl) {
-                if(in_array($wl->id, $selected_ids) && !in_array($wl->id, $unique_ids)) {
-                    $unique_worklists[] = $wl;
-                    $unique_ids[] = $wl->id;
-                }
+        foreach ($worklists as $wl) {
+            if(!in_array($wl->id, $unique_ids)) {
+                $unique_worklists[] = $wl;
+                $unique_ids[] = $wl->id;
             }
         }
 
         return $unique_worklists;
     }
 
-    public function shouldDisplayWorklistForContext(Worklist $worklist, Institution $institution, Site $site, Firm $firm)
+    public function filterWorklistsBySelected($worklists, $filter)
+    {
+        if (!$filter || $filter->coversAllWorklists()) {
+            return $worklists;
+        }
+
+        $selected_ids = $filter->getWorklists();
+
+        return array_values(array_filter(
+            $worklists,
+            static function($worklist) use ($selected_ids) {
+                return in_array($worklist->id, $selected_ids);
+            }
+        ));
+    }
+
+    public function getCurrentAutomaticWorklistsForUser($user, $start_date = null, $end_date = null, $filter = null)
+    {
+        $unique_worklists = $this->getAllCurrentUniqueAutomaticWorklistsForUser($user, $start_date, $end_date, $filter);
+
+        return $this->filterWorklistsBySelected($unique_worklists, $filter);
+    }
+
+    /**
+     * @param Worklist    $worklist
+     * @param Institution $institution
+     * @param Site        $site
+     * @param Firm|null   $firm - If null, treat as being all firms
+     *
+     * @return bool
+     */
+    public function shouldDisplayWorklistForContext(Worklist $worklist, Institution $institution, Site $site, $firm)
     {
         if ($definition = $worklist->worklist_definition) {
             if ($definition->patient_identifier_type->institution_id == $site->institution_id) {
@@ -711,7 +731,7 @@ class WorklistManager extends CComponent
                     return true;
                 }
                 foreach ($display_contexts as $dc) {
-                    if ($dc->checkInstitution($institution) && $dc->checkSite($site) && $dc->checkFirm($firm)) {
+                    if ($dc->checkInstitution($institution) && $dc->checkSite($site) && ($firm === null || $dc->checkFirm($firm))) {
                         return true;
                     }
                 }
@@ -728,13 +748,13 @@ class WorklistManager extends CComponent
 
     /**
      * @param $user
-     * @param Site     $site
-     * @param Firm     $firm
-     * @param DateTime $when
+     * @param Site      $site
+     * @param Firm|null $firm  - If null, treat as being all firms
+     * @param DateTime  $when
      *
      * @return array
      */
-    public function getCurrentAutomaticWorklistsForUserContext(Institution $institution, Site $site, Firm $firm, DateTime $when)
+    public function getCurrentAutomaticWorklistsForUserContext(Institution $institution, Site $site, $firm, DateTime $when)
     {
         $worklists = array();
         $model = $this->getModelForClass('Worklist');
