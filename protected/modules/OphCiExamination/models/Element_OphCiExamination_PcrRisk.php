@@ -19,6 +19,19 @@ class Element_OphCiExamination_PcrRisk extends \SplitEventTypeElement
         return parent::model($className);
     }
 
+    public function __toString()
+    {
+        $result = [];
+        if ($this->hasRight()) {
+            $result[] = sprintf("R: %.2f%%", $this->right_pcr_risk);
+        }
+        if ($this->hasLeft()) {
+            $result[] = "L: {$this->left_pcr_risk}%";
+        }
+
+        return implode(", ", $result);
+    }
+
     /**
      * @return string the associated database table name
      */
@@ -41,6 +54,7 @@ class Element_OphCiExamination_PcrRisk extends \SplitEventTypeElement
                     right_brunescent_white_cataract, right_alpha_receptor_blocker, right_doctor_grade_id, right_can_lie_flat, right_pcr_risk, right_excess_risk',
                 'safe',
             ),
+            ['event_id', 'required']
         );
     }
 
