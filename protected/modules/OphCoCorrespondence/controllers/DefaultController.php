@@ -577,6 +577,7 @@ class DefaultController extends BaseEventTypeController
     {
         $letter = ElementLetter::model()->find('event_id=?', array($id));
         $recipient_address = Yii::app()->request->getParam('recipient_address');
+
         $target_id = Yii::app()->request->getParam('target_id');
 
         $contact_type = null;
@@ -589,6 +590,14 @@ class DefaultController extends BaseEventTypeController
         Yii::log('Printing recipient');
 
         $letter_header_raw = SettingMetadata::model()->getSetting('letter_header', null, null, null, isset($letter->event->institution_id) ? $letter->event->institution_id : null);
+
+        /*
+        * <span> tags have to be added because the protected/models/SettingMetadata.php file
+        * substituteNode() method would put it between <p> tags, if no tag is added.
+        */
+        if (!empty(trim($letter_header_raw))) {
+            $recipient_address = "<span>" . $recipient_address . "</span>";
+        }
 
         $parent_event = Event::model()->findByPk($id);
         $parent_episode = $parent_event->episode;
