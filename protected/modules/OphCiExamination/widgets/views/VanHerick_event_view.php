@@ -21,7 +21,7 @@
         <table class="large">
             <tbody>
                 <tr>
-                    <td><?= $element->hasRight() ? $element->right_van_herick->name : 'Not assessed in this examination';?></td>
+                    <td><?= $element->hasRight() && $element->right_van_herick ? $element->right_van_herick->name : 'Not assessed in this examination';?></td>
                 </tr>
                 <?php if ($element->hasRight() && $element->{'right_notes'}) { ?>
                 <tr>
@@ -36,7 +36,7 @@
         <table class="large">
             <tbody>
             <tr>
-                <td><?= $element->hasLeft() ? $element->left_van_herick->name : 'Not assessed in this examination';?></td>
+                <td><?= $element->hasLeft() && $element->left_van_herick ? $element->left_van_herick->name : 'Not assessed in this examination';?></td>
             </tr>
             <?php if ($element->hasLeft() && $element->{'left_notes'}) { ?>
             <tr>
