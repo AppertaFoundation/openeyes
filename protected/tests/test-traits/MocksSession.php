@@ -16,8 +16,6 @@ trait MocksSession
      */
     public function stubSession()
     {
-        $this->eraseCurrentSession();
-
         $session = $this->getMockBuilder(\CHttpSession::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -45,12 +43,38 @@ trait MocksSession
 
         $session = $this->stubSession();
 
+        $session_values = [
+            'selected_firm_id' => $firm->id,
+            'selected_site_id' => $site->id,
+            'selected_institution_id' => $institution->id
+        ];
+
+        $value_map = array_map(function ($key) use ($session_values) {
+            return [$key, null, $session_values[$key]];
+        }, array_keys($session_values));
+
+
         $session->method('get')
-        ->will($this->returnValueMap([
-            ['selected_firm_id', null, $firm->id],
-            ['selected_site_id', null, $site->id],
-            ['selected_institution_id',null, $institution->id]
-        ]));
+            ->will($this->returnValueMap($value_map));
+        $session->method('offsetGet')
+            ->willReturnCallback(function ($offset) use ($session_values) {
+                return $session_values[$offset] ?? null;
+            });
+    }
+
+    public function mockCurrentUser($user)
+    {
+        $web_user = $this->getMockBuilder(OEWebUser::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getId'])
+            ->getMock();
+
+        $web_user->method('getId')
+            ->willReturn($user->id);
+
+        \Yii::app()->setComponent('user', $web_user);
+
+        return $this;
     }
 
     protected function beginMocksSession()

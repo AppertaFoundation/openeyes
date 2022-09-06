@@ -17,7 +17,7 @@
 
 namespace OEModule\OphCiExamination\models;
 
-
+use OE\factories\models\traits\HasFactory;
 use OEModule\OphCiExamination\widgets\Allergies as AllergiesWidget;
 
 /**
@@ -37,7 +37,9 @@ use OEModule\OphCiExamination\widgets\Allergies as AllergiesWidget;
  */
 class Allergies extends \BaseEventTypeElement
 {
+    use HasFactory;
     use traits\CustomOrdering;
+
     protected $default_view_order = 50;
 
     protected $auto_update_relations = true;

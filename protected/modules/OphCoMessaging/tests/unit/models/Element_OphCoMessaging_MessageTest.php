@@ -58,7 +58,7 @@ class Element_OphCoMessaging_MessageTest extends \ModelTestCase
 
         // reload event
         $event = Event::model()->findByPk($this->instance->event_id);
-        $this->assertNull($event->firstEventSubtypeItem->event_subtype);
+        $this->assertNull($event->firstEventSubtypeItem);
     }
 
     /** @test */

@@ -18,6 +18,7 @@ namespace OE\factories\models;
 use Institution;
 use InstitutionAuthentication;
 use OE\factories\ModelFactory;
+use UserAuthentication;
 use UserAuthenticationMethod;
 
 class InstitutionFactory extends ModelFactory
@@ -59,5 +60,16 @@ class InstitutionFactory extends ModelFactory
                 $user_authentication_method
             );
         });
+    }
+
+    public function withUserAsMember($user)
+    {
+        return $this->isTenanted()
+            ->afterCreating(function (Institution $institution) use ($user) {
+                ModelFactory::factoryFor(UserAuthentication::class)->forUser($user)
+                    ->create([
+                        'institution_authentication_id' => $institution->authenticationMethods[0]->id
+                    ]);
+            });
     }
 }
