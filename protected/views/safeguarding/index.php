@@ -79,6 +79,11 @@
 
                         $event = $element->event;
 
+                        // Ignore deleted events
+                        if (!$event) {
+                            continue;
+                        }
+
                         $patient = $event->episode->patient;
 
                         $date = $element->created_date;
