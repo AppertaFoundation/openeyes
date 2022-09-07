@@ -197,20 +197,27 @@ $type_assessment = new OphTrConsent_Type_Assessment();
                 </table>
             </div>
         </div>
-                <?= $this->renderPartial(
-                    '_print_signature',
-                    array(
-                    'vi' => ($css_class == 'impaired'),
-                    'element' => $elements[Element_OphTrConsent_Esign::class],
-                    'signature' => $elements[Element_OphTrConsent_Esign::class]
+                <?php
+                if (!is_null($elements[Element_OphTrConsent_Esign::class]
                     ->getSignatureByInitiatorAttributes(
                         (int)$elements['OEModule\OphTrConsent\models\Element_OphTrConsent_PatientAttorneyDeputy']->getElementType()->id,
                         (int)$contact->id
-                    ),
-                    'title_label' => 'Contact type',
-                    'name_label' => 'Patient\'s attorney or deputy',
-                    )
-                ); ?>
+                    ))) {
+                    echo $this->renderPartial(
+                        '_print_signature',
+                        array(
+                            'vi' => ($css_class == 'impaired'),
+                            'element' => $elements[Element_OphTrConsent_Esign::class],
+                            'signature' => $elements[Element_OphTrConsent_Esign::class]
+                                ->getSignatureByInitiatorAttributes(
+                                    (int)$elements['OEModule\OphTrConsent\models\Element_OphTrConsent_PatientAttorneyDeputy']->getElementType()->id,
+                                    (int)$contact->id
+                                ),
+                            'title_label' => 'Contact type',
+                            'name_label' => 'Patient\'s attorney or deputy',
+                        )
+                    );
+                } ?>
             <?php } ?>
         <?php if (empty($contacts)) : ?>
         </div></div>
@@ -268,21 +275,24 @@ $type_assessment = new OphTrConsent_Type_Assessment();
             if ((int)$contact->signature_required === 0) {
                 continue;
             }
+
+            if (!is_null($elements[Element_OphTrConsent_Esign::class]->getSignatureByInitiatorAttributes((int)$contact_element->getElementType()->id,(int)$contact->id))) {
+                echo $this->renderPartial(
+                    '_print_signature',
+                    array(
+                        'vi' => ($css_class == 'impaired'),
+                        'element' => $elements[Element_OphTrConsent_Esign::class],
+                        'signature' => $elements[Element_OphTrConsent_Esign::class]
+                            ->getSignatureByInitiatorAttributes(
+                                (int)$contact_element->getElementType()->id,
+                                (int)$contact->id
+                            ),
+                        'title_label' => 'Relationship',
+                        'name_label' => 'Name',
+                    )
+                );
+            }
             ?>
-            <?= $this->renderPartial(
-                '_print_signature',
-                array(
-                'vi' => ($css_class == 'impaired'),
-                'element' => $elements[Element_OphTrConsent_Esign::class],
-                'signature' => $elements[Element_OphTrConsent_Esign::class]
-                    ->getSignatureByInitiatorAttributes(
-                        (int)$contact_element->getElementType()->id,
-                        (int)$contact->id
-                    ),
-                'title_label' => 'Relationship',
-                'name_label' => 'Name',
-                )
-            ); ?>
         <?php } ?>
     <?php } ?>
 
@@ -305,35 +315,46 @@ $type_assessment = new OphTrConsent_Type_Assessment();
         </div>
     </div>
 
-    <?= $this->renderPartial(
-        '_print_signature',
-        array(
-            'vi' => ($css_class === 'impaired'),
-            'element' => $elements[Element_OphTrConsent_Esign::class],
-            'signature' => $elements[Element_OphTrConsent_Esign::class]
-                ->getSignatureByInitiatorAttributes($elements[Element_OphTrConsent_Esign::class]->getElementType()->id, 0),
-            'title_label' => 'Job title',
-            'name_label' => 'Interpreter name',
-        )
-    ); ?>
+    <?php
+    if (!is_null($elements[Element_OphTrConsent_Esign::class]
+        ->getSignatureByInitiatorAttributes($elements[Element_OphTrConsent_Esign::class]->getElementType()->id, 0))) {
+        echo $this->renderPartial(
+            '_print_signature',
+            array(
+                'vi' => ($css_class === 'impaired'),
+                'element' => $elements[Element_OphTrConsent_Esign::class],
+                'signature' => $elements[Element_OphTrConsent_Esign::class]
+                    ->getSignatureByInitiatorAttributes($elements[Element_OphTrConsent_Esign::class]->getElementType()->id, 0),
+                'title_label' => 'Job title',
+                'name_label' => 'Interpreter name',
+            )
+        );
+    } ?>
 
     <div class="group"><span class="checkbox <?= isset($elements['Element_OphTrConsent_Withdrawal']) ? 'checked' : ''?>"></span><?= isset($elements['Element_OphTrConsent_Withdrawal']) ? '<b class="highlighter">' : ''?> Patient has withdrawn consent <?= isset($elements['Element_OphTrConsent_Withdrawal']) ? '</b>' : ''?></div>
     <?php if (isset($elements['Element_OphTrConsent_Withdrawal'])) {?>
         <p><b>Reason for withdrawal:</b> <?= isset($elements['Element_OphTrConsent_Withdrawal']->withdrawal_reason) ? $elements['Element_OphTrConsent_Withdrawal']->withdrawal_reason : '-'?></p>
-        <?= $this->renderPartial(
-            '_print_signature',
-            array(
-                'vi' => ($css_class === 'impaired'),
-                'element' => $elements['Element_OphTrConsent_Esign'],
-                'signature' => $elements['Element_OphTrConsent_Esign']
-                                ->getSignatureByInitiatorAttributes(
-                                    $elements['Element_OphTrConsent_Withdrawal']->getElementType()->id,
-                                    $elements['Element_OphTrConsent_Withdrawal']->id,
-                                ),
-                                         'title_label' => 'Job title',
-                                         'name_label' => 'Print name'
-            )
-        );
+        <?php
+        if (!is_null($elements['Element_OphTrConsent_Esign']
+            ->getSignatureByInitiatorAttributes(
+                $elements['Element_OphTrConsent_Withdrawal']->getElementType()->id,
+                $elements['Element_OphTrConsent_Withdrawal']->id,
+            ))) {
+            echo $this->renderPartial(
+                '_print_signature',
+                array(
+                    'vi' => ($css_class === 'impaired'),
+                    'element' => $elements['Element_OphTrConsent_Esign'],
+                    'signature' => $elements['Element_OphTrConsent_Esign']
+                        ->getSignatureByInitiatorAttributes(
+                            $elements['Element_OphTrConsent_Withdrawal']->getElementType()->id,
+                            $elements['Element_OphTrConsent_Withdrawal']->id,
+                        ),
+                    'title_label' => 'Job title',
+                    'name_label' => 'Print name'
+                )
+            );
+        }
     } ?>
 
     <div class="highlighter"><h3>COVID-19</h3>
