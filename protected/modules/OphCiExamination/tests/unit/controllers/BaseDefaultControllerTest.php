@@ -70,7 +70,10 @@ abstract class BaseDefaultControllerTest extends BaseControllerTest
 
         $redirectedEventId = $this->performUpdateRequestWithController();
 
-        $this->assertEquals($event->id, $redirectedEventId);
+        $this->assertEquals(
+            $event->id,
+            $redirectedEventId,
+            "update request has failed, response is redirecting to event id {$redirectedEventId} instead of {$event->id}");
     }
 
     /**
