@@ -1,5 +1,4 @@
 <?php
-use OE\factories\ModelFactory;
 /**
  * (C) Apperta Foundation, 2022
  * This file is part of OpenEyes.
@@ -14,29 +13,17 @@ use OE\factories\ModelFactory;
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-/**
- * @group sample-data
- * @group common-lists
- */
-class CommonPreviousSystemicOperationTest extends \ModelTestCase
+use OE\factories\ModelFactory;
+
+class OphTrOperationbooking_Operation_StatusFactory extends ModelFactory
 {
-    use \InteractsWithCommonPreviousSystemicOperation;
-    use \HasDatabaseAssertions;
-    use \WithTransactions;
-    use \MocksSession;
-
-    protected $element_cls = \CommonPreviousSystemicOperation::class;
-
-    /** @test */
-    public function can_delete_an_instance_mapped_to_institution()
+    /**
+     * @return array
+     */
+    public function definition(): array
     {
-        $institution = ModelFactory::factoryFor(\Institution::class)->create();
-        $instance = $this->generateCommonPreviousSystemicOperationForInstitution($institution);
-
-        $pk = $instance->id;
-        $this->assertTrue($instance->delete());
-        $this->assertDatabaseDoesntHave(CommonPreviousSystemicOperation::model()->tableName(), [
-            'id' => $pk
-        ]);
+        return [
+            'name' => $this->faker->word()
+        ];
     }
 }

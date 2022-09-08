@@ -1,5 +1,4 @@
 <?php
-use OE\factories\ModelFactory;
 /**
  * (C) Apperta Foundation, 2022
  * This file is part of OpenEyes.
@@ -14,29 +13,23 @@ use OE\factories\ModelFactory;
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-/**
- * @group sample-data
- * @group common-lists
- */
-class CommonPreviousSystemicOperationTest extends \ModelTestCase
+use OE\factories\ModelFactory;
+use OE\factories\models\EventFactory;
+
+class Element_OphTrOperationbooking_OperationFactory extends ModelFactory
 {
-    use \InteractsWithCommonPreviousSystemicOperation;
-    use \HasDatabaseAssertions;
-    use \WithTransactions;
-    use \MocksSession;
-
-    protected $element_cls = \CommonPreviousSystemicOperation::class;
-
-    /** @test */
-    public function can_delete_an_instance_mapped_to_institution()
+    /**
+     * @return array
+     */
+    public function definition(): array
     {
-        $institution = ModelFactory::factoryFor(\Institution::class)->create();
-        $instance = $this->generateCommonPreviousSystemicOperationForInstitution($institution);
-
-        $pk = $instance->id;
-        $this->assertTrue($instance->delete());
-        $this->assertDatabaseDoesntHave(CommonPreviousSystemicOperation::model()->tableName(), [
-            'id' => $pk
-        ]);
+        return [
+            'event_id' => EventFactory::forModule('OphTrOperationbooking'),
+            'eye_id' => ModelFactory::factoryFor(\Eye::class)->useExisting(),
+            'priority_id' => OphTrOperationbooking_Operation_Priority::factory()->useExisting(),
+            'site_id' => ModelFactory::factoryFor(Site::class)->useExisting(),
+            'total_duration' => $this->faker->numberBetween(10, 150),
+            'status_id' => OphTrOperationbooking_Operation_Status::factory()->useExisting(),
+        ];
     }
 }

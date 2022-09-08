@@ -27,7 +27,7 @@ trait WithTransactions
     {
         $this->verifyTestsCanExistInTransaction();
 
-        $connection = $this->getFixtureManager()->getDbConnection();
+        $connection = $this->getDbConnection();
         $transaction = $connection->beginTransaction();
 
         $this->originalEnableTransactionsState = \Yii::app()->params['enable_transactions'];
@@ -35,7 +35,7 @@ trait WithTransactions
         // disable transaction calls that will fail inside the test transaction
         \Yii::app()->setParams(['enable_transactions' => false]);
 
-        $this->tearDownCallbacks(function() use ($transaction) {
+        $this->tearDownCallbacks(function () use ($transaction) {
             \Yii::app()->setParams(['enable_transactions' => $this->originalEnableTransactionsState]);
             $transaction->rollback();
         });

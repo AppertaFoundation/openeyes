@@ -1,5 +1,4 @@
 <?php
-use OE\factories\ModelFactory;
 /**
  * (C) Apperta Foundation, 2022
  * This file is part of OpenEyes.
@@ -13,30 +12,19 @@ use OE\factories\ModelFactory;
  * @copyright Copyright (C) 2022, Apperta Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+use OE\factories\ModelFactory;
+use OE\factories\models\EventFactory;
 
-/**
- * @group sample-data
- * @group common-lists
- */
-class CommonPreviousSystemicOperationTest extends \ModelTestCase
+class Element_OphTrOperationbooking_ScheduleOperationFactory extends ModelFactory
 {
-    use \InteractsWithCommonPreviousSystemicOperation;
-    use \HasDatabaseAssertions;
-    use \WithTransactions;
-    use \MocksSession;
-
-    protected $element_cls = \CommonPreviousSystemicOperation::class;
-
-    /** @test */
-    public function can_delete_an_instance_mapped_to_institution()
+    /**
+     * @return array
+     */
+    public function definition(): array
     {
-        $institution = ModelFactory::factoryFor(\Institution::class)->create();
-        $instance = $this->generateCommonPreviousSystemicOperationForInstitution($institution);
-
-        $pk = $instance->id;
-        $this->assertTrue($instance->delete());
-        $this->assertDatabaseDoesntHave(CommonPreviousSystemicOperation::model()->tableName(), [
-            'id' => $pk
-        ]);
+        return [
+            'event_id' => EventFactory::forModule('OphTrOperationbooking'),
+            'schedule_options_id' => OphTrOperationbooking_ScheduleOperation_Options::factory()->useExisting()
+        ];
     }
 }
