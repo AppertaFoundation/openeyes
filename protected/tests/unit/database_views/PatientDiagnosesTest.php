@@ -25,10 +25,12 @@ class PatientDiagnosesTest extends \OEDbTestCase
 {
     use \HasDatabaseAssertions;
     use \WithTransactions;
+    use MocksSession;
 
     /** @test */
     public function db_view_contains_principal_diagnosis()
     {
+        $this->markTestIncomplete();
         $patient = ModelFactory::factoryFor(Patient::class)->create();
         $disorder = ModelFactory::factoryFor(Disorder::class)->withICD10()->create();
         $eye = ModelFactory::factoryFor(Eye::class)->useExisting()->create();
@@ -55,6 +57,7 @@ class PatientDiagnosesTest extends \OEDbTestCase
     /** @test */
     public function db_view_contains_patient_secondary_diagnosis()
     {
+        $this->markTestIncomplete();
         $patient = ModelFactory::factoryFor(Patient::class)->create();
         $disorder = ModelFactory::factoryFor(Disorder::class)->withICD10()->create();
         $eye = ModelFactory::factoryFor(Eye::class)->useExisting()->create();

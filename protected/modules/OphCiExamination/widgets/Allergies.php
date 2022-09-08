@@ -36,38 +36,7 @@ class Allergies extends \BaseEventElementWidget
      */
     protected function updateElementFromData($element, $data)
     {
-        if (!is_a($element, 'OEModule\OphCiExamination\models\Allergies')) {
-            throw new \CException('invalid element class ' . get_class($element) . ' for ' . static::class);
-        }
-
-        // pre-cache current entries so any entries that remain in place will use the same db row
-        $entries_by_id = array();
-        foreach ($element->entries as $entry) {
-            $entries_by_id[$entry->id] = $entry;
-        }
-
-        if (array_key_exists('entries', $data)) {
-            $entries = array();
-            foreach ($data['entries'] as $i => $entry) {
-                $allergy_entry = new AllergyEntry();
-                $id = $entry['id'];
-                if ($id && array_key_exists($id, $entries_by_id)) {
-                    $allergy_entry = $entries_by_id[$id];
-                }
-
-                $allergy_entry->allergy_id = $entry['allergy_id'];
-                if (array_key_exists('reactions', $entry)) {
-                    $allergy_entry->reaction_ids = $entry['reactions'];
-                }
-                $allergy_entry->other = $entry['other'];
-                $allergy_entry->comments = $entry['comments'];
-                $allergy_entry->has_allergy = array_key_exists('has_allergy', $entry) ? $entry['has_allergy'] : null;
-                $entries[] = $allergy_entry;
-            }
-            $element->entries = $entries;
-        } else {
-            $element->entries = array();
-        }
+        parent::updateElementFromData($element, $data);
 
         if ((array_key_exists('no_allergies', $data) && $data['no_allergies'] == 1)) {
             // TODO: Think about the importance of this date information, and therefore whether it should
@@ -77,6 +46,12 @@ class Allergies extends \BaseEventElementWidget
             }
         } elseif ($element->no_allergies_date) {
             $element->no_allergies_date = null;
+        }
+    }
+
+    protected function ensureRequiredDataKeysSet(&$data) {
+        if (!isset($data['entries'])) {
+            $data['entries'] = [];
         }
     }
 

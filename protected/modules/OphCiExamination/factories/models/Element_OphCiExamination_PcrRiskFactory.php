@@ -18,7 +18,6 @@ namespace OEModule\OphCiExamination\factories\models;
 use DoctorGrade;
 use OE\factories\ModelFactory;
 use OE\factories\models\EventFactory;
-use OEModule\OphCiExamination\models\Element_OphCiExamination_PcrRisk;
 use SplitEventTypeElement;
 
 /**

@@ -18,8 +18,6 @@ trait HasDatabaseAssertions
 
     private function generateDatabaseCountQuery(string $table, array $attributes)
     {
-        $db = $this->getFixtureManager()->dbConnection;
-
         $wheres = [];
         $params = [];
         foreach ($attributes as $col => $val) {
@@ -27,7 +25,8 @@ trait HasDatabaseAssertions
             $params[":_$col"] = $val;
         }
 
-        return $db->createCommand()
+        return $this->getDbConnection()
+            ->createCommand()
             ->select('COUNT(*)')
             ->from($table)
             ->where(implode(' AND ', $wheres), $params);

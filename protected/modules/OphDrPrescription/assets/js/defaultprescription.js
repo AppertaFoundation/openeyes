@@ -4,19 +4,19 @@ if ($('#DrugSet_id').length > 0) {
 }
 
 // Add repeat to prescription
-$('body').delegate('#repeat_prescription', 'click', function () {
+$("#div_Element_OphDrPrescription_Details_prescription_items").on('click', '#repeat_prescription', function () {
     addRepeat();
     return false;
 });
 
 // Clear prescription
-$('body').delegate('#clear_prescription', 'click', function () {
+$("#div_Element_OphDrPrescription_Details_prescription_items").on('click', '#clear_prescription', function () {
     clear_prescription();
     return false;
 });
 
 // Update drug route options for selected route if not admin page
-$('body').delegate('select.drugRoute', 'change', function () {
+$('#div_Element_OphDrPrescription_Details_prescription_items').on('change', 'select.drugRoute', function () {
     let selected = $(this).children('option:selected');
     let options_td = $(this).parent().next();
     if (options_td.attr("class") == 'route_option_cell') {
@@ -219,7 +219,7 @@ function processSetEntries(set_id) {
 }
 function processPGDEntries(pgd_id) {
     $.get(
-        baseUrl + "/OphDrPrescription/PrescriptionCommon/getPGDDrugs", 
+        baseUrl + "/OphDrPrescription/PrescriptionCommon/getPGDDrugs",
         {
             pgd_id: pgd_id
         },
@@ -271,7 +271,7 @@ function addPGD(pgd_id) {
   // we need to call different functions for admin and public pages here
   if (controllerName == 'DefaultController') {
     $.get(
-        baseUrl + "/OphDrPrescription/PrescriptionCommon/PGDForm", 
+        baseUrl + "/OphDrPrescription/PrescriptionCommon/PGDForm",
         {
             key: getNextKey(),
             patient_id: OE_patient_id,

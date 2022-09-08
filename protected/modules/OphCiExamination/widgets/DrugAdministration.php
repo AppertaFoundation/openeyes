@@ -1,10 +1,12 @@
 <?php
+
 namespace OEModule\OphCiExamination\widgets;
 
 use CDbCriteria;
 use CException;
 use Element_DrugAdministration;
 use Helper;
+
 class DrugAdministration extends BaseMedicationWidget
 {
     public $examination_element = null;
@@ -39,13 +41,11 @@ class DrugAdministration extends BaseMedicationWidget
     public function getViewData()
     {
         $current_user = \User::model()->findByPk(\Yii::app()->user->id);
-        $is_prescriber = \Yii::app()->user->checkAccess('Prescribe');
+        $is_prescriber = \Yii::app()->user->checkAccess('TaskPrescribe');
         $event_date = $this->controller->event ? date('Y-m-d', strtotime($this->controller->event->event_date)) : date('Y-m-d');
 
-        $is_med_admin = \Yii::app()->user->checkAccess('Med Administer');
-        $has_pgd_access = $is_prescriber || $this->hasPGDAssignments($current_user);
-
-        $can_add_meds = $is_med_admin || $is_prescriber || $has_pgd_access;
+        $can_add_presets = \Yii::app()->user->checkAccess('OprnAddPresets') || $this->hasPGDAssignments($current_user);
+        $can_add_meds = \Yii::app()->user->checkAccess('OprnAddMeds');
         $model_name = \CHtml::modelName($this->element);
         $class_name = get_class($this->element)::$entry_class;
 
@@ -53,7 +53,26 @@ class DrugAdministration extends BaseMedicationWidget
         $available_appointments = array();
         $psds = array();
         $pgds = array();
-        if(in_array($this->controller->action->id, array('removed', 'renderEventImage', 'view', 'print'))){
+        $presets = array();
+        $patient_todo_assignments = \OphDrPGDPSD_Assignment::model()->todoAndActive($this->patient->id, $event_date, $is_prescriber)->findAll();
+        // avoid duplicated assignments
+        $assigned_psds = array_unique(array_merge($patient_todo_assignments, $this->element->assignments));
+        $relevant_psds = array();
+        $irrelevant_psds = array();
+        foreach ($assigned_psds as $assigned_psd) {
+            if (!$assigned_psd->isrelevant || !$assigned_psd->active) {
+                $irrelevant_psds[] = $assigned_psd;
+                continue;
+            }
+            $relevant_psds[] = $assigned_psd;
+        }
+        // sort the irrelevent ones by date
+        usort($irrelevant_psds, function ($assignment1, $assignment2) {
+            $appointment_date_order = $assignment1->worklist_patient && $assignment2->worklist_patient && $assignment1->worklist_patient->when > $assignment1->worklist_patient->when ? 1 : 0;
+            return $appointment_date_order;
+        });
+        $assigned_psds = array_merge($relevant_psds, $irrelevant_psds);
+        if (in_array($this->controller->action->id, array('removed', 'renderEventImage', 'view', 'print'))) {
             return array_merge(
                 parent::getViewData(),
                 array(
@@ -65,29 +84,33 @@ class DrugAdministration extends BaseMedicationWidget
                         'id' => $current_user->id,
                     ),
                     'user_obj' => $current_user,
-                    'assigned_psds' => $this->element->assignments,
+                    'assigned_psds' => $assigned_psds,
                     'available_appointments' => $available_appointments,
                     'psds' => json_encode($psds),
                     'pgds' => json_encode($pgds),
+                    'can_add_presets' => $can_add_presets,
+                    'can_add_meds' => $can_add_meds,
                     'medication_options' => $medication_options,
                     'is_prescriber' => $is_prescriber,
-                    'is_med_admin' => $is_med_admin,
                 )
             );
         }
         if ($is_prescriber) {
-            $now_timestamp = strtotime(date('Y-m-d'));
-            $available_appointments = \WorklistPatient::model()->findAll('patient_id = :patient_id AND UNIX_TIMESTAMP(`when`) >= :now', array(':patient_id' => $this->patient->id, ':now' => $now_timestamp));
+            $appointment_criteria = new CDbCriteria();
+            $appointment_criteria->with = ['worklist'];
+            $appointment_criteria->compare('t.patient_id', $this->patient->id);
+            $appointment_criteria->addCondition("UNIX_TIMESTAMP(DATE_FORMAT(worklist.start, '%Y-%m-%d')) >= UNIX_TIMESTAMP(DATE_FORMAT(NOW(), '%Y-%m-%d'))");
+            $available_appointments = \WorklistPatient::model()->findAll($appointment_criteria);
             usort($available_appointments, function ($appt1, $appt2) {
                 return strtotime($appt1->when) > strtotime($appt2->when);
             });
         }
-        if ($can_add_meds) {
+        if ($can_add_presets) {
             $pgdpsd_api = \Yii::app()->moduleAPI->get('OphDrPGDPSD');
             $medication_options = $pgdpsd_api->getMedicationOptions();
 
             $presets = \OphDrPGDPSD_PGDPSD::model()->findAll("active = 1 AND LOWER(type) IN ('psd', 'pgd')");
-            foreach($presets as $preset) {
+            foreach ($presets as $preset) {
                 $med_names = array_map(static function ($med) {
                     return '- ' . $med->medication->getLabel(true);
                 }, $preset->assigned_meds);
@@ -106,7 +129,8 @@ class DrugAdministration extends BaseMedicationWidget
                 if (strtolower($preset->type) === 'psd' && $is_prescriber) {
                     $psds[] = $item;
                 }
-                if (strtolower($preset->type) === 'pgd'
+                if (
+                    strtolower($preset->type) === 'pgd'
                     &&
                     (
                         in_array($current_user->id, $preset->getAuthedUserIDs())
@@ -117,24 +141,7 @@ class DrugAdministration extends BaseMedicationWidget
                 }
             }
         }
-        $patient_todo_assignments = \OphDrPGDPSD_Assignment::model()->todoAndActive($this->patient->id, $event_date, $is_prescriber)->findAll();
-        // avoid duplicated assignments
-        $assigned_psds = array_unique(array_merge($patient_todo_assignments, $this->element->assignments));
-        $relevant_psds = array();
-        $irrelevant_psds = array();
-        foreach ($assigned_psds as $assigned_psd) {
-            if (!$assigned_psd->isrelevant) {
-                $irrelevant_psds[] = $assigned_psd;
-                continue;
-            }
-            $relevant_psds[] = $assigned_psd;
-        }
-        // sort the irrelevent ones by date
-        usort($irrelevant_psds, function ($assignment1, $assignment2) {
-            $appointment_date_order = $assignment1->worklist_patient && $assignment2->worklist_patient && $assignment1->worklist_patient->when > $assignment1->worklist_patient->when ? 1 : 0;
-            return $appointment_date_order;
-        });
-        $assigned_psds = array_merge($relevant_psds, $irrelevant_psds);
+
         return array_merge(
             parent::getViewData(),
             array(
@@ -150,9 +157,10 @@ class DrugAdministration extends BaseMedicationWidget
                 'available_appointments' => $available_appointments,
                 'psds' => json_encode($psds),
                 'pgds' => json_encode($pgds),
+                'can_add_presets' => $can_add_presets,
+                'can_add_meds' => $can_add_meds,
                 'medication_options' => $medication_options,
                 'is_prescriber' => $is_prescriber,
-                'is_med_admin' => $is_med_admin,
             )
         );
     }
@@ -176,7 +184,7 @@ class DrugAdministration extends BaseMedicationWidget
         }
         $assignment_entries = array();
         $errors = array();
-        $is_prescriber = \Yii::app()->user->checkAccess('Prescribe');
+        $is_prescriber = \Yii::app()->user->checkAccess('TaskPrescribe');
         foreach ($assignments_data as $key => $assignment_data) {
             $assignment_id = array_key_exists('assignment_id', $assignment_data) ? $assignment_data['assignment_id'] : 0;
             $pgdpsd_id = array_key_exists('pgdpsd_id', $assignment_data) ? $assignment_data['pgdpsd_id'] : null;
@@ -212,23 +220,5 @@ class DrugAdministration extends BaseMedicationWidget
             }
         }
         $element->assignments = $assignment_entries;
-    }
-
-    /**
-     * @param bool $assignment
-     * @return array
-     * returns the style for deleted psd order block, and a deleted tag
-     */
-    public function getDeletedUI(bool $is_active){
-        $ret = array(
-            'deleted_style' => null,
-            'deleted_tag' => null,
-        );
-        if(!$is_active){
-            $ret['deleted_style'] = 'status-box red';
-            $ret['deleted_tag'] = "<span class='highlighter warning'>Cancelled</span>";
-        }
-
-        return $ret;
     }
 }

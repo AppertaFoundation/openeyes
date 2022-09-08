@@ -23,6 +23,7 @@ class CommonPreviousSystemicOperationTest extends \ModelTestCase
     use \InteractsWithCommonPreviousSystemicOperation;
     use \HasDatabaseAssertions;
     use \WithTransactions;
+    use \MocksSession;
 
     protected $element_cls = \CommonPreviousSystemicOperation::class;
 

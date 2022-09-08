@@ -6,6 +6,7 @@ use EventType;
 use Exception;
 use Firm;
 use JsonException;
+use OEModule\OphCiExamination\models\Element_OphCiExamination_ClinicOutcome;
 use PathwayStep;
 use Yii;
 
@@ -109,6 +110,66 @@ class PathstepObserver
             }
 
             $step->save();
+        }
+    }
+
+    /**
+     * @throws JsonException
+     * @throws Exception
+     */
+    public function createFollowUpStep($params)
+    {
+        $event = $params['event'];
+
+        $outcome_element = Element_OphCiExamination_ClinicOutcome::model()->find('event_id = :id', [':id' => $event->id]);
+
+        if ($outcome_element && $outcome_element->hasFollowUpStatus()) {
+            $step_type = \PathwayStepType::model()->find('short_name = \'Book Apt.\'');
+            foreach ($outcome_element->entries as $entry) {
+                if ($entry->isFollowUp()) {
+                    // First, attempt to find an existing follow-up step with a matching entry ID. If one is found, update it. Otherwise, create a new one.
+                    $existing_step = PathwayStep::model()->find(
+                        'pathway_id = :id AND step_type_id = :step_type AND JSON_CONTAINS(state_data, \''
+                        . $entry->id
+                        . '\', \'$.followup_entry_id\')',
+                        [':id' => $event->worklist_patient->pathway->id, ':step_type' => $step_type->id]
+                    );
+                    if ($existing_step) {
+                        $initial_state_data = json_decode($existing_step->state_data);
+
+                        $initial_state_data['site_id'] = $entry->site_id;
+                        $initial_state_data['service_id'] = $entry->service_id;
+                        $initial_state_data['firm_id'] = $entry->context_id;
+                        $initial_state_data['duration_value'] = $entry->followup_quantity;
+                        $initial_state_data['duration_period'] = $entry->followupPeriod->name;
+                        $existing_step->state_data = json_encode($initial_state_data);
+                        $existing_step->save();
+                    } else {
+                        $initial_state_data = json_decode($step_type->state_data_template);
+
+                        $initial_state_data['site_id'] = $entry->site_id;
+                        $initial_state_data['service_id'] = $entry->service_id;
+                        $initial_state_data['firm_id'] = $entry->context_id;
+                        $initial_state_data['duration_value'] = $entry->followup_quantity;
+                        $initial_state_data['duration_period'] = $entry->followupPeriod->name;
+                        $initial_state_data['followup_entry_id'] = $entry->id;
+
+                        $new_step = $step_type->createNewStepForPathway($event->worklist_patient->pathway->id, $initial_state_data);
+
+                        if ($new_step) {
+                            // Re-activate pathway if it has already been marked as completed.
+                            if ((int)$event->worklist_patient->pathway->status === \Pathway::STATUS_DONE) {
+                                $pathway = $event->worklist_patient->pathway;
+                                $pathway->status = \Pathway::STATUS_WAITING;
+                                if (!$pathway->save()) {
+                                    throw new \CHttpException(500, 'Unable to re-activate pathway.');
+                                }
+                                $event->worklist_patient->pathway->refresh();
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

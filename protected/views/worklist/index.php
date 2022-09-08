@@ -1232,6 +1232,7 @@ $initial_filter = $session_filter_info['filter'];
 
                 if (worklistFiltersController) {
                     worklistFiltersController.updateCounts(resp['quick_details'], resp['waiting_for_details'], resp['assigned_to_details']);
+                    worklistFiltersController.setAvailableLists(resp['all_worklists_in_context'], resp['filtered_worklist_ids']);
                     worklistFiltersController.resetShownLists();
                 }
 
@@ -1300,7 +1301,11 @@ $initial_filter = $session_filter_info['filter'];
         // passed from the controller.
         const extantWorklists = <?= json_encode(array_map(static function ($worklist) {
             return ['id' => $worklist->id, 'title' => $worklist->name];
-                                }, $worklists)) ?>;
+                                }, $unfiltered_worklists)) ?>;
+
+        const filteredWorklists = <?= json_encode(array_map(static function ($worklist) {
+            return $worklist->id;
+                                  }, $worklists)) ?>;
 
         const usersList = <?= json_encode(array_map(static function ($user) {
             return ['id' => $user->id, 'label' => $user->getFullName() . ' (' . $user->getInitials() . ')'];
@@ -1320,6 +1325,7 @@ $initial_filter = $session_filter_info['filter'];
             sortByPopupSelector: '#js-worklist-sort-order-popup',
 
             worklists: extantWorklists,
+            filteredWorklists: filteredWorklists,
             users: usersList,
             steps: stepsList,
 
@@ -1479,11 +1485,11 @@ $initial_filter = $session_filter_info['filter'];
             $patientQuickOverviewElem.get(0).style.left = (rect.x - POPUP_LEFT_OFFSET +  rect.width/2)  + "px";
         } else {
             $patientQuickOverviewElem.get(0).classList.add("full-panel");
-			if( mode.endsWith("to-right")){
-				$patientQuickOverviewElem.get(0).style.left = rect.right + 20 + 'px';
-			} else {
-				$patientQuickOverviewElem.get(0).left = rect.left - (420 + 20) + 'px';
-			}
+            if( mode.endsWith("to-right")){
+                $patientQuickOverviewElem.get(0).style.left = rect.right + 20 + 'px';
+            } else {
+                $patientQuickOverviewElem.get(0).left = rect.left - (420 + 20) + 'px';
+            }
         }
 
         if ($('.js-patient-popup-data').find(`[data-patient-id=${patientId}]`).length) {

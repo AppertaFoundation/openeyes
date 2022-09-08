@@ -1721,6 +1721,7 @@ class BaseEventTypeController extends BaseModuleController
                 $this->event->step_id = Yii::app()->session['active_step_id'];
             }
         }
+
         if (!$this->event->isNewRecord) {
             // this is an edit, so need to work out what we are deleting
             $oe_ids = array();
@@ -1771,7 +1772,6 @@ class BaseEventTypeController extends BaseModuleController
 
         // update the information attribute on the event
         $this->updateEventInfo();
-
         return true;
     }
 
