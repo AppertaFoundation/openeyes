@@ -1,5 +1,7 @@
 <?php
 namespace OEModule\OphCiExamination\widgets;
+
+use CDbCriteria;
 use Helper;
 class DrugAdministration extends BaseMedicationWidget
 {
@@ -23,7 +25,7 @@ class DrugAdministration extends BaseMedicationWidget
         $is_med_admin = \Yii::app()->user->checkAccess('Med Administer');
         $can_add_meds = $is_med_admin || $is_prescriber;
         $model_name = \CHtml::modelName($this->element);
-        $class_name = $this->element::$entry_class;
+        $class_name = get_class($this->element)::$entry_class;
 
         $medication_options = array();
         $available_appointments = array();
@@ -68,8 +70,11 @@ class DrugAdministration extends BaseMedicationWidget
             );
         }
         if ($is_prescriber) {
-            $now_timestamp = strtotime(date('Y-m-d'));
-            $available_appointments = \WorklistPatient::model()->findAll('patient_id = :patient_id AND UNIX_TIMESTAMP(`when`) >= :now', array(':patient_id' => $this->patient->id, ':now' => $now_timestamp));
+            $appointment_criteria = new CDbCriteria();
+            $appointment_criteria->with = ['worklist'];
+            $appointment_criteria->compare('t.patient_id', $this->patient->id);
+            $appointment_criteria->addCondition("UNIX_TIMESTAMP(DATE_FORMAT(worklist.start, '%Y-%m-%d')) >= UNIX_TIMESTAMP(DATE_FORMAT(NOW(), '%Y-%m-%d'))");
+            $available_appointments = \WorklistPatient::model()->findAll($appointment_criteria);
             usort($available_appointments, function ($appt1, $appt2) {
                 return strtotime($appt1->when) > strtotime($appt2->when);
             });

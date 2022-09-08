@@ -148,10 +148,14 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
             ),
             'with' => array(
                 'worklist_patient' => array(
-                    'condition' => "DATE_FORMAT(worklist_patient.`when`, '%Y-%m-%d') >= :event_date",
-                    'params' => array(
-                        ':event_date' => $event_date
-                    ),
+                    'with' => array(
+                        'worklist' => array(
+                            'condition' => "DATE_FORMAT(worklist.start, '%Y-%m-%d') >= :event_date",
+                            'params' => array(
+                                ':event_date' => $event_date
+                            ),
+                        )
+                    )
 
                 )
             ),
@@ -378,9 +382,10 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
             }
             return $ret;
         }
-        $assignment_date = $this->worklist_patient->when ? : $this->created_date;
-        $date = date("Y-m-d", strtotime($assignment_date));
-        $time = date("H:i", strtotime($assignment_date));
+
+        list($raw_datetime, $appointment_time) = $this->getAppointmentDateAndTime();
+
+        $date = date("Y-m-d", strtotime($raw_datetime));
         $valid_date = \Helper::convertDate2NHS($date, ' ');
         $wl_name = $this->worklist_patient->worklist->name;
         $warning_css = '';
@@ -398,15 +403,15 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
             $completed_date = \Helper::convertDate2NHS($completed_date, ' ');
             return array(
                 'date' => $date,
-                'time' => $time,
-                'appt_details_dom' => "<i class='oe-i small start pad'></i><span>$date<span class='fade'><small> at </small>$time </span>$wl_name</span>",
+                'time' => $appointment_time,
+                'appt_details_dom' => "<i class='oe-i small start pad'></i><span>$date<span class='fade'><small> at </small>$appointment_time </span>$wl_name</span>",
                 'valid_date_dom' => "<span><small class='fade'>Completed: </small>$completed_date</span>"
             );
         }
         return array(
             'date' => $date,
-            'time' => $time,
-            'appt_details_dom' => "<i class='oe-i small start pad'></i><span>$date<span class='fade'><small> at </small>$time </span>$wl_name</span>",
+            'time' => $appointment_time,
+            'appt_details_dom' => "<i class='oe-i small start pad'></i><span>$date<span class='fade'><small> at </small>$appointment_time </span>$wl_name</span>",
             'valid_date_dom' => "<span class='highlighter $warning_css'>Assigned for: $valid_date</span>"
         );
     }
@@ -464,13 +469,24 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
         $this->_confirmed = $val;
     }
 
+    /**
+     * @return array - [raw_datetime, appointment_time]
+     */
+    protected function getAppointmentDateAndTime() {
+        return [
+            $this->worklist_patient->when ? : $this->worklist_patient->worklist->start,
+            $this->worklist_patient->when ? date("H:i", strtotime($this->worklist_patient->when)) : 'Anytime'
+        ];
+    }
+
     public function getIsRelevant()
     {
         $current_user = \User::model()->findByPk(\Yii::app()->user->id);
         $is_prescriber = \Yii::app()->user->checkAccess('Prescribe');
         $is_med_admin = \Yii::app()->user->checkAccess('Med Administer');
         if ($this->worklist_patient) {
-            $appt_date = date('Y-m-d', strtotime($this->worklist_patient->when));
+            list($raw_datetime) = $this->getAppointmentDateAndTime();
+            $appt_date = date('Y-m-d', strtotime($raw_datetime));
             $today = date('Y-m-d');
             if ($appt_date > $today || (!$this->checkAuth($current_user) && !$is_prescriber && !$is_med_admin)) {
                 $this->_is_relevant = false;
