@@ -1,10 +1,12 @@
 <?php
+
 namespace OEModule\OphCiExamination\widgets;
 
 use CDbCriteria;
 use CException;
 use Element_DrugAdministration;
 use Helper;
+
 class DrugAdministration extends BaseMedicationWidget
 {
     public $examination_element = null;
@@ -70,7 +72,7 @@ class DrugAdministration extends BaseMedicationWidget
             return $appointment_date_order;
         });
         $assigned_psds = array_merge($relevant_psds, $irrelevant_psds);
-        if(in_array($this->controller->action->id, array('removed', 'renderEventImage', 'view', 'print'))){
+        if (in_array($this->controller->action->id, array('removed', 'renderEventImage', 'view', 'print'))) {
             return array_merge(
                 parent::getViewData(),
                 array(
@@ -94,8 +96,11 @@ class DrugAdministration extends BaseMedicationWidget
             );
         }
         if ($is_prescriber) {
-            $now_timestamp = strtotime(date('Y-m-d'));
-            $available_appointments = \WorklistPatient::model()->findAll('patient_id = :patient_id AND UNIX_TIMESTAMP(`when`) >= :now', array(':patient_id' => $this->patient->id, ':now' => $now_timestamp));
+            $appointment_criteria = new CDbCriteria();
+            $appointment_criteria->with = ['worklist'];
+            $appointment_criteria->compare('t.patient_id', $this->patient->id);
+            $appointment_criteria->addCondition("UNIX_TIMESTAMP(DATE_FORMAT(worklist.start, '%Y-%m-%d')) >= UNIX_TIMESTAMP(DATE_FORMAT(NOW(), '%Y-%m-%d'))");
+            $available_appointments = \WorklistPatient::model()->findAll($appointment_criteria);
             usort($available_appointments, function ($appt1, $appt2) {
                 return strtotime($appt1->when) > strtotime($appt2->when);
             });
@@ -105,7 +110,7 @@ class DrugAdministration extends BaseMedicationWidget
             $medication_options = $pgdpsd_api->getMedicationOptions();
 
             $presets = \OphDrPGDPSD_PGDPSD::model()->findAll("active = 1 AND LOWER(type) IN ('psd', 'pgd')");
-            foreach($presets as $preset) {
+            foreach ($presets as $preset) {
                 $med_names = array_map(static function ($med) {
                     return '- ' . $med->medication->getLabel(true);
                 }, $preset->assigned_meds);
@@ -124,7 +129,8 @@ class DrugAdministration extends BaseMedicationWidget
                 if (strtolower($preset->type) === 'psd' && $is_prescriber) {
                     $psds[] = $item;
                 }
-                if (strtolower($preset->type) === 'pgd'
+                if (
+                    strtolower($preset->type) === 'pgd'
                     &&
                     (
                         in_array($current_user->id, $preset->getAuthedUserIDs())

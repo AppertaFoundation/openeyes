@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This is the model class for table "ophdrpgdpsd_assignment".
  *
@@ -48,13 +49,13 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
         return array(
             array('status, assigned_meds', 'required'),
             array('_confirmed', 'validateConfirmation'),
-            array('last_modified_user_id, created_user_id', 'length', 'max'=>10),
+            array('last_modified_user_id, created_user_id', 'length', 'max' => 10),
             // The following rule is used by search().
             array('patient_id, pgdpsd_id, status, visit_id, assigned_meds, comment', 'safe'),
             array('institution_id', 'default', 'value' => Yii::app()->session->get('selected_institution_id'), 'on' => 'insert'),
             array('active', 'boolean', 'allowEmpty' => false),
             array('active', 'default', 'value' => 1, 'on' => 'insert'),
-            array('id, patient_id, visit_id, pgdpsd_id, status, comment_id', 'safe', 'on'=>'search'),
+            array('id, patient_id, visit_id, pgdpsd_id, status, comment_id', 'safe', 'on' => 'search'),
         );
     }
 
@@ -66,7 +67,7 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
         }
         $table_alias = $this->getTableAlias(false, false);
         return array(
-            'condition' =>"$table_alias.institution_id = :institution_id",
+            'condition' => "$table_alias.institution_id = :institution_id",
             'params' => array(
                 ':institution_id' => $selected_institution_id,
             )
@@ -125,7 +126,7 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
     {
         // @todo Please modify the following code to remove attributes that should not be searched.
 
-        $criteria=new CDbCriteria;
+        $criteria = new CDbCriteria();
 
         $criteria->compare('id', $this->id);
         $criteria->compare('patient_id', $this->patient_id);
@@ -135,7 +136,7 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
         $criteria->compare('comment_id', $this->comment_id);
 
         return new CActiveDataProvider($this, array(
-            'criteria'=>$criteria,
+            'criteria' => $criteria,
         ));
     }
 
@@ -150,10 +151,14 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
             ),
             'with' => array(
                 'worklist_patient' => array(
-                    'condition' => "DATE_FORMAT(worklist_patient.`when`, '%Y-%m-%d') >= :event_date",
-                    'params' => array(
-                        ':event_date' => $event_date
-                    ),
+                    'with' => array(
+                        'worklist' => array(
+                            'condition' => "DATE_FORMAT(worklist.start, '%Y-%m-%d') >= :event_date",
+                            'params' => array(
+                                ':event_date' => $event_date
+                            ),
+                        )
+                    )
                 ),
                 'elements' => array(
                     'with' => array(
@@ -406,9 +411,10 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
             }
             return $ret;
         }
-        $assignment_date = $this->worklist_patient->when ? : $this->created_date;
-        $date = date("Y-m-d", strtotime($assignment_date));
-        $time = date("H:i", strtotime($assignment_date));
+
+        list($raw_datetime, $appointment_time) = $this->getAppointmentDateAndTime();
+
+        $date = date("Y-m-d", strtotime($raw_datetime));
         $valid_date = \Helper::convertDate2NHS($date, ' ');
         $wl_name = $this->worklist_patient->worklist->name;
         $warning_css = '';
@@ -426,15 +432,15 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
             $completed_date = \Helper::convertDate2NHS($completed_date, ' ');
             return array(
                 'date' => $date,
-                'time' => $time,
-                'appt_details_dom' => "<i class='oe-i small start pad'></i><span>$date<span class='fade'><small> at </small>$time </span>$wl_name</span>",
+                'time' => $appointment_time,
+                'appt_details_dom' => "<i class='oe-i small start pad'></i><span>$date<span class='fade'><small> at </small>$appointment_time </span>$wl_name</span>",
                 'valid_date_dom' => "<span><small class='fade'>Completed: </small>$completed_date</span>"
             );
         }
         return array(
             'date' => $date,
-            'time' => $time,
-            'appt_details_dom' => "<i class='oe-i small start pad'></i><span>$date<span class='fade'><small> at </small>$time </span>$wl_name</span>",
+            'time' => $appointment_time,
+            'appt_details_dom' => "<i class='oe-i small start pad'></i><span>$date<span class='fade'><small> at </small>$appointment_time </span>$wl_name</span>",
             'valid_date_dom' => "<span class='highlighter $warning_css'>Assigned for: $valid_date</span>"
         );
     }
@@ -492,6 +498,17 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
         $this->_confirmed = $val;
     }
 
+    /**
+     * @return array - [raw_datetime, appointment_time]
+     */
+    protected function getAppointmentDateAndTime()
+    {
+        return [
+            $this->worklist_patient->when ? : $this->worklist_patient->worklist->start,
+            $this->worklist_patient->when ? date("H:i", strtotime($this->worklist_patient->when)) : 'Anytime'
+        ];
+    }
+
     public function getIsRelevant()
     {
         $current_user = \User::model()->findByPk(\Yii::app()->user->id);
@@ -529,9 +546,10 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
      * Get the deleted info box html element for deleted assignment
      * @return null|string deleted info box html element
      */
-    public function getDeletedUI(){
+    public function getDeletedUI()
+    {
         $deleted_tag = null;
-        if(!(bool)$this->active){
+        if (!(bool)$this->active) {
             $assigned_meds_count = count($this->assigned_meds);
             $administerd_meds_count = $this->getAdministeredMedsCount();
             $tag_txt = $administerd_meds_count > 0 ? ($assigned_meds_count === $administerd_meds_count ? "Cancelled" : "Cancelled, partially administered") : "Cancelled";
@@ -543,8 +561,9 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
     /**
      * @return int - number of administered medications
      */
-    public function getAdministeredMedsCount() {
-        $administered_meds = array_filter($this->assigned_meds, function($med) {
+    public function getAdministeredMedsCount()
+    {
+        $administered_meds = array_filter($this->assigned_meds, function ($med) {
             return $med->administered;
         });
         return count($administered_meds);
