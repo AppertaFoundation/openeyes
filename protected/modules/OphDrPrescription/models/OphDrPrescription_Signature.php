@@ -196,8 +196,7 @@ class OphDrPrescription_Signature extends BaseSignature
 
     private function getSignatureImage(): string
     {
-
-        if ($thumb = $this->signatureFile->getThumbnail("150x50")) {
+        if ($this->signatureFile && $thumb = $this->signatureFile->getThumbnail("150x50")) {
             $data = file_get_contents($thumb["path"]);
             if ($data !== false) {
                 $img = base64_encode($data);
