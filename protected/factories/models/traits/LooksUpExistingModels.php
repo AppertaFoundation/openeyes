@@ -8,13 +8,13 @@ trait LooksUpExistingModels
 {
     protected function mapToFactoryOrId($cls, $definition, $defaultDefinitionKey = 'name')
     {
-        if (get_class($definition) === $cls) {
-            return $definition->id;
-        }
-
         if (is_string($definition)) {
             // map to default key
             $definition = [$defaultDefinitionKey => $definition];
+        } else {
+            if (get_class($definition) === $cls) {
+                return $definition->id;
+            }
         }
 
         if (is_null($definition) || is_array($definition)) {

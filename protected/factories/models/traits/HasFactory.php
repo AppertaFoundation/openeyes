@@ -26,6 +26,8 @@ use OE\factories\ModelFactory;
  */
 trait HasFactory
 {
+    protected static $reflection_class_for_factory;
+
     public static function factory()
     {
         return ModelFactory::factoryFor(get_called_class());
@@ -37,7 +39,13 @@ trait HasFactory
             return ModelFactory::buildModuleFactoryName(get_called_class());
         }
 
-        return static::class . 'Factory';
+        $rc = static::reflectionClass();
+
+        if (preg_match('/modules/', dirname($rc->getFileName()))) {
+            return static::class . 'Factory';
+        }
+
+        return ModelFactory::$defaultModelNamespace . get_called_class() . 'Factory';
     }
 
     /**
@@ -46,15 +54,29 @@ trait HasFactory
      */
     public static function importNonNamespacedFactories()
     {
-        if (!preg_match('/OEModule/', static::class)) {
-            // assumed to not be a namespaced model class
-            $rc = new \ReflectionClass(static::class);
-            $class_path = dirname($rc->getFileName());
-            $path_segments = explode(DIRECTORY_SEPARATOR, $class_path);
+        if (preg_match('/OEModule/', static::class)) {
+            return;
+        }
 
-            // get the module name from the file path (assumes models directory)
-            $module_name = $path_segments[count($path_segments) - 2];
+        // assumed to not be a namespaced model class
+        $rc = static::reflectionClass();
+        $class_path = dirname($rc->getFileName());
+
+        $path_segments = explode(DIRECTORY_SEPARATOR, $class_path);
+
+        // get the module name from the file path (assumes models directory)
+        $module_name = $path_segments[count($path_segments) - 2];
+        if ($module_name !== 'protected') {
             \Yii::import("{$module_name}.factories.models.*");
         }
+    }
+
+    protected static function reflectionClass()
+    {
+        if (!static::$reflection_class_for_factory) {
+            static::$reflection_class_for_factory = new \ReflectionClass(static::class);
+        }
+
+        return static::$reflection_class_for_factory;
     }
 }

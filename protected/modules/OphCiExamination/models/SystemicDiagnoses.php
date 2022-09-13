@@ -19,6 +19,7 @@ namespace OEModule\OphCiExamination\models;
 
 use OEModule\OphCiExamination\components\OphCiExamination_API;
 use OEModule\OphCiExamination\widgets\SystemicDiagnoses as SystemicDiagnosesWidget;
+use OE\factories\models\traits\HasFactory;
 
 /**
  * Class SystemicDiagnoses
@@ -37,6 +38,7 @@ use OEModule\OphCiExamination\widgets\SystemicDiagnoses as SystemicDiagnosesWidg
  */
 class SystemicDiagnoses extends \BaseEventTypeElement
 {
+    use HasFactory;
     use traits\CustomOrdering;
 
     public static $PRESENT = 1;
