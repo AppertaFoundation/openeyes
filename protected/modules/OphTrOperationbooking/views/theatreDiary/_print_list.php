@@ -22,10 +22,30 @@
 $institution_id = Institution::model()->getCurrent()->id;
 $site_id = Yii::app()->session['selected_site_id'];
 ?>
+<style>
+    @page {
+        size: landscape;
+    }
+    table {
+        width: 100%;        
+    }
+    tr th, tr td {
+        text-align: left;
+        padding: 0 10px;
+    }
+    tr th:first-of-type,
+    tr td:first-of-type {
+        padding-left: 0;
+    }
+    tr th:last-of-type,
+    tr td:last-of-type {
+        padding-right: 0;
+    }
+</style>
 <div id="diaryTemplate">
     <div id="d_title">TCIs in date range <?= \CHtml::encode($_POST['date-start']) ?>
         to <?= \CHtml::encode($_POST['date-end']) ?></div>
-    <table>
+    <table width="100%">
         <tr>
             <th><?= PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $institution_id, $site_id) ?></th>
             <th>Patient name</th>

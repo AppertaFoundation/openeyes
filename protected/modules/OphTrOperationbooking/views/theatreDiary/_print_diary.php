@@ -18,6 +18,28 @@
  */
 
 ?>
+
+<style>
+    @page {
+        size: landscape;
+    }
+    table {
+        width: 100%;        
+    }
+    tr th, tr td {
+        text-align: left;
+        padding: 0 10px;
+    }
+    tr th:first-of-type,
+    tr td:first-of-type {
+        padding-left: 0;
+    }
+    tr th:last-of-type,
+    tr td:last-of-type {
+        padding-right: 0;
+    }
+</style>
+
 <?php
 $institution_id = Institution::model()->getCurrent()->id;
 $site_id = Yii::app()->session['selected_site_id'];
