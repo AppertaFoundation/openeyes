@@ -41,7 +41,7 @@ if (str_contains($ua, 'iPad')) {
 <?php }?>
 
 <?php
-    $iframe_policy = $this->iframe_policy ?? "frame-src 'self' localhost:* blob:;";
+    $iframe_policy = $this->iframe_policy ?? "frame-src 'self' localhost:* blob: complog:;";
     @header("Content-Security-Policy:default-src 'self' localhost:*;script-src 'self' 'unsafe-inline' 'unsafe-eval';style-src 'self' 'unsafe-inline';{$iframe_policy}img-src data: https://*/Analytics http://*/Analytics 'self';worker-src blob:;font-src 'self' data:", true);
 ?>
 
