@@ -1004,6 +1004,7 @@ $modules = array(
         'Api',
         'eyedraw',
         'Mirth',
+        'OESysEvent' => ['class' => \OEModule\OESysEvent\OESysEventModule::class],
         'OphCiExamination' => array('class' => '\OEModule\OphCiExamination\OphCiExaminationModule'),
         'OphCoCorrespondence',
         'OphCiPhasing',
