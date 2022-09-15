@@ -1,5 +1,4 @@
 <?php
-
 /**
  * OpenEyes.
  *
@@ -19,6 +18,8 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "et_ophciexamination_diagnoses". It's worth noting that this Element was originally
  * designed to provide a shortcut interface to setting patient diagnoses. Recording the specifics in the element as well
@@ -37,6 +38,7 @@ namespace OEModule\OphCiExamination\models;
 class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
 {
     use traits\CustomOrdering;
+    use HasFactory;
 
     protected $default_view_order = 10;
     public $no_ophthalmic_diagnoses = false;

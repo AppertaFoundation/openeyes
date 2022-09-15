@@ -2134,12 +2134,14 @@ class DefaultController extends \BaseEventTypeController
                 if ($entry->hasLinkedPrescribedEntry()) {
                     $prescribed_entry = $entry->prescriptionItem();
 
+                    $prescribed_entry->laterality = $entry->laterality;
                     $prescribed_entry->dose = $entry->dose;
                     $prescribed_entry->dose_unit_term = $entry->dose_unit_term;
                     $prescribed_entry->route_id = $entry->route_id;
                     $prescribed_entry->frequency_id = $entry->frequency_id;
                     $prescribed_entry->duration_id = $entry->duration_id;
                     $prescribed_entry->dispense_location_id = $entry->dispense_location_id;
+                    $prescribed_entry->dispense_condition_id = $entry->dispense_condition_id;
                     $prescribed_entry->start_date = $entry->start_date;
                     $prescribed_entry->end_date = $entry->end_date;
                     $prescribed_entry->stop_reason_id = $entry->stop_reason_id;

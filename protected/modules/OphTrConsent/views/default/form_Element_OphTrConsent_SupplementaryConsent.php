@@ -17,35 +17,39 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
+<?php
+$purifier = new CHtmlPurifier();
+$my_questions = [];
+$data_questions = [];
+if ($element->id) { // add questions we have data for.
+    foreach ($element->element_question as $ele_q) {
+        if (!empty($ele_q->question)) {
+            array_push($data_questions, $ele_q->question);
+        }
+    }
+}
+
+$form_id = @$_GET['type_id'] ?? 1;
+$new_q = Ophtrconsent_SupplementaryConsentQuestion::model()->findAllMyQuestionsAsgn(
+    $this->event->episode->firm->institution_id,
+    $this->event->site_id,
+    $this->event->episode->firm->getSubspecialtyID(),
+    $form_id);
+?>
 <div class="element-fields cols-10">
+    <?php if (!$new_q) { ?>
+    <div class="alert-box info">There are no active supplementary consent questions.</div>
+    <?php } else { ?>
     <table class="cols-full last-left">
         <colgroup>
             <col class="cols-6">
         </colgroup>
         <tbody>
             <?php
-            $purifier = new CHtmlPurifier();
-            $my_questions = [];
-            $data_questions = [];
-            if ($element->id) { // add questions we have data for.
-                foreach ($element->element_question as $ele_q) {
-                    if (!empty($ele_q->question)) {
-                        array_push($data_questions, $ele_q->question);
-                    }
-                }
-            }
-
-            $form_id = @$_GET['type_id'] ?? 1;
-            $new_q = Ophtrconsent_SupplementaryConsentQuestion::model()->findAllMyQuestionsAsgn(
-                $this->event->episode->firm->institution_id,
-                $this->event->site_id,
-                $this->event->episode->firm->getSubspecialtyID(),
-                $form_id);
 
             $my_questions = array_merge($data_questions, $new_q);
             // remove duplicate questions
             $my_questions = array_map("unserialize", array_unique(array_map("serialize", $my_questions)));
-
 
             foreach ($my_questions as $questassgn) { ?>
                 <tr>
@@ -134,5 +138,6 @@
             <?php }?>
         </tbody>
     </table>
+    <?php } ?>
 </div>
 

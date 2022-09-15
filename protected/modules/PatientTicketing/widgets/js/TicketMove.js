@@ -314,6 +314,7 @@
 
     document.addEventListener("DOMContentLoaded", setOnBeforeUnload);
   $(document).ready(function () {
+    autosize($('.autosize'));
     var ticketMoveController = new TicketMoveController();
     window.ticketMoveController = ticketMoveController;
     ticketMoveController.loadScratchpadData();

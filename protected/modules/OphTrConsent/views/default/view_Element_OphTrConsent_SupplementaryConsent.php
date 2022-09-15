@@ -24,6 +24,7 @@
 ?>
 <div class="element-fields full-width">
     <div class="cols-10">
+        <?php if(count($element->element_question) > 0) { ?>
         <table class="cols-full last-left">
             <colgroup>
                 <col class="cols-6">
@@ -102,5 +103,8 @@
                 <?php } ?>
             </tbody>
         </table>
+        <?php } else { ?>
+            <div class="alert-box info">There are no active supplementary consent questions.</div>
+        <?php } ?>
     </div>
 </div>
