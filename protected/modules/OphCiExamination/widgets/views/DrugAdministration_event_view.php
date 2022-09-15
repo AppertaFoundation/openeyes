@@ -7,24 +7,24 @@
             $is_active = $assigned_psd->active;
             $is_relevant = $assigned_psd->isrelevant;
             $grey_out_section = !$is_relevant || !$is_active ? 'fade' : null;
-            extract($this->getDeletedUI($is_active));
+            $deleted_tag = $assigned_psd->getDeletedUI();
         ?>
-    <div class="order-block <?=$grey_out_section;?> <?=$deleted_style?>">
+    <div class="order-block">
         <div class="flex row">
             <div class="flex-l">
                 <!-- rely on status class: todo | active | done -->
                 <div class="drug-admin-box inline <?=$assigned_psd->getStatusDetails()['css']?>">
                     <?=$assignment_type_name['type']?>
-                </div>
+                </div>&emsp;
                 <div class="large-text">
                     <?=$assignment_type_name['name']?>
                     <span class="js-appt-details">
                         <?=$appointment_details['appt_details_dom']?>
                     </span>
-                    <?=$deleted_tag?>
                 </div>
             </div>
             <div class="flex-r">
+                <?=$deleted_tag?>
                 <?=$appointment_details['valid_date_dom']?>
             </div>
         </div>
@@ -33,8 +33,11 @@
                 <table class="cols-full">
                     <colgroup>
                         <col class="cols-4">
-                        <col class="cols-2">
                         <col class="cols-1">
+                        <col class="cols-1">
+                        <col class="cols-2">
+                        <col class="cols-2">
+                        <col class="cols-2">
                     </colgroup>
                     <thead>
                         <tr>
@@ -44,17 +47,32 @@
                             <th>Administered by</th>
                             <th>Date</th>
                             <th>Time</th>
-                            <th><i class="oe-i tick small no-click pad"></i></th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
                     <?php
                     $entries = $assigned_psd->assigned_meds;
                     foreach ($entries as $entry_key => $entry) {
-                        extract($entry->getAdministerDetails());
+                        list(
+                            "administered_ts" => $administered_ts,
+                            "administered_nhs" => $administered_nhs,
+                            "administered_time" => $administered_time,
+                            "administered_time_ui" => $administered_time_ui,
+                            "administered_user" => $administered_user,
+                            "state_css" => $state_css,
+                        ) = $entry->getAdministerDetails();
                         ?>
-                        <tr>
-                            <td><?=$entry->medication->getLabel(true)?></td>
+                        <tr class="<?=$grey_out_section;?>">
+                            <td>
+                                <?php if(!$is_active && !$entry->administered) {?>
+                                    <del>
+                                <?php } ?>
+                                <?=$entry->medication->getLabel(true)?>
+                                <?php if(!$is_active && !$entry->administered) {?>
+                                    </del>
+                                <?php } ?>
+                            </td>
                             <td><?=$entry->dose?> <?=$entry->dose_unit_term?></td>
                             <td>
                             <?php if ($entry->route->isEyeRoute()) {?>
@@ -69,7 +87,6 @@
                             </td>
                             <td>
                                 <?=$administered_user;?>
-                                <!-- <small class="fade">Waiting to administer</small> -->
                             </td>
                             <td>
                                 <?=$administered_nhs;?>
@@ -78,7 +95,7 @@
                                 <?=$administered_time;?>
                             </td>
                             <td>
-                                <i class="oe-i medium pad <?=$css?>"></i>
+                                <i class="oe-i medium pad <?=$state_css?>"></i>
                             </td>
                         </tr>
                     <?php }?>

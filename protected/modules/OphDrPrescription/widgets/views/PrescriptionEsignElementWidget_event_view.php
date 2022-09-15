@@ -76,7 +76,6 @@
                 <thead>
                 <tr>
                     <th></th>
-                    <th>Role</th>
                     <th>Signatory</th>
                     <th>Date</th>
                     <th>Signature</th>
@@ -93,6 +92,7 @@
                             "element" => $this->element,
                             "signature" => $signature,
                             "mode" => ($this->mode === $this::$EVENT_EDIT_MODE ? "edit" : "view"),
+                            "hide_role" => true,
                         ]
                     );
                 }

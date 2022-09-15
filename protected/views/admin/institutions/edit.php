@@ -523,6 +523,8 @@ $default_urls = $logo_helper->getLogoURLs();
                 <th>Protocols</th>
                 <th>Necessity</th>
                 <th>Status Necessity</th>
+                <th>Auto Increment</th>
+                <th>Auto Increment Start</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -560,6 +562,11 @@ $default_urls = $logo_helper->getLogoURLs();
                             $necessity_options_with_labels,
                             ) ?>
                         </td>
+                        <td><?= \CHtml::activeCheckBox($identifier_rule, "[{$row_count}]auto_increment") ?></td>
+                        <td><?= \CHtml::activeTextField($identifier_rule, "[{$row_count}]auto_increment_start", [
+                                'placeholder' => 'Auto Increment Start',
+                                'class' => 'cols-4'
+                            ]) ?></td>
                         <td><a href="javascript:void(0)" class="js-delete_patient_identifier">Delete</a></td>
                     </tr>
                 <?php } ?>
@@ -658,6 +665,23 @@ $default_urls = $logo_helper->getLogoURLs();
                     name = "PatientIdentifierTypeDisplayOrder[{{row_count}}][status_necessity]" >
                 {{#necessity_options}} <option value="{{option}}" >{{label}}</option>{{/necessity_options}}
             </select>
+        </td>
+        <td>
+            <input id="ytPatientIdentifierTypeDisplayOrder_{{row_count}}_auto_increment"
+                   type="hidden"
+                   value="0"
+                   name="PatientIdentifierTypeDisplayOrder[{{row_count}}][auto_increment]">
+
+            <input id="PatientIdentifierTypeDisplayOrder_{{row_count}}_auto_increment"
+                   type="checkbox"
+                   value="1"
+                   name="PatientIdentifierTypeDisplayOrder[{{row_count}}][auto_increment]">
+        </td>
+        <td>
+            <input class="cols-4"
+                   type="text"
+                   value="0"
+                   name="PatientIdentifierTypeDisplayOrder[{{row_count}}][auto_increment_start]">
         </td>
         <td><a href="javascript:void(0)" class="js-delete_patient_identifier">Delete</a></td>
     </tr>

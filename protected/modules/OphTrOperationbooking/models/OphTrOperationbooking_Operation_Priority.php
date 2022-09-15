@@ -16,6 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "et_ophtroperationbooking_operation_priority".
  *
@@ -33,6 +35,8 @@
  */
 class OphTrOperationbooking_Operation_Priority extends BaseActiveRecordVersionedSoftDelete
 {
+    use HasFactory;
+
     public $notDeletedField = 'active';
 
     /**

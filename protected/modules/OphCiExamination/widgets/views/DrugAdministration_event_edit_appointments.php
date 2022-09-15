@@ -2,7 +2,7 @@
     <?php
         $today = \Helper::convertDate2NHS(date('Y-m-d'), ' ');
         $dates = array_map(function ($appt) {
-            return date('Y-m-d', strtotime($appt->when));
+            return date('Y-m-d', strtotime($appt->worklist->start));
         }, $available_appointments);
         $has_appointment_today = array_search(date('Y-m-d'), $dates) !== false;
     ?>
@@ -15,7 +15,7 @@
         <fieldset class="restrict-data-height rows-5">
             <?php if (!$available_appointments || !$has_appointment_today) { ?>
             <label class="highlight">
-                <input 
+                <input
                     type="radio"
                     class="js-assignment-options unbooked is-order"
                     data-for-today="1"
@@ -24,7 +24,7 @@
                     data-appt-time="<?=date('H:i');?>"
                     data-appt-clinic="Unbooked Appointment"
                     checked
-                > 
+                >
                 <span class="highlighter good">
                     Today
                     <span class="fade nowrap">
@@ -34,9 +34,11 @@
             </label>
             <?php } ?>
             <?php foreach ($available_appointments as $appt) {
-                $appt_date = \Helper::convertMySQL2NHS($appt->when, ' ');
-                $valid_appt_date = \Helper::convertMySQL2NHS($appt->when, ' ');
-                $time = date('H:i', strtotime($appt->when));
+                $raw_appt_date = $appt->when ? : $appt->worklist->start;
+
+                $appt_date = \Helper::convertMySQL2NHS($raw_appt_date, ' ');
+                $valid_appt_date = \Helper::convertMySQL2NHS($raw_appt_date, ' ');
+                $time = $appt->when ? date('H:i', strtotime($raw_appt_date)) : 'Anytime';
                 $for_today = false;
                 if ($appt_date === $today) {
                     $for_today = true;
@@ -45,7 +47,7 @@
                 }
                 ?>
             <label class="highlight">
-                <input 
+                <input
                     type="radio"
                     class="js-assignment-options is-order"
                     value="<?=$appt->id?>"
@@ -56,7 +58,7 @@
                     data-appt-clinic="<?=$appt->worklist->name;?>"
                     <?=intval($appt->id) === intval($assigned_appt) ? 'checked' : ''?>
                     <?=intval($appt->id) === intval($assigned_appt) ? 'data-assigned=1' : ''?>
-                > 
+                >
                 <span class="<?=intval($appt->id) === intval($assigned_appt) ? 'highlighter good' : '';?>">
                     <?= $appt_date;?>
                     <span class="fade nowrap">

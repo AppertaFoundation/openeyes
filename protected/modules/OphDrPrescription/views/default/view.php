@@ -48,7 +48,7 @@ if (($Element->draft) && (!$elementEditable) && $editAccess) {
 }
 
 if ($this->checkPrintAccess()) {
-    if (!$Element->draft || $editAccess) {
+    if (!$Element->draft && $this->checkAccess('OprnPrintPrescription')) {
         foreach ($Element->items as $item) {
             // If at least one prescription item has 'Print to FP10' selected as the dispense condition, display the Print FP10 button.
             if ($item->dispense_condition->id === $form_option->id && $settings->getSetting('enable_prescription_overprint') === 'on') {
@@ -56,8 +56,6 @@ if ($this->checkPrintAccess()) {
                 break;
             }
         }
-    }
-    if (!$Element->draft && $editAccess) {
         $this->event_actions[] = EventAction::printButton();
     }
 }

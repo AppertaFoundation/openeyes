@@ -175,6 +175,29 @@ class PatientIdentifierHelper
     }
 
     /**
+     * Returns the identifier of the specified patient.
+     *
+     * @param $usage_type
+     * @param $institution_id
+     * @param null $site_id
+     * @return PatientIdentifier|null
+     */
+    public static function getMaxIdentifier($type_id): ?PatientIdentifier
+    {
+        $criteria = new CDbCriteria();
+        $criteria->condition = "patient_identifier_type_id=:patient_identifier_type_id";
+        $criteria->params = [':patient_identifier_type_id' => $type_id];
+        $criteria->order = 'value desc';
+        $criteria->limit = 1; // We only want the first result.
+        $identifier = PatientIdentifier::model()->find($criteria);
+        if ($identifier) {
+            return $identifier;
+        }
+
+        return null;
+    }
+
+    /**
      * Returns all patient's identifiers
      *
      * @param $patient_id

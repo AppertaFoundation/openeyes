@@ -147,11 +147,13 @@ class PathwayStepType extends BaseActiveRecordVersioned
         return parent::model($className);
     }
 
-    private static function basePathTypeCriteria(){
+    private static function basePathTypeCriteria()
+    {
         $criteria = new CDbCriteria();
         $criteria->addCondition('user_can_create = 1');
         return $criteria;
     }
+
     /**
      * @return array|CActiveRecord|mixed|PathwayStepType[]|null
      */

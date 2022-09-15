@@ -19,6 +19,8 @@ use OEModule\CypressHelper\CypressHelperModule;
 * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
 */
 
+use OEModule\OphCiExamination\components\PathstepObserver;
+
 // If the old db.conf file (pre docker) exists, use it. Else read environment variable, else read docker secrets
 // Note, docker secrets are the recommended approach for docker environments
 
@@ -56,8 +58,9 @@ $db_test = array(
     $ssoRedirectURL = getenv('SSO_REDIRECT_URL') ?: 'http://localhost';
     $ssoResponseType = array(getenv('SSO_RESPONSE_TYPE')) ?: array('code');
     $ssoImplicitFLow = strtolower(getenv('SSO_IMPLICIT_FLOW')) === 'true';
-    $ssoUserAttributes = getenv('SSO_USER_ATTRIBUTES') ?: '';
-    $ssoCustomClaims = getenv('SSO_CUSTOM_CLAIMS') ?: '';
+
+    $ssoUserFields = getenv('SSO_USER_FIELDS') ?: '';
+    $ssoOIDCFields = getenv('SSO_OIDC_FIELDS') ?: '';
 
     $ssoMappingsCheck = strtolower(getenv('STRICT_SSO_ROLES_CHECK')) === 'true';
     $ssoLoginURL = getenv('SSO_LOGIN_URL') ?: null;
@@ -210,7 +213,7 @@ $config = array(
                     'complete_step' => [
                         'class' => 'PathstepObserver',
                         'method' => 'completeStep'
-                    ]
+                    ],
                 ],
                 'event_updated' => [
                     'complete_step' => [
@@ -808,7 +811,7 @@ $config = array(
         'default_patient_import_subspecialty' => 'GL',
         //        Add elements that need to be excluded from the admin sidebar in settings
         'exclude_admin_structure_param_list' => getenv('OE_EXCLUDE_ADMIN_STRUCT_LIST') ? explode(",", getenv('OE_EXCLUDE_ADMIN_STRUCT_LIST')) : array(''),
-        'oe_version' => 'pre-6.2.5-nightly',
+        'oe_version' => 'unreleased',
         'gp_label' => !empty(trim(getenv('OE_GP_LABEL'))) ? getenv('OE_GP_LABEL') : null,
         'general_practitioner_label' => !empty(trim(getenv('OE_GENERAL_PRAC_LABEL'))) ? getenv('OE_GENERAL_PRAC_LABEL') : null,
         // allow duplicate entries on an automatic worklist for a patient (default = false)
@@ -951,8 +954,20 @@ $config = array(
             'authParams' => array('response_mode' => 'form_post'),
             // Generates random encryption key for openssl
             'encryptionKey' => $ssoClientSecret,
-            // Configure custom claims with the user attributes that the claims are for
-            'custom_claims' => array_combine(explode(",", $ssoCustomClaims), explode(",", $ssoUserAttributes)),
+            'field_mapping_allow_list_with_defaults' => array(
+                'username' => '',
+                'email' => '',
+                'first_name' => '',
+                'last_name' => '',
+                'title' => '',
+                'role' => '',
+                'doctor_grade_id' => '',
+                'registration_code' => '',
+                'is_consultant' => 0,
+                'is_surgeon' => 0
+            ),
+            // Field mapping for (user_field, oidc_field). user_field must be in field_mapping_allow_list
+            'field_mapping' => array_combine(explode(",", $ssoUserFields), explode(",", $ssoOIDCFields)),
             // URL to redirect users to SSO portal to login again after session timeout
             'portal_login_url' => $ssoLoginURL,
         ),
@@ -961,21 +976,21 @@ $config = array(
         'training_hub_url' => !empty(trim(getenv('OE_TRAINING_HUB_URL'))) ? getenv('OE_TRAINING_HUB_URL') : null,
         'breakglass_enabled' => $breakGlassEnabled,
         'user_breakglass_field' => $userBreakGlassField,
-
-        /** CVI */
-
-        // enable GP letter to be sent via Docman (./yiic cvidelivery),
-        // generates pdf and XML just like docman
-        'cvi_docman_delivery_enabled' => strtolower(getenv("CVI_DOCMAN_DELIVERY_ENABLED")) == "true" ? true : false,
-
-        // enable mailing to RCOP (./yiic cvidelivery)
-        'cvi_rcop_delivery_enabled' => strtolower(getenv("CVI_RCOP_DELIVERY_ENABLED")) == "true" ? true : false,
-
-        // enable mailing LA (./yiic cvidelivery)
-        'cvi_la_delivery_enabled' => strtolower(getenv("CVI_LA_DELIVERY_ENABLED")) == "true" ? true : false,
-        /** END CVI PARAMS */
     ),
 );
+
+// Enable logging of php errors to brwser console
+// Can be either "true", or can provide the error levels to output (e.g, one or more of trace, error, warning, info, notice)
+if (!empty(getenv('LOG_TO_BROWSER'))) {
+    $browserlog = array(
+                    'browser' => array(
+                        'class' => 'CWebLogRoute',
+                        'levels' => strtolower(trim(getenv('LOG_TO_BROWSER'))) == "true" ? 'error, warning, notice' : trim(getenv('LOG_TO_BROWSER')),
+                        'showInFireBug' => true,
+                    ),
+    );
+    $config['components']['log']['routes'] = array_merge_recursive($config['components']['log']['routes'], $browserlog);
+}
 
 $modules = array(
         // Gii tool
@@ -1036,7 +1051,7 @@ if (strtolower(getenv('OE_MODE')) !== 'live') {
 $caches = array(
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '20220808163719',
+            'time' => '20220906164137',
         ),
 );
 

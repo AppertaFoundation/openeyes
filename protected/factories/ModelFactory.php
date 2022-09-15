@@ -1,5 +1,19 @@
 <?php
 
+/**
+ * (C) Copyright Apperta Foundation 2022
+ * This file is part of OpenEyes.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @link http://www.openeyes.org.uk
+ *
+ * @author OpenEyes <info@openeyes.org.uk>
+ * @copyright Copyright (C) 2022, Apperta Foundation
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+ */
+
 namespace OE\factories;
 
 use CActiveRecord;
@@ -34,7 +48,7 @@ abstract class ModelFactory
 
     public static function new($attributes = [])
     {
-        return (new static)->state($attributes)->configure();
+        return (new static())->state($attributes)->configure();
     }
 
     public static function factoryFor(string $modelName)
@@ -46,6 +60,10 @@ abstract class ModelFactory
 
     public static function resolveFactoryName(string $modelName)
     {
+        if (method_exists($modelName, 'importNonNamespacedFactories')) {
+            $modelName::importNonNamespacedFactories();
+        }
+
         if (method_exists($modelName, 'factoryName')) {
             return $modelName::factoryName();
         }
@@ -310,9 +328,16 @@ abstract class ModelFactory
      */
     protected function persist(array $instances)
     {
+        if (method_exists($this, 'mapDisplayOrderAttributes')) {
+            // @see OE\factories\models\traits\MapsDisplayOrderForFactory
+            $instances = $this->mapDisplayOrderAttributes($instances);
+        }
+
         foreach ($instances as $instance) {
-            // might be receiving an existing model, we don't need to save
-            if ($instance->isNewRecord && !$instance->save()) {
+            // as a lower level interaction with the models, we assume that the eventual
+            // set of data being created will be valid. Therefore we don't perform validation
+            // during the model saves.
+            if ($instance->isNewRecord && !$instance->save(false)) {
                 throw new CannotSaveModelException($instance->getErrors(), $instance->getAttributes());
             }
         }

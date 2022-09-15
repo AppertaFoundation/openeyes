@@ -15,6 +15,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "ophtroperationbooking_preassessment_type".
  *
@@ -30,6 +32,8 @@
  */
 class OphTrOperationbooking_PreAssessment_Type extends BaseActiveRecordVersionedSoftDelete
 {
+    use HasFactory;
+
     /**
      * Returns the static model of the specified AR class.
      *

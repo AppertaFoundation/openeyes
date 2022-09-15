@@ -91,6 +91,7 @@ var OpenEyes = OpenEyes || {};
         sites: [],
         contexts: [],
         worklists: [],
+        filteredWorklists: [],
 
         users: [],
 
@@ -200,13 +201,21 @@ var OpenEyes = OpenEyes || {};
         };
 
         this.mappings.worklists = new Map();
+        this.mappings.filteredWorklists = new Map();
         this.mappings.users = new Map();
         this.mappings.steps = new Map();
 
         this.mappings.worklists.set('all', `All (${this.options.worklists.length})`);
+        this.mappings.filteredWorklists.set('all', `All (${this.options.filteredWorklists.length})`);
+
+        const filteredIds = new Set(this.options.filteredWorklists);
 
         for (let worklistData of this.options.worklists) {
             this.mappings.worklists.set(worklistData.id, worklistData.title);
+
+            if (filteredIds.has(worklistData.id)) {
+                this.mappings.filteredWorklists.set(worklistData.id, worklistData.title);
+            }
         }
 
         for (let userData of this.options.users) {
@@ -528,6 +537,46 @@ var OpenEyes = OpenEyes || {};
             this.filterIsAltered = true;
             this.filter.optional.delete(filterType);
         }
+    };
+
+    WorklistFiltersController.prototype.setAvailableLists = function (lists, filteredIdsList) {
+        const filteredIds = new Set(filteredIdsList);
+        const replacementMappings = new Map();
+        const replacementFilteredMappings = new Map();
+        const newIds = [];
+        const newFilteredIds = [];
+
+        let order = 1;
+        let filteredOrder = 1;
+
+        for (const worklist of lists) {
+            replacementMappings.set(worklist.id, worklist.title);
+
+            if (!this.mappings.worklists.has(worklist.id)) {
+                newIds.push([worklist.id, order]);
+            }
+
+            order = order + 1;
+
+            if (filteredIds.has(worklist.id)) {
+                replacementFilteredMappings.set(worklist.id, worklist.title);
+
+                if (!this.mappings.filteredWorklists.has(worklist.id)) {
+                    newFilteredIds.push([worklist.id, filteredOrder]);
+                }
+
+                filteredOrder = filteredOrder + 1;
+            }
+        }
+
+        replacementMappings.set('all', `All (${lists.length})`);
+        replacementFilteredMappings.set('all', `All (${filteredIdsList.length})`);
+
+        this.mappings.worklists = replacementMappings;
+        this.mappings.filteredWorklists = replacementFilteredMappings;
+
+        this.panelView.updateAvailableWorklists(this.mappings, newIds, newFilteredIds);
+        this.panelView.setListsRow(this.mappings.worklists, this.filter.worklistsArray);
     };
 
     // Convenience method for lists view, which shows/hides lists when they are uncombined

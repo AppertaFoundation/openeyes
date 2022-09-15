@@ -1,11 +1,15 @@
 <?php
 
+use PHPUnit\Framework\MockObject\MockObject;
+
 /**
  * This trait is intended to provide a location to define the different session state dependencies in
  * a more readable manner within test setup.
  */
 trait MocksSession
 {
+    protected array $session_values = [];
+
     public function setupMocksSession()
     {
         $this->beginMocksSession();
@@ -16,13 +20,24 @@ trait MocksSession
      */
     public function stubSession()
     {
-        $this->eraseCurrentSession();
+        $session = \Yii::app()->getComponent('session', false);
 
-        $session = $this->getMockBuilder(\CHttpSession::class)
+        if (!$session instanceof MockObject) {
+            $session = $this->getMockBuilder(\CHttpSession::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        \Yii::app()->setComponent('session', $session);
+            $session->method('get')
+                ->willReturnCallback(function ($attr) {
+                    return $this->session_values[$attr] ?? null;
+                });
+            $session->method('offsetGet')
+                ->willReturnCallback(function ($attr) {
+                    return $this->session_values[$attr] ?? null;
+                });
+
+            \Yii::app()->setComponent('session', $session);
+        }
 
         return $session;
     }
@@ -45,18 +60,43 @@ trait MocksSession
 
         $session = $this->stubSession();
 
-        $session->method('get')
-        ->will($this->returnValueMap([
-            ['selected_firm_id', null, $firm->id],
-            ['selected_site_id', null, $site->id],
-            ['selected_institution_id',null, $institution->id]
-        ]));
+        $this->setSessionValues([
+            'selected_firm_id' => $firm->id,
+            'selected_site_id' => $site->id,
+            'selected_institution_id' => $institution->id
+        ]);
+    }
+
+    public function mockCurrentUser($user)
+    {
+        $web_user = $this->getMockBuilder(OEWebUser::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getId'])
+            ->getMock();
+
+        $web_user->method('getId')
+            ->willReturn($user->id);
+
+        \Yii::app()->setComponent('user', $web_user);
+
+        $session = $this->stubSession();
+        $this->setSessionValues(['user' => $web_user]);
+
+        return $this;
+    }
+
+    protected function setSessionValues(array $session_values = [], $merge = true)
+    {
+        $this->session_values = $merge ? array_merge($this->session_values, $session_values) : $session_values;
+
+        return $this;
     }
 
     protected function beginMocksSession()
     {
-        // ensure session is undefined
+        // ensure session is freshly stubbed
         $this->eraseCurrentSession();
+        $this->stubSession();
 
         $this->teardownCallbacks(function () {
             $this->eraseCurrentSession();
@@ -67,5 +107,6 @@ trait MocksSession
     {
         $_SESSION = [];
         Yii::app()->setComponent('session', null);
+        $this->setSessionValues([], false);
     }
 }

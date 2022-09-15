@@ -32,6 +32,8 @@
  * @property string $created_user_id
  * @property string $created_date
  * @property string $unique_row_string
+ * @property bool $auto_increment
+ * @property integer $auto_increment_start
  *
  * The followings are the available model relations:
  * @property PatientIdentifierType $patientIdentifierType
@@ -80,7 +82,7 @@ class PatientIdentifierTypeDisplayOrder extends BaseActiveRecordVersioned
             ['status_necessity', 'validateNecessity'],
             ['search_protocol_prefix', 'length', 'max' => 100],
             ['institution_id, display_order, patient_identifier_type_id, necessity, status_necessity, site_id,
-             search_protocol_prefix, searchable,unique_row_string', 'safe'],
+             search_protocol_prefix, searchable,unique_row_string, auto_increment, auto_increment_start', 'safe'],
         ];
     }
 

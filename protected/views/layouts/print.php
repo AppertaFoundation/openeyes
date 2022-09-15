@@ -30,6 +30,10 @@ if (!is_null($controller->module)) {
         case 'OphTrConsent':
             $print_helper_class = 'OphTrConsent ' . (isset($_GET['vi']) && $_GET['vi'] ? 'impaired-vision' : 'large-font');
             break;
+        case 'OphTrOperationbooking':
+            $print_helper_class = 'OphTrOperationbooking';
+            $print_helper_styles = 'margin: 0 80px';
+            break;
     }
 }
 $is_visual_impairment = \Yii::app()->request->getParam('is_visual_impairment');

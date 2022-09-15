@@ -16,6 +16,7 @@
  */
 
 namespace OEModule\OphCiExamination\models;
+use OE\factories\models\traits\HasFactory;
 
 
 /**
@@ -33,6 +34,8 @@ namespace OEModule\OphCiExamination\models;
  */
 class OphCiExaminationAllergy extends \BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     /**
      * Returns the static model of the specified AR class.
      *

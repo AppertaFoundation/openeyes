@@ -1,5 +1,4 @@
 <?php
-
 /**
  * OpenEyes.
  *
@@ -19,6 +18,8 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "ophciexamination_diagnosis".
  *
@@ -31,15 +32,7 @@ namespace OEModule\OphCiExamination\models;
  */
 class OphCiExamination_Diagnosis extends \BaseActiveRecordVersioned
 {
-    /**
-     * Returns the static model of the specified AR class.
-     *
-     * @return OphCiExamination_Diagnosis the static model class
-     */
-    public static function model($className = __CLASS__)
-    {
-        return parent::model($className);
-    }
+    use HasFactory;
 
     /**
      * @return string the associated database table name

@@ -65,7 +65,7 @@ class m200517_044325_add_multiple_LDAP_auth_to_institutions extends OEMigration
             true,
             'user_auth'
         );
-        $this->execute('INSERT INTO user_authentication_method(`code`) VALUES ("LOCAL"), ("LDAP")');
+        $this->execute('INSERT INTO user_authentication_method(`code`) VALUES ("LOCAL"), ("LDAP"), ("SSO")');
 
         // MIGRATE DATA TO NEW MODEL
         // CREATE NEW INSTITUTION AUTHENTICATION
@@ -95,7 +95,26 @@ class m200517_044325_add_multiple_LDAP_auth_to_institutions extends OEMigration
         // DETERMINE WHICH USERS ARE LDAP AND WHICH ARE LOCAL
         if (Yii::app()->params['auth_source'] === 'BASIC') {
             // CREATE USER AUTHENTICATION ENTRIES FOR LOCAL USERS
-            $this->execute("INSERT INTO `user_authentication`(`institution_authentication_id`,`user_id`,`username`,`active`,`password_hash`, `password_salt`) SELECT $local_inst_auth, u.id, u.username, u.active, u.password, u.salt FROM `user` u;");
+            $this->execute("INSERT INTO `user_authentication`(`institution_authentication_id`,`user_id`,`username`,`password_hash`, `password_salt`) SELECT $local_inst_auth, u.id, u.username, u.password, u.salt FROM `user` u;");
+        } elseif (Yii::app()->params['auth_source'] === 'SAML' || Yii::app()->params['auth_source'] === 'OIDC') {
+            // Get list of local users for BASIC authentication
+            $local_users = Yii::app()->params['local_users'] ?? [];
+            $local_user_ids = $this->dbConnection
+                ->createCommand("SELECT id FROM user WHERE username IN ('" . implode("','", $local_users) . "')")
+                ->queryColumn();
+
+            $auth_source = Yii::app()->params['auth_source'];
+            $this->insert('institution_authentication', [
+                'institution_id' => $default_institution['id'],
+                'user_authentication_method' => 'SSO',
+                'description' => "{$auth_source} authentication for {$default_institution['name']}."
+            ]);
+            $sso_auth = $this->dbConnection->getLastInsertID();
+
+            // Create User Authentication for SSO users
+            $this->execute("INSERT INTO `user_authentication`(`institution_authentication_id`,`user_id`,`username`,`active`) SELECT $sso_auth, u.id, u.username, u.active FROM `user` u WHERE u.id NOT IN (".implode(",", $local_user_ids).");");
+            // Create User Authentication for local users
+            $this->execute("INSERT INTO `user_authentication`(`institution_authentication_id`,`user_id`,`username`,`password_hash`, `password_salt`, `active`) SELECT $local_inst_auth, u.id, u.username, u.password, u.salt, u.active FROM `user` u WHERE u.id IN (".implode(",", $local_user_ids).");");
         } else {
             $local_users = Yii::app()->params['local_users'] ?? [];
             $local_user_ids = $this->dbConnection

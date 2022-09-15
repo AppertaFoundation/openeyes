@@ -51,6 +51,7 @@ class NinePositionsTest extends \ModelTestCase
     public function a_reading_is_required()
     {
         $instance = $this->getElementInstance();
+        $instance->readings = [];
         $this->assertAttributeInvalid($instance, 'readings', 'cannot be blank');
     }
 
