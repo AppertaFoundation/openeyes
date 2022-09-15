@@ -1666,6 +1666,8 @@ class AdminController extends BaseAdminController
             $patient_identifier_display_order->search_protocol_prefix = $patient_identifier_rule['search_protocol_prefix'];
             $patient_identifier_display_order->necessity = $patient_identifier_rule['necessity'];
             $patient_identifier_display_order->status_necessity = $patient_identifier_rule['status_necessity'];
+            $patient_identifier_display_order->auto_increment = $patient_identifier_rule['auto_increment'];
+            $patient_identifier_display_order->auto_increment_start = $patient_identifier_rule['auto_increment_start'];
 
             if (!$patient_identifier_display_order->save()) {
                 $errors[] = $patient_identifier_display_order->getErrors();

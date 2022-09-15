@@ -15,6 +15,11 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+ /**
+  * @deprecated Since 6.3.1
+  * @link /docs/adr/0004-standardise-on-native-datepicker-functionality-with-a-consistent-widget.md
+  */
 class DatePicker extends BaseFieldWidget
 {
     public $name;

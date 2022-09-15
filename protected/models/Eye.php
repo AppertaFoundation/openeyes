@@ -1,5 +1,4 @@
 <?php
-
 /**
  * OpenEyes.
  *
@@ -17,6 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "eye".
  *
@@ -28,6 +29,8 @@
  */
 class Eye extends BaseActiveRecord
 {
+    use HasFactory;
+
     const LEFT = 1;
     const RIGHT = 2;
     const BOTH = 3;

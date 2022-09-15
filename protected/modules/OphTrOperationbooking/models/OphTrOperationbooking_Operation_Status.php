@@ -16,6 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "et_ophtroperationbooking_operation_status".
  *
@@ -28,6 +30,8 @@
  */
 class OphTrOperationbooking_Operation_Status extends BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     const STATUS_REQUIRES_SCHEDULING = 1;
     const STATUS_SCHEDULED = 2;
     const STATUS_REQUIRES_RESCHEDULING = 3;

@@ -102,7 +102,6 @@
                 </p>
             <?php }?>
         <?php }?>
-        <div class="break"><!-- **** page break ***** --></div>
         <p>To help ensure your admission proceeds smoothly, please follow these instructions:</p>
         <ul>
             <?php if ($operation->booking->showWarning('Admission Instruction')) {?>

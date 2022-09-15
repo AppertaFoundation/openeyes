@@ -123,7 +123,7 @@ OpenEyes.UI = OpenEyes.UI || {};
         });
 
         this.setupDateControls();
-        this.setupListViewControls(idMappings.worklists);
+        this.setupListViewControls(idMappings.filteredWorklists);
         this.setupFiltersAdder(idMappings);
 
         this.panel.find('.js-combine-lists-option').change(function () {
@@ -229,19 +229,7 @@ OpenEyes.UI = OpenEyes.UI || {};
             controller.setShownLists(shownLists);
         });
 
-        const listsCookie = $.cookie('worklists-to-show');
-
-        if (listsCookie) {
-            let lists = JSON.parse(listsCookie);
-
-            for (let id of lists) {
-                into.find(`input[value="${id}"]`).attr('checked', true);
-            }
-
-            allButton.removeClass('selected');
-
-            controller.setShownLists(lists);
-        }
+        this.refreshShownLists();
     }
 
     WorklistFilterPanel.prototype.setupFiltersAdder = function (idMappings) {
@@ -390,6 +378,73 @@ OpenEyes.UI = OpenEyes.UI || {};
         this.setCombinedStatus(filter.combined);
     }
 
+    WorklistFilterPanel.prototype.refreshShownLists = function () {
+        const listsCookie = $.cookie('worklists-to-show');
+
+        if (listsCookie) {
+            const allButton = this.panel.find('.js-worklist-lists-view button.js-all-lists-btn');
+            const listsContainer = this.panel.find('.js-worklist-lists-view .js-list-set');
+            const lists = JSON.parse(listsCookie);
+
+            for (const id of lists) {
+                listsContainer.find(`input[value="${id}"]`).attr('checked', true);
+            }
+
+            allButton.removeClass('selected');
+
+            this.controller.setShownLists(lists);
+        }
+    }
+
+    WorklistFilterPanel.prototype.updateAvailableWorklists = function (mappings, newIds, newFilteredIds) {
+        const template = $('#js-worklist-filter-panel-template-worklist-entry').text();
+        const intoListView = this.panel.find('.js-worklist-lists-view .js-list-set');
+        const intoMenu = this.adder.$tr.find('#js-wfp-lists ul');
+
+        for (const [id, order] of newFilteredIds) {
+            const newEntry = Mustache.render(template, {id: id, title: mappings.filteredWorklists.get(id)});
+
+            // Order is one indexed to fit with nth-of-type being one indexed
+            if (order >= intoListView.find('label').length) {
+                intoListView.append(newEntry);
+            } else {
+                intoListView.find(`label:nth-of-type(${order})`).before(newEntry);
+            }
+        }
+
+        intoListView.find('input:checkbox').filter(function () { return !mappings.filteredWorklists.has(this.value); }).parent().remove();
+
+        $('.js-worklist-lists-view button[name="all"]').text(mappings.filteredWorklists.get('all'));
+
+        for (const [id, order] of newIds) {
+            // TODO Make changes to the adder dialogue so that adding & removing items does not require
+            // altering the internals
+            const newEntryData = this.adder.constructDataset({id: id, label: mappings.worklists.get(id)});
+            const newEntry = $("<li />", newEntryData);
+
+            $('<span />', { class: 'auto-width' }).text(newEntryData['data-label']).appendTo(newEntry);
+
+            // Order is one indexed to fit with nth-of-type being one indexed
+            // and has one added to it to skip the All entry
+            const finalOrder = order + 1;
+
+            if (finalOrder >= intoMenu.find('li').length) {
+                intoMenu.append(newEntry);
+            } else {
+                intoMenu.find(`li:nth-of-type(${finalOrder})`).before(newEntry);
+            }
+        }
+
+        this.adder.$tr.find('#js-wfp-lists li').filter(function () { return !mappings.worklists.has(this.dataset.id) }).remove();
+
+        const allMenuItem = this.adder.$tr.find('#js-wfp-lists li[data-id="all"]');
+
+        allMenuItem.prop('data-label', mappings.worklists.get('all'));
+        allMenuItem.find('span').text(mappings.worklists.get('all'));
+
+        this.refreshShownLists();
+    }
+
     WorklistFilterPanel.prototype.setSelectedSite = function (site) {
         this.panel.find('.js-worklists-sites option:selected').prop('selected', false);
 
@@ -460,10 +515,12 @@ OpenEyes.UI = OpenEyes.UI || {};
         } else {
             const view = this;
 
-            listsLabel = lists.map(function (id) {
+            listsLabel = lists.filter(function(id) {
+                return idMappings.has(`${id}`); // Unfortunately it has to be coerced because id may could be an integer, leading to false negatives
+            }).map(function (id) {
                 view.adder.$tr.find(`#js-wfp-lists li[data-id="${id}"]`).addClass('selected');
 
-                return idMappings.get(id);
+                return idMappings.get(`${id}`); // Same as above...
             }).join(', ');
         }
 
