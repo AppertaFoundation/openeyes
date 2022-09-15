@@ -381,8 +381,11 @@ class OEMigration extends CDbMigration
 
         $row = array(
             'name' => $name,
-            'class_name' => $params['class_name'] ?? "Element_{$event_type}_" . str_replace(' ',
-                    '', $name),
+            'class_name' => $params['class_name'] ?? "Element_{$event_type}_" . str_replace(
+                ' ',
+                '',
+                $name
+            ),
             'event_type_id' => $event_type_id,
             'display_order' => isset($params['display_order']) ? $params['display_order'] : 1,
             'default' => isset($params['default']) ? $params['default'] : 0,
@@ -393,7 +396,7 @@ class OEMigration extends CDbMigration
         if (isset($params['group_name'])) {
             $row['element_group_id'] = $this->getIdOfElementGroupByName($params['group_name'], $event_type_id);
 
-            if (!isset($params['group_title'])){
+            if (!isset($params['group_title'])) {
                 $row['group_title'] = $params['group_name'];
             }
         }
@@ -414,10 +417,16 @@ class OEMigration extends CDbMigration
     {
         $event_type_id = $this->getIdOfEventTypeByClassName($event_type);
         $element_type_id = $this->getIdOfElementTypeByClassName($element_type_class, $event_type_id);
-        $this->delete('ophciexamination_element_set_item', 'element_type_id = :element_type_id',
-            [':element_type_id' => $element_type_id]);
-        $this->delete('element_type', 'id = :id',
-            [':id' => $element_type_id]);
+        $this->delete(
+            'ophciexamination_element_set_item',
+            'element_type_id = :element_type_id',
+            [':element_type_id' => $element_type_id]
+        );
+        $this->delete(
+            'element_type',
+            'id = :id',
+            [':id' => $element_type_id]
+        );
     }
 
 
@@ -492,10 +501,9 @@ class OEMigration extends CDbMigration
                                                                 AND event_type_id = :event_type_id")->queryScalar([':group_name' => $name, ':event_type_id' => $event_type_id]));
         // If the element group already exists then just update the display_order
         // Else insert the new row
-        if ($exists){
+        if ($exists) {
             $this->update('element_group', $row, '`name` = :group_name AND event_type_id = :event_type_id', [':group_name' => $name, ':event_type_id' => $event_type_id]);
-        }
-        else {
+        } else {
             $this->insert('element_group', $row);
         }
 
@@ -512,10 +520,12 @@ class OEMigration extends CDbMigration
         $event_type_id = $this->getIdOfEventTypeByClassName($event_type);
         $this->delete(
             'element_group',
-            'name = :name AND event_type_id = :event_type_id', [
+            'name = :name AND event_type_id = :event_type_id',
+            [
             ':name' => $name,
             ':event_type_id' => $event_type_id
-        ]);
+        ]
+        );
     }
 
     /**
@@ -872,11 +882,15 @@ class OEMigration extends CDbMigration
 
         $default_code = $code;
 
-        if ($this->dbConnection->createCommand()->select('*')->from('patient_shortcode')->where('code = :code',
-            array(':code' => strtolower($code)))->queryRow()) {
+        if ($this->dbConnection->createCommand()->select('*')->from('patient_shortcode')->where(
+            'code = :code',
+            array(':code' => strtolower($code))
+        )->queryRow()) {
             $n = '00';
-            while ($this->dbConnection->createCommand()->select('*')->from('patient_shortcode')->where('code = :code',
-                array(':code' => 'z' . $n))->queryRow()) {
+            while ($this->dbConnection->createCommand()->select('*')->from('patient_shortcode')->where(
+                'code = :code',
+                array(':code' => 'z' . $n)
+            )->queryRow()) {
                 $n = str_pad((int)$n + 1, 2, '0', STR_PAD_LEFT);
             }
             $code = "z$n";
@@ -884,8 +898,10 @@ class OEMigration extends CDbMigration
             echo "Warning: attempt to register duplicate shortcode '$default_code', replaced with 'z$n'\n";
         }
 
-        if (!$this->dbConnection->createCommand()->select('id')->from('event_type')->where('id = :id',
-            array(':id' => $event_type_id))->queryScalar()) {
+        if (!$this->dbConnection->createCommand()->select('id')->from('event_type')->where(
+            'id = :id',
+            array(':id' => $event_type_id)
+        )->queryScalar()) {
             $event_type_id = null;
         }
 
@@ -1017,14 +1033,20 @@ class OEMigration extends CDbMigration
 
     public function removeOperationFromTask($oprn_name, $task_name)
     {
-        $this->delete('authitemchild', 'parent = :task_name and child = :oprn_name',
-            array(":task_name" => $task_name, ':oprn_name' => $oprn_name));
+        $this->delete(
+            'authitemchild',
+            'parent = :task_name and child = :oprn_name',
+            array(":task_name" => $task_name, ':oprn_name' => $oprn_name)
+        );
     }
 
     public function removeTaskFromRole($task_name, $role_name)
     {
-        $this->delete('authitemchild', 'parent = :role_name and child = :task_name',
-            array(":role_name" => $role_name, ':task_name' => $task_name));
+        $this->delete(
+            'authitemchild',
+            'parent = :role_name and child = :task_name',
+            array(":role_name" => $role_name, ':task_name' => $task_name)
+        );
     }
 
     public function removeRole($role_name)
@@ -1072,7 +1094,8 @@ class OEMigration extends CDbMigration
      * @param $column_name Name of the column to check for
      * @return bool true if the column exists
      */
-    protected function verifyColumnExists($table_name, $column_name){
+    protected function verifyColumnExists($table_name, $column_name)
+    {
         $cols = $this->dbConnection->createCommand("SHOW COLUMNS FROM `" . $table_name . "` LIKE '" .$column_name ."'")->queryScalar([ ':table_name' => $table_name ]);
         return !empty($cols);
     }
@@ -1083,7 +1106,8 @@ class OEMigration extends CDbMigration
      * @param $key_name Name of the FK contraint to check for
      * @return bool true if the FK exists
      */
-    protected function verifyForeignKeyExists($table_name, $key_name){
+    protected function verifyForeignKeyExists($table_name, $key_name)
+    {
         $fk_exists = $this->dbConnection->createCommand('   SELECT count(*)
                                                             FROM information_schema.table_constraints
                                                             WHERE table_schema = DATABASE()
@@ -1188,5 +1212,31 @@ class OEMigration extends CDbMigration
     public function dropView($view_name)
     {
         $this->dbConnection->createCommand('drop view ' . $view_name)->execute();
+    }
+
+    /**
+     * Deletes a given system setting from all the different setting_* tables
+     *
+     * @param [type] $setting_key
+     * @return void
+     */
+    public function deleteSetting($setting_key)
+    {
+        $setting_tables = [
+            'user',
+            'firm',
+            'specialty',
+            'subspecialty',
+            'site',
+            'internal_referral',
+            'institution',
+            'installation',
+            'metadata'
+        ];
+
+        // Loop through the various setting tables and delete the setting from all of them
+        foreach ($setting_tables as $table) {
+            $this->delete('setting_' . $table, '`key` = :key', [':key' => $setting_key]);
+        }
     }
 }

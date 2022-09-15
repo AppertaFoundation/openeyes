@@ -507,27 +507,27 @@ function createLoginOverlay() {
     errorDiv.classList.add('error');
     loginDiv.append(errorDiv);
 
+    let detailsDiv = document.createElement('div');
+    detailsDiv.classList.add('login-details');
+    loginDiv.append(detailsDiv);
+
+    let detailsList = document.createElement('ul');
+    detailsList.classList.add('row-list');
+    detailsDiv.append(detailsList);
+
+    let institutionListItem = document.createElement('li');
+    institutionListItem.id = 'js-institution';
+    institutionListItem.classList.add('login-institution');
+    institutionListItem.innerText = prepopulationData['institution']['name'];
+    detailsList.append(institutionListItem);
+
+    let siteListItem = document.createElement('li');
+    siteListItem.id = 'js-site';
+    siteListItem.classList.add('login-site');
+    siteListItem.innerText = prepopulationData['site']['name'];
+    detailsList.append(siteListItem);
+
     if (auth_source === 'BASIC' || auth_source === 'LDAP') {
-        let detailsDiv = document.createElement('div');
-        detailsDiv.classList.add('login-details');
-        loginDiv.append(detailsDiv);
-
-        let detailsList = document.createElement('ul');
-        detailsList.classList.add('row-list');
-        detailsDiv.append(detailsList);
-
-        let institutionListItem = document.createElement('li');
-        institutionListItem.id = 'js-institution';
-        institutionListItem.classList.add('login-institution');
-        institutionListItem.innerText = prepopulationData['institution']['name'];
-        detailsList.append(institutionListItem);
-
-        let siteListItem = document.createElement('li');
-        siteListItem.id = 'js-site';
-        siteListItem.classList.add('login-site');
-        siteListItem.innerText = prepopulationData['site']['name'];
-        detailsList.append(siteListItem);
-
         let userDiv = document.createElement('div');
         userDiv.classList.add('user');
         loginDiv.append(userDiv);
@@ -625,17 +625,21 @@ function redirectToSSOWithOverlay() {
         async: false,
         success: function (resp) {
             if (resp) {
-                window.open(resp, '_blank');
-                // The user has been redirected to SSO Portal so check every 15 seconds to see if user has authenticated
+                let current_window = window.self;
+                let login_window = window.open(resp, '_blank');
+                // The user has been redirected to SSO Portal so check every 10 seconds to see if user has authenticated
                 // This is to avoid data from previous session from being lost due to SSO sign-in
                 let testAuthenticated = setInterval(function () {
                     if (pollUserAuthenticated()) {
-                        // The user has authenticated, remove the login overlay
+                        // The user has authenticated, close the login window and get back to ongoing session
+                        login_window.close();
+                        current_window.focus();
+                        // Remove the login overlay
                         loginOverlay.hide();
                         clearInterval(testAuthenticated);
                         queueLoginOverlay();
                     }
-                }, 15000);
+                }, 10000);
                 // Clear interval and show error if the user is not authenticated in 10 minutes after redirect
                 setTimeout(function () {
                     clearInterval(testAuthenticated);

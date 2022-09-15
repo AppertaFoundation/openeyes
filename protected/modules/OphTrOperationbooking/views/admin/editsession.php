@@ -74,7 +74,7 @@ if ($this->checkAccess('admin')) {
                     <td><?= $session->NHSDate('date')?></td>
                 <?php } else {?>
                     <td><?= $form->labelEx($session, 'date') ?></td>
-                    <td><?= $form->datePicker($session, 'date', [], ['nowrapper' => true])?></td>
+                    <td><?= $form->datePickerNative($session, 'date', [], ['nowrapper' => true])?></td>
                 <?php }?>
             </tr>
             <tr>

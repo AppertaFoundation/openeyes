@@ -17,9 +17,13 @@
 namespace OE\factories\models;
 
 use OE\factories\ModelFactory;
+use OE\factories\models\traits\LooksUpExistingModels;
+use Specialty;
 
 class DisorderFactory extends ModelFactory
 {
+    use LooksUpExistingModels;
+
     protected ?int $currentMaxPrimaryKey = null;
 
     public function definition(): array
@@ -28,6 +32,15 @@ class DisorderFactory extends ModelFactory
             'fully_specified_name' => $this->faker->words(3, true),
             'term' => $this->faker->words(2, true)
         ];
+    }
+
+    public function forOpthalmology()
+    {
+        return $this->state(function () {
+            return [
+                'specialty_id' => $this->mapToFactoryOrId(Specialty::class, 'Ophthalmology')
+            ];
+        });
     }
 
     public function withICD10()

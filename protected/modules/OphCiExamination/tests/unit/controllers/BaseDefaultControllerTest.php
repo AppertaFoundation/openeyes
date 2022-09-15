@@ -70,7 +70,10 @@ abstract class BaseDefaultControllerTest extends BaseControllerTest
 
         $redirectedEventId = $this->performUpdateRequestWithController();
 
-        $this->assertEquals($event->id, $redirectedEventId);
+        $this->assertEquals(
+            $event->id,
+            $redirectedEventId,
+            "update request has failed, response is redirecting to event id {$redirectedEventId} instead of {$event->id}");
     }
 
     /**
@@ -96,10 +99,14 @@ abstract class BaseDefaultControllerTest extends BaseControllerTest
      */
     protected function performCreateRequestWithController()
     {
-        $controller = $this->getDefaultController(['checkCreateAccess', 'redirect']);
+        $controller = $this->getDefaultController(['checkCreateAccess', 'redirect', 'render']);
         // not concerned about permissions
         $controller->method('checkCreateAccess')
             ->willReturn(true);
+        $controller->method('render')
+            ->will($this->returnCallback(function (...$args) {
+                $this->fail('Create request unexpectedly attempting to render with params: ' . print_r($args, true));
+            }));
 
         return $this->runActionAndCaptureEventIdRedirect($controller, 'create');
     }
@@ -111,10 +118,14 @@ abstract class BaseDefaultControllerTest extends BaseControllerTest
      */
     protected function performUpdateRequestWithController()
     {
-        $controller = $this->getDefaultController(['checkUpdateAccess', 'redirect']);
+        $controller = $this->getDefaultController(['checkUpdateAccess', 'redirect', 'render']);
         // not concerned about permissions
         $controller->method('checkUpdateAccess')
             ->willReturn(true);
+        $controller->method('render')
+            ->will($this->returnCallback(function (...$args) {
+                $this->fail('Update request unexpectedly attempting to render with params: ' . print_r($args, true));
+            }));
 
         return $this->runActionAndCaptureEventIdRedirect($controller, 'update');
     }

@@ -17,7 +17,7 @@
 
 namespace OEModule\OphCiExamination\models;
 
-
+use OE\factories\models\traits\HasFactory;
 use OEModule\OphCiExamination\widgets\Allergies as AllergiesWidget;
 
 /**
@@ -37,7 +37,9 @@ use OEModule\OphCiExamination\widgets\Allergies as AllergiesWidget;
  */
 class Allergies extends \BaseEventTypeElement
 {
+    use HasFactory;
     use traits\CustomOrdering;
+
     protected $default_view_order = 50;
 
     protected $auto_update_relations = true;
@@ -48,7 +50,6 @@ class Allergies extends \BaseEventTypeElement
 
     protected $errorExceptions = array(
         'OEModule_OphCiExamination_models_Allergies_entries' => 'OEModule_OphCiExamination_models_Allergies_entry_table'
-
     );
 
     public function tableName()
@@ -93,19 +94,6 @@ class Allergies extends \BaseEventTypeElement
             ),
         );
     }
-
-    /**
-     * @return bool
-     *
-     * If an allergy is "not checked", do not store in db
-     */
-
-    public function beforeSave()
-    {
-        $entries = $this->entries;
-        return parent::beforeSave();
-    }
-
 
     /**
      * check either confirmation of no allergies or at least one allergy entry

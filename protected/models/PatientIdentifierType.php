@@ -237,4 +237,24 @@ class PatientIdentifierType extends BaseActiveRecordVersioned
         return (json_last_error() == JSON_ERROR_NONE);
     }
 
+    /** Returns a next highest value for an identifier type
+     *
+     * @param $type_id
+     * @param $auto_increment_start
+     * @return int
+     */
+    public static function getNextValueForIdentifierType($type_id, $auto_increment_start)
+    {
+        $primary_identifier = PatientIdentifierHelper::getMaxIdentifier($type_id);
+        if (!is_null($primary_identifier)) {
+            $primary_identifier_value = PatientIdentifierHelper::getIdentifierValue($primary_identifier);
+            if ((int) $primary_identifier_value < $auto_increment_start) {
+                return $auto_increment_start;
+            } else {
+                return ((int) $primary_identifier_value + 1);
+            }
+        }
+        return 0;
+    }
+
 }

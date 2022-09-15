@@ -14,6 +14,7 @@
  */
 
 namespace OEModule\OphCiExamination\factories;
+
 use OE\factories\models\EventFactory;
 
 class OphCiExaminationFactory extends EventFactory

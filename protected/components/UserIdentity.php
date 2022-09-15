@@ -429,7 +429,7 @@ class UserIdentity extends CUserIdentity
             }
         } elseif (Yii::app()->params['auth_source'] === 'SAML' || Yii::app()->params['auth_source'] === 'OIDC') {
             // The user is already authenticated from the portal so directly register the username for the session
-            $user->username = $this->username;
+            $user_authentication->username = $this->username;
         } else {
             /*
              * Unknown auth_source, error

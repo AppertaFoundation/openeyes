@@ -104,37 +104,37 @@ class SetupPathwayStepPickerBehavior extends CBehavior
         $psd_step_type_id = Yii::app()->db->createCommand()
             ->select('id')
             ->from('pathway_step_type')
-            ->where('short_name = \'drug admin\'')
+            ->where('short_name = \'drug admin\' AND user_can_create = 1')
             ->queryScalar();
         $exam_step_type_id = Yii::app()->db->createCommand()
             ->select('id')
             ->from('pathway_step_type')
-            ->where('short_name = \'Exam\'')
+            ->where('short_name = \'Exam\' AND user_can_create = 1')
             ->queryScalar();
         $vf_step_type_id = Yii::app()->db->createCommand()
             ->select('id')
             ->from('pathway_step_type')
-            ->where('short_name = \'Fields\'')
+            ->where('short_name = \'Fields\' AND user_can_create = 1')
             ->queryScalar();
         $letter_step_type_id = Yii::app()->db->createCommand()
             ->select('id')
             ->from('pathway_step_type')
-            ->where('short_name = \'Letter\'')
+            ->where('short_name = \'Letter\' AND user_can_create = 1')
             ->queryScalar();
         $generic_step_type_id = Yii::app()->db->createCommand()
             ->select('id')
             ->from('pathway_step_type')
-            ->where('short_name = \'Task\'')
+            ->where('short_name = \'Task\' AND user_can_create = 1')
             ->queryScalar();
         $onhold_step_type_id = Yii::app()->db->createCommand()
             ->select('id')
             ->from('pathway_step_type')
-            ->where('short_name = \'onhold\'')
+            ->where('short_name = \'onhold\' AND user_can_create = 1')
             ->queryScalar();
         $booking_step_type_id = Yii::app()->db->createCommand()
             ->select('id')
             ->from('pathway_step_type')
-            ->where('short_name = \'Book Apt.\'')
+            ->where('short_name = \'Book Apt.\' AND user_can_create = 1')
             ->queryScalar();
         $current_firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
 

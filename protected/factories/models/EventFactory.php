@@ -7,6 +7,7 @@ use Episode;
 use OE\factories\exceptions\FactoryNotFoundException;
 use OE\factories\ModelFactory;
 use OE\factories\models\traits\HasFirm;
+use Patient;
 
 class EventFactory extends ModelFactory
 {
@@ -48,6 +49,30 @@ class EventFactory extends ModelFactory
             $event->institution_id = $event->firm
                 ? $event->firm->institution_id
                 : ($event->episode->firm ? $event->episode->firm->institution_id : null);
+        });
+    }
+
+    public function forPatient(Patient $patient): self
+    {
+        return $this->state(function ($attributes) use ($patient) {
+            if ($attributes['episode_id'] instanceof ModelFactory) {
+                $attributes['episode_id'] = $attributes['episode_id']->forPatient($patient);
+            } else {
+                $attributes['episode_id']->patient_id = $patient->id;
+            }
+
+            return [
+                'episode_id' => $attributes['episode_id']
+            ];
+        });
+    }
+
+    public function onEventDate(DateTime $date): self
+    {
+        return $this->state(function () use ($date) {
+            return [
+                'event_date' => $date->format('Y-m-d')
+            ];
         });
     }
 
