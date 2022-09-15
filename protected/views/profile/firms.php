@@ -29,15 +29,16 @@
             <tbody>
             <?php
             foreach ($user->firmSelections as $i => $firm) {?>
-                <tr data-attr-id="<?php echo $firm->id?>">
-                    <td><input type="checkbox" name="firms[]" value="<?php echo $firm->id?>" /></td>
-                    <td><?php echo $firm->name?></td>
+                <tr data-attr-id="<?php echo $firm->id?>" <?= !$firm->runtime_selectable ? 'class="fade"' : "" ?>>
+                    <td><input type="checkbox" name="firms[]" value="<?php echo $firm->id?>" <?= !$firm->runtime_selectable ? "disabled=disabled" : ""; ?> /></td>
+                    <td><?php echo $firm->name . (!$firm->runtime_selectable ? " <sup>*</sup>" : ""); ?></td>
                     <td><?php echo $firm->subspecialtyText?></td>
                 </tr>
             <?php }?>
             </tbody>
         </table>
     </form>
+    <p><sup>*</sup> This firm is not selectable.</p>
 <div class="data-group">
   <label for="profile_firm_id" class="inline">Add <?php echo strtolower(Firm::contextLabel())?>:</label>
     <?=\CHtml::dropDownList('profile_firm_id', '', $user->getNotSelectedFirmList(), array('empty' => '- Select -'))?>
