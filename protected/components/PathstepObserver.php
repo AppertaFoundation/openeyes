@@ -1,5 +1,7 @@
 <?php
 
+use OEModule\OESysEvent\events\EventTypeEventCreated;
+
 class PathstepObserver
 {
     /**
@@ -147,6 +149,10 @@ class PathstepObserver
      */
     public function completeStep($params): void
     {
+        if ($params instanceof EventTypeEventCreated) {
+            $params = ['event' => $params->event, 'action' => 'created'];
+        }
+
         if ($params['event']) {
             $step = PathwayStep::model()->findByPk($params['event']->step_id);
 

@@ -16,6 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OEModule\OESysEvent\events\EventTypeEventCreated;
+
 /**
  * Class BaseEventTypeController.
  *
@@ -903,7 +905,8 @@ class BaseEventTypeController extends BaseModuleController
 
                         Yii::app()->user->setFlash('success', "{$this->event_type->name} created.");
 
-                        Yii::app()->event->dispatch('event_created', ['event' => $this->event, 'action' => 'create']);
+                        EventTypeEventCreated::dispatch($this->event);
+                        //Yii::app()->event->dispatch('event_created', ['event' => $this->event, 'action' => 'create']);
 
                         $transaction->commit();
 
