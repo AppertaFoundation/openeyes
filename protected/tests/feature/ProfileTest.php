@@ -22,6 +22,7 @@ use OEDbTestCase;
 use OE\factories\ModelFactory;
 use User;
 use UserAuthentication;
+use UserFirm;
 
 /**
  * @group sample-data
@@ -63,7 +64,77 @@ class ProfileTest extends OEDbTestCase
         );
     }
 
-    // TODO: Set up
+    /** @test */
+    public function added_firms_dont_appear_in_add_list()
+    {
+        list($user, $institution) = $this->createUserWithInstitution();
+
+        $expected_firm = ModelFactory::factoryFor(Firm::class)->create([
+            'runtime_selectable' => 1,
+            'name' => 'Expected Foo'
+        ]);
+
+        $unexpected_firm = ModelFactory::factoryFor(Firm::class)->create([
+            'runtime_selectable' => 1,
+            'name' => 'Unexpected Foo'
+        ]);
+
+        // Add User to Firm
+        ModelFactory::factoryFor(UserFirm::class)->create([
+            'user_id' => $user->id,
+            'firm_id' => $unexpected_firm->id
+        ]);
+
+        $response = $this->actingAs($user, $institution)
+            ->get('/profile/firms');
+
+        $this->assertCount(
+            0,
+            $response->filter('[data-test="unselected_firms"] select option[value="' . $unexpected_firm->id . '"]'),
+            'Found unexpected firm in options for selection in firm profile page'
+        );
+
+        // For sanity make sure expected one IS int he list
+        $this->assertCount(
+            1,
+            $response->filter('[data-test="unselected_firms"] select option[value="' . $expected_firm->id . '"]'),
+            'Found unexpected firm in options for selection in firm profile page'
+        );
+    }
+
+    /** @test */
+    public function added_firm_with_runtime_selectable_false_highlighted_in_list()
+    {
+        list($user, $institution) = $this->createUserWithInstitution();
+
+        $expected_firm = ModelFactory::factoryFor(Firm::class)->create([
+            'runtime_selectable' => 0,
+            'name' => 'Expected Foo'
+        ]);
+
+        // Add User to Firm
+        ModelFactory::factoryFor(UserFirm::class)->create([
+            'user_id' => $user->id,
+            'firm_id' => $expected_firm->id
+        ]);
+
+        $response = $this->actingAs($user, $institution)
+            ->get('/profile/firms');
+
+        $firm_rows = $response->filter('[data-test="selected_firms"] tbody tr[data-attr-id="' . $expected_firm->id . '"]');
+
+        $this->assertCount(
+            1,
+            $firm_rows,
+            'Could not find expected firm'
+        );
+        
+        foreach ($firm_rows as $row) {
+            $this->assertEquals($row->getAttribute('class'), "fade"); 
+        }
+    }
+
+    // TODO: Set up user rather then use admin
     protected function createUserWithInstitution()
     {
         $user = User::model()->findByAttributes(['first_name' => 'admin']);

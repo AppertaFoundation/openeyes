@@ -18,7 +18,7 @@
 ?>
     <h2><?php echo Firm::contextLabel()?>s you work in</h2>
     <form id="profile_firms" method="post" action="/profile/firms">
-        <table class="standard">
+        <table class="standard" data-test="selected_firms">
             <thead>
                 <tr>
                     <th><input type="checkbox" id="checkall" style="min-width: 20px"  /></th>
@@ -26,7 +26,7 @@
                     <th>Subspecialty</th>
                 </tr>
             </thead>
-            <tbody data-test="selected_firms">
+            <tbody>
             <?php
             foreach ($user->firmSelections as $i => $firm) {?>
                 <tr data-attr-id="<?php echo $firm->id?>" <?= !$firm->runtime_selectable ? 'class="fade"' : "" ?>>
