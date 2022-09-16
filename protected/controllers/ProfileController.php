@@ -385,7 +385,7 @@ class ProfileController extends BaseController
             'unselected_firms' => $this->getNotSelectedFirmList($user)
         ));
     }
-    
+
     /**
      * Firm deletion from user profile
      *

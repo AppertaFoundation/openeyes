@@ -128,9 +128,9 @@ class ProfileTest extends OEDbTestCase
             $firm_rows,
             'Could not find expected firm'
         );
-        
+
         foreach ($firm_rows as $row) {
-            $this->assertEquals($row->getAttribute('class'), "fade"); 
+            $this->assertEquals($row->getAttribute('class'), "fade");
         }
     }
 
