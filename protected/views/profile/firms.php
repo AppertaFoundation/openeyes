@@ -38,19 +38,22 @@
             </tbody>
         </table>
     </form>
-    <p><sup>*</sup> This firm is not selectable.</p>
-<div class="data-group">
-  <label for="profile_firm_id" class="inline">Add <?php echo strtolower(Firm::contextLabel())?>:</label>
-    <?=\CHtml::dropDownList('profile_firm_id', '', $user->getNotSelectedFirmList(), array('empty' => '- Select -'))?>
-    <?=\CHtml::link('Add all', '#', array('id' => 'add_all', 'class' => 'field-info button green hint'))?>
-</div>
-<div class="profile-actions">
-    <?php echo EventAction::button('Remove selected ' . strtolower(Firm::contextLabel()), 'delete', array(), array('class' => 'button large hint blue'))->toHtml()?>
-</div>
+    
+    <div class="data-group flex-layout">
+        <div style="flex-grow:1;">
+            <label for="profile_firm_id" class="inline">Add <?php echo strtolower(Firm::contextLabel())?>:</label>
+            <?=\CHtml::dropDownList('profile_firm_id', '', $user->getNotSelectedFirmList(), array('empty' => '- Select -'))?>
+            <?=\CHtml::link('Add all', '#', array('id' => 'add_all', 'class' => 'field-info button green hint'))?>
+        </div>
 
-<div class="profile-actions">
-    <p>Note: you can also set the sites you work at, <?=\CHtml::link('click here', Yii::app()->createUrl('/profile/sites'))?> to do so.</p>
-</div>
+        <?php echo EventAction::button('Remove selected ' . strtolower(Firm::contextLabel()), 'delete', array(), array('class' => 'button large hint blue'))->toHtml(); ?>
+    </div>
+    
+    <div class="row">
+        <br/>
+        <p><sup>*</sup> Some firm's context are no longer available for selection because of changes by an Admin user.</p>  
+        <p>Note: you can also set the sites you work at, <?=\CHtml::link('click here', Yii::app()->createUrl('/profile/sites'))?> to do so.</p>
+    </div>
 
 <script type="text/javascript">
     $('#profile_firm_id').change(function(e) {
