@@ -26,7 +26,7 @@
                     <th>Subspecialty</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody data-test="selected_firms">
             <?php
             foreach ($user->firmSelections as $i => $firm) {?>
                 <tr data-attr-id="<?php echo $firm->id?>" <?= !$firm->runtime_selectable ? 'class="fade"' : "" ?>>
@@ -40,9 +40,9 @@
     </form>
     
     <div class="data-group flex-layout">
-        <div style="flex-grow:1;">
+        <div style="flex-grow:1;" data-test="unselected_firms">
             <label for="profile_firm_id" class="inline">Add <?php echo strtolower(Firm::contextLabel())?>:</label>
-            <?=\CHtml::dropDownList('profile_firm_id', '', $user->getNotSelectedFirmList(), array('empty' => '- Select -'))?>
+            <?=\CHtml::dropDownList('profile_firm_id', '', $unselected_firms, array('empty' => '- Select -'))?>
             <?=\CHtml::link('Add all', '#', array('id' => 'add_all', 'class' => 'field-info button green hint'))?>
         </div>
 
