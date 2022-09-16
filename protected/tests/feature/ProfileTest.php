@@ -28,7 +28,7 @@ use UserAuthentication;
  * @group feature
  * @group profile
  */
-class ProfileTest extends OEDbTestCase 
+class ProfileTest extends OEDbTestCase
 {
     use \WithTransactions;
     use \MocksSession;
@@ -47,23 +47,23 @@ class ProfileTest extends OEDbTestCase
             'runtime_selectable' => 0,
             'name' => 'Unexpected Bar'
         ]);
-        
+
         $response = $this->actingAs($user, $institution)
             ->get('/profile/firms');
 
-        $unselected_options = $response->filter('[data-test="unselected_firms"] select option'); // option will have value attr of firm id
-        $selected_options = $response->filter('[data-test="selected_firms"] tr'); // data-attr-id (will have value of the firm id)
-
-        //try {
-            
-        // } catch(Exception $e) {
-        //     fwrite(STDERR, print_r($e, true));
-        // }
-
-        $this->assertFalse(true);
+        $this->assertCount(
+            1,
+            $response->filter('[data-test="unselected_firms"] select option[value="' . $expected_firm->id . '"]'),
+            'Could not find firm in options for selection in firm profile page'
+        );
+        $this->assertCount(
+            0,
+            $response->filter('[data-test="unselected_firms"] select option[value="' . $unexpected_firm->id . '"]'),
+            'Found unexpected firm in options for selection in firm profile page'
+        );
     }
 
-    // TODO: Set up 
+    // TODO: Set up
     protected function createUserWithInstitution()
     {
         $user = User::model()->findByAttributes(['first_name' => 'admin']);
