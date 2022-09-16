@@ -486,30 +486,6 @@ class User extends BaseActiveRecordVersioned
         return Site::model()->findAll($criteria);
     }
 
-    public function getNotSelectedFirmList()
-    {
-        $firms = Yii::app()->db->createCommand()
-            ->select('f.id, f.name, s.name AS subspecialty')
-            ->from('firm f')
-            ->leftJoin('service_subspecialty_assignment ssa', 'f.service_subspecialty_assignment_id = ssa.id')
-            ->leftJoin('subspecialty s', 'ssa.subspecialty_id = s.id')
-            ->leftJoin('user_firm uf', 'uf.firm_id = f.id and uf.user_id = ' . Yii::app()->user->id)
-            ->where('uf.id is null and f.active = 1 and f.runtime_selectable = 1')
-            ->order('f.name, s.name')
-            ->queryAll();
-        $data = array();
-        foreach ($firms as $firm) {
-            if ($firm['subspecialty']) {
-                $data[$firm['id']] = $firm['name'] . ' (' . $firm['subspecialty'] . ')';
-            } else {
-                $data[$firm['id']] = $firm['name'];
-            }
-        }
-        natcasesort($data);
-
-        return $data;
-    }
-
     /**
      * @return CAuthItem[]
      */
