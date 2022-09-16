@@ -36,6 +36,11 @@ trait MocksSession
                     return $this->session_values[$attr] ?? null;
                 });
 
+                $session->method('offsetExists')
+                ->willReturnCallback(function ($attr) {
+                    return isset($this->session_values[$attr]);
+                });
+
             \Yii::app()->setComponent('session', $session);
         }
 
