@@ -71,11 +71,19 @@ trait MocksSession
     {
         $web_user = $this->getMockBuilder(OEWebUser::class)
             ->disableOriginalConstructor()
-            ->setMethods(['getId'])
+            ->setMethods(['getId', 'getIsGuest', 'init'])
             ->getMock();
 
         $web_user->method('getId')
             ->willReturn($user->id);
+
+        $web_user->method('getIsGuest')
+            ->willReturn(false);
+
+        // stub state values from user object
+        foreach ($user->getAttributes() as $attr => $value) {
+            $web_user->setState($attr, $value);
+        }
 
         \Yii::app()->setComponent('user', $web_user);
 
