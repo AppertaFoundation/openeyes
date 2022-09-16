@@ -31,6 +31,7 @@ if ($element->elementType->name!="Clinic Outcome") :
   <tbody>
   <tr>
         <?php
+        // This is now deprecate and needs to be removed in the future, it is currently only used for editing legacy events see: OE-13648
         $firms = Firm::model()->findAll('institution_id=? AND service_subspecialty_assignment_id IS NOT NULL', array(Yii::app()->session['selected_institution_id']));
         $firm_name = array();
         $firm_sub_id = array();
