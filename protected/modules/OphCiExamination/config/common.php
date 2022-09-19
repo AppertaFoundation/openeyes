@@ -29,6 +29,18 @@ return [
                         'method' => 'createOrUpdateEvent',
                     ]
                 ],
+                'event_created' => [
+                    'create_followup_step' => [
+                        'class' => 'OEModule\OphCiExamination\components\PathstepObserver',
+                        'method' => 'createFollowUpStep'
+                    ]
+                ],
+                'event_updated' => [
+                    'create_followup_step' => [
+                        'class' => 'OEModule\OphCiExamination\components\PathstepObserver',
+                        'method' => 'createFollowUpStep'
+                    ]
+                ],
             ]
         ]
     ],

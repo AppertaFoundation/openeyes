@@ -19,6 +19,7 @@
  */
 
 use OEModule\OphCiExamination\models\AllergyEntry;
+use OEModule\OphCiExamination\models\OphCiExaminationAllergyReaction;
 
 ?>
 

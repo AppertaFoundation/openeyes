@@ -17,6 +17,7 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use OE\factories\models\traits\HasFactory;
 
 /**
  * Class FamilyHistory_Entry
@@ -35,22 +36,16 @@ namespace OEModule\OphCiExamination\models;
  */
 class AllergyEntry extends \BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     public static $PRESENT = 1;
     public static $NOT_PRESENT = 0;
     public static $NOT_CHECKED = -9;
     public static $OTHER_VAL = 17;
 
-    public $reaction_ids = array();
+    protected $auto_update_relations = true;
+    protected $auto_validate_relations = true;
 
-    /**
-     * Returns the static model of the specified AR class.
-     *
-     * @return PreviousOperation the static model class
-     */
-    public static function model($className = __CLASS__)
-    {
-        return parent::model($className);
-    }
     /**
      * @return string the associated database table name
      */
@@ -66,7 +61,7 @@ class AllergyEntry extends \BaseActiveRecordVersioned
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('element_id, allergy_id, reaction_id, other, comments, has_allergy', 'safe'),
+            array('element_id, allergy_id, reactions, other, comments, has_allergy', 'safe'),
             array('allergy_id', 'required'),
             array('other', 'validateOtherAllergies'),
             array('has_allergy', 'required', 'message'=>'Status cannot be blank'),
@@ -81,14 +76,11 @@ class AllergyEntry extends \BaseActiveRecordVersioned
      */
     public function relations()
     {
-        // NOTE: you may need to adjust the relation name and the related
-        // class name for the relations automatically generated below.
-        return array(
-            'element' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\Allergies', 'element_id'),
-            'allergy' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExaminationAllergy', 'allergy_id'),
-            'reactions' => array(self::MANY_MANY, 'OphCiExaminationAllergyReaction', 'ophciexamination_allergy_reaction_assignment(allergy_entry_id, reaction_id)'),
-            'reaction_assignments' => array(self::HAS_MANY, 'AllergyEntryReactionAssignment', 'allergy_entry_id'),
-        );
+        return [
+            'element' => [self::BELONGS_TO, Allergies::class, 'element_id'],
+            'allergy' => [self::BELONGS_TO, OphCiExaminationAllergy::class, 'allergy_id'],
+            'reactions' => [self::MANY_MANY, OphCiExaminationAllergyReaction::class, 'ophciexamination_allergy_reaction_assignment(allergy_entry_id, reaction_id)']
+        ];
     }
     /**
      * @return array customized attribute labels (name=>label)
@@ -125,18 +117,6 @@ class AllergyEntry extends \BaseActiveRecordVersioned
             $this->element->addAudit('edited-allergies');
         }
         return parent::beforeSave();
-    }
-
-    protected function afterSave()
-    {
-        $this->refreshReactionAssignments();
-        return parent::afterSave();
-    }
-
-    protected function beforeDelete()
-    {
-        $this->refreshReactionAssignments();
-        return parent::beforeDelete();
     }
 
     /**
@@ -209,36 +189,6 @@ class AllergyEntry extends \BaseActiveRecordVersioned
     {
         if ($this->allergy_id == AllergyEntry::$OTHER_VAL && $this->$attribute == "" ) {
             $this->addError($attribute, 'Allergy cannot be blank');
-        }
-    }
-
-    /***
-     * Assigns an allergy reaction to this entry
-     */
-    public function assignReaction($reaction_id)
-    {
-        $assignment = new \AllergyEntryReactionAssignment();
-
-        $assignment->allergy_entry_id = $this->id;
-        $assignment->reaction_id = $reaction_id;
-
-        $assignment->save();
-    }
-
-    /***
-     * Adds allergy reactions that don't already have an assignment, and removes reactions that shouldn't have an assignment
-     */
-    public function refreshReactionAssignments()
-    {
-        foreach ($this->reaction_assignments as $assignment) {
-            if (!in_array($assignment->reaction_id, $this->reaction_ids)) {
-                $assignment->delete();
-            }
-        }
-        foreach ($this->reaction_ids as $reaction_id) {
-            if (!\AllergyEntryReactionAssignment::model()->exists("allergy_entry_id = :allergy_entry_id AND reaction_id = :reaction_id", array(':allergy_entry_id' => $this->id, ':reaction_id'=> $reaction_id))) {
-                $this->assignReaction($reaction_id);
-            }
         }
     }
 }

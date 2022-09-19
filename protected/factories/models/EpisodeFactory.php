@@ -18,6 +18,7 @@ namespace OE\factories\models;
 
 use OE\factories\ModelFactory;
 use OE\factories\models\traits\HasFirm;
+use Patient;
 
 class EpisodeFactory extends ModelFactory
 {
@@ -26,11 +27,19 @@ class EpisodeFactory extends ModelFactory
     public function definition(): array
     {
         return [
-            'patient_id' => ModelFactory::factoryFor(\Patient::class),
+            'patient_id' => ModelFactory::factoryFor(Patient::class),
             'firm_id' => ModelFactory::factoryFor(Firm::class)->useExisting()
         ];
     }
 
+    public function forPatient(Patient $patient): self
+    {
+        return $this->state(function () use ($patient) {
+            return [
+                'patient_id' => $patient->id
+            ];
+        });
+    }
     public function withPrincipalDiagnosis($disorder_id = null, $eye_id = null)
     {
         return $this->state(function () use ($disorder_id, $eye_id) {

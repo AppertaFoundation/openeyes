@@ -1,6 +1,7 @@
 <?php
 
 namespace OEModule\OphCiExamination\models;
+use OE\factories\models\traits\HasFactory;
 
 /**
  * Class Element_OphCiExamination_PcrRisk
@@ -8,6 +9,7 @@ namespace OEModule\OphCiExamination\models;
 class Element_OphCiExamination_PcrRisk extends \SplitEventTypeElement
 {
     use traits\CustomOrdering;
+    use HasFactory;
 
     /**
      * Returns the static model of the specified AR class.
@@ -48,9 +50,9 @@ class Element_OphCiExamination_PcrRisk extends \SplitEventTypeElement
         return array(
             array(
                 'event_id, eye_id,
-                    left_glaucoma, left_pxf, left_diabetic, left_pupil_size, left_no_fundal_view, left_axial_length_group, 
+                    left_glaucoma, left_pxf, left_diabetic, left_pupil_size, left_no_fundal_view, left_axial_length_group,
                     left_brunescent_white_cataract, left_alpha_receptor_blocker, left_doctor_grade_id, left_can_lie_flat, left_pcr_risk, left_excess_risk,
-                    right_glaucoma, right_pxf, right_diabetic, right_pupil_size, right_no_fundal_view, right_axial_length_group, 
+                    right_glaucoma, right_pxf, right_diabetic, right_pupil_size, right_no_fundal_view, right_axial_length_group,
                     right_brunescent_white_cataract, right_alpha_receptor_blocker, right_doctor_grade_id, right_can_lie_flat, right_pcr_risk, right_excess_risk',
                 'safe',
             ),

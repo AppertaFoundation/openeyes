@@ -28,29 +28,10 @@
                     <button class="blue hint js-download-image-action" <?= $document_id ? '' : 'style="display:none"'; ?>>Download</button>
                     <button class="green hint js-save-annotation-action" style="display: none;">Save annotation</button>
                     <button class="red hint js-cancel-annotation-action" style="display: none;">Cancel annotation</button>
-                    <button id="document_<?= $side ?>_comment_button"
-                            class="button js-add-comments"
-                            data-comment-container="#document-<?= $side ?>-comments"
-                            type="button"
-                            data-hide-method="display"
-                            style="display: <?= $element->{$side."_comment"} || array_key_exists("{$side}_comment", $element->getErrors()) ? 'none;' : '' ?>">
-                        <i class="oe-i comments small-icon"></i>
-                    </button>
+
                 </div>
             </div>
         </td>
     </tr>
     </tbody>
 </table>
-<div class="js-comment-container flex-layout flex-left" id="document-<?= $side ?>-comments"
-    <?= $element->{$side."_comment"} || array_key_exists("{$side}_comment", $element->getErrors()) ? '' : 'style="display:none;"' ?>
-     data-comment-button="#document_<?= $side ?>_comment_button">
-    <?= $form->textArea(
-        $element,
-        "{$side}_comment",
-        array('rows' => '1', 'nowrapper' => true),
-        false,
-        ['placeholder' => 'Comments', 'class' => 'js-comment-field autosize cols-full']
-    ); ?>
-    <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
-</div>

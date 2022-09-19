@@ -66,7 +66,7 @@ class PatientStatisticTest extends ActiveRecordTestCase
     public function testGetMaxDatapoint()
     {
         $expected = $this->datapoints('datapoint4');
-        $this->assertEquals($expected, $this->statistic->getMaxDatapoint());
+        $this->assertEqualsWithDelta($expected, $this->statistic->getMaxDatapoint(), 0.0001);
     }
 
     /**
@@ -76,6 +76,6 @@ class PatientStatisticTest extends ActiveRecordTestCase
      */
     public function testGetLinearYForX(float $x, float $y)
     {
-        $this->assertEquals($y, $this->statistic->getLinearYForX($x));
+        $this->assertEqualsWithDelta($y, $this->statistic->getLinearYForX($x), 0.0001);
     }
 }
