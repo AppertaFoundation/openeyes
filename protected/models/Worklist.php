@@ -203,7 +203,7 @@ class Worklist extends BaseActiveRecordVersioned
     {
         $criteria = new CDbCriteria();
 
-        $criteria->join = 'JOIN worklist w ON t.worklist_id = w.id JOIN worklist_definition_mapping wdm ON wdm.worklist_definition_id = w.worklist_definition_id';
+        $criteria->join = 'JOIN worklist w ON t.worklist_id = w.id JOIN worklist_definition_mapping wdm ON wdm.worklist_definition_id = w.worklist_definition_id AND wdm.key=t.name';
 
         $criteria->addCondition('t.worklist_id = :worklist_id');
         $criteria->addCondition('wdm.display_order IS NOT NULL');
