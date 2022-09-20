@@ -203,6 +203,7 @@ if (!$element->isSigned()) {
                 mm_signature.subscribeInputEvent( ".js-route" );
                 mm_signature.subscribeInputEvent( ".js-duration" );
                 mm_signature.subscribeInputEvent( ".js-dispense-location" );
+                mm_signature.subscribeInputEvent( ".js-laterality" );
             }
 
             const signature_wrapper = document.querySelector('.js-signature-wrapper');
