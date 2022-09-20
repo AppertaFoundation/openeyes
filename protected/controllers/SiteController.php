@@ -215,6 +215,11 @@ class SiteController extends BaseController
                     $this->redirect($return_url);
                 }
             }
+        } elseif (isset($_POST['LoginFormMobileDevice'])) {
+            $model->attributes = $_POST['LoginFormMobileDevice'];
+            if ($model->validate() && $model->login()) {
+                $this->redirect($return_url);
+            };
         }
         if ($this->authSourceIsSSO()) {
             // User signing-in through portal should not be shown default OE login screen

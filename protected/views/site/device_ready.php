@@ -25,7 +25,7 @@ $user = Yii::app()->session['user'];
 
 <div class="oe-login">
 
-    <div class="login">
+    <div class="login" style="top:0;">
 
         <h1>Device ready</h1>
 
