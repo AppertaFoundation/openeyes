@@ -17,6 +17,9 @@
 
 namespace OEModule\OphCoMessaging\models;
 
+use EventSubtype;
+use EventSubTypeItem;
+
 /**
  * This is the model class for table "et_ophcomessaging_message".
  *
@@ -149,7 +152,8 @@ class Element_OphCoMessaging_Message extends \BaseEventTypeElement
         return $this->marked_as_read ? 'read' : 'unread';
     }
 
-    public function getPrint_view() {
+    public function getPrint_view()
+    {
         return 'print_'.$this->getDefaultView();
     }
 
@@ -158,7 +162,8 @@ class Element_OphCoMessaging_Message extends \BaseEventTypeElement
      *
      * @return array
      */
-    public function getSenders() {
+    public function getSenders()
+    {
         $criteria = new \CDbCriteria();
         $criteria->compare('for_the_attention_of_user_id', $this->id);
 
@@ -173,7 +178,8 @@ class Element_OphCoMessaging_Message extends \BaseEventTypeElement
         return $sender_names;
     }
 
-    public function getReadStyleClass() {
+    public function getReadStyleClass()
+    {
         if (isset($this->last_comment)) {
             if ($this->last_comment->marked_as_read === '0' && $this->last_comment->created_user_id !== \Yii::app()->user->id) {
                 return "unread";
@@ -192,5 +198,47 @@ class Element_OphCoMessaging_Message extends \BaseEventTypeElement
             }
             return "read";
         }
+    }
+
+    protected function beforeSave()
+    {
+        if ($this->isAttributeDirty('message_type_id')) {
+            // unload relation to ensure we get the correct instance during event subtype update
+            unset($this->message_type);
+        }
+
+        return parent::beforeSave();
+    }
+
+    protected function afterSave()
+    {
+        $this->updateEventSubtype();
+
+        parent::afterSave();
+    }
+
+    protected function updateEventSubtype()
+    {
+        $event_subtype_item = $this->getOrInstantiateEventSubtypeItem();
+
+        if (!$this->message_type->event_subtype) {
+            if (!$event_subtype_item->getIsNewRecord()) {
+                $event_subtype_item->delete();
+            }
+            return;
+        }
+        $event_subtype_item->event_subtype = $this->message_type->event_subtype;
+        $event_subtype_item->save();
+    }
+
+    private function getOrInstantiateEventSubtypeItem()
+    {
+        $event_subtype_item = EventSubtypeItem::model()->findByAttributes([
+            'event_id' => $this->event_id
+        ]) ?? new EventSubTypeItem();
+
+        $event_subtype_item->event_id = $this->event_id;
+
+        return $event_subtype_item;
     }
 }

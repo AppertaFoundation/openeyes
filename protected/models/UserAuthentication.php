@@ -375,6 +375,39 @@ class UserAuthentication extends BaseActiveRecordVersioned
         return false;
     }
 
+    public function findSSOAuthentication($user_id, $username, $institution_id, $site_id)
+    {
+        // Username not created in the institution, so create one
+        $institution_authentication_id = InstitutionAuthentication::model()->findByAttributes([
+            'user_authentication_method' => 'SSO',
+            'institution_id' => $institution_id,
+            'site_id' => $site_id
+        ])->id;
+
+        $this->user_id = $user_id;
+        $this->username = $username;
+        $this->institution_authentication_id = $institution_authentication_id;
+
+        if (!UserAuthentication::model()->findAllByAttributes([
+            'user_id' => $this->user_id,
+            'username' => $username,
+            'institution_authentication_id' => $institution_authentication_id,
+        ])) {
+            if (!$this->save()) {
+                $this->audit('login', 'login-failed', "Cannot create user with username: $this->username in institution: {$this->institutionAuthentication->institution->name}", true);
+                throw new Exception('Unable to save User: ' . print_r($this->getErrors(), true));
+            }
+        }
+
+        return $this;
+    }
+
+    public function setSSOUserAuthentication($user_id, $username, $institution_id, $site_id)
+    {
+        $user_authentication = $this->findSSOAuthentication($user_id, $username, $institution_id, $site_id);
+        return $user_authentication['username'];
+    }
+
     /**
      * Returns the static model of the specified AR class.
      * Please note that you should have this exact method in all your CActiveRecord descendants!

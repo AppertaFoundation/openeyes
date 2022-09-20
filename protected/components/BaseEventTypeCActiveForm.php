@@ -243,6 +243,25 @@ class BaseEventTypeCActiveForm extends FormLayout
     }
 
     /**
+     * @param       $element
+     * @param       $field
+     * @param array $options
+     * @param array $htmlOptions
+     * @param array $layoutColumns
+     */
+    public function datePickerNative($element, $field, $options = array(), $htmlOptions = array(), $layoutColumns = array())
+    {
+        $this->widget('application.widgets.DatePickerNative', array(
+            'element' => $element,
+            'name' => CHtml::modelName($element) . "[$field]",
+            'field' => $field,
+            'options' => $options,
+            'htmlOptions' => $htmlOptions,
+            'layoutColumns' => $layoutColumns,
+        ));
+    }
+
+    /**
      * @param CModel $element
      * @param string $field
      * @param array  $options

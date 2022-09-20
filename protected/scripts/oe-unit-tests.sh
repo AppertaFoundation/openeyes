@@ -17,7 +17,7 @@ WROOT="$(cd -P "$SCRIPTDIR/../../" && pwd)"
 testtorun=""
 phpunitconfigxml="$WROOT/protected/tests/phpunit.xml"
 phpunitpath="$WROOT/vendor/phpunit/phpunit/phpunit"
-groupOrExclude=false
+groupOrExclude=0
 
 while [[ $# -gt 0 ]]; do
   p="$1"
@@ -28,7 +28,7 @@ while [[ $# -gt 0 ]]; do
     shift
     ;;
   --group=* | --exclude-group=*)
-    groupOrExclude=true
+    groupOrExclude=1
     testtorun="$testtorun $p"
     ;;
   *)
@@ -40,7 +40,7 @@ while [[ $# -gt 0 ]]; do
   shift # move to next parameter
 done
 status=1
-if [ "$OE_TEST_NO_GROUP" != "1" ] && [ "$groupOrExclude" = false ] && [ -z $testtorun ]; then
+if [ "$OE_TEST_NO_GROUP" != "1" ] && [ "$groupOrExclude" -eq 0 ] && [ -z "$testtorun" ]; then
   echo "***************************************************************************"
   echo "*** Running all tests sets.                                             ***"
   echo "*** To run specific sets, use the relevant --group or --exclude options ***"

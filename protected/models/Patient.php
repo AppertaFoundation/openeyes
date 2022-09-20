@@ -222,26 +222,6 @@ class Patient extends BaseActiveRecordVersioned
         return parent::model($className);
     }
 
-    //    Generates an auto incremented Hospital Number
-    public function autoCompleteHosNum()
-    {
-        if (SettingMetadata::model()->getSetting('set_auto_increment_hospital_no') == 'on') {
-            $query = "SELECT MAX(CAST(hos_num as INT)) AS hosnum from patient";
-            $command = Yii::app()->db->createCommand($query);
-            $command->prepare();
-            $result = $command->queryColumn();
-            $default_hos_num = $result;
-//          Checks the admin setting for the starting number for auto increment
-            if ($default_hos_num[0] < (SettingMetadata::model()->getSetting('hos_num_start'))) {
-                $default_hos_num[0] = SettingMetadata::model()->getSetting('hos_num_start');
-                return $default_hos_num[0];
-            } else {
-                return ($default_hos_num[0] + 1);
-            }
-        }
-        return null;
-    }
-
     /**
      * This validator is added to the Patient object in PatientController create/update action
      *

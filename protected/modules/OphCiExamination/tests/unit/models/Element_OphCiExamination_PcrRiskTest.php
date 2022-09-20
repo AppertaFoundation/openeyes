@@ -34,7 +34,7 @@ class Element_OphCiExamination_PcrRiskTest extends \ModelTestCase
     /** @test */
     public function right_sided_instance_stringifies_pcr_risk_value()
     {
-        $instance = ModelFactory::factoryFor($this->element_cls)
+        $instance = Element_OphCiExamination_PcrRisk::factory()
             ->rightSideOnly()
             ->create([
                 'right_pcr_risk' => 12.4
@@ -46,7 +46,7 @@ class Element_OphCiExamination_PcrRiskTest extends \ModelTestCase
     /** @test */
     public function left_sided_instance_stringifies_pcr_risk_value()
     {
-        $instance = ModelFactory::factoryFor($this->element_cls)
+        $instance = Element_OphCiExamination_PcrRisk::factory()
             ->leftSideOnly()
             ->create([
                 'left_pcr_risk' => 10.36
@@ -58,7 +58,7 @@ class Element_OphCiExamination_PcrRiskTest extends \ModelTestCase
     /** @test */
     public function both_sided_instance_stringifies_pcr_risk_value()
     {
-        $instance = ModelFactory::factoryFor($this->element_cls)
+        $instance = Element_OphCiExamination_PcrRisk::factory()
             ->bothSided()
             ->create([
                 'right_pcr_risk' => 9.1,

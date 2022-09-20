@@ -6,20 +6,19 @@ trait HasDatabaseAssertions
     {
         $cmd = $this->generateDatabaseCountQuery($table, $attributes);
 
-        $this->assertGreaterThanOrEqual(1, $cmd->queryScalar());
+        $this->assertGreaterThanOrEqual(1, $cmd->queryScalar(), "$table does not contain " . print_r($attributes, true));
     }
 
     protected function assertDatabaseDoesntHave(string $table, array $attributes)
     {
         $cmd = $this->generateDatabaseCountQuery($table, $attributes);
 
-        $this->assertEquals(0, $cmd->queryScalar());
+        $count = $cmd->queryScalar();
+        $this->assertEquals(0, $count, "$table contains $count entries matching: " . print_r($attributes, true));
     }
 
     private function generateDatabaseCountQuery(string $table, array $attributes)
     {
-        $db = $this->getFixtureManager()->dbConnection;
-
         $wheres = [];
         $params = [];
         foreach ($attributes as $col => $val) {
@@ -27,7 +26,8 @@ trait HasDatabaseAssertions
             $params[":_$col"] = $val;
         }
 
-        return $db->createCommand()
+        return $this->getDbConnection()
+            ->createCommand()
             ->select('COUNT(*)')
             ->from($table)
             ->where(implode(' AND ', $wheres), $params);

@@ -16,6 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "disorder".
  *
@@ -35,6 +37,8 @@
  */
 class Disorder extends BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     const SITE_LEFT = 0;
     const SITE_RIGHT = 1;
     const SITE_BILATERAL = 2;

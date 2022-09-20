@@ -46,6 +46,8 @@ OpenEyes.UI = OpenEyes.UI || {};
         {id: 'subspecialty', label: 'Specialty'}
     ];
 
+    let pinned_quickview_id = null;
+
     EpisodeSidebar._defaultOptions = {
         switch_firm_text: 'Please switch firm to add an event to this episode',
         user_context: null,
@@ -55,7 +57,8 @@ OpenEyes.UI = OpenEyes.UI || {};
         deleted_event_list_selector: '.events li.deleted',
         grouping_picker_class: 'grouping-picker',
         default_sort: 'desc',
-        scroll_selector: 'div.oe-scroll-wrapper'
+        scroll_selector: 'div.oe-scroll-wrapper',
+        close_quicview_selector: '#close-quickview'
     };
 
     const sidebarCookie = 'oe-sidebar-state';
@@ -69,10 +72,12 @@ OpenEyes.UI = OpenEyes.UI || {};
             let state = sessionStorage.getItem(sidebarCookie);
             if (state) {
                 let stateObj = JSON.parse(state);
-                if (stateObj.sortOrder)
+                if (stateObj.sortOrder) {
                     self.sortOrder = stateObj.sortOrder;
-                if (stateObj.grouping)
+                }
+                if (stateObj.grouping) {
                     self.grouping = stateObj.grouping;
+                }
             }
         }
     };
@@ -92,33 +97,6 @@ OpenEyes.UI = OpenEyes.UI || {};
     };
 
     EpisodeSidebar.prototype.create = function () {
-
-        //Shows the current event image if it's loaded and the quickview is open
-        function showCurrentEventImage() {
-            //First check the parent element is visible
-            let quickview = $('.oe-event-quickview');
-            let loader = quickview.find('.spinner');
-            let event_id = quickview.data('current_event');
-            if (quickview.is(':visible') && event_id) {
-                let img = quickview.find('img[data-event-id=' + event_id + ']');
-                if (img.data('loaded')) {
-                    img.show();
-                    loader.hide();
-                } else {
-                    loader.show();
-                }
-            }
-        }
-
-        function setEventImageSrcFromData(li_item) {
-            let event_id = li_item.data('event-id');
-            let quickview = $('.oe-event-quickview');
-            let img = quickview.find('img[data-event-id=' + event_id + ']');
-            if (img.attr('src') === undefined) {
-                img.attr('src', img.data('src'));
-            }
-        }
-
         let self = this;
 
         if (self.options.default_sort === 'asc') {
@@ -188,68 +166,156 @@ OpenEyes.UI = OpenEyes.UI || {};
             e.preventDefault();
         });
 
-        self.element.on('mouseenter', '.event-type', function (e) {
-            const $iconHover = $(e.target);
-            const $li = $iconHover.parent().parents('li:first');
-            let event_id = $li.data('event-id');
+        function setBoxDetails($li) {
             const $eventQuickview =  $('.oe-event-quickview');
-            $li.find('.quicklook').show();
-
-            const $screenshots = $('.oe-event-quickview .quickview-screenshots');
-            $screenshots.find('img').hide();
-
             $('.oe-event-quickview #js-quickview-data').text($li.data('event-date-display'));
             $('.oe-event-quickview .event-icon').html($li.data('event-icon'));
+            $('.oe-event-quickview .title').html($li.data('event-type') + " - " + $li.data('event-date-display'));
             $eventQuickview.stop().fadeTo(50, 100, function () {
                 $(this).show();
             });
             $eventQuickview.data('current_event', $li.data('event-id'));
+        }
 
-            const img = $eventQuickview.find('img[data-event-id=' + event_id + ']');
+        async function loadImage($li, type = '') {
+            const $quickview =  $('.oe-event-quickview');
+            let event_id = $li.data('event-id');
+            const $screenshots = $('.oe-event-quickview .quick-view-content');
+            $screenshots.find('img').hide();
+            $quickview.find('.spinner').show();
+            setBoxDetails($li);
+            let load_timeout = 0;
 
-            if ( (img.attr('src') === undefined) && self.sendImageUrlAjaxRequest) {
-                $.ajax({
-                    type: 'GET',
-                    url: '/eventImage/getImageUrl',
-                    data: {'event_id': event_id},
-                    'beforeSend': function () {
-                        self.sendImageUrlAjaxRequest = false;
-                    },
-                    'success': function (response) {
-                        setEventImageSrc(event_id, response);
-                        setEventImageSrcFromData(
-                            self.element.find('.events').find("li[data-event-id=" + event_id + "]")
-                        );
-                    },
-                    'complete': function () {
-                        self.sendImageUrlAjaxRequest = true;
-                    },
-                    'error': function () {
-                        new OpenEyes.UI.Dialog.Alert({
-                            content: "Unable to generate a view at this time, please contact your administrator."
-                        }).open();
-                    }
+            let imgs = $quickview.find('img[data-event-id=' + event_id + ']');
+
+            // if no imgs we need to get the info from the server and
+            // generate empty img tags accordingly
+            if (!imgs.length) {
+                load_timeout = 500;
+                const response = await fetch(`/eventImage/getImageInfo?event_id=${event_id}`);
+                const json = await response.json();
+
+                // then generate all the empty img tags
+                const $imgs = generateImgTag(event_id, json.page_count);
+
+                // append to the container
+                const $container = $quickview.find('.quick-view-content');
+                $imgs.forEach(($img) => {
+                    $img.appendTo($container);
                 });
             }
 
-            showCurrentEventImage();
+            // at this point we should have generated image tags, let's show images
+            setTimeout(function() {
+                // let's select again all the images (in case if we just generated them)
+                let imgs = $quickview.find('img[data-event-id=' + event_id + ']');
+                if (type === 'first') {
+                    imgs = [imgs[0]];
+                }
+                $.each(imgs, (index, img) => {
+                    if ($(img).attr('src') === undefined) {
+                        fetch($(img).data('src')).then(response => response.text())
+                            .then(url => {
+                                $(img).attr('src', url);
+                                $(img).data('loaded', true);
+
+                                // to instantly show new images, like page 2 or 3 ...
+                                showCurrentEventImage();
+                            });
+
+                    }
+                });
+                showCurrentEventImage();
+
+
+            }, load_timeout);
+
+        }
+
+        self.element.on('click', '.event-type', (e) => {
+            e.preventDefault();
+            const $li = $(e.target).closest('li');
+
+            if (pinned_quickview_id === null) {
+                pinned_quickview_id = e.target.parentNode.dataset.id;
+                loadImage($li);
+                $(this.options.close_quicview_selector).show();
+            } else if (pinned_quickview_id !== e.target.parentNode.dataset.id) {
+                pinned_quickview_id = e.target.parentNode.dataset.id;
+                loadImage($li);
+                $(this.options.close_quicview_selector).show();
+            } else if (pinned_quickview_id === e.target.parentNode.dataset.id) {
+                pinned_quickview_id = null;
+                $(this.options.close_quicview_selector).hide();
+            }
+        });
+
+        $(this.options.close_quicview_selector).on('click', () => {
+            pinned_quickview_id = null;
+            self.element.find('.event-type').trigger('mouseleave');
+            $(this.options.close_quicview_selector).hide();
+        });
+        self.element.on('mouseenter', '.event-type', function (e) {
+            const $iconHover = $(e.target);
+            const $li = $iconHover.closest('li');
+            $li.find('.quicklook').show();
+
+            if (pinned_quickview_id !== null) {
+                return true;
+            }
+
+            loadImage($li, 'first');
         });
 
         self.element.on('mouseleave', '.event-type', function (e) {
-            var $iconHover = $(e.target);
-            $iconHover.parents('li:first').find('.quicklook').hide();
+            const $iconHover = $(e.target);
+            $iconHover.closest('li').find('.quicklook').hide();
+
+            if (pinned_quickview_id !== null) {
+                return true;
+            }
+
             $('.oe-event-quickview').stop().fadeTo(150, 0, function () {
                 $(this).hide();
             });
         });
 
-        function setEventImageSrc(event_id, url) {
-            let img = $('img[data-event-id=' + event_id + ']');
+        //Shows the current event image if it's loaded and the quickview is open
+        function showCurrentEventImage() {
+            //First check the parent element is visible
+            let quickview = $('.oe-event-quickview');
+            let loader = quickview.find('.spinner');
+            let event_id = quickview.data('current_event');
+            if (quickview.is(':visible') && event_id) {
+                loader.show();
+                let img = quickview.find('img[data-event-id=' + event_id + ']');
+                if (img.data('loaded')) {
+                    img.show();
+                    loader.hide();
+                } else {
+                    loader.show();
+                }
+            }
+        }
+
+        function setEventImageSrcFromData(li_item, page_num) {
+            let event_id = li_item.data('event-id');
+            let quickview = $('.oe-event-quickview');
+            let imgs = quickview.find('img[data-event-id=' + event_id + '][data-page-num=' + page_num + ']');
+
+            $.each(imgs, (index, img) => {
+                if ($(img).attr('src') === undefined) {
+                    $(img).attr('src', $(img).data('src'));
+                }
+            });
+        }
+
+        function setEventImageSrc(event_id, url, page_num) {
+            let img = $('img[data-event-id=' + event_id + '][data-page-num=' + page_num + ']');
             img.data('src', url);
         }
 
         $(document).ready(function () {
-
 
             let events = [];
             $('.event-type').each(function () {
@@ -263,12 +329,22 @@ OpenEyes.UI = OpenEyes.UI || {};
 
             let bulkURLFunc = function (response) {
                 let data = JSON.parse(response);
+
                 //Set the event image source urls for events which are already generated
                 if (data.generated_image_urls) {
                     for (let event_id in data.generated_image_urls) {
                         if (data.generated_image_urls.hasOwnProperty(event_id)) {
-                            setEventImageSrc(event_id, data.generated_image_urls[event_id]);
-                            setEventImageSrcFromData(self.element.find('.events').find("li[data-event-id=" + event_id + "]"));
+                            const url = data.generated_image_urls[event_id];
+                            const url_object = new URL(url, window.location.origin);
+                            const page_num = url_object.searchParams.get('page');
+
+                            // we only preload the first page
+                            if (page_num && page_num > 0) {
+                                continue;
+                            }
+
+                            setEventImageSrc(event_id, url, page_num);
+                            setEventImageSrcFromData(self.element.find('.events').find("li[data-event-id=" + event_id + "]"), page_num);
                         }
                     }
                 }
@@ -280,7 +356,7 @@ OpenEyes.UI = OpenEyes.UI || {};
                 data: {'event_ids': JSON.stringify(event_ids)},
             }).success(bulkURLFunc);
 
-            let $screenshots = $('.oe-event-quickview .quickview-screenshots');
+            let $screenshots = $('.oe-event-quickview .quick-view-content');
             let $loader = $('.oe-event-quickview .spinner');
             $screenshots.find('img').each(function () {
                 $(this).load(function () {
@@ -294,31 +370,56 @@ OpenEyes.UI = OpenEyes.UI || {};
 
         });
 
+        function generateImgTag(event_id, page_count) {
+            let imgs = [];
+            page_count--;
+
+            for (let i=0; i <= page_count; i++) {
+                const url = new URL(`/eventImage/getImageUrl?event_id=${event_id}`, window.location.origin);
+                url.searchParams.set('page', i);
+
+                let img = document.querySelector(`img[data-page-num="${i}"][data-src="${url.href}"]`);
+
+                if (!img) {
+                    img = $('<img />', {
+                        class: 'js-quickview-image',
+                        style: 'display: none;' + (page_count > 0 ? 'padding-bottom: 20px' : ''),
+                        'data-event-id': event_id,
+                        'data-src': url.href,
+                        'data-index': i,
+                        'data-page-num': i
+                    });
+                    imgs.push(img);
+                }
+            }
+            return imgs;
+        }
+
         // Create hidden quicklook images to prevent the page load from taking too long, while still allowing image caching
-        let counter = 1;
-        this.element.find(this.options.event_list_selector).each(function () {
-            const $container = $('.oe-event-quickview .quickview-screenshots');
+        this.element.find(this.options.event_list_selector).each(function (index) {
+            const $container = $('.oe-event-quickview .quick-view-content');
             if ($container.find('img[data-event-id="' + $(this).data('event-id') + '"]').length > 0) {
                 return;
             }
 
-            const $img = $('<img />', {
-                class: 'js-quickview-image',
-                style: 'display: none;',
-                'data-event-id': $(this).data('event-id'),
-                'data-src': $(this).data('event-image-url'),
-                'data-index': counter,
-            });
+            const count = $(this).data('event-image-page-count');
+            let steps = 0;
+            if (count && Number(count)) {
+                steps = parseInt($(this).data('event-image-page-count'))-1;
+            }
+            const $imgs = generateImgTag($(this).data('event-id'), count, index);
 
-            counter++;
-            $img.appendTo($container);
+            $imgs.forEach(($img) => {
+                $img.appendTo($container);
+            });
         });
     };
 
     EpisodeSidebar.prototype.orderEvents = function () {
         const self = this;
-        if (self.lastSort === self.sortOrder)
+        if (self.lastSort === self.sortOrder) {
             return;
+        }
 
         const items = this.element.find(this.options.event_list_selector);
 

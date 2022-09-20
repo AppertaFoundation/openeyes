@@ -137,6 +137,10 @@ class Ophtrconsent_SupplementaryConsentQuestion extends BaseActiveRecordVersione
 
             //find the best question assignment
             foreach($question->question_assignment as $ke=> $q_asgn){
+                //if question is not active, do not return it.
+                if ($q_asgn->active != 1) {
+                    continue;
+                }
                 //if this is a better assignment than $best_asgn, override it
                 // if we have one that doesn't match throw it out
                 if (

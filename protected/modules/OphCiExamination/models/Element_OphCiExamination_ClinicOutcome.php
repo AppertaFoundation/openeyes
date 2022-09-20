@@ -242,4 +242,17 @@ class Element_OphCiExamination_ClinicOutcome extends \BaseEventTypeElement
 
         return false;
     }
+
+    /**
+     * @return bool
+     */
+    public function hasFollowUpStatus()
+    {
+        foreach ($this->entries as $entry) {
+            if ($entry->isFollowUp()) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

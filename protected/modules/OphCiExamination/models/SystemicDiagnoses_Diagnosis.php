@@ -17,6 +17,8 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * Class SystemicDiagnoses_Diagnosis
  * @package OEModule\OphCiExamination\models
@@ -34,7 +36,7 @@ namespace OEModule\OphCiExamination\models;
  */
 class SystemicDiagnoses_Diagnosis extends \BaseEventTypeElement
 {
-
+    use HasFactory;
     public static $PRESENT = 1;
     public static $NOT_PRESENT = 0;
     public static $NOT_CHECKED = -9;
