@@ -753,8 +753,9 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
     {
         $left = false;
         $right = false;
+        $both = false;
 
-        foreach (['left', 'right'] as $side) {
+        foreach (['left', 'right', 'both'] as $side) {
             foreach ($this->{$side . '_cvi_disorder_assignments'} as $recorded_cvi) {
                 if ($recorded_cvi->ophcocvi_clinicinfo_disorder_id == $cvi_disorder->id) {
                     $$side = $recorded_cvi->affected;
@@ -762,7 +763,7 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
             }
         }
 
-        if ($left && $right) {
+        if ($both) {
             return \Eye::BOTH;
         }
 
