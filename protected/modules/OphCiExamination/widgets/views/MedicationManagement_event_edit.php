@@ -318,11 +318,17 @@ echo '<script type="text/javascript" src="' . $asset_folder . '/EsignElementWidg
             }
         });
 
+        let prescription_modified = false;
+
+        // Keep track of eye laterality separately because it uses widget of its own
+        $('.js-entry-table').find('.js-laterality').on('change', function() {
+            prescription_modified = true;
+        });
+
         $('#mm-handler-1').on('handle', function() {
             if (!prescription_is_final) {
                 return;
             }
-            let prescription_modified = false;
 
             //check if old prescribed medications have been modified
             prescribed_medications.forEach(function(medication) {
