@@ -17,8 +17,7 @@ namespace OEModule\OESysEvent\components;
 
 use CApplicationComponent;
 use OE\concerns\InteractsWithApp;
-use OEMOdule\OESysEvent\contracts\Dispatchable;
-use SebastianBergmann\GlobalState\RuntimeException;
+use OEModule\OESysEvent\contracts\Dispatchable;
 
 /**
  * Abstraction to handle the observer configuration and map System Events to the defined
@@ -83,7 +82,7 @@ class Manager extends CApplicationComponent
         }
 
         // TODO: make this more informative
-        throw new RuntimeException('unable to configure listener');
+        throw new \RuntimeException('unable to configure listener');
     }
 
     protected function makeClassListener($listener_class, $method = null): callable
