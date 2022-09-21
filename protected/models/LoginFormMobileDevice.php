@@ -51,7 +51,7 @@ class LoginFormMobileDevice extends CFormModel
     {
         $user = User::model()->findByPk($this->user_id);
         $user_authentication = null;
-        if($user && $user->checkPin($this->pin, $this->user_id, $this->institution_id, $this->site_id, $user_authentication)) {
+        if ($user && $user->checkPin($this->pin, $this->user_id, $this->institution_id, $this->site_id, $user_authentication)) {
             if ($this->_identity === null) {
                 $this->_identity = new UserIdentity($this->username, null, $this->institution_id, $this->site_id, $this->pin);
                 $this->_identity->authenticateWithPIN($user, $user_authentication);
@@ -63,8 +63,7 @@ class LoginFormMobileDevice extends CFormModel
             } else {
                 return false;
             }
-        }
-        else {
+        } else {
             $this->addError("pin", "Invalid PIN, please try again.");
             $this->pin = "";
             return false;

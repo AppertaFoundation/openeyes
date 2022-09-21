@@ -2084,6 +2084,7 @@ class PatientController extends BaseController
             // not to be sync with PAS
             $patient->is_local = 1;
 
+            $patient->primary_institution_id = Institution::model()->getCurrent()->id;
 
             // Don't save if the user just changed the "Patient Source"
             if ($_POST["changePatientSource"] == 0) {
