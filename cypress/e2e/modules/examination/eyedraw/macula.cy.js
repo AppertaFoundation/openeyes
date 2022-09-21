@@ -27,7 +27,7 @@ describe('macula element behaviour', () => {
             ['Geographic atrophy', 'Nonexudative age-related macular degeneration'],
             ['Epiretinal membrane', 'Epiretinal membrane'],
             ['Macroaneurysm', 'Retinal macroaneurysm'],
-            ['Retinal vein occluson', 'Venous retinal branch occlusion'],
+            ['Retinal vein occlusion', 'Venous retinal branch occlusion'],
             ['Retinal artery occlusion', 'Retinal artery occlusion'],
             ['Extra-foveal CNV', 'Choroidal retinal neovascularisation'],
             ['Cystoid macular oedema', 'Cystoid macular oedema'],

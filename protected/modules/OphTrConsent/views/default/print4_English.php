@@ -150,9 +150,9 @@ $type_assessment = new OphTrConsent_Type_Assessment();
     <div class="group">
         <h4>Patient's attorney or deputy</h4>
         <div class="indent">
-            <p>Where the patient has authorised an attorney to make decisions about the procedure in question under 
-                a Lasting Power of Attorney or a Court Appointed Deputy has been authorised to make decisions about the 
-                procedure in question, the attorney or deputy will have the final responsibility for determining whether 
+            <p>Where the patient has authorised an attorney to make decisions about the procedure in question under
+                a Lasting Power of Attorney or a Court Appointed Deputy has been authorised to make decisions about the
+                procedure in question, the attorney or deputy will have the final responsibility for determining whether
                 a procedure is in the patient's best interests
             </p>
 
@@ -189,7 +189,7 @@ $type_assessment = new OphTrConsent_Type_Assessment();
                         </tr>
                         <tr>
                             <th>Statement</th>
-                            <td>I have considered the relevant circumstances relating to the decision in question and believe 
+                            <td>I have considered the relevant circumstances relating to the decision in question and believe
                                 the procedure to be in the patients best interests:</td>
                             <td><span class="highlighter"><?= $contact->consideredDecision->name ?></span></td>
                         </tr>
@@ -295,8 +295,12 @@ $type_assessment = new OphTrConsent_Type_Assessment();
                 Independent Medical Capacity Advocate and I believe the procedure to be in the patient’s best interests
                 because:</h5>
             <ul>
-                <li>Reason for procedure here by user sunt in culpa qui officia deserunt mollit anim id est laborum.
+                <?php
+                if (isset($elements['OEModule\OphTrConsent\models\Element_OphTrConsent_BestInterestDecision']) && $elements['OEModule\OphTrConsent\models\Element_OphTrConsent_BestInterestDecision']->patient_has_not_refused == 1) { ?>
+                <li>
+                    <?= $elements['OEModule\OphTrConsent\models\Element_OphTrConsent_BestInterestDecision']->reason_for_procedure?>
                 </li>
+                <?php } ?>
             </ul>
         </div>
     </div>

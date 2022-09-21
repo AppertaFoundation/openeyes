@@ -25,6 +25,9 @@ use Period;
  * @property int $id
  * @property int $element_id
  * @property int $status_id
+ * @property int $site_id
+ * @property int $service_id
+ * @property int $context_id
  * @property int $discharge_status_id
  * @property int $discharge_destination_id
  * @property int $transfer_institution_id
@@ -74,13 +77,13 @@ class ClinicOutcomeEntry extends \BaseElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('id, element_id, status_id, followup_quantity, followup_period_id, role_id, followup_comments, discharge_status_id, discharge_destination_id, transfer_institution_id', 'safe'),
+            array('id, element_id, status_id,site_id,service_id,context_id, followup_quantity, followup_period_id, role_id, followup_comments, discharge_status_id, discharge_destination_id, transfer_institution_id', 'safe'),
             array('status_id', 'required'),
             array('status_id', 'statusDependencyValidation'),
             array('role_id', 'roleDependencyValidation'),
             array('followup_quantity, risk_status_id', 'default', 'setOnEmpty' => true, 'value' => null),
             array('followup_quantity', 'numerical', 'integerOnly' => true, 'min' => Element_OphCiExamination_ClinicOutcome::FOLLOWUP_Q_MIN, 'max' => Element_OphCiExamination_ClinicOutcome::FOLLOWUP_Q_MAX),
-            array('element_id, status_id, followup_quantity, followup_period_id, role_id, followup_comments', 'safe', 'on' => 'search'),
+            array('element_id, status_id,site_id,service_id,context_id, followup_quantity, followup_period_id, role_id, followup_comments', 'safe', 'on' => 'search'),
         );
     }
 
@@ -96,6 +99,11 @@ class ClinicOutcomeEntry extends \BaseElement
             'createdUser' => [self::BELONGS_TO, 'User', 'created_user_id'],
             'lastModifiedUser' => [self::BELONGS_TO, 'User', 'last_modified_user_id'],
             'status' => [self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Status', 'status_id'],
+
+            'site' => [self::BELONGS_TO, 'Site', 'site_id'],
+            'service' => [self::BELONGS_TO, 'Service', 'service_id'],
+            'context' => [self::BELONGS_TO, 'Firm', 'context_id'],
+
             'discharge_status' => [self::BELONGS_TO, 'OEModule\OphCiExamination\models\DischargeStatus', 'discharge_status_id'],
             'discharge_destination' => [self::BELONGS_TO, 'OEModule\OphCiExamination\models\DischargeDestination', 'discharge_destination_id'],
             'transfer_to' => [self::BELONGS_TO, 'Institution', 'transfer_institution_id'],
@@ -116,6 +124,9 @@ class ClinicOutcomeEntry extends \BaseElement
             'status_id' => 'Status',
             'followup_quantity' => 'Follow-up',
             'followup_period_id' => 'Follow-up period',
+            'site_id' => 'Site',
+            'service_id' => 'Service',
+            'context' => 'Context',
             'followup_comments' => 'Comments',
             'role_id' => 'Role',
         );
@@ -133,6 +144,9 @@ class ClinicOutcomeEntry extends \BaseElement
         $criteria->compare('id', $this->id, true);
         $criteria->compare('element_id', $this->element_id, true);
         $criteria->compare('status_id', $this->status_id);
+        $criteria->compare('site_id', $this->site_id);
+        $criteria->compare('service_id', $this->service_id);
+        $criteria->compare('context_id', $this->context_id);
         $criteria->compare('followup_quantity', $this->followup_quantity);
         $criteria->compare('followup_period_id', $this->followup_period_id);
         $criteria->compare('followup_comments', $this->followup_comments);
@@ -185,6 +199,21 @@ class ClinicOutcomeEntry extends \BaseElement
     public function getStatusLabel()
     {
         return $this->status->name;
+    }
+
+    public function getSiteLabel()
+    {
+        return $this->site->name ?? 'Any';
+    }
+
+    public function getServicelabel()
+    {
+        return $this->service->name ?? 'N\A';
+    }
+
+    public function getContextLabel()
+    {
+        return $this->context->name ?? 'N\A';
     }
 
     public function getDischargeStatusLabel()
@@ -273,7 +302,14 @@ class ClinicOutcomeEntry extends \BaseElement
     {
         if ($this->isFollowUp()) {
             $risk_status_info = $this->getRiskStatusLabel();
-            return $this->getStatusLabel() . ' ' . $this->followup_quantity . ' ' . $this->getPeriodLabel() . $this->getRoleLabel() . ' ' . $this->getDisplayComments() . $risk_status_info['icon'];
+            return $this->getStatusLabel()
+                . ' ' . $this->followup_quantity
+                . ' ' . $this->getPeriodLabel()
+                . $this->getRoleLabel()
+                . '. Site: '. $this->getSiteLabel()
+                . '. Service: '. $this->getServicelabel()
+                . '. Context: '. $this->getContextLabel()
+                . ' ' . $this->getDisplayComments() . $risk_status_info['icon'];
         }
 
         if ($this->isDischarge()) {
@@ -306,4 +342,5 @@ class ClinicOutcomeEntry extends \BaseElement
         }
         return false;
     }
+
 }

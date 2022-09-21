@@ -18,56 +18,58 @@
  */
 /** @var OphTrConsent_Signature $signature */
 /** @var Element_OphTrConsent_Esign $element */
-if ($element->isBeingSigned($signature)) {
-    $this->widget(SignatureCapture::class, [
-        "submit_url" => Yii::app()->createUrl(
-            $this->module->id . "/" . $this->id . "/saveCapturedSignature",
-            [
-                "element_id" => $element->id,
-                "element_type_id" => $element->getElementType()->id,
-                "signature_type" => $signature->type,
-                "signatory_role" => urlencode(Yii::app()->request->getParam("signatory_role")),
-                "signatory_name" => urlencode(Yii::app()->request->getParam("signatory_name")),
-                "initiator_element_type_id" => Yii::app()->request->getParam("initiator_element_type_id"),
-                "initiator_row_id" => Yii::app()->request->getParam("initiator_row_id"),
-            ]
-        ),
-        "after_submit_js" =>
-            Yii::app()->request->getParam("deviceSign") > 0 ?
-                // The signature was submitted using a handheld device, go back to device ready page
-                'function(response, widget)
-                        {window.parent.formHasChanged=false;window.parent.location="/site/deviceready";}'
-                :
-                // The signature was submitted in OpenEyes event view mode, refresh the page
-                'function(response, widget)
-                        {window.parent.formHasChanged=false;window.parent.location.reload();}',
-    ]);
-} elseif ($signature->isSigned()) {
-    ?>
-    <div class="box">
-        <div class="flex">
-            <div class="dotted-area">
-                <div class="label">Signed</div>
-                <?php
-                echo $signature->getPrintout() ?>
-            </div>
-            <div class="dotted-area">
-                <div class="label">Date</div>
-                <?php echo CHtml::encode(date("j M Y, H:i", strtotime($signature->last_modified_date))); ?>
-            </div>
-        </div>
-        <div class="flex">
-            <div class="dotted-area">
-                <div class="label"><?= $name_label ?></div>
-                <?= $signature->signatory_name ?>
-            </div>
-            <div class="dotted-area">
-                <div class="label"><?= $title_label ?></div>
-                <?= $job_title ?? $signature->signatory_role ?>
-            </div>
-        </div>
-    </div>
-    <?php
-}
 
+if ($signature) {
+    if ($element->isBeingSigned($signature)) {
+        $this->widget(SignatureCapture::class, [
+            "submit_url" => Yii::app()->createUrl(
+                $this->module->id . "/" . $this->id . "/saveCapturedSignature",
+                [
+                    "element_id" => $element->id,
+                    "element_type_id" => $element->getElementType()->id,
+                    "signature_type" => $signature->type,
+                    "signatory_role" => urlencode(Yii::app()->request->getParam("signatory_role")),
+                    "signatory_name" => urlencode(Yii::app()->request->getParam("signatory_name")),
+                    "initiator_element_type_id" => Yii::app()->request->getParam("initiator_element_type_id"),
+                    "initiator_row_id" => Yii::app()->request->getParam("initiator_row_id"),
+                ]
+            ),
+            "after_submit_js" =>
+                Yii::app()->request->getParam("deviceSign") > 0 ?
+                    // The signature was submitted using a handheld device, go back to device ready page
+                    'function(response, widget)
+                            {window.parent.formHasChanged=false;window.parent.location="/site/deviceready";}'
+                    :
+                    // The signature was submitted in OpenEyes event view mode, refresh the page
+                    'function(response, widget)
+                            {window.parent.formHasChanged=false;window.parent.location.reload();}',
+        ]);
+    } elseif ($signature->isSigned()) {
+        ?>
+        <div class="box">
+            <div class="flex">
+                <div class="dotted-area">
+                    <div class="label">Signed</div>
+                    <?php
+                    echo $signature->getPrintout() ?>
+                </div>
+                <div class="dotted-area">
+                    <div class="label">Date</div>
+                    <?php echo CHtml::encode(date("j M Y, H:i", strtotime($signature->last_modified_date))); ?>
+                </div>
+            </div>
+            <div class="flex">
+                <div class="dotted-area">
+                    <div class="label"><?= $name_label ?></div>
+                    <?= $signature->signatory_name ?>
+                </div>
+                <div class="dotted-area">
+                    <div class="label"><?= $title_label ?></div>
+                    <?= $job_title ?? $signature->signatory_role ?>
+                </div>
+            </div>
+        </div>
+        <?php
+    }
+}
 ?>

@@ -91,10 +91,10 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     DrugAdministrationController.prototype.buildReadOnlyAdministerCell = function($parent){
         const $administered_entries = $parent.find('input[name$="[administered]"][value="1"]')
         $parent.find('input[name$="[administered]"][value="1"]').closest('td').each(function(i, td){
-            if($(td).find('i.tick').length){
+            if($(td).find('i.tick-green').length){
                 return
             }
-            $('<i class="oe-i tick medium pad selected"></i>').insertBefore($(td).find('.toggle-switch'));
+            $('<i class="oe-i tick-green medium pad selected"></i>').insertBefore($(td).find('.toggle-switch'));
         });
         $administered_entries.closest('.toggle-switch').addClass('disabled').hide();
     }
@@ -127,7 +127,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                 const appt_clinic = $appt_selection.data('appt-clinic');
                 const is_for_today = $appt_selection.data('for-today');
                 if(!is_for_today){
-                    $parent.addClass('fade');
+                    $parent.find('tr').addClass('fade');
                 }
                 if(!$appt_selection.hasClass('unbooked')){
                     $parent.find('input[name$="[visit_id]"]').val($appt_selection.val());
@@ -156,14 +156,25 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         const $non_confirmed_block = $(parent_selector).find('input[name$="[confirmed]"][value="0"]');
         const add_meds_btn_ctn_selector = `.${this.options.addMedsBtnCtnClass}`;
         const assign_order_ctn_selector = `.${this.options.assignOrderCtnClass}`;
+        const controller = this;
         // if there is non confirmed block and the user is a prescriber
         if($non_confirmed_block.length && this.options.is_prescriber){
             add_meds_btn_disabled = $non_confirmed_block.closest(parent_selector).find('input[name$="[pgdpsd_id]"]').val() ? true : false;
             add_preset_btn_disabled = true;
         }
         if(!add_meds_btn_disabled && !add_preset_btn_disabled){
-            $(parent_selector).find('.js-after-confirm').show();
             $(parent_selector).each(function(i, section){
+                // if the assignment_id has value, that means it is a saved record
+                const has_assignment_id_value = $(section).find('input[name$="[assignment_id]"]').val() ? true : false;
+
+                const is_all_meds_administered = controller.isAllMedicationAdministered($(this));
+
+                // hide the after confirm elements only when it is a saved record and its medications are administered
+                if(has_assignment_id_value && is_all_meds_administered) {
+                    $(this).find('.js-after-confirm').hide();
+                } else {
+                    $(this).find('.js-after-confirm').show();
+                }
                 if(!$(section).find('hr.divider').length && !$(section).find(assign_order_ctn_selector).length){
                     $(section).append('<hr class="divider">');
                 }
@@ -171,6 +182,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         }
         $(add_meds_btn_ctn_selector).find('button#js-add-preset-order').prop('disabled', add_preset_btn_disabled);
         $(add_meds_btn_ctn_selector).find('button#js-add-medications').prop('disabled', add_meds_btn_disabled);
+    }
+
+    DrugAdministrationController.prototype.isAllMedicationAdministered = function($parent_block) {
+        const administer_btn_selector = `.${this.options.administerBtnClass}`;
+        return $parent_block.find('tbody tr').length === $parent_block.find(`tbody tr ${administer_btn_selector}:checked`).length
     }
 
     DrugAdministrationController.prototype.initAdderPopups = function(){
@@ -303,15 +319,14 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         const $parent = $(btn).parents(parent_selector);
         const $admin_btns = $parent.find(administer_btn_selector);
         const $trash_btns = $parent.find(del_med_btn_selector);
-        let block_classes = ['status-box', 'red', 'fade'];
         let switch_classes = 'disabled';
         $parent.find('input[name$="[active]"]').val(val);
         const is_relevant = $parent.find('input[name$="[is_relevant]"]').val();
-        if (parseInt(is_relevant) === 0) {
-            block_classes = block_classes.filter(sc => sc !== 'fade');
+        if (parseInt(is_relevant) === 1) {
+            $parent.find('tr').toggleClass('fade');
+        } else {
             switch_classes = '';
         }
-        $parent.toggleClass(block_classes.join(' '));
         $admin_btns.closest('.toggle-switch').toggleClass(switch_classes);
         $trash_btns.toggleClass(switch_classes);
         $(btn).replaceWith(btn_to_replace);
@@ -390,9 +405,9 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         const controller = this;
         const confirm_btn_selector = `.${this.options.confirmBtnClass}`;
         const appt_ctn_selector = `.${this.options.apptCtnClass}`;
-        const administer_btn_selector = `.${this.options.administerBtnClass}`;
+        const del_preset_btn_selector = `.${this.options.delPresetBtnClass}`;
 
-        if($parent_block.find('tbody tr').length === $parent_block.find(`tbody tr ${administer_btn_selector}:checked`).length || controller.isPGDBlock($parent_block)){
+        if(this.isAllMedicationAdministered($parent_block) || controller.isPGDBlock($parent_block)){
             $parent_block.find(confirm_btn_selector).text(this.record_admin_btn_text);
             $parent_block.find(`${appt_ctn_selector} input`).prop('disabled', true);
             $parent_block.find(appt_ctn_selector).hide();
@@ -407,6 +422,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             }
             $parent_block.find(`${appt_ctn_selector} input`).prop('disabled', false);
             $parent_block.find(appt_ctn_selector).show();
+            $parent_block.find(del_preset_btn_selector).show();
         }
     }
     // bind change event on time input

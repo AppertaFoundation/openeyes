@@ -27,7 +27,10 @@ class SsoOpenIDConnect extends \Jumbojett\OpenIDConnectClient
 
     protected function getSessionKey($key)
     {
-        return $_COOKIE[$key];
+        if (array_key_exists($key, $_COOKIE)) {
+            return $_COOKIE[$key];
+        }
+        return false;
     }
 
     protected function setSessionKey($key, $value)
@@ -69,6 +72,15 @@ class SsoOpenIDConnect extends \Jumbojett\OpenIDConnectClient
     protected function getNonce()
     {
         return $this->decryptCookie($this->getSessionKey('openid_connect_nonce'));
+    }
+
+    protected function setCodeVerifier($codeVerifier) {
+        $this->setSessionKey('openid_connect_code_verifier', $codeVerifier);
+        return $codeVerifier;
+    }
+
+    protected function getCodeVerifier() {
+        return $this->decryptCookie($this->getSessionKey('openid_connect_code_verifier'));
     }
 
     protected function encryptCookie($value)

@@ -1,7 +1,7 @@
 {
   "license": "AGPL-3.0-only",
   "devDependencies": {
-    "cypress": "10.4.0",
+    "cypress": "10.7.0",
     "decomment": "^0.8.6",
     "glob": "~7.0.3",
     "gzip-js": "0.3.2",

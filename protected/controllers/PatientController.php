@@ -233,9 +233,9 @@ class PatientController extends BaseController
 
         $hie_url = \SettingMetadata::model()->getSetting('hie_remote_url');
         if (filter_var($hie_url, FILTER_VALIDATE_URL)) {
-            $iframe_policy = " frame-src {$hie_url} localhost:* blob:;";
+            $iframe_policy = " frame-src {$hie_url} localhost:* blob: complog:;";
         } else {
-            $iframe_policy = " frame-src 'self' localhost:* blob:;";
+            $iframe_policy = " frame-src 'self' localhost:* blob: complog:;";
         }
 
         $this->iframe_policy = $iframe_policy;
@@ -2084,6 +2084,7 @@ class PatientController extends BaseController
             // not to be sync with PAS
             $patient->is_local = 1;
 
+            $patient->primary_institution_id = Institution::model()->getCurrent()->id;
 
             // Don't save if the user just changed the "Patient Source"
             if ($_POST["changePatientSource"] == 0) {
@@ -2095,12 +2096,6 @@ class PatientController extends BaseController
                 $patient->beforeValidate();
             }
         }
-        // Only auto increment hos no. when the set_auto_increment_hospital_no is on
-        /* TODO OE-10452
-        if ($patient->getIsNewRecord() && Yii::app()->params['set_auto_increment_hospital_no'] == 'on') {
-        $patient->hos_num = $patient->autoCompleteHosNum();
-        }
-        */
 
         $this->render('crud/create', array(
         'patient' => $patient,
@@ -2147,6 +2142,8 @@ class PatientController extends BaseController
             $pid_type_necessity_values[$patient_identifier_type_display_order->patient_identifier_type_id] = [
                 'necessity' => $patient_identifier_type_display_order->necessity,
                 'status_necessity' => $patient_identifier_type_display_order->status_necessity,
+                'auto_increment' => $patient_identifier_type_display_order->auto_increment,
+                'auto_increment_start' => $patient_identifier_type_display_order->auto_increment_start,
             ];
         }
         return $pid_type_necessity_values;
@@ -2180,9 +2177,13 @@ class PatientController extends BaseController
             if ($value['necessity'] !== 'hidden' && !array_key_exists($type_id, $patient_identifiers)) {
                 $patient_identifier = new PatientIdentifier();
                 $patient_identifier->patient_identifier_type_id = $type_id;
+                if ($value['auto_increment']) {
+                    $patient_identifier->value = PatientIdentifierType::getNextValueForIdentifierType($type_id, $value['auto_increment_start']);
+                }
                 $patient_identifiers[$type_id] = $patient_identifier;
             }
         }
+
 
         // overwrite values if they are set in $_POST
         if (isset($_POST['PatientIdentifier'])) {
