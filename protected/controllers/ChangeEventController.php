@@ -288,6 +288,11 @@ class ChangeEventController extends BaseController
                     $event->firm_id = \Yii::app()->request->getPost('selectedContextId');
 
                     if ($event->save()) {
+                        $element = ElementLetter::model()->findByAttributes(["event_id" => $event->id]);
+                        if ($element) {
+                            $element->updateFooter($element, $episode);
+                        }
+
                         Audit::add('event', 'update', $data = null, $log_message = null, $properties);
                         $outcome = 'true';
                     }
