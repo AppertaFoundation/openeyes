@@ -26,7 +26,6 @@ use WithTransactions;
  */
 class Element_OphCiExamination_PcrRiskTest extends \ModelTestCase
 {
-    // use \HasCoreEventElementTests;
     use WithTransactions;
 
     protected $element_cls = Element_OphCiExamination_PcrRisk::class;
