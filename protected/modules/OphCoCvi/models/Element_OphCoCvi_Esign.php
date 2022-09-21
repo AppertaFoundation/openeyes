@@ -115,6 +115,7 @@ class Element_OphCoCvi_Esign extends \BaseEsignElement
 
         if (!in_array(\BaseSignature::TYPE_LOGGEDIN_USER, $existing_types)) {
             $user = \Yii::app()->session['user'] ?? $this->user;
+            $user->refresh();
             $consultant = new \OphCoCvi_Signature();
             $consultant->signatory_role = !empty($user->grade) ? $user->grade->grade : "Unknown grade";
             $consultant->type = \BaseSignature::TYPE_LOGGEDIN_USER;
