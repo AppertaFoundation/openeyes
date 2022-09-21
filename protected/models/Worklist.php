@@ -199,11 +199,16 @@ class Worklist extends BaseActiveRecordVersioned
         return $res;
     }
 
+    /**
+     * Return worklist attributes with values
+     * 
+     * @return WorklistAttribute[]
+     */
     public function getDisplayed_mapping_attributes()
     {
         $criteria = new CDbCriteria();
 
-        $criteria->join = 'JOIN worklist w ON t.worklist_id = w.id JOIN worklist_definition_mapping wdm ON wdm.worklist_definition_id = w.worklist_definition_id AND wdm.key=t.name';
+        $criteria->join = 'JOIN worklist w ON t.worklist_id = w.id JOIN worklist_definition_mapping wdm ON wdm.worklist_definition_id = w.worklist_definition_id AND wdm.key = t.name';
 
         $criteria->addCondition('t.worklist_id = :worklist_id');
         $criteria->addCondition('wdm.display_order IS NOT NULL');
