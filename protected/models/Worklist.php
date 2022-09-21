@@ -200,7 +200,8 @@ class Worklist extends BaseActiveRecordVersioned
     }
 
     /**
-     * Return worklist attributes with values
+     * Return worklist attributes with values. This is defined by the mappings that have a display_order
+     * value set for the worklist_definition of this worklist
      *
      * @return WorklistAttribute[]
      */
