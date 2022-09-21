@@ -18,7 +18,7 @@
 ?>
     <h2><?php echo Firm::contextLabel()?>s you work in</h2>
     <form id="profile_firms" method="post" action="/profile/firms">
-        <table class="standard">
+        <table class="standard" data-test="selected_firms">
             <thead>
                 <tr>
                     <th><input type="checkbox" id="checkall" style="min-width: 20px"  /></th>
@@ -29,27 +29,31 @@
             <tbody>
             <?php
             foreach ($user->firmSelections as $i => $firm) {?>
-                <tr data-attr-id="<?php echo $firm->id?>">
-                    <td><input type="checkbox" name="firms[]" value="<?php echo $firm->id?>" /></td>
-                    <td><?php echo $firm->name?></td>
+                <tr data-attr-id="<?php echo $firm->id?>" <?= !$firm->runtime_selectable ? 'class="fade"' : "" ?>>
+                    <td><input type="checkbox" name="firms[]" value="<?php echo $firm->id?>" <?= !$firm->runtime_selectable ? "disabled=disabled" : ""; ?> /></td>
+                    <td><?php echo $firm->name . (!$firm->runtime_selectable ? " <sup>*</sup>" : ""); ?></td>
                     <td><?php echo $firm->subspecialtyText?></td>
                 </tr>
             <?php }?>
             </tbody>
         </table>
     </form>
-<div class="data-group">
-  <label for="profile_firm_id" class="inline">Add <?php echo strtolower(Firm::contextLabel())?>:</label>
-    <?=\CHtml::dropDownList('profile_firm_id', '', $user->getNotSelectedFirmList(), array('empty' => '- Select -'))?>
-    <?=\CHtml::link('Add all', '#', array('id' => 'add_all', 'class' => 'field-info button green hint'))?>
-</div>
-<div class="profile-actions">
-    <?php echo EventAction::button('Remove selected ' . strtolower(Firm::contextLabel()), 'delete', array(), array('class' => 'button large hint blue'))->toHtml()?>
-</div>
+    
+    <div class="data-group flex-layout">
+        <div style="flex-grow:1;" data-test="unselected_firms">
+            <label for="profile_firm_id" class="inline">Add <?php echo strtolower(Firm::contextLabel())?>:</label>
+            <?=\CHtml::dropDownList('profile_firm_id', '', $unselected_firms, array('empty' => '- Select -'))?>
+            <?=\CHtml::link('Add all', '#', array('id' => 'add_all', 'class' => 'field-info button green hint'))?>
+        </div>
 
-<div class="profile-actions">
-    <p>Note: you can also set the sites you work at, <?=\CHtml::link('click here', Yii::app()->createUrl('/profile/sites'))?> to do so.</p>
-</div>
+        <?php echo EventAction::button('Remove selected ' . strtolower(Firm::contextLabel()), 'delete', array(), array('class' => 'button large hint blue'))->toHtml(); ?>
+    </div>
+    
+    <div class="row">
+        <br/>
+        <p><sup>*</sup> Some firm's context are no longer available for selection because of changes by an Admin user.</p>  
+        <p>Note: you can also set the sites you work at, <?=\CHtml::link('click here', Yii::app()->createUrl('/profile/sites'))?> to do so.</p>
+    </div>
 
 <script type="text/javascript">
     $('#profile_firm_id').change(function(e) {
