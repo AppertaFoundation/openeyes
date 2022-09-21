@@ -201,7 +201,7 @@ class Worklist extends BaseActiveRecordVersioned
 
     /**
      * Return worklist attributes with values
-     * 
+     *
      * @return WorklistAttribute[]
      */
     public function getDisplayed_mapping_attributes()
