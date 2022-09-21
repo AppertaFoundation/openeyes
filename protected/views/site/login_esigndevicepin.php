@@ -1,5 +1,5 @@
 <div class="oe-login">
-    <div class="login">
+    <div class="login" style="top:0;">
         <h1>OpenEyes e-Sign</h1>
         <div class="user">
             <?php $form = $this->beginWidget('CActiveForm', array(

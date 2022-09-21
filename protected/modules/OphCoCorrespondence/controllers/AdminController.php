@@ -230,7 +230,7 @@ class AdminController extends \ModuleAdminController
                                 'associated_content' => array(),
                                 'errors' => $errors,
                                 'institution' => $institution,
-                                'site_options' => Site::model()->getListForInstitutionId($institution['id']),
+                                'site_options' => Site::model()->getListForInstitutionById($institution['id']),
                                 'default_sites' => null,
                                 'firm_options' => Firm::model()->getListWithSpecialties($institution['id'], true),
                                 'default_firms' => null
