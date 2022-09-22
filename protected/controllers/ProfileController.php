@@ -1,5 +1,4 @@
 <?php
-
 /**
  * OpenEyes.
  *
@@ -16,6 +15,7 @@
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 class ProfileController extends BaseController
 {
     public $layout = 'profile';
@@ -382,9 +382,9 @@ class ProfileController extends BaseController
         $user = User::model()->findByPk(Yii::app()->user->id);
         $this->render('/profile/firms', array(
             'user' => $user,
+            'unselected_firms' => $this->getNotSelectedFirmList($user)
         ));
     }
-
 
     /**
      * Firm deletion from user profile
@@ -613,5 +613,29 @@ class ProfileController extends BaseController
     public function getUserSettings($elementType)
     {
         return SettingUser::model()->findAll('user_id = :user_id AND element_type_id = :element_type_id', array(':user_id' => Yii::app()->user->id, ':element_type_id' => $elementType->id));
+    }
+
+    protected function getNotSelectedFirmList(User $user)
+    {
+        $firms = Yii::app()->db->createCommand()
+            ->select('f.id, f.name, s.name AS subspecialty')
+            ->from('firm f')
+            ->leftJoin('service_subspecialty_assignment ssa', 'f.service_subspecialty_assignment_id = ssa.id')
+            ->leftJoin('subspecialty s', 'ssa.subspecialty_id = s.id')
+            ->leftJoin('user_firm uf', 'uf.firm_id = f.id and uf.user_id = ' . $user->id)
+            ->where('uf.id is null and f.active = 1 and f.runtime_selectable = 1')
+            ->order('f.name, s.name')
+            ->queryAll();
+        $data = [];
+        foreach ($firms as $firm) {
+            if ($firm['subspecialty']) {
+                $data[$firm['id']] = $firm['name'] . ' (' . $firm['subspecialty'] . ')';
+            } else {
+                $data[$firm['id']] = $firm['name'];
+            }
+        }
+
+        natcasesort($data);
+        return $data;
     }
 }

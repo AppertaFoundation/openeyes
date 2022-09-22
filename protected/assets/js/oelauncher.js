@@ -25,10 +25,9 @@
      * As the patient hospital number is unavailable at time of load in some pages/menu_bar_items
      * this check will automatically append the patient number if it is available, otherwise will just open forum to the main page
      **/
-     if (launchcommand==('forum')){
+     if (launchcommand==('forum') || launchcommand === 'imagenet'){
         try{ launchcommand+="/"+OE_patient_hosnum;} catch(err) {};
      }
-
      // Call the oelauncher: url protocol, without leaving the page or causing a pop-up
      setTimeout( function() { window.location.href="oelauncher:" + launchcommand;}, 500);
 
