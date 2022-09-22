@@ -748,12 +748,16 @@ class DefaultController extends \BaseEventTypeController
                     $issueDate = \Helper::convertMySQL2NHS($date);
                 }
 
+                $type = \PatientIdentifierHelper::getPatientIdentifierType('LOCAL', $originalRow->site->institution_id, $originalRow->site->id) ??
+                            \PatientIdentifierHelper::getPatientIdentifierType('LOCAL', $originalRow->site->institution_id);
+                $patient_identifier = $type ? \PatientIdentifierHelper::getPatientIdentifierByType($originalRow->event->episode->patient->id, $type) : null;
+
                 $rows[] = [
                     \Helper::convertMySQL2NHS($originalRow->event->event_date),
                     $originalRow->event->episode->getSubspecialtyText(),
                     $originalRow->site ? $originalRow->site->name : "-",
                     $originalRow->event->episode->patient->getFullName() . " (" . $originalRow->event->episode->patient->getAge() . "y)",
-                    $originalRow->event->episode->patient->hos_num,
+                    $patient_identifier ? "\t" . \PatientIdentifierHelper::getIdentifierValue($patient_identifier) : "-",
                     $originalRow->user->getFullNameAndTitle(),
                     $consultant,
                     $inCharge,
