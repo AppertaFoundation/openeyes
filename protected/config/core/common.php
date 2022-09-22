@@ -507,9 +507,16 @@ $config = array(
                 'title' => 'Track patients in FORUM',
                 'alt_title' => 'Stop tracking in FORUM',
                 'uri' => "forum/toggleForumTracking",
-                'requires_setting' => array('setting_key' => 'enable_forum_integration', 'required_value' => 'on'),
-                'position' => 90,
+                'requires_setting' => ['setting_key' => 'enable_forum_integration', 'required_value' => 'on'],
+                'position' => 89,
             ),
+            'imagenet' => [
+                'title' => 'Track patients in IMAGEnet',
+                'alt_title' => 'Stop tracking in IMAGEnet',
+                'uri' => "imagenet/toggleImagenetTracking",
+                'requires_setting' => ['setting_key' => 'enable_imagenet_integration', 'required_value' => 'on'],
+                'position' => 90,
+            ],
             'disorder' => array(
                 'title' => 'Manage Disorders',
                 'uri' => "/disorder/index",
@@ -545,21 +552,6 @@ $config = array(
                 'position' => 40,
                 'uri' => '/Safeguarding/index/',
                 'restricted' => array('Safeguarding'),
-            ),
-            /*
-                 //TODO: not yet implemented
-                 'worklist' => array(
-                  'title' => 'Worklists',
-                  'uri' => '/worklist',
-                  'position' => 3,
-                ),
-                */
-            'imagenet' => array(
-                'title' => 'ImageNET',
-                'uri' => '',
-                'requires_setting' => array('setting_key' => 'imagenet_url', 'required_value' => 'not-empty'),
-                'position' => 92,
-                'options' => ['target' => '_blank'],
             ),
             'cito_integration' => array(
                 'title' => 'Open in CITO',
