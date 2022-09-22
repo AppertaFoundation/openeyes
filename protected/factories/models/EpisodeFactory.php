@@ -40,6 +40,16 @@ class EpisodeFactory extends ModelFactory
             ];
         });
     }
+
+    public function forFirm(Firm $firm): self
+    {
+        return $this->state(function () use ($firm) {
+            return [
+                'firm_id' => $firm->id
+            ];
+        });
+    }
+
     public function withPrincipalDiagnosis($disorder_id = null, $eye_id = null)
     {
         return $this->state(function () use ($disorder_id, $eye_id) {
