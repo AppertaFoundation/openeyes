@@ -6,6 +6,7 @@ if (PHP_MAJOR_VERSION >= 7 && PHP_MINOR_VERSION >= 1) {
 
 set_include_path(get_include_path() . PATH_SEPARATOR . __DIR__);
 set_include_path(get_include_path() . PATH_SEPARATOR . __DIR__ . '/test-traits');
+set_include_path(get_include_path() . PATH_SEPARATOR . __DIR__ . '/test-helpers');
 
 defined('YII_ENABLE_EXCEPTION_HANDLER') or define('YII_ENABLE_EXCEPTION_HANDLER', false);
 defined('YII_ENABLE_ERROR_HANDLER') or define('YII_ENABLE_ERROR_HANDLER', false);
