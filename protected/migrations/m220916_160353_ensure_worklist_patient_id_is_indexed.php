@@ -4,6 +4,7 @@ class m220916_160353_ensure_worklist_patient_id_is_indexed extends OEMigration
 {
     public function safeUp()
     {
+        // It was missing in one trust, and we couldn't find a reason, and it could be affecting other trusts
         if (!$this->dbConnection->createCommand("SHOW INDEX FROM event WHERE Key_name = 'event_ibfk_worklist_patient'")->queryScalar()) {
             $this->createIndex("event_ibfk_worklist_patient", 'event', 'worklist_patient_id');
         }
