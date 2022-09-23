@@ -755,6 +755,7 @@ class DefaultController extends \BaseEventTypeController
                     $originalRow->site_id
                 );
 
+                // \t character is added to make sure leading zeros are displayed in the excel spreadsheet
                 $rows[] = [
                     \Helper::convertMySQL2NHS($originalRow->event->event_date),
                     $originalRow->event->episode->getSubspecialtyText(),
