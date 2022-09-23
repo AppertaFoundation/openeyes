@@ -1086,7 +1086,7 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
         } else {
             $footer .= "<div>" . nl2br(trim($this->footer)) . "</div>";
         }
-        
+
         $footer .= "</div>";
         return $footer;
     }
