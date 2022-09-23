@@ -73,6 +73,10 @@
                             $item['title'] = $item['alt_title'];
                         }
 
+                        if ($item['title'] === 'Track patients in IMAGEnet' && Yii::app()->user->getState('imagenet_enabled') === 'on') {
+                            $item['title'] = $item['alt_title'];
+                        }
+
                         echo CHtml::link($item['title'], $link, $options)
                         ?>
                         <?php if ($has_sub) : ?>

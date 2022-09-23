@@ -56,16 +56,28 @@ class PatientPanel extends BaseCWidget
         }
 
         //Force forum to reload patient whenever the patient in OE changes
-        if (Yii::app()->user->getState('forum_enabled') === 'on') {
+        $forum_enabled = Yii::app()->user->getState('forum_enabled') === 'on';
+        $imagenet_enabled = Yii::app()->user->getState('imagenet_enabled') === 'on';
+
+        if ($forum_enabled || $imagenet_enabled) {
             $patient_identifier = PatientIdentifier::model()->find(
                 'patient_id=:patient_id AND patient_identifier_type_id=:patient_identifier_type_id',
-                [':patient_id' => $this->patient->id,
-                    ':patient_identifier_type_id' => Yii::app()->params['oelauncher_patient_identifier_type']]
+                [
+                    ':patient_id' => $this->patient->id,
+                    ':patient_identifier_type_id' => SettingMetadata::model()->getSetting('oelauncher_patient_identifier_type')
+                ]
             );
-            $patient_identifier_value = $patient_identifier->value?? null;
+
+            $patient_identifier_value = $patient_identifier->value ?? null;
             // Check the patient number has changed since last load
             if ( !Yii::app()->user->hasState('last_patient') || (Yii::app()->user->hasState('last_patient') && Yii::app()->user->getState('last_patient') != $patient_identifier_value)) {
-                Yii::app()->clientScript->registerScript("forceforum", "oelauncher('forum');", CClientScript::POS_LOAD);
+                if($forum_enabled) {
+                    Yii::app()->clientScript->registerScript("forceforum", "oelauncher('forum');", CClientScript::POS_LOAD);
+                }
+
+                if($imagenet_enabled) {
+                    Yii::app()->clientScript->registerScript("forceimagenet", "oelauncher('imagenet');", CClientScript::POS_LOAD);
+                }
 
                 // overwrite last patient id with current patient ID
                 Yii::app()->user->setState('last_patient', $patient_identifier_value);

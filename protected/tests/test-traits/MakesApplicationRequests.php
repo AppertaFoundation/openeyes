@@ -53,6 +53,39 @@ trait MakesApplicationRequests
         return $crawl_result ? $this->crawl($result) : $result;
     }
 
+    protected function post($url, $form_data = [])
+    {
+        $_SERVER['HTTP_USER_AGENT'] = 'phpunit'; // this is used in the main layout template
+        $_SERVER['REQUEST_URI'] = $url;
+        $_POST = $form_data;
+        $_REQUEST = $form_data;
+
+        $requestMock = $this->getMockBuilder(\CHttpRequest::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getCsrfToken', 'getPathInfo', 'redirect'])
+            ->getMock();
+
+        $redirected = null;
+
+        $requestMock->method('getCsrfToken')
+            ->willReturn('foo');
+        $requestMock->method('getPathInfo')
+            ->willReturn($url);
+        $requestMock->method('redirect')
+            ->willReturnCallback(function (...$args) use (&$redirected) {
+                $redirected = new ApplicationRedirectWrapper(...$args);
+            });
+
+        \Yii::app()->setComponent('request', $requestMock);
+
+        ob_start();
+        \Yii::app()->run();
+        $output = ob_get_contents();
+        ob_end_clean();
+
+        return new ApplicationResponseWrapper($output, $redirected);
+    }
+
     protected function crawl(string $contents)
     {
         return new Crawler($contents);

@@ -52,6 +52,7 @@ $subspecialty_contexts = $this->getContextFromSubspecialty($contexts,$default_su
 <div class="element-fields flex-layout full-width">
     <input id="pt_status_list" type="hidden" data-statuses="<?= htmlspecialchars(json_encode($patient_ticket_statuses)); ?>"/>
     <div class="cols-10">
+        <input type="hidden" name="<?= $model_name ?>[entries]" value="">
         <table id="<?= $model_name ?>_entry_table" class="cols-full">
             <colgroup>
                 <col>
