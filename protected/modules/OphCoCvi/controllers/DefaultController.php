@@ -751,7 +751,7 @@ class DefaultController extends \BaseEventTypeController
                 $patient_identifier = \PatientIdentifierHelper::getIdentifierForPatient(
                     'LOCAL',
                     $originalRow->event->episode->patient_id,
-                    $originalRow->site->institution_id, 
+                    $originalRow->site->institution_id,
                     $originalRow->site_id
                 );
 
