@@ -1443,6 +1443,12 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
         }
     }
 
+    /**
+     * @param User $user
+     * @param Firm $firm
+     * @return void
+     * Set Correspondence footer text
+     */
     public function setFooterTextFrom(\User $user, \Firm $firm)
     {
         if ($signOffUser = $user->signOffUser) {

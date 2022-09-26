@@ -1029,6 +1029,13 @@ class OphCoCorrespondence_API extends BaseAPI
         }
     }
 
+    /**
+     * @param $event
+     * @param $user
+     * @return void
+     * @throws Exception
+     * Change footer consultant when change context
+     */
     public function afterEventContextUpdate($event, $user) {
         $element = ElementLetter::model()->findByAttributes(["event_id" => $event->id]);
         $element->setFooterTextFrom($user, $event->firm);
