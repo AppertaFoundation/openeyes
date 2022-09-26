@@ -55,8 +55,7 @@ class Element_OphCiExamination_PcrRisk extends \SplitEventTypeElement
                     right_glaucoma, right_pxf, right_diabetic, right_pupil_size, right_no_fundal_view, right_axial_length_group,
                     right_brunescent_white_cataract, right_alpha_receptor_blocker, right_doctor_grade_id, right_can_lie_flat, right_pcr_risk, right_excess_risk',
                 'safe',
-            ),
-            ['event_id', 'required']
+            )
         );
     }
 
