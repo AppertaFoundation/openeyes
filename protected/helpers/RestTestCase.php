@@ -166,7 +166,7 @@ class RestTestCase extends OEDbTestCase
 
     protected function assertXPathRegExp($pattern, $path)
     {
-        $this->assertRegExp($pattern, $this->xPathEval($path));
+        $this->assertMatchesRegularExpression($pattern, $this->xPathEval($path));
     }
 
     protected function assertUrlEquals($expected, $actual)

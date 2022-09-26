@@ -92,8 +92,8 @@ class OphCiExamination_API_RefractionTest extends \OEDbTestCase
         $api = new OphCiExamination_API();
         $result = $api->getRefractionTextFromEvent($reading->event);
 
-        $this->assertContains($right_readings[0]->getSphericalEquivalent(), $result, "result should contain highest priority result on right");
-        $this->assertContains($left_readings[1]->getSphericalEquivalent(), $result, "result should contain highest priority result on left");
+        $this->assertStringContainsString($right_readings[0]->getSphericalEquivalent(), $result, "result should contain highest priority result on right");
+        $this->assertStringContainsString($left_readings[1]->getSphericalEquivalent(), $result, "result should contain highest priority result on left");
     }
 
     public function element_refraction_values_provider()

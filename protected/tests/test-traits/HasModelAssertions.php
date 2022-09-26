@@ -72,7 +72,7 @@ trait HasModelAssertions
             "No errors found for {$attribute} in:\n" . print_r($instance->getErrors(), true)
         );
 
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             "/" . preg_quote($message_partial, "/") . "/",
             $instance->getError($attribute)
         );

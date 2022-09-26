@@ -876,7 +876,7 @@ class OphCoCorrespondence_ReportLettersTest extends OEDbTestCase
 		$r->match_correspondence = 1;
 		$r->phrases = array();
 
-		$this->assertRegExp('/^Correspondence/',$r->description());
+		$this->assertMatchesRegularExpression('/^Correspondence/',$r->description());
 	}
 
 	public function testDescription_MatchLegacyLetters()
@@ -885,7 +885,7 @@ class OphCoCorrespondence_ReportLettersTest extends OEDbTestCase
 		$r->match_legacy_letters = 1;
 		$r->phrases = array();
 
-		$this->assertRegExp('/^Legacy letters/',$r->description());
+		$this->assertMatchesRegularExpression('/^Legacy letters/',$r->description());
 	}
 
 	public function testDescription_MatchCorrespondenceAndLegacy()
@@ -895,7 +895,7 @@ class OphCoCorrespondence_ReportLettersTest extends OEDbTestCase
 		$r->match_legacy_letters = 1;
 		$r->phrases = array();
 
-		$this->assertRegExp('/^Correspondence and legacy letters/',$r->description());
+		$this->assertMatchesRegularExpression('/^Correspondence and legacy letters/',$r->description());
 	}
 
 	public function testDescription_Phrases_Any()
@@ -904,7 +904,7 @@ class OphCoCorrespondence_ReportLettersTest extends OEDbTestCase
 		$r->match_correspondence = 1;
 		$r->phrases = array('apple','grapefruit','clemantine');
 
-		$this->assertRegExp('/Correspondence containing any of these phrases:\napple\ngrapefruit\nclemantine/',$r->description());
+		$this->assertMatchesRegularExpression('/Correspondence containing any of these phrases:\napple\ngrapefruit\nclemantine/',$r->description());
 	}
 
 	public function testDescription_Phrases_All()
@@ -914,7 +914,7 @@ class OphCoCorrespondence_ReportLettersTest extends OEDbTestCase
 		$r->condition_type = 'and';
 		$r->phrases = array('apple','grapefruit','clemantine');
 
-		$this->assertRegExp('/Correspondence containing all of these phrases:\napple\ngrapefruit\nclemantine/',$r->description());
+		$this->assertMatchesRegularExpression('/Correspondence containing all of these phrases:\napple\ngrapefruit\nclemantine/',$r->description());
 	}
 
 	public function testDescription_StartDate()
@@ -924,7 +924,7 @@ class OphCoCorrespondence_ReportLettersTest extends OEDbTestCase
 		$r->match_correspondence = 1;
 		$r->phrases = array();
 
-		$this->assertRegExp('/written after 1 May 2012/',$r->description());
+		$this->assertMatchesRegularExpression('/written after 1 May 2012/',$r->description());
 	}
 
 	public function testDescription_EndDate()
@@ -934,7 +934,7 @@ class OphCoCorrespondence_ReportLettersTest extends OEDbTestCase
 		$r->match_correspondence = 1;
 		$r->phrases = array();
 
-		$this->assertRegExp('/written before 1 May 2012/',$r->description());
+		$this->assertMatchesRegularExpression('/written before 1 May 2012/',$r->description());
 	}
 
 	public function testDescription_StartAndEndDate()
@@ -945,7 +945,7 @@ class OphCoCorrespondence_ReportLettersTest extends OEDbTestCase
 		$r->match_correspondence = 1;
 		$r->phrases = array();
 
-		$this->assertRegExp('/written between 1 May 2012 and 1 May 2013/',$r->description());
+		$this->assertMatchesRegularExpression('/written between 1 May 2012 and 1 May 2013/',$r->description());
 	}
 
 	public function testDescription_Author()
@@ -955,7 +955,7 @@ class OphCoCorrespondence_ReportLettersTest extends OEDbTestCase
 		$r->phrases = array();
 		$r->author_id = 2;
 
-		$this->assertRegExp('/written by Jane Bloggs/',$r->description());
+		$this->assertMatchesRegularExpression('/written by Jane Bloggs/',$r->description());
 	}
 
 	public function testDescription_StartAndEndDateAndAuthor()
@@ -967,7 +967,7 @@ class OphCoCorrespondence_ReportLettersTest extends OEDbTestCase
 		$r->phrases = array();
 		$r->author_id = 2;
 
-		$this->assertRegExp('/written between 1 May 2012 and 1 May 2013 by Jane Bloggs/',$r->description());
+		$this->assertMatchesRegularExpression('/written between 1 May 2012 and 1 May 2013 by Jane Bloggs/',$r->description());
 	}
 
 	public function testToCSV()
