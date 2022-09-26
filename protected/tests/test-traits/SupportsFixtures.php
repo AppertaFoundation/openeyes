@@ -54,7 +54,7 @@ trait SupportsFixtures
      */
     public function __call($name, $params)
     {
-        if (is_array($this->fixtures) && isset($params[0]) && ($record = $this->getFixtureRecord($name, $params[0]) !== false)) {
+        if (is_array($this->fixtures) && isset($params[0]) && ($record = $this->getFixtureRecord($name, $params[0])) !== false) {
             return $record;
         }
 
