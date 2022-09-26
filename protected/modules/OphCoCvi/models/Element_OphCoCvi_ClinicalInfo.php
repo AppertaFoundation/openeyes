@@ -751,22 +751,16 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
      */
     public function getCviDisorderSide(OphCoCvi_ClinicalInfo_Disorder $cvi_disorder): int
     {
-        $left = false;
-        $right = false;
+        $result = 0;
 
-        foreach (['left', 'right'] as $side) {
+        foreach (['left' => \Eye::LEFT, 'right' => \Eye::RIGHT, 'both' => \Eye::BOTH] as $side => $eye_id) {
             foreach ($this->{$side . '_cvi_disorder_assignments'} as $recorded_cvi) {
                 if ($recorded_cvi->ophcocvi_clinicinfo_disorder_id == $cvi_disorder->id) {
-                    $$side = $recorded_cvi->affected;
+                    $result |= $recorded_cvi->affected ? $eye_id : 0;
                 }
             }
         }
-
-        if ($left && $right) {
-            return \Eye::BOTH;
-        }
-
-        return $left ? \Eye::LEFT : ($right ? \Eye::RIGHT : 0);
+        return $result;
     }
 
     /**
