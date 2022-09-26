@@ -17,7 +17,7 @@ trait HasDatabaseAssertions
         $this->assertEquals(0, $count, "$table contains $count entries matching: " . print_r($attributes, true));
     }
 
-    private function generateDatabaseCountQuery(string $table, array $attributes)
+    protected function generateDatabaseCountQuery(string $table, array $attributes)
     {
         $wheres = [];
         $params = [];
