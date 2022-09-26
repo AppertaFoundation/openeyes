@@ -288,6 +288,10 @@ class ChangeEventController extends BaseController
                     $event->firm_id = \Yii::app()->request->getPost('selectedContextId');
 
                     if ($event->save()) {
+                        $event_api = $event->getAPI();
+                        if ($event_api && method_exists($event_api, 'afterEventContextUpdate')) {
+                            $event_api->afterEventContextUpdate($event, User::model()->findByPk(Yii::app()->user->getId()));
+                        }
                         Audit::add('event', 'update', $data = null, $log_message = null, $properties);
                         $outcome = 'true';
                     }

@@ -1442,4 +1442,19 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
             }
         }
     }
+
+    /**
+     * @param User $user
+     * @param Firm $firm
+     * @return void
+     * Set Correspondence footer text
+     */
+    public function setFooterTextFrom(\User $user, \Firm $firm)
+    {
+        if ($signOffUser = $user->signOffUser) {
+            $api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
+            $signature_text = $api->getFooterText($signOffUser, $firm);
+            $this->footer = $signOffUser->correspondence_sign_off_text . "{e-signature}" . ($signature_text ? "\n" . nl2br($signature_text) : '');
+        }
+    }
 }
