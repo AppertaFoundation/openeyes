@@ -61,7 +61,7 @@
             </tr>
             <tr>
                 <th>Comments</th>
-                <td><?= $triage->comments ? nl2br($triage->comments) ? '' ?></td>
+                <td><?= $triage->comments ? nl2br($triage->comments) : '' ?></td>
             </tr>
             </tbody>
         </table>
