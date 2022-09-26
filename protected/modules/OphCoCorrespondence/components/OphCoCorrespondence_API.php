@@ -1028,4 +1028,10 @@ class OphCoCorrespondence_API extends BaseAPI
             return implode('<br>', $patient_address->getLetterArray());
         }
     }
+
+    public function afterEventContextUpdate($event, $user) {
+        $element = ElementLetter::model()->findByAttributes(["event_id" => $event->id]);
+        $element->setFooterTextFrom($user, $event->firm);
+        $element->save();
+    }
 }

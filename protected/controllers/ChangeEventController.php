@@ -287,12 +287,12 @@ class ChangeEventController extends BaseController
                     $event->last_modified_date = date('Y-m-d H:i:s');
                     $event->firm_id = \Yii::app()->request->getPost('selectedContextId');
 
-                    if ($event->save()) {
-                        $element = ElementLetter::model()->findByAttributes(["event_id" => $event->id]);
-                        if ($element) {
-                            $element->updateFooter($element, $episode);
-                        }
+                    $event_api = $event->getAPI();
+                    if ($event_api && method_exists($event_api, 'afterEventContextUpdate')) {
+                        $event_api->afterEventContextUpdate($event, User::model()->findByPk(Yii::app()->user->getId()));
+                    }
 
+                    if ($event->save()) {
                         Audit::add('event', 'update', $data = null, $log_message = null, $properties);
                         $outcome = 'true';
                     }
