@@ -20,7 +20,7 @@ class OEFuzzyDateValidatorNotFutureTest extends CTestCase
     protected $validator;
     protected $cModelMock;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->validator = new OEFuzzyDateValidatorNotFuture();
 
@@ -118,7 +118,7 @@ class OEFuzzyDateValidatorNotFutureTest extends CTestCase
         $this->assertEquals('Invalid month value', $invalidMonthMsg[0]);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->cModelMock);
     }

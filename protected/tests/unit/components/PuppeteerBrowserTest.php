@@ -5,7 +5,7 @@
  *
  * @method patients($fixture_id)
  */
-class PuppeteerBrowserTest extends CDbTestCase
+class PuppeteerBrowserTest extends OEDbTestCase
 {
     protected $instance;
     protected $fixtures = array(
@@ -13,14 +13,14 @@ class PuppeteerBrowserTest extends CDbTestCase
         'events' => Event::class,
     );
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->instance = new PuppeteerBrowser();
         $this->instance->init();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
         unset($this->instance);

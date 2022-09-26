@@ -24,7 +24,7 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
 
     private $globalInstance;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->globalInstance = Yii::app()->assetManager;
 

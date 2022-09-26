@@ -125,7 +125,7 @@ class _WrapperContactBehavior3 extends BaseActiveRecord
     }
 }
 
-class ContactBehaviorTest extends CDbTestCase
+class ContactBehaviorTest extends OEDbTestCase
 {
     private _WrapperContactBehavior $model;
     private _WrapperContactBehavior2 $model2;
@@ -143,7 +143,7 @@ class ContactBehaviorTest extends CDbTestCase
     /**
      * @throws ReflectionException
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

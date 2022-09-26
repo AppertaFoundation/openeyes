@@ -35,7 +35,7 @@ class ServiceManagerTest extends PHPUnit_Framework_TestCase
 
     private $manager;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->manager = new ServiceManager();

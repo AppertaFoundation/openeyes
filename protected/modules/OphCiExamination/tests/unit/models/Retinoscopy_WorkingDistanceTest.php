@@ -35,7 +35,7 @@ class Retinoscopy_WorkingDistanceTest extends \ModelTestCase
 
     protected $element_cls = Retinoscopy_WorkingDistance::class;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->required_fields = ['name', 'value', 'display_order'];

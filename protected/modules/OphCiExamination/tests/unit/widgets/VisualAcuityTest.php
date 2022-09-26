@@ -47,7 +47,7 @@ class VisualAcuityTest extends \OEDbTestCase
     protected $widget_cls = VisualAcuity::class;
     protected $controller_cls = DefaultController::class;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->stubSession();

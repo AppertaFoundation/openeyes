@@ -15,7 +15,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class OphCoCorrespondence_ReportLettersTest extends CDbTestCase
+class OphCoCorrespondence_ReportLettersTest extends OEDbTestCase
 {
 	public $fixtures = array(
 		'events' => 'Event',
@@ -26,7 +26,7 @@ class OphCoCorrespondence_ReportLettersTest extends CDbTestCase
 		'legacy_letters' => 'Element_OphLeEpatientletter_EpatientLetter',
 	);
 
-	public function setUp()
+	public function setUp(): void
 	{
 		if (!file_exists(Yii::app()->basePath."/modules/OphLeEpatientletter/models/Element_OphLeEpatientletter_EpatientLetter.php") ||
 			!Yii::app()->db->schema->getTable('et_ophleepatientletter_epatientletter')) {
@@ -152,7 +152,7 @@ class OphCoCorrespondence_ReportLettersTest extends CDbTestCase
 			->disableOriginalConstructor()
 			->setMethods(array('getDbCommand','joinLetters','executeQuery'))
 			->getMock();
-			
+
 		$cmd = $this->getMockBuilder('CDbCommand')
 			->disableOriginalConstructor()
 			->setMethods(array('select','where','join','leftJoin','queryAll'))
@@ -172,7 +172,7 @@ class OphCoCorrespondence_ReportLettersTest extends CDbTestCase
 				array(),
 				' or '
 			);
-			
+
 		$r->condition_type = 'or';
 		$r->match_legacy_letters = 1;
 
@@ -301,10 +301,10 @@ class OphCoCorrespondence_ReportLettersTest extends CDbTestCase
 			->disableOriginalConstructor()
 			->setMethods(array('joinLetters','executeQuery','applyStartDate','applyEndDate'))
 			->getMock();
-			
+
 		$r->expects($this->never())
 			->method('applyStartDate');
-		
+
 		$r->expects($this->once())
 			->method('applyEndDate')
 			->with(' ('.' '.' '.') ',array());
@@ -462,7 +462,7 @@ class OphCoCorrespondence_ReportLettersTest extends CDbTestCase
 			->disableOriginalConstructor()
 			->setMethods(array('select','where','join','leftJoin','queryAll'))
 			->getMock();
-			
+
 		$select = array();
 		$where_clauses = array();
 		$where_params = array();
@@ -498,7 +498,7 @@ class OphCoCorrespondence_ReportLettersTest extends CDbTestCase
 	public function testJoinLetters_Correspondence_WhereParams()
 	{
 		$r = new OphCoCorrespondence_ReportLetters;
-	 
+
 		$cmd = $this->getMockBuilder('CDbCommand')
 			->disableOriginalConstructor()
 			->setMethods(array('select','where','join','leftJoin','queryAll'))
@@ -916,7 +916,7 @@ class OphCoCorrespondence_ReportLettersTest extends CDbTestCase
 
 		$this->assertRegExp('/Correspondence containing all of these phrases:\napple\ngrapefruit\nclemantine/',$r->description());
 	}
-	
+
 	public function testDescription_StartDate()
 	{
 		$r = new OphCoCorrespondence_ReportLetters;

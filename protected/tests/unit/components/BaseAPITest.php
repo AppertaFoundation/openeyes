@@ -14,7 +14,7 @@
  */
 require_once dirname(__FILE__).'/NamespacedBaseAPI.php';
 
-class BaseAPITest extends CDbTestCase
+class BaseAPITest extends OEDbTestCase
 {
     public $fixtures = array(
         'event_types' => 'EventType',
@@ -23,12 +23,12 @@ class BaseAPITest extends CDbTestCase
         'patients' => 'Patient'
     );
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->generateMockTableAndData('test_element_mock_table');
     }
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->destroyMockTableAndData('test_element_mock_table');
         parent::tearDown();

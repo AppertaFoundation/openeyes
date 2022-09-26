@@ -40,7 +40,7 @@ class OphCiExamination_Episode_VisualAcuityHistoryTest extends \OEDbTestCase
     protected $mockApi;
     protected $mockEventType;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         \Yii::app()

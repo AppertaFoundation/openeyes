@@ -45,7 +45,7 @@ class NinePositionsTest extends \OEDbTestCase
 
     protected $element_type_id;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->element_type_id = \ElementType::model()->find('class_name = ?', [NinePositionsElement::class])->id;

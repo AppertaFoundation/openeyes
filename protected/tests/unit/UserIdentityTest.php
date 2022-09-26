@@ -23,7 +23,7 @@
  */
 require_once 'Zend/Ldap.php';
 
-class UserIdentityTest extends CDbTestCase
+class UserIdentityTest extends OEDbTestCase
 {
     public $fixtures = array(
         'users' => 'User',

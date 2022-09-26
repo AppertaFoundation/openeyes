@@ -26,7 +26,7 @@ class OphTrOperationbooking_Operation_EROD_RuleTest extends ActiveRecordTestCase
         return OphTrOperationbooking_Operation_EROD_Rule::model();
     }
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         date_default_timezone_set('UTC');
     }

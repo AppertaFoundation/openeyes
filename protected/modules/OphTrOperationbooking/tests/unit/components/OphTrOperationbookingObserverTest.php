@@ -14,7 +14,7 @@
  */
 class OphTrOperationbookingObserverTest extends CTestCase
 {
-    public static function setupBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         Yii::import('application.modules.OphTrOperationbooking.components.*');
     }
@@ -22,7 +22,7 @@ class OphTrOperationbookingObserverTest extends CTestCase
     private $observer;
     private $op;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->observer = new OphTrOperationbookingObserver();

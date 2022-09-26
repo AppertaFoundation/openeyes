@@ -22,7 +22,7 @@ class ComponentStubGeneratorTest extends PHPUnit_Framework_TestCase
     /**
      * @throws ReflectionException
      */
-    public function setUp()
+    public function setUp(): void
     {
         $this->stub = ComponentStubGenerator::generate(
             'ComponentStubGeneratorTest_ExampleComponent',

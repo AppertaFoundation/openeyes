@@ -19,7 +19,7 @@ use PHPUnit\Framework\MockObject\MockObject;
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class BaseActiveRecordTest extends CDbTestCase
+class BaseActiveRecordTest extends OEDbTestCase
 {
     /**
      * @var BaseActiveRecord
@@ -34,7 +34,7 @@ class BaseActiveRecordTest extends CDbTestCase
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

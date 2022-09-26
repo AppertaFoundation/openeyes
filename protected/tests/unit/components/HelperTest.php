@@ -18,13 +18,13 @@ class HelperTest extends CTestCase
 {
     private static string $tz;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         self::$tz = date_default_timezone_get();
         date_default_timezone_set('UTC');
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         date_default_timezone_set(self::$tz);
     }

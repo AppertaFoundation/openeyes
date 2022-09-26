@@ -32,7 +32,7 @@ class DataObjectTest extends TestCase
     {
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $schemas = array(
@@ -65,7 +65,7 @@ class DataObjectTest extends TestCase
         Yii::app()->setComponent('fhirMarshal', $marshal);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         Yii::app()->setComponent('fhirMarshal', null);
         parent::tearDown();

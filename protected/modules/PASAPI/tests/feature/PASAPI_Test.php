@@ -42,6 +42,13 @@ class PASAPI_Test extends PASAPI_BaseTest
         $this->client = new Client($options);
     }
 
+    public function setUp(): void
+    {
+        $this->cleanUpTestUser();
+        $this->createTestUser();
+        $this->initialiseClient();
+    }
+
     /**
      * Check that without being logged in we don't have access.
      */

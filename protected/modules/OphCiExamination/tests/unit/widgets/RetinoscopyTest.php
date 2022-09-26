@@ -41,7 +41,7 @@ class RetinoscopyTest extends \OEDbTestCase
     protected $widget_cls = Retinoscopy::class;
     protected $controller_cls = DefaultController::class;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         \Yii::app()

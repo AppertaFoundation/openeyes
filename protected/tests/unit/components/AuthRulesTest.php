@@ -17,14 +17,14 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
 {
     private $rules;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         Yii::app()->params['event_lock_days'] = 1;
         $this->rules = new AuthRules();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset(Yii::app()->params['event_lock_days']);
         unset(Yii::app()->params['event_lock_disable']);

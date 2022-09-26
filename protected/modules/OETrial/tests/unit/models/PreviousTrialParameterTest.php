@@ -12,7 +12,7 @@
  * @method treatment_type($fixtureId)
  */
 
-class PreviousTrialParameterTest extends CDbTestCase
+class PreviousTrialParameterTest extends OEDbTestCase
 {
     /**
      * @var PreviousTrialParameter $object
@@ -36,14 +36,14 @@ class PreviousTrialParameterTest extends CDbTestCase
         Yii::app()->getModule('OECaseSearch');
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->object = new PreviousTrialParameter();
         $this->object->id = 0;
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->object);
         parent::tearDown();

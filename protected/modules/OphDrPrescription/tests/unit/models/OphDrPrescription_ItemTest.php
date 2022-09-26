@@ -26,7 +26,7 @@ class OphDrPrescription_ItemTest extends ActiveRecordTestCase
         'start_date'
     ];
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->items[] = $this->items('prescription_item1');
@@ -57,7 +57,7 @@ class OphDrPrescription_ItemTest extends ActiveRecordTestCase
         );
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
         unset($this->item, $this->tapered_item);

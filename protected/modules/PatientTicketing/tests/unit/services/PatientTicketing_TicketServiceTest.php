@@ -15,7 +15,7 @@
  * @copyright Copyright (c) 2011-2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class PatientTicketing_TicketServiceTest extends \CDbTestCase
+class PatientTicketing_TicketServiceTest extends OEDbTestCase
 {
     public $fixtures = array(
             'patients' => 'Patient',

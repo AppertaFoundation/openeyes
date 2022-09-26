@@ -37,7 +37,7 @@ class OphTrOperationbooking_Operation_SessionTest extends ActiveRecordTestCase
         'default_admission_time'
     ];
 
-    public static function setupBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         Yii::import('application.modules.OphTrOperationbooking.helpers.*');
     }

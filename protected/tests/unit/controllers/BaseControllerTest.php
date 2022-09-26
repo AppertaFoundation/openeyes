@@ -21,7 +21,7 @@
  *
  * @group controllers
  */
-class BaseControllerTest extends CDbTestCase
+class BaseControllerTest extends OEDbTestCase
 {
     private $controller;
 
@@ -32,7 +32,7 @@ class BaseControllerTest extends CDbTestCase
     /**
      * @throws ReflectionException
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
