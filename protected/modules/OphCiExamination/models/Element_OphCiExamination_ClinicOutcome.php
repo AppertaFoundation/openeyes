@@ -69,6 +69,7 @@ class Element_OphCiExamination_ClinicOutcome extends \BaseEventTypeElement
         return [
                 ['comments, entries, event_id, id', 'safe'],
                 ['entries', 'required'],
+                ['entries', 'default', 'setOnEmpty' => true, 'value' => []],
                 ['id, event_id, comments', 'safe', 'on' => 'search'],
         ];
     }
