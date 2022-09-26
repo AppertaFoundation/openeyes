@@ -511,6 +511,13 @@ class OphCoTherapyapplication_Processor
             }
         }
 
+        $criteria = new \CDbCriteria();
+        $criteria->compare('remote_id', \Yii::app()->params['institution_code']);
+
+        $institution_id = Institution::model()->find($criteria)->id;
+        $sender_address = SenderEmailAddresses::getSenderAddress(SettingMetadata::model()->getSetting('OphCoTherapyapplication_sender_email'), $institution_id, $this->event->site_id);
+        $sender_address->prepareMailer();
+
         if (Yii::app()->mailer->sendMessage($message)) {
             $email = new OphCoTherapyapplication_Email();
             $email->event_id = $this->event->id;

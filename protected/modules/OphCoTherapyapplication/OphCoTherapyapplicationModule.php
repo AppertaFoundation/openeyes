@@ -38,10 +38,6 @@ class OphCoTherapyapplicationModule extends BaseEventTypeModule
         'OphCoTherapyapplication_noncompliant_email_subject' => 'Therapy APPLICATION',
     );
 
-    public $required_parameters = array(
-            'OphCoTherapyapplication_sender_email',
-    );
-
     public function init()
     {
         // this method is called when the module is being created
@@ -57,18 +53,6 @@ class OphCoTherapyapplicationModule extends BaseEventTypeModule
         ));
 
         $this->moduleShortSuffix = 'TherapyA';
-
-        // check for required configuration variables
-        $missing_config = array();
-        foreach ($this->required_parameters as $required_config) {
-            if (!isset(Yii::app()->params[$required_config])) {
-                $missing_config[] = $required_config;
-            }
-        }
-
-        if (count($missing_config)) {
-            throw new Exception('Missing required configuration variables for '.$this->getName().': '.implode(', ', $missing_config));
-        }
 
         foreach ($this->default_parameter_settings as $k => $v) {
             if (!isset(Yii::app()->params[$k])) {
