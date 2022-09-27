@@ -128,15 +128,8 @@ abstract class BaseEsignElement extends BaseEventTypeElement
      */
     protected function generateDefaultConsultantSignature()
     {
+        $user = $this->getChangeUser();
         $consultant_signature = new \OphCoCvi_Signature();
-
-        if (isset($this->getApp()->user)) {
-            $uid = $this->getApp()->user->id === null ? $this->user->id : $this->getApp()->user->id;
-            $user = \User::model()->findByPk($uid);
-        } else {
-            $user = $this->user;
-        }
-
         $consultant_signature->signatory_role = !empty($user->grade) ? $user->grade->grade : "Unknown grade";
         $consultant_signature->type = \BaseSignature::TYPE_LOGGEDIN_USER;
         return $consultant_signature;
@@ -144,19 +137,20 @@ abstract class BaseEsignElement extends BaseEventTypeElement
 
     /**
      * This function generate default signature data for esign elements
-     * @return \OphCoCvi_Signature patient signature
+     * @return \OphCoCvi_Signature patient signature | null
      */
     protected function generateDefaultPatientSignature()
     {
-        $patient_signature = new \OphCoCvi_Signature();
-        $patient_signature->signatory_role = "Patient";
-        $patient = \Yii::app()->getController()->patient;
-
-        if (isset($patient)) {
+        if ($this->event && !$this->event->isNewRecord) {
+            $patient_signature = new \OphCoCvi_Signature();
+            $patient_signature->signatory_role = "Patient";
+            $patient = $this->event->patient;
             $patient_signature->signatory_name = $patient->getFullName();
+            $patient_signature->type = \BaseSignature::TYPE_PATIENT;
+
+            return $patient_signature;
         }
 
-        $patient_signature->type = \BaseSignature::TYPE_PATIENT;
-        return $patient_signature;
+        return null;
     }
 }

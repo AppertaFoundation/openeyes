@@ -119,8 +119,8 @@ class Element_OphCoCvi_Esign extends \BaseEsignElement
         }
 
         if (!in_array(\BaseSignature::TYPE_PATIENT, $existing_types)) {
-            if ($this->event && !$this->event->isNewRecord) {
-                $signatures[] = $this->generateDefaultPatientSignature();
+            if( $patient_signature = $this->generateDefaultPatientSignature() ){
+                $signatures[] = $patient_signature;
             }
         }
 
