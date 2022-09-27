@@ -94,6 +94,7 @@
         resizable: false,
         draggable: false,
         constrainToViewport: false,
+        width: 440,
         height: 'auto',
         minHeight: 'auto',
         show: 'fade'
@@ -112,10 +113,7 @@
         this.content = $('<div />', {class: 'oe-popup-wrap'});
         var closeButton = '<div class="close-icon-btn"><i class="oe-i remove-circle pro-theme"></i></div>';
         var popup = $('<div class="' + this.options.popupClass + '"></div>');
-        if (this.options.width) {
-            popup.css('width', this.options.width);
-        }
-        
+        popup.css('width', this.options.width);
         $('<div class="title">' + this.options.title + '</div>' + closeButton + '<div class="' + this.options.popupContentClass + '"></div>').appendTo(popup);
 
         this.content.append(popup);

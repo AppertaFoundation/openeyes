@@ -26,23 +26,6 @@
         </button>
     </div>
 </script>
-<!-- Dialog confirm split-view template -->
-<script type="text/html" id="dialog-confirm-splitview-template">
-    <div class="flex-t">
-        <div class="cols-5">{{{leftPanelContent}}}</div>
-        <div class="cols-6">
-            <p>{{{rightPanelContent}}}</p>
-            <div class="popup-actions">
-                <button class="{{okButtonClassList}}" type="button">
-                    {{{okButton}}}
-                </button>
-                <button class="{{cancelButtonClassList}}" type="button">
-                    {{{cancelButton}}}
-                </button>
-            </div>
-        </div>
-    </div>
-</script>
 <!-- Dialog confirm template -->
 <script type="text/html" id="dialog-confirm-template">
     <p>{{{content}}}</p>
