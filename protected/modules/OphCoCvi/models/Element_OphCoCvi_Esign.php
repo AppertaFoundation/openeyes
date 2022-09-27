@@ -113,24 +113,14 @@ class Element_OphCoCvi_Esign extends \BaseEsignElement
             return $e->type;
         }, $signatures);
 
+
         if (!in_array(\BaseSignature::TYPE_LOGGEDIN_USER, $existing_types)) {
-            $user = \Yii::app()->session['user'] ?? $this->user;
-            $user->refresh();
-            $consultant = new \OphCoCvi_Signature();
-            $consultant->signatory_role = !empty($user->grade) ? $user->grade->grade : "Unknown grade";
-            $consultant->type = \BaseSignature::TYPE_LOGGEDIN_USER;
-            $signatures[] = $consultant;
+            $signatures[] = $this->generateDefaultConsultantSignature();
         }
 
         if (!in_array(\BaseSignature::TYPE_PATIENT, $existing_types)) {
             if ($this->event && !$this->event->isNewRecord) {
-                $patient = new \OphCoCvi_Signature();
-                $patient->signatory_role = "Patient";
-                if (isset(\Yii::app()->getController()->patient)) {
-                    $patient->signatory_name = \Yii::app()->getController()->patient->getFullName();
-                }
-                $patient->type = \BaseSignature::TYPE_PATIENT;
-                $signatures[] = $patient;
+                $signatures[] = $this->generateDefaultPatientSignature();
             }
         }
 
