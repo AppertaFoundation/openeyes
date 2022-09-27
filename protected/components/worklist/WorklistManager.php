@@ -307,7 +307,7 @@ class WorklistManager extends CComponent
         $reordered_definitions = [];
         foreach ($definitions as $key => $definition) {
             if ($definition->worklistCount === "0") {
-                $reordered_definitions[] = $definition;
+                $reordered_definitions[$key] = $definition;
                 unset($definitions[$key]);
             }
         }
