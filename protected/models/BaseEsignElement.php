@@ -121,36 +121,4 @@ abstract class BaseEsignElement extends BaseEventTypeElement
             return (int)$signature->type === $type && ($include_signed || !$signature->isSigned());
         });
     }
-
-    /**
-     * This function generate default signature data for esign elements
-     * @return \OphCoCvi_Signature consultant signature
-     */
-    protected function generateDefaultConsultantSignature()
-    {
-        $user = $this->getChangeUser();
-        $consultant_signature = new \OphCoCvi_Signature();
-        $consultant_signature->signatory_role = !empty($user->grade) ? $user->grade->grade : "Unknown grade";
-        $consultant_signature->type = \BaseSignature::TYPE_LOGGEDIN_USER;
-        return $consultant_signature;
-    }
-
-    /**
-     * This function generate default signature data for esign elements
-     * @return \OphCoCvi_Signature patient signature | null
-     */
-    protected function generateDefaultPatientSignature()
-    {
-        if ($this->event && !$this->event->isNewRecord) {
-            $patient_signature = new \OphCoCvi_Signature();
-            $patient_signature->signatory_role = "Patient";
-            $patient = $this->event->patient;
-            $patient_signature->signatory_name = $patient->getFullName();
-            $patient_signature->type = \BaseSignature::TYPE_PATIENT;
-
-            return $patient_signature;
-        }
-
-        return null;
-    }
 }
