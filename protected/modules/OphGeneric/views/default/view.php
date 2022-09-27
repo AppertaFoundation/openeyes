@@ -35,6 +35,20 @@ if (!empty($sop) && \SettingMetadata::model()->getSetting('enable_forum_integrat
     );
 }
 
+$manufacturer_model_name = $device_information->manufacturer_model_name ?? null;
+if (isset($manufacturer_model_name) && $manufacturer_model_name === 'Triton' &&
+    \SettingMetadata::model()->getSetting('enable_imagenet_integration') === 'on') {
+    array_unshift(
+        $this->event_actions,
+        EventAction::link(
+            'Open In ImageNet',
+            ('oelauncher:imagenet/' . $this->jsVars['OE_patient_hosnum']),
+            null,
+            ['class' => 'button small']
+        )
+    );
+}
+
 $this->beginContent('//patient/event_container');
 ?>
 

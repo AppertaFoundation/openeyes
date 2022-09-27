@@ -321,9 +321,7 @@ if ($demographics_element->isNewRecord) {
                                 <?= ($answer && $answer->comments) ? " | comments: " : ''; ?>
                             <?php endif; ?>
 
-                            <?php if ($factor->require_comments) : ?>
-                                <?= \CHtml::encode($answer->comments); ?>
-                            <?php endif; ?>
+                            <?= ($answer && $answer->comments) ? \CHtml::encode($answer->comments) : ''; ?>
                         </td>
                     </tr>
                 <?php endforeach; ?>

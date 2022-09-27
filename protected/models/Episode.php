@@ -1,4 +1,5 @@
 <?php
+use OE\factories\models\traits\HasFactory;
 
 /**
  * OpenEyes.
@@ -38,6 +39,7 @@
  */
 class Episode extends BaseActiveRecordVersioned
 {
+    use HasFactory;
 
     /**
      * Returns the static model of the specified AR class.
