@@ -48,7 +48,11 @@
                         // patientId will be null on updating the event
                         $eventId = $element->event_id;
                         $event = Event::model()->findByPk($eventId);
-                        $patientId = $event->episode->patient_id;
+                        if(!$event) {
+                            $patientId = $this->event->episode->patient_id;
+                        } else {
+                            $patientId = $event->episode->patient_id;
+                        }
                     }
                     $patient = Patient::model()->findByPk($patientId);
                     $address = $patient->contact->address;
