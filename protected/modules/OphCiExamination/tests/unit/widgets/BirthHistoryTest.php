@@ -72,12 +72,12 @@ class BirthHistoryTest extends \OEDbTestCase
     }
 
     /** @test */
-    public function element_input_weight_kgs_is_set_when_created()
+    public function element_input_weight_grams_is_set_from_kgs_when_created()
     {
         $element = new BirthHistoryModel();
         $weight = rand(1, 10000);
 
-        $this->getWidgetInstanceForElement($element, ['input_weight_kgs' => $weight/1000]);
+        $this->getWidgetInstanceForElement($element, ['input_weight_kgs' => sprintf("%.3f", $weight / 1000)]);
 
         $this->assertEquals($weight, $element->weight_grams);
         $this->assertEquals(BirthHistoryModel::$WEIGHT_GRAMS, $element->weight_recorded_units);
@@ -92,7 +92,7 @@ class BirthHistoryTest extends \OEDbTestCase
 
         $this->getWidgetInstanceForElement($element, ['input_weight_lbs' => "{$lbs}", 'input_weight_ozs' => ($ozs < 10 ? "0" : "") . "{$ozs}"]);
 
-        $this->assertEquals((16*$lbs) + $ozs, $element->weight_ozs);
+        $this->assertEquals((16 * $lbs) + $ozs, $element->weight_ozs);
         $this->assertEquals(BirthHistoryModel::$WEIGHT_OZS, $element->weight_recorded_units);
     }
 
