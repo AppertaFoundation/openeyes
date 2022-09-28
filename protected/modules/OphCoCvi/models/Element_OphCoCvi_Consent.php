@@ -87,17 +87,20 @@ class Element_OphCoCvi_Consent extends \BaseEventTypeElement
 
     public static function isDocmanEnabled()
     {
-        return ( null !== \SettingMetadata::model()->getSetting('cvi_docman_delivery_enabled')) && \SettingMetadata::model()->getSetting('cvi_docman_delivery_enabled');
+        return (null !== \SettingMetadata::model()->getSetting('cvi_docman_delivery_enabled'))
+            && (strtolower(\SettingMetadata::model()->getSetting('cvi_docman_delivery_enabled')) === "on");
     }
 
     public static function isRCOPDeliveryEnabled()
     {
-        return ( null !== \SettingMetadata::model()->getSetting('cvi_rcop_delivery_enabled')) && \SettingMetadata::model()->getSetting('cvi_rcop_delivery_enabled');
+        return (null !== \SettingMetadata::model()->getSetting('cvi_rcop_delivery_enabled'))
+            && (strtolower(\SettingMetadata::model()->getSetting('cvi_rcop_delivery_enabled')) === "on");
     }
 
     public static function isLADeliveryEnabled()
     {
-        return ( null !== \SettingMetadata::model()->getSetting('cvi_la_delivery_enabled')) && \SettingMetadata::model()->getSetting('cvi_la_delivery_enabled');
+        return (null !== \SettingMetadata::model()->getSetting('cvi_la_delivery_enabled'))
+            && (strtolower(\SettingMetadata::model()->getSetting('cvi_la_delivery_enabled')) === "on");
     }
 
     /**
