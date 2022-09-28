@@ -74,7 +74,7 @@ class Element_OphCiExamination_DiagnosesTest extends ActiveRecordTestCase
     public function testGetLetter_string_FurtherFindings()
     {
         $etDiagString = $this->elDiagnoses('et_further_diagnoses1')->getLetter_string();
-        $this->assertContains('Finding 2', strip_tags($etDiagString));
+        $this->assertStringContainsString('Finding 2', strip_tags($etDiagString));
     }
 
     /**
@@ -83,7 +83,7 @@ class Element_OphCiExamination_DiagnosesTest extends ActiveRecordTestCase
     public function testGetLetter_string_Diagnoses_primary()
     {
         $etDiagString = $this->elDiagnoses('et_further_diagnoses3')->getLetter_string();
-        $this->assertContains('Principal: LEFT Myopia', strip_tags($etDiagString));
+        $this->assertStringContainsString('Principal: LEFT Myopia', strip_tags($etDiagString));
     }
 
     /**
@@ -92,7 +92,7 @@ class Element_OphCiExamination_DiagnosesTest extends ActiveRecordTestCase
     public function testGetLetter_string_Diagnoses_secondary()
     {
         $etDiagString = $this->elDiagnoses('et_further_diagnoses4')->getLetter_string();
-        $this->assertContains('RIGHT Myopia', strip_tags($etDiagString));
+        $this->assertStringContainsString('RIGHT Myopia', strip_tags($etDiagString));
     }
 
     /**
@@ -101,8 +101,8 @@ class Element_OphCiExamination_DiagnosesTest extends ActiveRecordTestCase
     public function testGetLetter_string_Diagnoses_primary_and_secondary()
     {
         $etDiagString = $this->elDiagnoses('et_further_diagnoses5')->getLetter_string();
-        $this->assertContains('Principal: LEFT Retinal lattice degeneration', strip_tags($etDiagString));
-        $this->assertContains('RIGHT Myopia', strip_tags($etDiagString));
+        $this->assertStringContainsString('Principal: LEFT Retinal lattice degeneration', strip_tags($etDiagString));
+        $this->assertStringContainsString('RIGHT Myopia', strip_tags($etDiagString));
     }
 
     /**
@@ -111,10 +111,10 @@ class Element_OphCiExamination_DiagnosesTest extends ActiveRecordTestCase
     public function testGetLetter_string_Diagnoses_primary_and_secondary_and_findings()
     {
         $etDiagString = $this->elDiagnoses('et_further_diagnoses6')->getLetter_string();
-        $this->assertContains('Principal: LEFT Retinal lattice degeneration', strip_tags($etDiagString));
-        $this->assertContains('RIGHT Myopia', strip_tags($etDiagString));
-        $this->assertContains('Finding 3 : test twotwotwo', strip_tags($etDiagString));
-        $this->assertContains('Finding 1', strip_tags($etDiagString));
+        $this->assertStringContainsString('Principal: LEFT Retinal lattice degeneration', strip_tags($etDiagString));
+        $this->assertStringContainsString('RIGHT Myopia', strip_tags($etDiagString));
+        $this->assertStringContainsString('Finding 3 : test twotwotwo', strip_tags($etDiagString));
+        $this->assertStringContainsString('Finding 1', strip_tags($etDiagString));
     }
 
     /*
@@ -130,8 +130,8 @@ class Element_OphCiExamination_DiagnosesTest extends ActiveRecordTestCase
         Yii::app()->session['selected_firm_id'] = 5;
 
         $etDiagString = $this->elDiagnoses('et_further_diagnoses7')->getLetter_string();
-        $this->assertContains('Principal: LEFT Vitreous haemorrhage', strip_tags($etDiagString));
-        $this->assertContains('LEFT Retinal lattice degeneration', strip_tags($etDiagString));
+        $this->assertStringContainsString('Principal: LEFT Vitreous haemorrhage', strip_tags($etDiagString));
+        $this->assertStringContainsString('LEFT Retinal lattice degeneration', strip_tags($etDiagString));
 
         unset(Yii::app()->session['selected_firm_id']);
     }
@@ -149,8 +149,8 @@ class Element_OphCiExamination_DiagnosesTest extends ActiveRecordTestCase
         Yii::app()->session['selected_firm_id'] = 1;
 
         $etDiagString = $this->elDiagnoses('et_further_diagnoses7')->getLetter_string();
-        $this->assertContains('Principal: LEFT Vitreous haemorrhage', strip_tags($etDiagString));
-        $this->assertContains("LEFT Retinal lattice degeneration\n", strip_tags($etDiagString));
+        $this->assertStringContainsString('Principal: LEFT Vitreous haemorrhage', strip_tags($etDiagString));
+        $this->assertStringContainsString("LEFT Retinal lattice degeneration\n", strip_tags($etDiagString));
 
         unset(Yii::app()->session['selected_firm_id']);
     }
@@ -168,8 +168,8 @@ class Element_OphCiExamination_DiagnosesTest extends ActiveRecordTestCase
         Yii::app()->session['selected_firm_id'] = 5;
 
         $etDiagString = $this->elDiagnoses('et_further_diagnoses11')->getLetter_string();
-        $this->assertContains('LEFT Vitreous haemorrhage', strip_tags($etDiagString));
-        $this->assertContains('LEFT Posterior vitreous detachment', strip_tags($etDiagString));
+        $this->assertStringContainsString('LEFT Vitreous haemorrhage', strip_tags($etDiagString));
+        $this->assertStringContainsString('LEFT Posterior vitreous detachment', strip_tags($etDiagString));
 
         unset(Yii::app()->session['selected_firm_id']);
     }
@@ -187,8 +187,8 @@ class Element_OphCiExamination_DiagnosesTest extends ActiveRecordTestCase
         Yii::app()->session['selected_firm_id'] = 5;
 
         $etDiagString = $this->elDiagnoses('et_further_diagnoses8')->getLetter_string();
-        $this->assertContains('LEFT Vitreous haemorrhage', strip_tags($etDiagString));
-        $this->assertContains('LEFT Retinal lattice degeneration', strip_tags($etDiagString));
+        $this->assertStringContainsString('LEFT Vitreous haemorrhage', strip_tags($etDiagString));
+        $this->assertStringContainsString('LEFT Retinal lattice degeneration', strip_tags($etDiagString));
 
         unset(Yii::app()->session['selected_firm_id']);
     }
@@ -206,8 +206,8 @@ class Element_OphCiExamination_DiagnosesTest extends ActiveRecordTestCase
         Yii::app()->session['selected_firm_id'] = 5;
 
         $etDiagString = $this->elDiagnoses('et_further_diagnoses9')->getLetter_string();
-        $this->assertContains('Principal: RIGHT Vitreous haemorrhage', strip_tags($etDiagString));
-        $this->assertContains('LEFT Retinal lattice degeneration', strip_tags($etDiagString));
+        $this->assertStringContainsString('Principal: RIGHT Vitreous haemorrhage', strip_tags($etDiagString));
+        $this->assertStringContainsString('LEFT Retinal lattice degeneration', strip_tags($etDiagString));
 
         unset(Yii::app()->session['selected_firm_id']);
     }
@@ -225,8 +225,8 @@ class Element_OphCiExamination_DiagnosesTest extends ActiveRecordTestCase
         Yii::app()->session['selected_firm_id'] = 5;
 
         $etDiagString = $this->elDiagnoses('et_further_diagnoses10')->getLetter_string();
-        $this->assertContains('RIGHT Retinal lattice degeneration', strip_tags($etDiagString));
-        $this->assertContains('LEFT Vitreous haemorrhage', strip_tags($etDiagString));
+        $this->assertStringContainsString('RIGHT Retinal lattice degeneration', strip_tags($etDiagString));
+        $this->assertStringContainsString('LEFT Vitreous haemorrhage', strip_tags($etDiagString));
 
         unset(Yii::app()->session['selected_firm_id']);
     }
@@ -244,8 +244,8 @@ class Element_OphCiExamination_DiagnosesTest extends ActiveRecordTestCase
         Yii::app()->session['selected_firm_id'] = 5;
 
         $etDiagString = $this->elDiagnoses('et_further_diagnoses12')->getLetter_string();
-        $this->assertContains('Principal: LEFT Retinal lattice degeneration', strip_tags($etDiagString));
-        $this->assertContains('LEFT Vitreous haemorrhage', strip_tags($etDiagString));
+        $this->assertCoassertStringContainsStringntains('Principal: LEFT Retinal lattice degeneration', strip_tags($etDiagString));
+        $this->assertStringContainsString('LEFT Vitreous haemorrhage', strip_tags($etDiagString));
 
         unset(Yii::app()->session['selected_firm_id']);
     }
@@ -263,8 +263,8 @@ class Element_OphCiExamination_DiagnosesTest extends ActiveRecordTestCase
         Yii::app()->session['selected_firm_id'] = 5;
 
         $etDiagString = $this->elDiagnoses('et_further_diagnoses13')->getLetter_string();
-        $this->assertContains('Principal: RIGHT Retinal lattice degeneration', strip_tags($etDiagString));
-        $this->assertContains('LEFT Vitreous haemorrhage', strip_tags($etDiagString));
+        $this->assertStringContainsString('Principal: RIGHT Retinal lattice degeneration', strip_tags($etDiagString));
+        $this->assertStringContainsString('LEFT Vitreous haemorrhage', strip_tags($etDiagString));
 
         unset(Yii::app()->session['selected_firm_id']);
     }
@@ -299,8 +299,8 @@ class Element_OphCiExamination_DiagnosesTest extends ActiveRecordTestCase
         Yii::app()->session['selected_firm_id'] = 5;
 
         $etDiagString = $this->elDiagnoses('et_further_diagnoses15')->getLetter_string();
-        $this->assertContains('RIGHT Essential hypertension', strip_tags($etDiagString));
-        $this->assertContains('Finding 1', strip_tags($etDiagString));
+        $this->assertStringContainsString('RIGHT Essential hypertension', strip_tags($etDiagString));
+        $this->assertStringContainsString('Finding 1', strip_tags($etDiagString));
 
         unset(Yii::app()->session['selected_firm_id']);
     }
@@ -335,8 +335,8 @@ class Element_OphCiExamination_DiagnosesTest extends ActiveRecordTestCase
         Yii::app()->session['selected_firm_id'] = 5;
 
         $etDiagString = $this->elDiagnoses('et_further_diagnoses17')->getLetter_string();
-        $this->assertContains('RIGHT Vitreous haemorrhage', strip_tags($etDiagString));
-        $this->assertContains('Finding 2', strip_tags($etDiagString));
+        $this->assertStringContainsString('RIGHT Vitreous haemorrhage', strip_tags($etDiagString));
+        $this->assertStringContainsString('Finding 2', strip_tags($etDiagString));
 
         unset(Yii::app()->session['selected_firm_id']);
     }
@@ -352,14 +352,14 @@ class Element_OphCiExamination_DiagnosesTest extends ActiveRecordTestCase
         Yii::app()->session['selected_firm_id'] = 5;
 
         $etDiagString = $this->elDiagnoses('et_further_diagnoses18')->getLetter_string();
-        $this->assertContains('Principal: RIGHT Myopia', strip_tags($etDiagString));
-        $this->assertContains('RIGHT Retinal lattice degeneration', strip_tags($etDiagString));
-        $this->assertContains('LEFT Posterior vitreous detachment', strip_tags($etDiagString));
-        $this->assertContains('LEFT Vitreous haemorrhage', strip_tags($etDiagString));
-        $this->assertContains('Finding 1', strip_tags($etDiagString));
-        $this->assertContains('Finding 2', strip_tags($etDiagString));
-        $this->assertContains('Finding 3', strip_tags($etDiagString));
-        $this->assertContains('Finding 4', strip_tags($etDiagString));
+        $this->assertStringContainsString('Principal: RIGHT Myopia', strip_tags($etDiagString));
+        $this->assertStringContainsString('RIGHT Retinal lattice degeneration', strip_tags($etDiagString));
+        $this->assertStringContainsString('LEFT Posterior vitreous detachment', strip_tags($etDiagString));
+        $this->assertStringContainsString('LEFT Vitreous haemorrhage', strip_tags($etDiagString));
+        $this->assertStringContainsString('Finding 1', strip_tags($etDiagString));
+        $this->assertStringContainsString('Finding 2', strip_tags($etDiagString));
+        $this->assertStringContainsString('Finding 3', strip_tags($etDiagString));
+        $this->assertStringContainsString('Finding 4', strip_tags($etDiagString));
 
         unset(Yii::app()->session['selected_firm_id']);
     }

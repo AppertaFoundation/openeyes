@@ -80,7 +80,7 @@ class Element_OphCiExamination_CurrentManagementPlan_Test extends ActiveRecordTe
         $result = $this->model->getLatestIOP($patient, $api);
         $expected = array('leftIOP' => '10', 'rightIOP' => '20');
 
-        $this->assertInternalType('array', $result);
+        $this->assertIsArray($result);
         $this->assertEquals($expected, $result);
     }
 }

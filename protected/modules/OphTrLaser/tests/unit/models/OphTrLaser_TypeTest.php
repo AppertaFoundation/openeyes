@@ -77,8 +77,9 @@ class OphTrLaser_TypeTest extends ActiveRecordTestCase
 
         $this->assertEquals(5, count($types));
         foreach ($types as $type) {
-            $this->assertInternalType('string', $type->name);
-            $this->assertInternalType('int', (int) $type->id);
+            $this->assertIsString($type->name);
+            // this seems a bit redundant as a test with the casting, but keeping it as written
+            $this->assertIsInt((int) $type->id);
             $this->assertGreaterThan(0, strlen($type->name));
         }
     }

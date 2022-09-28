@@ -144,7 +144,7 @@ class BaseActiveRecordTest extends OEDbTestCase
             ->willReturn(1);
 
         $test->__set('has_many', array('test'));
-        $this->assertInternalType('array', $test->has_many);
+        $this->assertIsArray($test->has_many);
         $this->assertEquals('test', $test->has_many[0], 'should pass through assignment when behaviour turned off');
 
         $r = new ReflectionClass($test);
@@ -153,7 +153,7 @@ class BaseActiveRecordTest extends OEDbTestCase
         $p->setValue($test, true);
 
         $test->__set('has_many', array('test2'));
-        $this->assertInternalType('array', $test->has_many);
+        $this->assertIsArray($test->has_many);
         $this->assertInstanceOf('RelationTestClass', $test->has_many[0], 'should set relation class when behaviour turned on');
 
         $rdp = $r->getProperty('relation_defaults');
@@ -161,7 +161,7 @@ class BaseActiveRecordTest extends OEDbTestCase
         $rdp->setValue($test, array('has_many' => array('default_prop' => 'test')));
 
         $test->__set('has_many', array(array('test_value' => 'a string')));
-        $this->assertInternalType('array', $test->has_many);
+        $this->assertIsArray($test->has_many);
         $this->assertInstanceOf('RelationTestClass', $test->has_many[0], 'should set relation class when behaviour turned on');
         $this->assertEquals('a string', $test->has_many[0]->test_value);
         $this->assertEquals('test', $test->has_many[0]->default_prop, 'should have picked up default property value');
@@ -188,7 +188,7 @@ class BaseActiveRecordTest extends OEDbTestCase
         $test->md = $meta;
 
         $test->many_many = array('test');
-        $this->assertInternalType('array', $test->many_many);
+        $this->assertIsArray($test->many_many);
         $this->assertEquals('test', $test->many_many[0], 'should pass through assignment when behaviour turned off');
 
         $r = new ReflectionClass($test);
@@ -197,7 +197,7 @@ class BaseActiveRecordTest extends OEDbTestCase
         $p->setValue($test, true);
 
         $test->many_many = array('test2');
-        $this->assertInternalType('array', $test->many_many);
+        $this->assertIsArray($test->many_many);
         $this->assertInstanceOf('RelationTestClass', $test->many_many[0], 'should set relation class when behaviour turned on');
         $this->assertEquals('test2', $test->many_many[0]->getPrimaryKey());
     }

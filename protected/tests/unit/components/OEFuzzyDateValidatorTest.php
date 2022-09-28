@@ -37,7 +37,7 @@ class OEFuzzyDateValidatorTest extends CTestCase
         $this->validator->validateAttribute($this->cModelMock, 'bar');
         $validDateMsg  = $this->cModelMock->getErrors('bar');
         $this->assertFalse($this->cModelMock->hasErrors());
-        $this->assertInternalType('array', $validDateMsg);
+        $this->assertIsArray($validDateMsg);
     }
 
     /**

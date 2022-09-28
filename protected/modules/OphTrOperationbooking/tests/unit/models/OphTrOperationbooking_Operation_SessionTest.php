@@ -60,12 +60,9 @@ class OphTrOperationbooking_Operation_SessionTest extends ActiveRecordTestCase
         $this->assertNull($booking->session_id);
     }
 
-    /**
-     * @expectedException CDbException
-     * @expectedExceptionMessage constraint violation
-     */
     public function testDontDissociateFromNonCancelledBookingOnDelete()
     {
+        $this->expectException(\CDbException::class);
         $this->session('session5')->delete();
     }
 

@@ -129,12 +129,14 @@ abstract class DataObjectTest_BaseObj extends DataObject
     {
         class_exists('DataTemplate');
         $template = (new Generator())->getMock('DataTemplateComponent', array(), array(), '', false);
-        $template->expects(new AnyInvokedCount())->method('match')
-            ->will(new ReturnCallback(function ($obj, &$warnings) { return get_object_vars($obj);
-            }));
-        $template->expects(new AnyInvokedCount())->method('generate')
-            ->will(new ReturnCallback(function ($values) { return (object) $values;
-            }));
+        $template->method('match')
+            ->willReturnCallback(function ($obj, &$warnings) {
+                return get_object_vars($obj);
+            });
+        $template->method('generate')
+            ->willReturnCallback(function ($values) {
+                return (object) $values;
+            });
 
         return $template;
     }

@@ -74,7 +74,7 @@ class FieldImagesTest extends OEDbTestCase
         $yiiMock = new FieldImagesTest_FileHelper_Present();
 
         $results = FiledImagesTest_TestClass::model()->getFieldImages($yiiMock, $this->assetManagerMock);
-        $this->assertInternalType('array', $results);
+        $this->assertIsArray($results);
         $this->assertEquals(2, count($results));
         $this->assertTrue(isset($results['3']));
         $this->assertTrue(isset($results['5']));

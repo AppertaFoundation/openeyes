@@ -130,7 +130,7 @@ class ContactLocationTest extends ActiveRecordTestCase
         $expected = 'City Road';
         $result = $this->contactlocations('contactlocation1')->__toString();
 
-        $this->assertContains($expected, $result, $expected.' not found');
+        $this->assertStringContainsString($expected, $result, $expected . ' not found');
         $this->assertGreaterThan(0, strlen($result));
         $this->assertNotNull($result);
     }
