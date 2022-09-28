@@ -319,8 +319,9 @@ class GeneticsPatient extends BaseActiveRecord
         $criteria->compare('patient.dob', $this->patient_dob, true);
         $criteria->compare('patient.dob', $this->patient_yob, true);
         if ($this->patient_hos_num) {
-            $criteria->with['patient_identifier'] = array('select' => 'patient_identifier.value', 'together' => true);
-            $criteria->with['patient_identifier_type'] = array('select' => 'patient_identifier_type.id', 'together' => true);
+            $criteria->join .= " JOIN patient_identifier patient_identifier_not_deleted ON (t.patient_id=patient_identifier_not_deleted.patient_id) 
+            AND (patient_identifier_not_deleted.deleted = 0) ";
+            $criteria->join .= " JOIN patient_identifier_type patient_identifier_type ON (patient_identifier_type.id=patient_identifier_not_deleted.patient_identifier_type_id) ";
             $criteria->compare('patient_identifier_not_deleted.value', $this->patient_hos_num, false);
         }
         if ($this->patient_pedigree_id) {
