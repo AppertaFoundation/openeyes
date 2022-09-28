@@ -274,6 +274,7 @@ class BaseController extends Controller
     {
         // TODO: Check logged in before setting
         $this->jsVars['element_close_warning_enabled'] = SettingMetadata::model()->getSetting('element_close_warning_enabled');
+        $this->jsVars['close_incomplete_exam_elements'] = SettingMetadata::model()->getSetting('close_incomplete_exam_elements');
         if (isset(Yii::app()->session['user_auth'])) {
             $user_auth = Yii::app()->session['user_auth'];
             $user = $user_auth->user;
