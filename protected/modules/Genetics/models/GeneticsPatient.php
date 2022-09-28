@@ -123,13 +123,13 @@ class GeneticsPatient extends BaseActiveRecord
             'patient' => array(self::BELONGS_TO, 'Patient', 'patient_id',
                 'condition' => 'patient.deleted=0'),
             'gender' => array(self::BELONGS_TO, 'Gender', 'gender_id'),
-            'patient_identifier' => array(self::BELONGS_TO,
+            'patient_identifier' => [
+                self::BELONGS_TO,
                 'PatientIdentifier',
-                'patient_id',
-                'condition' => '( patient_identifier_type.usage_type ="' . SettingMetadata::model()->getSetting('display_primary_number_usage_code') . '" )' .
-                    'AND (patient_identifier_type.id = patient_identifier_not_deleted.patient_identifier_type_id )',
-                ),
-            'patient_identifier_type' => array(self::HAS_MANY, 'PatientIdentifierType', 'id'),
+                ['patient_id' => 'patient_id'],
+                'condition' => '( patientIdentifierType.usage_type ="' . SettingMetadata::model()->getSetting('display_primary_number_usage_code') . '" )',
+                'with' => ['patientIdentifierType' => ['select' => 'usage_type', 'together' => true]]
+            ],
             'relationships' => array(self::HAS_MANY, 'GeneticsPatientRelationship', 'patient_id'),
             'studies' => array(self::MANY_MANY, 'GeneticsStudy', 'genetics_study_subject(subject_id, study_id)'),
             'previous_studies' => array(
@@ -319,9 +319,8 @@ class GeneticsPatient extends BaseActiveRecord
         $criteria->compare('patient.dob', $this->patient_dob, true);
         $criteria->compare('patient.dob', $this->patient_yob, true);
         if ($this->patient_hos_num) {
-            $criteria->join .= " JOIN patient_identifier patient_identifier_not_deleted ON (t.patient_id=patient_identifier_not_deleted.patient_id) 
-            AND (patient_identifier_not_deleted.deleted = 0) ";
-            $criteria->join .= " JOIN patient_identifier_type patient_identifier_type ON (patient_identifier_type.id=patient_identifier_not_deleted.patient_identifier_type_id) ";
+            $criteria->with['patient_identifier'] = ['select' => 'patient_identifier.value', 'together' => true];
+            $criteria->with['patient_identifier.patientIdentifierType'] = ['select' => 'patient_identifier_type.id', 'condition' => 'institution_id = ' . Institution::model()->getCurrent()->id, 'together' => true];
             $criteria->compare('patient_identifier_not_deleted.value', $this->patient_hos_num, false);
         }
         if ($this->patient_pedigree_id) {
