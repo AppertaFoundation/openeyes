@@ -46,13 +46,7 @@
                     $patientId = Yii::app()->request->getQuery('patient_id', null);
                     if (!isset($patientId)) {
                         // patientId will be null on updating the event
-                        $eventId = $element->event_id;
-                        $event = Event::model()->findByPk($eventId);
-                        if(!$event) {
-                            $patientId = $this->event->episode->patient_id;
-                        } else {
-                            $patientId = $event->episode->patient_id;
-                        }
+                        $patientId = $this->patient->id;
                     }
                     $patient = Patient::model()->findByPk($patientId);
                     $address = $patient->contact->address;
