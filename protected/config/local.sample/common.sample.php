@@ -18,7 +18,6 @@
 
 $config = array(
     'params' => array(
-        'OphCoTherapyapplication_sender_email' => array('email@example.com' => 'Test'),
     ),
 );
 

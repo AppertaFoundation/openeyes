@@ -49,7 +49,7 @@ class BirthHistory extends \BaseEventElementWidget
     public function getInputWeightKgs()
     {
         return $this->data[self::$INPUT_KGS_FLD] ??
-            ($this->element->weight_grams ? $this->element->weight_grams / 1000 : null);
+            ($this->element->weight_grams ? sprintf("%.3f", $this->element->weight_grams / 1000) : null);
     }
 
     public function getInputWeightLbsPortion()
