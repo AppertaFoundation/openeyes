@@ -24,7 +24,6 @@ use OEModule\OphCoCvi\models\Element_OphCoCvi_EventInfo;
 use mikehaertl\pdftk\Pdf;
 use OEModule\OphCoMessaging\components\MessageCreator;
 use OEModule\OphCoMessaging\models\OphCoMessaging_Message_MessageType;
-use SettingMetadata;
 
 require_once str_replace('index.php', 'vendor/setasign/fpdi/src/PdfParser/PdfParser.php', \Yii::app()->getRequest()->getScriptFile());
 /**
@@ -1520,7 +1519,7 @@ class OphCoCvi_Manager extends \CComponent
         }
 
         $message = \Yii::app()->mailer->newMessage();
-        $from_address = SettingMetadata::model()->getSetting('eclo_sender_email');
+        $from_address = \SettingMetadata::model()->getSetting('eclo_sender_email');
         $message->setFrom($from_address);
         $message->setTo(\SettingMetadata::model()->getSetting('eclo_target_email'));
         $message->setSubject("New CVI");
