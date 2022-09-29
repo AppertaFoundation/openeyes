@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Copyright Apperta Foundation 2022
  * This file is part of OpenEyes.
@@ -12,66 +13,84 @@
  * @copyright Copyright (C) 2022, Apperta Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-
 class m220928_091400_add_cvidelivery_settings extends OEMigration
 {
+    private $settings;
+
+    public function setUp() {
+
+        $this->settings = array(
+            array(
+                'key' => 'cvi_docman_delivery_enabled',
+                'name' => 'CVI delivery enable to send via docman',
+                'default_value' => 'off',
+                'value' => strtolower(getenv("CVI_DOCMAN_DELIVERY_ENABLED")) == 'true' ? 'On' : 'Off',
+                'type' => 'Radio buttons',
+                'data' => 'a:2:{s:2:"on";s:2:"On";s:3:"off";s:3:"Off";}',            
+            ),
+            array(
+                'key' => 'cvi_rcop_delivery_enabled',
+                'name' => 'CVI delivery enable to send to RCOP',
+                'default_value' => 'off',
+                'value' => strtolower(getenv("CVI_RCOP_DELIVERY_ENABLED")) == 'true' ? 'On' : 'Off',
+                'type' => 'Radio buttons',
+                'data' => 'a:2:{s:2:"on";s:2:"On";s:3:"off";s:3:"Off";}',
+            ),
+            array(
+                'key' => 'cvi_la_delivery_enabled',
+                'name' => 'CVI delivery enable to send to LA',
+                'default_value' => 'off',
+                'value' => strtolower(getenv("CVI_LA_DELIVERY_ENABLED")) == "true" ? 'On' : 'Off',
+                'type' => 'Radio buttons',
+                'data' => 'a:2:{s:2:"on";s:2:"On";s:3:"off";s:3:"Off";}',
+            ),
+            array(
+                'key' => 'cvi_eclo_notification_email',
+                'name' => 'CVI sending email to ECLO',
+                'default_value' => 'off',
+                'value' => 'off',
+                'type' => 'Radio buttons',
+                'data' => 'a:2:{s:2:"on";s:2:"On";s:3:"off";s:3:"Off";}',
+            ),
+            array(
+                'key' => 'cvi_eclo_sender_email',
+                'name' => 'CVI sender of ECLO email',
+                'default_value' => '',
+                'value' => 'noreply@openeyes.org.uk',
+                'type' => 'Text Field',
+                'data' => '',
+            ),
+            array(
+                'key' => 'cvi_eclo_target_email',
+                'name' => 'CVI target of ECLO email',
+                'default_value' => '',
+                'value' => '',
+                'type' => 'Text Field',
+                'data' => '',
+            ),
+        );
+    }
+
     public function up()
     {
-        $this->insert("setting_metadata", array(
-            "element_type_id" => null,
-            "key" => "cvi_docman_delivery_enabled",
-            "name" => "CVI delivery enable to send via docman",
-            "default_value" => 'off',
-            "field_type_id" => $this->getSettingFieldIdByName('Radio buttons'),
-            'data' => 'a:2:{s:2:"on";s:2:"On";s:3:"off";s:3:"Off";}',
-        ));
-
-        $this->insert("setting_installation", array(
-            'key' => 'cvi_docman_delivery_enabled',
-            'value' => strtolower(getenv("CVI_DOCMAN_DELIVERY_ENABLED")) == "true" ? "On" : "Off",
-        ));
-
-        $this->insert("setting_metadata", array(
-            "element_type_id" => null,
-            "key" => "cvi_rcop_delivery_enabled",
-            "name" => "CVI delivery enable to send to RCOP",
-            "default_value" => 'off',
-            "field_type_id" => $this->getSettingFieldIdByName('Radio buttons'),
-            'data' => 'a:2:{s:2:"on";s:2:"On";s:3:"off";s:3:"Off";}',
-        ));
-
-        $this->insert("setting_installation", array(
-            'key' => 'cvi_rcop_delivery_enabled',
-            'value' => strtolower(getenv("CVI_RCOP_DELIVERY_ENABLED")) == "true" ? "On" : "Off",
-        ));
-
-        $this->insert("setting_metadata", array(
-            "element_type_id" => null,
-            "key" => "cvi_la_delivery_enabled",
-            "name" => "CVI delivery enable to send to LA",
-            "default_value" => 'off',
-            "field_type_id" => $this->getSettingFieldIdByName('Radio buttons'),
-            'data' => 'a:2:{s:2:"on";s:2:"On";s:3:"off";s:3:"Off";}',
-        ));
-
-        $this->insert("setting_installation", array(
-            'key' => 'cvi_la_delivery_enabled',
-            'value' => strtolower(getenv("CVI_LA_DELIVERY_ENABLED")) == "true" ? "On" : "Off",
-        ));
+        $this->setUp();
+        foreach ($this->settings as $setting) {
+            $this->insert('setting_metadata', array(
+                'key' => $setting['key'],
+                'name' => $setting['name'],
+                'element_type_id' => null,
+                'default_value' => '',
+                'field_type_id' => $this->getSettingFieldIdByName($setting['type']),
+                'data' => $setting['data'],
+            ));
+            $this->insert('setting_installation', array(
+                'key' => $setting['key'],
+                'value' => $setting['value'],
+            ));
+        };
     }
 
     public function down()
     {
-        $this->execute("DELETE FROM setting_installation WHERE `key` IN (
-            'cvi_docman_delivery_enabled',
-            'cvi_rcop_delivery_enabled',
-            'cvi_la_delivery_enabled'
-        )");
-
-        $this->execute("DELETE FROM setting_metadata WHERE `key` IN (
-            'cvi_docman_delivery_enabled',
-            'cvi_rcop_delivery_enabled',
-            'cvi_la_delivery_enabled'
-        )");
     }
 }
