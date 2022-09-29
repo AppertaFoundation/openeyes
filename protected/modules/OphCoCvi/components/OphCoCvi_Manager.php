@@ -1519,13 +1519,13 @@ class OphCoCvi_Manager extends \CComponent
         }
 
         $message = \Yii::app()->mailer->newMessage();
-        $fromAddress = isset(\Yii::app()->params['from_email']) ? \Yii::app()->params['from_email'] : "noreply@openeyes.org.uk";
-        $message->setFrom($fromAddress);
+        $from_address = isset(\Yii::app()->params['from_email']) ? \Yii::app()->params['from_email'] : 'noreply@openeyes.org.uk';
+        $message->setFrom($from_address);
         $message->setTo(\SettingMetadata::model()->getSetting('eclo_email'));
         $message->setSubject("New CVI");
         $message->setBody("Dear ECLO Team\nA new CVI has been started by {$event->user->getFullName()}\nPatient: {$event->episode->patient->getFullName()}\nHos num:{$event->episode->patient->hos_num}");
 
-        $senderEmailAddress = \SenderEmailAddresses::getSenderAddress($fromAddress, $event->institution_id, $event->site_id);
+        $senderEmailAddress = \SenderEmailAddresses::getSenderAddress($from_address, $event->institution_id, $event->site_id);
         if (!$senderEmailAddress) {
             return false;
         }
