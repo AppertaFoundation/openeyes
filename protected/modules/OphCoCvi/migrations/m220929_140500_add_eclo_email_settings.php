@@ -17,14 +17,25 @@ class m220929_140500_add_eclo_email_settings extends OEMigration
 {
     private $settings = array(
         array(
-            'key' => 'cvi_eclo_sender_email',
-            'name' => 'CVI sender of ECLO email',
-            'value' => 'noreply@openeyes.org.uk',
+            'key' => 'cvi_eclo_notification_email',
+            'name' => 'CVI sending email to ECLO',
+            'value' => 'off',
+            'type' => 'Radio buttons',
+            'data' => 'a:2:{s:2:"on";s:2:"On";s:3:"off";s:3:"Off";}',
         ),
         array(
             'key' => 'cvi_eclo_sender_email',
             'name' => 'CVI sender of ECLO email',
+            'value' => 'noreply@openeyes.org.uk',
+            'type' => 'Text Field',
+            'data' => '',
+        ),
+        array(
+            'key' => 'cvi_eclo_target_email',
+            'name' => 'CVI target of ECLO email',
             'value' => '',
+            'type' => 'Text Field',
+            'data' => '',
         ),
     );
 
@@ -36,7 +47,8 @@ class m220929_140500_add_eclo_email_settings extends OEMigration
                 'name' => $setting['name'],
                 'element_type_id' => null,
                 'default_value' => '',
-                'field_type_id' => $this->getSettingFieldIdByName('Text Field'),
+                'field_type_id' => $this->getSettingFieldIdByName($setting['type']),
+                'data' => $setting['data'],
             ));
             $this->insert('setting_installation', array(
                 'key' => $setting['key'],

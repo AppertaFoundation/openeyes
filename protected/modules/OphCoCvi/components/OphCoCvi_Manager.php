@@ -1514,14 +1514,14 @@ class OphCoCvi_Manager extends \CComponent
 
     private function sendNotificationToClericalOfficer(\Event $event)
     {
-        if (empty(\SettingMetadata::model()->getSetting('new_cvi_notification_email'))) {
+        if (strtolower(\SettingMetadata::model()->getSetting('cvi_eclo_notification_email') ?? "off") !== "on") {
             return false;
         }
 
         $message = \Yii::app()->mailer->newMessage();
-        $from_address = \SettingMetadata::model()->getSetting('eclo_sender_email');
+        $from_address = \SettingMetadata::model()->getSetting('cvi_eclo_sender_email');
         $message->setFrom($from_address);
-        $message->setTo(\SettingMetadata::model()->getSetting('eclo_target_email'));
+        $message->setTo(\SettingMetadata::model()->getSetting('cvi_eclo_target_email'));
         $message->setSubject("New CVI");
         $message->setBody("Dear ECLO Team\nA new CVI has been started by {$event->user->getFullName()}\nPatient: {$event->episode->patient->getFullName()}\nHos num:{$event->episode->patient->hos_num}");
 
