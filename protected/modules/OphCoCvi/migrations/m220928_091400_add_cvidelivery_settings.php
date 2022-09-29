@@ -20,74 +20,74 @@ class m220928_091400_add_cvidelivery_settings extends OEMigration
     public function setUp()
     {
 
-        $this->settings = array(
-            array(
+        $this->settings = [
+            [
                 'key' => 'cvi_docman_delivery_enabled',
                 'name' => 'CVI delivery enable to send via docman',
                 'default_value' => 'off',
                 'value' => strtolower(getenv("CVI_DOCMAN_DELIVERY_ENABLED")) == 'true' ? 'On' : 'Off',
                 'type' => 'Radio buttons',
                 'data' => 'a:2:{s:2:"on";s:2:"On";s:3:"off";s:3:"Off";}',
-            ),
-            array(
+            ],
+            [
                 'key' => 'cvi_rcop_delivery_enabled',
                 'name' => 'CVI delivery enable to send to RCOP',
                 'default_value' => 'off',
                 'value' => strtolower(getenv("CVI_RCOP_DELIVERY_ENABLED")) == 'true' ? 'On' : 'Off',
                 'type' => 'Radio buttons',
                 'data' => 'a:2:{s:2:"on";s:2:"On";s:3:"off";s:3:"Off";}',
-            ),
-            array(
+            ],
+            [
                 'key' => 'cvi_la_delivery_enabled',
                 'name' => 'CVI delivery enable to send to LA',
                 'default_value' => 'off',
                 'value' => strtolower(getenv("CVI_LA_DELIVERY_ENABLED")) == "true" ? 'On' : 'Off',
                 'type' => 'Radio buttons',
                 'data' => 'a:2:{s:2:"on";s:2:"On";s:3:"off";s:3:"Off";}',
-            ),
-            array(
+            ],
+            [
                 'key' => 'cvi_eclo_notification_email',
                 'name' => 'CVI sending email to ECLO',
                 'default_value' => 'off',
                 'value' => 'off',
                 'type' => 'Radio buttons',
                 'data' => 'a:2:{s:2:"on";s:2:"On";s:3:"off";s:3:"Off";}',
-            ),
-            array(
+            ],
+            [
                 'key' => 'cvi_eclo_sender_email',
                 'name' => 'CVI sender of ECLO email',
                 'default_value' => '',
                 'value' => 'noreply@openeyes.org.uk',
                 'type' => 'Text Field',
                 'data' => '',
-            ),
-            array(
+            ],
+            [
                 'key' => 'cvi_eclo_target_email',
                 'name' => 'CVI target of ECLO email',
                 'default_value' => '',
                 'value' => '',
                 'type' => 'Text Field',
                 'data' => '',
-            ),
-        );
+            ],
+        ];
     }
 
     public function up()
     {
         $this->setUp();
         foreach ($this->settings as $setting) {
-            $this->insert('setting_metadata', array(
+            $this->insert('setting_metadata', [
                 'key' => $setting['key'],
                 'name' => $setting['name'],
                 'element_type_id' => null,
                 'default_value' => '',
                 'field_type_id' => $this->getSettingFieldIdByName($setting['type']),
                 'data' => $setting['data'],
-            ));
-            $this->insert('setting_installation', array(
+            ]);
+            $this->insert('setting_installation', [
                 'key' => $setting['key'],
                 'value' => $setting['value'],
-            ));
+            ]);
         };
     }
 
@@ -95,8 +95,8 @@ class m220928_091400_add_cvidelivery_settings extends OEMigration
     {
         $this->setUp();
         foreach ($this->settings as $setting) {
-            $this->delete('setting_installation', '`key` = ?', array($setting['key']));
-            $this->delete('setting_metadata', '`key` = ?', array($setting['key']));
+            $this->delete('setting_installation', '`key` = ?', [$setting['key']]);
+            $this->delete('setting_metadata', '`key` = ?', [$setting['key']]);
         }
     }
 }
