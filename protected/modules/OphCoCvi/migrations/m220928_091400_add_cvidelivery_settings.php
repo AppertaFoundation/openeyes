@@ -93,5 +93,10 @@ class m220928_091400_add_cvidelivery_settings extends OEMigration
 
     public function down()
     {
+        $this->setUp();
+        foreach ($this->settings as $setting) {
+            $this->delete('setting_installation', '`key` = ?', array($setting['key']));
+            $this->delete('setting_metadata', '`key` = ?', array($setting['key']));
+        }
     }
 }
