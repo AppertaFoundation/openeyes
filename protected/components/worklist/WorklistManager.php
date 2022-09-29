@@ -312,7 +312,7 @@ class WorklistManager extends CComponent
             }
         }
 
-        return $reordered_definitions + $definitions;
+        return array_merge($reordered_definitions, $definitions);
     }
 
     /**
