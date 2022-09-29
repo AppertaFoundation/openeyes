@@ -1514,7 +1514,7 @@ class OphCoCvi_Manager extends \CComponent
 
     private function sendNotificationToClericalOfficer(\Event $event)
     {
-        if (strtolower(\SettingMetadata::model()->getSetting('cvi_eclo_notification_email') ?? "off") !== "on") {
+        if (strtolower(\SettingMetadata::model()->getSetting('cvi_eclo_notification_email') ?? 'off') !== 'on') {
             return false;
         }
 
@@ -1522,7 +1522,7 @@ class OphCoCvi_Manager extends \CComponent
         $from_address = \SettingMetadata::model()->getSetting('cvi_eclo_sender_email');
         $message->setFrom($from_address);
         $message->setTo(\SettingMetadata::model()->getSetting('cvi_eclo_target_email'));
-        $message->setSubject("New CVI");
+        $message->setSubject('New CVI');
         $message->setBody("Dear ECLO Team\nA new CVI has been started by {$event->user->getFullName()}\nPatient: {$event->episode->patient->getFullName()}\nHos num:{$event->episode->patient->hos_num}");
 
         $sender_email_address = \SenderEmailAddresses::getSenderAddress($from_address, $event->institution_id, $event->site_id);
