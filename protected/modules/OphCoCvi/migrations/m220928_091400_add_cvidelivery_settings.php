@@ -17,7 +17,8 @@ class m220928_091400_add_cvidelivery_settings extends OEMigration
 {
     private $settings;
 
-    public function setUp() {
+    public function setUp()
+    {
 
         $this->settings = array(
             array(
@@ -26,7 +27,7 @@ class m220928_091400_add_cvidelivery_settings extends OEMigration
                 'default_value' => 'off',
                 'value' => strtolower(getenv("CVI_DOCMAN_DELIVERY_ENABLED")) == 'true' ? 'On' : 'Off',
                 'type' => 'Radio buttons',
-                'data' => 'a:2:{s:2:"on";s:2:"On";s:3:"off";s:3:"Off";}',            
+                'data' => 'a:2:{s:2:"on";s:2:"On";s:3:"off";s:3:"Off";}',
             ),
             array(
                 'key' => 'cvi_rcop_delivery_enabled',
