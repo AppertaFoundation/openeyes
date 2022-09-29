@@ -111,7 +111,6 @@ $config = array(
             'practice_code' => 'http://example.com/practice_code',
             'cb_code' => 'http://example.com/cb_code',
         ),
-        'OphCoTherapyapplication_sender_email' => array('email@example.com' => 'Test'),
         'OphCoTherapyapplication_compliant_recipient_email' => array('email@example.com' => 'Email Test'),
         'OphCoTherapyapplication_noncompliant_recipient_email' => array('email2@example.com' => 'Email Test 2'),
         'OphCoTherapyapplication_applicant_email' => 'email@example.com',
