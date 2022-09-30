@@ -53,7 +53,7 @@ $footer_array = explode("{e-signature}", $element["footer"]);
     <div class="flex-t col-gap">
         <div class="cols-3">
             <div class="flex">
-                
+
                 <?php
                 $correspondeceApp = Yii::app()->params['ask_correspondence_approval'];
                 if ($correspondeceApp === 'on') {
@@ -76,7 +76,7 @@ $footer_array = explode("{e-signature}", $element["footer"]);
                         'separator' => '', ),
                     );
                 } ?>
-                
+
             </div>
             <hr class="divider">
 
@@ -105,7 +105,7 @@ $footer_array = explode("{e-signature}", $element["footer"]);
                     <col class="cols-7">
                 </colgroup>
                 <tbody>
-                
+
                 <tr>
                 <td>
                     Letter Date
@@ -119,11 +119,11 @@ $footer_array = explode("{e-signature}", $element["footer"]);
                         ) ?>
                 </td>
                 </tr>
-                
-                
-                        
-               
-               
+
+
+
+
+
                 <!--                  Clinic Date  -->
                 <tr>
                     <td>
@@ -185,7 +185,7 @@ $footer_array = explode("{e-signature}", $element["footer"]);
             </table>
         </div>
         <div id="docman_block" class="cols-9">
-            
+
                     <?php
                     if (!$creating) {
                         $document_set = DocumentSet::model()->findByAttributes(array('event_id' => $element->event_id));
@@ -298,7 +298,7 @@ $footer_array = explode("{e-signature}", $element["footer"]);
                         ));
                     } ?>
                 </div>
-               
+
         </div>
     </div>
 </div>
@@ -308,9 +308,9 @@ $footer_array = explode("{e-signature}", $element["footer"]);
 <div class="flex-t col-gap">
     <div class="cols-3">
         <div class="data-group">
-           
+
                         <h3>Letter Templates</h3>
-                
+
                         <?= CHtml::dropDownList(
                             'macro_id',
                             $macro_id,
@@ -319,8 +319,8 @@ $footer_array = explode("{e-signature}", $element["footer"]);
                         ) ?>
                     <hr class="divider">
                         <h3>Insert Quick Text</h3>
-                    
-                
+
+
                             <?php
                             $firm = Firm::model()->with('serviceSubspecialtyAssignment')->findByPk(Yii::app()->session['selected_firm_id']);
 
@@ -387,7 +387,7 @@ $footer_array = explode("{e-signature}", $element["footer"]);
                                 )) ?>
                             <?php } ?>
                         </div>
-                    
+
         </div>
 
     <div class="cols-9">
@@ -600,6 +600,7 @@ $footer_array = explode("{e-signature}", $element["footer"]);
             onSelect: function(){
                 let AutoCompleteResponse = OpenEyes.UI.AutoCompleteSearch.getResponse();
                 $('.correspondence-letter-text-change').html(AutoCompleteResponse['correspondence_footer_text'].replace(/(\r\n|\n\r|\r|\n)/g, "<br>"));
+                $('#ElementLetter_footer').html(AutoCompleteResponse['correspondence_footer_text'].replace(/(\r\n|\n\r|\r|\n)/g, "<br>"));
             }
         });
     </script>

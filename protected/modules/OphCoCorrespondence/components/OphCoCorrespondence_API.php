@@ -1038,7 +1038,7 @@ class OphCoCorrespondence_API extends BaseAPI
      */
     public function afterEventContextUpdate($event, $user) {
         $element = ElementLetter::model()->findByAttributes(["event_id" => $event->id]);
-        $element->setFooterTextFrom($user, $event->firm);
+        $element->setFooterTextFrom($user, $event->episode->firm);
         $element->save();
     }
 }
