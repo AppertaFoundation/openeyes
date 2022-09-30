@@ -42,15 +42,7 @@
                 </div>
                 <div class="cols-8 column">
                     <?php
-                    // If it is the new record, get the patient_id from the url
-                    $patientId = Yii::app()->request->getQuery('patient_id', null);
-                    if (!isset($patientId)) {
-                        // patientId will be null on updating the event
-                        $eventId = $element->event_id;
-                        $event = Event::model()->findByPk($eventId);
-                        $patientId = $event->episode->patient_id;
-                    }
-                    $patient = Patient::model()->findByPk($patientId);
+                    $patient = $this->patient;
                     $address = $patient->contact->address;
                     $contact = $patient->contact;
                     $emailAddress = Yii::app()->request->getPost('Contact');
