@@ -127,7 +127,7 @@ class DicomLogViewerController extends BaseController
             ->join('patient_identifier pi', 'pi.patient_id = p.id')
             ->join('unique_codes_mapping ucm', 'e.id = ucm.event_id')
             ->join('unique_codes uc', 'ucm.unique_code_id = uc.id')
-            ->join('et_ophcocvi_consentsig ps', 'e.id = ps.event_id')
+            ->join('et_ophcocvi_esign ps', 'e.id = ps.event_id')
             ->join('contact c', 'p.contact_id = c.id')
             //->join('et_ophcocvi_eventinfo eoe', 'e.id = eoe.event_id')
             ->where($where, array(
