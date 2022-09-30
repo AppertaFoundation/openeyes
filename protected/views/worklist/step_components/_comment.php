@@ -7,13 +7,13 @@
 ?>
 <div class="step-comments">
     <?php if (!$partial && $visit) { ?>
-    <div class="flex js-comments-edit" style="<?= !($model instanceof PathwayTypeStep) && $model->comment ? 'display: none;' : '' ?>">
+    <div class="flex js-comments-edit" style="<?= $model && !($model instanceof PathwayTypeStep) && $model->comment ? 'display: none;' : '' ?>">
         <div class="cols-11">
             <input class="cols-full js-step-comments" type="text" maxlength="80" placeholder="Comments"
             <?= !($model instanceof PathwayTypeStep) && $model && $model->comment ? 'value="'.$model->comment->comment.'"' : '' ?>/>
             <div class="character-counter">
                 <span class="percent-bar"
-                        style="width: <?= $model->comment ? strlen($model->comment->comment)/0.8 : 0 ?>%;"></span>
+                        style="width: <?= $model && $model->comment ? strlen($model->comment->comment)/0.8 : 0 ?>%;"></span>
             </div>
         </div>
         <i class="oe-i save-plus js-save"></i>
