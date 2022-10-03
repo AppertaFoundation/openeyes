@@ -38,6 +38,7 @@ if ($demographics_element->isNewRecord) {
     $address = $patient->gp->getLetterAddress(['patient' => $patient]);
     $gp_postcode = $patient->gp->getGPPostcode(['patient' => $patient]) ?? '';
     $gp_telephone = $patient->practice->contact->primary_phone ?? $patient->gp->contact->primary_phone ?? '';
+    $gp_email = $this->patient->gp->contact->email ?? $this->patient->gp->contact->email ?? '';
 
     $title_surname = $patient->title . " " . $patient->first_name;
     $other_names = '';
@@ -48,6 +49,7 @@ if ($demographics_element->isNewRecord) {
     $gp_telephone = $demographics_element->gp_telephone;
     $title_surname = $demographics_element->title_surname;
     $other_names = $demographics_element->other_names;
+    $email = $demographics_element->email;
 }
 ?>
 
@@ -94,6 +96,10 @@ if ($demographics_element->isNewRecord) {
             <tr>
                 <th>Telephone number</th>
                 <td><?= \CHtml::encode($gp_telephone); ?></td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td><?= \CHtml::encode($email); ?></td>
             </tr>
             <tr>
                 <th>Date of birth</th>
