@@ -84,6 +84,18 @@ if ($demographics_element->isNewRecord) {
                 <td><?= \CHtml::encode($other_names) ?></td>
             </tr>
             <tr>
+                <th>Address</th>
+                <td><?= \CHtml::encode($address ? implode(", ", $address) : '') ?></td>
+            </tr>
+            <tr>
+                <th>Postcode</th>
+                <td><?= \CHtml::encode($gp_postcode); ?></td>
+            </tr>
+            <tr>
+                <th>Telephone number</th>
+                <td><?= \CHtml::encode($gp_telephone); ?></td>
+            </tr>
+            <tr>
                 <th>Date of birth</th>
                 <td><?= Helper::convertMySQL2NHS($patient->dob) ?></td>
             </tr>
