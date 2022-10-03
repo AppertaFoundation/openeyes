@@ -1514,16 +1514,22 @@ class OphCoCvi_Manager extends \CComponent
 
     private function sendNotificationToClericalOfficer(\Event $event)
     {
-        if (!isset(\Yii::app()->params['new_cvi_notification_email']) || !\Yii::app()->params['new_cvi_notification_email']) {
+        if (strtolower(\SettingMetadata::model()->getSetting('cvi_eclo_notification_email') ?? 'off') !== 'on') {
             return false;
         }
 
         $message = \Yii::app()->mailer->newMessage();
-        $message->setFrom(isset(\Yii::app()->params['from_email']) ? \Yii::app()->params['from_email'] : "noreply@openeyes.org.uk");
-        $message->setTo(\SettingMetadata::model()->getSetting('eclo_email'));
-        $message->setSubject("New CVI");
+        $from_address = \SettingMetadata::model()->getSetting('cvi_eclo_sender_email');
+        $message->setFrom($from_address);
+        $message->setTo(\SettingMetadata::model()->getSetting('cvi_eclo_target_email'));
+        $message->setSubject('New CVI');
         $message->setBody("Dear ECLO Team\nA new CVI has been started by {$event->user->getFullName()}\nPatient: {$event->episode->patient->getFullName()}\nHos num:{$event->episode->patient->hos_num}");
 
+        $sender_email_address = \SenderEmailAddresses::getSenderAddress($from_address, $event->institution_id, $event->site_id);
+        if (!$sender_email_address) {
+            return false;
+        }
+        $sender_email_address->prepareMailer();
         return \Yii::app()->mailer->sendMessage($message);
     }
 }
