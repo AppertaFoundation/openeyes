@@ -947,7 +947,6 @@ $config = array(
             // Generates random encryption key for openssl
             'encryptionKey' => $ssoClientSecret,
             'field_mapping_allow_list_with_defaults' => array(
-                'username' => '',
                 'email' => '',
                 'first_name' => '',
                 'last_name' => '',
