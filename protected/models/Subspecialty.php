@@ -1,4 +1,5 @@
 <?php
+use OE\factories\models\traits\HasFactory;
 /**
  * OpenEyes.
  *
@@ -32,6 +33,8 @@
  */
 class Subspecialty extends BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     const SELECTION_ORDER = 'name';
 
     /**
