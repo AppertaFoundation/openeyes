@@ -32,6 +32,7 @@ $getSignatureSource = function (int $type) use ($eventinfo_element): string {
     return '';
 };
 
+
 if ($demographics_element->isNewRecord) {
     $gp_name = $patient->gp->contact->fullName ?? '';
     // getLetterAddress checks if the patient has Practice and returns that if he/she has
@@ -50,6 +51,9 @@ if ($demographics_element->isNewRecord) {
     $title_surname = $demographics_element->title_surname;
     $other_names = $demographics_element->other_names;
     $email = $demographics_element->email;
+    $postcode = $demographics_element->postcode . " " . $demographics_element->postcode_2nd;
+    $telephone = $demographics_element->telephone;
+    $patient_address = [$demographics_element->address];
 }
 ?>
 
@@ -87,15 +91,15 @@ if ($demographics_element->isNewRecord) {
             </tr>
             <tr>
                 <th>Address</th>
-                <td><?= \CHtml::encode($address ? implode(", ", $address) : '') ?></td>
+                <td><?= \CHtml::encode($patient_address ? implode(", ", $patient_address) : '') ?></td>
             </tr>
             <tr>
                 <th>Postcode</th>
-                <td><?= \CHtml::encode($gp_postcode); ?></td>
+                <td><?= \CHtml::encode($postcode); ?></td>
             </tr>
             <tr>
                 <th>Telephone number</th>
-                <td><?= \CHtml::encode($gp_telephone); ?></td>
+                <td><?= \CHtml::encode($telephone); ?></td>
             </tr>
             <tr>
                 <th>Email</th>
