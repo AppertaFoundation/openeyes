@@ -306,7 +306,7 @@ class User extends BaseActiveRecordVersioned
      * @return string
      * @throws Exception
      */
-    public function getNameAndInstitutionUsername($institution_id, bool $reversed = true): string
+    public function getNameAndInstitutionUsername($institution_id, bool $reversed = true, string $username_prefix = '', string $separator = ' '): string
     {
         $user_auth_id = Yii::app()->db->createCommand()
             ->select('ua.id')
@@ -326,19 +326,19 @@ class User extends BaseActiveRecordVersioned
         }
 
         if ($reversed) {
-            $return = $this->getReversedFullNameAndTitle();
+            $return = $this->getReversedFullNameAndTitle($separator);
         } else {
-            $return = $this->getFullNameAndTitle();
+            $return = $this->getFullNameAndTitle($separator);
         }
-        return $return . " ($user_auth->username)";
+        return $return . " ({$username_prefix}{$user_auth->username})";
     }
 
     /**
      * @return string
      */
-    public function getFullNameAndTitle()
+    public function getFullNameAndTitle(string $separator = ' ')
     {
-        return implode(' ', array($this->title, $this->first_name, $this->last_name));
+        return implode($separator, array($this->title, $this->first_name, $this->last_name));
     }
 
     /**
@@ -376,9 +376,9 @@ class User extends BaseActiveRecordVersioned
     /**
      * @return string
      */
-    public function getReversedFullNameAndTitle()
+    public function getReversedFullNameAndTitle(string $separator = ' ')
     {
-        return implode(' ', array($this->title, $this->last_name, $this->first_name));
+        return implode($separator, array(strtoupper($this->last_name), ucwords($this->first_name), ucwords($this->title)));
     }
 
     public function getUsersFromCurrentInstitution()
