@@ -32,14 +32,12 @@ $getSignatureSource = function (int $type) use ($eventinfo_element): string {
     return '';
 };
 
-
 if ($demographics_element->isNewRecord) {
     $gp_name = $patient->gp->contact->fullName ?? '';
     // getLetterAddress checks if the patient has Practice and returns that if he/she has
     $address = $patient->gp->getLetterAddress(['patient' => $patient]);
     $gp_postcode = $patient->gp->getGPPostcode(['patient' => $patient]) ?? '';
     $gp_telephone = $patient->practice->contact->primary_phone ?? $patient->gp->contact->primary_phone ?? '';
-    $gp_email = $this->patient->gp->contact->email ?? $this->patient->gp->contact->email ?? '';
 
     $title_surname = $patient->title . " " . $patient->first_name;
     $other_names = '';
