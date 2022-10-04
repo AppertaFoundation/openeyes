@@ -401,6 +401,9 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
                     $identifiers[] = $identifier;
                 }
 
+                // Be careful here, if fields are disappearing in the final xml, then check the
+                // following fields align up with the clients expecations (case-sensitive)
+
                 $demographics->SubjectIdentifier = $identifiers;
                 $demographics->FamilyName = $this->event->episode->patient->last_name;
                 $demographics->GivenName = $this->event->episode->patient->first_name;
@@ -410,7 +413,7 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
                 $demographics->AddressLine2 = $this->event->episode->patient->contact->address->address2;
                 $demographics->AddressLine3 = $this->event->episode->patient->contact->address->city;
                 $demographics->AddressLine4 = $this->event->episode->patient->contact->address->county;
-                $demographics->PostCode = $this->event->episode->patient->contact->address->postcode;
+                $demographics->Postcode = $this->event->episode->patient->contact->address->postcode;
 
                 $header->SubjectDemographicsAsRecorded = $demographics;
 
