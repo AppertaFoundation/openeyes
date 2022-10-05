@@ -173,6 +173,27 @@ if (isset($elements['OEModule\OphTrConsent\models\Element_OphTrConsent_Additiona
         </div>
     <?php endif; ?>
 
+    <hr class="divider">
+    <h2>Form 1: Supplementary consent</h2>
+    <h3>Images</h3>
+    <p>Photographs, x-rays or other images may be taken as part of your treatment and will form part of your
+        medical
+        record. It is very unlikely that you would be recognised from these images. If however you could be
+        recognised
+        we would seek your specific consent before any particular publication.</p>
+    <?php
+    if (isset($elements["Element_OphTrConsent_SupplementaryConsent"]) && count($elements["Element_OphTrConsent_SupplementaryConsent"]->element_question) > 0)
+    {
+        echo $this->renderPartial(
+            '_print_supplementary_consent',
+            array(
+                'element' => $elements['Element_OphTrConsent_SupplementaryConsent'],
+            )
+        );
+    } else { ?>
+        <div class="alert-box info">There are no active supplementary consent questions.</div>
+    <?php } ?>
+
     <?php if (isset($elements['Element_OphTrConsent_PatientQuestions']) && $type_assessment->existsElementInConsentForm($elements['Element_OphTrConsent_PatientQuestions']->elementType->id, Element_OphTrConsent_Type::TYPE_PATIENT_AGREEMENT_ID)) : ?>
         <?php
         $purifier = new CHtmlPurifier();
@@ -407,120 +428,6 @@ if (isset($elements['OEModule\OphTrConsent\models\Element_OphTrConsent_Additiona
         );
     } ?>
     <hr class="divider">
-    <h2>Form 1: Supplementary consent</h2>
-    <h3>Images</h3>
-    <p>Photographs, x-rays or other images may be taken as part of your treatment and will form part of your
-        medical
-        record. It is very unlikely that you would be recognised from these images. If however you could be
-        recognised
-        we would seek your specific consent before any particular publication.</p>
-    <?php
-    if (isset($elements["Element_OphTrConsent_SupplementaryConsent"]) && count($elements["Element_OphTrConsent_SupplementaryConsent"]->element_question) > 0)
-    {
-        $purifier = new CHtmlPurifier();
-        foreach ($elements["Element_OphTrConsent_SupplementaryConsent"]->element_question as $key => $question) { ?>
-            <div class="group">
-                <h4>
-                    <?php
-                    if (!empty($question->question->question_text)) {
-                        echo nl2br($purifier->purify($question->question->question_text));
-                        if (isset($question->question->question_info)) {
-                            echo '</br>' . nl2br($purifier->purify($question->question->question_info));
-                        }
-                    } else {
-                        if (!empty($question->question->question->name)) {
-                            echo nl2br($purifier->purify($question->question->name));
-                            if (isset($question->question->description)) {
-                                echo '</br>' . nl2br($purifier->purify($question->question->description));
-                            }
-                        }
-                    }
-                    ?>
-                </h4>
-                <div class="indent">
-                    <?php
-                    switch ($question->question->question->question_type->name) {
-                        case 'dropdown':
-                            if (!empty($question->element_answers)) {
-                                foreach ($question->element_answers as $subkey => $answer) {
-                                    if ($subkey > 0) {
-                                        echo ', ';
-                                    }
-                                    echo '<span class="highlighter" style="display: inline-block">';
-                                    if (!empty($answer->answer)) {
-                                        if (!empty($answer->answer->display)) {
-                                            echo nl2br($purifier->purify($answer->answer->display));
-                                        } elseif (!empty($answer->answer->name)) {
-                                            echo nl2br($purifier->purify($answer->answer->name));
-                                        }
-                                    } else {
-                                        echo "empty answer";
-                                    }
-                                    echo '</span>';
-                                }
-                            } else {
-                                echo "no answers";
-                            }
-                            break;
-                        case 'check':
-                            if (!empty($question->element_answers)) {
-                                $element_answers = array_map(function ($element_answer) {
-                                    return $element_answer->answer_id;
-                                }, $question->element_answers);
-                                foreach ($question->question->answers as $answer) {
-                                    $checked = "";
-                                    if (in_array($answer->id, $element_answers)) {
-                                        $checked = "checked";
-                                    }
-                                    echo '<span class="checkbox ' . $checked . '"></span>' . nl2br($purifier->purify($answer->display));
-                                }
-                            } else {
-                                echo "no answers";
-                            }
-                            break;
-                        case 'radio':
-                            if (!empty($question->element_answers)) {
-                                $element_answers = array_map(function ($element_answer) {
-                                    return $element_answer->answer_id;
-                                }, $question->element_answers);
-                                foreach ($question->question->answers as $answer) {
-                                    $checked = "";
-                                    if (in_array($answer->id, $element_answers)) {
-                                        $checked = "checked";
-                                    }
-                                    echo '<span class="checkbox ' . $checked . '"></span>' . nl2br($purifier->purify($answer->display));
-                                }
-                            } else {
-                                echo "no answers";
-                            }
-                            break;
-                        case 'text':
-                        case 'textarea':
-                            if (!empty($question->element_answers)) {
-                                foreach ($question->element_answers as $subkey => $answer) {
-                                    if ($subkey > 0) {
-                                        echo '<br>';
-                                    }
-                                    echo '<span class="highlighter" style="display: inline-block">';
-                                    if (!empty($answer->answer_text)) {
-                                        echo nl2br($purifier->purify($answer->answer_text));
-                                    } else {
-                                        echo "No text";
-                                    }
-                                    echo '</span>';
-                                }
-                            } else {
-                                echo "no answers";
-                            }
-                            break;
-                    } ?>
-                </div>
-            </div>
-        <?php } ?>
-        <p>If you do not wish to take part in the above, your care will not be compromised in any way.</p>
-    <?php } else { ?>
-        <div class="alert-box info">There are no active supplementary consent questions.</div>
-    <?php } ?>
     <div class="highlighter"><h3>COVID-19</h3>
         <p>In the majority, COVID-19 causes a mild, self-limiting illness but symptoms may be highly variable amongst
             individuals. It is important that you understand the specific risk profile to yourself.</p>
