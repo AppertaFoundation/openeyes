@@ -507,9 +507,16 @@ $config = array(
                 'title' => 'Track patients in FORUM',
                 'alt_title' => 'Stop tracking in FORUM',
                 'uri' => "forum/toggleForumTracking",
-                'requires_setting' => array('setting_key' => 'enable_forum_integration', 'required_value' => 'on'),
-                'position' => 90,
+                'requires_setting' => ['setting_key' => 'enable_forum_integration', 'required_value' => 'on'],
+                'position' => 89,
             ),
+            'imagenet' => [
+                'title' => 'Track patients in IMAGEnet',
+                'alt_title' => 'Stop tracking in IMAGEnet',
+                'uri' => "imagenet/toggleImagenetTracking",
+                'requires_setting' => ['setting_key' => 'enable_imagenet_integration', 'required_value' => 'on'],
+                'position' => 90,
+            ],
             'disorder' => array(
                 'title' => 'Manage Disorders',
                 'uri' => "/disorder/index",
@@ -545,21 +552,6 @@ $config = array(
                 'position' => 40,
                 'uri' => '/Safeguarding/index/',
                 'restricted' => array('Safeguarding'),
-            ),
-            /*
-                 //TODO: not yet implemented
-                 'worklist' => array(
-                  'title' => 'Worklists',
-                  'uri' => '/worklist',
-                  'position' => 3,
-                ),
-                */
-            'imagenet' => array(
-                'title' => 'ImageNET',
-                'uri' => '',
-                'requires_setting' => array('setting_key' => 'imagenet_url', 'required_value' => 'not-empty'),
-                'position' => 92,
-                'options' => ['target' => '_blank'],
             ),
             'cito_integration' => array(
                 'title' => 'Open in CITO',
@@ -811,7 +803,7 @@ $config = array(
         'default_patient_import_subspecialty' => 'GL',
         //        Add elements that need to be excluded from the admin sidebar in settings
         'exclude_admin_structure_param_list' => getenv('OE_EXCLUDE_ADMIN_STRUCT_LIST') ? explode(",", getenv('OE_EXCLUDE_ADMIN_STRUCT_LIST')) : array(''),
-        'oe_version' => 'unreleased',
+        'oe_version' => '6.3.1',
         'gp_label' => !empty(trim(getenv('OE_GP_LABEL'))) ? getenv('OE_GP_LABEL') : null,
         'general_practitioner_label' => !empty(trim(getenv('OE_GENERAL_PRAC_LABEL'))) ? getenv('OE_GENERAL_PRAC_LABEL') : null,
         // allow duplicate entries on an automatic worklist for a patient (default = false)
@@ -955,7 +947,6 @@ $config = array(
             // Generates random encryption key for openssl
             'encryptionKey' => $ssoClientSecret,
             'field_mapping_allow_list_with_defaults' => array(
-                'username' => '',
                 'email' => '',
                 'first_name' => '',
                 'last_name' => '',
@@ -1052,7 +1043,7 @@ if (strtolower(getenv('OE_MODE')) !== 'live') {
 $caches = array(
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '20220906164137',
+            'time' => '20220915132208',
         ),
 );
 

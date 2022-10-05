@@ -66,8 +66,7 @@ class Element_OphCiExamination_PcrRiskFactory extends ModelFactory
 
     public function withAllAnswers()
     {
-
-        $this->selected_sided_attributes = $this->newModel()->sidedFields();
+        $this->selected_sided_attributes = array_unique(array_merge($this->selected_sided_attributes, $this->newModel()->sidedFields()));
 
         return $this;
     }

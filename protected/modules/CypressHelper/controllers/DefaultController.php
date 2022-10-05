@@ -4,10 +4,13 @@ namespace OEModule\CypressHelper\controllers;
 
 use CWebLogRoute;
 use EventType;
+use Firm;
 use OE\concerns\InteractsWithApp;
 use OE\factories\models\EventFactory;
 use OE\factories\ModelFactory;
 use Patient;
+use CActiveRecord;
+use OELog;
 
 class DefaultController extends \CController
 {
@@ -35,14 +38,18 @@ class DefaultController extends \CController
         ];
 
         if (!$model->validate()) {
-            $this->sendJsonResponse(400, $model->getErrors());
+            $this->sendJsonResponse($model->getErrors(), 400);
         }
 
         $model->login();
         $this->getApp()->session['confirm_site_and_firm'] = false;
         $this->getApp()->session['shown_version_reminder'] = true;
 
-        $this->sendJsonResponse();
+        $this->sendJsonResponse([
+            'firm_id' => $this->getApp()->session['selected_firm_id'],
+            'subspecialty_id' => Firm::model()->findByPK($this->getApp()->session['selected_firm_id'])->getSubspecialtyID(),
+            'institution_id' => $this->getApp()->session['selected_institution_id']
+        ]);
     }
 
     public function actionCreateEvent($moduleName)
@@ -50,12 +57,12 @@ class DefaultController extends \CController
         /** @var \Event */
         $event = EventFactory::forModule($moduleName)->create();
 
-        $this->sendJsonResponse(200, [
+        $this->sendJsonResponse([
             'id' => $event->id,
             'urls' => [
                 'view' => $event->getEventViewPath()
             ]
-            ]);
+        ]);
     }
 
     public function actionCreatePatient()
@@ -72,7 +79,7 @@ class DefaultController extends \CController
 
         // TODO: create an appropriate DTO pattern for returning structured
         // data of a patient that can be used in testing.
-        $this->sendJsonResponse(200, [
+        $this->sendJsonResponse([
             'id' => $patient->id,
             'title' => $patient->title,
             'surname' => $patient->last_name,
@@ -88,7 +95,7 @@ class DefaultController extends \CController
         ])->id;
 
         $firmId = $this->getApp()->session['selected_firm_id'];
-        $this->sendJsonResponse(200, [
+        $this->sendJsonResponse([
             'url' => "/patientEvent/create?patient_id={$patientId}&event_type_id={$eventTypeId}&context_id={$firmId}&service_id={$firmId}"
         ]);
     }
@@ -112,7 +119,7 @@ class DefaultController extends \CController
             ->useExisting($lookup_attributes)
             ->create();
 
-        $this->sendJsonResponse(200, [
+        $this->sendJsonResponse([
             'model' => array_merge(
                 [
                     'id' => $model_instance->id
@@ -122,7 +129,36 @@ class DefaultController extends \CController
             ]);
     }
 
-    protected function sendJsonResponse($status = 200, array $data = [])
+    public function actionCreateModels()
+    {
+        $model_class = $_POST['model_class'] ?? null;
+        if (!$model_class) {
+            throw new \CHttpException(400, 'model class must be provided');
+        }
+
+        $model_factory = ModelFactory::factoryFor($model_class);
+        $states = $_POST['states'] ?? [];
+        if (!is_array($states)) {
+            $states = [$states];
+        }
+
+        foreach ($states as $state) {
+            if (is_array($state)) {
+                $model_factory = $model_factory->{$state[0]}(...array_slice($state, 1));
+            } else {
+                $model_factory = $model_factory->$state();
+            }
+        }
+
+        $model_factory->count($_POST['count'] ? (int) $_POST['count'] : 1);
+
+        $instances = $model_factory->create($_POST['attributes'] ?? []);
+
+        $this->sendJsonResponse(['models' => $this->getModelAttributes($instances)]);
+    }
+
+
+    protected function sendJsonResponse(array $data = [], int $status = 200)
     {
         header('HTTP/1.1 ' . $status);
         header('Content-type: application/json');
@@ -139,5 +175,26 @@ class DefaultController extends \CController
                 $route->enabled = false;
             }
         }
+    }
+
+    protected function getModelAttributes(array $instances)
+    {
+        return array_map(function ($instance) {
+            return array_merge($instance->getAttributes(), $this->getRelationsForModel($instance));
+        }, $instances);
+    }
+
+    protected function getRelationsForModel(CActiveRecord $instance)
+    {
+        $relations = [];
+        foreach ($instance->relations() as $relation => $definition) {
+            if (in_array($relation, ['user', 'usermodified'])) {
+                continue;
+            }
+            if ($definition[0] === CActiveRecord::BELONGS_TO) {
+                $relations[$relation] = $instance->$relation->getAttributes();
+            }
+        }
+        return $relations;
     }
 }

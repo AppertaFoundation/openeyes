@@ -748,12 +748,20 @@ class DefaultController extends \BaseEventTypeController
                     $issueDate = \Helper::convertMySQL2NHS($date);
                 }
 
+                $patient_identifier = \PatientIdentifierHelper::getIdentifierForPatient(
+                    'LOCAL',
+                    $originalRow->event->episode->patient_id,
+                    $originalRow->site->institution_id,
+                    $originalRow->site_id
+                );
+
+                // \t character is added to make sure leading zeros are displayed in the excel spreadsheet
                 $rows[] = [
                     \Helper::convertMySQL2NHS($originalRow->event->event_date),
                     $originalRow->event->episode->getSubspecialtyText(),
                     $originalRow->site ? $originalRow->site->name : "-",
                     $originalRow->event->episode->patient->getFullName() . " (" . $originalRow->event->episode->patient->getAge() . "y)",
-                    $originalRow->event->episode->patient->hos_num,
+                    $patient_identifier ? "\t" . \PatientIdentifierHelper::getIdentifierValue($patient_identifier) : "-",
                     $originalRow->user->getFullNameAndTitle(),
                     $consultant,
                     $inCharge,

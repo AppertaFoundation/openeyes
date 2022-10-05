@@ -48,6 +48,10 @@ if ($demographics_element->isNewRecord) {
     $gp_telephone = $demographics_element->gp_telephone;
     $title_surname = $demographics_element->title_surname;
     $other_names = $demographics_element->other_names;
+    $email = $demographics_element->email;
+    $postcode = $demographics_element->postcode . " " . $demographics_element->postcode_2nd;
+    $telephone = $demographics_element->telephone;
+    $patient_address = [$demographics_element->address];
 }
 ?>
 
@@ -82,6 +86,22 @@ if ($demographics_element->isNewRecord) {
             <tr>
                 <th>All other names (identify preferred name):</th>
                 <td><?= \CHtml::encode($other_names) ?></td>
+            </tr>
+            <tr>
+                <th>Address</th>
+                <td><?= \CHtml::encode($patient_address ? implode(", ", $patient_address) : '') ?></td>
+            </tr>
+            <tr>
+                <th>Postcode</th>
+                <td><?= \CHtml::encode($postcode); ?></td>
+            </tr>
+            <tr>
+                <th>Telephone number</th>
+                <td><?= \CHtml::encode($telephone); ?></td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td><?= \CHtml::encode($email); ?></td>
             </tr>
             <tr>
                 <th>Date of birth</th>
@@ -321,9 +341,7 @@ if ($demographics_element->isNewRecord) {
                                 <?= ($answer && $answer->comments) ? " | comments: " : ''; ?>
                             <?php endif; ?>
 
-                            <?php if ($factor->require_comments) : ?>
-                                <?= \CHtml::encode($answer->comments); ?>
-                            <?php endif; ?>
+                            <?= ($answer && $answer->comments) ? \CHtml::encode($answer->comments) : ''; ?>
                         </td>
                     </tr>
                 <?php endforeach; ?>

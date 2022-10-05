@@ -306,7 +306,7 @@ class User extends BaseActiveRecordVersioned
      * @return string
      * @throws Exception
      */
-    public function getNameAndInstitutionUsername($institution_id, bool $reversed = true): string
+    public function getNameAndInstitutionUsername($institution_id, bool $reversed = true, string $username_prefix = '', string $separator = ' '): string
     {
         $user_auth_id = Yii::app()->db->createCommand()
             ->select('ua.id')
@@ -326,19 +326,19 @@ class User extends BaseActiveRecordVersioned
         }
 
         if ($reversed) {
-            $return = $this->getReversedFullNameAndTitle();
+            $return = $this->getReversedFullNameAndTitle($separator);
         } else {
-            $return = $this->getFullNameAndTitle();
+            $return = $this->getFullNameAndTitle($separator);
         }
-        return $return . " ($user_auth->username)";
+        return $return . " ({$username_prefix}{$user_auth->username})";
     }
 
     /**
      * @return string
      */
-    public function getFullNameAndTitle()
+    public function getFullNameAndTitle(string $separator = ' ')
     {
-        return implode(' ', array($this->title, $this->first_name, $this->last_name));
+        return implode($separator, array($this->title, $this->first_name, $this->last_name));
     }
 
     /**
@@ -376,9 +376,9 @@ class User extends BaseActiveRecordVersioned
     /**
      * @return string
      */
-    public function getReversedFullNameAndTitle()
+    public function getReversedFullNameAndTitle(string $separator = ' ')
     {
-        return implode(' ', array($this->title, $this->last_name, $this->first_name));
+        return implode($separator, array(strtoupper($this->last_name), ucwords($this->first_name), ucwords($this->title)));
     }
 
     public function getUsersFromCurrentInstitution()
@@ -484,30 +484,6 @@ class User extends BaseActiveRecordVersioned
         $criteria->order = 'name asc';
 
         return Site::model()->findAll($criteria);
-    }
-
-    public function getNotSelectedFirmList()
-    {
-        $firms = Yii::app()->db->createCommand()
-            ->select('f.id, f.name, s.name AS subspecialty')
-            ->from('firm f')
-            ->leftJoin('service_subspecialty_assignment ssa', 'f.service_subspecialty_assignment_id = ssa.id')
-            ->leftJoin('subspecialty s', 'ssa.subspecialty_id = s.id')
-            ->leftJoin('user_firm uf', 'uf.firm_id = f.id and uf.user_id = ' . Yii::app()->user->id)
-            ->where('uf.id is null and f.active = 1')
-            ->order('f.name, s.name')
-            ->queryAll();
-        $data = array();
-        foreach ($firms as $firm) {
-            if ($firm['subspecialty']) {
-                $data[$firm['id']] = $firm['name'] . ' (' . $firm['subspecialty'] . ')';
-            } else {
-                $data[$firm['id']] = $firm['name'];
-            }
-        }
-        natcasesort($data);
-
-        return $data;
     }
 
     /**
@@ -867,48 +843,15 @@ class User extends BaseActiveRecordVersioned
         return $ret;
     }
 
-    /**
-     * @throws CDbException
-     * @throws CHttpException
-     */
-    public function setSSOUserInformation($response)
-    {
-        $defaultRights = SsoDefaultRights::model()->findByAttributes(['source' => 'SSO']);
-        // Set user credentials that login through SAML authentication
-        if (Yii::app()->params['auth_source'] === 'SAML') {
-            $this->first_name = $response['FirstName'][0];
-            $this->last_name = $response['LastName'][0];
-            $this->email = $response['username'][0];   // For SAML users, email would be their username
-            $this->title = array_key_exists('title', $response) ? $response['title'][0] : '';
-            $this->role = array_key_exists('role', $response) ? $response['role'][0] : '';
+    public function setSAMLSSOUserInformation($response) {
 
-            $user = self::model()->find('email = :email', array(':email' => $this->email));
-        }
-        // Set the user credentials that login through OIDC authentication
-        elseif (Yii::app()->params['auth_source'] === 'OIDC') {
-            if (!$defaultRights['default_enabled']) {
-                $this->checkRolesFromSSOToken($response);
-            }
+        $this->first_name = $response['FirstName'][0];
+        $this->last_name = $response['LastName'][0];
+        $this->email = $response['username'][0];   // For SAML users, email would be their username
+        $this->title = array_key_exists('title', $response) ? $response['title'][0] : '';
+        $this->role = array_key_exists('role', $response) ? $response['role'][0] : '';
 
-            $userauth = UserAuthentication::model()->find('username = : username', array(':username' => $response['username']));
-            /**
-             * @var $userauth UserAuthentication
-             */
-            $user = $userauth->user ?? null;
-            $allowedKeys = Yii::app()->params['OIDC_settings']['field_mapping_allow_list_with_defaults'];
-            foreach ($allowedKeys as $allowedKey => $defaultValue) {
-                if ($allowedKey === 'username') {
-                    continue;       // Username field is no longer in User model
-                }
-                if (array_key_exists($allowedKey, $response)) {
-                    $this->$allowedKey = $response[$allowedKey];
-                } elseif ($user !== null) {
-                    $this->$allowedKey = $user->$allowedKey;
-                } else {
-                    $this->$allowedKey = $defaultValue;
-                }
-            }
-        }
+        $user = self::model()->find('email = :email', array(':email' => $this->email));
 
         $this->setdefaultSSORights();
         $this->setSSOContact(array_key_exists('qualifications', $response) ? $response['qualifications'][0] : '');
@@ -930,13 +873,54 @@ class User extends BaseActiveRecordVersioned
             $this->update();
         }
         // Roles from the token need to be assigned to the user after every login
+        $defaultRights = SsoDefaultRights::model()->findByAttributes(['source' => 'SSO']);
         if (!$defaultRights['default_enabled']) {
             // Pass the array of roles from the token
             $roles = isset($response['roles']) ? $response['roles'] : [];
             $this->setRolesFromSSOToken($roles);
         }
+    }
 
-        return $this->id;
+    public function setOIDCSSOUserInformation($response) {
+        $defaultRights = SsoDefaultRights::model()->findByAttributes(['source' => 'SSO']);
+        if (!$defaultRights['default_enabled']) {
+            $this->checkRolesFromSSOToken($response);
+        }
+
+        $allowedKeys = Yii::app()->params['OIDC_settings']['field_mapping_allow_list_with_defaults'];
+        foreach ($allowedKeys as $allowedKey => $defaultValue) {
+            if (array_key_exists($allowedKey, $response)) {
+                $this->$allowedKey = $response[$allowedKey];
+            } elseif (!$this->$allowedKey) {
+                $this->$allowedKey = $defaultValue;
+            }
+        }
+
+        $this->setdefaultSSORights();
+        $this->setSSOContact(array_key_exists('qualifications', $response) ? $response['qualifications'] : '');
+
+        //If the user is logging into the OE for the first time, assign default roles and firms
+        if (!$this->id) {
+            if (!$this->save()) {
+                $this->audit('login', 'login-failed', "Cannot create user: $this->email", true);
+                throw new Exception('Unable to save User: '.print_r($this->getErrors(), true));
+            }
+
+            $this->setdefaultSSOFirms();
+            $this->setdefaultSSORoles();
+        } else {
+            $this->setIsNewRecord(false);
+            if (!$this->update()) {
+                $this->audit('login', 'login-failed', "Cannot update user: $this->username", true);
+                throw new Exception('Unable to save User: '.print_r($this->getErrors(), true));
+            };
+        }
+        // Roles from the token need to be assigned to the user after every login
+        if (!$defaultRights['default_enabled']) {
+            // Pass the array of roles from the token
+            $roles = isset($response['roles']) ? $response['roles'] : [];
+            $this->setRolesFromSSOToken($roles);
+        }
     }
 
     public function setdefaultSSORights()
@@ -1029,7 +1013,9 @@ class User extends BaseActiveRecordVersioned
         $contact->first_name = $this->first_name;
         $contact->last_name = $this->last_name;
         $contact->email = $this->email;
-        $contact->qualifications = $qualifications;
+        if ($qualifications) {
+            $contact->qualifications = $qualifications;
+        }
 
         if (!$contact->save()) {
             throw new CHttpException(500, 'Unable to save user contact: ' . print_r($contact->getErrors(), true));
