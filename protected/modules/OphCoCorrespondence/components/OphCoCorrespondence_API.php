@@ -1028,4 +1028,17 @@ class OphCoCorrespondence_API extends BaseAPI
             return implode('<br>', $patient_address->getLetterArray());
         }
     }
+
+    /**
+     * @param $event
+     * @param $user
+     * @return void
+     * @throws Exception
+     * Update consultant in footer when change context
+     */
+    public function afterEventContextUpdate($event, $user) {
+        $element = ElementLetter::model()->findByAttributes(["event_id" => $event->id]);
+        $element->setFooterTextFrom($user, $event->episode->firm);
+        $element->save();
+    }
 }

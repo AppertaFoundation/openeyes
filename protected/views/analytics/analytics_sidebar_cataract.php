@@ -1,4 +1,4 @@
-<?php Yii::app()->getAssetManager()->registerScriptFile('../../../node_modules/jspdf/dist/jspdf.min.js') ?>
+<?php Yii::app()->getAssetManager()->registerScriptFile('../../../node_modules/jspdf/dist/jspdf.umd.min.js') ?>
     <style>
         .download-csv-container{
             position: relative;
