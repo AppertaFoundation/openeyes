@@ -397,7 +397,7 @@ class OphTrOperationnote_ReportOperations extends BaseReport
 
                 if ($booking_diagnosis) {
                     $diag_el = $operationElement->getDiagnosis();
-                    $disorder = $diag_el->disorder();
+                    $disorder = $diag_el ? $diag_el->disorder() : null;
                     if ($disorder) {
                         $record['booking_diagnosis'] = $diag_el->eye->adjective . ' ' . $disorder->term;
                     } else {
