@@ -180,6 +180,27 @@ if (isset($elements['OEModule\OphTrConsent\models\Element_OphTrConsent_Additiona
         </div>
     <?php endif; ?>
 
+    <hr class="divider">
+    <h2>Form 1: Supplementary consent</h2>
+    <h3>Images</h3>
+    <p>Photographs, x-rays or other images may be taken as part of your treatment and will form part of your
+        medical
+        record. It is very unlikely that you would be recognised from these images. If however you could be
+        recognised
+        we would seek your specific consent before any particular publication.</p>
+    <?php
+    if (isset($elements["Element_OphTrConsent_SupplementaryConsent"]) && count($elements["Element_OphTrConsent_SupplementaryConsent"]->element_question) > 0)
+    {
+        echo $this->renderPartial(
+            '_print_supplementary_consent',
+            array(
+                'element' => $elements['Element_OphTrConsent_SupplementaryConsent'],
+            )
+        );
+    } else { ?>
+        <div class="alert-box info">There are no active supplementary consent questions.</div>
+    <?php } ?>
+
     <?php if (isset($elements['Element_OphTrConsent_Specialrequirements']) && $type_assessment->existsElementInConsentForm($elements['Element_OphTrConsent_Specialrequirements']->elementType->id, Element_OphTrConsent_Type::TYPE_PATIENT_AGREEMENT_ID)) : ?>
         <div class="group">
             <h4>Any special requirements:</h4>
