@@ -16,17 +16,10 @@ jobs:
   include:
     - # PR builds - phpunit
       if: type = pull_request
-      script: docker-compose -f protected/tests/docker-compose.yml run --use-aliases -e BUILD_BRANCH=$TRAVIS_PULL_REQUEST_BRANCH phpunit
-      name: "PHPUnit"
+      script: docker-compose -f protected/tests/docker-compose.yml run --use-aliases -e BUILD_BRANCH=$TRAVIS_PULL_REQUEST_BRANCH web
+      name: "All tests"
     - # Branch builds - phpunit fixtures
       if: type = push AND (branch in (master, develop) OR branch =~ /^release\/\S*$/ OR branch =~ /^bugfix\/\S*$/)
-      script: docker-compose -f protected/tests/docker-compose.yml run --use-aliases -e BUILD_BRANCH=$TRAVIS_BRANCH phpunit
-      name: "PHPUnit (branch)"
+      script: docker-compose -f protected/tests/docker-compose.yml run --use-aliases -e BUILD_BRANCH=$TRAVIS_BRANCH web
+      name: "All tests (branch)"
 
-notifications:
-  slack:
-    on_pull_requests: false
-    rooms:
-      - secure: "$slack_room"
-    on_success: change
-    on_failure: always

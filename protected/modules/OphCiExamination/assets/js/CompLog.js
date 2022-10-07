@@ -142,7 +142,7 @@ CompLogConnection.prototype.convertHl7ToArray = function(hl7Data){
 			if(measurements[0][i+2].substring(0,8) === today){
 				measurement = {side: "", method: "", logmar: "", snellen: "", base: ""};
 				measurement.side = measurements[0][i+4].toLowerCase();
-				measurement.method = measurements[0][i+5].replace("Usual ","").replace("Lenses", "lens").replace("Best Corrected", "Glasses");
+				measurement.method = measurements[0][i+5].replace("Usual ","").replace(/Lenses|Lens/, "lens").replace("Best Corrected", "Glasses");
 				measurement.base = measurements[0][i+7];
 				measurement.logmar = measurements[0][i+8].substring(0, measurements[0][i+8].length - 1).replace("(","").replace(")","");
 				measurement.snellen = measurements[0][i+11].replace(".0","").replace("(","").replace(")","");
