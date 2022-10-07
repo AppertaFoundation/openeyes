@@ -114,21 +114,12 @@ class Element_OphCoCvi_Esign extends \BaseEsignElement
         }, $signatures);
 
         if (!in_array(\BaseSignature::TYPE_LOGGEDIN_USER, $existing_types)) {
-            $consultant = new \OphCoCvi_Signature();
-            $consultant->signatory_role = !empty($this->user->grade) ? $this->user->grade->grade : "Unknown grade";
-            $consultant->type = \BaseSignature::TYPE_LOGGEDIN_USER;
-            $signatures[] = $consultant;
+            $signatures[] = $this->generateDefaultConsultantSignature();
         }
 
         if (!in_array(\BaseSignature::TYPE_PATIENT, $existing_types)) {
-            if ($this->event && !$this->event->isNewRecord) {
-                $patient = new \OphCoCvi_Signature();
-                $patient->signatory_role = "Patient";
-                if (isset(\Yii::app()->getController()->patient)) {
-                    $patient->signatory_name = \Yii::app()->getController()->patient->getFullName();
-                }
-                $patient->type = \BaseSignature::TYPE_PATIENT;
-                $signatures[] = $patient;
+            if ($patient_signature = $this->generateDefaultPatientSignature()) {
+                $signatures[] = $patient_signature;
             }
         }
 
@@ -182,5 +173,38 @@ class Element_OphCoCvi_Esign extends \BaseEsignElement
             return ["Patient's E-Sign will be available once the CVI is saved."];
         }
         return [];
+    }
+
+    /**
+     * This function generate default signature data for esign elements
+     * @return \OphCoCvi_Signature consultant signature
+     */
+    protected function generateDefaultConsultantSignature()
+    {
+        $user = $this->getChangeUser();
+        $consultant_signature = new \OphCoCvi_Signature();
+        $consultant_signature->signatory_role = !empty($user->grade) ? $user->grade->grade : "Unknown grade";
+        $consultant_signature->type = \BaseSignature::TYPE_LOGGEDIN_USER;
+        return $consultant_signature;
+    }
+
+    /**
+     * This function generate default signature data for esign elements
+     * @return \OphCoCvi_Signature patient signature | null
+     */
+    protected function generateDefaultPatientSignature()
+    {
+        if ($this->event && !$this->event->isNewRecord) {
+            $patient = $this->event->patient;
+
+            $patient_signature = new \OphCoCvi_Signature();
+            $patient_signature->type = \BaseSignature::TYPE_PATIENT;
+            $patient_signature->signatory_role = "Patient";
+            $patient_signature->signatory_name = $patient->getFullName();
+
+            return $patient_signature;
+        }
+
+        return null;
     }
 }

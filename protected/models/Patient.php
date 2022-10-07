@@ -21,6 +21,7 @@ use OEModule\OphCiExamination\components\OphCiExamination_API;
 use OEModule\OphCiExamination\models\SocialHistory;
 use OEModule\OphCiExamination\models\OphCiExaminationAllergy;
 use OEModule\OphCiExamination\models\Element_OphCiExamination_CommunicationPreferences;
+use OE\factories\models\traits\HasFactory;
 
 /**
  * This is the model class for table "patient".
@@ -76,6 +77,8 @@ use OEModule\OphCiExamination\models\Element_OphCiExamination_CommunicationPrefe
  */
 class Patient extends BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     const CHILD_AGE_LIMIT = 16;
 
     const PATIENT_SOURCE_OTHER = 0;

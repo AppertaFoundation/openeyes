@@ -19,7 +19,7 @@
 <script src="<?= Yii::app()->assetManager->createUrl('../../node_modules/fabric/dist/fabric.min.js')?>"></script>
 <script src="<?= Yii::app()->assetManager->createUrl('../../node_modules/pdfjs-dist/build/pdf.min.js')?>"></script>
 <script src="<?= Yii::app()->assetManager->createUrl('../../node_modules/pdfjs-dist/build/pdf.worker.min.js')?>"></script>
-<script src="<?= Yii::app()->assetManager->createUrl('../../node_modules/jspdf/dist/jspdf.min.js')?>"></script>
+<script src="<?= Yii::app()->assetManager->createUrl('../../node_modules/jspdf/dist/jspdf.umd.min.js')?>"></script>
 <div class="element-fields full-width flex-layout">
     <input type="hidden" id="removed-docs" name="removed-docs" value="">
     <div id="document-event" class="<?= $element->single_document_id || $element->hasSidedAttributesSet("OR") ? 'cols-full' : 'cols-11' ?>">
@@ -80,13 +80,13 @@
                                name="upload_mode"
                             <?= $element->single_document_id || !$element->hasSidedAttributesSet("AND") ? "checked" : ""; ?>
                             <?= ($element->hasSidedAttributesSet("OR") ? ' disabled' : '') ?>>
-                               Single file
+                        Single file
                     </label> <label class="inline highlight">
                         <input type="radio" name="upload_mode"
                                value="double"
                             <?= ($element->hasSidedAttributesSet("OR") ? "checked" : ""); ?>
                             <?= ($element->single_document_id || $element->single_comment ? " disabled" : ""); ?>>
-                               Right/Left sides
+                        Right/Left sides
                     </label></td>
             </tr>
             </tbody>
@@ -143,6 +143,29 @@
                 </tr>
                 </tbody>
             </table>
+            <div class="cols-11">
+                <div class="js-comment-container flex-layout flex-left"
+                     id="document-single-comments"
+                     style="display: <?= $element->single_comment || array_key_exists('single_comment', $element->getErrors()) ? 'block;' : 'none;' ?>"
+                     data-comment-button="#document_single_comment_button">
+                    <?= $form->textArea(
+                        $element,
+                        'single_comment',
+                        array('rows' => '1', 'nowrapper' => true),
+                        false,
+                        ['placeholder' => 'Comments', 'class' => 'js-comment-field autosize']
+                    ); ?>
+                    <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
+                </div>
+                <button id="document_single_comment_button"
+                        class="button js-add-comments"
+                        data-comment-container="#document-single-comments"
+                        type="button"
+                        data-hide-method="display"
+                        style="display: <?= $element->single_comment || array_key_exists('single_comment', $element->getErrors()) ? 'none;' : 'block;' ?>">
+                    <i class="oe-i comments small-icon"></i>
+                </button>
+            </div>
         </div>
 
         <div id="double_document_uploader" class="data-group js-document-upload-wrapper"
@@ -164,42 +187,63 @@
                         $document = $side.'_document';
                         $document_id = $side.'_document_id';
                         ?>
-                    <td data-side="<?=$side?>">
-                        <input type="hidden" value="<?=!empty($element->{$side."_document"}->rotate) ? $element->{$side."_document"}->rotate : ''?>" name="<?=$side?>_document_rotate" id="<?=$side?>_document_rotate">
-                        <div class="pdf-actions"<?= (!$element->{$side."_document_id"} ||
-                        $element->{$side.'_document'}->mimetype != "application/pdf" ?
-                            'style="display:none"' :
-                            ''); ?>>
-                            <label>Page:</label>
-                            <i class="oe-i direction-left large pad-left js-pdf-prev"></i>
-                            <i class="oe-i direction-right large pad-left js-pdf-next"></i>
-                        </div>
-                        <div class="upload-box"
-                             id="<?=$side?>_document_id_row" <?= $element->{$side."_document_id"} ? 'style="display:none"' : ''; ?>>
-                            <label for="Document_<?=$side?>_document_row_id" id="upload_box_<?=$side?>_document"
-                                   class="upload-label">
-                                <i class="oe-i download no-click large"></i>
-                                <br>
-                                <span class="js-upload-box-text">Click to select file or DROP here</span>
-                            </label>
-                            <input autocomplete="off"
-                                   type="file"
-                                   name="Document[<?=$side?>_document_id]"
-                                   id="Document_<?=$side?>_document_row_id"
-                                   style="display:none;"
-                                   class="js-document-file-input"
-                                   data-side="<?=$side?>"
-                            >
-                        </div>
-                        <?php $this->generateFileField($element, $side.'_document', $side); ?>
+                        <td data-side="<?=$side?>">
+                            <input type="hidden" value="<?=!empty($element->{$side."_document"}->rotate) ? $element->{$side."_document"}->rotate : ''?>" name="<?=$side?>_document_rotate" id="<?=$side?>_document_rotate">
+                            <div class="pdf-actions"<?= (!$element->{$side."_document_id"} ||
+                            $element->{$side.'_document'}->mimetype != "application/pdf" ?
+                                'style="display:none"' :
+                                ''); ?>>
+                                <label>Page:</label>
+                                <i class="oe-i direction-left large pad-left js-pdf-prev"></i>
+                                <i class="oe-i direction-right large pad-left js-pdf-next"></i>
+                            </div>
+                            <div class="upload-box"
+                                 id="<?=$side?>_document_id_row" <?= $element->{$side."_document_id"} ? 'style="display:none"' : ''; ?>>
+                                <label for="Document_<?=$side?>_document_row_id" id="upload_box_<?=$side?>_document"
+                                       class="upload-label">
+                                    <i class="oe-i download no-click large"></i>
+                                    <br>
+                                    <span class="js-upload-box-text">Click to select file or DROP here</span>
+                                </label>
+                                <input autocomplete="off"
+                                       type="file"
+                                       name="Document[<?=$side?>_document_id]"
+                                       id="Document_<?=$side?>_document_row_id"
+                                       style="display:none;"
+                                       class="js-document-file-input"
+                                       data-side="<?=$side?>"
+                                >
+                            </div>
+                            <?php $this->generateFileField($element, $side.'_document', $side); ?>
 
-                        <input type="hidden" id="original-<?=$side?>-doc" value="<?= $element->{$side."_document_id"} ?>">
+                            <input type="hidden" id="original-<?=$side?>-doc" value="<?= $element->{$side."_document_id"} ?>">
 
-                        <?= CHtml::activeHiddenField($element, $side.'_document_id', ['class' => 'js-document-id']); ?>
+                            <?= CHtml::activeHiddenField($element, $side.'_document_id', ['class' => 'js-document-id']); ?>
 
-                        <input type="hidden" class="js-protected-file-content" name="ProtectedFile[<?=$side?>_file_content]" id="ProtectedFile_<?=$side?>_file_content" value="">
-                        <input type="hidden" class="js-canvas-modified" name="<?=$side;?>_file_canvas_modified" id="<?=$side;?>_file_canvas_modified" value="">
-                    </td>
+                            <div class="js-comment-container flex-layout flex-left" id="document-<?= $side ?>-comments"
+                                <?= $element->{$side."_comment"} || array_key_exists("{$side}_comment", $element->getErrors()) ? '' : 'style="display:none;"' ?>
+                                 data-comment-button="#document_<?= $side ?>_comment_button">
+                                <?= $form->textArea(
+                                    $element,
+                                    "{$side}_comment",
+                                    array('rows' => '1', 'nowrapper' => true),
+                                    false,
+                                    ['placeholder' => 'Comments', 'class' => 'js-comment-field autosize cols-full']
+                                ); ?>
+                                <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
+                            </div>
+                            <button id="document_<?= $side ?>_comment_button"
+                                    class="button js-add-comments"
+                                    data-comment-container="#document-<?= $side ?>-comments"
+                                    type="button"
+                                    data-hide-method="display"
+                                    style="display: <?= $element->{$side."_comment"} || array_key_exists("{$side}_comment", $element->getErrors()) ? 'none;' : 'block;' ?>">
+                                <i class="oe-i comments small-icon"></i>
+                            </button>
+
+                            <input type="hidden" class="js-protected-file-content" name="ProtectedFile[<?=$side?>_file_content]" id="ProtectedFile_<?=$side?>_file_content" value="">
+                            <input type="hidden" class="js-canvas-modified" name="<?=$side;?>_file_canvas_modified" id="<?=$side;?>_file_canvas_modified" value="">
+                        </td>
                     <?php endforeach; ?>
                 </tr>
                 </tbody>

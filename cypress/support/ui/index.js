@@ -8,3 +8,7 @@ Cypress.Commands.add('getElementByName', (elementName) => {
 Cypress.Commands.add('getElementSideByName', (elementName, side) => {
     return cy.getElementByName(elementName).find(`.element-eyes .column[data-side=${side}]`);
 });
+
+Cypress.Commands.add('getBySel', (selector, ...args) => {
+    return cy.get(`[data-test=${selector}]`, ...args);
+});

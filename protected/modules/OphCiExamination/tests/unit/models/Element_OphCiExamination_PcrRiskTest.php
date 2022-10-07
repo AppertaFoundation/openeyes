@@ -26,10 +26,10 @@ use WithTransactions;
  */
 class Element_OphCiExamination_PcrRiskTest extends \ModelTestCase
 {
-    // use \HasCoreEventElementTests;
     use WithTransactions;
 
     protected $element_cls = Element_OphCiExamination_PcrRisk::class;
+    protected array $columns_to_skip = ['event_id'];
 
     /** @test */
     public function right_sided_instance_stringifies_pcr_risk_value()

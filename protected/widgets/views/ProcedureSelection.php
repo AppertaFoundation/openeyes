@@ -105,7 +105,7 @@ $formatted_subsections = array_merge(
     </table>
 
     <div class="add-data-actions flex-item-bottom">
-        <button class="button hint green add-entry" type="button" id="add-procedure-list-btn-<?= $identifier ?>">
+        <button class="button hint green add-entry" type="button" id="add-procedure-list-btn-<?= $identifier ?>" data-test="add-procedure-btn">
             <i class="oe-i plus pro-theme"></i>
         </button>
     </div>
@@ -308,7 +308,7 @@ $formatted_subsections = array_merge(
                 <?php
                 $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
                 $subspecialty_id = $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
-                $subspecialty_procedures = ProcedureSubspecialtyAssignment::model()->getProcedureListFromSubspecialty($subspecialty_id);
+                $subspecialty_procedures = $subspecialty_id ? Procedure::model()->getListBySubspecialty($subspecialty_id) : [];
                 $formatted_procedures = "";
                 foreach ($subspecialty_procedures as $proc_id => $subspecialty_procedure) {
                     $formatted_procedures .= "<li data-label='$subspecialty_procedure'data-id='$proc_id' class=''>" .
@@ -478,7 +478,7 @@ $formatted_subsections = array_merge(
                     })
                 ],
                 liClass: 'restrict-width extended',
-                popupClass: 'oe-add-select-search',
+                popupClass: 'oe-add-select-search js-test-adder',
                 onReturn: function(adderDialog, selectedItems) {
                     //on multiselect: sort selected items alphabetically as the list could have a different display order
                     if (selectedItems.length > 1) {

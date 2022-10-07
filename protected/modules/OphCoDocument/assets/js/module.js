@@ -283,7 +283,7 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
                     let url = el.querySelector(el.getAttribute('data-image-el')).src;
                     downloadImage(url, `download.${format}`);
                 } else {
-                    element.parentElement.querySelector('.js-protected-file-content').value = generatePdfOutput(el, true);
+                    el.parentElement.querySelector('.js-protected-file-content').value = generatePdfOutput(el, true);
                 }
             });
         });
@@ -465,13 +465,15 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
         let imageObjs = element.querySelectorAll('img');
 
         imageObjs.forEach(function (imageObj, index) {
-            let aspectRatio = (imageObj.height / imageObj.width);
+            const width = $(imageObj).width();
+            const height = $(imageObj).height();
+            let aspectRatio = (height / width);
             let orientation = 'portrait';
-            if (imageObj.height < imageObj.width) {
+            if (height < width) {
                 orientation = 'landscape';
             }
             if (index === 0) {
-                doc = new jsPDF({ 'orientation': orientation });
+                doc = new jspdf.jsPDF({ 'orientation': orientation });
             }
             else {
                 doc.addPage('a4', orientation);

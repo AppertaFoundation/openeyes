@@ -520,6 +520,13 @@ class DefaultController extends BaseEventTypeController
             /* @var Element_OphCoDocument_Document $element */
             $element = Element_OphCoDocument_Document::model()->findByAttributes(array('event_id' => $this->event->id));
             /* @var ProtectedFile $document */
+
+            // Create an image of whole event if there is no file (only comments)
+            if (!$element->left_document && !$element->right_document && !$element->single_document) {
+                parent::actionCreateImage($id);
+                return;
+            }
+
             foreach (
                 [
                     Eye::LEFT => $element->left_document,

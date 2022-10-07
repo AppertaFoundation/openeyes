@@ -59,6 +59,10 @@
                     <span <?= !$triage->site ? 'class="none"' : '' ?>><?= $triage->site ? $triage->site->name : 'N/A' ?></span>
                 </td>
             </tr>
+            <tr>
+                <th>Comments</th>
+                <td><?= $triage->comments ? nl2br($triage->comments) : '' ?></td>
+            </tr>
             </tbody>
         </table>
     </div>
