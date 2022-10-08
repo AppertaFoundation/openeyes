@@ -6,8 +6,8 @@
  */
 ?>
 <div class="step-comments">
-    <?php if (!$partial && $visit) { 
-    $comment = ($model instanceof PathwayTypeStep) ? null : $model->comment; ?>
+    <?php if (!$partial && $visit) {
+        $comment = ($model instanceof PathwayTypeStep) ? null : $model->comment; ?>
     <div class="flex js-comments-edit" style="<?= $comment ? 'display: none;' : '' ?>">
         <div class="cols-11">
             <input class="cols-full js-step-comments" type="text" maxlength="80" placeholder="Comments"
