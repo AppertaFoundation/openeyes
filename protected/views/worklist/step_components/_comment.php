@@ -6,14 +6,15 @@
  */
 ?>
 <div class="step-comments">
-    <?php if (!$partial && $visit) { ?>
-    <div class="flex js-comments-edit" style="<?= $model && !($model instanceof PathwayTypeStep) && $model->comment ? 'display: none;' : '' ?>">
+    <?php if (!$partial && $visit) { 
+    $comment = ($model instanceof PathwayTypeStep) ? null : $model->comment; ?>
+    <div class="flex js-comments-edit" style="<?= $comment ? 'display: none;' : '' ?>">
         <div class="cols-11">
             <input class="cols-full js-step-comments" type="text" maxlength="80" placeholder="Comments"
-            <?= !($model instanceof PathwayTypeStep) && $model && $model->comment ? 'value="'.$model->comment->comment.'"' : '' ?>/>
+            <?= $comment ? 'value="'.$comment->comment.'"' : '' ?>/>
             <div class="character-counter">
                 <span class="percent-bar"
-                        style="width: <?= $model && $model->comment ? strlen($model->comment->comment)/0.8 : 0 ?>%;"></span>
+                        style="width: <?= $comment ? strlen($comment->comment)/0.8 : 0 ?>%;"></span>
             </div>
         </div>
         <i class="oe-i save-plus js-save"></i>
