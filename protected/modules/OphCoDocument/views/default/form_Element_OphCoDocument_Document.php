@@ -19,7 +19,7 @@
 <script src="<?= Yii::app()->assetManager->createUrl('../../node_modules/fabric/dist/fabric.min.js')?>"></script>
 <script src="<?= Yii::app()->assetManager->createUrl('../../node_modules/pdfjs-dist/build/pdf.min.js')?>"></script>
 <script src="<?= Yii::app()->assetManager->createUrl('../../node_modules/pdfjs-dist/build/pdf.worker.min.js')?>"></script>
-<script src="<?= Yii::app()->assetManager->createUrl('../../node_modules/jspdf/dist/jspdf.min.js')?>"></script>
+<script src="<?= Yii::app()->assetManager->createUrl('../../node_modules/jspdf/dist/jspdf.umd.min.js')?>"></script>
 <div class="element-fields full-width flex-layout">
     <input type="hidden" id="removed-docs" name="removed-docs" value="">
     <div id="document-event" class="<?= $element->single_document_id || $element->hasSidedAttributesSet("OR") ? 'cols-full' : 'cols-11' ?>">

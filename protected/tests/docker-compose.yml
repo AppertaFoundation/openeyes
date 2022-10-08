@@ -27,14 +27,19 @@ services:
       # disable binary logging (as not needed for development, but logs MUST be enabled for production)
       - "--disable-log-bin"
 
-  phpunit:
-    image: ${OEWEB_IMAGE_NAME:-appertaopeneyes/web:php7}
+  web:
+    image: toukanlabsdocker/oe-web-dev:php7.4
     environment:
       OE_MODE: "TEST"
-      TESTS_TO_RUN: "PHPUNIT"
+      TESTS_TO_RUN: "PHPUNIT-SAMPLE;CYPRESS_SHORT;PHPUNIT-FIXTURES"
+      OE_QUIET_DEBUG_LOG: "TRUE"
+      OUTPUT_APPLICATION_LOGS: "FALSE"
+      XDEBUG_MODE: "off"
+      OE_FORCE_MIGRATE: "TRUE"
+      SKIP_OE_CLONE: "TRUE"
+      GENERATE_TEMP_SODIUM_CRYPTO_KEY: "TRUE"
       DATABASE_HOST: "db"
       MYSQL_ROOT_PASSWORD: openeyes
-      ENABLE_CRON: "FALSE"
       WAIT_HOSTS_TIMEOUT: "120"
       WAIT_SLEEP_INTERVAL: "2"
       USE_DEMO_DATA: "FALSE"
@@ -42,6 +47,7 @@ services:
       DATABASE_USER: "openeyes"
       DATABASE_PASS: "openeyes"
       OE_INSTITUTION_CODE: "NEW"
+      DISPLAY: "${DISPLAY}"
     secrets:
       - source: SSH_PRIVATE_KEY
     stdin_open: true
@@ -50,6 +56,7 @@ services:
      - "db"
     volumes:
       - "../..:/var/www/openeyes:delegated"
+      - "/tmp/.X11-unix:/tmp/.X11-unix"
 
 secrets:
   SSH_PRIVATE_KEY:

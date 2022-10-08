@@ -61,4 +61,27 @@ Cypress.Commands.add('getModelByAttributes', (className, attributes) => {
         }
     })
     .its('body.model')
-})
+});
+
+Cypress.Commands.add('createModels', (className, states, attributes, count) => {
+    if (count === undefined) {
+        count = 1;
+    }
+    return cy.request({
+        method: 'POST',
+        url: '/CypressHelper/Default/createModels',
+        form: true,
+        body: {
+            model_class: className,
+            states: states,
+            attributes: attributes,
+            count: count
+        }
+    })
+    .then((response) => {
+        if ((response.body.models.length) === 1) {
+            return response.body.models[0];
+        }
+        return response.body.models;
+    });
+});

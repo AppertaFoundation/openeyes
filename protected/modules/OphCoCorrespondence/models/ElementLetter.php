@@ -353,7 +353,7 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
                 }
 
                 $attr_list = array(
-                    'Author' => $user->getNameAndInstitutionUsername($institution->id, false),
+                    'Author' => $user->getNameAndInstitutionUsername($institution->id, true, '313:',', '),
                     'DocumentType' => $document_type, // New field.
                     'DocumentSubType' => $document_subtype,
                     'DocumentTypeCode' => $document_type_code,
@@ -361,7 +361,7 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
                     'DocumentCategoryCode' => $document_category_code,
                     'DocumentSubCategoryCode' => $document_category_code . '02',
                     'ExternalSupersessionId' => "313|$this->letter_type_id|{$this->event->episode->patient->getHos()}|$this->event_id",
-                    'Consultant' => $this->event->episode->firm->getConsultantNameAndUsername($institution->id, false),
+                    'Consultant' => $this->event->episode->firm->getConsultantNameAndUsername($institution->id, true, '313:',', '),
                     'ConsultantCode' => $this->event->episode->firm->consultant ? $this->event->episode->firm->consultant->getFormattedRegistrationCode() : '',
                     'Organisation' => $institution->name,
                     'OrganisationCode' => $institution->remote_id,
@@ -401,6 +401,9 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
                     $identifiers[] = $identifier;
                 }
 
+                // Be careful here, if fields are disappearing in the final xml, then check the
+                // following fields align up with the clients expecations (case-sensitive)
+
                 $demographics->SubjectIdentifier = $identifiers;
                 $demographics->FamilyName = $this->event->episode->patient->last_name;
                 $demographics->GivenName = $this->event->episode->patient->first_name;
@@ -410,7 +413,7 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
                 $demographics->AddressLine2 = $this->event->episode->patient->contact->address->address2;
                 $demographics->AddressLine3 = $this->event->episode->patient->contact->address->city;
                 $demographics->AddressLine4 = $this->event->episode->patient->contact->address->county;
-                $demographics->PostCode = $this->event->episode->patient->contact->address->postcode;
+                $demographics->Postcode = $this->event->episode->patient->contact->address->postcode;
 
                 $header->SubjectDemographicsAsRecorded = $demographics;
 

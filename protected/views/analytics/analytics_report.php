@@ -95,7 +95,7 @@
             </div>
         </main>
     </div>
-    <script src="<?= Yii::app()->assetManager->createUrl('../../node_modules/jspdf/dist/jspdf.min.js')?>"></script>
+    <script src="<?= Yii::app()->assetManager->createUrl('../../node_modules/jspdf/dist/jspdf.umd.min.js')?>"></script>
     <script src="<?= Yii::app()->assetManager->createUrl('../../node_modules/plotly.js-dist/plotly.js')?>"></script>
     <script src="<?= Yii::app()->assetManager->createUrl('js/analytics/analytics_toolbox.js')?>"></script>
     <script src="<?= Yii::app()->assetManager->createUrl('js/analytics/analytics_dataCenter.js')?>"></script>
