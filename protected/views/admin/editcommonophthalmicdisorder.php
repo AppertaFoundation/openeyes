@@ -162,7 +162,7 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
                     array('class' => 'alternate-disorder-id')
                 );
 
-                return $rename_span . $input . $hidden_alternate_disorder_input;
+                return $rename_span . $input . $hidden_alternate_disorder_input; 
             }
         ),
         array(
