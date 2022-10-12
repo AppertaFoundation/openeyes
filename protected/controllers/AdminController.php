@@ -181,7 +181,7 @@ class AdminController extends BaseAdminController
 
     public function actionEditCommonOphthalmicDisorder()
     {
-        $institution_id = Institution::model()->getCurrent()->id;
+        //$institution_id = Institution::model()->getCurrent()->id;
 
         $this->group = 'Disorders';
         $models = CommonOphthalmicDisorderGroup::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION);
@@ -191,7 +191,9 @@ class AdminController extends BaseAdminController
         }, $models);
         $this->jsVars['common_ophthalmic_disorder_group_options'] = $data;
 
-        $current_institution = Institution::model()->getCurrent();
+        $current_institution = $this->request->getParam('institution_id')
+                                    ? Institution::model()->find('id = ' . $this->request->getParam('institution_id'))
+                                    : Institution::model()->getCurrent();
         $this->jsVars['current_institution'] = ['id' => $current_institution->id, 'name' => $current_institution->short_name];
 
         $errors = array();
@@ -249,13 +251,13 @@ class AdminController extends BaseAdminController
 
                     $needs_mapping = $institution_mappings[$key];
 
-                    if ($common_ophthalmic_disorder->hasMapping(ReferenceData::LEVEL_INSTITUTION, $institution_id)) {
+                    if ($common_ophthalmic_disorder->hasMapping(ReferenceData::LEVEL_INSTITUTION, $current_institution->id)) {
                         if (!$needs_mapping) {
-                            $common_ophthalmic_disorder->deleteMapping(ReferenceData::LEVEL_INSTITUTION, $institution_id);
+                            $common_ophthalmic_disorder->deleteMapping(ReferenceData::LEVEL_INSTITUTION, $current_institution->id);
                         }
                     } else {
                         if ($needs_mapping) {
-                            $common_ophthalmic_disorder->createMapping(ReferenceData::LEVEL_INSTITUTION, $institution_id);
+                            $common_ophthalmic_disorder->createMapping(ReferenceData::LEVEL_INSTITUTION, $current_institution->id);
                         }
                     }
                 }
@@ -311,6 +313,8 @@ class AdminController extends BaseAdminController
 
         $criteria = new CDbCriteria();
         $criteria->compare('subspecialty_id', $subspecialty_id);
+        
+        // TODO - Add mapping criteria here, so only ones shown are those associated with institution are listed
 
         $this->render('editcommonophthalmicdisorder', array(
             'dataProvider' => new CActiveDataProvider('CommonOphthalmicDisorder', array(
@@ -319,6 +323,8 @@ class AdminController extends BaseAdminController
             )),
             'subspecialty_id' => $subspecialty_id,
             'subspecialty' => $subspecialties,
+            'current_institution_id' => $current_institution->id,
+            'current_institution' => $current_institution
         ));
     }
 

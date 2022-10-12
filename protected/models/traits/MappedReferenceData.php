@@ -129,8 +129,12 @@ trait MappedReferenceData
         return $criteria;
     }
 
-    public function getIdForLevel(int $level): int
+    public function getIdForLevel(int $level, Institution $institution = null): int
     {
+        if ($institution === null) {
+            $institution = Institution::model()->getCurrent();
+        }
+
         $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
         $subspecialty = $firm ? $firm->serviceSubspecialtyAssignment->subspecialty : null;
         $specialty = $subspecialty ? $subspecialty->specialty : null;
@@ -161,7 +165,7 @@ trait MappedReferenceData
                     }
                     return $site->id;
                 default:
-                    return Institution::model()->getCurrent()->id;
+                    return $institution->id;
             }
         }
         throw new InvalidArgumentException('Class does not support specified level.');

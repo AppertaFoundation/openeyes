@@ -22,15 +22,20 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
 ?>
 
 <form method="get">
-    <table class="cols-4">
+    <table class="cols-7">
         <colgroup>
-            <col class="cols-1">
+            <col class="cols-3">
             <col class="cols-4">
         </colgroup>
         <tbody>
-        <tr class="col-gap">
-            <td>Subspecialty</td>
+        <tr class="col-gap">            
+            <td>&nbsp;<br/><?=\CHtml::dropDownList(
+                    'institution_id',
+                    $current_institution_id,
+                    Institution::model()->getTenantedList(!Yii::app()->user->checkAccess('admin'))
+                ) ?></td>
             <td>
+                <small>Subspeciality</small><br/>
                 <?=\CHtml::dropDownList(
                     'subspecialty_id',
                     $subspecialty_id,
@@ -42,7 +47,7 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
     </table>
 </form>
 
-<form method="POST" action="/admin/editcommonophthalmicdisorder?subspecialty_id=<?= $subspecialty_id; ?>">
+<form method="POST" action="/admin/editcommonophthalmicdisorder?institution_id=<?= $current_institution_id; ?>&subspecialty_id=<?= $subspecialty_id; ?>">
     <input type="hidden" class="no-clear" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
     <?php
     $columns = array(
@@ -182,8 +187,11 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
             'header' => 'Assigned to current institution',
             'type' => 'raw',
             'name' => 'assigned_insitution',
-            'value' => function($data, $row) {
-                return CHtml::checkBox("assigned_institution[$row]", $data->hasMapping(ReferenceData::LEVEL_INSTITUTION, $data->getIdForLevel(ReferenceData::LEVEL_INSTITUTION)));
+            'value' => function ($data, $row) use ($current_institution) {
+                return CHtml::checkBox(
+                    "assigned_institution[$row]", 
+                    $data->hasMapping(ReferenceData::LEVEL_INSTITUTION, $data->getIdForLevel(ReferenceData::LEVEL_INSTITUTION, $current_institution))
+                );
             }
         ),
     );
@@ -278,6 +286,10 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
         });
 
         $('#subspecialty_id').on('change', function () {
+            $(this).closest('form').submit();
+        });
+
+        $('#institution_id').on('change', function () {
             $(this).closest('form').submit();
         });
 
