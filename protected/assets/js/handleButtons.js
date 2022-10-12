@@ -155,15 +155,10 @@ $(document).ready(function(){
       'type': 'GET',
       'url': baseUrl + '/admin/approveEventDeletionRequest/' + id,
       'success': function (resp) {
-        // checking if the resp has the substring 1 instead of checking if the resp = 1,
-        // because the approveEventDeletionRequest method calls getElements method (indirectly) in the Event model
-        // which calls class_exists PHP method with the second argument as true (default value)
-        // and that adds a blank line to the output of the above request which causes the below condition to fail.
-        if (resp.indexOf("1") >= 0) {
           window.location.reload();
-        } else {
-          alert("Something went wrong trying to approve the deletion request.  Please try again or contact support for assistance.");
-        }
+      },
+      'error': function () {
+        alert("Something went wrong trying to approve the deletion request.  Please try again or contact support for assistance.");
       }
     });
   });
