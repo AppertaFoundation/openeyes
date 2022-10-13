@@ -97,7 +97,7 @@ trait MappedReferenceData
         if ($institution === null) {
             $institution = Institution::model()->getCurrent();
         }
-
+        
         $levelCriteria = $this->buildCriteriaForFindAllAtLevel($level, $institution);
 
         if (isset($criteria)) {

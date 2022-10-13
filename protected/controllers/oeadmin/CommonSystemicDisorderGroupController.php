@@ -38,7 +38,7 @@ class CommonSystemicDisorderGroupController extends BaseAdminController
             $result = $model->save();
 
             $institution_id = Institution::model()->getCurrent()->id;
-            $needs_mapping =Yii::app()->request->getPost('assigned_institution');
+            $needs_mapping = Yii::app()->request->getPost('assigned_institution');
 
             if ($model->hasMapping(ReferenceData::LEVEL_INSTITUTION, $institution_id)) {
                 if (!$needs_mapping) {
