@@ -286,7 +286,7 @@ class DisorderController extends BaseController
             return \CommonOphthalmicDisorder::getListByGroupWithSecondaryTo($firm);
         }
     }
-    
+
     public function actionEditSecondaryToCommonOphthalmicDisorder()
     {
         $errors = array();
