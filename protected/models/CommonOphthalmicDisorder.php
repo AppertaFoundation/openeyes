@@ -148,7 +148,7 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
             'subspecialty' => array(self::BELONGS_TO, 'Subspecialty', 'subspecialty_id'),
             'secondary_to' => array(self::HAS_MANY, 'SecondaryToCommonOphthalmicDisorder', 'parent_id'),
             'group' => array(self::BELONGS_TO, 'CommonOphthalmicDisorderGroup', 'group_id'),
-            'institutions' => array(self::MANY_MANY, 'Institution', $this->tableName().'_institution('.$this->tableName().'_id, institution_id)'),
+            'institutions' => array(self::MANY_MANY, 'Institution', $this->tableName() . '_institution(' . $this->tableName() . '_id, institution_id)'),
         );
     }
 
@@ -290,16 +290,22 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
         if (empty($firm)) {
             throw new CException('Firm is required');
         }
+
         $disorders = array();
+
         if ($ss_id = $firm->getSubspecialtyID()) {
+
+            $criteria = new CDbCriteria();
+            $criteria->join = "JOIN common_ophthalmic_disorder_institution codi ON t.id = codi.common_ophthalmic_disorder_id";
+            $criteria->compare('t.subspecialty_id', $ss_id);
+            $criteria->compare('codi.institution_id', $firm->institution_id);
+
             $cods = self::model()->with(array(
                 'finding' => array('joinType' => 'LEFT JOIN'),
                 'disorder' => array('joinType' => 'LEFT JOIN'),
                 'group',
-            ))->findAll(array(
-                'condition' => 't.subspecialty_id = :subspecialty_id',
-                'params' => array(':subspecialty_id' => $ss_id),
-            ));
+            ))->findAll($criteria);
+
             foreach ($cods as $cod) {
                 if ($cod->type) {
                     $disorder = array();

@@ -181,20 +181,19 @@ class AdminController extends BaseAdminController
 
     public function actionEditCommonOphthalmicDisorder()
     {
-        //$institution_id = Institution::model()->getCurrent()->id;
-
         $this->group = 'Disorders';
-        $models = CommonOphthalmicDisorderGroup::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION);
-
-        $data = array_map(function ($model) {
-            return $model->getAttributes(array("id", "name"));
-        }, $models);
-        $this->jsVars['common_ophthalmic_disorder_group_options'] = $data;
 
         $current_institution = $this->request->getParam('institution_id')
                                     ? Institution::model()->find('id = ' . $this->request->getParam('institution_id'))
                                     : Institution::model()->getCurrent();
         $this->jsVars['current_institution'] = ['id' => $current_institution->id, 'name' => $current_institution->short_name];
+
+        $groupModels = CommonOphthalmicDisorderGroup::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION, null, $current_institution);
+
+        $groupData = array_map(function ($model) {
+            return $model->getAttributes(array("id", "name"));
+        }, $groupModels);
+        $this->jsVars['common_ophthalmic_disorder_group_options'] = $groupData;
 
         $errors = array();
         $subspecialties = Subspecialty::model()->findAll(array('order' => 'name'));
@@ -225,10 +224,6 @@ class AdminController extends BaseAdminController
                     return $entry['CommonOphthalmicDisorder'];
                 }, $JSON);
 
-                $institution_mappings = array_map(function ($entry) {
-                    return isset($entry['assigned_institution']) && $entry['assigned_institution'];
-                }, $JSON);
-
                 $ids = array();
                 foreach ($disorders as $key => $disorder) {
                     $common_ophthalmic_disorder = CommonOphthalmicDisorder::model()->findByPk($disorder['id']);
@@ -249,16 +244,9 @@ class AdminController extends BaseAdminController
 
                     $ids[$common_ophthalmic_disorder->id] = $common_ophthalmic_disorder->id;
 
-                    $needs_mapping = $institution_mappings[$key];
-
-                    if ($common_ophthalmic_disorder->hasMapping(ReferenceData::LEVEL_INSTITUTION, $current_institution->id)) {
-                        if (!$needs_mapping) {
-                            $common_ophthalmic_disorder->deleteMapping(ReferenceData::LEVEL_INSTITUTION, $current_institution->id);
-                        }
-                    } else {
-                        if ($needs_mapping) {
-                            $common_ophthalmic_disorder->createMapping(ReferenceData::LEVEL_INSTITUTION, $current_institution->id);
-                        }
+                    // map to institution if not already mapped
+                    if (!$common_ophthalmic_disorder->hasMapping(ReferenceData::LEVEL_INSTITUTION, $current_institution->id)) {
+                        $common_ophthalmic_disorder->createMapping(ReferenceData::LEVEL_INSTITUTION, $current_institution->id);
                     }
                 }
             } else {
@@ -274,11 +262,14 @@ class AdminController extends BaseAdminController
                         return $id;
                     }, $ids));
                 }
-
                 $criteria->compare('subspecialty_id', $subspecialty_id);
 
-                $to_delete = CommonOphthalmicDisorder::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION, $criteria);
+                $to_delete = CommonOphthalmicDisorder::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION, $criteria, $current_institution);
+
                 foreach ($to_delete as $item) {
+                    // unmap deleted
+                    $item->deleteMapping(ReferenceData::LEVEL_INSTITUTION, $current_institution->id);
+
                     if (!$item->delete()) {
                         throw new Exception("Unable to delete CommonOphthalmicDisorder:{$item->primaryKey}");
                     }
@@ -312,15 +303,17 @@ class AdminController extends BaseAdminController
         Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/OpenEyes.UI.DiagnosesSearch.js'), ClientScript::POS_END);
 
         $criteria = new CDbCriteria();
+        $criteria->join = "JOIN common_ophthalmic_disorder_institution codi ON t.id = codi.common_ophthalmic_disorder_id";
         $criteria->compare('subspecialty_id', $subspecialty_id);
+        $criteria->compare('codi.institution_id', $current_institution->id);
         
-        // TODO - Add mapping criteria here, so only ones shown are those associated with institution are listed
+        $data = new CActiveDataProvider('CommonOphthalmicDisorder', array(
+            'criteria' => $criteria,
+            'pagination' => false,
+        ));
 
         $this->render('editcommonophthalmicdisorder', array(
-            'dataProvider' => new CActiveDataProvider('CommonOphthalmicDisorder', array(
-                'criteria' => $criteria,
-                'pagination' => false,
-            )),
+            'dataProvider' => $data,
             'subspecialty_id' => $subspecialty_id,
             'subspecialty' => $subspecialties,
             'current_institution_id' => $current_institution->id,

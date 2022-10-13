@@ -85,8 +85,8 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
             'header' => 'Group',
             'name' => 'group.name',
             'type' => 'raw',
-            'value' => function ($data, $row) {
-                $options = CHtml::listData(CommonOphthalmicDisorderGroup::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION), 'id', 'name');
+            'value' => function ($data, $row) use ($current_institution) {
+                $options = CHtml::listData(CommonOphthalmicDisorderGroup::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION, null, $current_institution), 'id', 'name');
                 return CHtml::activeDropDownList($data, "[$row]group_id", $options, array('empty' => '-- select --'));
             }
         ),
@@ -181,17 +181,6 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
                 } else {
                     return '<span data-tooltip-content="This entry is a parent of a Secondary Common Ophtalmic Disorder" class="oe-i info small js-has-tooltip"></span>';
                 }
-            }
-        ),
-        array(
-            'header' => 'Assigned to current institution',
-            'type' => 'raw',
-            'name' => 'assigned_insitution',
-            'value' => function ($data, $row) use ($current_institution) {
-                return CHtml::checkBox(
-                    "assigned_institution[$row]", 
-                    $data->hasMapping(ReferenceData::LEVEL_INSTITUTION, $data->getIdForLevel(ReferenceData::LEVEL_INSTITUTION, $current_institution))
-                );
             }
         ),
     );

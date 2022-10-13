@@ -92,9 +92,13 @@ trait MappedReferenceData
      * @param int $level
      * @return array
      */
-    public function findAllAtLevel(int $level, $criteria = null): array
+    public function findAllAtLevel(int $level, $criteria = null, $institution = null): array
     {
-        $levelCriteria = $this->buildCriteriaForFindAllAtLevel($level);
+        if ($institution === null) {
+            $institution = Institution::model()->getCurrent();
+        }
+
+        $levelCriteria = $this->buildCriteriaForFindAllAtLevel($level, $institution);
 
         if (isset($criteria)) {
             $levelCriteria->mergeWith($criteria);
@@ -108,12 +112,12 @@ trait MappedReferenceData
      * that have additional functionality (cf Medication which only applies the mappings
      * on local instances)
      */
-    protected function buildCriteriaForFindAllAtLevel(int $level)
+    protected function buildCriteriaForFindAllAtLevel(int $level, Institution $institution)
     {
         $criteria = new CDbCriteria();
 
         $mapping_level_column_name = $this->levelIdColumn($level);
-        $level_id = $this->getIdForLevel($level);
+        $level_id = $this->getIdForLevel($level, $institution);
         $mapping_model = $this->mappingModelName($level)::model();
 
         if ((int) $mapping_model->countByAttributes([$mapping_level_column_name => $level_id]) === 0) {
