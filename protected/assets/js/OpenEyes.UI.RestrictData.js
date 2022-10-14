@@ -118,7 +118,7 @@ OpenEyes.UI = OpenEyes.UI || {};
                 hidden = !hidden;
             };
 
-            btn.addEventListener("click", changeState, false);
+            btn?.addEventListener("click", changeState, false);
         }
 
         /*
