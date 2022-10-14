@@ -41,21 +41,11 @@ class m221014_141148_limit_common_systemic_disorder_by_institution extends CDbMi
 
         // loop through additional institutions
         foreach ($institutions as $institution) {
-            // save new ids for remapping later
-            $new_group_ids = [];
-
             // duplicate groups - retain id map to original group
             if (count($original_disorder_groups) > 0) {
                 foreach ($original_disorder_groups as $original_disorder_group) {
-                    $this->insert($disorder_group_table_name, [
-                        'name' => $original_disorder_group['name'],
-                        'display_order' => $original_disorder_group['display_order']
-                    ]);
-
-                    $new_group_ids[$original_disorder_group['id']] = $this->dbConnection->getLastInsertID();
-
                     $this->insert($disorder_group_table_name . '_institution', [
-                        'common_systemic_disorder_group_id' => $new_group_ids[$original_disorder_group['id']],
+                        'common_systemic_disorder_group_id' => $original_disorder_group['id'],
                         'institution_id' => $institution
                     ]);
                 }
@@ -64,15 +54,10 @@ class m221014_141148_limit_common_systemic_disorder_by_institution extends CDbMi
             // duplicate disorders - assigning to duplicated group if exists
             if (count($original_disorders) > 0) {
                 foreach ($original_disorders as $original_disorder) {
-                    $new_disorder = $original_disorder;
-                    if ($original_disorder['group_id']) {
-                        $new_disorder['group_id'] = $new_group_ids[$original_disorder['group_id']];
-                    }
-
                     $this->insert($disorder_table_name, [
-                        'disorder_id' => $new_disorder['disorder_id'],
-                        'display_order' => $new_disorder['display_order'],
-                        'group_id' => $new_disorder['group_id']
+                        'disorder_id' => $original_disorder['disorder_id'],
+                        'display_order' => $original_disorder['display_order'],
+                        'group_id' => $original_disorder['group_id']
                     ]);
 
                     $this->insert($disorder_table_name . '_institution', [
