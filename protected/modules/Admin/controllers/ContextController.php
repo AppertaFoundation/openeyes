@@ -56,7 +56,7 @@ class ContextController extends BaseAdminController
             $firm->attributes = $_POST['Firm'];
 
             if (!$this->checkAccess('admin')) {
-                $firm->institution_id = Yii::app()->session('selected_institution_id');
+                $firm->institution_id = Yii::app()->session['selected_institution_id'];
             }
 
             if (!$firm->validate()) {
