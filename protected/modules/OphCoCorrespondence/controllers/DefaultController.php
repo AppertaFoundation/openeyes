@@ -1312,14 +1312,33 @@ class DefaultController extends BaseEventTypeController
      */
     public function loadFaxAndDirectLineNumbers()
     {
-        $sfs = FirmSiteSecretary::model()->findAll('firm_id=?', array(Yii::app()->session['selected_firm_id']));
-        $direct_line_numbers[] = null;
-        $fax_numbers[] = null;
+        $context_firm_id = Yii::app()->session['selected_firm_id']; // EVENT FIRM ID
+        $episode_firm_id = $this->event->episode->firm_id;
 
-        foreach ($sfs as $sf) {
-            $direct_line_numbers[$sf->site_id] = $sf->direct_line;
-            $fax_numbers[$sf->site_id] = $sf->fax;
+        $direct_line_numbers = [];
+        $fax_numbers = [];
+
+        $sfs_context = FirmSiteSecretary::model()->findAll('firm_id=?', array($context_firm_id));
+        $sfs_episode = FirmSiteSecretary::model()->findAll('firm_id=?', array($episode_firm_id));
+
+        foreach ($sfs_context as $sfc) { $direct_line_numbers[$sfc->site_id] = trim($sfc->direct_line); }
+
+        foreach ($sfs_episode as $sfe) {
+            if (!isset($direct_line_numbers[$sfe->site_id]) || $direct_line_numbers[$sfe->site_id] == '') {
+                $direct_line_numbers[$sfe->site_id] = trim($sfe->direct_line);
+            }
         }
+
+        foreach ($sfs_context as $sfc) { $fax_numbers[$sfc->site_id] = trim($sfc->fax); }
+
+        foreach ($sfs_episode as $sfe) {
+            if (!isset($fax_numbers[$sfe->site_id]) || $fax_numbers[$sfe->site_id] == '') {
+                $fax_numbers[$sfe->site_id] = trim($sfe->fax);
+            }
+        }
+
+        $direct_line_numbers = array_filter($direct_line_numbers, fn($value) => !is_null($value) && $value !== '');
+        $fax_numbers = array_filter($fax_numbers, fn($value) => !is_null($value) && $value !== '');
 
         $this->jsVars['correspondence_directlines'] = $direct_line_numbers;
         $this->jsVars['correspondence_fax_numbers'] = $fax_numbers;
