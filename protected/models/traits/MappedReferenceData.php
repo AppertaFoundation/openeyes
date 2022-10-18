@@ -73,7 +73,7 @@ trait MappedReferenceData
                 case ReferenceData::LEVEL_USER:
                     return 'user';
                 case ReferenceData::LEVEL_FIRM:
-                    return SettingMetadata::model()->getSettingName('context_firm_label');
+                    return 'firm';
                 case ReferenceData::LEVEL_SUBSPECIALTY:
                     return 'subspecialty';
                 case ReferenceData::LEVEL_SPECIALTY:
