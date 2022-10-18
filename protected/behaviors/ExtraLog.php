@@ -20,7 +20,7 @@ trait ExtraLog
         $is_debug = (bool)(\Yii::app()->params['extra_debug_log'] ?? false);
 
         if ($is_debug) {
-            if (is_array($msg)) {
+            if (is_array($msg) || is_object($msg)) {
                 $msg = '<pre>' . print_r($msg, true) . '</pre>';
             }
             \OELog::log($msg);
