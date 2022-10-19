@@ -61,7 +61,9 @@ protected/modules/*
 # Include core modules
 !/protected/modules/Admin/
 !/protected/modules/Api/
+!/protected/modules/BreakGlass/
 !/protected/modules/CSDClient/
+!/protected/modules/CypressHelper/
 !/protected/modules/Genetics/
 !/protected/modules/OECaseSearch/
 !/protected/modules/OETrial/

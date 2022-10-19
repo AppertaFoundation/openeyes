@@ -11,6 +11,8 @@ use OE\factories\ModelFactory;
 use Patient;
 use CActiveRecord;
 use OELog;
+use SettingInstallation;
+use SettingMetadata;
 
 class DefaultController extends \CController
 {
@@ -155,6 +157,43 @@ class DefaultController extends \CController
         $instances = $model_factory->create($_POST['attributes'] ?? []);
 
         $this->sendJsonResponse(['models' => $this->getModelAttributes($instances)]);
+    }
+
+    public function actionSetSystemSettingValue()
+    {
+        $system_setting_key = $_POST['system_setting_key'] ?? null;
+        $system_setting_value = $_POST['system_setting_value'] ?? null;
+
+        if (!$system_setting_key || !$system_setting_value) {
+            throw new \CHttpException(400, 'system setting key and value must both be provided');
+        }
+
+        $setting = SettingInstallation::model()->findByAttributes(['key' => $system_setting_key]);
+        $setting->value = $system_setting_value;
+        $setting->save();
+
+        // ensure the change takes immediate effect for further requests
+        \Yii::app()->settingCache->flush();
+
+        echo '1';
+    }
+
+    public function actionResetSystemSettingValue()
+    {
+        $system_setting_key = $_POST['system_setting_key'] ?? null;
+
+        if (!$system_setting_key) {
+            throw new \CHttpException(400, 'system setting key must be provided');
+        }
+
+        $setting = SettingInstallation::model()->findByAttributes(['key' => $system_setting_key]);
+        $setting->value = SettingMetadata::model()->findByAttributes(['key' => $system_setting_key])->default_value;
+        $setting->save();
+
+        // ensure the change takes immediate effect for further requests
+        \Yii::app()->settingCache->flush();
+
+        echo '1';
     }
 
 
