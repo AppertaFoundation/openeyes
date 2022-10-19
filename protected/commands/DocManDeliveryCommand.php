@@ -54,13 +54,12 @@ EOH;
             $this->savePDFFile($document->document_target->document_instance->correspondence_event_id, $document->id);
             // $this->savePDFFile generates xml if required
         } elseif ($document->output_type == DocumentOutput::TYPE_INTERNAL_REFERRAL) {
-            $file_info = $this->getFileName($document->id, 'Internal');
+            $file_info = static::getFileName($this->event, $document->id, 'Internal');
             //Docman xml will be used
-            $xml_generated = $this->generateXMLOutput($file_info['filename'], $this->event, $document);
+            $xml_generated = $this->generateXMLOutput($file_info, $this->event, $document);
 
             if ($xml_generated) {
                 $internal_referral_command = new InternalReferralDeliveryCommand();
-                $internal_referral_command->setFileRandomNumber($file_info['rand']);
 
                 //now we only generate PDF file, until the integration, the generate_xml is set to false in the InternalReferralDeliveryCommand
                 $internal_referral_command->actionGenerateOne($this->event->id);
@@ -198,7 +197,7 @@ EOH;
 
             curl_close($ch);
 
-            $filename = $this->getFileName($output_id)['filename'];
+            $filename = static::getFileName($this->event, $output_id);
 
             $content_rtf = null;
             if (getenv("RTF_HOSTNAME") != null) {
@@ -301,71 +300,6 @@ EOH;
         }
 
         return $results;
-    }
-
-    /**
-     * @param int $document_output_id The id column of the document_output table
-     * @param string $prefix Prefix to be prepended to the filename
-     * @return array Name of the output file
-     */
-    private function getFileName($document_output_id, $prefix = '')
-    {
-        $replacePairs = [
-            '{prefix}' => '',
-            '{event.id}' => '',
-            '{patient.hos_num}' => '',
-            '{random}' => '',
-            '{gp.nat_id}' => '',
-            '{document_output.id}' => '',
-            '{event.last_modified_date}' => '',
-            '{date}' => ''
-        ];
-
-        $fileNameFormat = Yii::app()->params['docman_filename_format'];
-        $templateStrings = $this->getStringsToReplace($fileNameFormat);
-
-        $local_identifier_value = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(
-            'LOCAL',
-            $this->event->episode->patient->id,
-            $this->event->institution_id, $this->event->site_id
-        ));
-
-        foreach ($templateStrings as $templateString) {
-            switch ($templateString) {
-                case '{prefix}':
-                    $replacePairs[$templateString] = isset($prefix) && !empty($prefix) ? $prefix . '_' : '';
-                    break;
-                case '{patient.hos_num}':
-                    $replacePairs[$templateString] = $local_identifier_value;
-                    break;
-                case '{event.id}':
-                    $replacePairs[$templateString] = $this->event->id;
-                    break;
-                case '{random}':
-                    $rand = rand();
-                    $replacePairs[$templateString] = $rand;
-                    break;
-                case '{gp.nat_id}':
-                    $gp = $this->event->episode->patient->gp;
-                    if ($gp) {
-                        $replacePairs[$templateString] = $gp->nat_id;
-                    }
-                    break;
-                case '{document_output.id}':
-                    $replacePairs[$templateString] = $document_output_id;
-                    break;
-                case '{event.last_modified_date}':
-                    $replacePairs[$templateString] = date('Ymd_His', strtotime($this->event->last_modified_date));
-                    break;
-                case '{date}':
-                    $replacePairs[$templateString] = date('YmdHis');
-                    break;
-            }
-        }
-
-        $filename = strtr($fileNameFormat, $replacePairs);
-
-        return ['filename' => $filename, 'rand' => isset($rand) ? $rand : ''];
     }
 
     /**

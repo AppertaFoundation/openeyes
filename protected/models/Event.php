@@ -1,4 +1,5 @@
 <?php
+use OE\factories\models\traits\HasFactory;
 
 /**
  * OpenEyes.
@@ -46,6 +47,8 @@
  */
 class Event extends BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     protected $event_view_path = '/default/view';
 
     /**
