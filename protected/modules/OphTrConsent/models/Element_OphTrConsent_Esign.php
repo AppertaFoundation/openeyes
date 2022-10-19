@@ -28,8 +28,12 @@
 use OEModule\OphTrConsent\models\RequiresSignature;
 use OEModule\OphTrConsent\widgets\EsignElementWidget;
 
-class Element_OphTrConsent_Esign extends BaseEsignElement implements RequiresSignature
+class Element_OphTrConsent_Esign extends \BaseEsignElement implements RequiresSignature
 {
+    use AutoSignTrait;
+    private $signature_class = \OphTrConsent_Signature::class;
+    private $pin_required_setting_name = 'require_pin_for_consent';
+
     protected $widgetClass = EsignElementWidget::class;
 
     /** @var array Signature items cached so that they're not collected with every function call */
@@ -169,12 +173,16 @@ class Element_OphTrConsent_Esign extends BaseEsignElement implements RequiresSig
         } else {
             $user = User::model()->findByPk(Yii::app()->session['user']->id);
             $sig = new OphTrConsent_Signature();
-            $sig->setAttributes([
-                "type" => BaseSignature::TYPE_OTHER_USER,
-                "signatory_role" => $user->role,
-                "signatory_name" => $user->getFullNameAndTitleAndQualifications(),
-                "initiator_row_id" => 0,
-            ]);
+
+            if (SettingMetadata::model()->checkSetting('require_pin_for_consent', 'no')) {
+                $sig->proof = \SignatureHelper::getSignatureProof($user->signature->id, new \DateTime(), $user->id);
+                $sig->setDataFromProof();
+            }
+
+            $sig->type = BaseSignature::TYPE_OTHER_USER;
+            $sig->signatory_role = $user->role;
+            $sig->signatory_name = $user->getFullNameAndTitleAndQualifications();
+            $sig->initiator_row_id = 0;
             $sig->user_id = $user->id;
             return [$sig];
         }

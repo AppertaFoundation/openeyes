@@ -16,12 +16,16 @@
 
 namespace OEModule\OphCoCvi\controllers;
 
+use BaseSignature;
 use OEModule\OphCoCvi\models;
 use OEModule\OphCoCvi\components\OphCoCvi_Manager;
 use OEModule\OphCoCvi\components\LabelManager;
 use OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Disorder_Section;
 use OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Diagnosis_Not_Covered;
 use OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo;
+use OphCoCvi_Signature;
+use SettingMetadata;
+use SignatureHelper;
 
 /**
  * Class DefaultController
@@ -336,6 +340,13 @@ class DefaultController extends \BaseEventTypeController
         if ($element->isNewRecord) {
             $element->site_id = $this->getApp()->session['selected_site_id'];
         }
+    }
+
+    protected function setElementDefaultOptions_Element_OphCoCvi_Esign(
+        models\Element_OphCoCvi_Esign $element,
+        $action
+    ) {
+        $element->attemptAutoSign();
     }
 
     /**
