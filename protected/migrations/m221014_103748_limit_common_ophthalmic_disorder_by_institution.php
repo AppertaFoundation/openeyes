@@ -42,14 +42,26 @@ class m221014_103748_limit_common_ophthalmic_disorder_by_institution extends CDb
         // loop through additional institutions
         foreach ($institutions as $institution) {
             // duplicate groups - retain id map to original group
+            $group_id_mapping = [];
+
             if (count($original_disorder_groups) > 0) {
                 foreach ($original_disorder_groups as $original_disorder_group) {
+                    $this->insert($disorder_group_table_name, [
+                        'name' => $original_disorder_group['name'],
+                        'display_order' => $original_disorder_group['display_order'],
+                        'deleted' => $original_disorder_group['deleted']
+                    ]);
+
+                    $group_id_mapping[$original_disorder_group['id']] = $this->dbConnection->getLastInsertID();
+
                     $this->insert($disorder_group_table_name . '_institution', [
-                        'common_ophthalmic_disorder_group_id' => $original_disorder_group['id'],
+                        'common_ophthalmic_disorder_group_id' => $group_id_mapping[$original_disorder_group['id']],
                         'institution_id' => $institution
                     ]);
                 }
             }
+
+            OELog::log(print_r(['mapping', $group_id_mapping], true));
 
             // duplicate disorders - assigning to duplicated group if exists
             if (count($original_disorders) > 0) {
@@ -58,7 +70,7 @@ class m221014_103748_limit_common_ophthalmic_disorder_by_institution extends CDb
                         'disorder_id' => $original_disorder['disorder_id'],
                         'subspecialty_id' => $original_disorder['subspecialty_id'],
                         'display_order' => $original_disorder['display_order'],
-                        'group_id' => $original_disorder['group_id'],
+                        'group_id' => ($original_disorder['group_id'] && $group_id_mapping[$original_disorder['group_id']]) ? $group_id_mapping[$original_disorder['group_id']] : $original_disorder['group_id'],
                         'alternate_disorder_id' => $original_disorder['alternate_disorder_id'],
                         'alternate_disorder_label' => $original_disorder['alternate_disorder_label'],
                         'finding_id' => $original_disorder['finding_id']
