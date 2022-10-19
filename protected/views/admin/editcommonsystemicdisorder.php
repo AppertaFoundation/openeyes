@@ -24,24 +24,6 @@ if (isset($errors)) {
 Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/OpenEyes.GenericFormJSONConverter.js'), CClientScript::POS_HEAD);
 ?>
 
-<form method="get">
-    <table class="cols-7">
-        <colgroup>
-            <col class="cols-3">
-            <col class="cols-4">
-        </colgroup>
-        <tbody>
-        <tr class="col-gap">            
-            <td>&nbsp;<br/><?=\CHtml::dropDownList(
-                    'institution_id',
-                    $current_institution_id,
-                    Institution::model()->getTenantedList(!Yii::app()->user->checkAccess('admin'))
-                ) ?></td>
-        </tr>
-        </tbody>
-    </table>
-</form>
-
 <form method="POST" action="/oeadmin/CommonSystemicDisorder/save?institution_id=<?= $current_institution_id; ?>">
     <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
     <?php

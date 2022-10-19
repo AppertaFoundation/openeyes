@@ -379,7 +379,6 @@ class DisorderController extends BaseController
 
         // end of handling the POST
 
-
         $generic_admin = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.widgets.js') . '/GenericAdmin.js', true);
         Yii::app()->getClientScript()->registerScriptFile($generic_admin);
 

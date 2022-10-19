@@ -21,9 +21,15 @@ class CommonSystemicDisorderGroupController extends BaseAdminController
 
     public function actionList()
     {
+        $current_institution = $this->request->getParam('institution_id')
+            ? Institution::model()->find('id = ' . $this->request->getParam('institution_id'))
+            : Institution::model()->getCurrent();
+
         $this->render('/admin/listcommonsystemicdisordergroup', [
             'model' => CommonSystemicDisorderGroup::model(),
-            'model_list' => CommonSystemicDisorderGroup::model()->findAll(['order' => 'display_order']),
+            'model_list' => CommonSystemicDisorderGroup::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION, ['order' => 'display_order'], $current_institution),
+            'current_institution_id' => $current_institution->id,
+            'current_institution' => $current_institution
         ]);
     }
 

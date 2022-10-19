@@ -26,8 +26,26 @@ if (isset($errors)) {
     <div class="js-admin-error-container"></div>
 </div>
 
+<form method="get">
+    <table class="cols-7">
+        <colgroup>
+            <col class="cols-3">
+            <col class="cols-4">
+        </colgroup>
+        <tbody>
+        <tr class="col-gap">            
+            <td>&nbsp;<br/><?=\CHtml::dropDownList(
+                    'institution_id',
+                    $current_institution_id,
+                    Institution::model()->getTenantedList(!Yii::app()->user->checkAccess('admin'))
+                ) ?></td>
+        </tr>
+        </tbody>
+    </table>
+</form>
+
 <div class="cols-5">
-    <form id="admin_commonsystemicdisordergroup" method="POST" action="/oeadmin/CommonSystemicDisorderGroup/save">
+    <form id="admin_commonsystemicdisordergroup" method="POST" action="/oeadmin/CommonSystemicDisorderGroup/save?institution_id=<?= $current_institution_id; ?>">
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
         <input type="hidden" name="page" value="1">
         <table class="standard entry-table sortable">
@@ -128,6 +146,10 @@ if (isset($errors)) {
                     $(tr).find("[name$='display_order]']").val(index);
                 });
             }
+        });
+
+        $('#institution_id').on('change', function () {
+            $(this).closest('form').submit();
         });
 
         $('#et_delete_disorder_group').on('click', function () {
