@@ -11,7 +11,9 @@ describe('ophthalmic diagnoses widget behaviour', () => {
                     });
             })
             .then(([url, patient]) => {
+                console.log(["tom", url, patient]);
                 cy.visit(url);
+                console.log('url done')
                 return cy.addExaminationElement('Diagnoses');
             });
     });
@@ -20,22 +22,6 @@ describe('ophthalmic diagnoses widget behaviour', () => {
 
         cy.get('#add-contacts-btn').click();
 
-        cy.get('#contacts-popup')
-            .should('be.visible')
-            .within(() => {
-                return cy.getModelByAttributes('ContactLabel', {name: 'Next of Kin'})
-                    .then((contactLabel) => {
-                        // Select next of kin
-                        cy.get(`li[data-id="${contactLabel.id}"]`).scrollIntoView();
-                        cy.get(`li[data-id="${contactLabel.id}"]`).click();
-
-                        // Select add new
-                        cy.get('li[data-type="custom"]').should('be.visible');
-                        cy.get('li[data-type="custom"]').click();
-
-                        cy.get('.add-icon-btn').click();
-                    })
-
-            });
+        cy.get('#contacts-popup');
     });
 });
