@@ -1317,9 +1317,14 @@ class DefaultController extends BaseEventTypeController
 
         $direct_line_numbers = [];
         $fax_numbers = [];
+        $sfs_episode = [];
 
         $sfs_context = FirmSiteSecretary::model()->findAll('firm_id=?', array($context_firm_id));
-        $sfs_episode = FirmSiteSecretary::model()->findAll('firm_id=?', array($episode_firm_id));
+
+        if( (int) $episode_firm_id > 0 ) {
+            $sfs_episode = FirmSiteSecretary::model()->findAll('firm_id=?', array($episode_firm_id));
+        }
+
 
         foreach ($sfs_context as $sfc) {
             $direct_line_numbers[$sfc->site_id] = trim($sfc->direct_line);
