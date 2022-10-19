@@ -18,7 +18,7 @@
     "pdfjs-dist": "^2.3.200",
     "pickmeup": "~3.2.0",
     "plotly.js-dist": "^1.53.0",
-    "puppeteer": "5.5.0",
+    "puppeteer": "^2.1.0",
     "signature_pad": "^3.0.0-beta.4",
     "sortablejs": "~1.10.2",
     "tinymce": "^4.8.2",

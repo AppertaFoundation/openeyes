@@ -545,6 +545,9 @@ if [[ $eventimages == "1" && $demo == "1" ]]; then
     done
 fi
 
+# Repopulate the freehand drawing templates
+php $WROOT/protected/yiic populatefreehanddrawingtemplates
+
 # restart the service if we stopped it
 if [ $dwservrunning = 1 ]; then
     echo "Restarting dicom-file-watcher..."

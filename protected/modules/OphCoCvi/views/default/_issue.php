@@ -126,7 +126,7 @@ if ($demographics_element->isNewRecord) {
         <div class="highlighter">To be completed by the Ophthalmologist</div>
         <h6>(Tick the box that applies)</h6><h4>I consider that this person is:</h4><span
                 class="tickbox <?= !$clinical_info->is_considered_blind ? 'checked' : '' ?>"></span>
-        <b>Slight impaired (partially sighted)</b><span
+        <b>Sight impaired (partially sighted)</b><span
                 class="tickbox <?= $clinical_info->is_considered_blind ? 'checked' : '' ?>"></span> <b>Severely sight
             impaired (blind)</b>
         <p>I have made the patient aware of the information booklet, “Sight Loss: What we needed to know”
