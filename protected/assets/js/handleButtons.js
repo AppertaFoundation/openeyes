@@ -155,11 +155,10 @@ $(document).ready(function(){
       'type': 'GET',
       'url': baseUrl + '/admin/approveEventDeletionRequest/' + id,
       'success': function (resp) {
-        if (resp == "1") {
           window.location.reload();
-        } else {
-          alert("Something went wrong trying to approve the deletion request.  Please try again or contact support for assistance.");
-        }
+      },
+      'error': function () {
+        alert("Something went wrong trying to approve the deletion request.  Please try again or contact support for assistance.");
       }
     });
   });
