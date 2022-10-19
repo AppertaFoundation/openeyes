@@ -489,7 +489,7 @@ echo '<script type="text/javascript" src="' . $asset_folder . '/EsignElementWidg
                             }
                         }
 
-                        if (medication_history_bound_key && medication_management_bound_key === medication_history_bound_key) {
+                        if (medication_history_bound_key && medication_management_bound_key === medication_history_bound_key || !medication_history_bound_key && !medication_management_bound_key) {
                             window.HMController.bindEntries($(historyMedicationRow), $(medicationManagementRow), false);
                             window.MMController.disableRemoveButton($(medicationManagementRow));
                             rowNeedsCopying = false;

@@ -439,4 +439,9 @@ class ProtectedFile extends BaseActiveRecordVersioned
 
         return true;
     }
+
+    public function fileExists()
+    {
+        return file_exists($this->getFilePath());
+    }
 }
