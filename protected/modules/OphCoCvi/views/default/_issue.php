@@ -261,10 +261,10 @@ if ($demographics_element->isNewRecord) {
                             </td>
                             <td><?= \CHtml::encode($disorder->code) ?></td>
                             <td>
-                                <span class="tickbox <?= in_array($clinical_info->getCviDisorderSide($disorder), array(\Eye::RIGHT, \Eye::BOTH)) ? 'checked' : ''; ?>"></span>
+                                <span class="tickbox <?= in_array($clinical_info->getCviDisorderSide($disorder), [\Eye::RIGHT, \Eye::BOTH]) ? 'checked' : ''; ?>"></span>
                             </td>
                             <td>
-                                <span class="tickbox <?= in_array($clinical_info->getCviDisorderSide($disorder), array(\Eye::LEFT, \Eye::BOTH)) ? 'checked' : ''; ?>"></span>
+                                <span class="tickbox <?= in_array($clinical_info->getCviDisorderSide($disorder), [\Eye::LEFT, \Eye::BOTH]) ? 'checked' : ''; ?>"></span>
                             </td>
                         </tr>
                     <?php endforeach; ?>
