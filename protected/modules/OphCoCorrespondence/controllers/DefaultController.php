@@ -1312,7 +1312,7 @@ class DefaultController extends BaseEventTypeController
      */
     public function loadFaxAndDirectLineNumbers()
     {
-        $context_firm_id = Yii::app()->session['selected_firm_id']; // EVENT FIRM ID
+        $context_firm_id = Yii::app()->session['selected_firm_id'];
         $episode_firm_id = $this->event->episode->firm_id;
 
         $direct_line_numbers = [];
@@ -1321,7 +1321,9 @@ class DefaultController extends BaseEventTypeController
         $sfs_context = FirmSiteSecretary::model()->findAll('firm_id=?', array($context_firm_id));
         $sfs_episode = FirmSiteSecretary::model()->findAll('firm_id=?', array($episode_firm_id));
 
-        foreach ($sfs_context as $sfc) { $direct_line_numbers[$sfc->site_id] = trim($sfc->direct_line); }
+        foreach ($sfs_context as $sfc) {
+            $direct_line_numbers[$sfc->site_id] = trim($sfc->direct_line);
+        }
 
         foreach ($sfs_episode as $sfe) {
             if (!isset($direct_line_numbers[$sfe->site_id]) || $direct_line_numbers[$sfe->site_id] == '') {
@@ -1329,7 +1331,9 @@ class DefaultController extends BaseEventTypeController
             }
         }
 
-        foreach ($sfs_context as $sfc) { $fax_numbers[$sfc->site_id] = trim($sfc->fax); }
+        foreach ($sfs_context as $sfc) {
+            $fax_numbers[$sfc->site_id] = trim($sfc->fax);
+        }
 
         foreach ($sfs_episode as $sfe) {
             if (!isset($fax_numbers[$sfe->site_id]) || $fax_numbers[$sfe->site_id] == '') {
