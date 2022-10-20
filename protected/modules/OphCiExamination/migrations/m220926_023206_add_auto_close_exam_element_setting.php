@@ -9,32 +9,10 @@ class m220926_023206_add_auto_close_exam_element_setting extends OEMigration
             'field_type_id' => 3,
             'key' => 'close_incomplete_exam_elements',
             'name' => 'Offer to automatically close incomplete examination elements',
-            'lowest_setting_level' => 'INSTITUTION',
-            'data' => serialize(array('on' => 'On', 'off' => 'Off'))
+            'lowest_setting_level' => 'INSTALLATION',
+            'data' => serialize(array('on' => 'On', 'off' => 'Off')),
+            'default_value' => 'off'
         ));
-
-        $this->insert('setting_installation', array(
-            'key' => 'close_incomplete_exam_elements',
-            'value' => 'off'
-        ));
-
-        $institutions = $this->dbConnection->createCommand()
-            ->select('id AS institution_id')
-            ->from('institution')
-            ->queryColumn();
-
-        $institutions = array_map(
-            static function ($item) {
-                return [
-                    'institution_id' => $item,
-                    'key' => 'close_incomplete_exam_elements',
-                    'value' => 'off',
-                ];
-            },
-            $institutions
-        );
-
-        $this->insertMultiple('setting_institution', $institutions);
     }
 
     public function safeDown()
