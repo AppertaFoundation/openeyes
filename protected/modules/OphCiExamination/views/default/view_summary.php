@@ -319,7 +319,7 @@ if ($historyElement) {
                                 <?php foreach ($stopped_systemic_medications as $entry) { ?>
                                     <tr>
                                         <td>
-                                            
+
                                             <?= $entry->getMedicationDisplay(true) ?>
                                         </td>
                                         <td>
@@ -401,7 +401,7 @@ if ($historyElement) {
                 </div>
             <?php } else { ?>
                 <div class="data-value">
-                    <?= nl2br($managementElement->comments) ?>
+                    <?= Yii::app()->format->Ntext($managementElement->comments) ?>
                 </div>
             <?php } ?>
         </div>
