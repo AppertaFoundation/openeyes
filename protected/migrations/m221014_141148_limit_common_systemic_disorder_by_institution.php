@@ -42,10 +42,19 @@ class m221014_141148_limit_common_systemic_disorder_by_institution extends CDbMi
         // loop through additional institutions
         foreach ($institutions as $institution) {
             // duplicate groups - retain id map to original group
+            $group_id_mapping = [];
+            
             if (count($original_disorder_groups) > 0) {
                 foreach ($original_disorder_groups as $original_disorder_group) {
+                    $this->insert($disorder_group_table_name, [
+                        'name' => $original_disorder_group['name'],
+                        'display_order' => $original_disorder_group['display_order']
+                    ]);
+
+                    $group_id_mapping[$original_disorder_group['id']] = $this->dbConnection->getLastInsertID();
+
                     $this->insert($disorder_group_table_name . '_institution', [
-                        'common_systemic_disorder_group_id' => $original_disorder_group['id'],
+                        'common_systemic_disorder_group_id' => $group_id_mapping[$original_disorder_group['id']],
                         'institution_id' => $institution
                     ]);
                 }
@@ -57,7 +66,7 @@ class m221014_141148_limit_common_systemic_disorder_by_institution extends CDbMi
                     $this->insert($disorder_table_name, [
                         'disorder_id' => $original_disorder['disorder_id'],
                         'display_order' => $original_disorder['display_order'],
-                        'group_id' => $original_disorder['group_id']
+                        'group_id' => ($original_disorder['group_id'] && $group_id_mapping[$original_disorder['group_id']]) ? $group_id_mapping[$original_disorder['group_id']] : $original_disorder['group_id'],
                     ]);
 
                     $this->insert($disorder_table_name . '_institution', [
