@@ -50,8 +50,6 @@ class AdminController extends BaseAdminController
         $current_institution = $this->request->getParam('institution_id')
             ? Institution::model()->find('id = ' . $this->request->getParam('institution_id'))
             : Institution::model()->getCurrent();
-
-        $groupModels = CommonOphthalmicDisorderGroup::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION, null, $current_institution);
         
         $errors = array();
 
@@ -118,20 +116,8 @@ class AdminController extends BaseAdminController
                 $to_delete = CommonOphthalmicDisorderGroup::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION, $criteria, $current_institution);
 
                 foreach ($to_delete as $item) {
-                    OELog::log(print_r([
-                        "To delete",
-                        $item->id,
-                        $item->hasMapping(ReferenceData::LEVEL_INSTITUTION, $current_institution->id),
-                    ], true));
-
                     // unmap deleted
                     $item->deleteMapping(ReferenceData::LEVEL_INSTITUTION, $current_institution->id);
-
-                    OELog::log(print_r([
-                        "To delete too",
-                        $item->id,
-                        $item->hasMapping(ReferenceData::LEVEL_INSTITUTION, $current_institution->id),
-                    ], true));
 
                     if (!$item->delete()) {
                         throw new Exception("Unable to delete CommonOphthalmicDisorderGroup:{$item->primaryKey}");
