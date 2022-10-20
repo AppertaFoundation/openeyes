@@ -392,14 +392,27 @@ $field_prefix = $model_name . '[assignment][{{section_key}}][entries][{{entry_ke
         }
     ];
     const presetsReturn = function (adderDialog, selectedItems) {
-        if (selectedItems.length < 2) {
-            return;
+        if (!selectedItems[0] || !selectedItems[0].is_preset) {
+            new OpenEyes.UI.Dialog.Alert({content: 'A PSDs or PGDs must be selected'}).open();
+            return false;
         }
+
         let selected_preset = selectedItems[0];
         let preset_meds = selected_preset.meds;
-        const laterality = selectedItems[1];
-        selected_preset['laterality'] = laterality['id'];
-        this.buildTemplate(selected_preset, laterality, preset_meds);
+
+        const medsNeedingLaterality  = preset_meds.filter((med) => {
+            return !med.route || eye_route_ids.includes(med.route_id.toString());
+        });
+
+        if (medsNeedingLaterality.length > 0) {
+            if (!selectedItems[1]) {
+                new OpenEyes.UI.Dialog.Alert({content: 'laterality needs to be selected for ' + medsNeedingLaterality.map((med) => med.preferred_term)}).open();
+                return false;
+            }
+            selected_preset['laterality'] = selectedItems[1].id;
+        }
+
+        this.buildTemplate(selected_preset, selectedItems[1], preset_meds);
     }
     const presetsSelect = function (e) {
         const parent = $(e.currentTarget).parent('ul');
