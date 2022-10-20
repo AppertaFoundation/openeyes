@@ -143,7 +143,7 @@ class PathstepObserver
                             $initial_state_data = json_decode($existing_step->state_data);
 
                             $initial_state_data->site_id = $entry->site_id;
-                            $initial_state_data->service_id = $entry->service_id;
+                            $initial_state_data->subspecialty_id = $entry->subspecialty_id;
                             $initial_state_data->firm_id = $entry->context_id;
                             $initial_state_data->duration_value = $entry->followup_quantity;
                             $initial_state_data->duration_period = $entry->followupPeriod->name;
@@ -153,7 +153,7 @@ class PathstepObserver
                             $initial_state_data = json_decode($step_type->state_data_template);
 
                             $initial_state_data['site_id'] = $entry->site_id;
-                            $initial_state_data['service_id'] = $entry->service_id;
+                            $initial_state_data['subspecialty_id'] = $entry->subspecialty_id;
                             $initial_state_data['firm_id'] = $entry->context_id;
                             $initial_state_data['duration_value'] = $entry->followup_quantity;
                             $initial_state_data['duration_period'] = $entry->followupPeriod->name;
