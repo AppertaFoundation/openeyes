@@ -184,7 +184,7 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
         </td>
         <td width="400px">
             <input type="text" name="CommonOphthalmicDisorderGroup[{{row_count}}][name]"
-                   id="CommonOphthalmicDisorderGroup_{{row_count}}_name" autocomplete="off">
+                   id="CommonOphthalmicDisorderGroup_{{row_count}}_name" autocomplete="off" style="width:400px;">
         </td>
         <td>
             <button type="button"><a href="javascript:void(0)" class="delete">delete</a></button>

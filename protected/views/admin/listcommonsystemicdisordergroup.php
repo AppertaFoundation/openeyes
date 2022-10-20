@@ -26,6 +26,13 @@ if (isset($errors)) {
     <div class="js-admin-error-container"></div>
 </div>
 
+<?php
+Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/OpenEyes.GenericFormJSONConverter.js'), CClientScript::POS_HEAD);
+foreach (Yii::app()->user->getFlashes() as $key => $message) {
+    echo '<div class="flash- alert-box with-icon warning' . $key . '">' . $message . "</div>\n";
+}
+?>
+
 <form method="get">
     <table class="cols-7">
         <colgroup>
@@ -44,141 +51,155 @@ if (isset($errors)) {
     </table>
 </form>
 
-<div class="cols-5">
-    <form id="admin_commonsystemicdisordergroup" method="POST" action="/oeadmin/CommonSystemicDisorderGroup/save?institution_id=<?= $current_institution_id; ?>">
-        <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
-        <input type="hidden" name="page" value="1">
-        <table class="standard entry-table sortable">
-        <?php if (empty($model_list)) { ?>
-            <tbody>
-            <tr><td><span class="empty">No results found.</span></td></tr>
-            </tbody>
-        <?php } else { ?>
-            <colgroup>
-                <col class="cols-1">
-                <col class="cols-1">
-                <col class="cols-5">
-            </colgroup>
-            <thead>
-            <tr>
-                <th><input type="checkbox" name="selectall" id="selectall"/></th>
-                <th>Order</th>
-                <th>Name</th>
-            </tr>
-            </thead>
-            <tbody class="sortable">
-            <?php foreach ($model_list as $key => $model) { ?>
-                <tr class="clickable" data-id="<?= $model->id ?>"
-                    data-uri="/oeadmin/CommonSystemicDisorderGroup/update/<?= $model->id ?>" >
-                    <td>
-                        <input type="checkbox" name="select[]" value="<?= $model->id ?>"/>
-                    </td>
-                    <td class="reorder">
-                        <input type="hidden" name="CommonSystemicDisorderGroup[<?= $key ?>][id]" value="<?= $model->id ?>"/>
-                        <input type="hidden" name="CommonSystemicDisorderGroup[<?= $key ?>][display_order]" value="<?= $model->display_order ?>"/>
-                        <span>&uarr;&darr;</span>
-                    </td>
-                    <td>
-                        <?= $model->name ?>
-                    </td>
-                </tr>
-            <?php } ?>
-            </tbody>
-        <?php } ?>
-            <tfoot>
-            <tr>
-                <td colspan="5">
-                    <?= \CHtml::button(
-                        'Add',
-                        [
-                            'class' => 'button large',
-                            'type' => 'button',
-                            'name' => 'add',
-                            'data-uri' => '/oeadmin/CommonSystemicDisorderGroup/create',
-                            'id' => 'et_add'
-                        ]
-                    ); ?>
-                    <?php
-                    if (count($model_list) > 1) {
-                        echo \CHtml::button(
-                            'Save',
-                            [
-                            'class' => 'button large',
-                            'type' => 'submit',
-                            'name' => 'save',
-                            ]
-                        );
-                    } ?>
-                    <?= \CHtml::button(
-                        'Delete',
-                        [
-                            'class' => 'button large',
-                            'type' => 'button',
-                            'name' => 'delete',
-                            'data-uri' => '/oeadmin/CommonSystemicDisorderGroup/delete',
-                            'id' => 'et_delete_disorder_group',
-                        ]
-                    ); ?>
-                </td>
-            </tr>
-            </tfoot>
-        </table>
+<div class="cols-8">
+    <form method="POST" action="/oeadmin/CommonSystemicDisorderGroup/save?institution_id=<?= $current_institution_id; ?>">
+        <input type="hidden" class="no-clear" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
+        <?php
+        $columns = array(
+            array(
+                'header' => 'Order',
+                'type' => 'raw',
+                'htmlOptions' => array('width' => '50px'),
+                'value' => function ($data, $row) {
+                    return '<span>&uarr;&darr;</span>' .
+                        CHtml::hiddenField("CommonSystemicDisorderGroup[$row][id]", $data->id) .
+                        CHtml::hiddenField("display_order[$row]", $data->display_order);
+                },
+                'cssClassExpression' => "'reorder'",
+            ),
+            array(
+                'header' => 'Group Name',
+                'type' => 'raw',
+                'htmlOptions' => array('width' => '420px'),
+                'value' => function ($data, $row) {
+                    return CHtml::textField("CommonSystemicDisorderGroup[$row][name]", $data->name, array('style' => 'width:400px'));
+                }
+            ),
+            array(
+                'header' => 'Actions',
+                'type' => 'raw',
+                'value' => function ($data) use ($active_group_ids) {
+                    if (!in_array($data->id, $active_group_ids)) {
+                        return '<button type="button"><a href="javascript:void(0)" class="delete">delete</a></button>';
+                    } else {
+                        return '<span data-tooltip-content="This group has disorders assigned to it so can\'t be deleted." class="oe-i info small js-has-tooltip"></span>';
+                    }
+                }
+            ),
+        );
+
+        $this->widget('zii.widgets.grid.CGridView', array(
+            'dataProvider' => $dataProvider,
+            'itemsCssClass' => 'generic-admin standard sortable',
+            'template' => '{items}',
+            "emptyTagName" => 'span',
+            'rowHtmlOptionsExpression' => 'array("data-row"=>$row)',
+            'enableSorting' => false,
+            'columns' => $columns
+        ));
+        ?>
+        <div>
+            <button class="button large" type="button" id="add_new">Add</button>&nbsp
+            <button class="generic-admin-save button large" name="admin-save" type="submit"id="et_admin-save">Save</button>&nbsp;
+        </div>
     </form>
 </div>
+
 <script>
+
+    let formStructure = {
+        'name' : 'CommonSystemicDisorderGroups',
+        'tableSelector': '.generic-admin.standard.sortable',
+        'rowSelector': 'tr',
+        'rowIdentifier': 'row',
+        'structure': {
+            'CommonSystemicDisorderGroup[ROW_IDENTIFIER][id]' : '',
+            'display_order[ROW_IDENTIFIER]' : '',
+            'CommonSystemicDisorderGroup[ROW_IDENTIFIER][name]' : '#CommonSystemicDisorderGroup_ROW_IDENTIFIER_name'
+        }
+    };
+    let GenericFormJSONConverter = new OpenEyes.GenericFormJSONConverter(formStructure);
+    let $table = $('.generic-admin');
+
+    function initialiseRow($row) {
+        initTriggers($row, 'finding');
+    }
+
     $(document).ready(function () {
-        $('.entry-table').on('click', 'tr.clickable', function (e) {
+        let formSubmitted = false;
+
+        $('.generic-admin-save').on('click', function (e) {
+            if(formSubmitted) {
+                formSubmitted = false;
+                return;
+            }
+
             e.preventDefault();
-            let uri = $(this).data('uri');
 
-            if (uri) {
-                window.location.href = uri;
-            }
-        });
+            formSubmitted = true;
+            GenericFormJSONConverter.convert();
 
-        $(':checkbox').on('click', function (e) {
-            e.stopPropagation();
-        });
-
-        $('.sortable tbody').sortable({
-            stop: function() {
-                $('.sortable tbody tr').each(function(index, tr) {
-                    $(tr).find("[name$='display_order]']").val(index);
-                });
-            }
+            // only if there are no errors in the page proceed to save
+            $(this).trigger('click');
         });
 
         $('#institution_id').on('change', function () {
             $(this).closest('form').submit();
         });
 
-        $('#et_delete_disorder_group').on('click', function () {
-            let $checked = $('input[name="select[]"]:checked');
-            if ($checked.length === 0) {
-                new OpenEyes.UI.Dialog.Alert({
-                    content: "Please select one or more common systemic disorder group to delete."
-                }).open();
-            } else {
-                $.ajax({
-                    'type': 'POST',
-                    'url': baseUrl + $(this).data('uri'),
-                    'data': $checked.serialize() + "&YII_CSRF_TOKEN=" + YII_CSRF_TOKEN,
-                    'dataType': 'JSON',
-                    'success': function (response) {
-                        if (response['status'] === 1) {
-                            window.location.reload();
-                        } else {
-                            $('.js-admin-errors').show();
-                            let $errorContainer = $('.js-admin-error-container');
-                            $errorContainer.html("");
+        $table.find('tbody tr').each(function () {
+            initialiseRow($(this));
+        });
 
-                            response['errors'].forEach(function (error) {
-                                $errorContainer.append('<p class="js-admin-errors">' + error + '</p>');
-                            });
-                        }
-                    }
+        $('.sortable tbody').sortable({
+            stop: function(e, ui) {
+                $('.sortable tbody tr').each(function(index) {
+                    $(this).find("[name^='display_order']").val(index);
                 });
             }
         });
+
+        $('#add_new').on('click', function () {
+            let $tr = $('table.generic-admin tbody tr');
+            const $last_order_input = document.querySelector('table.generic-admin tbody tr:last-child input[name^="display_order"]');
+            const order_value = $last_order_input ? +$last_order_input.value + 1 : 0;
+
+            let output = Mustache.render($('#common_systemic_disorder_group_template').text(), {
+                "row_count": OpenEyes.Util.getNextDataKey($tr, 'row'),
+                'even_odd': $tr.length % 2 ? 'odd' : 'even',
+                'order_value': order_value
+            });
+
+            $('table.generic-admin tbody').append(output);
+
+            initialiseRow($('table.generic-admin tbody tr:last-child'));
+        });
+
+        $('.tool-tip').tooltip();
     });
+
+    function initTriggers($row) {
+        $row.on('click', 'a.delete', function () {
+            $(this).closest('tr').remove();
+        });
+    }
+</script>
+
+<script type="text/template" id="common_systemic_disorder_group_template">
+    <tr data-row="{{row_count}}" class="{{even_odd}}">
+        <td class="reorder">
+            <span>↑↓</span>
+            <input type="hidden" value="" name="CommonSystemicDisorderGroup[{{row_count}}][id]"
+                   id="CommonSystemicDisorderGroup_{{row_count}}_id">
+            <input type="hidden" value="{{order_value}}" name="display_order[{{row_count}}]"
+                   id="display_order_{{row_count}}">
+        </td>
+        <td width="400px">
+            <input type="text" name="CommonSystemicDisorderGroup[{{row_count}}][name]"
+                   id="CommonSystemicDisorderGroup_{{row_count}}_name" autocomplete="off" style="width:400px;">
+        </td>
+        <td>
+            <button type="button"><a href="javascript:void(0)" class="delete">delete</a></button>
+        </td>
+    </tr>
 </script>
