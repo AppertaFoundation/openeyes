@@ -1,8 +1,24 @@
+let currentInstitutionId, currentSubSpecialityId;
+
 describe('ophthalmic diagnoses widget behaviour', () => {
     before(() => {
         cy.login()
-            .then(() => {
-                return cy.createPatient();
+            .then((response) => {
+                currentInstitutionId = response.body.institution_id;
+                currentSubSpecialityId = response.body.subspeciality_id;
+
+                return [cy.createPatient(), response.body.institution_id, response.body.subspeciality_id];
+            })
+            .then(([patient, institution_id, subspeciality_id]) => {
+                cy.createModels('CommonOphthalmicDisorder', [['forInstitution', institution_id]], {subspeciality_id: subspeciality_id})
+                    .as('expectedCommonOphthalmicDisorder1');
+                cy.createModels('CommonOphthalmicDisorder', [['forInstitution', institution_id]], {subspeciality_id: subspeciality_id})
+                    .as('expectedCommonOphthalmicDisorder2');
+                
+                cy.createModels('CommonOphthalmicDisorder', [], {subspeciality_id: subspeciality_id})
+                    .as('unexpectedCommonOphthalmicDisorder');
+
+                return patient;
             })
             .then((patient) => {
                 return cy.getEventCreationUrl(patient.id, 'OphCiExamination')
@@ -11,17 +27,19 @@ describe('ophthalmic diagnoses widget behaviour', () => {
                     });
             })
             .then(([url, patient]) => {
-                console.log(["tom", url, patient]);
                 cy.visit(url);
-                console.log('url done')
-                return cy.addExaminationElement('Diagnoses');
+                return cy.addExaminationElement('Ophthalmic Diagnoses');
             });
     });
 
-    it('only loads diagnoses assigned to the current institution', () =>{
+    it('only loads diagnoses mapped to the current institution', () =>{
+        console.log
 
-        cy.get('#add-contacts-btn').click();
+        cy.getBySel('add-ophthalmic-diagnoses-button').click();
 
-        cy.get('#contacts-popup');
+        cy.getBySel('ophthalmic-diagnoses-popup')
+            .should('be.visible');
+
+
     });
 });

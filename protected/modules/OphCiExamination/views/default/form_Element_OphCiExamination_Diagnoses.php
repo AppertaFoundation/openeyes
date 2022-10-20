@@ -133,8 +133,8 @@ foreach ($this->patient->episodes as $ep) {
         </tbody>
     </table>
 
-    <div class="add-data-actions flex-item-bottom" id="ophthalmic-diagnoses-popup">
-        <button class="button hint green add-entry" type="button" id="add-ophthalmic-diagnoses">
+    <div class="add-data-actions flex-item-bottom" id="ophthalmic-diagnoses-popup" data-test="ophthalmic-diagnoses-popup">
+        <button class="button hint green add-entry" type="button" id="add-ophthalmic-diagnoses" data-test="add-ophthalmic-diagnoses-button">
             <i class="oe-i plus pro-theme"></i>
         </button>
     </div>
