@@ -19,7 +19,6 @@ namespace OE\factories\models;
 use Disorder;
 use OE\factories\ModelFactory;
 use OE\factories\models\traits\LooksUpExistingModels;
-use Specialty;
 use Subspecialty;
 use CommonOphthalmicDisorder;
 use ReferenceData;
@@ -31,8 +30,8 @@ class CommonOphthalmicDisorderFactory extends ModelFactory
     public function definition(): array
     {
         return [
-            'disorder_id' => ModelFactory::factoryFor(Disorder::class)->useExisting(['speciality_id' => '109']),
-            'subspeciality_id' => ModelFactory::factoryFor(Subspecialty::class)->useExisting()
+            'disorder_id' => ModelFactory::factoryFor(Disorder::class)->create(['specialty_id' => '109']),
+            'subspecialty_id' => ModelFactory::factoryFor(Subspecialty::class)->useExisting()
         ];
     }
 
