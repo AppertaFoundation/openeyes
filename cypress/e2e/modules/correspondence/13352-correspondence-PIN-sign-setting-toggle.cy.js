@@ -1,4 +1,4 @@
-describe.skip('correspondence esign behaviour', () => {
+describe('correspondence esign behaviour', () => {
     before(() => {
         cy.resetSystemSettingValue('require_pin_for_correspondence');
     });

@@ -1,4 +1,4 @@
-describe.skip('cvi esign behaviour', () => {
+describe('cvi esign behaviour', () => {
     const SETTING_NAME = 'require_pin_for_cvi';
 
     before(() => {

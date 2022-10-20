@@ -1,4 +1,4 @@
-describe.skip('consent esign behaviour', () => {
+describe('consent esign behaviour', () => {
     const SETTING_NAME = 'require_pin_for_consent';
     before(() => {
         cy.login()

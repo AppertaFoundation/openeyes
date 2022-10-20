@@ -16,10 +16,12 @@ declare -a foldersToDelete=(
     "$WROOT/protected/modules/eyedraw"
     "$WROOT/protected/runtime/cache"
     "$WROOT/assets"
+    "$WROOT/vendor"
+    "$WROOT/runtime/*"
 )
 
 # loop through the list of folders to delete
 for i in "${foldersToDelete[@]}"; do
     echo "deleting $i"
-    sudo rm -rf "$i" 
+    sudo rm -rf "$i"
 done

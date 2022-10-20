@@ -1,4 +1,4 @@
-describe.skip('examination esign behaviour', () => {
+describe('examination esign behaviour', () => {
     const SETTING_NAME = 'require_pin_for_prescription';
     before(() => {
         cy.login()
