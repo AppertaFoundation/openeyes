@@ -238,7 +238,11 @@ class ChangeEventController extends BaseController
                         $episode->firm_id = $new_firm->id;
 
                         $action = 'change-firm';
-                        $data = 'Changed from '.$current_firm->name.' to '.\Firm::model()->findByPk($firm_id)->name;
+                        $current_firm_name = "";
+                        if ($current_firm) {
+                            $current_firm_name = $current_firm->name;
+                        }
+                        $data = 'Changed from '.$current_firm_name.' to '.\Firm::model()->findByPk($firm_id)->name;
                     }
                     $episode->last_modified_user_id = Yii::app()->user->id;
                     $episode->last_modified_date = date('Y-m-d H:i:s');
