@@ -21,6 +21,7 @@ use OE\factories\ModelFactory;
 use OE\factories\models\traits\LooksUpExistingModels;
 use Subspecialty;
 use CommonOphthalmicDisorder;
+use CommonOphthalmicDisorderGroup;
 use ReferenceData;
 
 class CommonOphthalmicDisorderFactory extends ModelFactory
@@ -47,6 +48,24 @@ class CommonOphthalmicDisorderFactory extends ModelFactory
         return $this->state(function () use ($group_id) {
             return [
                 'group_id' => $group_id
+            ];
+        });
+    }
+
+    public function forKnownGroupName($group_name)
+    {
+        return $this->state(function () use ($group_name) {
+            return [
+                'group_id' => ModelFactory::factoryFor(CommonOphthalmicDisorderGroup::class)->useExisting(['name' => $group_name])->create()
+            ];
+        });
+    }
+
+    public function forKnownDisorderTerm($disorder_term)
+    {
+        return $this->state(function () use ($disorder_term) {
+            return [
+                'disorder_id' => ModelFactory::factoryFor(Disorder::class)->useExisting(['term' => $disorder_term])->create(['specialty_id' => '109'])
             ];
         });
     }

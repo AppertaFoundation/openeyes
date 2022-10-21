@@ -16,10 +16,10 @@
 
 namespace OE\factories\models;
 
-use Disorder;
 use OE\factories\ModelFactory;
 use OE\factories\models\traits\LooksUpExistingModels;
-use Specialty;
+use CommonOphthalmicDisorderGroup;
+use ReferenceData;
 
 class CommonOphthalmicDisorderGroupFactory extends ModelFactory
 {
@@ -32,13 +32,11 @@ class CommonOphthalmicDisorderGroupFactory extends ModelFactory
         ];
     }
 
-    public function forInstitution()
+    public function forInstitution($institution_id)
     {
-        // return $this->state(function () {
-        //     return [
-        //         'specialty_id' => $this->mapToFactoryOrId(Specialty::class, 'Ophthalmology')
-        //     ];
-        // });
+        return $this->afterCreating(function (CommonOphthalmicDisorderGroup $disorderGroup) use ($institution_id) {
+            $disorderGroup->createMapping(ReferenceData::LEVEL_INSTITUTION, $institution_id);
+        });
     }
 
     public function forDisplayOrder($display_order)
