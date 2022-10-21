@@ -44,6 +44,7 @@ $set_id = isset($this->set) ? $this->set->id : null;
             data-element-type-class="<?php echo CHtml::modelName($element->elementType->class_name) ?>"
             data-element-type-name="<?php echo $element->elementType->name ?>"
             data-element-display-order="<?= $element->getDisplayOrder($set_id); ?>"
+            data-mandatory="<?= $this->isRequiredInUI($element) ? "true" : "false"?>"
   >
         <?php
         if (isset($_POST['element_dirty'][$model_name])) {
@@ -86,16 +87,21 @@ $set_id = isset($this->set) ? $this->set->id : null;
                 <!-- order is important for layout because of Flex -->
                 <?php if ($this->canViewPrevious($element) || $this->canCopy($element)) { ?>
                     <span class="js-duplicate-element">
-            <i class="oe-i duplicate"></i>
-          </span>
+                        <i class="oe-i duplicate"></i>
+                    </span>
+                <?php }
+                // Remove MUST be last element
+                if ($this->isRequiredInUI($element)) { ?>
+                    <span class="disabled js-has-tooltip" data-tooltip-content="<b>Mandatory Element</b><br/>Can not be left blank">
+                        <i class="oe-i medium-icon <?= $element->hasErrors() ? 'asterisk-red' : 'asterisk' ?>"></i>
+                    </span>
+                <?php } else { ?>
+                    <span class="js-remove-element">
+                        <?php if (!isset($no_bin) || $no_bin == false) { ?>
+                            <i class="oe-i trash-blue"></i>
+                        <?php } ?>
+                    </span>
                 <?php } ?>
-                <!-- remove MUST be last element -->
-                <span class="<?= ($this->isRequiredInUI($element)) ? 'disabled' : 'js-remove-element' ?>"
-                      title="<?= ($this->isRequiredInUI($element)) ? 'This is a mandatory element and cannot be closed.' : '' ?>">
-                    <?php if (!isset($no_bin) || $no_bin == false) { ?>
-                        <i class="oe-i trash-blue <?= ($this->isRequiredInUI($element)) ? 'disabled' : '' ?>"></i>
-                    <?php } ?>
-          </span>
             </div>
         <?php } ?>
 

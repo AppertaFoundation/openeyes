@@ -251,4 +251,39 @@ class BaseDeliveryCommand extends CConsoleCommand
     {
         return str_replace("&", "and", $xml);
     }
+
+    /**
+     * @param Event $e The event of the document
+     * @param int $document_output_id
+     * @param string $prefix Prefix to be prepended to the filename
+     * @return string Name of the output file
+     */
+    public static function getFileName(Event $e, int $document_output_id, $prefix = '')
+    {
+        $fileNameFormat = Yii::app()->params['docman_filename_format'];
+
+        $replacement_definitions = [
+            '{prefix}' => isset($prefix) && !empty($prefix) ? $prefix . '_' : '',
+            '{patient.hos_num}' => function () use ($e) {
+                return str_replace(' ', '', PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient('LOCAL', $e->episode->patient->id, $e->institution_id, $e->site_id)));
+            },
+            '{event.id}' => $e->id,
+            '{random}' => rand(),
+            '{gp.nat_id}' => $e->episode->patient->gp ? $e->episode->patient->gp->nat_id : '',
+            '{event.last_modified_date}' => date('Ymd_His', strtotime($e->last_modified_date)),
+            '{document_output.id}' => $document_output_id,
+            '{date}' => date('YmdHis'),
+        ];
+
+        $replacement_pairs = [];
+        foreach ($replacement_definitions as $key => $value) {
+            if (str_contains($fileNameFormat, $key)) {
+                $replacement_pairs[$key] = is_callable($value) ? $value() : $value;
+            }
+        }
+
+        $filename = strtr($fileNameFormat, $replacement_pairs);
+
+        return $filename;
+    }
 }

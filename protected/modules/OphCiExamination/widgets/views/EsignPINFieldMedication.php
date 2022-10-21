@@ -131,12 +131,29 @@ if (!$element->isSigned()) {
                 }, 50);
             });
 
-            const setToDefaultSignatureRow = () => {
+            const clearSignatureRow = () => {
                 $('.js-signature-control').show();
                 $('.mm-signature-row').hide();
                 $('.js-signature-wrapper').html('');
                 $('#<?= $el_class ?>_signatures_0_id').val('');
                 $('#<?= $el_class ?>_signatures_0_proof').val('');
+            };
+
+            const setToDefaultSignatureRow = () => {
+                $.ajax({
+                    'type': 'GET',
+                    'url': baseUrl + '/OphCiExamination/Default/checkPrescriptionAutoSignEnabled',
+                    dataType: "json",
+                    async: false,
+                    'success': function (data) {
+                        if (!data.auto_sign_enabled) {
+                            clearSignatureRow();
+                        }
+                    },
+                    'error': function (resp, status, error) {
+                        clearSignatureRow();
+                    }
+                });
             }
 
             let isset_mm_error = document.getElementById("OEModule_OphCiExamination_models_MedicationManagement_element").getElementsByClassName("error")[0];

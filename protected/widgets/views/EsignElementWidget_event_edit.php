@@ -72,7 +72,7 @@ if ($this->isSigningAllowed()) {
                             if ($unable_to_consent && $withdrawal_element->contact_type_id === null) {
                                 $this->render(
                                     'OEModule.OphTrConsent.views.default._add_withdrawal_contact',
-                                    ['withdrawal_element' => $withdrawal_element],
+                                    ['withdrawal_element' => $withdrawal_element]
                                 );
                             } else {
                                 echo '<tbody>';
