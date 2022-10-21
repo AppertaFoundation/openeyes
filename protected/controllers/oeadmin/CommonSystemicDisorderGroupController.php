@@ -43,9 +43,9 @@ class CommonSystemicDisorderGroupController extends BaseAdminController
         ));
         $active_group_ids = array_values(
             array_unique(
-                array_map(function($disorder) {
+                array_map(function ($disorder) {
                         return $disorder->group_id;
-                    }, 
+                },
                     $disorders_in_group->getData()
                 )
             )
@@ -77,7 +77,7 @@ class CommonSystemicDisorderGroupController extends BaseAdminController
         if (json_last_error() != 0) {
             $json_error = true;
         }
-        
+
         $ids = array();
 
         if (!$json_error) {
@@ -89,7 +89,6 @@ class CommonSystemicDisorderGroupController extends BaseAdminController
                 return $entry['CommonSystemicDisorderGroup'];
             }, $JSON);
             foreach ($groups as $key => $group) {
-                
                 $common_systemic_disorder_group = CommonSystemicDisorderGroup::model()->findByPk($group['id']);
                 if (!$common_systemic_disorder_group) {
                     $common_systemic_disorder_group = new CommonSystemicDisorderGroup();
@@ -98,7 +97,7 @@ class CommonSystemicDisorderGroupController extends BaseAdminController
 
                 $common_systemic_disorder_group->attributes = $group;
                 $common_systemic_disorder_group->display_order = $display_orders[$key];
-            
+
                 if (!$common_systemic_disorder_group->save()) {
                     $errors[] = $common_systemic_disorder_group->getErrors();
                 }
@@ -110,7 +109,6 @@ class CommonSystemicDisorderGroupController extends BaseAdminController
                     $common_systemic_disorder_group->createMapping(ReferenceData::LEVEL_INSTITUTION, $current_institution->id);
                 }
             }
-        
         } else {
             $errors[] = ['Form Error' => ['There has been an error in saving, please contact support.']];
         }
@@ -153,7 +151,7 @@ class CommonSystemicDisorderGroupController extends BaseAdminController
 
             $transaction->rollback();
         }
-        
-        $this->redirect(Yii::app()->request->urlReferrer); 
+
+        $this->redirect(Yii::app()->request->urlReferrer);
     }
 }

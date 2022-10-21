@@ -43,7 +43,7 @@ class m221014_141148_limit_common_systemic_disorder_by_institution extends CDbMi
         foreach ($institutions as $institution) {
             // duplicate groups - retain id map to original group
             $group_id_mapping = [];
-            
+
             if (count($original_disorder_groups) > 0) {
                 foreach ($original_disorder_groups as $original_disorder_group) {
                     $this->insert($disorder_group_table_name, [

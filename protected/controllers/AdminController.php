@@ -50,10 +50,10 @@ class AdminController extends BaseAdminController
         $current_institution = $this->request->getParam('institution_id')
             ? Institution::model()->find('id = ' . $this->request->getParam('institution_id'))
             : Institution::model()->getCurrent();
-        
+
         $errors = array();
 
-        if (Yii::app()->request->isPostRequest) {        
+        if (Yii::app()->request->isPostRequest) {
             $transaction = Yii::app()->db->beginTransaction();
             $JSON_string = Yii::app()->request->getParam('CommonOphthalmicDisorderGroups');
             $json_error = false;
@@ -65,7 +65,7 @@ class AdminController extends BaseAdminController
             if (json_last_error() != 0) {
                 $json_error = true;
             }
-            
+
             $ids = array();
 
             if (!$json_error) {
@@ -77,7 +77,6 @@ class AdminController extends BaseAdminController
                     return $entry['CommonOphthalmicDisorderGroup'];
                 }, $JSON);
                 foreach ($groups as $key => $group) {
-                    
                     $common_ophthalmic_disorder_group = CommonOphthalmicDisorderGroup::model()->findByPk($group['id']);
                     if (!$common_ophthalmic_disorder_group) {
                         $common_ophthalmic_disorder_group = new CommonOphthalmicDisorderGroup();
@@ -86,7 +85,7 @@ class AdminController extends BaseAdminController
 
                     $common_ophthalmic_disorder_group->attributes = $group;
                     $common_ophthalmic_disorder_group->display_order = $display_orders[$key];
-                
+
                     if (!$common_ophthalmic_disorder_group->save()) {
                         $errors[] = $common_ophthalmic_disorder_group->getErrors();
                     }
@@ -98,7 +97,6 @@ class AdminController extends BaseAdminController
                         $common_ophthalmic_disorder_group->createMapping(ReferenceData::LEVEL_INSTITUTION, $current_institution->id);
                     }
                 }
-            
             } else {
                 $errors[] = ['Form Error' => ['There has been an error in saving, please contact support.']];
             }
@@ -162,9 +160,9 @@ class AdminController extends BaseAdminController
         ));
         $active_group_ids = array_values(
             array_unique(
-                array_map(function($disorder) {
+                array_map(function ($disorder) {
                         return $disorder->group_id;
-                    }, 
+                },
                     $disorders_in_group->getData()
                 )
             )
@@ -429,7 +427,7 @@ class AdminController extends BaseAdminController
         $criteria->join = "JOIN common_ophthalmic_disorder_institution codi ON t.id = codi.common_ophthalmic_disorder_id";
         $criteria->compare('subspecialty_id', $subspecialty_id);
         $criteria->compare('codi.institution_id', $current_institution->id);
-        
+
         $data = new CActiveDataProvider('CommonOphthalmicDisorder', array(
             'criteria' => $criteria,
             'pagination' => false,

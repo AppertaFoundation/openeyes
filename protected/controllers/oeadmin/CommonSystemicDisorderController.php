@@ -43,7 +43,7 @@ class CommonSystemicDisorderController extends BaseAdminController
 
         $this->render('/admin/editcommonsystemicdisorder', [
             'dataProvider' => new CActiveDataProvider('CommonSystemicDisorder', [
-                'pagination' => false, 
+                'pagination' => false,
                 'criteria' => $criteria
             ]),
             'current_institution_id' => $current_institution->id,

@@ -297,7 +297,6 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
         $disorders = array();
 
         if ($ss_id = $firm->getSubspecialtyID()) {
-
             $criteria = new CDbCriteria();
             $criteria->join = "JOIN common_ophthalmic_disorder_institution codi ON t.id = codi.common_ophthalmic_disorder_id";
             $criteria->compare('t.subspecialty_id', $ss_id);

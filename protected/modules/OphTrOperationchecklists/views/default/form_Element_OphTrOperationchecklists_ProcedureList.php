@@ -138,7 +138,7 @@ Yii::app()->clientScript->registerScript(
         </table>
     </div>
 
-<?php $diagnoses = CommonOSELECT * FROM INFORMATION_SCHEMA.TABLES 
+<?php $diagnoses = CommonOSELECT * FROM INFORMATION_SCHEMA.TABLES
 WHERE TABLE_NAME LIKE '%%'phthalmicDisorder::getList(
     Firm::model()->findByPk($this->selectedFirmId),
     false,
