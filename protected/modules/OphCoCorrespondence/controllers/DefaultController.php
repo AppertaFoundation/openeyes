@@ -1317,37 +1317,31 @@ class DefaultController extends BaseEventTypeController
 
         $direct_line_numbers = [];
         $fax_numbers = [];
-        $sfs_episode = [];
+        $secretaries_from_episode = [];
 
-        $sfs_context = FirmSiteSecretary::model()->findAll('firm_id=?', array($context_firm_id));
+        $secretaries_from_context = FirmSiteSecretary::model()->findAll('firm_id=?', array($context_firm_id));
 
-        if( (int) $episode_firm_id > 0 ) {
-            $sfs_episode = FirmSiteSecretary::model()->findAll('firm_id=?', array($episode_firm_id));
+        if ((int) $episode_firm_id > 0) {
+            $secretaries_from_episode = FirmSiteSecretary::model()->findAll('firm_id=?', array($episode_firm_id));
         }
 
-
-        foreach ($sfs_context as $sfc) {
+        foreach ($secretaries_from_context as $sfc) {
             $direct_line_numbers[$sfc->site_id] = trim($sfc->direct_line);
-        }
-
-        foreach ($sfs_episode as $sfe) {
-            if (!isset($direct_line_numbers[$sfe->site_id]) || $direct_line_numbers[$sfe->site_id] == '') {
-                $direct_line_numbers[$sfe->site_id] = trim($sfe->direct_line);
-            }
-        }
-
-        foreach ($sfs_context as $sfc) {
             $fax_numbers[$sfc->site_id] = trim($sfc->fax);
         }
 
-        foreach ($sfs_episode as $sfe) {
-            if (!isset($fax_numbers[$sfe->site_id]) || $fax_numbers[$sfe->site_id] == '') {
+        foreach ($secretaries_from_episode as $sfe) {
+            if (empty($direct_line_numbers[$sfe->site_id] ?? null)) {
+                $direct_line_numbers[$sfe->site_id] = trim($sfe->direct_line);
+            }
+
+            if (empty($fax_numbers[$sfe->site_id] ?? null)) {
                 $fax_numbers[$sfe->site_id] = trim($sfe->fax);
             }
         }
 
-        $direct_line_numbers = array_filter($direct_line_numbers, fn($value) => !is_null($value) && $value !== '');
-        $fax_numbers = array_filter($fax_numbers, fn($value) => !is_null($value) && $value !== '');
+        $direct_line_numbers = array_filter($direct_line_numbers);
+        $fax_numbers = array_filter($fax_numbers);
 
         $this->jsVars['correspondence_directlines'] = $direct_line_numbers;
         $this->jsVars['correspondence_fax_numbers'] = $fax_numbers;
