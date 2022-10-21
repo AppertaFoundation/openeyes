@@ -25,7 +25,7 @@ Cypress.Commands.add('addEyedrawDoodleInElement', (elementName, doodleName, side
             .then((element) => {
                 return cy.addEyedrawDoodle(element, doodleName, doodleIsInDrawer);
             });
-    } 
+    }
     
     return cy.getElementByName(elementName)
         .then((element) => {

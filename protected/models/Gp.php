@@ -16,6 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "Gp".
  *
@@ -31,6 +33,8 @@
  */
 class Gp extends BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     const UNKNOWN_SALUTATION = 'Doctor';
     const UNKNOWN_NAME = 'The General Practitioner';
 
@@ -226,7 +230,7 @@ class Gp extends BaseActiveRecordVersioned
     public function gpCorrespondences()
     {
         $sql = 'SELECT gp.id, CONCAT_WS(" ", title, first_name, last_name) as correspondenceName
-                FROM gp 
+                FROM gp
                 JOIN contact on gp.contact_id = contact.id';
 
         $query = $this->getDbConnection()->createCommand($sql);

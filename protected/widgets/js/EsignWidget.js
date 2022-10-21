@@ -88,12 +88,6 @@ OpenEyes.UI = OpenEyes.UI || {};
             const user_id  = widget.$userIdInput.val();
 
             widget.$pinInput.val("");
-            if (pin === "") {
-                new OpenEyes.UI.Dialog.Alert({
-                    content: "Please enter PIN."
-                }).open();
-                return false;
-            }
             if (widget.options.needUserName && user_id === "") {
                 new OpenEyes.UI.Dialog.Alert({
                     content: "Please enter the signatory's name."
@@ -125,8 +119,8 @@ OpenEyes.UI = OpenEyes.UI || {};
                 function (response) {
                     if (response.code === 0) {
                         widget.displaySignature(
-                            response.singature_image1_base64,
-                            response.singature_image2_base64,
+                            response.signature_image1_base64,
+                            response.signature_image2_base64,
                             response.date,
                             response.time,
                             response.signatory_name || null,

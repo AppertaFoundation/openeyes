@@ -30,20 +30,6 @@ class InternalReferralDeliveryCommand extends CConsoleCommand
 
     private $csv_format = 'OEInternalReferralLetterReport_%s.csv';
 
-    private $file_random_number;
-
-    public function setFileRandomNumber($number)
-    {
-        $this->file_random_number = $number;
-    }
-
-    public function getFileRandomNumber()
-    {
-        return $this->file_random_number ? $this->file_random_number : rand();
-    }
-
-
-
     /**
      * InternalReferralDelivery constructor.
      */
@@ -110,10 +96,10 @@ class InternalReferralDeliveryCommand extends CConsoleCommand
             echo 'Processing event ' . $event->id . ' :: Internal Referral' . PHP_EOL;
 
             $pdf_generated = $this->savePDFFile($event->id, $document->id);
-            $filename = $this->getFileName($event);
+            $filename = BaseDeliveryCommand::getFileName($event, $document->id, 'Internal');
 
             if ($this->generate_xml) {
-                $xml_generated = $this->generateXMLOutput($event, $filename);
+                $xml_generated = $this->generateXMLOutput($document->id, $event, $filename);
             }
 
             if (!$pdf_generated || ($this->generate_xml && !$xml_generated)) {
@@ -193,7 +179,7 @@ class InternalReferralDeliveryCommand extends CConsoleCommand
             curl_setopt($ch, CURLOPT_COOKIEFILE, '/tmp/cookie.txt');
 
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_COOKIE , "institution_id=$event->institution_id;site_id=$event->site_id");
+            curl_setopt($ch, CURLOPT_COOKIE, "institution_id=$event->institution_id;site_id=$event->site_id");
 
             $response = curl_exec($ch);
             if (curl_errno($ch)) {
@@ -225,54 +211,55 @@ class InternalReferralDeliveryCommand extends CConsoleCommand
                 return false;
             }
 
-            $filename = $this->getFileName($event);
+            $filename = BaseDeliveryCommand::getFileName($event, $output_id, 'Internal');
 
             return $pdf_generated = (file_put_contents($this->path . "/" . $filename . ".pdf", $content) !== false);
         }
     }
 
     /**
-     * Returns file name based on the event
-     *
-     * @param Event $event
-     * @return string
+     * @param $string
+     * @return array Return the array of strings that needs to be replaced
      */
-    private function getFileName(\Event $event)
+    private function getStringsToReplace($string)
     {
-        $local_identifier_value = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(
-            'LOCAL',
-            $event->episode->patient->id,
-            $event->institution_id, $event->site_id
-        ));
-        if (!isset(Yii::app()->params['filename_format']) || Yii::app()->params['filename_format'] === 'format1') {
-            $filename = "OPENEYES_Internal_" . (str_replace(' ', '', $local_identifier_value)) . '_' . $event->id . "_" . $this->getFileRandomNumber();
-        } else {
-            if (Yii::app()->params['filename_format'] === 'format2') {
-                $filename = 'Internal_' . (str_replace(' ', '', $local_identifier_value)) . '_' . date(
-                    'YmdHi',
-                    strtotime($event->last_modified_date)
-                ) . '_' . $event->id;
-            } else {
-                if (Yii::app()->params['filename_format'] === 'format3') {
-                    $filename = 'Internal_' . (str_replace(' ', '', $local_identifier_value)) . '_edtdep-OEY_' .
-                        date('Ymd_His', strtotime($event->last_modified_date)) . '_' . $event->id;
-                }
+        $tokens = [
+            '{' => '}',
+        ];
+
+        $closeTokens = array_flip($tokens);
+        $results = [];
+        $stack = [];
+        $result = "";
+        for ($i = 0; $i < strlen($string); ++$i) {
+            $s = $string[$i];
+            if (isset($tokens[$s])) {
+                $stack[] = $s;
+                $result .= $s;
+            } elseif (isset($closeTokens[$s])) {
+                $result .= $s;
+                $results[] = $result;
+                $result = "";
+                array_pop($stack);
+            } elseif (!empty($stack)) {
+                $result .= $s;
             }
         }
 
-        return $filename;
+        return $results;
     }
 
     /**
      * Generate XML file
      *
+     * @param int $document_output_id
      * @param Event $event
      * @param $filename
      * @return bool
      */
-    private function generateXMLOutput(\Event $event, $filename)
+    private function generateXMLOutput(int $document_output_id, \Event $event, $filename)
     {
-        $data = Yii::app()->internalReferralIntegration->constructRequestData($event, $this->path . "/" . $this->getFileName($event) . ".pdf");
+        $data = Yii::app()->internalReferralIntegration->constructRequestData($event, $this->path . "/" . BaseDeliveryCommand::getFileName($event, $document_output_id, 'Internal') . ".pdf");
         $xml = $this->renderFile($this->xml_template_file, $data, true);
         return (file_put_contents($this->path . "/" . $filename . ".XML", $this->cleanXML($xml)) !== false);
     }

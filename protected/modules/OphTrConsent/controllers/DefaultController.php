@@ -17,7 +17,6 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-use Eye;
 use OEModule\OphTrConsent\models\Element_OphTrConsent_AdditionalSignatures;
 use OEModule\OphTrConsent\models\Element_OphTrConsent_BestInterestDecision;
 use OEModule\OphTrConsent\models\OphTrConsent_BestInterestDecision_Attachment;
@@ -1217,6 +1216,14 @@ class DefaultController extends BaseEventTypeController
             "&initiator_row_id=" . \Yii::app()->request->getParam("initiator_row_id") .
             "&deviceSign=" . \Yii::app()->request->getParam("deviceSign")
         );
+    }
+
+    protected function saveComplexAttributes_Element_OphTrConsent_Esign(
+        Element_OphTrConsent_Esign $element,
+        $data,
+        $index
+    ) {
+        $element->attemptAutoSign();
     }
 
     protected function setComplexAttributes_Element_OphTrConsent_OthersInvolvedDecisionMakingProcess($element, $data, $index)

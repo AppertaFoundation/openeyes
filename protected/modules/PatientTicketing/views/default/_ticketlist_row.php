@@ -68,9 +68,6 @@
         </div>
     </td>
     <td>
-        <div class="small-row">
-            <?=$ticket->current_queue_assignment->consultant->fullNameAndTitle ?? 'Consultant not recorded'; /* probably older events */?><br>
-        </div>
         <div class="small-row"><?= Helper::convertDate2NHS($ticket->created_date) ?><br>
         <div class="small-row">
             <small><?= \CHtml::encode($ticket->event->site->name ?? 'Site not recorded'); ?></small>

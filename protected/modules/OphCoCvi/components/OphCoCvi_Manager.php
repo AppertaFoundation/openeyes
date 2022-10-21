@@ -1518,12 +1518,13 @@ class OphCoCvi_Manager extends \CComponent
             return false;
         }
 
+        $hos_num = $this->getHosNum($event->episode->patient);
         $message = \Yii::app()->mailer->newMessage();
         $from_address = \SettingMetadata::model()->getSetting('cvi_eclo_sender_email');
         $message->setFrom($from_address);
         $message->setTo(\SettingMetadata::model()->getSetting('cvi_eclo_target_email'));
         $message->setSubject('New CVI');
-        $message->setBody("Dear ECLO Team\nA new CVI has been started by {$event->user->getFullName()}\nPatient: {$event->episode->patient->getFullName()}\nHos num:{$event->episode->patient->hos_num}");
+        $message->setBody("Dear ECLO Team\nA new CVI has been started by {$event->user->getFullName()}\nPatient: {$event->episode->patient->getFullName()}\nHos num:{$hos_num}");
 
         $sender_email_address = \SenderEmailAddresses::getSenderAddress($from_address, $event->institution_id, $event->site_id);
         if (!$sender_email_address) {
@@ -1531,5 +1532,13 @@ class OphCoCvi_Manager extends \CComponent
         }
         $sender_email_address->prepareMailer();
         return \Yii::app()->mailer->sendMessage($message);
+    }
+
+    private function getHosNum($patient) {
+        $institution = \Institution::model()->getCurrent();
+        $selected_site_id = \Yii::app()->session['selected_site_id'];
+        $display_primary_number_usage_code = \SettingMetadata::model()->getSetting('display_primary_number_usage_code');
+        $primary_identifier = \PatientIdentifierHelper::getIdentifierForPatient($display_primary_number_usage_code, $patient->id, $institution->id, $selected_site_id);
+        return \PatientIdentifierHelper::getIdentifierValue($primary_identifier);
     }
 }

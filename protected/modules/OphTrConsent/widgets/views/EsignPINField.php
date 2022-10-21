@@ -36,14 +36,10 @@ $uid = \CHtml::modelName($el_class) . "_" . \CHtml::modelName($widget_class) . "
     <td><span class="js-signatory-name"><?= $this->signature->signatory_name ?></span></td>
     <!-- Date -->
     <td>
-        <div class="js-signature-date" <?php if (!$this->isSigned()) {
-            echo 'style="display:none"';
-                                       }?>>
+        <div class="js-signature-date" <?= !$this->isSigned() ? 'style="display:none"' : "" ?>>
             <?php $this->displaySignatureDate() ?>
         </div>
-        <div class="js-signature-control" <?php if ($this->isSigned()) {
-            echo 'style="display:none"';
-                                          }?>>
+        <div class="js-signature-control" <?= $this->isSigned() ? 'style="display:none"' : "" ?>>
             <div class="oe-user-pin">
                 <?php echo CHtml::passwordField('pin_' . $uid, '', array(
                     'placeholder' => "********",
@@ -57,9 +53,7 @@ $uid = \CHtml::modelName($el_class) . "_" . \CHtml::modelName($widget_class) . "
     </td>
     <!-- Signature -->
     <td>
-        <div class="js-signature-wrapper flex-l" <?php if (!$this->isSigned()) {
-            echo 'style="display:none"';
-                                                 }?>>
+        <div class="js-signature-wrapper flex-l" <?= !$this->isSigned() ? 'style="display:none"' : ""?>>
             <?php $this->displaySignature() ?>
             <div class="esigned-at">
                 <i class="oe-i tick-green small pad-right"></i>Signed <small>at</small> <span class="js-signature-time"><?php $this->displaySignatureTime() ?></span>

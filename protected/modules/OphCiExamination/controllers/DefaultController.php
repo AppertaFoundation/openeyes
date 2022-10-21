@@ -59,7 +59,8 @@ class DefaultController extends \BaseEventTypeController
         'getSignatureByPin' => self::ACTION_TYPE_FORM,
         'getSignatureByUsernameAndPin' => self::ACTION_TYPE_FORM,
         'searchInstitutions' => self::ACTION_TYPE_FORM,
-        'medicationManagementEditable' => self::ACTION_TYPE_FORM
+        'medicationManagementEditable' => self::ACTION_TYPE_FORM,
+        'checkPrescriptionAutoSignEnabled' => self::ACTION_TYPE_FORM
     );
 
     private const ACTION_TYPE_SAFEGUARDING = 'Safeguarding';
@@ -490,6 +491,11 @@ class DefaultController extends \BaseEventTypeController
         $result = $api->{"getLastIOPReading{$side}"}($patient);
 
         echo $result;
+    }
+
+    public function actionCheckPrescriptionAutoSignEnabled()
+    {
+        echo json_encode(['auto_sign_enabled' => \SettingMetadata::model()->checkSetting('require_pin_for_prescription', 'no')]);
     }
 
     public function actionCreate()

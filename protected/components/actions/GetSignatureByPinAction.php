@@ -26,6 +26,9 @@ class GetSignatureByPinAction extends \CAction
     protected string $thumbnail_src1;
     protected string $thumbnail_src2;
     protected ?int $signature_file_id = null;
+    protected int $context;
+
+    protected bool $is_secretary_signing = false;
 
     protected function getUser() : void
     {
@@ -44,34 +47,37 @@ class GetSignatureByPinAction extends \CAction
 
     protected function getSignatureFile() : void
     {
-        $this->signature_file_id = $this->user->signature_file_id;
-        if(is_null($this->signature_file_id)) {
-            throw new Exception(
-                "It seems that you haven't yet captured a signature in OpenEyes. ".
-                "Please go to your profile to do so."
-            );
+        if(!$this->is_secretary_signing) {
+            $signature_data = SignatureHelper::getUserSignatureFile($this->user->id);
+            $this->signature_file_id = $signature_data['signature_file_id'];
+            $this->thumbnail_src1 = $signature_data['thumbnail_src1'];
+            $this->thumbnail_src2 = $signature_data['thumbnail_src2'];
         }
-
-        $file = $this->user->signature;
-        $thumbnail1 = $file->getThumbnail("72x24", true);
-        $thumbnail2 = $file->getThumbnail("150x50", true);
-
-        $thumbnail1_source = file_get_contents($thumbnail1['path']);
-        $this->thumbnail_src1 = 'data:' . $file->mimetype . ';base64,' . base64_encode($thumbnail1_source);
-
-        $thumbnail2_source = file_get_contents($thumbnail2['path']);
-        $this->thumbnail_src2 = 'data:' . $file->mimetype . ';base64,' . base64_encode($thumbnail2_source);
     }
 
     protected function checkPIN() : void
     {
-        if(strlen($this->pin) === 0) {
-            throw new Exception("Empty PIN was provided, please enter PIN and click 'PIN sign' again.");
-        }
-        if(!$this->user->checkPin($this->pin)) {
-            throw new Exception("Incorrect PIN");
+        $secretary_can_sign = $this->controller->secretary_can_sign ?? false;
+        if ($this->pin === Yii::app()->params["secretary_pin"] && $secretary_can_sign) {
+            $this->is_secretary_signing = true;
+            $this->checkSecretaryPIN();
+        } else {
+            if(strlen($this->pin) === 0) {
+                throw new Exception("Empty PIN was provided, please enter PIN and click 'PIN sign' again.");
+            }
+            if(!$this->user->checkPin($this->pin)) {
+                throw new Exception("Incorrect PIN");
+            }
         }
     }
+
+    private function checkSecretaryPIN()
+    {
+        if (!Yii::app()->user->checkAccess('SignEvent')) {
+            throw new Exception("We're sorry, you are not authorized to sign events. Please contact support.");
+        }
+    }
+
 
     /**
      * @inheritDoc
@@ -80,11 +86,18 @@ class GetSignatureByPinAction extends \CAction
     {
         $this->pin = Yii::app()->request->getPost('pin');
 
+        // \OELog::log(print_r($this->controller, true));
+
         try {
-            $this->getUser();
+            // Check if the user has the Prescribe role, if not throw an exception.
+            $can_prescribe = Yii::app()->user->checkAccess('Prescribe');
+            if (!$can_prescribe) {
+                throw new Exception("You do not have the necessary user rights to sign this prescription.");
+            }
+            $this->user = SignatureHelper::getUserForSigning();
+            // $this->getUser();
             $this->checkPIN();
             $this->getSignatureFile();
-
         } catch (Exception $e) {
             $this->renderJSON([
                 'code' => 1,
@@ -107,16 +120,21 @@ class GetSignatureByPinAction extends \CAction
 
     protected function successResponse()
     {
-        $this->renderJSON([
-            "code" => 0,
-            "error" => "",
-            "signature_proof" => $this->signature_proof,
-            'singature_image1_base64' => $this->thumbnail_src1,
-            'singature_image2_base64' => $this->thumbnail_src2,
+        $response = [
+            'code' => 0,
+            'error' => "",
+            'signature_proof' => $this->signature_proof,
             'date' => $this->date_time->format(Helper::NHS_DATE_FORMAT),
             'time' => $this->date_time->format("H:i"),
-            'signed_by_secretary' => false,
-        ]);
+            'signed_by_secretary' => $this->is_secretary_signing,
+        ];
+
+        if (!$this->is_secretary_signing) {
+            $response['signature_image1_base64'] = $this->thumbnail_src1;
+            $response['signature_image2_base64'] = $this->thumbnail_src2;
+        }
+
+        $this->renderJSON($response);
     }
 
     /**

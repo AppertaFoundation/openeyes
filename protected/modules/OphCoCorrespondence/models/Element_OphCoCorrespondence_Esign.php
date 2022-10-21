@@ -26,6 +26,11 @@
  */
 class Element_OphCoCorrespondence_Esign extends BaseEsignElement
 {
+    use AutoSignTrait;
+    private $signature_class = \OphCoCorrespondence_Signature::class;
+    private $pin_required_setting_name = 'require_pin_for_correspondence';
+    private $auto_sign_role = self::PRIMARY_ROLE;
+
     public const PRIMARY_ROLE = "From";
     public const SECONDARY_ROLE = "Secondary Signatory";
 
