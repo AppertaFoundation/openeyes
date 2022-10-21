@@ -503,7 +503,7 @@ $(function () {
                     const $thisStep = $('.oe-pathstep-btn[data-pathstep-type-id="' + ps.pathstepTypeId + '"][data-visit-id="' + ps.visitID +'"]');
                     const $pathway = $thisStep.closest('td.js-pathway-container');
                     const oldSteps = collectActiveTodoStepsFrom($pathway);
-                    let $commentButton = $('.comments[data-pathway-id="' + ps.pathwayId + '"]');
+                    let $commentButton = ps.pathwayId ? $('.comments[data-pathway-id="' + ps.pathwayId + '"]') : $('.comments[data-visit-id="' + ps.visitID + '"]');
 
                     $pathway.html(response.step_html);
 

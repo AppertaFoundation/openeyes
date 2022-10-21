@@ -1355,7 +1355,7 @@ class DefaultController extends BaseEventTypeController
                 $elements[] = $element_type->getInstance();
             }
 
-            if ($element_type->class_name === "Element_OphTrOperationnote_Cataract") {
+            if ($element_type->class_name === "Element_OphTrOperationnote_Cataract"  && in_array($element_type, $elements)) {
                 $elements[] = new Element_OphTrOperationnote_Biometry();
             }
         }

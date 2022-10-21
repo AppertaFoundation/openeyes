@@ -59,7 +59,8 @@ class DefaultController extends \BaseEventTypeController
         'getSignatureByPin' => self::ACTION_TYPE_FORM,
         'getSignatureByUsernameAndPin' => self::ACTION_TYPE_FORM,
         'searchInstitutions' => self::ACTION_TYPE_FORM,
-        'medicationManagementEditable' => self::ACTION_TYPE_FORM
+        'medicationManagementEditable' => self::ACTION_TYPE_FORM,
+        'checkPrescriptionAutoSignEnabled' => self::ACTION_TYPE_FORM
     );
 
     private const ACTION_TYPE_SAFEGUARDING = 'Safeguarding';
@@ -490,6 +491,11 @@ class DefaultController extends \BaseEventTypeController
         $result = $api->{"getLastIOPReading{$side}"}($patient);
 
         echo $result;
+    }
+
+    public function actionCheckPrescriptionAutoSignEnabled()
+    {
+        echo json_encode(['auto_sign_enabled' => \SettingMetadata::model()->checkSetting('require_pin_for_prescription', 'no')]);
     }
 
     public function actionCreate()
@@ -3033,22 +3039,10 @@ class DefaultController extends \BaseEventTypeController
         return array('errorMessages' => $error_messages);
     }
 
-    public function getClinicalOutcomeServices()
-    {
-        return array_map(
-            static function ($item) {
-                return ['id' => $item->id, 'name' => 'subspecialty', 'label' => $item->name];
-            },
-            \Subspecialty::model()->with(['serviceSubspecialtyAssignment' => ['with' => 'firms']])->findAll(
-                'firms.active = 1'
-            )
-        );
-    }
-
-    /** Return  contexts based on Service_id
+    /** Return contexts based on Subspecialty Id
      *
      * @param $contexts
-     * @param $service_id
+     * @param $subspecialty_id
      * @return array
      */
     public function getContextFromSubspecialty($contexts, $subspecialty_id)

@@ -1539,4 +1539,11 @@ class DefaultController extends BaseEventTypeController
 
         return $pdf_path;
     }
+
+    protected function setElementDefaultOptions_Element_OphCoCorrespondence_Esign(
+        Element_OphCoCorrespondence_Esign $element,
+        $action
+    ) {
+        $element->attemptAutoSign();
+    }
 }
