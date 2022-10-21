@@ -188,8 +188,10 @@ trait MappedReferenceData
             $suffix = $this->levelRelationProperty($level);
             foreach ($this->$suffix ?? [] as $model) {
                 if ((int)$model->id === $id) {
-                    if (($this->softDeleteMappings() && $model->active)
-                    || !$this->softDeleteMappings()) {
+                    if (
+                        ($this->softDeleteMappings() && $model->active)
+                        || !$this->softDeleteMappings()
+                    ) {
                         return true;
                     }
                 }
@@ -217,10 +219,12 @@ trait MappedReferenceData
             $reference_data_column = $this->mappingColumn($level);
             $level_column = $this->levelIdColumn($level);
 
-            if ((int)$model_func()->count(
-                "$reference_data_column = :reference_data_id AND $level_column = :level_id",
-                array(':reference_data_id' => $this->id, ':level_id' => $level_id)
-            ) > 0) {
+            if (
+                (int)$model_func()->count(
+                    "$reference_data_column = :reference_data_id AND $level_column = :level_id",
+                    array(':reference_data_id' => $this->id, ':level_id' => $level_id)
+                ) > 0
+            ) {
                 throw new RuntimeException('Mapping already exists for the specified level ID.');
             }
 
@@ -258,10 +262,12 @@ trait MappedReferenceData
             $transaction = Yii::app()->db->beginTransaction();
             try {
                 foreach ($level_ids as $level_id) {
-                    if ($model_func()->exists(
-                        "$reference_data_column = :reference_data_id AND $level_column = :level_id",
-                        array(':reference_data_id' => $this->id, ':level_id' => $level_id)
-                    )) {
+                    if (
+                        $model_func()->exists(
+                            "$reference_data_column = :reference_data_id AND $level_column = :level_id",
+                            array(':reference_data_id' => $this->id, ':level_id' => $level_id)
+                        )
+                    ) {
                         continue;
                     }
                     $instance = new $model();
@@ -396,7 +402,7 @@ trait MappedReferenceData
             $reference_data_column = $this->mappingColumn($level);
             $instances = $model_instance_func()->findAll(
                 "$reference_data_column = :reference_data_id",
-                 array(":reference_data_id" => $this->id)
+                array(":reference_data_id" => $this->id)
             );
 
             if (empty($instances)) {

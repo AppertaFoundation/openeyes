@@ -39,9 +39,7 @@ foreach (OphCiExamination_ClinicOutcome_Status::model()->findAll('patientticket=
     $patient_ticket_statuses[] = $status->id;
 }
 $sites_list = Site::model()->getListForCurrentInstitution('name');
-$services = $this->getClinicalOutcomeServices();
 $contexts = NewEventDialogHelper::structureAllSubspecialties();
-
 $subspecialty_contexts = [];
 
 $current_firm = Firm::model()->findByPk($this->selectedFirmId);
@@ -165,15 +163,15 @@ $subspecialty_contexts = $this->getContextFromSubspecialty($contexts,$default_su
                         </div>
                     </td>
 
-                    <!-- Service -->
+                    <!-- Subspecialty -->
                     <td class="follow-up-options-follow-up-only" style="display: none">
                         <div class="flex-layout flex-top flex-left">
-                            <ul class="add-options" id="followup-outcome-service_options">
-                                <?php foreach ($services as $service) : ?>
-                                    <li data-service_id="<?= $service['id'] ?>"
-                                        data-label="<?= $service['label'] ?>"
-                                        class="<?= $default_subspecialty_id === $service['id'] ? 'selected' : '' ?>">
-                                        <?= $service['label'] ?>
+                            <ul class="add-options" id="followup-outcome-subspecialty_options">
+                                <?php foreach ($contexts as $context) : ?>
+                                    <li data-subspecialty_id="<?= $context['id'] ?>"
+                                        data-label="<?= $context['name'] ?>"
+                                        class="<?= $default_subspecialty_id === $context['id'] ? 'selected' : '' ?>">
+                                        <?= $context['name'] ?>
                                     </li>
                                 <?php endforeach; ?>
                             </ul>
@@ -314,10 +312,10 @@ $subspecialty_contexts = $this->getContextFromSubspecialty($contexts,$default_su
                 'risk_status_content' => '{{risk_status_content}}',
                 'is_template' => true,
                 'site' => '{{site}}',
-                'service' => '{{service}}',
+                'subspecialty' => '{{subspecialty}}',
                 'context' => '{{context}}',
                 'site_id' => '{{site_id}}',
-                'service_id' => '{{service_id}}',
+                'subspecialty_id' => '{{subspecialty_id}}',
                 'context_id' => '{{context_id}}',
 
             ],

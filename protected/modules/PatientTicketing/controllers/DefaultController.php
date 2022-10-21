@@ -159,12 +159,14 @@ class DefaultController extends \BaseModuleController
         }
         if (isset($filter_options['date-from']) && $filter_options['date-from']) {
             $date_from = new \DateTime($filter_options['date-from']);
+            $date_from->setTime(0, 0, 0);
             $date_from_timestamp = $date_from->getTimestamp();
             $criteria->addCondition('UNIX_TIMESTAMP(DATE(t.created_date)) >= :date_from_timestamp');
             $params[':date_from_timestamp'] = $date_from_timestamp;
         }
         if (isset($filter_options['date-to']) && $filter_options['date-to']) {
             $date_to = new \DateTime($filter_options['date-to']);
+            $date_to->setTime(23, 59, 59);
             $date_to_timestamp = $date_to->getTimestamp();
             $criteria->addCondition('UNIX_TIMESTAMP(DATE(t.created_date)) <= :date_to_timestamp');
             $params[':date_to_timestamp'] = $date_to_timestamp;

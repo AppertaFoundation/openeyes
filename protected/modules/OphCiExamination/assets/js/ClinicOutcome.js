@@ -44,7 +44,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         this.risk_status_options_selector = '#follow-up-risk-status-options li';
         this.$risk_status_options = $(this.risk_status_options_selector);
 
-        this.service_options_selector = '#followup-outcome-service_options li';
+        this.subspecialty_options_selector = '#followup-outcome-subspecialty_options li';
         this.site_options_selector = '#follow-up-site-options li';
         this.context_options_selector = '#follow-up-context-options li';
 
@@ -91,12 +91,12 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             controller.deleteRow($(this).closest('tr'));
         });
 
-        $(this.service_options_selector).on('click', (e) => {
+        $(this.subspecialty_options_selector).on('click', (e) => {
             e.preventDefault();
             let context_options_selector = '#follow-up-context-options';
 
-            let service_id = $(e.target).data('service_id');
-            let contexts = (this.getContextFromService(service_id));
+            let subspecialty_id = $(e.target).data('subspecialty_id');
+            let contexts = (this.getContextFromService(subspecialty_id));
             let html = '';
 
             if(contexts){
@@ -111,11 +111,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         });
     };
 
-    ClinicOutcomeController.prototype.getContextFromService = function(service_id) {
+    ClinicOutcomeController.prototype.getContextFromService = function(subspecialty_id) {
         let contexts = $(jQuery.parseJSON( this.options.contexts ));
         let result;
         contexts.each( (idx, i) => {
-            if (i.id == service_id) {
+            if (i.id == subspecialty_id) {
                 result = i.contexts;
                 return;
             }
@@ -134,7 +134,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         let selected_quantity = $(this.quantity_options_selector + '.selected').data('quantity');
 
         let $selected_site = $(this.site_options_selector + '.selected');
-        let $selected_service = $(this.service_options_selector + '.selected');
+        let $selected_subspecialty = $(this.subspecialty_options_selector + '.selected');
         let $selected_context = $(this.context_options_selector + '.selected');
 
         if (this.validateInputs(
@@ -146,7 +146,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             $selected_discharge_destination,
             $selected_transfer_to,
             $selected_site,
-            $selected_service,
+            $selected_subspecialty,
             $selected_context
         )) {
             this.createRow(
@@ -158,7 +158,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                 $selected_discharge_destination,
                 $selected_transfer_to,
                 $selected_site,
-                $selected_service,
+                $selected_subspecialty,
                 $selected_context
             );
             $('#followup_comments').val('');
@@ -175,7 +175,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         $selected_transfer_to,
 
         $selected_site,
-        $selected_service,
+        $selected_subspecialty,
         $selected_context
     ) {
         let alert_message = '';
@@ -221,7 +221,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         $selected_discharge_destination,
         $selected_transfer_to,
         $selected_site,
-        $selected_service,
+        $selected_subspecialty,
         $selected_context
     ) {
         let data = {};
@@ -253,8 +253,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
             data.site_id = $selected_site.data('site_id');
             data.site = $selected_site.data('label');
-            data.service_id = $selected_service.data('service_id');
-            data.service = $selected_service.data('label');
+            data.subspecialty_id = $selected_subspecialty.data('subspecialty_id');
+            data.subspecialty = $selected_subspecialty.data('label');
             data.context_id = $selected_context.data('context_id');
             data.context = $selected_context.data('label');
 

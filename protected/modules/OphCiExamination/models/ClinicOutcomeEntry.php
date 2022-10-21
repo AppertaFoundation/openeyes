@@ -26,7 +26,7 @@ use Period;
  * @property int $element_id
  * @property int $status_id
  * @property int $site_id
- * @property int $service_id
+ * @property int $subspecialty_id
  * @property int $context_id
  * @property int $discharge_status_id
  * @property int $discharge_destination_id
@@ -77,13 +77,13 @@ class ClinicOutcomeEntry extends \BaseElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('id, element_id, status_id,site_id,service_id,context_id, followup_quantity, followup_period_id, role_id, followup_comments, discharge_status_id, discharge_destination_id, transfer_institution_id', 'safe'),
+            array('id, element_id, status_id, site_id, subspecialty_id, context_id, followup_quantity, followup_period_id, role_id, followup_comments, discharge_status_id, discharge_destination_id, transfer_institution_id', 'safe'),
             array('status_id', 'required'),
             array('status_id', 'statusDependencyValidation'),
             array('role_id', 'roleDependencyValidation'),
             array('followup_quantity, risk_status_id', 'default', 'setOnEmpty' => true, 'value' => null),
             array('followup_quantity', 'numerical', 'integerOnly' => true, 'min' => Element_OphCiExamination_ClinicOutcome::FOLLOWUP_Q_MIN, 'max' => Element_OphCiExamination_ClinicOutcome::FOLLOWUP_Q_MAX),
-            array('element_id, status_id,site_id,service_id,context_id, followup_quantity, followup_period_id, role_id, followup_comments', 'safe', 'on' => 'search'),
+            array('element_id, status_id, site_id, subspecialty_id, context_id, followup_quantity, followup_period_id, role_id, followup_comments', 'safe', 'on' => 'search'),
         );
     }
 
@@ -101,7 +101,7 @@ class ClinicOutcomeEntry extends \BaseElement
             'status' => [self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Status', 'status_id'],
 
             'site' => [self::BELONGS_TO, 'Site', 'site_id'],
-            'service' => [self::BELONGS_TO, 'Service', 'service_id'],
+            'subspecialty' => [self::BELONGS_TO, 'Subspecialty', 'subspecialty_id'],
             'context' => [self::BELONGS_TO, 'Firm', 'context_id'],
 
             'discharge_status' => [self::BELONGS_TO, 'OEModule\OphCiExamination\models\DischargeStatus', 'discharge_status_id'],
@@ -125,7 +125,7 @@ class ClinicOutcomeEntry extends \BaseElement
             'followup_quantity' => 'Follow-up',
             'followup_period_id' => 'Follow-up period',
             'site_id' => 'Site',
-            'service_id' => 'Service',
+            'subspecialty_id' => 'Subspecialty',
             'context' => 'Context',
             'followup_comments' => 'Comments',
             'role_id' => 'Role',
@@ -145,7 +145,7 @@ class ClinicOutcomeEntry extends \BaseElement
         $criteria->compare('element_id', $this->element_id, true);
         $criteria->compare('status_id', $this->status_id);
         $criteria->compare('site_id', $this->site_id);
-        $criteria->compare('service_id', $this->service_id);
+        $criteria->compare('subspecialty_id', $this->subspecialty_id);
         $criteria->compare('context_id', $this->context_id);
         $criteria->compare('followup_quantity', $this->followup_quantity);
         $criteria->compare('followup_period_id', $this->followup_period_id);
@@ -206,9 +206,9 @@ class ClinicOutcomeEntry extends \BaseElement
         return $this->site->name ?? 'Any';
     }
 
-    public function getServicelabel()
+    public function getSubspecialtylabel()
     {
-        return $this->service->name ?? 'N\A';
+        return $this->subspecialty->name ?? 'N\A';
     }
 
     public function getContextLabel()
@@ -307,7 +307,7 @@ class ClinicOutcomeEntry extends \BaseElement
                 . ' ' . $this->getPeriodLabel()
                 . $this->getRoleLabel()
                 . '. Site: '. $this->getSiteLabel()
-                . '. Service: '. $this->getServicelabel()
+                . '. Subspecialty: '. $this->getSubspecialtylabel()
                 . '. Context: '. $this->getContextLabel()
                 . ' ' . $this->getDisplayComments() . $risk_status_info['icon'];
         }

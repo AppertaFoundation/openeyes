@@ -39,10 +39,10 @@ if (!isset($values)) {
         'risk_status_class' => $risk_status_info['class'],
         'risk_status_content' => $risk_status_info['content'],
         'site_id' => $entry->site_id,
-        'service_id' => $entry->service_id,
+        'subspecialty_id' => $entry->subspecialty_id,
         'context_id' => $entry->context_id,
         'site' => $entry->getSiteLabel(),
-        'service' => $entry->getServiceLabel(),
+        'subspecialty' => $entry->getSubspecialtyLabel(),
         'context' => $entry->getContextLabel(),
     );
 }
@@ -75,8 +75,8 @@ if (!isset($values)) {
 
             <input type="hidden" name="<?= $field_prefix ?>[site_id]"
                    value="<?= $values['site_id'] ?>"/>
-            <input type="hidden" name="<?= $field_prefix ?>[service_id]"
-                   value="<?= $values['service_id'] ?>"/>
+            <input type="hidden" name="<?= $field_prefix ?>[subspecialty_id]"
+                   value="<?= $values['subspecialty_id'] ?>"/>
             <input type="hidden" name="<?= $field_prefix ?>[context_id]"
                    value="<?= $values['context_id'] ?>"/>
         <?php } ?>
@@ -97,8 +97,8 @@ if (!isset($values)) {
             . $values['followup_comments_display']
             . '. Site: '
             . $values['site']
-            . ', Service: '
-            . $values['service']
+            . ', Subspecialty: '
+            . $values['subspecialty']
             . ', Context: '
             . $values['context']
 

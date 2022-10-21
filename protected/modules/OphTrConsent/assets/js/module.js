@@ -275,7 +275,7 @@ $(document).ready(function() {
     signatures.changeGuardian();
 
 	$("#clinical-create").submit(function(e) {
-		if(proceed || !savenprint_clicked) {
+		if((typeof proceed != 'undefined' && proceed) || (typeof savenprint_clicked == 'undefined' || !savenprint_clicked)) {
 			return true;
 		} else {
 			e.preventDefault();

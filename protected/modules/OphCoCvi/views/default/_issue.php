@@ -126,7 +126,7 @@ if ($demographics_element->isNewRecord) {
         <div class="highlighter">To be completed by the Ophthalmologist</div>
         <h6>(Tick the box that applies)</h6><h4>I consider that this person is:</h4><span
                 class="tickbox <?= !$clinical_info->is_considered_blind ? 'checked' : '' ?>"></span>
-        <b>Slight impaired (partially sighted)</b><span
+        <b>Sight impaired (partially sighted)</b><span
                 class="tickbox <?= $clinical_info->is_considered_blind ? 'checked' : '' ?>"></span> <b>Severely sight
             impaired (blind)</b>
         <p>I have made the patient aware of the information booklet, “Sight Loss: What we needed to know”
@@ -219,7 +219,7 @@ if ($demographics_element->isNewRecord) {
                 is the main cause for the impairment.</b></h4><h6>Please note that this is not intended to be a
             comprehensive list of all possible diagnoses.</h6>
         <!-- headers for all tables - must align correctly (uses same colgroup) -->
-        <div class="flex"><h3 class="cols-3"><!----></h3>
+        <div class="flex"><h3 class="cols-5"><!----></h3>
             <table>
                 <colgroup>
                     <col class="cols-6">
@@ -240,7 +240,9 @@ if ($demographics_element->isNewRecord) {
             </table>
         </div>
         <?php foreach ($this->getDisorderSections($clinical_info->patient_type) as $disorder_section) : ?>
-            <div class="flex"><h3 class="cols-3"><?= \CHtml::encode($disorder_section->name); ?></h3>
+            <div class="flex">
+                <h3 class="cols-3"><?= \CHtml::encode($disorder_section->name); ?></h3>
+                <div class="cols-2"></div>
                 <table class="row-lines">
                     <colgroup>
                         <col class="cols-6">
@@ -259,10 +261,10 @@ if ($demographics_element->isNewRecord) {
                             </td>
                             <td><?= \CHtml::encode($disorder->code) ?></td>
                             <td>
-                                <span class="tickbox <?= $clinical_info->getCviDisorderSide($disorder) === Eye::RIGHT ? 'checked' : ''; ?>"></span>
+                                <span class="tickbox <?= in_array($clinical_info->getCviDisorderSide($disorder), [\Eye::RIGHT, \Eye::BOTH]) ? 'checked' : ''; ?>"></span>
                             </td>
                             <td>
-                                <span class="tickbox <?= $clinical_info->getCviDisorderSide($disorder) === Eye::LEFT ? 'checked' : ''; ?>"></span>
+                                <span class="tickbox <?= in_array($clinical_info->getCviDisorderSide($disorder), [\Eye::LEFT, \Eye::BOTH]) ? 'checked' : ''; ?>"></span>
                             </td>
                         </tr>
                     <?php endforeach; ?>

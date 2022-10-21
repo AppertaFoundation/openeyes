@@ -52,7 +52,6 @@
 	 */
 	ConfirmDialog._defaultOptions = {
 		modal: true,
-		width: 400,
 		minHeight: 'auto',
 		title: 'Confirm',
 		dialogClass: 'dialog confirm',
@@ -78,6 +77,8 @@
 			selector: options.templateSelector,
 			data: {
 				content: options.content,
+                leftPanelContent: options.leftPanelContent,
+                rightPanelContent: options.rightPanelContent,
 				okButton: options.okButton,
 				cancelButton: options.cancelButton,
 				okButtonClassList: options.okButtonClassList,

@@ -1312,14 +1312,36 @@ class DefaultController extends BaseEventTypeController
      */
     public function loadFaxAndDirectLineNumbers()
     {
-        $sfs = FirmSiteSecretary::model()->findAll('firm_id=?', array(Yii::app()->session['selected_firm_id']));
-        $direct_line_numbers[] = null;
-        $fax_numbers[] = null;
+        $context_firm_id = Yii::app()->session['selected_firm_id'];
+        $episode_firm_id = $this->event->episode->firm_id;
 
-        foreach ($sfs as $sf) {
-            $direct_line_numbers[$sf->site_id] = $sf->direct_line;
-            $fax_numbers[$sf->site_id] = $sf->fax;
+        $direct_line_numbers = [];
+        $fax_numbers = [];
+        $secretaries_from_episode = [];
+
+        $secretaries_from_context = FirmSiteSecretary::model()->findAll('firm_id=?', array($context_firm_id));
+
+        if ((int) $episode_firm_id > 0) {
+            $secretaries_from_episode = FirmSiteSecretary::model()->findAll('firm_id=?', array($episode_firm_id));
         }
+
+        foreach ($secretaries_from_context as $sfc) {
+            $direct_line_numbers[$sfc->site_id] = trim($sfc->direct_line);
+            $fax_numbers[$sfc->site_id] = trim($sfc->fax);
+        }
+
+        foreach ($secretaries_from_episode as $sfe) {
+            if (empty($direct_line_numbers[$sfe->site_id] ?? null)) {
+                $direct_line_numbers[$sfe->site_id] = trim($sfe->direct_line);
+            }
+
+            if (empty($fax_numbers[$sfe->site_id] ?? null)) {
+                $fax_numbers[$sfe->site_id] = trim($sfe->fax);
+            }
+        }
+
+        $direct_line_numbers = array_filter($direct_line_numbers);
+        $fax_numbers = array_filter($fax_numbers);
 
         $this->jsVars['correspondence_directlines'] = $direct_line_numbers;
         $this->jsVars['correspondence_fax_numbers'] = $fax_numbers;
@@ -1516,5 +1538,12 @@ class DefaultController extends BaseEventTypeController
         }
 
         return $pdf_path;
+    }
+
+    protected function setElementDefaultOptions_Element_OphCoCorrespondence_Esign(
+        Element_OphCoCorrespondence_Esign $element,
+        $action
+    ) {
+        $element->attemptAutoSign();
     }
 }

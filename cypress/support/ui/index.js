@@ -1,3 +1,5 @@
+import './adder'
+import './consent'
 import './examination'
 import './eyedraw'
 
