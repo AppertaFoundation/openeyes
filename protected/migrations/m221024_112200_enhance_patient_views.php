@@ -62,10 +62,28 @@ class m221024_112200_enhance_patient_views extends OEMigration
                 LEFT JOIN ophciexamination_clinicoutcome_role ocr ON ocr.id=oce.role_id
                 LEFT JOIN ophciexamination_clinicoutcome_risk_status ocrs ON ocrs.id=oce.risk_status_id;
 		")->execute();
+
+        $this->dbConnection->createCommand("
+            CREATE OR REPLACE VIEW v_patient_clinical_management AS
+			SELECT ep.patient_id AS patient_id,
+                ev.worklist_patient_id AS worklist_patient_id,
+                eom.comments AS comment,
+                eom.last_modified_date AS last_modified_date,
+                eom.last_modified_user_id AS last_modified_user_id,
+                eom.created_date AS created_date,
+                eom.created_user_id AS created_user_id
+            FROM et_ophciexamination_management eom
+                JOIN event ev ON ev.id=eom.event_id
+                JOIN episode ep ON ep.id=ev.episode_id;
+		")->execute();
     }
 
     public function safeDown()
     {
+        $this->dbConnection->createCommand("
+            DROP VIEW IF EXISTS v_patient_clinical_management;
+        ")->execute();
+
         $this->dbConnection->createCommand("
             DROP VIEW IF EXISTS v_patient_follow_up;
         ")->execute();
