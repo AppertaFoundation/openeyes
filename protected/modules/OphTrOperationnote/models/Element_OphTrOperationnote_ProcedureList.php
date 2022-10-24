@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -77,7 +78,7 @@ class Element_OphTrOperationnote_ProcedureList extends Element_OpNote
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'element_type' => array(self::HAS_ONE, 'ElementType', 'id', 'on' => "element_type.class_name='".get_class($this)."'"),
+            'element_type' => array(self::HAS_ONE, 'ElementType', 'id', 'on' => "element_type.class_name='" . get_class($this) . "'"),
             'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
             'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
@@ -170,7 +171,7 @@ class Element_OphTrOperationnote_ProcedureList extends Element_OpNote
         // delete remaining current procedures
         foreach ($current_procedures as $pa) {
             if (!$pa->delete()) {
-                throw new Exception('Unable to delete procedure assignment: '.print_r($pa->getErrors(), true));
+                throw new Exception('Unable to delete procedure assignment: ' . print_r($pa->getErrors(), true));
             }
         }
     }
@@ -188,7 +189,7 @@ class Element_OphTrOperationnote_ProcedureList extends Element_OpNote
             $this->event->episode->episode_status_id = 4;
 
             if (!$this->event->episode->save()) {
-                throw new Exception('Unable to change episode status for episode '.$this->event->episode->id);
+                throw new Exception('Unable to change episode status for episode ' . $this->event->episode->id);
             }
 
             if ($this->booking_event_id && $api = Yii::app()->moduleAPI->get('OphTrOperationbooking')) {
@@ -216,7 +217,7 @@ class Element_OphTrOperationnote_ProcedureList extends Element_OpNote
         $criteria = new CDbCriteria();
         $criteria->order = 't.display_order asc';
 
-        if (!in_array(Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])->serviceSubspecialtyAssignment->subspecialty->name, array('Adnexal', 'Strabismus'))) {
+        if (SettingMetadata::model()->getSetting('opbooking_disable_both_eyes') == 'on') {
             $criteria->addCondition('t.id != :three');
             $criteria->params[':three'] = 3;
         }
