@@ -76,10 +76,116 @@ class m221024_112200_enhance_patient_views extends OEMigration
                 JOIN event ev ON ev.id=eom.event_id
                 JOIN episode ep ON ep.id=ev.episode_id;
 		")->execute();
+
+        $this->dbConnection->createCommand("
+		CREATE OR REPLACE VIEW v_patient_diagnoses AS
+		SELECT ev.patient_id AS patient_id,
+			od.eye_id AS side_id,
+			CASE od.eye_id 
+				WHEN 1 THEN 'L'
+				WHEN 2 THEN 'R'
+				WHEN 3 THEN 'B'
+			END AS side,
+			od.disorder_id AS disorder_id,
+			d.term AS disorder_term,
+			d.fully_specified_name AS disorder_fully_specified,
+			od.`date` AS disorder_date,
+			d.aliases AS disorder_aliases,
+			d.icd10_code AS icd10_code,
+			d.icd10_term AS icd10_term,
+			s.name AS specialty,
+			ev.event_id,
+			ev.worklist_patient_id AS last_verified_worklist_patient_id,
+            od.last_modified_date AS last_modified_date,
+            od.last_modified_user_id AS last_modified_user_id
+		FROM et_ophciexamination_diagnoses eod
+            INNER JOIN v_patient_events ev ON ev.event_id = eod.event_id 
+            INNER JOIN ophciexamination_diagnosis od ON od.element_diagnoses_id = eod.id
+            INNER JOIN disorder d ON d.id = od.disorder_id
+            INNER JOIN specialty s ON s.id = d.specialty_id 	
+		UNION 
+		SELECT ev.patient_id AS patient_id,
+			od.side_id AS side_id,
+			CASE od.side_id
+				WHEN 1 THEN 'L'
+				WHEN 2 THEN 'R'
+				WHEN 3 THEN 'B'
+				ELSE NULL
+			END AS side,
+			od.disorder_id AS disorder_id,
+			d.term AS disorder_term,
+			d.fully_specified_name AS disorder_fully_specified,
+			od.`date` AS disorder_date,
+			d.aliases AS disorder_aliases,
+			d.icd10_code AS icd10_code,
+			d.icd10_term AS icd10_term,
+			s.name AS specialty,
+			ev.event_id,
+			ev.worklist_patient_id AS last_verified_worklist_patient_id,
+            od.last_modified_date AS last_modified_date,
+            od.last_modified_user_id AS last_modified_user_id
+		FROM et_ophciexamination_systemic_diagnoses eod
+            INNER JOIN v_patient_events ev ON ev.event_id = eod.event_id 
+            INNER JOIN ophciexamination_systemic_diagnoses_diagnosis od ON od.element_id = eod.id
+            INNER JOIN disorder d ON d.id = od.disorder_id
+            LEFT JOIN specialty s ON s.id = d.specialty_id;
+		")->execute();
     }
 
     public function safeDown()
     {
+        $this->dbConnection->createCommand("
+		CREATE OR REPLACE VIEW v_patient_diagnoses AS
+		SELECT ev.patient_id AS patient_id,
+			od.eye_id AS side_id,
+			CASE od.eye_id 
+				WHEN 1 THEN 'L'
+				WHEN 2 THEN 'R'
+				WHEN 3 THEN 'B'
+			END AS side,
+			od.disorder_id AS disorder_id,
+			d.term AS disorder_term,
+			d.fully_specified_name AS disorder_fully_specified,
+			od.`date` AS disorder_date,
+			d.aliases AS disorder_aliases,
+			d.icd10_code AS icd10_code,
+			d.icd10_term AS icd10_term,
+			s.name AS specialty,
+			ev.event_id,
+			ev.worklist_patient_id AS last_verified_worklist_patient_id
+		FROM et_ophciexamination_diagnoses eod
+            INNER JOIN v_patient_events ev ON ev.event_id = eod.event_id 
+            INNER JOIN ophciexamination_diagnosis od ON od.element_diagnoses_id = eod.id
+            INNER JOIN disorder d ON d.id = od.disorder_id
+            INNER JOIN specialty s ON s.id = d.specialty_id
+            INNER JOIN latest_ophthalmic_diagnosis_examination_events lodee ON lodee.event_id = ev.event_id AND lodee.patient_id = ev.patient_id 	
+		UNION 
+		SELECT ev.patient_id AS patient_id,
+			od.side_id AS side_id,
+			CASE od.side_id
+				WHEN 1 THEN 'L'
+				WHEN 2 THEN 'R'
+				WHEN 3 THEN 'B'
+				ELSE NULL
+			END AS side,
+			od.disorder_id AS disorder_id,
+			d.term AS disorder_term,
+			d.fully_specified_name AS disorder_fully_specified,
+			od.`date` AS disorder_date,
+			d.aliases AS disorder_aliases,
+			d.icd10_code AS icd10_code,
+			d.icd10_term AS icd10_term,
+			s.name AS specialty,
+			ev.event_id,
+			ev.worklist_patient_id AS last_verified_worklist_patient_id
+		FROM et_ophciexamination_systemic_diagnoses eod
+            INNER JOIN v_patient_events ev ON ev.event_id = eod.event_id 
+            INNER JOIN ophciexamination_systemic_diagnoses_diagnosis od ON od.element_id = eod.id
+            INNER JOIN disorder d ON d.id = od.disorder_id
+            LEFT JOIN specialty s ON s.id = d.specialty_id
+            INNER JOIN latest_systemic_diagnosis_examination_events lodee ON lodee.event_id = ev.event_id AND lodee.patient_id = ev.patient_id;
+		")->execute();
+
         $this->dbConnection->createCommand("
             DROP VIEW IF EXISTS v_patient_clinical_management;
         ")->execute();
