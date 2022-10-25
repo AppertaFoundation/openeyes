@@ -252,7 +252,7 @@ class m221024_112200_enhance_patient_views extends OEMigration
             CREATE OR REPLACE VIEW v_patient_procedures AS
             SELECT patient_id,
                 'Clinical' AS procedure_type,
-                NULL AS worklist_patient_id,
+                worklist_patient_id AS worklist_patient_id,
                 side,
                 procedure_id,
                 procedure_term,
