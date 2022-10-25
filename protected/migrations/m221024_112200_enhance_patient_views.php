@@ -6,7 +6,7 @@ class m221024_112200_enhance_patient_views extends OEMigration
     {
         $this->execute("
             CREATE OR REPLACE VIEW v_patient_appointments AS
-			SELECT wp.patient_id AS patient_id,
+            SELECT wp.patient_id AS patient_id,
                 w.name AS worklist_name,
                 wp.id AS worklist_patient_id,
                 GROUP_CONCAT(DISTINCT CONCAT(wa.name,':',wpa.attribute_value)) AS worklist_patient_attributes,
@@ -32,34 +32,34 @@ class m221024_112200_enhance_patient_views extends OEMigration
                 LEFT JOIN event ev ON ev.worklist_patient_id=wp.id
                 LEFT JOIN site s ON s.id=ev.site_id
             GROUP BY wp.id;
-		");
+        ");
 
         $this->execute("
             CREATE OR REPLACE VIEW v_patient_follow_up AS
-			SELECT ep.patient_id AS patient_id,
+            SELECT ep.patient_id AS patient_id,
                 ev.id AS event_id,
                 ev.worklist_patient_id AS worklist_patient_id,
                 oce.status_id,
-				ocs.`name` AS 'status_name',
-				ss.id AS 'subspecialty_id',
-				ss.`name` AS 'subspecialty_name',
-				oce.context_id AS 'context_id',
-				f.`name` AS 'context_name',
-				oce.followup_quantity,
-				oce.followup_period_id,
-				p.`name` AS followup_period_name,
-				oce.role_id,
-				ocr.`name` AS 'role_name',
-				oce.risk_status_id,
-				ocrs.`name` AS 'risk_name',
-				oce.discharge_status_id,
-				ods.`name` AS 'discharge_status',
-				oce.discharge_destination_id,
-				odd.`name` AS discharge_destination,
-				oce.transfer_institution_id,
-				i.`name` AS 'transfer_institution',
-				oce.id AS 'entry_id',
-				eoc.comments,
+                ocs.`name` AS 'status_name',
+                ss.id AS 'subspecialty_id',
+                ss.`name` AS 'subspecialty_name',
+                oce.context_id AS 'context_id',
+                f.`name` AS 'context_name',
+                oce.followup_quantity,
+                oce.followup_period_id,
+                p.`name` AS followup_period_name,
+                oce.role_id,
+                ocr.`name` AS 'role_name',
+                oce.risk_status_id,
+                ocrs.`name` AS 'risk_name',
+                oce.discharge_status_id,
+                ods.`name` AS 'discharge_status',
+                oce.discharge_destination_id,
+                odd.`name` AS discharge_destination,
+                oce.transfer_institution_id,
+                i.`name` AS 'transfer_institution',
+                oce.id AS 'entry_id',
+                eoc.comments,
                 oce.last_modified_date AS last_modified_date,
                 oce.last_modified_user_id AS last_modified_user_id,
                 oce.created_date AS created_date,
@@ -78,11 +78,11 @@ class m221024_112200_enhance_patient_views extends OEMigration
                 LEFT JOIN ophciexamination_clinicoutcome_risk_status ocrs ON ocrs.id=oce.risk_status_id
                 LEFT JOIN ophciexamination_discharge_status ods ON ods.id=oce.discharge_status_id
                 LEFT JOIN ophciexamination_discharge_destination odd ON odd.id=oce.discharge_destination_id;
-		");
+        ");
 
         $this->execute("
             CREATE OR REPLACE VIEW v_patient_clinical_management AS
-			SELECT ep.patient_id AS patient_id,
+            SELECT ep.patient_id AS patient_id,
                 ev.worklist_patient_id AS worklist_patient_id,
                 eom.id AS entry_id,
                 eom.comments AS comment,
@@ -93,7 +93,7 @@ class m221024_112200_enhance_patient_views extends OEMigration
             FROM et_ophciexamination_management eom
                 JOIN event ev ON ev.id=eom.event_id
                 JOIN episode ep ON ep.id=ev.episode_id;
-		");
+        ");
 
         $this->execute("
             CREATE OR REPLACE VIEW v_patient_diagnoses AS
@@ -147,7 +147,7 @@ class m221024_112200_enhance_patient_views extends OEMigration
                 INNER JOIN disorder d ON d.id = od.disorder_id
                 INNER JOIN latest_systemic_diagnosis_examination_events lodee ON lodee.event_id = ev.event_id AND lodee.patient_id = ev.patient_id
                 LEFT JOIN specialty s ON s.id = d.specialty_id;
-		");
+        ");
 
         $this->execute("
             CREATE OR REPLACE VIEW v_event_diagnoses AS
@@ -205,11 +205,11 @@ class m221024_112200_enhance_patient_views extends OEMigration
                 INNER JOIN disorder d ON d.id = od.disorder_id
                 INNER JOIN latest_systemic_diagnosis_examination_events lodee ON lodee.event_id = ev.event_id AND lodee.patient_id = ev.patient_id
                 LEFT JOIN specialty s ON s.id = d.specialty_id;
-		");
+        ");
 
         $this->execute("
             CREATE OR REPLACE VIEW v_patient_surgical_procedures AS
-			SELECT ep.patient_id AS patient_id,
+            SELECT ep.patient_id AS patient_id,
                 ev.worklist_patient_id AS worklist_patient_id,
                 oppa.id AS entry_id,
                 CASE eop.eye_id
@@ -246,7 +246,7 @@ class m221024_112200_enhance_patient_views extends OEMigration
                 LEFT JOIN et_ophtroperationbooking_operation eoo ON eoo.event_id=eop.booking_event_id
                 LEFT JOIN ophtroperationbooking_operation_cancellation_reason oocr ON oocr.id=eoo.cancellation_reason_id
             GROUP BY ep.patient_id,ev.worklist_patient_id,eop.eye_id,p.id;
-		");
+        ");
 
         $this->execute("
             CREATE OR REPLACE VIEW v_patient_procedures AS
@@ -293,75 +293,75 @@ class m221024_112200_enhance_patient_views extends OEMigration
 
         $this->execute("
             CREATE OR REPLACE VIEW v_patient_investigations AS
-			SELECT p.id AS patient_id,
+            SELECT p.id AS patient_id,
                 ev.id AS event_id,
                 eoie.id AS entry_id,
-				eoie.date AS investigation_date,
-				eoie.time AS investigation_time,
-				eoie.investigation_code AS investigation_code_id,
-				eoic.name AS investigation_name,
-				IFNULL(eoie.comments, oic.comments) AS investigation_comments,
-				eoic.snomed_term AS snomed_term,
-				eoic.snomed_code AS snomed_code,
-				oc.name AS opcs_code,
-				oc.description AS opcs_terms,
-				eoic.ecds_code AS ecds_code,
-				IFNULL(proc.ecds_term, d.ecds_term) AS ecds_term,
-				eoic.specialty_id AS specialty_id,
-				ev.worklist_patient_id AS worklist_patient_id,
-				eoi.created_user_id AS created_user_id,
-				eoi.created_date AS created_date,
-				eoi.last_modified_user_id AS last_modified_user_id,
-				eoi.last_modified_date AS last_modified_date
-			FROM patient p
-				JOIN episode ep ON ep.patient_id=p.id
-				JOIN event ev ON ev.episode_id=ep.id
-				JOIN et_ophciexamination_investigation eoi ON eoi.event_id=ev.id
-				JOIN et_ophciexamination_investigation_entry eoie ON eoie.element_id=eoi.id
-				JOIN et_ophciexamination_investigation_codes eoic ON eoic.id=eoie.investigation_code
-				LEFT JOIN ophciexamination_investigation_comments oic ON oic.investigation_code=eoic.id
-				LEFT JOIN proc ON proc.ecds_code=eoic.ecds_code
-				LEFT JOIN disorder d ON d.ecds_code=eoic.ecds_code
-				LEFT JOIN proc_opcs_assignment poa ON poa.proc_id=proc.id
-				LEFT JOIN opcs_code oc ON oc.id=poa.opcs_code_id;
-		");
+                eoie.date AS investigation_date,
+                eoie.time AS investigation_time,
+                eoie.investigation_code AS investigation_code_id,
+                eoic.name AS investigation_name,
+                IFNULL(eoie.comments, oic.comments) AS investigation_comments,
+                eoic.snomed_term AS snomed_term,
+                eoic.snomed_code AS snomed_code,
+                oc.name AS opcs_code,
+                oc.description AS opcs_terms,
+                eoic.ecds_code AS ecds_code,
+                IFNULL(proc.ecds_term, d.ecds_term) AS ecds_term,
+                eoic.specialty_id AS specialty_id,
+                ev.worklist_patient_id AS worklist_patient_id,
+                eoi.created_user_id AS created_user_id,
+                eoi.created_date AS created_date,
+                eoi.last_modified_user_id AS last_modified_user_id,
+                eoi.last_modified_date AS last_modified_date
+            FROM patient p
+                JOIN episode ep ON ep.patient_id=p.id
+                JOIN event ev ON ev.episode_id=ep.id
+                JOIN et_ophciexamination_investigation eoi ON eoi.event_id=ev.id
+                JOIN et_ophciexamination_investigation_entry eoie ON eoie.element_id=eoi.id
+                JOIN et_ophciexamination_investigation_codes eoic ON eoic.id=eoie.investigation_code
+                LEFT JOIN ophciexamination_investigation_comments oic ON oic.investigation_code=eoic.id
+                LEFT JOIN proc ON proc.ecds_code=eoic.ecds_code
+                LEFT JOIN disorder d ON d.ecds_code=eoic.ecds_code
+                LEFT JOIN proc_opcs_assignment poa ON poa.proc_id=proc.id
+                LEFT JOIN opcs_code oc ON oc.id=poa.opcs_code_id;
+        ");
     }
 
     public function safeDown()
     {
         $this->execute("
             CREATE OR REPLACE VIEW v_patient_investigations AS
-			SELECT p.id AS patient_id,
-				ev.id AS event_id,
-				eoie.date AS investigation_date,
-				eoie.time AS investigation_time,
-				eoie.investigation_code AS investigation_code_id,
-				eoic.name AS investigation_name,
-				IFNULL(eoie.comments, oic.comments) AS investigation_comments,
-				eoic.snomed_term AS snomed_term,
-				eoic.snomed_code AS snomed_code,
-				oc.name AS opcs_code,
-				oc.description AS opcs_terms,
-				eoic.ecds_code AS ecds_code,
-				IFNULL(proc.ecds_term, d.ecds_term) AS ecds_term,
-				eoic.specialty_id AS specialty_id,
-				ev.worklist_patient_id AS worklist_patient_id,
-				eoi.created_user_id AS created_user_id,
-				eoi.created_date AS created_date,
-				eoi.last_modified_user_id AS last_modified_user_id,
-				eoi.last_modified_date AS last_modified_date
-			FROM patient p
-				JOIN episode ep ON ep.patient_id=p.id
-				JOIN event ev ON ev.episode_id=ep.id
-				JOIN et_ophciexamination_investigation eoi ON eoi.event_id=ev.id
-				JOIN et_ophciexamination_investigation_entry eoie ON eoie.element_id=eoi.id
-				JOIN et_ophciexamination_investigation_codes eoic ON eoic.id=eoie.investigation_code
-				LEFT JOIN ophciexamination_investigation_comments oic ON oic.investigation_code=eoic.id
-				LEFT JOIN proc ON proc.ecds_code=eoic.ecds_code
-				LEFT JOIN disorder d ON d.ecds_code=eoic.ecds_code
-				LEFT JOIN proc_opcs_assignment poa ON poa.proc_id=proc.id
-				LEFT JOIN opcs_code oc ON oc.id=poa.opcs_code_id;
-		");
+            SELECT p.id AS patient_id,
+                ev.id AS event_id,
+                eoie.date AS investigation_date,
+                eoie.time AS investigation_time,
+                eoie.investigation_code AS investigation_code_id,
+                eoic.name AS investigation_name,
+                IFNULL(eoie.comments, oic.comments) AS investigation_comments,
+                eoic.snomed_term AS snomed_term,
+                eoic.snomed_code AS snomed_code,
+                oc.name AS opcs_code,
+                oc.description AS opcs_terms,
+                eoic.ecds_code AS ecds_code,
+                IFNULL(proc.ecds_term, d.ecds_term) AS ecds_term,
+                eoic.specialty_id AS specialty_id,
+                ev.worklist_patient_id AS worklist_patient_id,
+                eoi.created_user_id AS created_user_id,
+                eoi.created_date AS created_date,
+                eoi.last_modified_user_id AS last_modified_user_id,
+                eoi.last_modified_date AS last_modified_date
+            FROM patient p
+                JOIN episode ep ON ep.patient_id=p.id
+                JOIN event ev ON ev.episode_id=ep.id
+                JOIN et_ophciexamination_investigation eoi ON eoi.event_id=ev.id
+                JOIN et_ophciexamination_investigation_entry eoie ON eoie.element_id=eoi.id
+                JOIN et_ophciexamination_investigation_codes eoic ON eoic.id=eoie.investigation_code
+                LEFT JOIN ophciexamination_investigation_comments oic ON oic.investigation_code=eoic.id
+                LEFT JOIN proc ON proc.ecds_code=eoic.ecds_code
+                LEFT JOIN disorder d ON d.ecds_code=eoic.ecds_code
+                LEFT JOIN proc_opcs_assignment poa ON poa.proc_id=proc.id
+                LEFT JOIN opcs_code oc ON oc.id=poa.opcs_code_id;
+        ");
 
         $this->execute("
             DROP VIEW IF EXISTS v_patient_procedures;
@@ -376,56 +376,56 @@ class m221024_112200_enhance_patient_views extends OEMigration
         ");
 
         $this->execute("
-		CREATE OR REPLACE VIEW v_patient_diagnoses AS
-		SELECT ev.patient_id AS patient_id,
-			od.eye_id AS side_id,
-			CASE od.eye_id 
-				WHEN 1 THEN 'L'
-				WHEN 2 THEN 'R'
-				WHEN 3 THEN 'B'
-			END AS side,
-			od.disorder_id AS disorder_id,
-			d.term AS disorder_term,
-			d.fully_specified_name AS disorder_fully_specified,
-			od.`date` AS disorder_date,
-			d.aliases AS disorder_aliases,
-			d.icd10_code AS icd10_code,
-			d.icd10_term AS icd10_term,
-			s.name AS specialty,
-			ev.event_id,
-			ev.worklist_patient_id AS last_verified_worklist_patient_id
-		FROM et_ophciexamination_diagnoses eod
+        CREATE OR REPLACE VIEW v_patient_diagnoses AS
+        SELECT ev.patient_id AS patient_id,
+            od.eye_id AS side_id,
+            CASE od.eye_id 
+                WHEN 1 THEN 'L'
+                WHEN 2 THEN 'R'
+                WHEN 3 THEN 'B'
+            END AS side,
+            od.disorder_id AS disorder_id,
+            d.term AS disorder_term,
+            d.fully_specified_name AS disorder_fully_specified,
+            od.`date` AS disorder_date,
+            d.aliases AS disorder_aliases,
+            d.icd10_code AS icd10_code,
+            d.icd10_term AS icd10_term,
+            s.name AS specialty,
+            ev.event_id,
+            ev.worklist_patient_id AS last_verified_worklist_patient_id
+        FROM et_ophciexamination_diagnoses eod
             INNER JOIN v_patient_events ev ON ev.event_id = eod.event_id 
             INNER JOIN ophciexamination_diagnosis od ON od.element_diagnoses_id = eod.id
             INNER JOIN disorder d ON d.id = od.disorder_id
             INNER JOIN specialty s ON s.id = d.specialty_id
             INNER JOIN latest_ophthalmic_diagnosis_examination_events lodee ON lodee.event_id = ev.event_id AND lodee.patient_id = ev.patient_id 	
-		UNION 
-		SELECT ev.patient_id AS patient_id,
-			od.side_id AS side_id,
-			CASE od.side_id
-				WHEN 1 THEN 'L'
-				WHEN 2 THEN 'R'
-				WHEN 3 THEN 'B'
-				ELSE NULL
-			END AS side,
-			od.disorder_id AS disorder_id,
-			d.term AS disorder_term,
-			d.fully_specified_name AS disorder_fully_specified,
-			od.`date` AS disorder_date,
-			d.aliases AS disorder_aliases,
-			d.icd10_code AS icd10_code,
-			d.icd10_term AS icd10_term,
-			s.name AS specialty,
-			ev.event_id,
-			ev.worklist_patient_id AS last_verified_worklist_patient_id
-		FROM et_ophciexamination_systemic_diagnoses eod
+        UNION 
+        SELECT ev.patient_id AS patient_id,
+            od.side_id AS side_id,
+            CASE od.side_id
+                WHEN 1 THEN 'L'
+                WHEN 2 THEN 'R'
+                WHEN 3 THEN 'B'
+                ELSE NULL
+            END AS side,
+            od.disorder_id AS disorder_id,
+            d.term AS disorder_term,
+            d.fully_specified_name AS disorder_fully_specified,
+            od.`date` AS disorder_date,
+            d.aliases AS disorder_aliases,
+            d.icd10_code AS icd10_code,
+            d.icd10_term AS icd10_term,
+            s.name AS specialty,
+            ev.event_id,
+            ev.worklist_patient_id AS last_verified_worklist_patient_id
+        FROM et_ophciexamination_systemic_diagnoses eod
             INNER JOIN v_patient_events ev ON ev.event_id = eod.event_id 
             INNER JOIN ophciexamination_systemic_diagnoses_diagnosis od ON od.element_id = eod.id
             INNER JOIN disorder d ON d.id = od.disorder_id
             LEFT JOIN specialty s ON s.id = d.specialty_id
             INNER JOIN latest_systemic_diagnosis_examination_events lodee ON lodee.event_id = ev.event_id AND lodee.patient_id = ev.patient_id;
-		");
+        ");
 
         $this->execute("
             DROP VIEW IF EXISTS v_patient_clinical_management;
@@ -457,6 +457,6 @@ class m221024_112200_enhance_patient_views extends OEMigration
                 LEFT JOIN pathway_step psd ON psd.pathway_id=p.id
                 LEFT JOIN pathway_step_type pstd ON pstd.id=psd.step_type_id AND pstc.short_name='discharge'
             GROUP BY wp.id;
-		");
+        ");
     }
 }
