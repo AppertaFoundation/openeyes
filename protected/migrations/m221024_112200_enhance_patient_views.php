@@ -102,7 +102,8 @@ class m221024_112200_enhance_patient_views extends OEMigration
             INNER JOIN v_patient_events ev ON ev.event_id = eod.event_id 
             INNER JOIN ophciexamination_diagnosis od ON od.element_diagnoses_id = eod.id
             INNER JOIN disorder d ON d.id = od.disorder_id
-            INNER JOIN specialty s ON s.id = d.specialty_id 	
+            INNER JOIN specialty s ON s.id = d.specialty_id
+            INNER JOIN latest_ophthalmic_diagnosis_examination_events lodee ON lodee.event_id = ev.event_id AND lodee.patient_id = ev.patient_id	
 		UNION 
 		SELECT ev.patient_id AS patient_id,
 			od.side_id AS side_id,
@@ -128,12 +129,56 @@ class m221024_112200_enhance_patient_views extends OEMigration
             INNER JOIN v_patient_events ev ON ev.event_id = eod.event_id 
             INNER JOIN ophciexamination_systemic_diagnoses_diagnosis od ON od.element_id = eod.id
             INNER JOIN disorder d ON d.id = od.disorder_id
+            INNER JOIN latest_systemic_diagnosis_examination_events lodee ON lodee.event_id = ev.event_id AND lodee.patient_id = ev.patient_id
             LEFT JOIN specialty s ON s.id = d.specialty_id;
+		")->execute();
+
+        $this->dbConnection->createCommand("
+            CREATE OR REPLACE VIEW v_patient_surgical_procedures AS
+			SELECT ep.patient_id AS patient_id,
+                ev.worklist_patient_id AS worklist_patient_id,
+                CASE eop.eye_id
+                    WHEN 1 THEN 'L'
+                    WHEN 2 THEN 'R'
+                    WHEN 3 THEN 'B'
+                    ELSE NULL
+                END AS side,
+                p.id AS procedure_id,
+                p.term AS procedure_term,
+                eop.created_date AS procedure_date,
+                p.aliases AS procedure_aliases,
+                p.snomed_code AS snomed_code,
+                p.snomed_term AS snomed_term,
+                s2.name AS specialty,
+                IF(eoo.cancellation_reason_id IS NULL,'N','Y') AS procedure_cancelled,
+                oocr.`text` AS cancellation_reason,
+                GROUP_CONCAT(oc.name)  AS opcs_codes,
+                GROUP_CONCAT(oc.description)  AS opcs_descriptions,
+                oppa.last_modified_date AS last_modified_date,
+                oppa.last_modified_user_id AS last_modified_user_id
+            FROM ophtroperationnote_procedurelist_procedure_assignment oppa
+                JOIN et_ophtroperationnote_procedurelist eop ON eop.id=oppa.procedurelist_id
+                JOIN event ev ON ev.id=eop.event_id
+                JOIN episode ep ON ep.id=ev.episode_id
+                JOIN firm f ON f.id=ev.firm_id
+                JOIN service_subspecialty_assignment ssa ON ssa.id=f.service_subspecialty_assignment_id
+                JOIN subspecialty s ON s.id=ssa.subspecialty_id
+                JOIN specialty s2 ON s2.id=s.specialty_id
+                LEFT JOIN proc p ON p.id=oppa.proc_id
+                LEFT JOIN proc_opcs_assignment poa ON poa.proc_id=p.id
+                LEFT JOIN opcs_code oc ON oc.id=poa.opcs_code_id
+                LEFT JOIN et_ophtroperationbooking_operation eoo ON eoo.event_id=eop.booking_event_id
+                LEFT JOIN ophtroperationbooking_operation_cancellation_reason oocr ON oocr.id=eoo.cancellation_reason_id
+            GROUP BY ep.patient_id,ev.worklist_patient_id,eop.eye_id,p.id;
 		")->execute();
     }
 
     public function safeDown()
     {
+        $this->dbConnection->createCommand("
+            DROP VIEW IF EXISTS v_patient_surgical_procedures;
+        ")->execute();
+
         $this->dbConnection->createCommand("
 		CREATE OR REPLACE VIEW v_patient_diagnoses AS
 		SELECT ev.patient_id AS patient_id,
