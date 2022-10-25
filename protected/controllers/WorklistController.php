@@ -546,8 +546,25 @@ class WorklistController extends BaseController
             }
         }
         if ($step) {
-            Yii::app()->event->dispatch('step_deleted', ['step' => $step]);
-            $step->delete();
+            $transaction = Yii::app()->db->beginTransaction();
+            try {
+                Yii::app()->event->dispatch('step_deleted', ['step' => $step]);
+
+                if ($step->comment && !$step->comment->delete()) {
+                    OELog::log(print_r($step->comment->getErrors(), true));
+                    throw new RuntimeException('Could not delete step comment');
+                }
+
+                if (!$step->delete()) {
+                    OELog::log(print_r($step->getErrors(), true));
+                    throw new RuntimeException('Could not delete step');
+                };
+                $transaction->commit();
+            } catch(Exception $e) {
+                $transaction->rollback();
+                throw $e;
+            }
+
             $this->renderJSON(
                 array('step_html' => $this->renderPartial('_clinical_pathway', ['visit' => $step->pathway->worklist_patient], true))
             );
@@ -1951,6 +1968,7 @@ class WorklistController extends BaseController
         $comment->comment = $post['comment'];
         $comment->doctor_id = $post['user_id'];
         if ($comment->save()) {
+            $wl_patient->refresh();
             $this->renderJSON(
                 array(
                     'step_html' => $pathway_instanced ? $this->renderPartial('_clinical_pathway', ['visit' => $wl_patient], true) : null,

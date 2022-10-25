@@ -144,7 +144,14 @@ class PathwayType extends BaseActiveRecordVersioned
     public function instancePathway(WorklistPatient $worklist_patient): array
     {
         $new_steps = array();
-
+        // if the worklist patient has pathway associated with,
+        // return the relevant steps
+        if ($worklist_patient->pathway) {
+            foreach ($worklist_patient->pathway->steps as $step) {
+                $new_steps[$step->id] = $step;
+            }
+            return $new_steps;
+        }
         if ($this->createNewPathway($worklist_patient->id)) {
             $worklist_patient->refresh();
             foreach ($this->default_steps as $step) {
