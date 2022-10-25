@@ -27,7 +27,7 @@ class m221024_112200_enhance_patient_views extends OEMigration
                 LEFT JOIN pathway p ON p.worklist_patient_id=wp.id
                 LEFT JOIN pathway_step psc ON psc.pathway_id=p.id
                 LEFT JOIN pathway_step_type pstc ON pstc.id=psc.step_type_id AND pstc.short_name='checkin'
-                LEFT JOIN pathway_step psd ON psd.pathway_id=p.id
+                LEFT JOIN pathway_step psd ON psd.pathway_id=p.idocs.name
                 LEFT JOIN pathway_step_type pstd ON pstd.id=psd.step_type_id AND pstc.short_name='discharge'
                 LEFT JOIN event ev ON ev.worklist_patient_id=wp.id
                 LEFT JOIN site s ON s.id=ev.site_id
@@ -39,14 +39,27 @@ class m221024_112200_enhance_patient_views extends OEMigration
 			SELECT ep.patient_id AS patient_id,
                 ev.id AS event_id,
                 ev.worklist_patient_id AS worklist_patient_id,
-                ocs.name AS outcome,
-                s.name AS requested_location,
-                ss.name AS requested_subspecialty,
-                f.name AS requested_appointment_type,
-                oce.followup_quantity AS follow_up_value,
-                p.name AS follow_up_unit,
-                ocr.name AS requested_clinician_type,
-                ocrs.name AS risk_priority,
+                oce.status_id,
+				ocs.`name` AS 'status_name',
+				ss.id AS 'subspecialty_id',
+				ss.`name` AS 'subspecialty_name',
+				oce.context_id AS 'context_id',
+				f.`name` AS 'context_name',
+				oce.followup_quantity,
+				oce.followup_period_id,
+				p.`name` AS followup_period_name,
+				oce.role_id,
+				ocr.`name` AS 'role_name',
+				oce.risk_status_id,
+				ocrs.`name` AS 'risk_name',
+				oce.discharge_status_id,
+				ods.`name` AS 'discharge_status',
+				oce.discharge_destination_id,
+				odd.`name` AS discharge_destination,
+				oce.transfer_institution_id,
+				i.`name` AS 'transfer_institution',
+				oce.id AS 'entry_id',
+				eoc.comments,
                 oce.last_modified_date AS last_modified_date,
                 oce.last_modified_user_id AS last_modified_user_id,
                 oce.created_date AS created_date,
@@ -57,17 +70,21 @@ class m221024_112200_enhance_patient_views extends OEMigration
                 JOIN ophciexamination_clinicoutcome_entry oce ON oce.element_id=eoc.id
                 LEFT JOIN ophciexamination_clinicoutcome_status ocs ON ocs.id=oce.status_id
                 LEFT JOIN site s ON s.id=oce.site_id
+                LEFT JOIN institution i ON i.id=oce.transfer_institution_id
                 LEFT JOIN subspecialty ss ON ss.id=oce.subspecialty_id
                 LEFT JOIN firm f ON f.id=oce.context_id
                 LEFT JOIN period p ON p.id=oce.followup_period_id
                 LEFT JOIN ophciexamination_clinicoutcome_role ocr ON ocr.id=oce.role_id
-                LEFT JOIN ophciexamination_clinicoutcome_risk_status ocrs ON ocrs.id=oce.risk_status_id;
+                LEFT JOIN ophciexamination_clinicoutcome_risk_status ocrs ON ocrs.id=oce.risk_status_id
+                LEFT JOIN ophciexamination_discharge_status ods ON ods.id=oce.discharge_status_id
+                LEFT JOIN ophciexamination_discharge_destination odd ON odd.id=oce.discharge_destination_id;
 		");
 
         $this->execute("
             CREATE OR REPLACE VIEW v_patient_clinical_management AS
 			SELECT ep.patient_id AS patient_id,
                 ev.worklist_patient_id AS worklist_patient_id,
+                eom.id AS entry_id,
                 eom.comments AS comment,
                 eom.last_modified_date AS last_modified_date,
                 eom.last_modified_user_id AS last_modified_user_id,
@@ -136,6 +153,7 @@ class m221024_112200_enhance_patient_views extends OEMigration
             CREATE OR REPLACE VIEW v_event_diagnoses AS
             SELECT ev.patient_id AS patient_id,
                 ev.event_id AS event_id,
+                eod.id AS entry_id,
                 od.eye_id AS side_id,
                 CASE od.eye_id 
                     WHEN 1 THEN 'L'
@@ -162,6 +180,7 @@ class m221024_112200_enhance_patient_views extends OEMigration
             UNION 
             SELECT ev.patient_id AS patient_id,
                 ev.event_id AS event_id,
+                eod.id AS entry_id,
                 od.side_id AS side_id,
                 CASE od.side_id 
                     WHEN 1 THEN 'L'
@@ -192,6 +211,7 @@ class m221024_112200_enhance_patient_views extends OEMigration
             CREATE OR REPLACE VIEW v_patient_surgical_procedures AS
 			SELECT ep.patient_id AS patient_id,
                 ev.worklist_patient_id AS worklist_patient_id,
+                oppa.id AS entry_id,
                 CASE eop.eye_id
                     WHEN 1 THEN 'L'
                     WHEN 2 THEN 'R'
@@ -206,7 +226,7 @@ class m221024_112200_enhance_patient_views extends OEMigration
                 p.snomed_term AS snomed_term,
                 s2.name AS specialty,
                 IF(eoo.cancellation_reason_id IS NULL,'N','Y') AS procedure_cancelled,
-                eoo.cancellation_reason_id AS cancellation_code,
+                eoo.cancellation_reason_id AS cancellation_reason_id,
                 oocr.`text` AS cancellation_reason,
                 GROUP_CONCAT(oc.name)  AS opcs_codes,
                 GROUP_CONCAT(oc.description)  AS opcs_descriptions,
@@ -242,7 +262,7 @@ class m221024_112200_enhance_patient_views extends OEMigration
                 snomed_term,
                 specialty,
                 NULL AS procedure_cancelled,
-                NULL AS cancellation_code,
+                NULL AS cancellation_reason_id,
                 NULL AS cancellation_reason,
                 NULL AS opcs_codes,
                 NULL AS opcs_descriptions,
@@ -262,7 +282,7 @@ class m221024_112200_enhance_patient_views extends OEMigration
                 snomed_term,
                 specialty,
                 procedure_cancelled,
-                cancellation_code,
+                cancellation_reason_id,
                 cancellation_reason,
                 opcs_codes,
                 opcs_descriptions,
