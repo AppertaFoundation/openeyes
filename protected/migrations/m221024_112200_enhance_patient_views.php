@@ -27,7 +27,7 @@ class m221024_112200_enhance_patient_views extends OEMigration
                 LEFT JOIN pathway p ON p.worklist_patient_id=wp.id
                 LEFT JOIN pathway_step psc ON psc.pathway_id=p.id
                 LEFT JOIN pathway_step_type pstc ON pstc.id=psc.step_type_id AND pstc.short_name='checkin'
-                LEFT JOIN pathway_step psd ON psd.pathway_id=p.idocs.name
+                LEFT JOIN pathway_step psd ON psd.pathway_id=p.id
                 LEFT JOIN pathway_step_type pstd ON pstd.id=psd.step_type_id AND pstc.short_name='discharge'
                 LEFT JOIN event ev ON ev.worklist_patient_id=wp.id
                 LEFT JOIN site s ON s.id=ev.site_id
@@ -252,7 +252,7 @@ class m221024_112200_enhance_patient_views extends OEMigration
             CREATE OR REPLACE VIEW v_patient_procedures AS
             SELECT patient_id,
                 'Clinical' AS procedure_type,
-                worklist_patient_id AS worklist_patient_id,
+                worklist_patient_id,
                 side,
                 procedure_id,
                 procedure_term,
@@ -264,8 +264,8 @@ class m221024_112200_enhance_patient_views extends OEMigration
                 NULL AS procedure_cancelled,
                 NULL AS cancellation_reason_id,
                 NULL AS cancellation_reason,
-                NULL AS opcs_codes,
-                NULL AS opcs_descriptions,
+                opcs_code AS opcs_codes,
+                opcs_code AS opcs_descriptions,
                 last_modified_date,
                 last_modified_user_id
             FROM v_patient_clinic_procedures
@@ -294,7 +294,7 @@ class m221024_112200_enhance_patient_views extends OEMigration
         $this->execute("
             CREATE OR REPLACE VIEW v_patient_investigations AS
 			SELECT p.id AS patient_id,
-				ev.id AS event_id,
+                ev.id AS event_id,
                 eoie.id AS entry_id,
 				eoie.date AS investigation_date,
 				eoie.time AS investigation_time,
