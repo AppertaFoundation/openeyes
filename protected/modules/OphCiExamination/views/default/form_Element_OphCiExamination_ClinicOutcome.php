@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,13 +16,14 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <?php
 
 use OEModule\OphCiExamination\models\DischargeDestination;
-use \OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Role;
+use OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Role;
 use OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Status;
-use \OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Risk_Status;
+use OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Risk_Status;
 $current_institution_id = Yii::app()->session['selected_institution_id'];
 
 Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/ClinicOutcome.js", CClientScript::POS_HEAD);
@@ -44,7 +46,7 @@ $subspecialty_contexts = [];
 
 $current_firm = Firm::model()->findByPk($this->selectedFirmId);
 $default_subspecialty_id = $current_firm->serviceSubspecialtyAssignment->subspecialty_id;
-$subspecialty_contexts = $this->getContextFromSubspecialty($contexts,$default_subspecialty_id);
+$subspecialty_contexts = $this->getContextFromSubspecialty($contexts, $default_subspecialty_id);
 ?>
 
 <div class="element-fields flex-layout full-width">
@@ -91,7 +93,7 @@ $subspecialty_contexts = $this->getContextFromSubspecialty($contexts,$default_su
                 array('nowrapper' => true),
                 false,
                 array(
-                    'class' => 'autosize js-comment-field',
+                    'class' => 'autosize js-comment-field cols-full',
                     'placeholder' => $element->getAttributeLabel('comments'),
                 )
             ) ?>
