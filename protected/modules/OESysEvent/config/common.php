@@ -9,8 +9,8 @@ return [
             'class' => \OEModule\OESysEvent\components\Manager::class,
             'observers' => [
                 [
-                    'listener' => LogEventTypeEventCreation::class,
-                    'event' => EventTypeEventCreated::class
+                    'event' => EventTypeEventCreated::class,
+                    'listener' => LogEventTypeEventCreation::class
                 ]
             ]
         ]
