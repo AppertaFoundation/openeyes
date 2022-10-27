@@ -64,6 +64,7 @@ protected/modules/*
 !/protected/modules/CSDClient/
 !/protected/modules/Genetics/
 !/protected/modules/OECaseSearch/
+!/protected/modules/OESysEvent/
 !/protected/modules/OETrial/
 !/protected/modules/OphCiDidNotAttend/
 !/protected/modules/OphCiExamination/
