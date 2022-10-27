@@ -1,5 +1,4 @@
 <?php
-
 /**
  * OpenEyes.
  *
@@ -16,6 +15,8 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+use OEModule\OESysEvent\events\EventTypeEventSoftDeleted;
 
 /**
  * This is the model class for table "event".
@@ -432,6 +433,7 @@ class Event extends BaseActiveRecordVersioned
     public function onAfterSoftDelete($yii_event)
     {
         $this->raiseEvent('onAfterSoftDelete', $yii_event);
+        EventTypeEventSoftDeleted::dispatch($this);
     }
 
     /**
