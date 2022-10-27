@@ -97,7 +97,7 @@ use OEModule\OphCoCvi\models\OphCoCvi_ClinicalInfo_Diagnosis_Not_Covered;
                     ];?>
                     <?php foreach ($rows as $label => $value) :?>
                         <tr>
-                            <td><div class="data-label"><?= \CHtml::encode($label) ?></div></td>
+                            <td><div class="data-label"><?= $label ?></div></td>
                             <td><div class="data-value"><?= $value;?></div></td>
                         </tr>
                     <?php endforeach;?>
