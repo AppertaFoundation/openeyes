@@ -86,16 +86,17 @@ class GetSignatureByPinAction extends \CAction
     {
         $this->pin = Yii::app()->request->getPost('pin');
 
-        // \OELog::log(print_r($this->controller, true));
-
         try {
             // Check if the user has the Prescribe role, if not throw an exception.
-            $can_prescribe = Yii::app()->user->checkAccess('Prescribe');
-            if (!$can_prescribe) {
-                throw new Exception("You do not have the necessary user rights to sign this prescription.");
+            if (isset($this->controller->required_user_sign_permissions)){
+                foreach ($this->controller->required_user_sign_permissions as $permission)
+                {
+                    if (!Yii::app()->user->checkAccess($permission)) {
+                        throw new Exception("Unable to sign, user does not have necessary permissions.");
+                    }
+                }
             }
             $this->user = SignatureHelper::getUserForSigning();
-            // $this->getUser();
             $this->checkPIN();
             $this->getSignatureFile();
         } catch (Exception $e) {

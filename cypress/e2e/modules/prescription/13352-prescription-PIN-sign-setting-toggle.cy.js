@@ -21,6 +21,22 @@ describe('prescription esign behaviour', () => {
 
         it(`verifies that signature appears`, () => {
             cy.get('div.js-signature-wrapper').scrollIntoView().should('be.visible');
+            
+            cy.get('#add-standard-set-btn').click();
+            cy.selectAdderDialogOptionText('Post-op');
+            cy.confirmAdderDialog();
+
+            cy.get('td.route_option_cell > select').each(($el) => {
+                cy.wrap($el).select(1);
+            });
+
+            cy.get('div.js-signature-wrapper').should('be.visible');
+
+            cy.get('button#et_save').click();
+            cy.get('a.button.header-tab').contains('Edit').click();
+            cy.get('button#reason_2').click();
+
+            cy.get('div.js-signature-wrapper').should('be.visible');
         });
     });
 
