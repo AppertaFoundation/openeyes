@@ -50,7 +50,7 @@ return array(
     'components' => array(
         'assetManager' => array(
             'class' => 'AssetManager',
-            'basePath' => __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..',
+            'basePath' => __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'assets',
         ),
         'fixture' => array(
             'class' => 'DbFixtureManager',

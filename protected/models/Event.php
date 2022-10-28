@@ -16,6 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OE\factories\models\traits\HasFactory;
 use OEModule\OESysEvent\events\EventTypeEventSoftDeleted;
 
 /**
@@ -47,6 +48,8 @@ use OEModule\OESysEvent\events\EventTypeEventSoftDeleted;
  */
 class Event extends BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     protected $event_view_path = '/default/view';
 
     /**

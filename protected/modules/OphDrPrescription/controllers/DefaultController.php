@@ -1156,4 +1156,13 @@ class DefaultController extends BaseEventTypeController
         }
         return false;
     }
+
+    protected function setElementDefaultOptions_Element_OphDrPrescription_Esign(
+        Element_OphDrPrescription_Esign $element,
+        $action
+    ) {
+        if (Yii::app()->user->checkAccess('Prescribe')) {
+            $element->attemptAutoSign();
+        }
+    }
 }

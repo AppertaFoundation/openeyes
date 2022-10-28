@@ -107,4 +107,9 @@ class SettingInstitution extends BaseActiveRecordVersioned
             'criteria' => $criteria,
         ));
     }
+
+    public function save($runValidation = true, $attributes = NULL, $allow_overriding = false) {
+        Yii::app()->settingCache->flush();
+        return parent::save($runValidation, $attributes, $allow_overriding);
+    }
 }

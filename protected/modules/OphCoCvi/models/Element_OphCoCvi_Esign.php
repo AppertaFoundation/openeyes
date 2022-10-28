@@ -16,6 +16,8 @@
 
 namespace OEModule\OphCoCvi\models;
 
+use AutoSignTrait;
+
 /**
  * Class Element_OphCoCvi_Esign
  *
@@ -27,6 +29,10 @@ namespace OEModule\OphCoCvi\models;
  */
 class Element_OphCoCvi_Esign extends \BaseEsignElement
 {
+    use AutoSignTrait;
+    private $signature_class = \OphCoCvi_Signature::class;
+    private $pin_required_setting_name = 'require_pin_for_cvi';
+
     protected $widgetClass = \OEModule\OphCoCvi\widgets\EsignElementWidget::class;
     /**
      * Returns the static model of the specified AR class.

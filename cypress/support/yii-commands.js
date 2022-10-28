@@ -85,3 +85,37 @@ Cypress.Commands.add('createModels', (className, states, attributes, count) => {
         return response.body.models;
     });
 });
+
+Cypress.Commands.add('setSystemSettingValue', (settingKey, settingValue) => {
+    return cy.request({
+        method: 'POST',
+        url: '/CypressHelper/Default/setSystemSettingValue',
+        form: true,
+        body: {
+            system_setting_key: settingKey,
+            system_setting_value: settingValue
+        }
+    });
+});
+
+Cypress.Commands.add('getSystemSettingValue', (settingKey) => {
+    return cy.request({
+        method: 'POST',
+        url: '/CypressHelper/Default/getSystemSettingValue',
+        form: true,
+        body: {
+            system_setting_key: settingKey
+        }
+    });
+});
+
+Cypress.Commands.add('resetSystemSettingValue', (settingKey) => {
+    return cy.request({
+        method: 'POST',
+        url: '/CypressHelper/Default/resetSystemSettingValue',
+        form: true,
+        body: {
+            system_setting_key: settingKey
+        }
+    });
+});

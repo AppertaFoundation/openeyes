@@ -18,12 +18,16 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use AutoSignTrait;
+use BaseSignature;
 use OEModule\OphCiExamination\widgets\MedicationManagement as MedicationManagementWidget;
 use CDbCriteria;
 use Element_OphDrPrescription_Details;
 use Event;
 use EventMedicationUse;
 use Exception;
+use OELog;
+use OphCiExamination_Signature;
 use OphDrPrescription_Item;
 use OphDrPrescription_ItemTaper;
 use PrescriptionCreator;
@@ -47,12 +51,17 @@ use Yii;
  * @property User $createdUser
  * @property User $lastModifiedUser
  * @property Element_OphDrPrescription_Details $prescription
- * @property OphCiExamination_Signature $signatures
+ * @property OphCiExamination_Signature[] $signatures
  *
  * @method auditAllergicDrugEntries($target, $action = "allergy_override")
  */
 class MedicationManagement extends BaseMedicationElement
 {
+    use AutoSignTrait;
+    private $signature_class = \OphCiExamination_Signature::class;
+    private $pin_required_setting_name = 'require_pin_for_prescription';
+    private $auto_sign_role = 'Consultant';
+
     use traits\CustomOrdering;
     public $do_not_save_entries = false;
     public bool $save_draft_prescription = false;
@@ -668,19 +677,26 @@ class MedicationManagement extends BaseMedicationElement
     }
 
     /**
-     * @return OphCoCorrespondence_Signature[]
+     * @return OphCiExamination_Signature[]
      */
     public function getSignatures($readonly = false): array
     {
-        if ($readonly && (empty($this->signatures))) {
-            return [];
+        if ($readonly || !empty($this->signatures)) {
+            return $this->signatures ?? [];
         }
 
-        $consultant = new \OphCiExamination_Signature();
-        $consultant->signatory_role = "Consultant";
-        $consultant->type = \BaseSignature::TYPE_LOGGEDIN_MED_USER;
+        return $this->generateDefaultSignatures();
+    }
 
-        return !empty($this->signatures) ? $this->signatures : [$consultant];
+    /**
+     * @return OphCiExamination_Signature[]
+     */
+    public function generateDefaultSignatures(): array
+    {
+        $auto_sign = \SettingMetadata::model()->checkSetting($this->pin_required_setting_name, 'no') && Yii::app()->user->checkAccess('Prescribe');
+        $default_signature = $this->createUserSignature($auto_sign, BaseSignature::TYPE_LOGGEDIN_MED_USER);
+
+        return [$default_signature];
     }
 
     /** @return array Informational messages to display */

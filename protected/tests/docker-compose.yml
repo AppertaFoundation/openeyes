@@ -3,16 +3,26 @@ version: "3.4"
 # NOTE is is recommended to run `docker-compose down` before `docker-compose up` This will ensure that the database is refreshed on each run.
 # E.g, docker-compose down && docker-compose up
 #
-# To see individual logs - use docker-compose logs [phpunit | behat ]
+# To see individual logs - use docker-compose logs [db | web ]
 #
-# To run only a single test suite, use `docker-compose up [phpunit | selenium behat ]
-## Note that the selenium service is needed for the behat service
+## Note that an xvfb service service is needed for the cypress tests
 #
-# If you want to view the selenium tests runing, connect a vnv viewer to localhost
+#
+## If you want to run this file locally (e.g, to mimic the CI environment)
+# 1. Make sure to delete the following local directories first:
+#    - ./protected/files
+#    - ./node_modules
+#    - ./protected/modules/eyedraw
+#    - ./protected/runtime/cache
+#    - ./assets
+#    ( a helper script is provided alongside this compose file named clear-assets-before-tests.sh )
+# 2. [Optional, probably not needed unless you have trouble with cy:open] Set a local environment variable for display to match your local XWindows server
+#    - e.g., `export DISPLAY="host.docker.internal:0"
 
 services:
   db:
-    image: toukanlabsdocker/oe-sample-db:mariadb_10.4-6
+    # image: toukanlabsdocker/oe-sample-db:mariadb_10.4-6
+    image: toukanlabsdocker/oe-sample-db:mariadb_10.4-release-6.3.x
     environment:
       MYSQL_ROOT_PASSWORD: openeyes
       TZ: "Europe/London"
@@ -26,15 +36,23 @@ services:
       - "128M"
       # disable binary logging (as not needed for development, but logs MUST be enabled for production)
       - "--disable-log-bin"
+    volumes:
+      - "protected-files:/protected/files"
 
-  phpunit:
-    image: ${OEWEB_IMAGE_NAME:-appertaopeneyes/web:php7}
+  web:
+    image: toukanlabsdocker/oe-web-dev:php7.4
     environment:
       OE_MODE: "TEST"
-      TESTS_TO_RUN: "PHPUNIT"
+      TESTS_TO_RUN: "PHPUNIT-SAMPLE;CYPRESS_SHORT;PHPUNIT-FIXTURES"
+      # TESTS_TO_RUN: "CYPRESS_SHORT;WAIT_APACHE"
+      OE_QUIET_DEBUG_LOG: "TRUE"
+      OUTPUT_APPLICATION_LOGS: "FALSE"
+      XDEBUG_MODE: "off"
+      OE_FORCE_MIGRATE: "TRUE"
+      SKIP_OE_CLONE: "TRUE"
+      GENERATE_TEMP_SODIUM_CRYPTO_KEY: "TRUE"
       DATABASE_HOST: "db"
       MYSQL_ROOT_PASSWORD: openeyes
-      ENABLE_CRON: "FALSE"
       WAIT_HOSTS_TIMEOUT: "120"
       WAIT_SLEEP_INTERVAL: "2"
       USE_DEMO_DATA: "FALSE"
@@ -42,6 +60,9 @@ services:
       DATABASE_USER: "openeyes"
       DATABASE_PASS: "openeyes"
       OE_INSTITUTION_CODE: "NEW"
+      DISPLAY: "${DISPLAY:-:99.0}"
+      BUILD_BRANCH: "${BUILD_BRANCH:-master}"
+      PUID: ${PUID:-1000}
     secrets:
       - source: SSH_PRIVATE_KEY
     stdin_open: true
@@ -50,7 +71,13 @@ services:
      - "db"
     volumes:
       - "../..:/var/www/openeyes:delegated"
+      - "/tmp/.X11-unix:/tmp/.X11-unix"
+      - "protected-files:/protected/files"
+    ports:
+      - "8080:80"
 
+volumes:
+  protected-files:
 secrets:
   SSH_PRIVATE_KEY:
     file: ~/.ssh/id_rsa
