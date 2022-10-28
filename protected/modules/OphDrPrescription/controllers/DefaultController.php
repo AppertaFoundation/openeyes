@@ -34,6 +34,10 @@ class DefaultController extends BaseEventTypeController
         'getSignatureByUsernameAndPin' => self::ACTION_TYPE_FORM
     );
 
+    public static $required_user_sign_permissions = [
+        'Prescribe'
+    ];
+
     private function userIsAdmin()
     {
         $user = Yii::app()->session['user'];
