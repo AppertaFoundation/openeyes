@@ -33,6 +33,7 @@ class Element_OphDrPrescription_Esign extends BaseEsignElement
     use AutoSignTrait;
     private $signature_class = \OphDrPrescription_Signature::class;
     private $pin_required_setting_name = 'require_pin_for_prescription';
+    private $auto_sign_user_role = 'Prescriber';
 
     protected $widgetClass = PrescriptionEsignElementWidget::class;
     /**
@@ -115,15 +116,24 @@ class Element_OphDrPrescription_Esign extends BaseEsignElement
      */
     public function getSignatures(): array
     {
-        $prescriber = new OphDrPrescription_Signature();
-        $prescriber->signatory_role = !empty($this->user->grade) ? $this->user->grade->grade : "Prescriber";
-        $prescriber->type = BaseSignature::TYPE_LOGGEDIN_USER;
-
-        if (!$this->isNewRecord) {
-            return [$prescriber];
+        if (!empty($this->user->grade)) {
+            $this->auto_sign_user_role = $this->user->grade->grade;
         }
 
-        return !empty($this->signatures) ? $this->signatures : [$prescriber];
+        if (!$this->attemptAutoSign()) {
+            $prescriber = new OphDrPrescription_Signature();
+            $prescriber->signatory_role = $this->auto_sign_user_role;
+            $prescriber->type = BaseSignature::TYPE_LOGGEDIN_USER;
+
+
+            if (!$this->isNewRecord) {
+                return [$prescriber];
+            }
+
+            return !empty($this->signatures) ? $this->signatures : [$prescriber];
+        }
+
+        return $this->signatures;
     }
 
     public function getViewSignatures(): array
