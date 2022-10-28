@@ -184,6 +184,7 @@ class Element_OphTrConsent_Esign extends \BaseEsignElement implements RequiresSi
             $sig->signatory_name = $user->getFullNameAndTitleAndQualifications();
             $sig->initiator_row_id = 0;
             $sig->user_id = $user->id;
+
             return [$sig];
         }
     }
