@@ -57,14 +57,18 @@ class Manager extends CApplicationComponent
         }
     }
 
-    public function dispatch($system_event): void
+    public function dispatch(...$arguments): void
     {
-        $listeners = is_string($system_event) ?
-            $this->getListenersForEventString($system_event) :
-            $this->getListenersFor($system_event);
+        if (is_string($arguments[0])) {
+            // legacy dispatch pattern
+            $listeners = $this->getListenersForEventString($arguments[0]);
+            array_shift($arguments);
+        } else {
+            $listeners = $this->getListenersFor($arguments[0]);
+        }
 
         foreach ($listeners as $listener) {
-            $listener($system_event);
+            $listener(...$arguments);
         }
     }
 
@@ -85,19 +89,38 @@ class Manager extends CApplicationComponent
         throw new \RuntimeException('unable to configure listener');
     }
 
+    /**
+     * Creates a callback function that will use the given $listener_class
+     * to retrieve a component class from the app, or new up the class if it not defined.
+     *
+     * If a method is provided, that method will be called with the arguments passed to the
+     * callback. Otherwise the class will be invoked with those arguments.
+     *
+     * @param string $listener_class
+     * @param ?string $method
+     * @return callable
+     */
     protected function makeClassListener($listener_class, $method = null): callable
     {
-        return function ($event) use ($listener_class, $method) {
+        return function (...$arguments) use ($listener_class, $method) {
             $listener = $this->getApp()->$listener_class ?? new $listener_class();
 
-            return $method ? $listener->$method($event) : $listener($event);
+            return $method ? $listener->$method(...$arguments) : $listener(...$arguments);
         };
     }
 
-    protected function wrapClassListener($listener_instance, $method = null)
+    /**
+     * Returns a callback function that will directly invoke the given the listener instance,
+     * or (if provided) calls the given $method on that instance.
+     *
+     * @param object $listener_instance
+     * @param string $method
+     * @return callable
+     */
+    protected function wrapClassListener($listener_instance, $method = null): callable
     {
-        return function ($event) use ($listener_instance, $method) {
-            return $method ? $listener_instance->$method($event) : $listener_instance($event);
+        return function (...$arguments) use ($listener_instance, $method) {
+            return $method ? $listener_instance->$method(...$arguments) : $listener_instance(...$arguments);
         };
     }
 
