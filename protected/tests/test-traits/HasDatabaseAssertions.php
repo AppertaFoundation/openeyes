@@ -22,7 +22,7 @@ trait HasDatabaseAssertions
         $wheres = [];
         $params = [];
         foreach ($attributes as $col => $val) {
-            $wheres[] = "$col = :_$col";
+            $wheres[] = "$table.$col = :_$col";
             $params[":_$col"] = $val;
         }
 
