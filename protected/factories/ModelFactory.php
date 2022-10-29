@@ -18,6 +18,7 @@ namespace OE\factories;
 
 use CActiveRecord;
 use CApplication;
+use CDbCriteria;
 use Faker\Generator;
 use OE\factories\exceptions\CannotSaveModelException;
 use OE\factories\exceptions\FactoryNotFoundException;
@@ -190,13 +191,20 @@ abstract class ModelFactory
         }
 
         if ($this->findOrCreateAttributes !== null) {
-            if ($this->count !== null && $this->count > 1) {
-                throw new \InvalidArgumentException("Cannot 'useExisting' with multiple instances in ModelFactory");
-            }
             $existing = $this->getExisting($this->findOrCreateAttributes);
 
             if (count($existing)) {
-                return $existing[array_rand($existing)];
+                if ($this->count === null) {
+                    return $existing[array_rand($existing)];
+                }
+                if ($this->count === 1) {
+                    // count should always return array
+                    return [$existing[array_rand($existing)]];
+                }
+
+                return array_map(function ($key) use ($existing) {
+                    return $existing[$key];
+                }, array_rand($existing, $this->count));
             }
         }
 
@@ -275,9 +283,13 @@ abstract class ModelFactory
         foreach ($definition as $attribute => $value) {
             if ($value instanceof self) {
                 if (!$canCreate) {
-                    throw new CannotMakeModelException("Need to create {$value->modelName()} for {$attribute}.");
+                    $value = $value->make()->getPrimaryKey();
+                    if (!$value) {
+                        throw new CannotMakeModelException("Need to create {$value->modelName()} for {$attribute}.");
+                    }
+                } else {
+                    $value = $value->create()->getPrimaryKey();
                 }
-                $value = $value->create()->getPrimaryKey();
             } elseif ($value instanceof CActiveRecord) {
                 $value = $value->getPrimaryKey();
             }
@@ -317,8 +329,12 @@ abstract class ModelFactory
     protected function getExisting($attributes = [])
     {
         $modelName = $this->modelName();
+        $criteria = new CDbCriteria();
+        $criteria->order = 'RAND()';
+        $criteria->limit = $this->count ?? 1;
+        $criteria->addColumnCondition($attributes);
 
-        return $modelName::model()->findAllByAttributes($attributes);
+        return $modelName::model()->findAll($criteria);
     }
 
     /**
