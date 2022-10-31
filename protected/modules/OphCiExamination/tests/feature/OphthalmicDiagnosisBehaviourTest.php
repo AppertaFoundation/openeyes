@@ -14,12 +14,18 @@
  */
 
 namespace OEModule\OphCiExamination\tests\feature;
+
 use CHtml;
 use OE\factories\models\EventFactory;
 use OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses;
 use OEModule\OphCiExamination\models\OphCiExamination_Diagnosis;
 use SecondaryDiagnosis;
 
+/**
+ * @group sample-data
+ * @group disorder
+ * @group diagnoses
+ */
 class OphthalmicDiagnosisBehaviourTest extends \OEDbTestCase
 {
     use \HasEventTypeElementAssertions;
@@ -47,9 +53,7 @@ class OphthalmicDiagnosisBehaviourTest extends \OEDbTestCase
         $this->assertPrincipalDiagnosisRecordedIn($episode, $test_diagnoses->diagnoses);
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function deleting_more_recent_examination_reverts_to_previous()
     {
         $initial_event = EventFactory::forModule('OphCiExamination')
@@ -110,6 +114,9 @@ class OphthalmicDiagnosisBehaviourTest extends \OEDbTestCase
         $this->assertPrincipalDiagnosisRecordedIn($episode, $most_recent_diagnoses_element_data->diagnoses);
     }
 
+    /**
+     * This abstraction simply wraps the generation and POSTing of sample diagnoses element data for the given episode
+     */
     protected function createDiagnosesElementThroughRequest(\Episode $episode): Element_OphCiExamination_Diagnoses
     {
         list($user, $institution) = $this->createUserWithInstitution();
