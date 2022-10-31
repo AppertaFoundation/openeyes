@@ -55,7 +55,8 @@
                 <?= CHtml::activeTextField($laser_procedure->procedure ?? Procedure::model(),
                     'term',
                     ['class' => 'procedures-search-autocomplete cols-full',
-                        'disabled' => !$is_admin]) ?>
+                        'disabled' => !$is_admin,
+                        'autocomplete' => "on"]) ?>
                 <input type="hidden" name="Procedure[id]" value="<?=$laser_procedure->id?>">
                 <input type="hidden" name="Procedure[proc_id]" value="<?=$laser_procedure->procedure_id?>">
                 <input type="hidden" name="Procedure[mode]" value="original">
@@ -167,7 +168,7 @@
             let input_val = $(this).val().trim();
             let ul_id = input_id + '_list';
 
-            if (e.key.length !== 1) {
+            if (e.key && e.key.length !== 1) {
                 if (e.key.toLowerCase() !== 'backspace') {
                     return;
                 }
@@ -202,6 +203,7 @@
                     li.class = ul_id + '_item';
                     $(li).off('click').on('click', selectProc)
                     $('#' + ul_id).append(li);
+                    $('[name="Procedure[proc_id]"]').val(li.dataset.id);
                 }
             } else {
                 // Procedure not found
