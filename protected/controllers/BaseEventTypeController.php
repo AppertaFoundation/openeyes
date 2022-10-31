@@ -905,8 +905,7 @@ class BaseEventTypeController extends BaseModuleController
 
                         Yii::app()->user->setFlash('success', "{$this->event_type->name} created.");
 
-                        EventTypeEventCreated::dispatch($this->event);
-                        //Yii::app()->event->dispatch('event_created', ['event' => $this->event, 'action' => 'create']);
+                        Yii::app()->event->dispatch('event_created', ['event' => $this->event, 'action' => 'create']);
 
                         $transaction->commit();
 
