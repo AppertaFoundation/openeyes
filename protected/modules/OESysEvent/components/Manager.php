@@ -18,6 +18,7 @@ namespace OEModule\OESysEvent\components;
 use CApplicationComponent;
 use OE\concerns\InteractsWithApp;
 use OEModule\OESysEvent\contracts\Dispatchable;
+use OEModule\OESysEvent\exceptions\UnrecognisedListenerConfigException;
 
 /**
  * Abstraction to handle the observer configuration and map System Events to the defined
@@ -42,6 +43,8 @@ class Manager extends CApplicationComponent
                 continue;
             }
 
+            // legacy configuration indexed arrays by strings that have no relevance
+            // to how the events are defined or handled, so this property is ignored
             foreach ($observer_config as $handler_id => $handler_config) {
                 $this->listen($event_name, $handler_config['class'], $handler_config['method']);
             }
@@ -85,8 +88,7 @@ class Manager extends CApplicationComponent
             return $this->wrapClassListener($listener, $method);
         }
 
-        // TODO: make this more informative
-        throw new \RuntimeException('unable to configure listener');
+        throw new UnrecognisedListenerConfigException('received ' . gettype($listener) . ' can only accept strings or invokable classes');
     }
 
     /**
