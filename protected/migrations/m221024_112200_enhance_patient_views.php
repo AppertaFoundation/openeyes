@@ -153,6 +153,7 @@ class m221024_112200_enhance_patient_views extends OEMigration
             CREATE OR REPLACE VIEW v_event_diagnoses AS
             SELECT ev.patient_id AS patient_id,
                 ev.event_id AS event_id,
+                ev.worklist_patient_id AS worklist_patient_id,
                 eod.id AS entry_id,
                 od.eye_id AS side_id,
                 CASE od.eye_id 
@@ -180,6 +181,7 @@ class m221024_112200_enhance_patient_views extends OEMigration
             UNION 
             SELECT ev.patient_id AS patient_id,
                 ev.event_id AS event_id,
+                ev.worklist_patient_id AS worklist_patient_id,
                 eod.id AS entry_id,
                 od.side_id AS side_id,
                 CASE od.side_id 
