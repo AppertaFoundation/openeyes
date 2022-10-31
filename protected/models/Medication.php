@@ -381,7 +381,6 @@ class Medication extends BaseActiveRecordVersioned
             $ids = [];
 
             /** @var MedicationSet[] $sets */
-
             foreach ($sets as $set) {
                 foreach ($set->items as $item) {
                     if (in_array($item->medication->id, $ids)) {
@@ -459,9 +458,9 @@ class Medication extends BaseActiveRecordVersioned
         return $this->listByUsageCode("COMMON_SYSTEMIC", $subspecialty_id, $raw, $site_id, $prescribable_filter);
     }
 
-    public function listCommonDrops($raw = false, $prescribable_filter = false)
+    public function listCommonDrops($subspecialty_id, $raw = false, $prescribable_filter = false)
     {
-        return $this->listByUsageCode("COMMON_EYE_DROPS", null, $raw, null, $prescribable_filter);
+        return $this->listByUsageCode("COMMON_EYE_DROPS", $subspecialty_id, $raw, null);
     }
 
     public function listCommonOralMedications($raw = false, $prescribable_filter = false)
