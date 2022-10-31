@@ -35,26 +35,8 @@ class OphthalmicDiagnosisBehaviourTest extends \OEDbTestCase
         $episode = \Episode::factory()->create();
         $patient = $episode->patient;
 
-        $test_diagnoses = Element_OphCiExamination_Diagnoses::factory()
-        ->withBilateralDiagnoses(1)
-        ->withRightDiagnoses(1)
-        ->withLeftDiagnoses(1)
-        ->make([
-            'event_id' => null
-        ]);
+        $test_diagnoses = $this->createDiagnosesElementThroughRequest($episode);
 
-        list($user, $institution) = $this->createUserWithInstitution();
-        $this->mockCurrentContext($episode->firm, null, $institution);
-        $form_data = [
-            CHtml::modelName($test_diagnoses) => $this->mapElementToFormData($test_diagnoses),
-            'principal_diagnosis_row_key' => $this->findPrincipalRowKey($test_diagnoses->diagnoses),
-            'patient_id' => $patient->id
-        ];
-
-        $response = $this->actingAs($user, $institution)
-            ->post('/OphCiExamination/Default/create', $form_data);
-
-        $response->assertRedirectContains('view', 'Expected to redirect to a view of the created event');
         $this->assertEventTypeElementCreatedFor(
             $patient,
             Element_OphCiExamination_Diagnoses::class,
@@ -66,9 +48,6 @@ class OphthalmicDiagnosisBehaviourTest extends \OEDbTestCase
     }
 
     /**
-     * Because the secondary diagnoses are only setup via the POST data handling of the
-     * examination module, we have to use the request approach to verify the behaviour
-     *
      * @test
      */
     public function deleting_more_recent_examination_reverts_to_previous()
@@ -86,34 +65,21 @@ class OphthalmicDiagnosisBehaviourTest extends \OEDbTestCase
         $episode = $initial_event->episode;
         $patient = $episode->patient;
 
-        list($user, $institution) = $this->createUserWithInstitution();
-        $this->mockCurrentContext($episode->firm, null, $institution);
-
-        $diagnoses_to_be_deleted = Element_OphCiExamination_Diagnoses::factory()
-            ->withBilateralDiagnoses(1)
-            ->withRightDiagnoses(1)
-            ->withLeftDiagnoses(1)
-            ->make(['event_id' => null]);
-
-        $form_data = [
-            CHtml::modelName($diagnoses_to_be_deleted) => $this->mapElementToFormData($diagnoses_to_be_deleted),
-            'principal_diagnosis_row_key' => $this->findPrincipalRowKey($diagnoses_to_be_deleted->diagnoses),
-            'patient_id' => $patient->id
-        ];
-
-        $response = $this->actingAs($user, $institution)
-            ->post('/OphCiExamination/Default/create', $form_data);
-
-        $response->assertRedirectContains('view', 'Expected to redirect to a view of the created event');
+        // Secondary diagnosis updates are (at the time of writing) triggered through
+        // the controller behaviour calling the correct methods on the diagnoses element
+        // So here we are performing the POST request to trigger this.
+        $diagnoses_to_be_deleted = $this->createDiagnosesElementThroughRequest($episode);
 
         $this->assertSecondaryDiagnosesRecordedFor($patient, $diagnoses_to_be_deleted->diagnoses);
         $this->assertPrincipalDiagnosisRecordedIn($episode, $diagnoses_to_be_deleted->diagnoses);
 
+        // retrieve the event that was created with this post
         $latest_event = \Event::model()
             ->findAll(['order' => 'created_date DESC', 'limit' => 1])[0];
 
         $latest_event->softDelete();
 
+        // should revert to the diagnoses from the initial event
         $this->assertSecondaryDiagnosesRecordedFor($patient, $initial_diagnoses->diagnoses);
         $this->assertPrincipalDiagnosisRecordedIn($episode, $initial_diagnoses->diagnoses);
     }
@@ -121,7 +87,52 @@ class OphthalmicDiagnosisBehaviourTest extends \OEDbTestCase
     /** @test */
     public function patient_diagnoses_unaffected_when_older_examination_is_deleted()
     {
-        $this->markTestIncomplete();
+        $event_to_be_deleted = EventFactory::forModule('OphCiExamination')
+        ->create([
+            'event_date' => $this->faker->dateTimeBetween('-4 weeks', '-2 weeks')->format('Y-m-d')
+        ]);
+
+        Element_OphCiExamination_Diagnoses::factory()
+            ->withBilateralDiagnoses(1)
+            ->withRightDiagnoses(1)
+            ->withLeftDiagnoses(1)
+            ->create(['event_id' => $event_to_be_deleted->id]);
+        $episode = $event_to_be_deleted->episode;
+
+        $most_recent_diagnoses_element_data = $this->createDiagnosesElementThroughRequest($episode);
+
+        $this->assertSecondaryDiagnosesRecordedFor($episode->patient, $most_recent_diagnoses_element_data->diagnoses);
+        $this->assertPrincipalDiagnosisRecordedIn($episode, $most_recent_diagnoses_element_data->diagnoses);
+
+        $event_to_be_deleted->softDelete();
+
+        $this->assertSecondaryDiagnosesRecordedFor($episode->patient, $most_recent_diagnoses_element_data->diagnoses);
+        $this->assertPrincipalDiagnosisRecordedIn($episode, $most_recent_diagnoses_element_data->diagnoses);
+    }
+
+    protected function createDiagnosesElementThroughRequest(\Episode $episode): Element_OphCiExamination_Diagnoses
+    {
+        list($user, $institution) = $this->createUserWithInstitution();
+        $this->mockCurrentContext($episode->firm, null, $institution);
+
+        $diagnoses_data_element = Element_OphCiExamination_Diagnoses::factory()
+            ->withBilateralDiagnoses(1)
+            ->withRightDiagnoses(1)
+            ->withLeftDiagnoses(1)
+            ->make(['event_id' => null]);
+
+        $form_data = [
+            CHtml::modelName($diagnoses_data_element) => $this->mapElementToFormData($diagnoses_data_element),
+            'principal_diagnosis_row_key' => $this->findPrincipalRowKey($diagnoses_data_element->diagnoses),
+            'patient_id' => $episode->patient_id
+        ];
+
+        $response = $this->actingAs($user, $institution)
+            ->post('/OphCiExamination/Default/create', $form_data);
+
+        $response->assertRedirectContains('view', 'Expected to redirect to a view of the created event');
+
+        return $diagnoses_data_element;
     }
 
     protected function mapElementToFormData($element): array
