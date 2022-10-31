@@ -17,6 +17,7 @@ namespace OEModule\OphCiExamination\tests\feature;
 use CHtml;
 use OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses;
 use OEModule\OphCiExamination\models\OphCiExamination_Diagnosis;
+use SecondaryDiagnosis;
 
 class OphthalmicDiagnosisBehaviourTest extends \OEDbTestCase
 {
@@ -28,7 +29,7 @@ class OphthalmicDiagnosisBehaviourTest extends \OEDbTestCase
     /** @test */
     public function entries_are_saved_and_reflected_in_patient_record()
     {
-        $element = Element_OphCiExamination_Diagnoses::factory()
+        $test_diagnoses = Element_OphCiExamination_Diagnoses::factory()
             ->withBilateralDiagnoses(1)
             ->withRightDiagnoses(1)
             ->withLeftDiagnoses(1)
@@ -44,8 +45,8 @@ class OphthalmicDiagnosisBehaviourTest extends \OEDbTestCase
 
         $this->mockCurrentContext($episode->firm, null, $institution);
         $form_data = [
-            CHtml::modelName($element) => $this->mapElementToFormData($element),
-            'principal_diagnosis_row_key' => $this->findPrincipalRowKey($element->diagnoses),
+            CHtml::modelName($test_diagnoses) => $this->mapElementToFormData($test_diagnoses),
+            'principal_diagnosis_row_key' => $this->findPrincipalRowKey($test_diagnoses->diagnoses),
             'patient_id' => $patient->id
         ];
 
@@ -58,10 +59,9 @@ class OphthalmicDiagnosisBehaviourTest extends \OEDbTestCase
             Element_OphCiExamination_Diagnoses::class,
             []
         );
-        $this->assertDiagnosesRecordedFor($patient, $element->diagnoses);
-
-        // TODO: validate patient secondary diagnoses
-        // TODO: validate principal recorded
+        $this->assertExaminationDiagnosesRecordedFor($patient, $test_diagnoses->diagnoses);
+        $this->assertSecondaryDiagnosesRecordedFor($patient, $test_diagnoses->diagnoses);
+        $this->assertPrincipalDiagnosisRecordedIn($episode, $test_diagnoses->diagnoses);
     }
 
     public function deleting_more_recent_examination_reverts_to_previous()
@@ -107,7 +107,7 @@ class OphthalmicDiagnosisBehaviourTest extends \OEDbTestCase
         return [$user, $institution];
     }
 
-    protected function assertDiagnosesRecordedFor(\Patient $patient, array $diagnoses)
+    protected function assertExaminationDiagnosesRecordedFor(\Patient $patient, array $diagnoses)
     {
         $element_table = Element_OphCiExamination_Diagnoses::model()->tableName();
         $record_table = OphCiExamination_Diagnosis::model()->tableName();
@@ -124,5 +124,39 @@ class OphthalmicDiagnosisBehaviourTest extends \OEDbTestCase
             $this->joinPatientToEventTypeElementQuery($patient, $query, "el");
             $this->assertGreaterThanOrEqual(1, $query->queryScalar(), "$record_table does not contain " . print_r($diagnosis_data, true) . "for given patient.");
         }
+    }
+
+    protected function assertSecondaryDiagnosesRecordedFor(\Patient $patient, $diagnoses): void
+    {
+        $non_principal = array_filter($diagnoses, function ($diagnosis) {
+            return !$diagnosis->principal;
+        });
+
+        $table = SecondaryDiagnosis::model()->tableName();
+
+        foreach ($non_principal as $diagnosis) {
+            $attributes = [
+                'disorder_id' => $diagnosis->disorder_id,
+                'eye_id' => $diagnosis->eye_id,
+                'date' => $diagnosis->date,
+                'patient_id' => $patient->id
+            ];
+
+            $this->assertDatabaseHas($table, $attributes);
+        }
+    }
+
+    protected function assertPrincipalDiagnosisRecordedIn(\Episode $episode, $diagnoses): void
+    {
+        $episode->refresh();
+        $principal = array_values(
+            array_filter($diagnoses, function ($diagnosis) {
+                return (bool) $diagnosis->principal;
+            })
+        )[0];
+
+        $this->assertEquals($principal->disorder_id, $episode->disorder_id, "Principal diagnosis disorder has not been set correctly on the episode");
+        $this->assertEquals($principal->eye_id, $episode->eye_id, "Principal diagnosis eye has not been set correctly on the episode");
+        $this->assertEquals($principal->date, $episode->disorder_date, "Principal diagnosis datehas not been set correctly on the episode");
     }
 }
