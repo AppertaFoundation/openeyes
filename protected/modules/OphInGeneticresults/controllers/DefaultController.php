@@ -9,7 +9,7 @@ class DefaultController extends BaseEventTypeController
     {
         return array(
             array('allow',
-                'actions' => array('Create', 'Update', 'View', 'Print'),
+                'actions' => array('Create', 'Update', 'View', 'Print', 'Delete'),
                 'roles' => array('OprnEditGeneticResults'),
             ),
             array('allow',

@@ -57,9 +57,7 @@ class GetSignatureByPinAction extends \CAction
 
     protected function checkPIN() : void
     {
-        $secretary_can_sign = $this->controller->secretary_can_sign ?? false;
-        if ($this->pin === Yii::app()->params["secretary_pin"] && $secretary_can_sign) {
-            $this->is_secretary_signing = true;
+        if ($this->is_secretary_signing) {
             $this->checkSecretaryPIN();
         } else {
             if(strlen($this->pin) === 0) {
@@ -71,13 +69,17 @@ class GetSignatureByPinAction extends \CAction
         }
     }
 
-    private function checkSecretaryPIN()
+    private function checkSecretaryPIN() : void
     {
         if (!Yii::app()->user->checkAccess('SignEvent')) {
             throw new Exception("We're sorry, you are not authorized to sign events. Please contact support.");
         }
     }
 
+    private function checkIsSecretarySigning(): void {
+        $secretary_can_sign = $this->controller->secretary_can_sign ?? false;
+        $this->is_secretary_signing = ($this->pin === Yii::app()->params["secretary_pin"] && $secretary_can_sign);
+    }
 
     /**
      * @inheritDoc
@@ -86,16 +88,28 @@ class GetSignatureByPinAction extends \CAction
     {
         $this->pin = Yii::app()->request->getPost('pin');
 
-        // \OELog::log(print_r($this->controller, true));
-
         try {
-            // Check if the user has the Prescribe role, if not throw an exception.
-            $can_prescribe = Yii::app()->user->checkAccess('Prescribe');
-            if (!$can_prescribe) {
-                throw new Exception("You do not have the necessary user rights to sign this prescription.");
+            $this->checkIsSecretarySigning();
+
+            if ($this->is_secretary_signing) {
+                $user_id = Yii::app()->request->getPost('user_id');
+                $this->user = User::model()->findByPk($user_id);
+                if (!$this->user) {
+                    throw new Exception("An error occurred while trying to fetch your signature. Please contact support.");
+                }
+            } else {
+                $this->user = SignatureHelper::getUserForSigning();
             }
-            $this->user = SignatureHelper::getUserForSigning();
-            // $this->getUser();
+
+            // Check if the user has the necessary permissions to sign this event, if not throw an exception.
+            if (isset($this->controller->required_user_sign_permissions)){
+                foreach ($this->controller->required_user_sign_permissions as $permission)
+                {
+                    if (!Yii::app()->user->checkAccess($permission)) {
+                        throw new Exception("Unable to sign, user does not have necessary permissions.");
+                    }
+                }
+            }
             $this->checkPIN();
             $this->getSignatureFile();
         } catch (Exception $e) {

@@ -658,11 +658,11 @@ class DefaultController extends BaseEventTypeController
             $withdrawal->email = $this->patient->getEmail();
             $withdrawal->phone_number = $this->patient->primary_phone;
             $withdrawal->mobile_number = $this->patient->contact->mobile_phone;
-            $withdrawal->address_line1 = $this->patient->contact->address->address1;
-            $withdrawal->address_line2 = $this->patient->contact->address->address2;
-            $withdrawal->city = $this->patient->contact->address->city;
-            $withdrawal->country_id = $this->patient->contact->address->country_id;
-            $withdrawal->postcode = $this->patient->contact->address->postcode;
+            $withdrawal->address_line1 = $this->patient->contact->address->address1 ?? "";
+            $withdrawal->address_line2 = $this->patient->contact->address->address2 ?? "";
+            $withdrawal->city = $this->patient->contact->address->city ?? "";
+            $withdrawal->country_id = $this->patient->contact->address->country_id ?? null;
+            $withdrawal->postcode = $this->patient->contact->address->postcode ?? "";
             $withdrawal->consent_patient_relationship_id = $other_relationship->id;
             $withdrawal->other_relationship = 'Patient';
         }

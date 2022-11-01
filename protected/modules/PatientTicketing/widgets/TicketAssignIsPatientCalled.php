@@ -49,32 +49,23 @@ class TicketAssignIsPatientCalled extends BaseTicketAssignment
         return $errs;
     }
 
-    public function radioButtons(
-        $element,
-        $field,
-        $data,
-        $selected_item = null,
-        $maxwidth = false,
-        $hidden = false,
-        $no_element = false,
-        $label_above = false,
-        $htmlOptions = array(),
-        $layoutColumns = array()
+    public function isPatientCalledFormFields(
+        $htmlOptions = array()
     ) {
-        $json_data = json_decode($this->ticket->current_queue_assignment->details,true);
-        $selected_item = @$json_data['is_patient_called']?$json_data['is_patient_called']:null;
+        if (!is_null($this->form_data) && isset($this->form_data['patientticketing_glreview']['is_patient_called'])) {
+            $selected_item = $this->form_data['patientticketing_glreview']['is_patient_called'];
+        } else {
+            $json_data = json_decode($this->ticket->current_queue_assignment->details, true);
+            $selected_item = @$json_data['is_patient_called']?$json_data['is_patient_called'] : null;
+        }
+
         $this->widget('application.widgets.RadioButtonList', array(
             'element' => $this,
             'name' => 'patientticketing_glreview[is_patient_called]',
-            'field' => $field,
-            'data' => $data,
+            'field' => 'is_patient_called',
+            'data' => [0 => 'No', 1 => 'Yes'],
             'selected_item' => $selected_item,
-            'maxwidth' => $maxwidth,
-            'hidden' => $hidden,
-            'no_element' => $no_element,
-            'label_above' => $label_above,
             'htmlOptions' => $htmlOptions,
-            'layoutColumns' => $layoutColumns,
         ));
     }
 }
