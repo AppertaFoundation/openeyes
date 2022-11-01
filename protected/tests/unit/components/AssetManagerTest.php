@@ -49,34 +49,6 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
     /**
      * @covers AssetManager
      */
-    public function testInstanceCreated()
-    {
-        $this->assertTrue(
-            $this->globalInstance instanceof AssetManager,
-            'Yii::app()->assetManager should be an instance of AssetManager'
-        );
-
-        $this->assertTrue(
-            $this->globalInstance instanceof CAssetManager,
-            'AssetManager should extend CAssetManager'
-        );
-
-        $cacheBuster = PHPUnit_Framework_Assert::readAttribute($this->globalInstance, 'cacheBuster');
-        $this->assertTrue(
-            $cacheBuster instanceof CacheBuster,
-            'cacheBuster property on AssetManager instance should be an instance of CacheBuster'
-        );
-
-        $clientScript = PHPUnit_Framework_Assert::readAttribute($this->globalInstance, 'clientScript');
-        $this->assertTrue(
-            $clientScript instanceof ClientScript,
-            'clientScript property on AssetManager instance should be an instance of ClientScript'
-        );
-    }
-
-    /**
-     * @covers AssetManager
-     */
     public function testGetPublishedPathOfAlias()
     {
         $instance = self::getInstance();

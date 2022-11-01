@@ -152,7 +152,7 @@ class UserIdentityTest extends OEDbTestCase
     {
         Yii::app()->params['auth_source'] = 'LDAP';
 
-        $ZendLdapStub = $this->getMock('Zend_Ldap', array(), array(), '', false);
+        $ZendLdapStub = $this->createMock('Zend_Ldap', array(), array(), '', false);
 
         $ZendLdapStub->expects($this->any())
              ->method('bind')
@@ -166,7 +166,10 @@ class UserIdentityTest extends OEDbTestCase
                  'mail' => array('stub@stub.com'),
              )));
 
-        $userIdentity = $this->getMock('UserIdentity', array('getLdap'), array('JoeBloggs', 'password'));
+        $userIdentity = $this->getMockBuilder(UserIdentity::class)
+            ->setMethods(['getLdap'])
+            ->setConstructorArgs(['JoeBloggs', 'password'])
+            ->getMock();
         $userIdentity->expects($this->any())
                 ->method('getLdap')
                 ->will($this->returnValue($ZendLdapStub));
