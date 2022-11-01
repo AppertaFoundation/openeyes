@@ -1029,6 +1029,35 @@ class OphCoCorrespondence_API extends BaseAPI
         }
     }
 
+
+    /**
+    * Gets optometrist address
+    *
+    * Shortcode: pad
+    *
+    *
+    * @param Patient $patient
+    * @param bool $use_context
+    * @returns string
+    */
+
+   public function getOptometristAddress(\Patient $patient, $use_context = false)
+   {
+        $optometrist = $patient->getPatientOptometrist();
+            
+        if (!$optometrist) {
+            return 'No optom';
+        }
+
+        $optometrist_address = $optometrist->correspondAddress ?? $optometrist->address ?? null;
+
+        if (!$optometrist_address) {
+            return 'No optom address';
+        } else {
+            return implode('<br>', $optometrist_address->getLetterArray());
+        }
+   }
+
     /**
      * @param $event
      * @param $user
