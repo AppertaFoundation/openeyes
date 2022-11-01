@@ -41,4 +41,10 @@ class UserAuthenticationFactory extends ModelFactory
             ];
         });
     }
+
+    public function persistInstance($instance): bool
+    {
+        // need to validate to leverage the before and after validate hooks
+        return $instance->save(true);
+    }
 }

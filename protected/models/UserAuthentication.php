@@ -1,5 +1,4 @@
 <?php
-
 /**
  * OpenEyes
  *
@@ -15,6 +14,8 @@
  * @copyright Copyright (c) 2020, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+use OE\factories\models\traits\HasFactory;
 
 /**
  * This is the model class for table "user_authentication".
@@ -46,6 +47,8 @@
  */
 class UserAuthentication extends BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     public $password;
     public $password_repeat;
     private $old_attributes;
