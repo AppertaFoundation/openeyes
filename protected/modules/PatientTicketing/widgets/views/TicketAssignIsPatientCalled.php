@@ -22,12 +22,7 @@ $form = new BaseEventTypeCActiveForm();
         <label for="site"><?= $this->getAttributeLabel('is_patient_called') ?>:</label>
     </div>
     <div class="large-<?= $this->data_width ?> column end">
-        <?php echo $this->radioButtons($this, 'is_patient_called', [0=>'No',1=>'Yes'],
-            $this->is_patient_called,
-            false,
-            false,
-            false,
-            false,
+        <?php echo $this->isPatientCalledFormFields(
             array(
                 'text-align' => 'right',
                 'nowrapper' => true,
