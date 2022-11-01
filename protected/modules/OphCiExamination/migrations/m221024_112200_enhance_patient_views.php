@@ -4,8 +4,7 @@ class m221024_112200_enhance_patient_views extends OEMigration
 {
     public function safeUp()
     {
-        $this->execute("
-            CREATE OR REPLACE VIEW v_patient_appointments AS
+        $this->execute("CREATE OR REPLACE VIEW v_patient_appointments AS
             SELECT wp.patient_id AS patient_id,
                 w.name AS worklist_name,
                 wp.id AS worklist_patient_id,
@@ -34,8 +33,7 @@ class m221024_112200_enhance_patient_views extends OEMigration
             GROUP BY wp.id;
         ");
 
-        $this->execute("
-            CREATE OR REPLACE VIEW v_patient_follow_up AS
+        $this->execute("CREATE OR REPLACE VIEW v_patient_follow_up AS
             SELECT ep.patient_id AS patient_id,
                 ev.id AS event_id,
                 ev.worklist_patient_id AS worklist_patient_id,
@@ -80,8 +78,7 @@ class m221024_112200_enhance_patient_views extends OEMigration
                 LEFT JOIN ophciexamination_discharge_destination odd ON odd.id=oce.discharge_destination_id;
         ");
 
-        $this->execute("
-            CREATE OR REPLACE VIEW v_patient_clinical_management AS
+        $this->execute("CREATE OR REPLACE VIEW v_patient_clinical_management AS
             SELECT ep.patient_id AS patient_id,
                 ev.worklist_patient_id AS worklist_patient_id,
                 eom.id AS entry_id,
@@ -95,8 +92,7 @@ class m221024_112200_enhance_patient_views extends OEMigration
                 JOIN episode ep ON ep.id=ev.episode_id;
         ");
 
-        $this->execute("
-            CREATE OR REPLACE VIEW v_patient_diagnoses AS
+        $this->execute("CREATE OR REPLACE VIEW v_patient_diagnoses AS
             SELECT ev.patient_id AS patient_id,
                 od.eye_id AS side_id,
                 CASE od.eye_id 
@@ -149,12 +145,11 @@ class m221024_112200_enhance_patient_views extends OEMigration
                 LEFT JOIN specialty s ON s.id = d.specialty_id;
         ");
 
-        $this->execute("
-            CREATE OR REPLACE VIEW v_event_diagnoses AS
+        $this->execute("CREATE OR REPLACE VIEW v_event_diagnoses AS
             SELECT ev.patient_id AS patient_id,
                 ev.event_id AS event_id,
                 ev.worklist_patient_id AS worklist_patient_id,
-                eod.id AS entry_id,
+                od.id AS entry_id,
                 od.eye_id AS side_id,
                 CASE od.eye_id 
                     WHEN 1 THEN 'L'
@@ -182,7 +177,7 @@ class m221024_112200_enhance_patient_views extends OEMigration
             SELECT ev.patient_id AS patient_id,
                 ev.event_id AS event_id,
                 ev.worklist_patient_id AS worklist_patient_id,
-                eod.id AS entry_id,
+                od.id AS entry_id,
                 od.side_id AS side_id,
                 CASE od.side_id 
                     WHEN 1 THEN 'L'
@@ -209,8 +204,7 @@ class m221024_112200_enhance_patient_views extends OEMigration
                 LEFT JOIN specialty s ON s.id = d.specialty_id;
         ");
 
-        $this->execute("
-            CREATE OR REPLACE VIEW v_patient_surgical_procedures AS
+        $this->execute("CREATE OR REPLACE VIEW v_patient_surgical_procedures AS
             SELECT ep.patient_id AS patient_id,
                 ev.worklist_patient_id AS worklist_patient_id,
                 oppa.id AS entry_id,
@@ -250,8 +244,7 @@ class m221024_112200_enhance_patient_views extends OEMigration
             GROUP BY ep.patient_id,ev.worklist_patient_id,eop.eye_id,p.id;
         ");
 
-        $this->execute("
-            CREATE OR REPLACE VIEW v_patient_procedures AS
+        $this->execute("CREATE OR REPLACE VIEW v_patient_procedures AS
             SELECT patient_id,
                 'Clinical' AS procedure_type,
                 worklist_patient_id,
@@ -293,8 +286,7 @@ class m221024_112200_enhance_patient_views extends OEMigration
             FROM v_patient_surgical_procedures;
         ");
 
-        $this->execute("
-            CREATE OR REPLACE VIEW v_patient_investigations AS
+        $this->execute("CREATE OR REPLACE VIEW v_patient_investigations AS
             SELECT p.id AS patient_id,
                 ev.id AS event_id,
                 eoie.id AS entry_id,
@@ -327,12 +319,57 @@ class m221024_112200_enhance_patient_views extends OEMigration
                 LEFT JOIN proc_opcs_assignment poa ON poa.proc_id=proc.id
                 LEFT JOIN opcs_code oc ON oc.id=poa.opcs_code_id;
         ");
+
+        $this->execute("CREATE OR REPLACE VIEW v_patient_identifiers AS
+        SELECT n.patient_id AS patient_id,
+            i.short_name AS institution_short_name,
+            s.short_name AS site_short_name,
+            t.short_title AS type_short_title,
+            n.value AS identifier_value,
+            i.name AS institution_long_name,
+            i.remote_id AS institution_code,
+            s.name AS site_long_name,
+            s.remote_id AS site_code,
+            t.long_title AS type_long_title,
+            n.patient_identifier_type_id AS patient_identifier_type_id,
+            t.usage_type AS usage_type,
+            t.institution_id AS institution_id,
+            t.site_id AS site_id,
+            n.deleted AS identifier_deleted,
+            n.last_modified_user_id AS last_modified_user_id,
+            n.last_modified_date AS last_modified_date
+        FROM patient_identifier n
+            JOIN patient_identifier_type t ON t.id = n.patient_identifier_type_id
+            JOIN institution i ON i.id = t.institution_id
+            LEFT JOIN site s ON s.id = t.site_id
+        ORDER BY n.patient_id;");
     }
 
     public function safeDown()
     {
-        $this->execute("
-            CREATE OR REPLACE VIEW v_patient_investigations AS
+        $this->execute("CREATE OR REPLACE VIEW v_patient_identifiers AS
+        SELECT n.patient_id AS patient_id,
+			i.short_name AS institution_short_name,
+			s.short_name AS site_short_name,
+			t.short_title AS type_short_title,
+			n.value AS identifier_value,
+			i.name AS institution_long_name,
+			i.remote_id AS institution_code,
+			s.name AS site_long_name,
+			s.remote_id AS site_code,
+			t.long_title AS type_long_title,
+			n.patient_identifier_type_id AS patient_identifier_type_id,
+			t.usage_type AS usage_type,
+			t.institution_id AS institution_id,
+			t.site_id AS site_id,
+			n.deleted AS identifier_deleted
+		FROM patient_identifier n
+			JOIN patient_identifier_type t ON t.id = n.patient_identifier_type_id
+	        JOIN institution i ON i.id = t.institution_id
+	        LEFT JOIN site s ON s.id = t.site_id
+        ORDER BY n.patient_id;");
+
+        $this->execute("CREATE OR REPLACE VIEW v_patient_investigations AS
             SELECT p.id AS patient_id,
                 ev.id AS event_id,
                 eoie.date AS investigation_date,
@@ -377,8 +414,7 @@ class m221024_112200_enhance_patient_views extends OEMigration
             DROP VIEW IF EXISTS v_event_diagnoses;
         ");
 
-        $this->execute("
-        CREATE OR REPLACE VIEW v_patient_diagnoses AS
+        $this->execute("CREATE OR REPLACE VIEW v_patient_diagnoses AS
         SELECT ev.patient_id AS patient_id,
             od.eye_id AS side_id,
             CASE od.eye_id 
@@ -437,8 +473,7 @@ class m221024_112200_enhance_patient_views extends OEMigration
             DROP VIEW IF EXISTS v_patient_follow_up;
         ");
 
-        $this->execute("
-            CREATE OR REPLACE VIEW v_patient_appointments AS
+        $this->execute("CREATE OR REPLACE VIEW v_patient_appointments AS
             SELECT wp.patient_id AS patient_id,
                 w.name AS worklist_name,
                 wp.id AS worklist_patient_id,
