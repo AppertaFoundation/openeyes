@@ -1046,13 +1046,13 @@ class OphCoCorrespondence_API extends BaseAPI
         $optometrist = $patient->getPatientOptometrist();
             
         if (!$optometrist) {
-            return 'No optom';
+            return;
         }
 
         $optometrist_address = $optometrist->correspondAddress ?? $optometrist->address ?? null;
 
         if (!$optometrist_address) {
-            return 'No optom address';
+            return;
         } else {
             return implode('<br>', $optometrist_address->getLetterArray());
         }
