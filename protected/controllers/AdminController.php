@@ -764,6 +764,8 @@ class AdminController extends BaseAdminController
                     $userAtt['firms'] = array();
                 }
 
+                OELog::log(print_r(['roles', $userAtt['roles']], true));
+
                 $user->saveRoles($userAtt['roles']);
 
                 try {
