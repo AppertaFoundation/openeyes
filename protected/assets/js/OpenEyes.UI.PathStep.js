@@ -99,11 +99,11 @@
                 ps.requestDetails.bind(
                     ps,
                     {
-                        partial: 1, 
+                        partial: 1,
                         pathstep_id: ps.pathstepId,
                         pathstep_type_id: ps.pathstepTypeId,
                         visit_id: ps.visitID,
-                        red_flag: ps.redFlag, 
+                        red_flag: ps.redFlag,
                     }
                 ),
                 300
@@ -183,25 +183,36 @@
         });
     };
 
+    /**
+     * Assign the step data to the PathStep object
+     * @param {*} pathstep_icon the pathstep icon html (non jquery object)
+     */
+    PathStep.prototype.populatePathstepData = function(pathstep_icon) {
+        if (this instanceof PathStep) {
+            this.pathwayId = $(pathstep_icon).data(this.options.pathwayDataKey);
+            this.pathstepId = $(pathstep_icon).data(this.options.elementDataKey);
+            this.pathstepTypeId = $(pathstep_icon).data(this.options.elementDataTypeKey);
+            this.patientID = $(pathstep_icon).data(this.options.patientIDKey);
+            this.redFlag = $(pathstep_icon).data(this.options.redFlagKey);
+            this.visitID = $(pathstep_icon).data(this.options.visitIDKey);
+        }
+
+    }
+
     // initialize popup
-    PathStep.prototype.initPopup = function (ele) {
+    PathStep.prototype.initPopup = function (pathstep_icon) {
         let $pathstep_ctn = $('<div class="' + this.options.presetpopUpClassText + '"></div>');
         let $pathstep_ctn_spinner = $(this.options.spinnerHTML);
-        this.pathstepIcon = ele;
-        this.pathwayId = $(ele).data(this.options.pathwayDataKey);
-        this.pathstepId = $(ele).data(this.options.elementDataKey);
-        this.pathstepTypeId = $(ele).data(this.options.elementDataTypeKey);
-        this.patientID = $(ele).data(this.options.patientIDKey);
-        this.redFlag = $(ele).data(this.options.redFlagKey);
-        this.visitID = $(ele).data(this.options.visitIDKey);
-        if($(ele).hasClass('js-no-interaction')){
+        this.pathstepIcon = pathstep_icon;
+        this.populatePathstepData(pathstep_icon);
+        if($(pathstep_icon).hasClass('js-no-interaction')){
             this.isInteractive = 0;
         } else {
             this.isInteractive = 1;
         }
         this.administer_ready = false;
 
-        const popup_pos = this.getPopupPosition(ele, $pathstep_ctn);
+        const popup_pos = this.getPopupPosition(pathstep_icon, $pathstep_ctn);
         $pathstep_ctn.css(popup_pos);
         $pathstep_ctn_spinner.appendTo($pathstep_ctn);
         $pathstep_ctn.appendTo('body');
@@ -301,6 +312,7 @@
         this.currentPopup.html('');
         $(this.options.spinnerHTML).appendTo(this.currentPopup);
         this.currentPopup.get(0).style.height = this.popupOriginalHeight + 'px';
+        this.populatePathstepData(this.pathstepIcon);
     };
     // setup the popup height after getting detailed content
     PathStep.prototype.configPopupHeight = function ($popup, popup_content_wrapper_class) {
@@ -318,6 +330,26 @@
     PathStep.prototype.checkPopupExistence = function () {
         return this.currentPopup && this.currentPopup.closest('body').length > 0;
     };
+
+    /**
+     * Disable / enable the step action buttons
+     * @param {bool} disable a flag indicates whether the element(s) should be disabled
+     * @param {string} actions_selector the selector of the step actions
+     */
+    PathStep.prototype.toggleDisableStepActions = function(disable = true, step_actions_selector = '.step-actions button') {
+        if (!this.checkPopupExistence()) {
+            console.error('No Popup found');
+            return;
+        }
+
+        const step_actions = $(this.currentPopup).find(step_actions_selector);
+        if (!step_actions.length) {
+            console.error('No step action elements');
+            return;
+        }
+
+        step_actions.each((i, action) => $(action).prop('disabled', disable));
+    }
 
     exports.PathStep = PathStep;
 
