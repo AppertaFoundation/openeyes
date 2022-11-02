@@ -23,6 +23,8 @@ class DefaultController extends BaseEventTypeController
         'downloadFileCollection' => self::ACTION_TYPE_VIEW,
         'getDecisionTree' => self::ACTION_TYPE_FORM,
         'getVABaseValues' => self::ACTION_TYPE_FORM,
+        'renderPdfForSide' => self::ACTION_TYPE_PRINT,
+        'renderPreviewPdf' => self::ACTION_TYPE_PRINT,
     );
 
     // TODO: check this is in line with Jamie's change circa 3rd April 2013
@@ -101,6 +103,35 @@ class DefaultController extends BaseEventTypeController
             Yii::app()->user->setFlash('error', 'Unable to process the application at this time.');
         }
         $this->redirect(array($this->successUri));
+    }
+
+    public function actionRenderPdfForSide($event_id)
+    {
+        $request = $this->getApp()->getRequest();
+        $event = Event::model()->findByPk($request->getQuery('event_id'));
+        if (!$side = $request->getQuery('side')) {
+            throw new CHttpException(400, 'Invalid request.');
+        }
+        if (!Eye::model()->find('name=?', array(ucwords($side)))) {
+            throw new CHttpException(404, 'Eye not found.');
+        }
+
+
+        $service = new OphCoTherapyapplication_Processor($event);
+        $html = $service->renderPdfForSide($this, $side);
+
+        echo $html;
+    }
+
+    public function actionRenderPreviewPdf($event_id)
+    {
+        $request = $this->getApp()->getRequest();
+        $event = Event::model()->findByPk($request->getQuery('event_id'));
+
+        $service = new OphCoTherapyapplication_Processor($event);
+        $html = $service->renderPreviewPdf($this);
+
+        echo $html;
     }
 
     public function actionDownloadFileCollection($id)

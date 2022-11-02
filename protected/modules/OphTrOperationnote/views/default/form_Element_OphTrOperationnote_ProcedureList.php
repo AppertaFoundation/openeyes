@@ -68,12 +68,13 @@ if ($element->booking_event_id) {
       <tbody>
       <tr>
         <td style="vertical-align: top;">
+          
             <?php echo $form->hiddenInput($element, 'booking_event_id') ?>
             <?php echo $form->radioButtons(
                 $element,
                 'eye_id',
                 $element->eyeOptions,
-                ($element->eye() ? (intval($element->eye()->id) === Eye::BOTH ? Eye::RIGHT : $element->eye()->id) : null),
+                ($element->eye() ? $element->eye()->id : null),
                 null,
                 null,
                 null,

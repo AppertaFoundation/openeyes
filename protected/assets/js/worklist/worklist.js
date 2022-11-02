@@ -485,6 +485,10 @@ $(function () {
         $(context).addClass('spinner');
         $(context).addClass('as-icon');
 
+        const step_actions = $(ps?.currentPopup).find('.step-actions button');
+        // disable the buttons to avoid racing issue
+        step_actions?.each((i, action) => $(action).prop('disabled', true));
+
         $.ajax({
             url: '/worklist/addComment',
             type: 'POST',
@@ -514,14 +518,6 @@ $(function () {
                     if (!$commentButton.hasClass('comments-added')) {
                         $commentButton.addClass('comments-added');
                     }
-
-                    ps.resetPopup();
-                    ps.requestDetails({
-                        partial: 0,
-                        pathstep_type_id: ps.pathstepTypeId,
-                        pathstep_id: response.step_id,
-                        visit_id: ps.visitID
-                    });
                 } else {
                     let $eventSelector = $(event.target);
                     let $editSelector = $eventSelector.closest('.js-comments-edit');
@@ -537,6 +533,14 @@ $(function () {
                         $commentButton.addClass('comments-added');
                     }
                 }
+                // reset the popup ui and refresh the popup data
+                ps?.resetPopup();
+                ps?.requestDetails({
+                    partial: 0,
+                    pathstep_type_id: ps.pathstepTypeId,
+                    pathstep_id: response.step_id,
+                    visit_id: ps.visitID
+                });
             }
         });
     };

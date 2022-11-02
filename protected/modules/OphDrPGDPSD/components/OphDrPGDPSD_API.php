@@ -66,7 +66,7 @@ class OphDrPGDPSD_API extends \BaseAPI
         } else {
             $common_ophthalmic = array();
         }
-        $common_drops = \Medication::model()->listCommonDrops(true, true);
+        $common_drops = \Medication::model()->listCommonDrops($subspecialty_id, true, true);
         $common_oral = \Medication::model()->listCommonOralMedications(true, true);
 
         $common_systemic = array_map(function ($comm_sys) {

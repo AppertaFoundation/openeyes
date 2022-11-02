@@ -5,6 +5,7 @@
  * @var $patient Patient
  * @var $red_flag bool
  * @var $partial bool
+ * @var $has_permission_to_start bool
  */
 
 use OEModule\OphCiExamination\models\OphCiExamination_AE_RedFlags_Options;
@@ -182,7 +183,12 @@ if ($is_step_instance) {
         <?php if (!$partial) { ?>
         <div class="step-actions">
             <?php if (isset($worklist_patient)) { ?>
-                <button class="green hint js-ps-popup-btn" data-action="next"<?= (int)$step->status === PathwayStep::STEP_COMPLETED ? ' style="display: none;"' : ''?>>
+                <button
+                    class="green hint js-ps-popup-btn"
+                    data-action="next"
+                    <?= (int)$step->status === PathwayStep::STEP_COMPLETED ? ' style="display: none;"' : ''?>
+                    <?= $has_permission_to_start ? '' : 'disabled'?>
+                >
                     <?= $is_step_instance && (int)$step->status === PathwayStep::STEP_STARTED ? 'Complete' : 'Start' ?>
                 </button>
                 <button class="blue hint js-ps-popup-btn" data-action="prev"<?= $is_requested ? ' style="display: none;"' : ''?>>

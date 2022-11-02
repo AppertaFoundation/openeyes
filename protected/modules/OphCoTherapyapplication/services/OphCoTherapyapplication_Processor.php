@@ -173,25 +173,6 @@ class OphCoTherapyapplication_Processor
         Yii::app()->puppeteer->leftMargin = '10mm';
         Yii::app()->puppeteer->rightMargin = '10mm';
 
-        $ec = $this->getElement('Element_OphCoTherapyapplication_ExceptionalCircumstances');
-        if (!$ec) {
-            throw new Exception("Exceptional circumstances not found for event ID {$this->event->id}");
-        }
-
-        $template_data = $this->getTemplateData();
-
-        $html = '<link rel="stylesheet" type="text/css" href="' . $controller->assetPath . '/css/print.css" />';
-
-        if ($ec->hasLeft()) {
-            $left_template_data = $template_data + $this->getSideSpecificTemplateData('left');
-            $html .= $this->getPDFContentForSide($controller, $left_template_data, 'left');
-        }
-
-        if ($ec->hasRight()) {
-            $right_template_data = $template_data + $this->getSideSpecificTemplateData('right');
-            $html .= $this->getPDFContentForSide($controller, $right_template_data, 'right');
-        }
-
         $this->event->lock();
 
         if (!$this->event->hasPDF('therapy_application') || @$_GET['html']) {
@@ -202,7 +183,13 @@ class OphCoTherapyapplication_Processor
             $wk->setPatient($this->event->episode->patient);
             $wk->setBarcode($this->event->barcodeSVG);
 
-            $wk->savePageToPDF($this->event->imageDirectory, 'event', 'therapy_application', $html, false);
+            $wk->savePageToPDF(
+                $this->event->imageDirectory,
+                'event',
+                'therapy_application',
+                'http://localhost/OphCoTherapyapplication/default/renderPreviewPdf?event_id=' . $this->event->id,
+                false
+            );
         }
 
         $this->event->unlock();
@@ -305,6 +292,43 @@ class OphCoTherapyapplication_Processor
         return Yii::app()->getModule('OphCoTherapyapplication')->getViewPath() . DIRECTORY_SEPARATOR . 'email';
     }
 
+    public function renderPdfForSide(CController $controller, $side)
+    {
+        $template_data = $this->getTemplateData();
+        $template_data += $this->getSideSpecificTemplateData($side);
+
+        $html = null;
+        if ($html = $this->getPDFContentForSide($controller, $template_data, $side)) {
+            $html = '<link rel="stylesheet" type="text/css" href="' . $controller->assetPath . '/css/print.css" />' . "\n" . $html;
+        }
+
+        return $html;
+    }
+
+    public function renderPreviewPdf(CController $controller)
+    {
+        $ec = $this->getElement('Element_OphCoTherapyapplication_ExceptionalCircumstances');
+        if (!$ec) {
+            throw new Exception("Exceptional circumstances not found for event ID {$this->event->id}");
+        }
+
+        $template_data = $this->getTemplateData();
+
+        $html = '<link rel="stylesheet" type="text/css" href="' . $controller->assetPath . '/css/print.css" />';
+
+        if ($ec->hasLeft()) {
+            $left_template_data = $template_data + $this->getSideSpecificTemplateData('left');
+            $html .= $this->getPDFContentForSide($controller, $left_template_data, 'left');
+        }
+
+        if ($ec->hasRight()) {
+            $right_template_data = $template_data + $this->getSideSpecificTemplateData('right');
+            $html .= $this->getPDFContentForSide($controller, $right_template_data, 'right');
+        }
+
+        return $html;
+    }
+
     /**
      * create the PDF file as a ProtectedFile for the given side.
      *
@@ -318,9 +342,7 @@ class OphCoTherapyapplication_Processor
      */
     protected function createAndSavePdfForSide(CController $controller, array $template_data, $side)
     {
-        if ($html = $this->getPDFContentForSide($controller, $template_data, $side)) {
-            $html = '<link rel="stylesheet" type="text/css" href="' . $controller->assetPath . '/css/print.css" />' . "\n" . $html;
-
+        if (!is_null($this->renderPdfForSide($controller, $side))) {
             $this->event->lock();
 
             if (!$this->event->hasPDF('therapy_application')) {
@@ -331,7 +353,13 @@ class OphCoTherapyapplication_Processor
                 $wk->setPatient($this->event->episode->patient);
                 $wk->setBarcode($this->event->barcodeSVG);
 
-                $wk->savePageToPDF($this->event->imageDirectory, 'event', 'therapy_application', $html, false);
+                $wk->savePageToPDF(
+                    $this->event->imageDirectory,
+                    'event',
+                    'therapy_application',
+                    'http://localhost/OphCoTherapyapplication/default/renderPdfForSide?event_id=' . $this->event->id . '&side='.$side,
+                    false
+                );
             }
 
             $this->event->unlock();

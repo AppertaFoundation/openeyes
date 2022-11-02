@@ -61,14 +61,12 @@
     "psr-4": {
       "OE\\concerns\\": "protected/concerns",
       "OE\\factories\\": "protected/factories"
-    },
-    "classmap": [
-      "features/bootstrap/Pages/OpenEyesPage.php"
-    ]
+    }
   },
   "autoload-dev": {
     "classmap": [
-      "vendor/zhuravljov/yii2-debug/Yii2Debug.php"
+      "vendor/zhuravljov/yii2-debug/Yii2Debug.php",
+      "features/bootstrap/Pages/OpenEyesPage.php"
     ]
   },
   "extra": {

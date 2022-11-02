@@ -148,7 +148,7 @@ class DicomLogViewerController extends BaseController
         if (!file_exists($filepath)) {
             return false;
         }
-        header('Content-Type: image');
+        header('Content-Type: image/jpeg');
         header('Expires: 0');
         header('Cache-Control: must-revalidate');
         ob_clean();
