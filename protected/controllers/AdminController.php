@@ -706,6 +706,9 @@ class AdminController extends BaseAdminController
         $errors = [];
         $user_auth_errors = [];
 
+        // used to provide saved role selection when user save fails
+        $postedRoles = null;
+
         if ($request->getIsPostRequest()) {
             $userAtt = $request->getPost('User');
 
@@ -763,8 +766,6 @@ class AdminController extends BaseAdminController
                 if (!array_key_exists('firms', $userAtt) || !is_array($userAtt['firms'])) {
                     $userAtt['firms'] = array();
                 }
-
-                OELog::log(print_r(['roles', $userAtt['roles']], true));
 
                 $user->saveRoles($userAtt['roles']);
 
@@ -839,10 +840,16 @@ class AdminController extends BaseAdminController
                     // not ids alone, thus they need to loaded in here to prevent an exception and to preserve the list
                     // for the user when there are errors with the rest of the form data.
                     $criteria = new CDbCriteria();
-
                     $criteria->addInCondition('id', $userAtt['firms']);
-
                     $user->firms = Firm::model()->findAll($criteria);
+
+                    $postedRoles = array_map(function($role) {
+                        return [
+                            'name' => $role
+                        ];
+                    } , $userAtt['roles']);
+
+                    OELog::log(print_r(['roles', $postedRoles], true));
                 }
             }
 
@@ -869,6 +876,7 @@ class AdminController extends BaseAdminController
             'contact' => $contact,
             'errors' => $errors,
             'user_auths' => $user_authentication_entries,
+            'posted_roles' => $postedRoles
         ));
     }
 
