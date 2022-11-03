@@ -1,6 +1,4 @@
 <?php
-use OE\factories\models\EventFactory;
-use OEModule\OESysEvent\events\EventTypeEventSoftDeleted;
 /**
  * (C) Apperta Foundation, 2022
  * This file is part of OpenEyes.
@@ -15,12 +13,29 @@ use OEModule\OESysEvent\events\EventTypeEventSoftDeleted;
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OEModule\OESysEvent\events\ClinicalEventSoftDeletedSystemEvent;
+
 /**
  * @group sample-data
+ * @group system-events
  */
 class EventTest extends OEDbTestCase
 {
     use WithTransactions;
+
+    protected $configured_event_manager = null;
+
+    public function setUp()
+    {
+        parent::setUp();
+        $this->configured_event_manager = Yii::app()->getComponent('event');
+    }
+
+    public function tearDown()
+    {
+        Yii::app()->setComponent('event', $this->configured_event_manager);
+        parent::tearDown();
+    }
 
     /** @test */
     public function soft_delete_triggers_the_appropriate_event()
@@ -30,9 +45,9 @@ class EventTest extends OEDbTestCase
 
         $event->softDelete();
 
-        $dispatched = $manager_mock->getDispatched(EventTypeEventSoftDeleted::class);
+        $dispatched = $manager_mock->getDispatched(ClinicalEventSoftDeletedSystemEvent::class);
         $this->assertCount(1, $dispatched);
-        $this->assertEquals($event, $dispatched[0]->event);
+        $this->assertEquals($event, $dispatched[0]->clinical_event);
     }
 
     protected function mockEventManager()

@@ -16,8 +16,7 @@
 namespace OEModule\OphCiExamination\listeners;
 
 use OE\concerns\InteractsWithApp;
-use OELog;
-use OEModule\OESysEvent\events\EventTypeEventSoftDeleted;
+use OEModule\OESysEvent\events\ClinicalEventSoftDeletedSystemEvent;
 use OEModule\OphCiExamination\components\OphCiExamination_API;
 use OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses;
 use OEModule\OphCiExamination\models\OphCiExamination_Diagnosis;
@@ -27,15 +26,15 @@ class UpdatePatientDiagnosesAfterSoftDelete
 {
     use InteractsWithApp;
 
-    protected \Event $event;
+    protected \Event $clinical_event;
     protected ?\DataContext $data_context = null;
     protected ?OphCiExamination_API $module_api = null;
 
 
-    public function __invoke(EventTypeEventSoftDeleted $system_event)
+    public function __invoke(ClinicalEventSoftDeletedSystemEvent $system_event)
     {
-        $this->event = $system_event->event;
-        $diagnoses_element = $this->event->getElementByClass(Element_OphCiExamination_Diagnoses::class);
+        $this->clinical_event = $system_event->clinical_event;
+        $diagnoses_element = $this->clinical_event->getElementByClass(Element_OphCiExamination_Diagnoses::class);
 
         if (!$diagnoses_element) {
             // event removal has no effect on patient diagnoses
@@ -50,13 +49,13 @@ class UpdatePatientDiagnosesAfterSoftDelete
 
     protected function getPatient(): \Patient
     {
-        return $this->event->episode->patient;
+        return $this->clinical_event->episode->patient;
     }
 
     protected function getDataContext()
     {
         if (!$this->data_context) {
-            $this->data_context = new \DataContext($this->getApp(), ['subspecialties' => $this->event->episode->getSubspecialty()]);
+            $this->data_context = new \DataContext($this->getApp(), ['subspecialties' => $this->clinical_event->episode->getSubspecialty()]);
         }
 
         return $this->data_context;
@@ -87,7 +86,7 @@ class UpdatePatientDiagnosesAfterSoftDelete
     {
         $tip_element = Element_OphCiExamination_Diagnoses::model()->getTipElement($this->getPatient());
 
-        if (!$tip_element || $tip_element->event->event_date < $this->event->event_date) {
+        if (!$tip_element || $tip_element->event->event_date < $this->clinical_event->event_date) {
             $this->setPatientSecondaryDiagnosesFrom($tip_element);
         }
 
@@ -113,16 +112,16 @@ class UpdatePatientDiagnosesAfterSoftDelete
         $principal_diagnosis = $this->getPrincipalDiagnosisFrom($element);
 
         if ($principal_diagnosis) {
-            $this->event->episode->disorder_id = $principal_diagnosis->disorder_id;
-            $this->event->episode->eye_id = $principal_diagnosis->eye_id;
-            $this->event->episode->disorder_date = $principal_diagnosis->date;
+            $this->clinical_event->episode->disorder_id = $principal_diagnosis->disorder_id;
+            $this->clinical_event->episode->eye_id = $principal_diagnosis->eye_id;
+            $this->clinical_event->episode->disorder_date = $principal_diagnosis->date;
         } else {
-            $this->event->episode->disorder_id = null;
-            $this->event->episode->eye_id = null;
-            $this->event->episode->disorder_date = null;
+            $this->clinical_event->episode->disorder_id = null;
+            $this->clinical_event->episode->eye_id = null;
+            $this->clinical_event->episode->disorder_date = null;
         }
 
-        if (!$this->event->episode->save()) {
+        if (!$this->clinical_event->episode->save()) {
             throw new \RuntimeException('unable to save principal diagnosis to episode');
         }
     }

@@ -15,12 +15,12 @@
 
 namespace OEModule\OESysEvent\events;
 
-class EventTypeEventSoftDeleted extends SystemEvent
+class ClinicalEventSoftDeletedSystemEvent extends SystemEvent
 {
-    public \Event $event;
+    public \Event $clinical_event;
 
     public function __construct(\Event $event)
     {
-        $this->event = $event;
+        $this->clinical_event = $event;
     }
 }

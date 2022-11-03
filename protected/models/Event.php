@@ -17,7 +17,7 @@
  */
 
 use OE\factories\models\traits\HasFactory;
-use OEModule\OESysEvent\events\EventTypeEventSoftDeleted;
+use OEModule\OESysEvent\events\ClinicalEventSoftDeletedSystemEvent;
 
 /**
  * This is the model class for table "event".
@@ -436,7 +436,7 @@ class Event extends BaseActiveRecordVersioned
     public function onAfterSoftDelete($yii_event)
     {
         $this->raiseEvent('onAfterSoftDelete', $yii_event);
-        EventTypeEventSoftDeleted::dispatch($this);
+        ClinicalEventSoftDeletedSystemEvent::dispatch($this);
     }
 
     /**
