@@ -20,6 +20,6 @@ class m221103_101700_register_current_address_shortcode extends OEMigration
 
     public function safeDown()
     {
-        $this->delete('patient_shortcode', 'code = :sc', array(':sc' => self::SHORTCODE));
+        $this->delete('patient_shortcode', 'code = :sc', [':sc' => self::SHORTCODE]);
     }
 }
