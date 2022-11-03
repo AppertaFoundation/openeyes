@@ -45,7 +45,7 @@ return [
                     ]
                 ],
                 [
-                    'event' => ClinicalEventSoftDeletedSystemEvent::class,
+                    'system_event' => ClinicalEventSoftDeletedSystemEvent::class,
                     'listener' => UpdatePatientDiagnosesAfterSoftDelete::class
                 ]
             ]

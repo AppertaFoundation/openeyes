@@ -11,7 +11,7 @@ There are 3 key elements for events to be triggered and handled:
 An abstract class of `OEModule\OESysEvent\events\SystemEvent::class` has been defined, and any event that is to be dispatched can inherit from this:
 
 ```
-class FooEvent extends SystemEvent
+class FooSystemEvent extends SystemEvent
 {
     public bool $bar;
     public int $count;
@@ -27,21 +27,14 @@ class FooEvent extends SystemEvent
 This enables strict definition of the parameters required for the event to be dispatched. Dispatching can be triggered thus:
 
 ```
-FooEvent::dispatch(true);
+FooSystemEvent::dispatch(true);
 
-FooEvent::dispatch(false, 5);
+FooSystemEvent::dispatch(false, 5);
 ```
 
 As and when we shift to PHP 8, we will be able  to do:
 
-```
-class FooEvent extends SystemEvent
-{
-    public function __construct(public bool $bar, public int $count = 0)
-    {
-    }
-}
-```
+Note that for clarity, system event classnames should explicitly be postfixed with `SystemEvent`
 
 ### Defining a listener (subscriber)
 
@@ -50,7 +43,7 @@ Listeners should be defined as an invokable class that receives the event
 ```
 class FooListener
 {
-    public function __invoke(FooEvent $event)
+    public function __invoke(FooSystemEvent $event)
     {
         OELog::log("it's " . ($event->bar ? "true" : "false") . " {$event->count} times!");
     }
@@ -66,10 +59,26 @@ At the moment we leverage standard Yii configuration on the event component:
         'event' => {
             'observers' => [
                 [
+                    'event' => FooSystemEvent::class
                     'listener' => FooListener::class,
-                    'event' => FooEvent::class
                 ]
             ]
         }
     ]
+```
+
+### Additional notes
+
+To ensure clarity, a distinction must be made between the standard OpenEyes `Event` class and system events. As such, any `Event` variables should be described as a clinical event. Any system events must also be labelled as such:
+
+No:
+
+```
+class EventTouchedEvent extends SystemEvent
+```
+
+yes:
+
+```
+class ClinicalEventTouchedSystemEvent extends SystemEvent
 ```

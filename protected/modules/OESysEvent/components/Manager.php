@@ -39,7 +39,7 @@ class Manager extends CApplicationComponent
         foreach ($this->observers as $event_name => $observer_config) {
             if (is_int($event_name)) {
                 // new config style
-                $this->listen($observer_config['event'], $observer_config['listener']);
+                $this->listen($observer_config['system_event'], $observer_config['listener']);
                 continue;
             }
 
