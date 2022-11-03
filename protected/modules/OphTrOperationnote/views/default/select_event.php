@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,9 +16,10 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <?php
-$this->beginContent('//patient/event_container', array('no_face'=>true));
+$this->beginContent('//patient/event_container', array('no_face' => true));
 $assetAliasPath = 'application.modules.OphTrOperationbooking.assets';
 $this->moduleNameCssClass .= ' edit';
 ?>
@@ -165,20 +167,10 @@ $warnings = $this->patient->getWarnings($clinical);
     $('.booking-select').on('click', function () {
         let eyeId = $(this).data('eye-id');
         let booking = $(this).data('booking');
-        if (eyeId === 3) {
-            // if the procedure is for BOTH eyes, show an alert:
-            new OpenEyes.UI.Dialog.Alert({
-                content: "Bilateral cataract operation notes are not currently supported. Please complete details for the first eye in this event, then create a second operation note event for the second eye.",
-                closeCallback: function () {
-                    selectBooking(booking);
-                }
-            }).open();
-        }
-        else {
-            selectBooking(booking);
-        }
+        
+        selectBooking(booking);
+
     });
   });
 </script>
 <?php $this->endContent(); ?>
-

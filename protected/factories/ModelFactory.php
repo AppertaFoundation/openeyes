@@ -334,13 +334,19 @@ abstract class ModelFactory
         }
 
         foreach ($instances as $instance) {
-            // as a lower level interaction with the models, we assume that the eventual
-            // set of data being created will be valid. Therefore we don't perform validation
-            // during the model saves.
-            if ($instance->isNewRecord && !$instance->save(false)) {
+            if ($instance->isNewRecord && !$this->persistInstance($instance)) {
                 throw new CannotSaveModelException($instance->getErrors(), $instance->getAttributes());
             }
         }
+    }
+
+    protected function persistInstance($instance): bool
+    {
+        // as a lower level interaction with the models, we assume that the eventual
+        // set of data being created will be valid. Therefore we don't perform validation
+        // during the model saves. We abstract this though so that specific factories can
+        // validate.
+        return $instance->save(false);
     }
 
     protected function callAfterMaking(array $instances)

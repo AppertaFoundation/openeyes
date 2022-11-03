@@ -20,6 +20,8 @@ describe('consent esign behaviour', () => {
             cy.consentCompleteAndSave(this.createUrl)
                 .then(() => {
                     cy.get('div.js-signature-wrapper').first().scrollIntoView().should('be.visible');
+                    cy.get('button#et_confirm').click()
+                    cy.get('div.alert-box.success').contains('Consent is confirmed').should('be.visible');
                 });
         });
     });
@@ -34,6 +36,8 @@ describe('consent esign behaviour', () => {
             cy.consentCompleteAndSave(this.createUrl)
                 .then(() => {
                     cy.get('button.js-sign-button').first().scrollIntoView().should('be.visible');
+                    cy.get('button#et_confirm').click()
+                    cy.get('tr#Element_OphTrConsent_Esign_OEModule_OphTrConsent_widgets_EsignUsernamePINField_C button.js-sign-button').scrollIntoView().should('be.visible');
                 });
         });
     });

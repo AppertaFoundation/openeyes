@@ -58,7 +58,7 @@ class PSDObserver
         if ($data['step']->getState('action_type') === 'manage_psd') {
             $assignment = OphDrPGDPSD_Assignment::model()->findByPk($data['step']->getState('assignment_id'));
             if ($assignment && (int)$assignment->status === $assignment::STATUS_TODO) {
-                $transaction = \Yii::app()->db->beginTransaction();
+                $transaction = \Yii::app()->db->beginInternalTransaction();
                 $assignment->delete();
 
                 if ($assignment->getErrors()) {

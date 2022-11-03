@@ -37,7 +37,7 @@
             'step_components/_comment',
             array(
                 'partial' => $partial,
-                'model' => $visit->pathway,
+                'model' => $visit->pathway ?? new Pathway(),
                 'visit' => $visit,
             )
         );
