@@ -468,7 +468,7 @@ class Pathway extends BaseActiveRecordVersioned
         }
 
         $end_time = new DateTime();
-        $wait_time = floor(($end_time->getTimestamp() - $start_time->getTimestamp()) / 60);
+        $wait_time = $start_time === false ? 0 : floor(($end_time->getTimestamp() - $start_time->getTimestamp()) / 60);
 
         return array(
             'wait_time' => $wait_time,
