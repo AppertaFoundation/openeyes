@@ -20,6 +20,7 @@ use OELog;
 use OEModule\OESysEvent\events\EventTypeEventSoftDeleted;
 use OEModule\OphCiExamination\components\OphCiExamination_API;
 use OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses;
+use OEModule\OphCiExamination\models\OphCiExamination_Diagnosis;
 use SecondaryDiagnosis;
 
 class UpdatePatientDiagnosesAfterSoftDelete
@@ -108,24 +109,22 @@ class UpdatePatientDiagnosesAfterSoftDelete
 
     protected function setPatientPrincipalDiagnosisFrom(?Element_OphCiExamination_Diagnoses $element): void
     {
-        $principal_diagnosis = array_filter(
-            $element->diagnoses ?? [],
-            function ($diagnosis) {
-                return (bool) $diagnosis->principal;
-            }
-        );
 
-        if (count($principal_diagnosis)) {
-            $this->event->episode->disorder_id = $principal_diagnosis[0]->disorder_id;
-            $this->event->episode->eye_id = $principal_diagnosis[0]->eye_id;
-            $this->event->episode->disorder_date = $principal_diagnosis[0]->date;
+        $principal_diagnosis = $this->getPrincipalDiagnosisFrom($element);
+
+        if ($principal_diagnosis) {
+            $this->event->episode->disorder_id = $principal_diagnosis->disorder_id;
+            $this->event->episode->eye_id = $principal_diagnosis->eye_id;
+            $this->event->episode->disorder_date = $principal_diagnosis->date;
         } else {
             $this->event->episode->disorder_id = null;
             $this->event->episode->eye_id = null;
             $this->event->episode->disorder_date = null;
         }
 
-        $this->event->episode->save();
+        if (!$this->event->episode->save()) {
+            throw new \RuntimeException('unable to save principal diagnosis to episode');
+        }
     }
 
     private function setPatientSecondaryDiagnosesAndGetDisorderIds($diagnoses_elements = []): array
@@ -160,5 +159,17 @@ class UpdatePatientDiagnosesAfterSoftDelete
         foreach ($secondary_diagnoses as $secondary_diagnosis) {
             $this->getPatient()->removeDiagnosis($secondary_diagnosis->id);
         }
+    }
+
+    private function getPrincipalDiagnosisFrom(Element_OphCiExamination_Diagnoses $element): ?OphCiExamination_Diagnosis
+    {
+        $diagnoses = array_filter(
+            $element->diagnoses ?? [],
+            function ($diagnosis) {
+                return (bool) $diagnosis->principal;
+            }
+        );
+
+        return count($diagnoses) ? $diagnoses[0] : null;
     }
 }

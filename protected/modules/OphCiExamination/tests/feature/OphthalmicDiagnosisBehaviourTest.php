@@ -66,6 +66,7 @@ class OphthalmicDiagnosisBehaviourTest extends \OEDbTestCase
             ->withRightDiagnoses(1)
             ->withLeftDiagnoses(1)
             ->create(['event_id' => $initial_event->id]);
+
         $episode = $initial_event->episode;
         $patient = $episode->patient;
 
@@ -231,5 +232,30 @@ class OphthalmicDiagnosisBehaviourTest extends \OEDbTestCase
         $this->assertEquals($principal->disorder_id, $episode->disorder_id, "Principal diagnosis disorder has not been set correctly on the episode");
         $this->assertEquals($principal->eye_id, $episode->eye_id, "Principal diagnosis eye has not been set correctly on the episode");
         $this->assertEquals($principal->date, $episode->disorder_date, "Principal diagnosis datehas not been set correctly on the episode");
+    }
+
+    /**
+     * Helper method for debugging purposes when tests fail
+     *
+     * @param [type] $diagnoses
+     * @return void
+     */
+    private function debugDiagnoses($diagnoses): void
+    {
+        fwrite(STDERR, print_r(
+            array_map(
+                function ($diagnosis) {
+                    return [
+                        'disorder_id' => $diagnosis->disorder_id,
+                        'eye_id' => $diagnosis->eye_id,
+                        'principal' => $diagnosis->principal ?? 0,
+                        'date' => $diagnosis->date
+                    ];
+                },
+                $diagnoses->diagnoses
+            ),
+            true
+            )
+        );
     }
 }
