@@ -165,7 +165,6 @@ $form = $this->beginWidget(
             <tr>
                 <td>Roles</td>
                 <td>
-                    <?php print_r($posted_roles); ?>
                     <?php echo $form->multiSelectList(
                         $user,
                         'User[roles]',
@@ -176,11 +175,7 @@ $form = $this->beginWidget(
                             'name',
                             'name'
                         ),
-                        $posted_roles ? CHtml::listData(
-                            $posted_roles,
-                                'name',
-                                'name'
-                            ) : null,
+                        null,
                         ['class' => 'cols-full', 'label' => 'Roles',
                             'empty' => '-- Add --', 'nowrapper' => true]
                     ); ?>

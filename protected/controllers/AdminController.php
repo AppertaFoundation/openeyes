@@ -706,22 +706,18 @@ class AdminController extends BaseAdminController
         $errors = [];
         $user_auth_errors = [];
 
-        // used to provide saved role selection when user save fails
-        $postedRoles = null;
-
         if ($request->getIsPostRequest()) {
-            $userAtt = $request->getPost('User');
-
-            if (Yii::app()->params['auth_source'] === 'BASIC' && $id && empty($userAtt['password_status'])) {
-                unset($userAtt['password_status']);
-            }
-
-            $user->attributes = $userAtt;
-
+            $user_attributes = $request->getPost('User');
             $user_auths_attributes = $request->getPost('UserAuthentication', []);
 
+            if (Yii::app()->params['auth_source'] === 'BASIC' && $id && empty($user_attributes['password_status'])) {
+                unset($user_attributes['password_status']);
+            }
+
+            $user->attributes = $user_attributes;
+
             if (!$user->validate()) {
-                $errors = $user->getErrors();
+                $errors = array_merge($errors, $user->getErrors());
 
                 $user_authentication_entries = array_map(
                     ['UserAuthentication', 'fromAttributes'],
@@ -730,14 +726,15 @@ class AdminController extends BaseAdminController
             } else {
                 $transaction = Yii::app()->db->beginTransaction();
 
-                $contact->title = $userAtt['title'];
-                $contact->first_name = $userAtt['first_name'];
-                $contact->last_name = $userAtt['last_name'];
+                $contact->title = $user_attributes['title'];
+                $contact->first_name = $user_attributes['first_name'];
+                $contact->last_name = $user_attributes['last_name'];
                 $contact->qualifications = $request->getPost('Contact')['qualifications'];
                 $contact->created_institution_id = Yii::app()->session['selected_institution_id'];
 
                 if (!$contact->save()) {
-                    $transaction->rollback();
+                    //$transaction->rollback();
+                    $errors = array_merge($errors, $contact->getErrors());
 
                     throw new CHttpException(500, 'Unable to save user contact: ' . print_r($contact->getErrors(), true));
                 }
@@ -749,7 +746,8 @@ class AdminController extends BaseAdminController
                 $is_new = $user->getIsNewRecord();
 
                 if (!$user->save(false)) {
-                    $transaction->rollback();
+                    //$transaction->rollback();
+                    $errors = array_merge($errors, $user->getErrors());
 
                     throw new CHttpException(500, 'Unable to save user: ' . print_r($user->getErrors(), true));
                 }
@@ -759,21 +757,21 @@ class AdminController extends BaseAdminController
                     $user->update(['correspondence_sign_off_user_id']);
                 }
 
-                if (!isset($userAtt['roles']) || (empty($userAtt['roles']))) {
-                    $userAtt['roles'] = array();
+                if (!isset($user_attributes['roles']) || (empty($user_attributes['roles']))) {
+                    $user_attributes['roles'] = array();
                 }
 
-                if (!array_key_exists('firms', $userAtt) || !is_array($userAtt['firms'])) {
-                    $userAtt['firms'] = array();
+                if (!array_key_exists('firms', $user_attributes) || !is_array($user_attributes['firms'])) {
+                    $user_attributes['firms'] = array();
                 }
 
-                $user->saveRoles($userAtt['roles']);
+                $user->saveRoles($user_attributes['roles']);
 
                 try {
-                    $user->saveFirms($userAtt['firms']);
+                    $user->saveFirms($user_attributes['firms']);
                 } catch (FirmSaveException $e) {
                     $user->addError('global_firm_rights', 'When no global firm rights is set, a firm must be selected');
-                    $errors = $user->getErrors();
+                    $errors = array_merge($errors, $user->getErrors());
                 }
 
                 // Delete auths removed by the admin user first
@@ -797,7 +795,7 @@ class AdminController extends BaseAdminController
 
                 if (count($user_auths_attributes) === 0) {
                     $user->addError('authentications', 'A user account must have 1 or more valid institution authentications');
-                    $errors = $user->getErrors();
+                    $errors = array_merge($errors, $user->getErrors());;
                 } else {
                     foreach ($user_auths_attributes as $user_auth_attributes) {
                         $user_auth = UserAuthentication::fromAttributes($user_auth_attributes);
@@ -840,16 +838,10 @@ class AdminController extends BaseAdminController
                     // not ids alone, thus they need to loaded in here to prevent an exception and to preserve the list
                     // for the user when there are errors with the rest of the form data.
                     $criteria = new CDbCriteria();
-                    $criteria->addInCondition('id', $userAtt['firms']);
+                    $criteria->addInCondition('id', $user_attributes['firms']);
                     $user->firms = Firm::model()->findAll($criteria);
 
-                    $postedRoles = array_map(function($role) {
-                        return [
-                            'name' => $role
-                        ];
-                    } , $userAtt['roles']);
-
-                    OELog::log(print_r(['roles', $postedRoles], true));
+                    //$user->roles = Yii::app()->authManager->getRoles();
                 }
             }
 
@@ -875,8 +867,7 @@ class AdminController extends BaseAdminController
             'user' => $user,
             'contact' => $contact,
             'errors' => $errors,
-            'user_auths' => $user_authentication_entries,
-            'posted_roles' => $postedRoles
+            'user_auths' => $user_authentication_entries
         ));
     }
 
