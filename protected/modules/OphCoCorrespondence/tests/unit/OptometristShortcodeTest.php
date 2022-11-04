@@ -26,9 +26,9 @@ use OELog;
 
 /**
  * @package OEModule\OphCoCorrespondence\tests\unit
- * 
+ *
  * class ColourVisionTest
- * 
+ *
  * @group sample-data
  * @group shortcode
  */
@@ -51,18 +51,18 @@ class OptometristShortcodeTest extends \OEDbTestCase
 
         $patient = Patient::factory()->create();
         $optometrist = Contact::factory()->ofType('Optometrist')->create();
-        
+
         PatientContactAssignment::factory()->create(['patient_id' => $patient->id, 'contact_id' => $optometrist->id]);
 
         $optometrist_address = $optometrist->correspondAddress ?? $optometrist->address;
-        
+
         $this->performShortcodeTest($patient, '[pod]', implode('<br>', $optometrist_address->getLetterArray(false)));
     }
 
     protected function performShortcodeTest(Patient $patient, $shortcode, $expected)
     {
         $response = $this->actingAs($this->user, $this->institution)->post('/OphCoCorrespondence/Default/ExpandStrings', ['patient_id' => $patient->id, 'text' => $shortcode]);
-                        
+
         $this->assertEquals($expected, $response->response);
     }
 

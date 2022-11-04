@@ -1041,10 +1041,10 @@ class OphCoCorrespondence_API extends BaseAPI
     * @returns string
     */
 
-   public function getOptometristAddress(\Patient $patient, $use_context = false)
-   {
+    public function getOptometristAddress(\Patient $patient, $use_context = false)
+    {
         $optometrist = $patient->getPatientOptometrist();
-            
+
         if (!$optometrist) {
             return;
         }
@@ -1056,7 +1056,7 @@ class OphCoCorrespondence_API extends BaseAPI
         } else {
             return implode('<br>', $optometrist_address->getLetterArray());
         }
-   }
+    }
 
     /**
      * @param $event
@@ -1065,7 +1065,8 @@ class OphCoCorrespondence_API extends BaseAPI
      * @throws Exception
      * Update consultant in footer when change context
      */
-    public function afterEventContextUpdate($event, $user) {
+    public function afterEventContextUpdate($event, $user)
+    {
         $element = ElementLetter::model()->findByAttributes(["event_id" => $event->id]);
         $element->setFooterTextFrom($user, $event->episode->firm);
         $element->save();
