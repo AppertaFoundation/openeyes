@@ -15,12 +15,20 @@
                 <label>Pincode:</label>
             </td>
             <td>
-                <div class="js-pincode-content">
-                    <input type="password" name="user_pwd" id="user_pwd" placeholder="Enter Your Password">
-                </div>
-                <div class="js-pincode-actions">
-                    <button class="button large hint green" id="js-view-pincode">View Pincode</button>
-                </div>
+                <?php $user_authentication = new UserAuthentication();
+                if (!$user_authentication->isSsoAuth()) { ?>
+                    <div class="js-pincode-content">
+                        <input type="password" name="user_pwd" id="user_pwd" placeholder="Enter Your Password">
+                    </div>
+                    <div class="js-pincode-actions">
+                        <button class="button large hint green" id="js-view-pincode">View Pincode</button>
+                    </div>
+                <?php } else { ?>
+                    <div class="js-pincode-content"></div>
+                    <div class="js-pincode-actions">
+                        <button class="button large hint green" id="js-view-pincode">click here to reveal PIN</button>
+                    </div>
+                <?php } ?>
             </td>
         </tr>
     </tbody>
@@ -33,7 +41,7 @@
         const regen_pin_btn_selector = `${ctn_selector} #js-regen-pincode`;
         const layout_table_selector = '.js-profile-pincode-layout';
         const pincode_content_ctn_selector = '.js-pincode-content';
-        
+
         const $spinner = $(`${ctn_selector} .spinner`);
 
         // binding view pincode button
@@ -41,7 +49,7 @@
             e.preventDefault();
 
             const $pwd = $('#user_pwd');
-            
+
             const $btn = $(this);
 
             const $alert_box = $(layout_table_selector).siblings('.alert-box');
@@ -50,7 +58,7 @@
                 $alert_box.remove();
             }
             $pwd.removeClass('highlighted-error error');
-            if(!$pwd.val()){
+            if( !(auth_source === 'OIDC' || auth_source === 'SAML') && !$pwd.val()){
                 $pwd.addClass('highlighted-error error');
                 return;
             }

@@ -592,7 +592,7 @@ class UserIdentity extends CUserIdentity
         }
 
         $user->last_site_id = $app->session['selected_site_id'];
-        
+
         $app->session['user'] = $user;
         $app->session['user_auth'] = $user_authentication;
 
@@ -610,14 +610,13 @@ class UserIdentity extends CUserIdentity
 
     /**
      * extract ldap authentication logic from function authticateUser
-     * 
+     *
      * @param UserAuthentication $user_authentication
      * @return bool
      */
     public function verifyExternalPassword(UserAuthentication $user_authentication)
     {
         $inst_auth = $user_authentication->institutionAuthentication;
-
         $ldap_config = $inst_auth->LDAPConfig;
         if ($ldap_config->getLDAPParam('utf8_decode_required')) {
             $this->password = utf8_decode($this->password);

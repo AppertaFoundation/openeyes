@@ -228,6 +228,8 @@ class ProfileController extends BaseController
         if ($user_auth->isLocalAuth()) {
             // verify password for local user
             $is_verified = $user_auth->verifyPassword($password);
+        } else if ($user_auth->isSsoAuth()) {
+            $is_verified = true;
         } else {
             // for external user, send username and password in a request for verification
             $institution_id = Yii::app()->session['selected_institution_id'];
@@ -244,10 +246,19 @@ class ProfileController extends BaseController
         $pincode_html = null;
         $pincode_regen_html = null;
 
-        if ($is_verified) {
+        if ($is_verified && !$user_auth->isSsoAuth()) {
             $user = $user_auth->user;
             $msg = '<div class="alert-box success">Your password verification was successful</div>';
             $info_icon = '<i class="js-pwd-verification-info oe-i info small js-has-tooltip" data-tooltip-content="Your password verification will expire in 30 seconds or immediately after page refresh"></i>';
+            $pincode = $user->getPincode();
+            $pincode_html = "<span class='js-pincode'>$pincode</span><span class='js-count-down'> (30)</span>";
+
+            // getPincodeRegenUI will be extracted into $is_reach_limit, $pincode_regen_html
+            extract($this->getPincodeRegenUI($user));
+        } else if ($is_verified && $user_auth->isSsoAuth()) {
+            $user = $user_auth->user;
+            $msg = '';
+            $info_icon = '<i class="js-pwd-verification-info oe-i info small js-has-tooltip" data-tooltip-content="Your password will disappear with in 30 seconds or immediately after page refresh"></i>';
             $pincode = $user->getPincode();
             $pincode_html = "<span class='js-pincode'>$pincode</span><span class='js-count-down'> (30)</span>";
 
