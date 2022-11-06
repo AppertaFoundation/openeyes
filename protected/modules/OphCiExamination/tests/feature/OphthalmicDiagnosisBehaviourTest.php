@@ -19,6 +19,7 @@ use CHtml;
 use OE\factories\models\EventFactory;
 use OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses;
 use OEModule\OphCiExamination\models\OphCiExamination_Diagnosis;
+use OEModule\OphCiExamination\models\SystemicDiagnoses;
 use SecondaryDiagnosis;
 
 /**
@@ -33,16 +34,16 @@ class OphthalmicDiagnosisBehaviourTest extends \OEDbTestCase
     use \MocksSession;
     use \MakesApplicationRequests;
     use \WithFaker;
-    use \WithTransactions;
+    // use \WithTransactions;
 
     /** @test */
-    public function entries_are_saved_and_reflected_in_patient_record()
+    public function ophthalmic_entries_are_saved_and_reflected_in_patient_record()
     {
         // set up patient and episode for new event to be attached to
         $episode = \Episode::factory()->create();
         $patient = $episode->patient;
 
-        $test_diagnoses = $this->createDiagnosesElementThroughRequest($episode);
+        $test_diagnoses = $this->createOphthalmicDiagnosesElementThroughRequest($episode);
 
         $this->assertEventTypeElementCreatedFor(
             $patient,
@@ -55,6 +56,24 @@ class OphthalmicDiagnosisBehaviourTest extends \OEDbTestCase
     }
 
     /** @test */
+    public function systemic_diagnoses_are_saved_and_reflected_in_patient_record()
+    {
+        // set up patient and episode for new event to be attached to
+        $episode = \Episode::factory()->create();
+        $patient = $episode->patient;
+
+        $test_diagnoses = $this->createSystemicDiagnosesElementThroughRequest($episode);
+
+        $this->assertEventTypeElementCreatedFor(
+            $patient,
+            SystemicDiagnoses::class,
+            []
+        );
+
+        $this->assertSecondaryDiagnosesRecordedFor($patient, $test_diagnoses->diagnoses, false);
+    }
+
+    /** @test */
     public function deleting_more_recent_examination_reverts_to_previous()
     {
         $initial_event = EventFactory::forModule('OphCiExamination')
@@ -62,7 +81,7 @@ class OphthalmicDiagnosisBehaviourTest extends \OEDbTestCase
             'event_date' => $this->faker->dateTimeBetween('-4 weeks', '-2 weeks')->format('Y-m-d')
         ]);
 
-        $initial_diagnoses = Element_OphCiExamination_Diagnoses::factory()
+        $initial_oph_diagnoses = Element_OphCiExamination_Diagnoses::factory()
             ->withBilateralDiagnoses(1)
             ->withRightDiagnoses(1)
             ->withLeftDiagnoses(1)
@@ -74,7 +93,7 @@ class OphthalmicDiagnosisBehaviourTest extends \OEDbTestCase
         // Secondary diagnosis updates are (at the time of writing) triggered through
         // the controller behaviour calling the correct methods on the diagnoses element
         // So here we are performing the POST request to trigger this.
-        $diagnoses_to_be_deleted = $this->createDiagnosesElementThroughRequest($episode);
+        $diagnoses_to_be_deleted = $this->createOphthalmicDiagnosesElementThroughRequest($episode);
 
         $this->assertSecondaryDiagnosesRecordedFor($patient, $diagnoses_to_be_deleted->diagnoses);
         $this->assertPrincipalDiagnosisRecordedIn($episode, $diagnoses_to_be_deleted->diagnoses);
@@ -86,8 +105,8 @@ class OphthalmicDiagnosisBehaviourTest extends \OEDbTestCase
         $latest_event->softDelete();
 
         // should revert to the diagnoses from the initial event
-        $this->assertSecondaryDiagnosesRecordedFor($patient, $initial_diagnoses->diagnoses);
-        $this->assertPrincipalDiagnosisRecordedIn($episode, $initial_diagnoses->diagnoses);
+        $this->assertSecondaryDiagnosesRecordedFor($patient, $initial_oph_diagnoses->diagnoses);
+        $this->assertPrincipalDiagnosisRecordedIn($episode, $initial_oph_diagnoses->diagnoses);
     }
 
     /** @test */
@@ -105,7 +124,7 @@ class OphthalmicDiagnosisBehaviourTest extends \OEDbTestCase
             ->create(['event_id' => $event_to_be_deleted->id]);
         $episode = $event_to_be_deleted->episode;
 
-        $most_recent_diagnoses_element_data = $this->createDiagnosesElementThroughRequest($episode);
+        $most_recent_diagnoses_element_data = $this->createOphthalmicDiagnosesElementThroughRequest($episode);
 
         $this->assertSecondaryDiagnosesRecordedFor($episode->patient, $most_recent_diagnoses_element_data->diagnoses);
         $this->assertPrincipalDiagnosisRecordedIn($episode, $most_recent_diagnoses_element_data->diagnoses);
@@ -119,11 +138,8 @@ class OphthalmicDiagnosisBehaviourTest extends \OEDbTestCase
     /**
      * This abstraction simply wraps the generation and POSTing of sample diagnoses element data for the given episode
      */
-    protected function createDiagnosesElementThroughRequest(\Episode $episode): Element_OphCiExamination_Diagnoses
+    protected function createOphthalmicDiagnosesElementThroughRequest(\Episode $episode): Element_OphCiExamination_Diagnoses
     {
-        list($user, $institution) = $this->createUserWithInstitution();
-        $this->mockCurrentContext($episode->firm, null, $institution);
-
         $diagnoses_data_element = Element_OphCiExamination_Diagnoses::factory()
             ->withBilateralDiagnoses(1)
             ->withRightDiagnoses(1)
@@ -131,20 +147,33 @@ class OphthalmicDiagnosisBehaviourTest extends \OEDbTestCase
             ->make(['event_id' => null]);
 
         $form_data = [
-            CHtml::modelName($diagnoses_data_element) => $this->mapElementToFormData($diagnoses_data_element),
+            CHtml::modelName($diagnoses_data_element) => $this->mapOphthalmicDiagnosesElementToFormData($diagnoses_data_element),
             'principal_diagnosis_row_key' => $this->findPrincipalRowKey($diagnoses_data_element->diagnoses),
             'patient_id' => $episode->patient_id
         ];
 
-        $response = $this->actingAs($user, $institution)
-            ->post('/OphCiExamination/Default/create', $form_data);
-
-        $response->assertRedirectContains('view', 'Expected to redirect to a view of the created event');
+        $this->createExaminationEventWithFormData($episode, $form_data);
 
         return $diagnoses_data_element;
     }
 
-    protected function mapElementToFormData($element): array
+    protected function createSystemicDiagnosesElementThroughRequest(\Episode $episode): SystemicDiagnoses
+    {
+        $diagnoses_data_element = SystemicDiagnoses::factory()
+            ->withDiagnoses(2)
+            ->make(['event_id' => null]);
+
+        $form_data = [
+            CHtml::modelName($diagnoses_data_element) => $this->mapSystemicDiagnosesElementToFormData($diagnoses_data_element),
+            'patient_id' => $episode->patient_id
+        ];
+
+        $this->createExaminationEventWithFormData($episode, $form_data);
+
+        return $diagnoses_data_element;
+    }
+
+    protected function mapOphthalmicDiagnosesElementToFormData(Element_OphCiExamination_Diagnoses $element): array
     {
         $result = ['entries' => []];
         foreach ($element->diagnoses as $i => $entry) {
@@ -159,6 +188,25 @@ class OphthalmicDiagnosisBehaviourTest extends \OEDbTestCase
         return $result;
     }
 
+    protected function mapSystemicDiagnosesElementToFormData(SystemicDiagnoses $element): array
+    {
+        $result = [
+            'entries' => [],
+            'present' => "1"
+        ];
+        foreach ($element->diagnoses as $i => $entry) {
+            $result['entries'][] = [
+                'has_disorder' => "1",
+                'disorder_id' => $entry->disorder_id,
+                'date' => $entry->date,
+                'has_disorder' => $entry->has_disorder,
+                // assume no laterality in initial tests
+                'na_eye' => "-9"
+            ];
+        }
+        return $result;
+    }
+
     protected function findPrincipalRowKey(array $diagnoses): int
     {
         for ($i = 0; $i < count($diagnoses); $i++) {
@@ -168,6 +216,17 @@ class OphthalmicDiagnosisBehaviourTest extends \OEDbTestCase
         }
 
         throw new \InvalidArgumentException('No principal entry found');
+    }
+
+    protected function createExaminationEventWithFormData(\Episode $episode, array $form_data): void
+    {
+        list($user, $institution) = $this->createUserWithInstitution();
+        $this->mockCurrentContext($episode->firm, null, $institution);
+
+        $response = $this->actingAs($user, $institution)
+            ->post('/OphCiExamination/Default/create', $form_data);
+
+        $response->assertRedirectContains('view', 'Expected to redirect to a view of the created event');
     }
 
     // TODO: refactor (see PCRRiskTest)
@@ -201,19 +260,21 @@ class OphthalmicDiagnosisBehaviourTest extends \OEDbTestCase
         }
     }
 
-    protected function assertSecondaryDiagnosesRecordedFor(\Patient $patient, $diagnoses): void
+    protected function assertSecondaryDiagnosesRecordedFor(\Patient $patient, $diagnoses, bool $remove_principal = true): void
     {
-        $non_principal = array_filter($diagnoses, function ($diagnosis) {
-            return !$diagnosis->principal;
-        });
+        if ($remove_principal) {
+            $diagnoses = array_filter($diagnoses, function ($diagnosis) {
+                return !$diagnosis->principal;
+            });
+        }
 
         $table = SecondaryDiagnosis::model()->tableName();
 
-        foreach ($non_principal as $diagnosis) {
+        foreach ($diagnoses as $diagnosis) {
             $attributes = [
                 'disorder_id' => $diagnosis->disorder_id,
-                'eye_id' => $diagnosis->eye_id,
-                'date' => $diagnosis->date,
+                'eye_id' => (property_exists($diagnosis, 'eye_id') ? $diagnosis->eye_id : $diagnosis->side_id) ?? null,
+                'date' => $diagnosis->date ?? null,
                 'patient_id' => $patient->id
             ];
 

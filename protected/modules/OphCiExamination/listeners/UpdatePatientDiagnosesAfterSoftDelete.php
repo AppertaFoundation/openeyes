@@ -20,6 +20,7 @@ use OEModule\OESysEvent\events\ClinicalEventSoftDeletedSystemEvent;
 use OEModule\OphCiExamination\components\OphCiExamination_API;
 use OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses;
 use OEModule\OphCiExamination\models\OphCiExamination_Diagnosis;
+use OEModule\OphCiExamination\models\SystemicDiagnoses;
 use SecondaryDiagnosis;
 
 class UpdatePatientDiagnosesAfterSoftDelete
@@ -43,6 +44,7 @@ class UpdatePatientDiagnosesAfterSoftDelete
 
         $transaction = $this->getApp()->db->beginInternalTransaction();
         $this->updatePatientOphthalmicDiagnoses();
+        $this->updatePatientSystemicDiagnoses();
         // TODO: systemic diagnoses
         $transaction->commit();
     }
@@ -87,13 +89,13 @@ class UpdatePatientDiagnosesAfterSoftDelete
         $tip_element = Element_OphCiExamination_Diagnoses::model()->getTipElement($this->getPatient());
 
         if (!$tip_element || $tip_element->event->event_date < $this->clinical_event->event_date) {
-            $this->setPatientSecondaryDiagnosesFrom($tip_element);
+            $this->setPatientOphthalmicSecondaryDiagnosesFrom($tip_element);
         }
 
         $this->setPatientPrincipalDiagnosisFrom($this->getTipElementForEventContext(Element_OphCiExamination_Diagnoses::class));
     }
 
-    protected function setPatientSecondaryDiagnosesFrom(?Element_OphCiExamination_Diagnoses $element = null)
+    protected function setPatientOphthalmicSecondaryDiagnosesFrom(?Element_OphCiExamination_Diagnoses $element = null)
     {
         $initial_secondary_disorder_ids = array_map(
             function ($secondary_diagnosis) {
@@ -124,6 +126,29 @@ class UpdatePatientDiagnosesAfterSoftDelete
         if (!$this->clinical_event->episode->save()) {
             throw new \RuntimeException('unable to save principal diagnosis to episode');
         }
+    }
+
+    protected function updatePatientSystemicDiagnoses(): void
+    {
+        $tip_element = SystemicDiagnoses::model()->getTipElement($this->getPatient());
+
+        if (!$tip_element || $tip_element->event->event_date < $this->clinical_event->event_date) {
+            $this->setPatientSystemicSecondaryDiagnosesFrom($tip_element);
+        }
+    }
+
+    protected function setPatientSystemicSecondaryDiagnosesFrom(SystemicDiagnoses $element): void
+    {
+        $initial_secondary_disorder_ids = array_map(
+            function ($secondary_diagnosis) {
+                return $secondary_diagnosis->disorder_id;
+            },
+            $this->getPatient()->getSystemicDiagnoses()
+        );
+
+        $retained_disorder_ids = $this->setPatientSecondaryDiagnosesAndGetDisorderIds($element->diagnoses ?? []);
+
+        $this->removePatientSecondaryDiagnoses(array_diff($initial_secondary_disorder_ids, $retained_disorder_ids));
     }
 
     private function setPatientSecondaryDiagnosesAndGetDisorderIds($diagnoses_elements = []): array
