@@ -209,9 +209,11 @@ class ProfileController extends BaseController
         // when the user access pincode page, calls the generatePin function without argument
         // it will check if the user has pincode, if no pincode, a new pincode will be generated for the user
         $user->generatePin();
+        $user_auth = Yii::app()->session['user_auth'];
         $pin_regen_status = $user->pincodeRegenStatus();
         $this->render('/profile/pincode', array(
-            'pin_regen_status' => $pin_regen_status
+            'pin_regen_status' => $pin_regen_status,
+            'is_local_auth' => $user_auth->isLocalAuth()
         ));
     }
 

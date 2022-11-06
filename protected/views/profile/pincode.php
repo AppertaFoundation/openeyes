@@ -15,8 +15,7 @@
                 <label>Pincode:</label>
             </td>
             <td>
-                <?php $user_authentication = new UserAuthentication();
-                if (!$user_authentication->isSsoAuth()) { ?>
+                <?php if ($is_local_auth) { ?>
                     <div class="js-pincode-content">
                         <input type="password" name="user_pwd" id="user_pwd" placeholder="Enter Your Password">
                     </div>
