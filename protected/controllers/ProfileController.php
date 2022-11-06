@@ -230,7 +230,7 @@ class ProfileController extends BaseController
         if ($user_auth->isLocalAuth()) {
             // verify password for local user
             $is_verified = $user_auth->verifyPassword($password);
-        } else if ($user_auth->isSsoAuth()) {
+        } elseif ($user_auth->isSsoAuth()) {
             $is_verified = true;
         } else {
             // for external user, send username and password in a request for verification
@@ -257,7 +257,7 @@ class ProfileController extends BaseController
 
             // getPincodeRegenUI will be extracted into $is_reach_limit, $pincode_regen_html
             extract($this->getPincodeRegenUI($user));
-        } else if ($is_verified && $user_auth->isSsoAuth()) {
+        } elseif ($is_verified && $user_auth->isSsoAuth()) {
             $user = $user_auth->user;
             $msg = '';
             $info_icon = '<i class="js-pwd-verification-info oe-i info small js-has-tooltip" data-tooltip-content="Your password will disappear with in 30 seconds or immediately after page refresh"></i>';
