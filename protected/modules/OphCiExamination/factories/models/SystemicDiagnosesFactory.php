@@ -34,22 +34,46 @@ class SystemicDiagnosesFactory extends ModelFactory
         ];
     }
 
+    public function create($attributes = [])
+    {
+        $this->afterCreating(function (SystemicDiagnoses $element) {
+            // if diagnoses have been "made" they must be associated with the created
+            // element record and saved.
+            foreach ($element->diagnoses as $diagnosis_entry) {
+                $diagnosis_entry->element_diagnoses_id = $element->id;
+                $diagnosis_entry->save();
+            }
+        });
+
+        return parent::create($attributes);
+    }
     /**
      * @param mixed $disorders - array of disorders, or integer to represent the number of diagnoses to assign
      * @return void
      */
     public function withDiagnoses($disorders = []): self
     {
-        return $this->afterCreating(function (SystemicDiagnoses $element) use ($disorders) {
+        return $this->afterMaking(function (SystemicDiagnoses $element) use ($disorders) {
             if (is_int($disorders)) {
-                $disorders = Disorder::factory()->count($disorders)->create();
+                $disorders = Disorder::factory()
+                    ->systemic()
+                    ->count($disorders)
+                    ->useExisting()
+                    ->make();
             }
-            foreach ($disorders as $disorder) {
-                SystemicDiagnoses_Diagnosis::factory()->create([
-                    'element_id' => $element->id,
-                    'disorder_id' => $disorder->id
-                ]);
-            }
+
+            $element->diagnoses = array_merge(
+                $element->diagnoses ?? [],
+                array_map(
+                    function ($disorder) {
+                        return SystemicDiagnoses_Diagnosis::factory()->make([
+                            'element_id' => null,
+                            'disorder_id' => $disorder->id
+                        ]);
+                    },
+                    $disorders
+                )
+            );
         });
     }
 }

@@ -34,6 +34,15 @@ class DisorderFactory extends ModelFactory
         ];
     }
 
+    public function systemic()
+    {
+        return $this->state(function () {
+            return [
+                'speciality_id' => null
+            ];
+        });
+    }
+
     public function forOpthalmology()
     {
         return $this->state(function () {
