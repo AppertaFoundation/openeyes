@@ -49,7 +49,7 @@ class OptometristShortcodeTest extends \OEDbTestCase
 
         $this->performShortcodeTest($patient, '[pod]', implode('<br>', $optometrist->address->getLetterArray(false)));
     }
-    
+
     /** @test */
     public function optometrist_address_shortcode_correspond_address_correctly_takes_precidence()
     {
@@ -66,11 +66,11 @@ class OptometristShortcodeTest extends \OEDbTestCase
         list($user, $institution) = $this->createUserWithInstitution();
 
         $response = $this->actingAs(
-                $user, 
+                $user,
                 $institution
-            )->post('/OphCoCorrespondence/Default/ExpandStrings', 
+            )->post('/OphCoCorrespondence/Default/ExpandStrings',
             [
-                'patient_id' => $patient->id, 
+                'patient_id' => $patient->id,
                 'text' => $shortcode
             ]);
 
