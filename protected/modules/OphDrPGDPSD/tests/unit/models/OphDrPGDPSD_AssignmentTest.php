@@ -1,12 +1,15 @@
 <?php
 /**
-* @covers OphDrPGDPSD_PGDPSD
-* @covers OphDrPGDPSD_PGDPSDMeds
-* @covers OphDrPGDPSD_AssignedUser
-* @covers OphDrPGDPSD_AssignedTeam
-* @covers OphDrPGDPSD_Assignment
-* @covers OphDrPGDPSD_AssignmentMeds
-* @covers OphDrPGDPSD_AssignmentComment
+    * @covers OphDrPGDPSD_PGDPSD
+    * @covers OphDrPGDPSD_PGDPSDMeds
+    * @covers OphDrPGDPSD_AssignedUser
+    * @covers OphDrPGDPSD_AssignedTeam
+    * @covers OphDrPGDPSD_Assignment
+    * @covers OphDrPGDPSD_AssignmentMeds
+    * @covers OphDrPGDPSD_AssignmentComment
+    *
+    * @group sample-data
+    * @group pgdpsd
  */
 class OphDrPGDPSD_AssignmentTest extends \ActiveRecordTestCase
 {
