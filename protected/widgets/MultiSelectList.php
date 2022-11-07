@@ -46,7 +46,7 @@ class MultiSelectList extends BaseFieldWidget
             $this->filtered_options = $this->options;
         }
 
-        if (empty($_POST) || !$this->element->isNewRecord) {
+        if (empty($_POST) && !$this->element->isNewRecord) {
             if ($this->element && $this->element->{$this->relation}) {
                 foreach ($this->element->{$this->relation} as $item) {
                     $this->selected_ids[] = $item->{$this->relation_id_field};
@@ -63,9 +63,8 @@ class MultiSelectList extends BaseFieldWidget
         } else {
             // the field name might be an URL encoded array (in the case of the institution levels)
             $fieldPath = strrpos($this->field, '[')
-            ? explode('[', str_replace(']', '', $this->field))
-            : $this->field;
-
+                ? explode('[', str_replace(']', '', $this->field))
+                : $this->field;
 
             // if field name (fieldPath) is an array then we must navigate the
             // post object down the field path ensuring the data is set
