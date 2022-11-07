@@ -22,7 +22,7 @@ use User;
 use Patient;
 use PatientContactAssignment;
 use Contact;
-use OELog;
+use Address;
 
 /**
  * @package OEModule\OphCoCorrespondence\tests\unit
@@ -39,39 +39,52 @@ class OptometristShortcodeTest extends \OEDbTestCase
     private User $user;
     private Institution $institution;
 
-    public function setUp()
-    {
-        $this->createUserWithInstitution();
-    }
-
     /** @test */
     public function optometrist_address_shortcode()
     {
-        OELog::log('sausage');
-
         $patient = Patient::factory()->create();
         $optometrist = Contact::factory()->ofType('Optometrist')->create();
 
         PatientContactAssignment::factory()->create(['patient_id' => $patient->id, 'contact_id' => $optometrist->id]);
 
-        $optometrist_address = $optometrist->correspondAddress ?? $optometrist->address;
+        $this->performShortcodeTest($patient, '[pod]', implode('<br>', $optometrist->address->getLetterArray(false)));
+    }
+    
+    /** @test */
+    public function optometrist_address_shortcode_correspond_address_correctly_takes_precidence()
+    {
+        $patient = Patient::factory()->create();
+        $optometrist = Contact::factory()->withCorrespondAddress()->ofType('Optometrist')->create();
 
-        $this->performShortcodeTest($patient, '[pod]', implode('<br>', $optometrist_address->getLetterArray(false)));
+        PatientContactAssignment::factory()->create(['patient_id' => $patient->id, 'contact_id' => $optometrist->id]);
+
+        $this->performShortcodeTest($patient, '[pod]', implode('<br>', $optometrist->correspondAddress->getLetterArray(false)));
     }
 
     protected function performShortcodeTest(Patient $patient, $shortcode, $expected)
     {
-        $response = $this->actingAs($this->user, $this->institution)->post('/OphCoCorrespondence/Default/ExpandStrings', ['patient_id' => $patient->id, 'text' => $shortcode]);
+        list($user, $institution) = $this->createUserWithInstitution();
+
+        $response = $this->actingAs(
+                $user, 
+                $institution
+            )->post('/OphCoCorrespondence/Default/ExpandStrings', 
+            [
+                'patient_id' => $patient->id, 
+                'text' => $shortcode
+            ]);
 
         $this->assertEquals($expected, $response->response);
     }
 
     protected function createUserWithInstitution()
     {
-        $this->user = User::model()->findByAttributes(['first_name' => 'admin']);
-
-        $this->institution = Institution::factory()
-            ->withUserAsMember($this->user)
-            ->create();
+        $user = User::model()->findByAttributes(['first_name' => 'admin']);
+        return [
+            $user,
+            Institution::factory()
+                ->withUserAsMember($user)
+                ->create()
+        ];
     }
 }

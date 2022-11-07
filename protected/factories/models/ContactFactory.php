@@ -55,4 +55,13 @@ class ContactFactory extends ModelFactory
             ];
         });
     }
+
+    public function withCorrespondAddress() {
+        return $this->afterCreating(function ($instance) {
+            ModelFactory::factoryFor(Address::class)->create([
+                'contact_id' => $instance->id,
+                'address_type_id' => 3 // Correspondence address type
+            ]);
+        });
+    }
 }
