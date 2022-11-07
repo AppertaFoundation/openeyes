@@ -205,7 +205,6 @@ class OphDrPGDPSD_PGDPSD extends \BaseActiveRecordVersioned
     {
         $this->temp_meds = array();
         foreach ($this->temp_meds_info as $med) {
-
             $temp_assigned_med = new OphDrPGDPSD_PGDPSDMeds();
             $temp_assigned_med->attributes = $med;
             $this->temp_meds[] = $temp_assigned_med;

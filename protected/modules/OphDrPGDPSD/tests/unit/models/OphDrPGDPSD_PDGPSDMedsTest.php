@@ -29,7 +29,8 @@ class OphDrPGDPSD_PDGPSDMedsTest extends \ActiveRecordTestCase
         return OphDrPGDPSD_PGDPSDMeds::model();
     }
 
-    public function meds_data_provider() {
+    public function meds_data_provider()
+    {
         return [
             'valid psd attributes passes' => [
                 [
@@ -106,20 +107,21 @@ class OphDrPGDPSD_PDGPSDMedsTest extends \ActiveRecordTestCase
         ];
     }
 
-    /** 
+    /**
      * @dataProvider meds_data_provider
-     * 
-     * @test 
+     *
+     * @test
      * */
-    public function validation_rules_are_applied_correctly($attributes, $type, $valid, $expectedErrors) {
+    public function validation_rules_are_applied_correctly($attributes, $type, $valid, $expectedErrors)
+    {
         $this_med = new OphDrPGDPSD_PGDPSDMeds();
         $this_med->attributes = $attributes;
         $this_med->pgdpsd->type = $type;
 
         $this->assertEquals($this_med->validate(), $valid);
 
-        if(count($expectedErrors)) {
-            foreach($expectedErrors as $expectedError) {
+        if (count($expectedErrors)) {
+            foreach ($expectedErrors as $expectedError) {
                 $this->assertArrayHasKey($expectedError, $this_med->getErrors());
             }
         }
