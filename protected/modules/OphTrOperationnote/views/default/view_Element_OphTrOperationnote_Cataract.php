@@ -99,12 +99,14 @@
 
                     <tr>
                         <td>
-                            <div class="data-label"><?=\CHtml::encode($element->getAttributeLabel('report2')) ?>
+                            <!-- workaround for OE-13821, display report if report2 is empty -->
+                            <div class="data-label"><?=\CHtml::encode(empty($element->report2) ? $element->getAttributeLabel('report') : $element->getAttributeLabel('report2')) ?>
                                 :
                             </div>
                         </td>
                         <td>
-                            <div class="data-value"><?=\CHtml::encode($element->report2) . '<br>' . CHtml::encode($element->comments) ?></div>
+                            <!-- workaround for OE-13821, display report if report2 is empty -->
+                            <div class="data-value"><?=\CHtml::encode(empty($element->report2) ? $element->report : $element->report2 ) . '<br>' . CHtml::encode($element->comments) ?></div>
                         </td>
                     </tr>
 
