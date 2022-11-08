@@ -76,17 +76,8 @@ class OphthalmicDiagnosisBehaviourTest extends \OEDbTestCase
     /** @test */
     public function deleting_more_recent_examination_with_ophthalmic_diagnoses_reverts_to_previous()
     {
-        $initial_event = EventFactory::forModule('OphCiExamination')
-        ->create([
-            'event_date' => $this->faker->dateTimeBetween('-4 weeks', '-2 weeks')->format('Y-m-d')
-        ]);
-
-        $initial_oph_diagnoses = Element_OphCiExamination_Diagnoses::factory()
-            ->withBilateralDiagnoses(1)
-            ->withRightDiagnoses(1)
-            ->withLeftDiagnoses(1)
-            ->create(['event_id' => $initial_event->id]);
-
+        list($initial_oph_diagnoses) = $this->createExaminationWithElements([Element_OphCiExamination_Diagnoses::class]);
+        $initial_event = $initial_oph_diagnoses->event;
         $episode = $initial_event->episode;
         $patient = $episode->patient;
 
@@ -112,16 +103,8 @@ class OphthalmicDiagnosisBehaviourTest extends \OEDbTestCase
     /** @test */
     public function patient_ophthalmic_diagnoses_unaffected_when_older_examination_is_deleted()
     {
-        $event_to_be_deleted = EventFactory::forModule('OphCiExamination')
-        ->create([
-            'event_date' => $this->faker->dateTimeBetween('-4 weeks', '-2 weeks')->format('Y-m-d')
-        ]);
-
-        Element_OphCiExamination_Diagnoses::factory()
-            ->withBilateralDiagnoses(1)
-            ->withRightDiagnoses(1)
-            ->withLeftDiagnoses(1)
-            ->create(['event_id' => $event_to_be_deleted->id]);
+        list($diagnoses_to_be_deleted) = $this->createExaminationWithElements([Element_OphCiExamination_Diagnoses::class]);
+        $event_to_be_deleted = $diagnoses_to_be_deleted->event;
         $episode = $event_to_be_deleted->episode;
 
         $most_recent_diagnoses_element_data = $this->createOphthalmicDiagnosesElementThroughRequest($episode);
@@ -138,16 +121,9 @@ class OphthalmicDiagnosisBehaviourTest extends \OEDbTestCase
     /** @test */
     public function deleting_more_recent_examination_with_systemic_diagnoses_reverts_to_previous()
     {
-        $initial_event = EventFactory::forModule('OphCiExamination')
-        ->create([
-            'event_date' => $this->faker->dateTimeBetween('-4 weeks', '-2 weeks')->format('Y-m-d')
-        ]);
+        list($initial_sys_diagnoses) = $this->createExaminationWithElements([SystemicDiagnoses::class]);
 
-        $initial_sys_diagnoses = SystemicDiagnoses::factory()
-            ->withDiagnoses(2)
-            ->create(['event_id' => $initial_event->id]);
-
-        $episode = $initial_event->episode;
+        $episode = $initial_sys_diagnoses->event->episode;
         $patient = $episode->patient;
 
         // Secondary diagnosis updates are (at the time of writing) triggered through
@@ -165,6 +141,78 @@ class OphthalmicDiagnosisBehaviourTest extends \OEDbTestCase
 
         // should revert to the diagnoses from the initial event
         $this->assertSecondaryDiagnosesRecordedFor($patient, $initial_sys_diagnoses->diagnoses, false);
+    }
+
+    /** @test */
+    public function systemic_and_ophthalmic_diagnoses_are_reverted_to_most_recent_previous_event()
+    {
+        // old entries that should be ignored
+        list($older_oph, $older_sys) = $this->createExaminationWithElements(
+            [Element_OphCiExamination_Diagnoses::class, SystemicDiagnoses::class],
+            null,
+            '-8 weeks',
+            '-6 weeks'
+        );
+
+        $episode = $older_oph->event->episode;
+
+        list($expected_oph) = $this->createExaminationWithElements(
+            [Element_OphCiExamination_Diagnoses::class],
+            $episode,
+            '-5 weeks',
+            '-4 weeks'
+        );
+
+        list($expected_sys) = $this->createExaminationWithElements(
+            [SystemicDiagnoses::class],
+            $episode,
+            '-5 weeks',
+            '-3 weeks'
+        );
+
+        $this->createOphthalmicAndSystemicElementsThroughRequest($episode);
+
+        // retrieve the event that was created with this post
+        $latest_event = \Event::model()
+            ->findAll(['order' => 'id DESC', 'limit' => 1])[0];
+
+        $latest_event->softDelete();
+
+        $this->assertSecondaryDiagnosesRecordedFor($episode->patient, $expected_oph->diagnoses);
+        $this->assertSecondaryDiagnosesRecordedFor($episode->patient, $expected_sys->diagnoses, false);
+    }
+
+    protected function createExaminationWithElements(
+        array $element_classes,
+        ?\Episode $episode = null,
+        $after = '-4 weeks',
+        $before = '-2 weeks'
+    )
+    {
+        $event_attrs = [
+            'event_date' => $this->faker->dateTimeBetween($after, $before)->format('Y-m-d')
+        ];
+        if ($episode) {
+            $event_attrs['episode_id'] = $episode->id;
+        }
+        $event = EventFactory::forModule('OphCiExamination')
+            ->create($event_attrs);
+
+        $elements = [];
+        foreach ($element_classes as $element_class) {
+            if ($element_class === Element_OphCiExamination_Diagnoses::class) {
+                $factory = Element_OphCiExamination_Diagnoses::factory()
+                    ->withBilateralDiagnoses(1)
+                    ->withRightDiagnoses(1)
+                    ->withLeftDiagnoses(1);
+            } else {
+                $factory = SystemicDiagnoses::factory()
+                ->withDiagnoses(2);
+            }
+            $elements[] = $factory
+                ->create(['event_id' => $event->id]);
+        }
+        return $elements;
     }
 
     /**
@@ -203,6 +251,27 @@ class OphthalmicDiagnosisBehaviourTest extends \OEDbTestCase
         $this->createExaminationEventWithFormData($episode, $form_data);
 
         return $diagnoses_data_element;
+    }
+
+    protected function createOphthalmicAndSystemicElementsThroughRequest(\Episode $episode): array
+    {
+        $ophthalmic = Element_OphCiExamination_Diagnoses::factory()
+            ->withBilateralDiagnoses(2)
+            ->make(['event_id' => null]);
+        $systemic = SystemicDiagnoses::factory()
+            ->withDiagnoses(2)
+            ->make(['event_id' => null]);
+
+        $form_data = [
+            CHtml::modelName($ophthalmic) => $this->mapOphthalmicDiagnosesElementToFormData($ophthalmic),
+            'principal_diagnosis_row_key' => $this->findPrincipalRowKey($ophthalmic->diagnoses),
+            CHtml::modelName($systemic) => $this->mapSystemicDiagnosesElementToFormData($systemic),
+            'patient_id' => $episode->patient_id
+        ];
+
+        $this->createExaminationEventWithFormData($episode, $form_data);
+
+        return [$ophthalmic, $systemic];
     }
 
     protected function mapOphthalmicDiagnosesElementToFormData(Element_OphCiExamination_Diagnoses $element): array
