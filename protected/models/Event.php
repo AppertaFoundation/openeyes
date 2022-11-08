@@ -415,11 +415,12 @@ class Event extends BaseActiveRecordVersioned
             if (!$this->save()) {
                 throw new Exception('Unable to mark event deleted: ' . print_r($this->event->getErrors(), true));
             }
+
+            $this->onAfterSoftDelete(new CEvent($this));
+
             if ($transaction) {
                 $transaction->commit();
             }
-
-            $this->onAfterSoftDelete(new CEvent($this));
         } catch (Exception $e) {
             if ($transaction) {
                 $transaction->rollback();
