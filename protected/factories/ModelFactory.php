@@ -160,7 +160,7 @@ abstract class ModelFactory
      */
     public function useExisting($attributes = [])
     {
-        $this->findOrCreateAttributes = $attributes;
+        $this->findOrCreateAttributes = array_merge($this->findOrCreateAttributes ?? [], $attributes);
 
         // apply as state so if no object is found the attributes are used in making
         return $this->state($attributes);
@@ -191,7 +191,7 @@ abstract class ModelFactory
         }
 
         if ($this->findOrCreateAttributes !== null) {
-            $existing = $this->getExisting($this->findOrCreateAttributes);
+            $existing = $this->getExisting($this->getExpandedAttributes($this->findOrCreateAttributes));
 
             if (count($existing)) {
                 if ($this->count === null) {
