@@ -106,9 +106,8 @@ class Element_OphCiExamination_DiagnosesFactory extends ModelFactory
                 // which if it becomes an issue will necessitate a more robust retrieval
                 // approach here
                 $disorders = Disorder::factory()
-                    ->forOpthalmology()
+                    ->existingforOphthalmology()
                     ->count($disorders)
-                    ->useExisting()
                     ->make();
             }
             $this->addDisordersTo($element, $disorders, $laterality);

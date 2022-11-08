@@ -36,12 +36,16 @@ class SystemicDiagnosesFactory extends ModelFactory
 
     public function create($attributes = [])
     {
-        $this->afterCreating(function (SystemicDiagnoses $element) {
-            // if diagnoses have been "made" they must be associated with the created
-            // element record and saved.
+        $this->afterMaking(function (SystemicDiagnoses $element) {
+            // auto-relations causes related instances to be validated during a save
+            // regardless of whether the parent is validating or not.
+            // Systemic Diagnosis has an unusual behaviour that validates side_id is set
+            // and then nulls it if it's -9 (NA) prior to save
+            // so here we force unset values to -9 to ensure that they will validate
             foreach ($element->diagnoses as $diagnosis_entry) {
-                $diagnosis_entry->element_diagnoses_id = $element->id;
-                $diagnosis_entry->save();
+                if (!isset($diagnosis_entry->side_id)) {
+                    $diagnosis_entry->side_id = -9;
+                }
             }
         });
 
@@ -56,9 +60,8 @@ class SystemicDiagnosesFactory extends ModelFactory
         return $this->afterMaking(function (SystemicDiagnoses $element) use ($disorders) {
             if (is_int($disorders)) {
                 $disorders = Disorder::factory()
-                    ->systemic()
+                    ->existingForSystemic()
                     ->count($disorders)
-                    ->useExisting()
                     ->make();
             }
 

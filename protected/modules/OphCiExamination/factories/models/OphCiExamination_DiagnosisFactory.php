@@ -31,7 +31,7 @@ class OphCiExamination_DiagnosisFactory extends ModelFactory
         return [
             'element_diagnoses_id' => Element_OphCiExamination_Diagnoses::factory(),
             'eye_id' => Eye::factory()->useExisting(),
-            'disorder_id' => Disorder::factory()->forOpthalmology()->useExisting(),
+            'disorder_id' => Disorder::factory()->forOphthalmology()->useExisting(),
             'date' => $this->faker->dateTimeBetween('-3 weeks')->format('Y-m-d')
         ];
     }
