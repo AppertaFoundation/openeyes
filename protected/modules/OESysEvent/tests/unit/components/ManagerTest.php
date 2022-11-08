@@ -51,7 +51,7 @@ class ManagerTest extends OEDbTestCase
         $manager = new Manager();
         $manager->observers = [
             [
-                'event' => ExampleEvent::class,
+                'system_event' => ExampleEvent::class,
                 'listener' => InvokableEventHandler::class
             ]
         ];
