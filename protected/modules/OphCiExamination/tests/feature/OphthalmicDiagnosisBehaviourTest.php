@@ -74,7 +74,7 @@ class OphthalmicDiagnosisBehaviourTest extends \OEDbTestCase
     }
 
     /** @test */
-    public function deleting_more_recent_examination_reverts_to_previous()
+    public function deleting_more_recent_examination_with_ophthalmic_diagnoses_reverts_to_previous()
     {
         $initial_event = EventFactory::forModule('OphCiExamination')
         ->create([
@@ -100,7 +100,7 @@ class OphthalmicDiagnosisBehaviourTest extends \OEDbTestCase
 
         // retrieve the event that was created with this post
         $latest_event = \Event::model()
-            ->findAll(['order' => 'created_date DESC', 'limit' => 1])[0];
+            ->findAll(['order' => 'id DESC', 'limit' => 1])[0];
 
         $latest_event->softDelete();
 
@@ -110,7 +110,7 @@ class OphthalmicDiagnosisBehaviourTest extends \OEDbTestCase
     }
 
     /** @test */
-    public function patient_diagnoses_unaffected_when_older_examination_is_deleted()
+    public function patient_ophthalmic_diagnoses_unaffected_when_older_examination_is_deleted()
     {
         $event_to_be_deleted = EventFactory::forModule('OphCiExamination')
         ->create([
@@ -133,6 +133,38 @@ class OphthalmicDiagnosisBehaviourTest extends \OEDbTestCase
 
         $this->assertSecondaryDiagnosesRecordedFor($episode->patient, $most_recent_diagnoses_element_data->diagnoses);
         $this->assertPrincipalDiagnosisRecordedIn($episode, $most_recent_diagnoses_element_data->diagnoses);
+    }
+
+    /** @test */
+    public function deleting_more_recent_examination_with_systemic_diagnoses_reverts_to_previous()
+    {
+        $initial_event = EventFactory::forModule('OphCiExamination')
+        ->create([
+            'event_date' => $this->faker->dateTimeBetween('-4 weeks', '-2 weeks')->format('Y-m-d')
+        ]);
+
+        $initial_sys_diagnoses = SystemicDiagnoses::factory()
+            ->withDiagnoses(2)
+            ->create(['event_id' => $initial_event->id]);
+
+        $episode = $initial_event->episode;
+        $patient = $episode->patient;
+
+        // Secondary diagnosis updates are (at the time of writing) triggered through
+        // the controller behaviour calling the correct methods on the diagnoses element
+        // So here we are performing the POST request to trigger this.
+        $diagnoses_to_be_deleted = $this->createSystemicDiagnosesElementThroughRequest($episode);
+
+        $this->assertSecondaryDiagnosesRecordedFor($patient, $diagnoses_to_be_deleted->diagnoses, false);
+
+        // retrieve the event that was created with this post
+        $latest_event = \Event::model()
+            ->findAll(['order' => 'id DESC', 'limit' => 1])[0];
+
+        $latest_event->softDelete();
+
+        // should revert to the diagnoses from the initial event
+        $this->assertSecondaryDiagnosesRecordedFor($patient, $initial_sys_diagnoses->diagnoses, false);
     }
 
     /**
@@ -200,7 +232,7 @@ class OphthalmicDiagnosisBehaviourTest extends \OEDbTestCase
                 'disorder_id' => $entry->disorder_id,
                 'date' => $entry->date,
                 'has_disorder' => $entry->has_disorder,
-                // assume no laterality in initial tests
+                // TODO: map laterality of systemic for form data
                 'na_eye' => "-9"
             ];
         }
@@ -260,6 +292,15 @@ class OphthalmicDiagnosisBehaviourTest extends \OEDbTestCase
         }
     }
 
+    /**
+     * Checks the given \Patient has SecondaryDiagnoses recorded for given $diagnoses - a list of
+     * OphCiExamination_Diagnosis or \OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis
+     *
+     * @param \Patient $patient
+     * @param OphCiExamination_Diagnosis[]|\OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis[] $diagnoses
+     * @param boolean $remove_principal
+     * @return void
+     */
     protected function assertSecondaryDiagnosesRecordedFor(\Patient $patient, $diagnoses, bool $remove_principal = true): void
     {
         if ($remove_principal) {
@@ -273,7 +314,7 @@ class OphthalmicDiagnosisBehaviourTest extends \OEDbTestCase
         foreach ($diagnoses as $diagnosis) {
             $attributes = [
                 'disorder_id' => $diagnosis->disorder_id,
-                'eye_id' => (property_exists($diagnosis, 'eye_id') ? $diagnosis->eye_id : $diagnosis->side_id) ?? null,
+                'eye_id' => ($diagnosis->hasAttribute('eye_id') ? $diagnosis->eye_id : $diagnosis->side_id) ?? null,
                 'date' => $diagnosis->date ?? null,
                 'patient_id' => $patient->id
             ];

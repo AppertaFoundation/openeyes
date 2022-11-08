@@ -35,17 +35,18 @@ class UpdatePatientDiagnosesAfterSoftDelete
     public function __invoke(ClinicalEventSoftDeletedSystemEvent $system_event)
     {
         $this->clinical_event = $system_event->clinical_event;
-        $diagnoses_element = $this->clinical_event->getElementByClass(Element_OphCiExamination_Diagnoses::class);
 
-        if (!$diagnoses_element) {
+        $update_methods_to_call = $this->mapClinicalEventElementsToUpdateActions();
+
+        if (!count($update_methods_to_call)) {
             // event removal has no effect on patient diagnoses
             return;
         }
 
         $transaction = $this->getApp()->db->beginInternalTransaction();
-        $this->updatePatientOphthalmicDiagnoses();
-        $this->updatePatientSystemicDiagnoses();
-        // TODO: systemic diagnoses
+        foreach ($update_methods_to_call as $method) {
+            $this->$method();
+        }
         $transaction->commit();
     }
 
@@ -137,7 +138,7 @@ class UpdatePatientDiagnosesAfterSoftDelete
         }
     }
 
-    protected function setPatientSystemicSecondaryDiagnosesFrom(SystemicDiagnoses $element): void
+    protected function setPatientSystemicSecondaryDiagnosesFrom(?SystemicDiagnoses $element = null): void
     {
         $initial_secondary_disorder_ids = array_map(
             function ($secondary_diagnosis) {
@@ -146,29 +147,45 @@ class UpdatePatientDiagnosesAfterSoftDelete
             $this->getPatient()->getSystemicDiagnoses()
         );
 
-        $retained_disorder_ids = $this->setPatientSecondaryDiagnosesAndGetDisorderIds($element->diagnoses ?? []);
+        $retained_disorder_ids = $this->setPatientSystemicSecondaryDiagnosesAndGetDisorderIds($element->diagnoses ?? []);
 
         $this->removePatientSecondaryDiagnoses(array_diff($initial_secondary_disorder_ids, $retained_disorder_ids));
     }
 
-    private function setPatientSecondaryDiagnosesAndGetDisorderIds($diagnoses_elements = []): array
+    /**
+     * Handles an array of OphCiExamination_Diagnosis or SystemicDiagnoses_Diagnosis entries
+     *
+     * @param array $diagnoses_entries
+     * @return array
+     */
+    private function setPatientSecondaryDiagnosesAndGetDisorderIds($diagnoses_entries = []): array
     {
         return array_filter(
             array_map(
-                function ($diagnosis_element) {
-                    if ($diagnosis_element->principal) {
+                function ($diagnosis_entry) {
+                    if ($diagnosis_entry->hasAttribute('principal') && $diagnosis_entry->principal) {
                         return null;
                     }
                     $this->getPatient()
                         ->addDiagnosis(
-                            $diagnosis_element->disorder_id,
-                            $diagnosis_element->eye_id,
-                            $diagnosis_element->date
+                            $diagnosis_entry->disorder_id,
+                            $diagnosis_entry->hasAttribute('eye_id') ? $diagnosis_entry->eye_id : $diagnosis_entry->side_id,
+                            $diagnosis_entry->date
                         );
-                    return $diagnosis_element->disorder_id;
+                    return $diagnosis_entry->disorder_id;
                 },
-                $diagnoses_elements
+                $diagnoses_entries
             )
+        );
+    }
+
+    private function setPatientSystemicSecondaryDiagnosesAndGetDisorderIds($diagnoses_entries = []): array
+    {
+        return array_map(
+            function ($diagnosis_entry) {
+                return $diagnosis_entry->updateAndGetSecondaryDiagnosis($this->getPatient())->disorder_id;
+            },
+            $diagnoses_entries
         );
     }
 
@@ -195,5 +212,23 @@ class UpdatePatientDiagnosesAfterSoftDelete
         );
 
         return count($diagnoses) ? $diagnoses[0] : null;
+    }
+
+    private function mapClinicalEventElementsToUpdateActions(): array
+    {
+        $map = [
+            'updatePatientOphthalmicDiagnoses' => Element_OphCiExamination_Diagnoses::class,
+            'updatePatientSystemicDiagnoses' => SystemicDiagnoses::class
+        ];
+
+        $update_actions = [];
+
+        foreach ($map as $method => $event_class) {
+            if ($this->clinical_event->getElementByClass($event_class)) {
+                $update_actions[] = $method;
+            }
+        }
+
+        return $update_actions;
     }
 }
