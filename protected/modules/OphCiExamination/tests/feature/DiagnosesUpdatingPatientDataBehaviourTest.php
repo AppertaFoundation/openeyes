@@ -28,13 +28,13 @@ use SecondaryDiagnosis;
  * @group disorder
  * @group diagnoses
  */
-class OphthalmicDiagnosisBehaviourTest extends \OEDbTestCase
+class DiagnosesUpdatingPatientDataBehaviourTest extends \OEDbTestCase
 {
     use \HasEventTypeElementAssertions;
     use \MocksSession;
     use \MakesApplicationRequests;
     use \WithFaker;
-    // use \WithTransactions;
+    use \WithTransactions;
 
     /** @test */
     public function ophthalmic_entries_are_saved_and_reflected_in_patient_record()
