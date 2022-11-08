@@ -138,7 +138,7 @@ $widgetOptionsJson = json_encode(array(
                         <?php endif; ?>
 
                   <span data-text="<?php echo $options[$id] ?>"
-                      class="multi-select-remove remove-one <?php if (isset($htmlOptions['class'])) {
+                      class="multi-select-remove remove-one <?php if (isset($htmlOptions['class']) && $htmlOptions['class'] !== "hidden") {
                             ?><?php echo $htmlOptions['class'] ?><?php
                                                             } ?>"
                         <?php if (isset($htmlOptions['data-linked-fields'])) {
