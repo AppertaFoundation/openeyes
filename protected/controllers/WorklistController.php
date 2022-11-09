@@ -669,6 +669,7 @@ class WorklistController extends BaseController
     public function actionGetPathStep($partial, $pathstep_id, $visit_id, $pathstep_type_id, $red_flag = false, $interactive = 1)
     {
         $wl_patient = WorklistPatient::model()->findByPk($visit_id);
+        $has_permission_to_start = true;
         switch ($pathstep_id) {
             case 'checkin':
                 if ($wl_patient) {
@@ -767,6 +768,11 @@ class WorklistController extends BaseController
                     Yii::app()->end();
                 }
 
+                // if the step is for prescription, only prescriber has the permission to start it
+                if (($step instanceof PathwayStep && $step->type->short_name === 'Rx')
+                || ($step instanceof PathwayTypeStep && $step->step_type->short_name === 'Rx')) {
+                    $has_permission_to_start = Yii::app()->user->checkAccess('TaskPrescribe');
+                }
                 if ($step) {
                     $view_file = ($step instanceof PathwayStep ? $step->type->widget_view : $step->step_type->widget_view) ?? 'generic_step';
                     $dom = $this->renderPartial(
@@ -776,7 +782,8 @@ class WorklistController extends BaseController
                             'worklist_patient' => $wl_patient,
                             'patient' => $wl_patient->patient,
                             'partial' => $partial,
-                            'red_flag' => $red_flag
+                            'red_flag' => $red_flag,
+                            'has_permission_to_start' => $has_permission_to_start
                         ),
                         true
                     );

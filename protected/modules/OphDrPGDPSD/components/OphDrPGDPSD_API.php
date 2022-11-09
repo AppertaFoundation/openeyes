@@ -53,21 +53,32 @@ class OphDrPGDPSD_API extends \BaseAPI
         $medication['preferred_term'] = $medication['label'];
         return $medication;
     }
+
+    /**
+     * Get systemic, ophthalmic, drop and oral medications
+     * and process them to be compatible with adder popup in the drug administration element
+     *
+     * The medications will come from the relevant drug sets based on current site and subspecialty
+     *
+     * @return array
+     */
     public function getMedicationOptions()
     {
-        $common_systemic = \Medication::model()->listCommonSystemicMedications(true, true);
         $firm_id = $this->yii->session->get('selected_firm_id');
         $site_id = $this->yii->session->get('selected_site_id');
-        if ($firm_id) {
-            /** @var Firm $firm */
-            $firm = $firm_id ? \Firm::model()->findByPk($firm_id) : null;
-            $subspecialty_id = $firm->getSubspecialtyID();
-            $common_ophthalmic = \Medication::model()->listBySubspecialtyWithCommonMedications($subspecialty_id, true, $site_id, true);
-        } else {
-            $common_ophthalmic = array();
+
+        // if no firm id, return empty medication list
+        if (!$firm_id) {
+            return [];
         }
-        $common_drops = \Medication::model()->listCommonDrops(true, true);
-        $common_oral = \Medication::model()->listCommonOralMedications(true, true);
+
+        $firm = \Firm::model()->findByPk($firm_id);
+        $subspecialty_id = $firm->getSubspecialtyID();
+
+        $common_systemic = \Medication::model()->listCommonSystemicMedications(true, $subspecialty_id, $site_id);
+        $common_ophthalmic = \Medication::model()->listBySubspecialtyWithCommonMedications($subspecialty_id, true, $site_id);
+        $common_drops = \Medication::model()->listCommonDrops($subspecialty_id, true, $site_id);
+        $common_oral = \Medication::model()->listCommonOralMedications($subspecialty_id, true, $site_id);
 
         $common_systemic = array_map(function ($comm_sys) {
             $comm_sys['category'] = 'systemic';

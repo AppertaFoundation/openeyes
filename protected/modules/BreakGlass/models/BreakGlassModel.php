@@ -2,8 +2,8 @@
 
 class BreakGlassModel extends CFormModel
 {
-    public string $reason;
-    public string $longreason;
+    public ?string $reason = NULL;
+    public ?string $longreason = NULL;
 
     public function rules()
     {

@@ -5,10 +5,12 @@ namespace OEModule\CypressHelper\controllers;
 use CWebLogRoute;
 use EventType;
 use Firm;
+use Institution;
 use OE\concerns\InteractsWithApp;
 use OE\factories\models\EventFactory;
 use OE\factories\ModelFactory;
 use Patient;
+use User;
 use CActiveRecord;
 use OELog;
 use SettingInstallation;
@@ -51,6 +53,25 @@ class DefaultController extends \CController
             'firm_id' => $this->getApp()->session['selected_firm_id'],
             'subspecialty_id' => Firm::model()->findByPK($this->getApp()->session['selected_firm_id'])->getSubspecialtyID(),
             'institution_id' => $this->getApp()->session['selected_institution_id']
+        ]);
+    }
+
+    public function actionCreateUser()
+    {
+        $authitems = $_POST['authitems'] ?? [];
+        $institution_id = $_POST['institution_id'] ?? 1;
+        $attributes = $_POST['attributes'] ?? [];
+        $password = $_POST['password'] ?? 'password';
+
+        $user = User::factory()
+            ->withAuthItems($authitems)
+            ->withLocalAuthForInstitution(Institution::model()->findByPk($institution_id), $password)
+            ->create($attributes);
+
+        $this->sendJsonResponse([
+            'user_id' => $user->id,
+            'username' => $user->authentications[0]->username,
+            'password' => $password
         ]);
     }
 

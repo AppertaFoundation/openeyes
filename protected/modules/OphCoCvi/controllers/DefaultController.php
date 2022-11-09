@@ -143,6 +143,10 @@ class DefaultController extends \BaseEventTypeController
         $wk->setDocRef($this->event->docref);
         $wk->setPatient($this->event->episode->patient);
         $wk->setBarcode($this->event->barcodeSVG);
+        $wk->setInstitutionAndSite(
+            isset($this->event->institution) ? $this->event->institution->id : null,
+            isset($this->event->site) ? $this->event->site->id : null
+        );
         $wk->savePageToPDF(
             $this->event->imageDirectory,
             $this->pdf_print_suffix,

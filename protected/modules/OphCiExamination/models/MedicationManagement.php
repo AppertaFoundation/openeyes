@@ -184,7 +184,7 @@ class MedicationManagement extends BaseMedicationElement
      * gets stopped Medication Management entries
      * @return MedicationManagementEntry[]
      */
-    public function getStoppedEntries() : array
+    public function getStoppedEntries(): array
     {
         return array_filter($this->visible_entries, function ($e) {
             return !is_null($e->end_date) && $e->is_discontinued && $e->stopped_in_event_id === $e->event_id;
@@ -195,7 +195,7 @@ class MedicationManagement extends BaseMedicationElement
      * Gets NOT stopped Medication Management entries
      * @return MedicationManagementEntry[]
      */
-    public function getNotStoppedEntries() : array
+    public function getNotStoppedEntries(): array
     {
         $stopped_ids = $this->getStoppedEntryIds();
         $collection = new \ModelCollection($this->visible_entries);
@@ -207,7 +207,7 @@ class MedicationManagement extends BaseMedicationElement
      * gets changed Medication Management entries
      * @return MedicationManagementEntry[]
      */
-    public function getChangedEntries() : array
+    public function getChangedEntries(): array
     {
         $stopped_entry_ids = $this->getStoppedEntryIds();
         return array_filter($this->visible_entries, function ($e) use ($stopped_entry_ids) {
@@ -236,7 +236,7 @@ class MedicationManagement extends BaseMedicationElement
             $criteria->params['latest_med_use_id'] = $e->prescription_item_id ?? $e->id;
             $past_medication_history_entries_count = EventMedicationUse::model()->count($criteria);
 
-            return !empty($past_entries) || $past_medication_history_entries_count !== "0" && !in_array($e->id, $stopped_entry_ids) ;
+            return !empty($past_entries) || $past_medication_history_entries_count !== "0" && !in_array($e->id, $stopped_entry_ids);
         });
     }
 
@@ -244,7 +244,7 @@ class MedicationManagement extends BaseMedicationElement
      * gets changed entry ids
      * @return array
      */
-    private function getChangedEntriesIds() : array
+    private function getChangedEntriesIds(): array
     {
         $changed_entries = $this->getChangedEntries();
         $ids = [];
@@ -259,7 +259,7 @@ class MedicationManagement extends BaseMedicationElement
      * gets changed entry ids
      * @return array
      */
-    private function getStoppedEntryIds() : array
+    private function getStoppedEntryIds(): array
     {
         $stopped_entries = $this->getStoppedEntries();
         $ids = [];
@@ -657,6 +657,15 @@ class MedicationManagement extends BaseMedicationElement
         return $this->entries;
     }
 
+    public function beforeDelete()
+    {
+        foreach ($this->signatures as $signature) {
+            $signature->deletePrevSignature();
+        }
+
+        parent::beforeDelete();
+    }
+
     public function afterDelete()
     {
         foreach ($this->entries as $entry) {
@@ -738,16 +747,14 @@ class MedicationManagement extends BaseMedicationElement
      */
     public function usesEsignDevice(): bool
     {
-        return !empty(
-        array_filter ($this->signatures, function ($signature) {
+        return !empty(array_filter($this->signatures, function ($signature) {
             return $signature->usesEsignDevice();
-        })
-        );
+        }));
     }
 
     /**
-    * @param array $elements
-    */
+     * @param array $elements
+     */
     public function eventScopeValidation(array $elements)
     {
         $elements = array_filter(
