@@ -1,3 +1,26 @@
+Cypress.Commands.add('createUser', (authitems, attributes, username, password) => {
+    let data = {
+        authitems: authitems
+    }
+    if (attributes !== undefined) {
+        data.attributes = attributes
+    }
+    if (username !== undefined) {
+        data.username = username;
+    }
+    if (password !== undefined) {
+        data.password = password;
+    }
+
+    return cy.request({
+        method: 'POST',
+        form: true,
+        url: 'CypressHelper/Default/createUser',
+        body: data
+    })
+    .its('body');
+});
+
 Cypress.Commands.add('login', (username, password) => {
     if (password == undefined) {
         password = 'admin';
@@ -7,6 +30,7 @@ Cypress.Commands.add('login', (username, password) => {
     }
     return cy.request({
         method: 'POST',
+        form: true,
         url: 'CypressHelper/Default/login',
         body: {
             username: username,
