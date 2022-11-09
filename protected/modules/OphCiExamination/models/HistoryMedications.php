@@ -251,4 +251,13 @@ class HistoryMedications extends BaseMedicationElement
 
         return $untracked;
     }
+
+    public function afterDelete()
+    {
+        foreach ($this->entries as $entry) {
+            $entry->delete();
+        }
+
+        parent::afterDelete();
+    }
 }

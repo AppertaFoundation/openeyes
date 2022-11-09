@@ -153,9 +153,9 @@ class EventMedicationUse extends BaseElement
             array('stopped_in_event_id', 'default', 'setOnEmpty' => true, 'value' => null),
             array('stop_reason_id', 'validateStopReason'),
             array(
-                'id, event_id, copied_from_med_use_id, latest_prescribed_med_use_id, usage_type, usage_subtype, 
-                    medication_id, form_id, laterality, dose, dose_unit_term, route_id, frequency_id, duration, 
-                    dispense_location_id, dispense_condition_id, start_date, end_date, last_modified_user_id, 
+                'id, event_id, copied_from_med_use_id, latest_prescribed_med_use_id, usage_type, usage_subtype,
+                    medication_id, form_id, laterality, dose, dose_unit_term, route_id, frequency_id, duration,
+                    dispense_location_id, dispense_condition_id, start_date, end_date, last_modified_user_id,
                     last_modified_date, created_user_id, created_date, bound_key, latest_med_use_id', 'safe', 'on' => 'search'
             ),
         );
@@ -681,6 +681,10 @@ class EventMedicationUse extends BaseElement
      */
     public function getTaperChangeHistory(): array
     {
+        if(is_null($this->id)) {
+            return [];
+        }
+
         $change_history = [];
         $prescription_item = OphDrPrescription_Item::model()->findByPk($this->id);
         $start_date = new DateTime($prescription_item->start_date);

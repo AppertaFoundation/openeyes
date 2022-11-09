@@ -275,13 +275,17 @@ function setPcrPupil(ev, pcrEl) {
     if (!pcrEl) {
         pcrEl = ev.data;
     }
-
     var $container = getPcrContainer(ev);
     $container.find(pcrEl).val($(ev.target).val());
-    $container.find(pcrEl).text($(ev.target).val());
+
+    // Only change the text of the element if it is not select element
+    // The pupil size is a select element in Examination event,
+    // but it is an input and label in the  Operation Note event.
+    if (!$container.find(pcrEl).is("select")) {
+        $container.find(pcrEl).text($(ev.target).val());
+    }
 
     $(pcrEl).trigger('change');
-
 }
 
 /**
