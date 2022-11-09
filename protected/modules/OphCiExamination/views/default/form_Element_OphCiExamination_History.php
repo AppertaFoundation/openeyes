@@ -83,7 +83,7 @@ foreach ($this->getAttributes($element, $firm->serviceSubspecialtyAssignment->su
 
 $macros = HistoryMacro::model()->findAll([
         'with' => 'subspecialties',
-        'condition' => 'subspecialties_subspecialties.subspecialty_id = :subspecialty_id AND active = 1',
+        'condition' => '(subspecialties_subspecialties.subspecialty_id = :subspecialty_id OR subspecialties_subspecialties.subspecialty_id IS NULL) AND active = 1',
         'params' => [':subspecialty_id' => $firm->getSubspecialtyID()],
         'order' => 'display_order asc',
     ]);

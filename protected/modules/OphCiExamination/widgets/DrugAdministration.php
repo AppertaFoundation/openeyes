@@ -105,10 +105,22 @@ class DrugAdministration extends BaseMedicationWidget
                 return strtotime($appt1->when) > strtotime($appt2->when);
             });
         }
-        if ($can_add_presets) {
+        /**
+         * if the current user has the permission to add individual medications
+         * then get the medication lists
+         */
+        if ($can_add_meds) {
             $pgdpsd_api = \Yii::app()->moduleAPI->get('OphDrPGDPSD');
             $medication_options = $pgdpsd_api->getMedicationOptions();
-
+        }
+        /**
+         * if the current user has the permission to add presets
+         * then get the presets, and process the list to be compatible with adder popup
+         * then split the list into PSD and PGD
+         * PSD will only display for the users with the Prescribe permission
+         * PGD will display for nominated users and the users with the Prescribe permission
+         */
+        if ($can_add_presets) {
             $presets = \OphDrPGDPSD_PGDPSD::model()->findAll("active = 1 AND LOWER(type) IN ('psd', 'pgd')");
             foreach ($presets as $preset) {
                 $med_names = array_map(static function ($med) {
