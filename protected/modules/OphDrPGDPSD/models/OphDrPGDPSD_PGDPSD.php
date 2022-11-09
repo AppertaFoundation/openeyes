@@ -233,7 +233,7 @@ class OphDrPGDPSD_PGDPSD extends \BaseActiveRecordVersioned
     }
     public function medAssignmentValidator($attribute_name)
     {
-        $hasErrors = false;
+        $has_errors = false;
 
         if (!$this->assigned_meds && !$this->$attribute_name) {
             $this->addError('Medications', 'Medication List cannot be blank');
@@ -252,10 +252,10 @@ class OphDrPGDPSD_PGDPSD extends \BaseActiveRecordVersioned
                     }
                     $this->addError('Medications', "{$med_name} {$msg[0]}");
                 }
-                $hasErrors = true;
+                $has_errors = true;
             }
         }
-        return !$hasErrors;
+        return !$has_errors;
     }
 
     public function getAssignedMedsInJSON($prepend_markup = true)

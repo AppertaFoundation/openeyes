@@ -112,7 +112,7 @@ class OphDrPGDPSD_PDGPSDMedsTest extends \ActiveRecordTestCase
      *
      * @test
      * */
-    public function validation_rules_are_applied_correctly($attributes, $type, $valid, $expectedErrors)
+    public function validation_rules_are_applied_correctly($attributes, $type, $valid, $expected_errors)
     {
         $this_med = new OphDrPGDPSD_PGDPSDMeds();
         $this_med->attributes = $attributes;
@@ -120,9 +120,9 @@ class OphDrPGDPSD_PDGPSDMedsTest extends \ActiveRecordTestCase
 
         $this->assertEquals($this_med->validate(), $valid);
 
-        if (count($expectedErrors)) {
-            foreach ($expectedErrors as $expectedError) {
-                $this->assertArrayHasKey($expectedError, $this_med->getErrors());
+        if (count($expected_errors)) {
+            foreach ($expected_errors as $expected_error) {
+                $this->assertArrayHasKey($expected_error, $this_med->getErrors());
             }
         }
     }
