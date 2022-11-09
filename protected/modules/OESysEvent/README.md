@@ -59,7 +59,7 @@ At the moment we leverage standard Yii configuration on the event component:
         'event' => {
             'observers' => [
                 [
-                    'event' => FooSystemEvent::class
+                    'system_event' => FooSystemEvent::class
                     'listener' => FooListener::class,
                 ]
             ]
