@@ -795,7 +795,8 @@ class AdminController extends BaseAdminController
 
                 if (count($user_auths_attributes) === 0) {
                     $user->addError('authentications', 'A user account must have 1 or more valid institution authentications');
-                    $errors = array_merge($errors, $user->getErrors());;
+                    $errors = array_merge($errors, $user->getErrors());
+                    ;
                 } else {
                     foreach ($user_auths_attributes as $user_auth_attributes) {
                         $user_auth = UserAuthentication::fromAttributes($user_auth_attributes);
