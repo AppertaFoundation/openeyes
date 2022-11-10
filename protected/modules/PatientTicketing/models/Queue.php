@@ -102,7 +102,7 @@ class Queue extends \BaseActiveRecordVersioned
     public function behaviors()
     {
         return array(
-                'LookupTable' => 'LookupTable',
+            'LookupTable' => 'LookupTable',
         );
     }
 
@@ -119,7 +119,7 @@ class Queue extends \BaseActiveRecordVersioned
         $criteria->compare('name', $this->name, true);
 
         return new \CActiveDataProvider(get_class($this), array(
-                'criteria' => $criteria,
+            'criteria' => $criteria,
         ));
     }
 
@@ -132,11 +132,11 @@ class Queue extends \BaseActiveRecordVersioned
     public function notClosing()
     {
         $criteria = new \CDbCriteria();
-        $criteria->select = $this->getTableAlias(true).'.*, count(oc.id)';
-        $criteria->join = 'left outer join patientticketing_queueoutcome oc on '.$this->getTableAlias(true).
-                '.id = oc.queue_id left join patientticketing_queue oq on oc.outcome_queue_id = oq.id';
+        $criteria->select = $this->getTableAlias(true) . '.*, count(oc.id)';
+        $criteria->join = 'left outer join patientticketing_queueoutcome oc on ' . $this->getTableAlias(true) .
+            '.id = oc.queue_id left join patientticketing_queue oq on oc.outcome_queue_id = oq.id';
         $criteria->condition = 'oq.active = 1';
-        $criteria->group = $this->getTableAlias(true).'.id';
+        $criteria->group = $this->getTableAlias(true) . '.id';
 
         $this->getDbCriteria()->mergeWith($criteria);
 
@@ -151,10 +151,10 @@ class Queue extends \BaseActiveRecordVersioned
     public function closing()
     {
         $criteria = new \CDbCriteria();
-        $criteria->select = $this->getTableAlias(true).'.*, count(oc.id) oc_ct';
-        $criteria->join = 'left outer join patientticketing_queueoutcome oc on '.$this->getTableAlias(true).
-                '.id = oc.queue_id';
-        $criteria->group = $this->getTableAlias(true).'.id';
+        $criteria->select = $this->getTableAlias(true) . '.*, count(oc.id) oc_ct';
+        $criteria->join = 'left outer join patientticketing_queueoutcome oc on ' . $this->getTableAlias(true) .
+            '.id = oc.queue_id';
+        $criteria->group = $this->getTableAlias(true) . '.id';
         $criteria->having = 'oc_ct = 0';
         $this->getDbCriteria()->mergeWith($criteria);
 
@@ -171,7 +171,7 @@ class Queue extends \BaseActiveRecordVersioned
         if ($this->$attribute) {
             $array = \CJSON::decode($this->$attribute);
             if (!$array) {
-                $this->addError($attribute, $this->getAttributeLabel($attribute).' must be valid JSON');
+                $this->addError($attribute, $this->getAttributeLabel($attribute) . ' must be valid JSON');
             } else {
                 // valid JSON
                 $ids = array_column($array, 'id');
@@ -192,14 +192,14 @@ class Queue extends \BaseActiveRecordVersioned
         // validate any widget fields in the assignment_fields attribute
         foreach ($this->getAssignmentFieldDefinitions() as $i => $fld) {
             if (!$id = @$fld['id']) {
-                $this->addError('assignment_fields', 'ID required for assignment field '.($i + 1));
+                $this->addError('assignment_fields', 'ID required for assignment field ' . ($i + 1));
                 continue;
             }
             if (@$fld['type'] == 'widget') {
                 if (!@$fld['widget_name']) {
-                    $this->addError('assignment_fields', 'Widget Name missing for '.$id);
-                } elseif (!is_file(\Yii::getPathOfAlias('application.modules.PatientTicketing.widgets.'.$fld['widget_name']).'.php')) {
-                    $this->addError('assignment_fields', 'Widget with name '.$fld['widget_name'].' for '.$id.' not defined');
+                    $this->addError('assignment_fields', 'Widget Name missing for ' . $id);
+                } elseif (!is_file(\Yii::getPathOfAlias('application.modules.PatientTicketing.widgets.' . $fld['widget_name']) . '.php')) {
+                    $this->addError('assignment_fields', 'Widget with name ' . $fld['widget_name'] . ' for ' . $id . ' not defined');
                 }
             }
         }
@@ -210,9 +210,9 @@ class Queue extends \BaseActiveRecordVersioned
     /**
      * Add the given ticket to the Queue for the user and firm.
      *
-     * @param Ticket    $ticket
-     * @param int       $user_id
-     * @param \Firm     $firm
+     * @param Ticket $ticket
+     * @param int $user_id
+     * @param \Firm $firm
      * @param $data
      */
     public function addTicket(Ticket $ticket, int $user_id, \Firm $firm, $data, $automatically_created = false)
@@ -223,48 +223,50 @@ class Queue extends \BaseActiveRecordVersioned
         $assignment->assignment_user_id = $user_id;
         $assignment->assignment_firm_id = $firm->id;
         $assignment->assignment_date = date('Y-m-d H:i:s');
-        $assignment->notes = $data[self::$FIELD_PREFIX.'_notes'] ?? null;
+        $assignment->notes = $data[self::$FIELD_PREFIX . '_notes'] ?? null;
 
         // store the assignment field values to the assignment object.
         if ($assignment_fields = $this->getAssignmentFieldDefinitions()) {
             $details = array();
             foreach ($assignment_fields as $assignment_field) {
-                $store = array('id' => $assignment_field['id']);
-                if (@$assignment_field['type'] == 'widget') {
-                    // store the widget for later data manipulation
-                    $store['widget_name'] = $assignment_field['widget_name'];
-                    // post processing handling
-                    $class_name = 'OEModule\\PatientTicketing\\widgets\\'.$assignment_field['widget_name'];
-                    $widget = new $class_name();
-                    $widget->form_name = $assignment_field['form_name'];
-                    $widget->assignment_field = $assignment_field;
-                    $widget->ticket = $ticket;
-                    $widget->queue = $this;
+                $data_assignment_value = $data[$assignment_field['form_name']] ?? null;
+                if ($data_assignment_value) {
+                    $store = array('id' => $assignment_field['id']);
+                    $assignment_field_type = $assignment_field['type'] ?? null;
+                    if ($assignment_field_type == 'widget') {
+                        // store the widget for later data manipulation
+                        $store['widget_name'] = $assignment_field['widget_name'];
+                        // post processing handling
+                        $class_name = 'OEModule\\PatientTicketing\\widgets\\' . $assignment_field['widget_name'];
+                        $widget = new $class_name();
+                        $widget->form_name = $assignment_field['form_name'];
+                        $widget->assignment_field = $assignment_field;
+                        $widget->ticket = $ticket;
+                        $widget->queue = $this;
 
-                    $field_name = $widget->fieldName ?? $assignment_field['form_name'] ?? null;
-                    $val = $data[$field_name] ?? null;
-                    if ($val) {
-                        $widget->processAssignmentData($ticket, $val);
-                    }
-                } elseif (@$assignment_field['choices']) {
-                    if ($val = @$data[$assignment_field['form_name']]) {
+                        $field_name = $widget->fieldName ?? $assignment_field['form_name'] ?? null;
+                        $data_assignment_value = $data[$field_name] ?? null;
+                        if ($data_assignment_value) {
+                            $widget->processAssignmentData($ticket, $data_assignment_value);
+                        }
+                    } elseif ($assignment_field['choices'] ?? null) {
                         foreach ($assignment_field['choices'] as $k => $v) {
-                            if ($k == $val) {
-                                $val = $v;
+                            if ($k == $data_assignment_value) {
+                                $data_assignment_value = $v;
                                 break;
                             }
                         }
                     }
+                    $store['value'] = $data_assignment_value;
+                    $details[] = $store;
                 }
-                $store['value'] = $val;
-                $details[] = $store;
             }
             $assignment->details = json_encode($details);
         }
 
         //If ticket is created from a console command  we cannot generate report text as it requires rendering HTML
         // which is only possible if we have a controller instantiated
-        if(!$automatically_created) {
+        if (!$automatically_created) {
             // generate the report field on the ticket.
             $assignment->generateReportText();
         } else {
@@ -333,14 +335,14 @@ class Queue extends \BaseActiveRecordVersioned
         if ($ass_fields = \CJSON::decode($this->assignment_fields)) {
             foreach ($ass_fields as $ass_fld) {
                 $flds[] = array(
-                        'id' => @$ass_fld['id'],
-                        'form_name' => self::$FIELD_PREFIX.@$ass_fld['id'],
-                        'required' => @$ass_fld['required'],
-                        'type' => @$ass_fld['type'],
-                        'widget_name' => @$ass_fld['widget_name'],
-                        'label' => @$ass_fld['label'],
-                        'choices' => @$ass_fld['choices'],
-                        'assignment_fields' => $ass_fld
+                    'id' => @$ass_fld['id'],
+                    'form_name' => self::$FIELD_PREFIX . @$ass_fld['id'],
+                    'required' => @$ass_fld['required'],
+                    'type' => @$ass_fld['type'],
+                    'widget_name' => @$ass_fld['widget_name'],
+                    'label' => @$ass_fld['label'],
+                    'choices' => @$ass_fld['choices'],
+                    'assignment_fields' => $ass_fld
                 );
             }
         }
@@ -361,7 +363,7 @@ class Queue extends \BaseActiveRecordVersioned
         if ($this->is_initial) {
             $flds[] = array(
                 'id' => '_priority',
-                'form_name' => self::$FIELD_PREFIX.'_priority',
+                'form_name' => self::$FIELD_PREFIX . '_priority',
                 'required' => $this->getQueueSet()->allow_null_priority ? false : true,
                 'choices' => \CHtml::listData(Priority::model()->findAll(), 'id', 'name'),
                 'label' => 'Priority',
@@ -369,10 +371,10 @@ class Queue extends \BaseActiveRecordVersioned
         }
         $flds[] = array(
             'id' => '_notes',
-            'form_name' => self::$FIELD_PREFIX.'_notes',
+            'form_name' => self::$FIELD_PREFIX . '_notes',
             'required' => false,
             'type' => 'textarea',
-            'label' => 'Notes', );
+            'label' => 'Notes',);
 
         return array_merge($flds, $this->getAssignmentFieldDefinitions());
     }
@@ -438,7 +440,7 @@ class Queue extends \BaseActiveRecordVersioned
     public function getCurrentTicketCount()
     {
         $criteria = new \CDbCriteria();
-        $criteria->addCondition('queue_assignments.id = (select id from '.TicketQueueAssignment::model()->tableName().' cass where cass.ticket_id = t.id order by cass.assignment_date desc limit 1) and queue_assignments.queue_id = :qid');
+        $criteria->addCondition('queue_assignments.id = (select id from ' . TicketQueueAssignment::model()->tableName() . ' cass where cass.ticket_id = t.id order by cass.assignment_date desc limit 1) and queue_assignments.queue_id = :qid');
         $criteria->params = array(':qid' => $this->id);
 
         return Ticket::model()->with('queue_assignments')->count($criteria);
@@ -483,7 +485,7 @@ class Queue extends \BaseActiveRecordVersioned
     {
         $root = $this->getRootQueue();
         if (is_array($root)) {
-            throw new \Exception('Unexpected configuration of multiple root queues'.print_r($root, true));
+            throw new \Exception('Unexpected configuration of multiple root queues' . print_r($root, true));
             $rid = $root[0]->id;
         } else {
             $rid = $root->id;
