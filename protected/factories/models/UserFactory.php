@@ -63,17 +63,6 @@ class UserFactory extends ModelFactory
     public function withLocalAuthForInstitution(\Institution $institution, string $password = 'password'): self
     {
         return $this->afterCreating(function (\User $user) use ($password, $institution) {
-            // we are leveraging the validation behaviour of the UserAuthentication
-            // class, which checks the password strength. So we reset the value
-            // prior to creating the instance, and thereby allow simple passwords
-            // for testing purposes
-            $default_settings = $this->app->params['pw_restrictions'];
-            $this->app->setParams([
-                'pw_restrictions' => [
-                    'strength_regex' => '%\w*%'
-                ]
-            ]);
-
             UserAuthentication::factory()->create([
                 'user_id' => $user->id,
                 'institution_authentication_id' => InstitutionAuthentication::factory()->useExisting([
@@ -82,11 +71,6 @@ class UserFactory extends ModelFactory
                 ]),
                 'password' => $password,
                 'password_repeat' => $password
-            ]);
-
-            // restore the normal password rules for consistency
-            $this->app->setParams([
-                'pw_restrictions' => $default_settings
             ]);
         });
     }
