@@ -83,7 +83,8 @@ $widgetOptionsJson = json_encode(array(
         <select id="<?=\CHtml::getIdByName($field) ?>"
                 class="MultiSelectList
                     <?=($showRemoveAllLink)?' inline':''?>
-                    hidden
+                    <?= isset($htmlOptions['class'])?$htmlOptions['class']:''?>
+                    <?= isset($htmlOptions['hidedropdown'])?' hidden':''?>
                 "
                 name=""
                 style="<?= isset($htmlOptions['style'])?$htmlOptions['style']:''?>"
