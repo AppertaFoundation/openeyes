@@ -54,7 +54,7 @@ class OphDrPGDPSD_PDGPSDTest extends \ActiveRecordTestCase
             'description is required for pgd type' => [
                 [
                     'name' => "Foo bar",
-                    'type' => 'pgd'  
+                    'type' => 'pgd'
                 ],
                 null,
                 [],
@@ -235,15 +235,15 @@ class OphDrPGDPSD_PDGPSDTest extends \ActiveRecordTestCase
         $this_pgdpsd = new OphDrPGDPSD_PGDPSD();
         $this_pgdpsd->attributes = $attributes;
 
-        if($user_or_team) {
-            if(rand(0, 1)) {
+        if ($user_or_team) {
+            if (rand(0, 1)) {
                 $this_pgdpsd->temp_team_ids = [Team::factory()->create()->id];
             } else {
                 $this_pgdpsd->temp_user_ids = [User::factory()->create()->id];
             }
         }
 
-        if(count($meds)) {
+        if (count($meds)) {
             $this_pgdpsd->temp_meds_info = $meds;
         }
 
@@ -256,7 +256,8 @@ class OphDrPGDPSD_PDGPSDTest extends \ActiveRecordTestCase
         }
     }
 
-    protected function getValidPSDMed() {
+    protected function getValidPSDMed()
+    {
         return [
             'medication_id' => rand(1, 50),
             'pgdpsd_id' => rand(1, 2),
@@ -266,7 +267,8 @@ class OphDrPGDPSD_PDGPSDTest extends \ActiveRecordTestCase
         ];
     }
 
-    protected function getValidPGDMed() {
+    protected function getValidPGDMed()
+    {
         return [
             'medication_id' => rand(1, 50),
             'pgdpsd_id' => rand(1, 2),
@@ -280,11 +282,12 @@ class OphDrPGDPSD_PDGPSDTest extends \ActiveRecordTestCase
         ];
     }
 
-    protected function getInvalidMed($type) {
+    protected function getInvalidMed($type)
+    {
         $med = $type === 'psd' ? $this->getValidPSDMed() : $this->getValidPGDMed();
         shuffle($med);
         $numToRemove = rand(1, count($med));
-        for($i = 0; $i < $numToRemove; $i++) {
+        for ($i = 0; $i < $numToRemove; $i++) {
             array_pop($med);
         }
         return $med;
