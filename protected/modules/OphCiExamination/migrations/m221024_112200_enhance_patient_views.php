@@ -244,10 +244,91 @@ class m221024_112200_enhance_patient_views extends OEMigration
             GROUP BY ep.patient_id,ev.worklist_patient_id,eop.eye_id,p.id;
         ");
 
+        $this->execute("CREATE OR REPLACE VIEW v_patient_clinic_procedures AS
+        SELECT p.id AS patient_id,
+            ev.id AS event_id,
+            ocpe.id AS entry_id,
+            1 AS eye_id,
+            'L' AS side,
+            ocpe.date AS procedure_date,
+            ocpe.outcome_time AS precedure_time,
+            ocpe.procedure_id AS procedure_id,
+            proc.term AS procedure_term,
+            proc.short_format AS short_format,
+            ocpe.comments AS procedure_comments,
+            proc.aliases AS aliases,
+            s.name AS specialty,
+            ss.name AS subspecialty,
+            proc.snomed_code AS snomed_code,
+            proc.snomed_term AS snomed_term,
+            group_concat(oc.name separator ',') AS opcs_code,
+            group_concat(oc.description separator ',') AS opcs_description,
+            proc.ecds_code AS ecds_code,
+            proc.ecds_term AS ecds_term,
+            ev.worklist_patient_id AS worklist_patient_id,
+            ocpe.created_user_id AS created_user_id,
+            ocpe.created_date AS created_date,
+            ocpe.last_modified_user_id AS last_modified_user_id,
+            ocpe.last_modified_date AS last_modified_date
+        FROM patient p
+            JOIN episode ep ON ep.patient_id = p.id
+            JOIN event ev ON ev.episode_id = ep.id
+            JOIN et_ophciexamination_clinic_procedures eocp ON eocp.event_id = ev.id
+            JOIN ophciexamination_clinic_procedures_entry ocpe ON ocpe.element_id = eocp.id
+            JOIN eye ON eye.id = ocpe.eye_id
+            JOIN subspecialty ss ON ss.id = ocpe.subspecialty_id
+            JOIN specialty s ON s.id = ss.specialty_id
+            JOIN proc ON proc.id = ocpe.procedure_id
+            LEFT JOIN proc_opcs_assignment poa ON poa.proc_id = proc.id
+            LEFT JOIN opcs_code oc ON oc.id = poa.opcs_code_id
+        WHERE ocpe.eye_id IN (1, 3)
+        GROUP BY ocpe.id
+        UNION
+        SELECT
+            p.id AS patient_id,
+            ev.id AS event_id,
+            ocpe.id AS entry_id,
+            2 AS eye_id,
+            'R' AS side,
+            ocpe.date AS procedure_date,
+            ocpe.outcome_time AS precedure_time,
+            ocpe.procedure_id AS procedure_id,
+            proc.term AS procedure_term,
+            proc.short_format AS short_format,
+            ocpe.comments AS procedure_comments,
+            proc.aliases AS aliases,
+            s.name AS specialty,
+            ss.name AS subspecialty,
+            proc.snomed_code AS snomed_code,
+            proc.snomed_term AS snomed_term,
+            group_concat(oc.name separator ',') AS opcs_code,
+            group_concat(oc.description separator ',') AS opcs_description,
+            proc.ecds_code AS ecds_code,
+            proc.ecds_term AS ecds_term,
+            ev.worklist_patient_id AS worklist_patient_id,
+            ocpe.created_user_id AS created_user_id,
+            ocpe.created_date AS created_date,
+            ocpe.last_modified_user_id AS last_modified_user_id,
+            ocpe.last_modified_date AS last_modified_date
+        FROM patient p
+            JOIN episode ep ON ep.patient_id = p.id
+            JOIN event ev ON ev.episode_id = ep.id
+            JOIN et_ophciexamination_clinic_procedures eocp ON eocp.event_id = ev.id
+            JOIN ophciexamination_clinic_procedures_entry ocpe ON ocpe.element_id = eocp.id
+            JOIN eye ON eye.id = ocpe.eye_id
+            JOIN subspecialty ss ON ss.id = ocpe.subspecialty_id
+            JOIN specialty s ON s.id = ss.specialty_id
+            JOIN proc ON proc.id = ocpe.procedure_id
+            LEFT JOIN proc_opcs_assignment poa ON poa.proc_id = proc.id
+            LEFT JOIN opcs_code oc ON oc.id = poa.opcs_code_id
+        WHERE ocpe.eye_id in (2, 3)
+        GROUP BY ocpe.id;");
+
         $this->execute("CREATE OR REPLACE VIEW v_patient_procedures AS
             SELECT patient_id,
                 'Clinical' AS procedure_type,
                 worklist_patient_id,
+                entry_id,
                 side,
                 procedure_id,
                 procedure_term,
@@ -268,6 +349,7 @@ class m221024_112200_enhance_patient_views extends OEMigration
             SELECT patient_id,
                 'Surgical' AS procedure_type,
                 worklist_patient_id,
+                entry_id,
                 side,
                 procedure_id,
                 procedure_term,
@@ -322,6 +404,7 @@ class m221024_112200_enhance_patient_views extends OEMigration
 
         $this->execute("CREATE OR REPLACE VIEW v_patient_identifiers AS
         SELECT n.patient_id AS patient_id,
+            n.id AS entry_id,
             i.short_name AS institution_short_name,
             s.short_name AS site_short_name,
             t.short_title AS type_short_title,
@@ -405,6 +488,84 @@ class m221024_112200_enhance_patient_views extends OEMigration
         $this->execute("
             DROP VIEW IF EXISTS v_patient_procedures;
         ");
+
+        $this->execute("CREATE OR REPLACE VIEW v_patient_clinic_procedures AS
+            SELECT p.id AS patient_id,
+                ev.id AS event_id,
+                1 AS eye_id,
+                'L' AS side,
+                ocpe.date AS procedure_date,
+                ocpe.outcome_time AS precedure_time,
+                ocpe.procedure_id AS procedure_id,
+                proc.term AS procedure_term,
+                proc.short_format AS short_format,
+                ocpe.comments AS procedure_comments,
+                proc.aliases AS aliases,
+                s.name AS specialty,
+                ss.name AS subspecialty,
+                proc.snomed_code AS snomed_code,
+                proc.snomed_term AS snomed_term,
+                group_concat(oc.name separator ',') AS opcs_code,
+                group_concat(oc.description separator ',') AS opcs_description,
+                proc.ecds_code AS ecds_code,
+                proc.ecds_term AS ecds_term,
+                ev.worklist_patient_id AS worklist_patient_id,
+                ocpe.created_user_id AS created_user_id,
+                ocpe.created_date AS created_date,
+                ocpe.last_modified_user_id AS last_modified_user_id,
+                ocpe.last_modified_date AS last_modified_date
+            FROM patient p
+                JOIN episode ep ON ep.patient_id = p.id
+                JOIN event ev ON ev.episode_id = ep.id
+                JOIN et_ophciexamination_clinic_procedures eocp ON eocp.event_id = ev.id
+                JOIN ophciexamination_clinic_procedures_entry ocpe ON ocpe.element_id = eocp.id
+                JOIN eye ON eye.id = ocpe.eye_id
+                JOIN subspecialty ss ON ss.id = ocpe.subspecialty_id
+                JOIN specialty s ON s.id = ss.specialty_id
+                JOIN proc ON proc.id = ocpe.procedure_id
+                LEFT JOIN proc_opcs_assignment poa ON poa.proc_id = proc.id
+                LEFT JOIN opcs_code oc ON oc.id = poa.opcs_code_id
+            WHERE ocpe.eye_id IN (1, 3)
+            GROUP BY ocpe.id
+            UNION
+            SELECT
+                p.id AS patient_id,
+                ev.id AS event_id,
+                2 AS eye_id,
+                'R' AS side,
+                ocpe.date AS procedure_date,
+                ocpe.outcome_time AS precedure_time,
+                ocpe.procedure_id AS procedure_id,
+                proc.term AS procedure_term,
+                proc.short_format AS short_format,
+                ocpe.comments AS procedure_comments,
+                proc.aliases AS aliases,
+                s.name AS specialty,
+                ss.name AS subspecialty,
+                proc.snomed_code AS snomed_code,
+                proc.snomed_term AS snomed_term,
+                group_concat(oc.name separator ',') AS opcs_code,
+                group_concat(oc.description separator ',') AS opcs_description,
+                proc.ecds_code AS ecds_code,
+                proc.ecds_term AS ecds_term,
+                ev.worklist_patient_id AS worklist_patient_id,
+                ocpe.created_user_id AS created_user_id,
+                ocpe.created_date AS created_date,
+                ocpe.last_modified_user_id AS last_modified_user_id,
+                ocpe.last_modified_date AS last_modified_date
+            FROM patient p
+                JOIN episode ep ON ep.patient_id = p.id
+                JOIN event ev ON ev.episode_id = ep.id
+                JOIN et_ophciexamination_clinic_procedures eocp ON eocp.event_id = ev.id
+                JOIN ophciexamination_clinic_procedures_entry ocpe ON ocpe.element_id = eocp.id
+                JOIN eye ON eye.id = ocpe.eye_id
+                JOIN subspecialty ss ON ss.id = ocpe.subspecialty_id
+                JOIN specialty s ON s.id = ss.specialty_id
+                JOIN proc ON proc.id = ocpe.procedure_id
+                LEFT JOIN proc_opcs_assignment poa ON poa.proc_id = proc.id
+                LEFT JOIN opcs_code oc ON oc.id = poa.opcs_code_id
+            WHERE ocpe.eye_id in (2, 3)
+            GROUP BY ocpe.id;");
 
         $this->execute("
             DROP VIEW IF EXISTS v_patient_surgical_procedures;
