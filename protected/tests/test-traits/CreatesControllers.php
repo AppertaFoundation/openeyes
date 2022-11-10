@@ -19,8 +19,12 @@ trait CreatesControllers
             $methods = array_merge(['getControllerPrefix'], $methods);
         }
 
-        $controllerId = strtolower(str_replace('Controller', '', $cls));
+        // handle non-namespaced controller classes
+        if (strrpos($cls, '\\') === false) {
+            $cls = \Yii::import("application.modules.{$this->moduleCls}.controllers.$cls");
+        }
 
+        $controllerId = strtolower(str_replace('Controller', '', $cls));
         $controller = $this->getMockBuilder($cls)
                     ->setConstructorArgs([$controllerId, Yii::app()->getModule($this->moduleCls)])
                     ->setMethods($methods)
