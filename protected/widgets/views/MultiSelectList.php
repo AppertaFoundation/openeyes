@@ -84,6 +84,7 @@ $widgetOptionsJson = json_encode(array(
                 class="MultiSelectList
                     <?=($showRemoveAllLink)?' inline':''?>
                     <?= isset($htmlOptions['class'])?$htmlOptions['class']:''?>
+                    <?= ($htmlOptions['hidedropdown'] ?? false) ? ' hidden' : '' ?>
                 "
                 name=""
                 style="<?= isset($htmlOptions['style'])?$htmlOptions['style']:''?>"

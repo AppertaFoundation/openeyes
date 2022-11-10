@@ -144,8 +144,10 @@ $patientSummaryPopup = $this->createWidget(
                     $acd_left = "ACD {$biometry->acd_left} mm";
                 ?>
 
-                <i class="oe-i-e i-InBiometry js-has-tooltip" data-tt='{"type":"bilateral","tipR":"<b class=\"fade\">Created:<\/b> <?=$biometry_event->event_date;?><br \/><b>Lens <?=$biometry->lens_right;?><\/b><br \/><b>Power <?=$biometry->iol_power_right;?><\/b><br \/><?=$biometry->formula_right;?>\/T<br \/><?=$al_right?><br \/><?=$k1_right?><br \/><?=$k2_right?><br \/><?=$delta_k_right?><br \/><?=$acd_right?>","tipL":"<b class=\"fade\">Created:<\/b> <?=$biometry_event->event_date?><br \/><b>Lens <?=$biometry->lens_left ?><\/b><br \/><b>Power <?=$biometry->iol_power_left ?><\/b><br \/><?=$biometry->formula_right?><br \/><?=$al_left?><br \/><?=$k1_left?><br \/><?=$k2_left?><br \/><?=$delta_k_left?><br \/><?=$acd_left?>","eyeIcons":true,"clickPopup":false}'></i>
-                <a href="/OphInBiometry/default/view/<?=$biometry_event->id?>" class="button"> Biometry</a>
+                <?php if ($biometry_event) : ?>
+                    <i class="oe-i-e i-InBiometry js-has-tooltip" data-tt='{"type":"bilateral","tipR":"<b class=\"fade\">Created:<\/b> <?=$biometry_event->event_date;?><br \/><b>Lens <?=$biometry->lens_right;?><\/b><br \/><b>Power <?=$biometry->iol_power_right;?><\/b><br \/><?=$biometry->formula_right;?>\/T<br \/><?=$al_right?><br \/><?=$k1_right?><br \/><?=$k2_right?><br \/><?=$delta_k_right?><br \/><?=$acd_right?>","tipL":"<b class=\"fade\">Created:<\/b> <?=$biometry_event->event_date?><br \/><b>Lens <?=$biometry->lens_left ?><\/b><br \/><b>Power <?=$biometry->iol_power_left ?><\/b><br \/><?=$biometry->formula_right?><br \/><?=$al_left?><br \/><?=$k1_left?><br \/><?=$k2_left?><br \/><?=$delta_k_left?><br \/><?=$acd_left?>","eyeIcons":true,"clickPopup":false}'></i>
+                    <a href="/OphInBiometry/default/view/<?=$biometry_event->id?>" class="button"> Biometry</a>
+                <?php endif; ?>
             <?php endif; ?>
 
             <?php if ($consent_event) :?>
