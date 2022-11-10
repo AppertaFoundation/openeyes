@@ -82,3 +82,21 @@ yes:
 ```
 class ClinicalEventTouchedSystemEvent extends SystemEvent
 ```
+
+## Future development
+
+### Removal of legacy support
+
+Once legacy events have been removed from the application, we can clean up the `Manager` implementation to enforce the use of class based events.
+
+### Webhook event listener configuration
+
+Providing a mechanism in configuration for one or more webhook to be defined to receive system event notifications. This would allow a 3rd party to then call OpenEyes API endpoints to retrieve state that would have been affected by the system event.
+
+### System event broadcasting
+
+Using websockets through something like soketi.io we would be able to use system events to trigger UI updates in OpenEyes.
+
+### Event faking
+
+Infrastructure to help support testing of events being triggered.
