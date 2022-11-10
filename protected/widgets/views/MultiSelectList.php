@@ -83,7 +83,7 @@ $widgetOptionsJson = json_encode(array(
         <select id="<?=\CHtml::getIdByName($field) ?>"
                 class="MultiSelectList
                     <?=($showRemoveAllLink)?' inline':''?>
-                    <?= isset($htmlOptions['class'])?$htmlOptions['class']:''?>
+                    hidden
                 "
                 name=""
                 style="<?= isset($htmlOptions['style'])?$htmlOptions['style']:''?>"
@@ -138,7 +138,7 @@ $widgetOptionsJson = json_encode(array(
                         <?php endif; ?>
 
                   <span data-text="<?php echo $options[$id] ?>"
-                      class="multi-select-remove remove-one <?php if (isset($htmlOptions['class']) && $htmlOptions['class'] !== "hidden") {
+                      class="multi-select-remove remove-one <?php if (isset($htmlOptions['class'])) {
                             ?><?php echo $htmlOptions['class'] ?><?php
                                                             } ?>"
                         <?php if (isset($htmlOptions['data-linked-fields'])) {

@@ -157,7 +157,6 @@ $is_outpatient_minor_op = isset($data['outpatient_minor_op']) && $data['outpatie
                             array(
                                 'empty' => '- Anaesthetic agents -',
                                 'label' => 'Agents',
-                                'class' => 'hidden',
                                 'nowrapper' => true,
                             ),
                             false,

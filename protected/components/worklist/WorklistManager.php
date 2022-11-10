@@ -1447,6 +1447,9 @@ class WorklistManager extends CComponent
         if (count($candidates) == 1) {
             return $candidates[0];
         } elseif (count($candidates) > 1) {
+            echo '<pre>';
+            var_dump($candidates);
+            echo '</pre>';
             $this->addError('More than worklist matched criteria');
         } else {
             $this->addError('No worklist found for criteria');
