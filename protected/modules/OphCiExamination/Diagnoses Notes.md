@@ -22,6 +22,23 @@ These notes have been written to summarise the information gleaned whilst attemp
 
 In an effort to resolve this, the `UpdatePatientDiagnosesAfterSoftDelete` invokable class has been created that can be triggered by the soft delete of the examination. This handler essentially replays the application of diagnoses to the Patient from the previous examination, and removes any that are not a part of that record. It does this for both Ophthalmic and Systemic diagnoses.
 
+### Future development
+
+We may need the handling of calculating patient diagnostic state to be triggered under additional circumstance. If that is the case, the methods in the event listener should be extracted into a separate component that can be utilised by different handlers. This would look something like:
+
+```
+class PatientDiagnosisManager
+
+public function setPrincipalDiagnosisFrom(?Element_OphCiExamination_Diagnoses $element = null, Subspecialty $subspecialty)
+{}
+
+public function setOphthalmicSecondaryDiagnosesFrom(Element_OphCiExamination_Diagnoses $element)
+{}
+
+public function setSystemicDiagnosesFrom(?SystemicDiagnoses = null)
+{}
+```
+
 ## Test coverage
 
 A high level set of tests has been written to cover this functionality. The factories and test helpers that have been defined to support this will reveal some of the details of the implementation. If more edge cases are discovered, these notes should be updated, and the test coverage expanded accordingly.
