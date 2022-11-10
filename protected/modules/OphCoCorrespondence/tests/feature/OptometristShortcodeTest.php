@@ -27,7 +27,7 @@ use Address;
 /**
  * @package OEModule\OphCoCorrespondence\tests\unit
  *
- * class ColourVisionTest
+ * class OptometristShortcodeTest
  *
  * @group sample-data
  * @group shortcode
