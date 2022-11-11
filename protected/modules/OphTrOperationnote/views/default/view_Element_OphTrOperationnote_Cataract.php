@@ -100,6 +100,8 @@
                     <tr>
                         <td>
                             <div class="data-label"><?=\CHtml::encode($element->getAttributeLabel('report2')) ?>
+                                :
+                            </div>
                         </td>
                         <td>
                             <div class="data-value"><?=\CHtml::encode($element->report2) . '<br>' . CHtml::encode($element->comments) ?></div>
