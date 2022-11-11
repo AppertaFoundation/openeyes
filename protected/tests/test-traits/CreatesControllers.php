@@ -21,7 +21,7 @@ trait CreatesControllers
 
         // handle non-namespaced controller classes
         if (strrpos($cls, '\\') === false) {
-            $cls = \Yii::import("application.modules.{$this->moduleCls}.controllers.$cls");
+            $cls = $this->importNonNamspacedClassWithUniqueAlias($cls);
         }
 
         $controllerId = strtolower(str_replace('Controller', '', $cls));
@@ -37,5 +37,26 @@ trait CreatesControllers
 
         \Yii::app()->controller = $controller;
         return $controller;
+    }
+
+    /**
+     * This attempts to work around the fact that multiple modules have the same controller
+     * class name in a different directory location by manipulating the file content as a
+     * new unique class.
+     *
+     * @todo cache the unique class
+     * @param string $cls
+     * @return string
+     */
+    protected function importNonNamspacedClassWithUniqueAlias(string $cls): string
+    {
+        $path = \Yii::getPathOfAlias("application.modules.{$this->moduleCls}.controllers.$cls");
+        $uniqueClassPostfix = rand();
+        $source = file_get_contents("$path.php");
+        $source = str_replace("class DefaultController ", "class DefaultController$uniqueClassPostfix ", $source);
+        $tmp = tmpfile();
+        fwrite($tmp, $source);
+        require_once(stream_get_meta_data($tmp)['uri']);
+        return "$cls$uniqueClassPostfix";
     }
 }
