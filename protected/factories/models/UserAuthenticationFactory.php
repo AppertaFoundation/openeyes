@@ -47,7 +47,22 @@ class UserAuthenticationFactory extends ModelFactory
 
     public function persistInstance($instance): bool
     {
+        // we are leveraging the validation behaviour of the UserAuthentication
+        // class, which checks the password strength. So we reset the value
+        // prior to creating the instance, and thereby allow simple passwords
+        // for testing purposes
+        $default_settings = $this->app->params['pw_restrictions'];
+        $this->app->setParams([
+            'pw_restrictions' => [
+                'strength_regex' => '%\w*%'
+            ]
+        ]);
         // need to validate to leverage the before and after validate hooks
         return $instance->save(true);
+
+        // restore the normal password rules for consistency
+        $this->app->setParams([
+            'pw_restrictions' => $default_settings
+        ]);
     }
 }
