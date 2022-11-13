@@ -21,10 +21,16 @@
 ?>
 
 <div>
-    <div class="row divider">
-        <h2>Edit setting: <?= $metadata->name ?></h2>
+<h2>Edit setting: <?= $metadata->name ?></h2>
+<?php if (!empty($metadata->description)) : ?>
+    <div class="alert-box info ">
+        <b>Info:</b>
+        <?= htmlspecialchars($metadata->description) ?>
     </div>
-
+<?php endif ?>
+    <div class="row divider">
+    </div>
+    
     <?php
     $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         'id' => 'settingsform',
@@ -50,12 +56,7 @@
     );
     ?>
     <hr class="divider">
-    <?php if (!empty($metadata->description)) : ?>
-    <div class="alert-box info">
-        <i class="oe-i info small pad"></i>
-        <?= $metadata->description ?>
-    </div>
-    <?php endif ?>
+    
     <div class="row">
         <?= CHtml::submitButton('Save ' . $metadata->name, [
                 'class' => 'green hint',

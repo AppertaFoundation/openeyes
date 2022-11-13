@@ -44,6 +44,7 @@
                 <th width="35%">Setting</th>
                 <th>Value</th>
                 <th></th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -55,7 +56,7 @@
                 $metadata_value = $metadata->getSettingName($metadata->key, $allowed_classes, $institution_id, true);
 
                 $base_data_uri = "admin/editSystemSetting?key=" . $metadata->key;
-                if($metadata->lowest_setting_level === 'INSTITUTION' && $institution_id){
+                if ($metadata->lowest_setting_level === 'INSTITUTION' && $institution_id) {
                     $uri_param = "&class=SettingInstitution&institution_id={$institution_id}";
                 } else {
                     $uri_param = '&class=SettingInstallation';
@@ -88,6 +89,11 @@
                         <td><span class="fade"><?php echo $metadata->name ?></span></td>
                         <td><span class="fade"><?= $param_value ?> </span></td>
                         <td><i class="oe-i info small js-has-tooltip" data-tooltip-content="This parameter is being overridden by a config file and cannot be modified."></i></td>
+                        <td><?php if (!empty($metadata->description)) : ?>
+                            <i class="oe-i status-query small js-has-tooltip" data-tooltip-content="<?= $metadata->description ?>"></i>
+        
+                            <?php endif ?>
+                        </td>
                     </tr>
 
                 <?php } elseif ($institution_id && !$is_admin && $metadata->lowest_setting_level === 'INSTALLATION') { ?>
@@ -95,6 +101,11 @@
                         <td><span class="fade"><?php echo $metadata->name ?></span></td>
                         <td><span class="fade"><?= $metadata_value ?> </span></td>
                         <td><i class="oe-i info small js-has-tooltip" data-tooltip-content="This parameter can only be modified by a system administrator."></i></td>
+                        <td><?php if (!empty($metadata->description)) : ?>
+                            <i class="oe-i status-query small js-has-tooltip" data-tooltip-content="<?= $metadata->description ?>"></i>
+        
+                            <?php endif ?>
+                        </td>
                     </tr>
                 <?php } elseif ($institution_id && $metadata->lowest_setting_level !== 'INSTALLATION') { ?>
                     <tr class="clickable" data-uri="<?= $data_uri ?>">
@@ -105,12 +116,22 @@
                             <i class="oe-i info small js-has-tooltip" data-tooltip-content="This parameter value is specific to the currently selected institution."></i>
                         <?php } ?>
                         </td>
+                        <td><?php if (!empty($metadata->description)) : ?>
+                            <i class="oe-i status-query small js-has-tooltip" data-tooltip-content="<?= $metadata->description ?>"></i>
+        
+                            <?php endif ?>
+                        </td>
                     </tr>
                 <?php } else { ?>
                     <tr class="clickable" data-uri="<?= $data_uri ?>">
                         <td><?php echo $metadata->name ?></td>
                         <td><?= $purifier->purify($metadata_value);?></td>
                         <td></td>
+                        <td><?php if (!empty($metadata->description)) : ?>
+                            <i class="oe-i status-query small js-has-tooltip" data-tooltip-content="<?= htmlspecialchars($metadata->description) ?>"></i>
+        
+                            <?php endif ?>
+                        </td>
                     </tr>
                     <?php
                 }
