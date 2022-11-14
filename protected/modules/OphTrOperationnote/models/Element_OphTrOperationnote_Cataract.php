@@ -256,6 +256,10 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemandEye
             $this->predicted_refraction = null;
             $this->iol_position_id = $position_none->id;
         }
+        // due to intermittent front-end issues with report2 values, we default report2 to the contents of report
+        if (empty($this->report2)) {
+            $this->report2 = $this->report;
+        }
         return parent::beforeSave();
     }
 
