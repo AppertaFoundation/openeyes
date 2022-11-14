@@ -3,6 +3,8 @@
 /**
  * @group sample-data
  * @group reference-data
+ * @runTestsInSeparateProcesses
+ * @preserveGlobalState disabled
  */
 class OphDrPrescription_DefaultControllerTest extends OEDbTestCase
 {
@@ -12,13 +14,6 @@ class OphDrPrescription_DefaultControllerTest extends OEDbTestCase
     use WithTransactions;
 
     public string $moduleCls = 'OphDrPrescription';
-
-    public function setUp()
-    {
-        parent::setUp();
-        // not sure why this isn't automagically happening in config
-        \Yii::import('application.modules.OphDrPrescription.*');
-    }
 
     public function getDefaultController($methods = [])
     {
