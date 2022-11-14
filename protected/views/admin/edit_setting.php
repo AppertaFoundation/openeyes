@@ -30,7 +30,6 @@
 <?php endif ?>
     <div class="row divider">
     </div>
-    
     <?php
     $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         'id' => 'settingsform',

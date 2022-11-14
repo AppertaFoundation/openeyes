@@ -31,6 +31,10 @@ class m221109_114900_add_description_grouping_to_settings extends OEMigration
         $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($filename);
 
         foreach ($spreadsheet->getSheet(0)->toArray() as $index => $data) {
+            //skip first row as it is column headers
+            if ($index == 0) {
+                continue;
+            }
             // Add the group
             $this->execute("INSERT IGNORE INTO setting_group (`name`) VALUES (:group)", [':group' => $data[3]]);
 

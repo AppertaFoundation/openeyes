@@ -110,6 +110,7 @@ class SettingMetadata extends BaseActiveRecordVersioned
         return array(
             'element_type' => array(self::BELONGS_TO, 'ElementType', 'element_type_id'),
             'field_type' => array(self::BELONGS_TO, 'SettingFieldType', 'field_type_id'),
+            'group' => array(self::BELONGS_TO, 'SettingGroup', 'group_id'),
         );
     }
 
