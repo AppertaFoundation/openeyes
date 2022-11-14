@@ -52,38 +52,11 @@ class m221109_114900_add_description_grouping_to_settings extends OEMigration
                                 ':name' => $data[2]
                 ]
             );
-            // $this->update(
-            //     'setting_metadata',
-            //     [
-            //                 'description' => $data[4],
-            //                 'group_id' => $data[3],
-            //                 'name' => $data[2]
-            //             ],
-            //     "`key` = :key AND (element_type_id = :element_id OR element_type_id IS NULL)",
-            //     [
-            //                 ':key' => $data[0],
-            //                 ':element_id' => $data[1]
-            //             ]
-            // );
         }
 
-        // CSV File with following order- key, element_type_id, name, group, description
-        // $file = fopen(Yii::app()->basePath . "/migrations/data/m221109_114900_add_description_grouping_to_settings/setting_metadata_202208211803.csv", "r");
-        // while (($data = fgetcsv($file, 1000, ',')) !== false) {
-        //     $this->update(
-        //         'setting_metadata',
-        //         [
-        //             'description' => $data[4],
-        //             'group' => $data[3],
-        //             'name' => $data[2]
-        //         ],
-        //         "`key` = :key AND (element_type_id = :element_id OR element_type_id IS NULL)",
-        //         [
-        //             ':key' => $data[0],
-        //             ':element_id' => $data[1]
-        //         ]
-        //     );
-        // }
+        // Ensure that all future settings must have a group and description assigned
+        $this->alterOEColumn('setting_metadata', 'description', 'TEXT NOT NULL', true);
+        $this->alterOEColumn('setting_metadata', 'group_id', 'INT NOT NULL', true);
     }
 
     public function safeDown()

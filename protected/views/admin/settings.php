@@ -48,9 +48,9 @@
 
     foreach ($grouped_settings as $group) {
         // Skip the group if there are no items to show
-        // if (empty($group['system_settings'])) {
-        //     continue;
-        // }
+        if (empty($group['system_settings'])) {
+            continue;
+        }
         ?>
         <div class="collapse-data">
         <div class="highlighter subtle-invert collapse-data-header-icon collapse"><?= $group['name'] ?? 'Ungrouped' ?></div>
@@ -59,7 +59,7 @@
         <table class="standard last-right">
             <thead>
                 <tr>
-                    <th class="cols-5">Setting</th>
+                    <th class="cols-4">Setting</th>
                     <th>Value</th>
                     <th></th>
                     <th></th>
