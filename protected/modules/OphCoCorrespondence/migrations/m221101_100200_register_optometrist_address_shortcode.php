@@ -1,13 +1,13 @@
 <?php
 
-class m220712_083300_register_current_address_shortcode extends OEMigration
+class m221101_100200_register_optometrist_address_shortcode extends OEMigration
 {
-    protected const SHORTCODE = 'pad';
+    protected const SHORTCODE = 'pod';
 
     public function safeUp()
     {
         $event_type_id = $this->getIdOfEventTypeByClassName('OphCoCorrespondence');
-        $this->registerShortcode($event_type_id, self::SHORTCODE, 'getCurrentPatientAddress', 'Patient’s Home Address');
+        $this->registerShortcode($event_type_id, self::SHORTCODE, 'getOptometristAddress', 'Optometrist\'s Address');
     }
 
     public function safeDown()
