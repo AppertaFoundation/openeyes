@@ -46,29 +46,16 @@
 
     $purifier = new CHtmlPurifier();
 
-    $criteria = new CDbCriteria();
-    $criteria->order = 'name ASC';
-    $groups = SettingGroup::model()->findAll($criteria);
-    $empty = new SettingGroup();
-    $empty->id = null;
-    $empty->name = 'No Group';
-    $groups[] = $empty;
-
-    foreach ($groups as $group) {
-        $criteria = new CDbCriteria();
-        $criteria->addCondition('element_type_id is null');
-        $group->id ? $criteria->addCondition('group_id = ' . $group->id) : $criteria->addCondition('group_id is null') ;
-        $criteria->order = 'name ASC';
-        $settings = SettingMetadata::model()->findAll($criteria, [ ':group_id' => $group->id ]);
+    foreach ($grouped_settings as $group) {
         // Skip the group if there are no items to show
-        if (empty($settings)) {
-            continue;
-        }
+        // if (empty($group['system_settings'])) {
+        //     continue;
+        // }
         ?>
         <div class="collapse-data">
-        <div class="highlighter subtle-invert collapse-data-header-icon collapse"><?= $group->name ?></div>
+        <div class="highlighter subtle-invert collapse-data-header-icon collapse"><?= $group['name'] ?? 'Ungrouped' ?></div>
         <div class="collapse-data-content" style="display: block">
-        
+
         <table class="standard last-right">
             <thead>
                 <tr>
@@ -81,7 +68,7 @@
             <tbody>
                 <?php
 
-                foreach ($settings as $metadata) {
+                foreach ($group['system_settings'] as $metadata) {
                     // Setting pulled from database
                     $metadata_value = $metadata->getSettingName($metadata->key, $allowed_classes, $institution_id, true);
 
@@ -121,7 +108,7 @@
                             <td><i class="oe-i info small js-has-tooltip" data-tooltip-content="This parameter is being overridden by a config file and cannot be modified."></i></td>
                             <td><?php if (!empty($metadata->description)) : ?>
                                 <i class="oe-i status-query small js-has-tooltip" data-tooltip-content="<?= $metadata->description ?>"></i>
-            
+
                                 <?php endif ?>
                             </td>
                         </tr>
@@ -133,7 +120,7 @@
                             <td><i class="oe-i info small js-has-tooltip" data-tooltip-content="This parameter can only be modified by a system administrator."></i></td>
                             <td><?php if (!empty($metadata->description)) : ?>
                                 <i class="oe-i status-query small js-has-tooltip" data-tooltip-content="<?= $metadata->description ?>"></i>
-            
+
                                 <?php endif ?>
                             </td>
                         </tr>
@@ -148,7 +135,7 @@
                             </td>
                             <td><?php if (!empty($metadata->description)) : ?>
                                 <i class="oe-i status-query small js-has-tooltip" data-tooltip-content="<?= $metadata->description ?>"></i>
-            
+
                                 <?php endif ?>
                             </td>
                         </tr>
@@ -159,7 +146,7 @@
                             <td></td>
                             <td><?php if (!empty($metadata->description)) : ?>
                                 <i class="oe-i status-query small js-has-tooltip" data-tooltip-content="<?= htmlspecialchars($metadata->description) ?>"></i>
-            
+
                                 <?php endif ?>
                             </td>
                         </tr>

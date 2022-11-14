@@ -27,16 +27,6 @@
 class SettingGroup extends BaseActiveRecordVersioned
 {
     /**
-     * Returns the static model of the specified AR class.
-     *
-     * @return SettingGroup the static model class
-     */
-    public static function model($className = __CLASS__)
-    {
-        return parent::model($className);
-    }
-
-    /**
      * @return string the associated database table name
      */
     public function tableName()
@@ -67,8 +57,11 @@ class SettingGroup extends BaseActiveRecordVersioned
     {
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
-        return array(
-        );
+        return [
+            'systemSettings' => [self::HAS_MANY, SettingMetadata::class, 'group_id',
+                'order' => 'systemSettings.name ASC',
+                'condition' => 'systemSettings.element_type_id IS NULL']
+        ];
     }
 
     /**
