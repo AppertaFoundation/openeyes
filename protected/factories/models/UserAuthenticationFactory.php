@@ -29,7 +29,10 @@ class UserAuthenticationFactory extends ModelFactory
         return [
             'institution_authentication_id' => ModelFactory::factoryFor(InstitutionAuthentication::class),
             'user_id' => ModelFactory::factoryFor(User::class),
-            'username' => $this->faker->userName()
+            'username' => $this->faker->userName(),
+            // because we validate when saving with this factory, we must provide password
+            'password' => 'password',
+            'password_repeat' => 'password'
         ];
     }
 
@@ -40,5 +43,26 @@ class UserAuthenticationFactory extends ModelFactory
                 'user_id' => $user->id,
             ];
         });
+    }
+
+    public function persistInstance($instance): bool
+    {
+        // we are leveraging the validation behaviour of the UserAuthentication
+        // class, which checks the password strength. So we reset the value
+        // prior to creating the instance, and thereby allow simple passwords
+        // for testing purposes
+        $default_settings = $this->app->params['pw_restrictions'];
+        $this->app->setParams([
+            'pw_restrictions' => [
+                'strength_regex' => '%\w*%'
+            ]
+        ]);
+        // need to validate to leverage the before and after validate hooks
+        return $instance->save(true);
+
+        // restore the normal password rules for consistency
+        $this->app->setParams([
+            'pw_restrictions' => $default_settings
+        ]);
     }
 }

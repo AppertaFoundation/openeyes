@@ -31,7 +31,12 @@
             </tr>
             </thead>
             <tbody>
-            <?php foreach ($model_list as $i => $model) { ?>
+            <?php foreach ($model_list as $i => $model) {
+                $subspecialties = "All Subspecialties";
+                if (count($model->subspecialties)) {
+                    $subspecialties = implode(", ", CHtml::listData($model->subspecialties, 'id', 'name'));
+                }
+                ?>
                 <tr class="clickable" data-id="<?= $model->id ?>"
                     data-uri="OphCiExamination/admin/HistoryMacro/edit/<?= $model->id ?>">
                     <td><input type="checkbox" name="select[]" value="<?= $model->id ?>"/></td>
@@ -43,7 +48,7 @@
                         <?= $model->name ?>
                     </td>
                     <td>
-                        <?= implode(", ", CHtml::listData($model->subspecialties, 'id', 'name')) ?>
+                        <?= $subspecialties ?>
                     </td>
                     <td>
                         <i class="oe-i small <?= $model->active ? 'tick' : 'remove' ?>"></i>

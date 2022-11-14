@@ -1,5 +1,7 @@
 <?php
 
+use Nesk\Puphpeteer\Resources\HTTPResponse;
+
 /**
  * OpenEyes.
  *
@@ -667,6 +669,7 @@ class WorklistController extends BaseController
     public function actionGetPathStep($partial, $pathstep_id, $visit_id, $pathstep_type_id, $red_flag = false, $interactive = 1)
     {
         $wl_patient = WorklistPatient::model()->findByPk($visit_id);
+        $has_permission_to_start = true;
         switch ($pathstep_id) {
             case 'checkin':
                 if ($wl_patient) {
@@ -765,6 +768,11 @@ class WorklistController extends BaseController
                     Yii::app()->end();
                 }
 
+                // if the step is for prescription, only prescriber has the permission to start it
+                if (($step instanceof PathwayStep && $step->type->short_name === 'Rx')
+                || ($step instanceof PathwayTypeStep && $step->step_type->short_name === 'Rx')) {
+                    $has_permission_to_start = Yii::app()->user->checkAccess('TaskPrescribe');
+                }
                 if ($step) {
                     $view_file = ($step instanceof PathwayStep ? $step->type->widget_view : $step->step_type->widget_view) ?? 'generic_step';
                     $dom = $this->renderPartial(
@@ -774,7 +782,8 @@ class WorklistController extends BaseController
                             'worklist_patient' => $wl_patient,
                             'patient' => $wl_patient->patient,
                             'partial' => $partial,
-                            'red_flag' => $red_flag
+                            'red_flag' => $red_flag,
+                            'has_permission_to_start' => $has_permission_to_start
                         ),
                         true
                     );
@@ -1933,13 +1942,12 @@ class WorklistController extends BaseController
     {
         $post = $_POST;
         $wl_patient = WorklistPatient::model()->findByPk($post['visit_id']);
-        $step_id = null;
+        $step_id = $post['pathstep_id'];
         $pathway_instanced = false;
         if ($post['pathstep_id'] === 'comment') {
             $pathway_id = $post['pathway_id'];
             if (!$wl_patient->pathway) {
                 $wl_patient->worklist->worklist_definition->pathway_type->instancePathway($wl_patient);
-                $pathway_instanced = true;
                 $wl_patient->refresh();
                 $pathway_id = $wl_patient->pathway->id;
             }
@@ -1954,7 +1962,6 @@ class WorklistController extends BaseController
                 if ($type_step) {
                     $steps = $type_step->pathway_type->instancePathway($wl_patient);
                     $step_id = $steps[$post['pathstep_type_id']]->id;
-                    $pathway_instanced = true;
                 }
             } else {
                 $step_id = $post['pathstep_id'];
@@ -1965,17 +1972,45 @@ class WorklistController extends BaseController
                 $comment->pathway_step_id = $step_id;
             }
         }
+
+        // if the worklist has pathway associated with, set the flag to true
+        if ($wl_patient->pathway) {
+            $pathway_instanced = true;
+        }
+
         $comment->comment = $post['comment'];
         $comment->doctor_id = $post['user_id'];
         if ($comment->save()) {
             $wl_patient->refresh();
-            $this->renderJSON(
-                array(
-                    'step_html' => $pathway_instanced ? $this->renderPartial('_clinical_pathway', ['visit' => $wl_patient], true) : null,
-                    'step_id' => $step_id,
-                    'comment' => $comment->comment
-                )
-            );
+        }
+
+        /**
+         * re-render the pathway html no matter what
+         */
+        $this->renderJSON(
+            array(
+                'step_html' => $pathway_instanced ? $this->renderPartial('_clinical_pathway', ['visit' => $wl_patient], true) : null,
+                'step_id' => $step_id,
+                'comment' => $comment->comment ?? null
+            )
+        );
+    }
+
+    /**
+     * According to the step_id and delete its associated comment
+     *
+     * @return void
+     */
+    public function actionDeleteComment() {
+        $step_id = Yii::app()->request->getParam('step_id');
+        $step = PathwayStep::model()->findByPk(($step_id));
+        if (!$step) {
+            throw new CHttpException(404, 'Step not found.');
+        }
+        $comment = $step->comment;
+        if ($comment && !$comment->delete()) {
+            OELog::log(print_r($comment->getErrors(), true));
+            throw new CHttpException(500, "Unable to delete the comment with pathstep id {$step_id}");
         }
     }
 
