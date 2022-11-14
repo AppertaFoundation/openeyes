@@ -472,22 +472,156 @@ $(function () {
         }
     };
 
+    /**
+     *
+     * @param {PathStep} ps - PathStep object
+     * @param {string} texts - string
+     * @returns {object} - isDeleted: indicates if the comment is deleted, addCommentIcon: the add comment icon button
+     */
+    const isCommentDeleted = function (ps, texts = "") {
+        const $currentPopup = $(ps.currentPopup?.get(0));
+
+        // in general the currentPopup should always be available, but return false just in case
+        if (!$currentPopup.length) {
+            return {
+                isDeleted: false,
+                addCommentIcon: null
+            };
+        }
+        const $addCommentIcon = $currentPopup.find('.js-comments-edit .js-save, .js-comments-edit .js-remove-comments');
+
+        let existingComments = '';
+
+        // if the text is not passed in, query the dom to get the texts
+        if (!texts.length) {
+            texts = $currentPopup.find('.js-comments-edit input.js-step-comments').val();
+        }
+
+        existingComments = $currentPopup.find('.js-comments-view .comment').text();
+
+        // if there is no existing comments, return false
+        if (existingComments.length <= 0) {
+            return {
+                isDeleted: false,
+                addCommentIcon: $addCommentIcon
+            };
+        }
+
+        // At the stage, there must be existing comments, if no input text, then the comment is removed
+        if (texts.length === 0) {
+            return {
+                isDeleted: true,
+                addCommentIcon: $addCommentIcon
+            };
+        }
+
+        return {
+            isDeleted: false,
+            addCommentIcon: $addCommentIcon
+        };
+
+    }
+
     let updateLetterCount = function (event, context, ps) {
         let textString = $(context).val();
+
+        const { isDeleted, addCommentIcon } = isCommentDeleted(ps, textString);
+        const removalClasses = "remove-circle js-remove-comments";
+        const additionClasses = "save-plus js-save";
+
+        if (addCommentIcon?.length) {
+            if (isDeleted) {
+                addCommentIcon.addClass(removalClasses).removeClass(additionClasses);
+            } else {
+                addCommentIcon.addClass(additionClasses).removeClass(removalClasses);
+            }
+        }
+
         let textLength = textString.length / 0.8;
         let $progressBar = $(context).next().find('.percent-bar');
         $progressBar.css('width', textLength + '%');
     };
 
-    let addComment = function (event, context, ps) {
-        let comment = $(event.target).closest('.js-comments-edit').find('.js-step-comments').val();
-        $(context).removeClass('save-plus');
-        $(context).addClass('spinner');
-        $(context).addClass('as-icon');
+    /**
+     * Callback for the click event on the element(s) with classes [js-comments-edit js-remove-comments]
+     *
+     * @param {MouseEvent} event
+     * @param {*} context a reference to the element
+     * @param {PathStep} ps PathStep object
+     */
+    const deleteComment = function(event, context, ps) {
+        if (!ps) {
+            console.error("No PathStep instance");
+            return;
+        }
+        const iconClass = 'remove-circle';
+        toggleIcon(context, iconClass);
 
-        const step_actions = $(ps?.currentPopup).find('.step-actions button');
         // disable the buttons to avoid racing issue
-        step_actions?.each((i, action) => $(action).prop('disabled', true));
+        ps.toggleDisableStepActions();
+
+        if (!ps.pathstepId) {
+            ps.toggleDisableStepActions(false);
+            toggleIcon(context, iconClass, false);
+            console.error("PathStep id is not set");
+            return;
+        }
+
+        $.ajax({
+            url: '/worklist/deleteComment',
+            type: 'POST',
+            data: {
+                YII_CSRF_TOKEN: YII_CSRF_TOKEN,
+                step_id: ps.pathstepId
+            },
+            success: function(response) {
+                // reset the popup ui and refresh the popup data
+                ps.resetPopup();
+                ps.requestDetails({
+                    partial: 0,
+                    pathstep_type_id: ps.pathstepTypeId,
+                    pathstep_id: ps.pathstepId,
+                    visit_id: ps.visitID
+                });
+            },
+            error: function(err) {
+                ps.toggleDisableStepActions(false);
+                toggleIcon(context, iconClass, false);
+                console.error(err);
+            }
+        })
+    }
+
+    /**
+     * Replace the targetElement icon with spinner if the showSpinner is set to true,
+     * otherwise, replace the spinner with icon
+     *
+     * @param {HTMLElement} targetElement
+     * @param {string} iconClass
+     * @param {bool} showSpinner
+     * @param {string} spinnerClass
+     */
+    const toggleIcon = function(targetElement ,iconClass, showSpinner = true, spinnerClass = "spinner as-icon") {
+        if (showSpinner) {
+            $(targetElement).removeClass(iconClass);
+            $(targetElement).addClass(spinnerClass);
+        } else {
+            $(targetElement).removeClass(spinnerClass);
+            $(targetElement).addClass(iconClass);
+        }
+    }
+
+    let addComment = function (event, context, ps) {
+        if (!ps) {
+            console.error("No PathStep instance");
+            return;
+        }
+        const iconClass = 'save-plus';
+        let comment = $(event.target).closest('.js-comments-edit').find('.js-step-comments').val();
+        toggleIcon(context, iconClass);
+
+        // disable the buttons to avoid racing issue
+        ps.toggleDisableStepActions();
 
         $.ajax({
             url: '/worklist/addComment',
@@ -504,12 +638,19 @@ $(function () {
             },
             success: function (response) {
                 if (response.step_html) {
-                    const $thisStep = $('.oe-pathstep-btn[data-pathstep-type-id="' + ps.pathstepTypeId + '"][data-visit-id="' + ps.visitID +'"]');
-                    const $pathway = $thisStep.closest('td.js-pathway-container');
+                    const $pathway_row = $(`#js-pathway-${ps.visitID}`);
+
+                    const $pathway = $pathway_row.find('.js-pathway-container');
+                    // update the pathway container html and step html details
+                    $pathway.html(response.step_html);
+
+                    const $thisStep = $pathway_row.find(`.oe-pathstep-btn[data-pathstep-id="${response.step_id}"]`);
+
+                    // update the associated pathstepIcon of the current pathstep object
+                    ps.pathstepIcon = $thisStep.get(0);
+
                     const oldSteps = collectActiveTodoStepsFrom($pathway);
                     let $commentButton = ps.pathwayId ? $('.comments[data-pathway-id="' + ps.pathwayId + '"]') : $('.comments[data-visit-id="' + ps.visitID + '"]');
-
-                    $pathway.html(response.step_html);
 
                     const newSteps = collectActiveTodoStepsFrom($pathway);
 
@@ -534,13 +675,18 @@ $(function () {
                     }
                 }
                 // reset the popup ui and refresh the popup data
-                ps?.resetPopup();
-                ps?.requestDetails({
+                ps.resetPopup();
+                ps.requestDetails({
                     partial: 0,
                     pathstep_type_id: ps.pathstepTypeId,
                     pathstep_id: response.step_id,
                     visit_id: ps.visitID
                 });
+            },
+            error: function(err) {
+                ps.toggleDisableStepActions(false);
+                toggleIcon(context, iconClass, false);
+                console.error(err);
             }
         });
     };
@@ -1110,6 +1256,11 @@ $(function () {
                 'target': '.js-comments-edit .js-save',
                 'event': 'click',
                 'callback': addComment,
+            },
+            {
+                'target': '.js-comments-edit .js-remove-comments',
+                'event': 'click',
+                'callback': deleteComment,
             },
             {
                 'target': '.js-comments-edit .js-step-comments',

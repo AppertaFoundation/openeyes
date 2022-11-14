@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <?php
 $row_count = 0;
@@ -140,7 +142,7 @@ $non_ticket_entries = [];
                 }
             } ?>
         </div>
-        <?php } ?>
+    <?php } ?>
     </div>
     <?php if ($element->comments) { ?>
         <hr class="divider">
@@ -149,7 +151,7 @@ $non_ticket_entries = [];
                 <col class="cols-1">
             </colgroup>
             <tr>
-                <td>Comments</td>
+                <td>Comments:</td>
                 <td><?= $element->comments ?></td>
             </tr>
         </table>

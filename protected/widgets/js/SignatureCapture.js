@@ -65,9 +65,8 @@ this.OpenEyes.UI = this.OpenEyes.UI || {};
         // create a temp canvas
         const newCanvas = document.createElement('canvas');
         let dx, dy, dWidth, dHeight;
-        // Must be exactly 900x300 px
-        newCanvas.width = FIXED_WIDTH;
-        newCanvas.height = FIXED_HEIGHT;
+        newCanvas.width = canvas.width;
+        newCanvas.height = canvas.height;
         // Crop image
         if(width < height * 3) {
             // Too narrow
