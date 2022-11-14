@@ -55,17 +55,20 @@
     $groups[] = $empty;
 
     foreach ($groups as $group) {
-        ?>
-        <div class="collapse-data">
-        <div class="highlighter subtle-invert collapse-data-header-icon collapse"><?= $group->name ?></div>
-        <div class="collapse-data-content" style="display: block">
-        <?php
         $criteria = new CDbCriteria();
         $criteria->addCondition('element_type_id is null');
         $group->id ? $criteria->addCondition('group_id = ' . $group->id) : $criteria->addCondition('group_id is null') ;
         $criteria->order = 'name ASC';
         $settings = SettingMetadata::model()->findAll($criteria, [ ':group_id' => $group->id ]);
+        // Skip the group if there are no items to show
+        if (empty($settings)) {
+            continue;
+        }
         ?>
+        <div class="collapse-data">
+        <div class="highlighter subtle-invert collapse-data-header-icon collapse"><?= $group->name ?></div>
+        <div class="collapse-data-content" style="display: block">
+        
         <table class="standard last-right">
             <thead>
                 <tr>
