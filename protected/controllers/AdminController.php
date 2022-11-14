@@ -733,8 +733,7 @@ class AdminController extends BaseAdminController
                 $contact->created_institution_id = Yii::app()->session['selected_institution_id'];
 
                 if (!$contact->save()) {
-                    //$transaction->rollback();
-                    $errors = array_merge($errors, $contact->getErrors());
+                    $transaction->rollback();
 
                     throw new CHttpException(500, 'Unable to save user contact: ' . print_r($contact->getErrors(), true));
                 }
@@ -746,8 +745,7 @@ class AdminController extends BaseAdminController
                 $is_new = $user->getIsNewRecord();
 
                 if (!$user->save(false)) {
-                    //$transaction->rollback();
-                    $errors = array_merge($errors, $user->getErrors());
+                    $transaction->rollback();
 
                     throw new CHttpException(500, 'Unable to save user: ' . print_r($user->getErrors(), true));
                 }
@@ -757,15 +755,14 @@ class AdminController extends BaseAdminController
                     $user->update(['correspondence_sign_off_user_id']);
                 }
 
-                if (!isset($user_attributes['roles']) || (empty($user_attributes['roles']))) {
-                    $user_attributes['roles'] = array();
-                }
-
                 if (!array_key_exists('firms', $user_attributes) || !is_array($user_attributes['firms'])) {
-                    $user_attributes['firms'] = array();
+                    $user_attributes['firms'] = [];
                 }
 
-                $user->saveRoles($user_attributes['roles']);
+                $user->saveRoles(
+                    (!isset($user_attributes['roles']) || (empty($user_attributes['roles'])))
+                        ? []
+                        : $user_attributes['roles']);
 
                 try {
                     $user->saveFirms($user_attributes['firms']);
@@ -841,8 +838,6 @@ class AdminController extends BaseAdminController
                     $criteria = new CDbCriteria();
                     $criteria->addInCondition('id', $user_attributes['firms']);
                     $user->firms = Firm::model()->findAll($criteria);
-
-                    //$user->roles = Yii::app()->authManager->getRoles();
                 }
             }
 
