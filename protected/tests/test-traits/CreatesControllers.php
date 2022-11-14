@@ -20,7 +20,6 @@ trait CreatesControllers
         }
 
         $controllerId = strtolower(str_replace('Controller', '', $cls));
-
         $controller = $this->getMockBuilder($cls)
                     ->setConstructorArgs([$controllerId, Yii::app()->getModule($this->moduleCls)])
                     ->setMethods($methods)
