@@ -15,17 +15,12 @@
 
 namespace OE\factories\models;
 
+use InstitutionAuthentication;
 use OE\factories\ModelFactory;
+use UserAuthentication;
 
-/**
- * UserFactory
- *
- * The functionality for this factory will need to be expanded as its use increases. It's initial
- * implementation simply provides a basic definition for populating the database
- */
 class UserFactory extends ModelFactory
 {
-
     /**
      *
      * @return array
@@ -40,5 +35,43 @@ class UserFactory extends ModelFactory
             'role' => '', // not sure what this is for so blank string works as default
             'has_selected_firms' => 0
         ];
+    }
+
+    /**
+     * Define the auth items to be assigned to the user. Some notes on this are provided for reference
+     * in the CypressHelper readme
+     *
+     * @param array $authitems
+     * @return self
+     */
+    public function withAuthItems(array $authitems = []): self
+    {
+        return $this->afterCreating(function (\User $user) use ($authitems) {
+            foreach ($authitems as $authitem) {
+                $this->app->authManager->assign($authitem, $user->id);
+            }
+        });
+    }
+
+    /**
+     * This state allows for creating Users that can actually login through the application
+     *
+     * @param \Institution $institution
+     * @param string $password
+     * @return self
+     */
+    public function withLocalAuthForInstitution(\Institution $institution, string $password = 'password'): self
+    {
+        return $this->afterCreating(function (\User $user) use ($password, $institution) {
+            UserAuthentication::factory()->create([
+                'user_id' => $user->id,
+                'institution_authentication_id' => InstitutionAuthentication::factory()->useExisting([
+                    'institution_id' => $institution->id,
+                    'user_authentication_method' => 'LOCAL'
+                ]),
+                'password' => $password,
+                'password_repeat' => $password
+            ]);
+        });
     }
 }

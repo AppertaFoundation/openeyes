@@ -1,5 +1,7 @@
 <?php
+
 namespace OEModule\OphCiExamination\models;
+
 /**
  * This is the model class for table "et_ophciexamination_investigation_codes".
  *
@@ -39,14 +41,12 @@ class OphCiExamination_Investigation_Codes extends \BaseActiveRecordVersioned
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('name, ecds_code', 'required'),
-            array('name, snomed_term', 'length', 'max'=>256),
-            array('snomed_code, ecds_code', 'length', 'max'=>20),
-            array('specialty_id, last_modified_user_id, created_user_id', 'length', 'max'=>10),
+            array('name, snomed_term', 'length', 'max' => 256),
+            array('snomed_code, ecds_code', 'length', 'max' => 20),
+            array('specialty_id, last_modified_user_id, created_user_id', 'length', 'max' => 10),
             array('last_modified_date, created_date', 'safe'),
             // The following rule is used by search().
-            // @todo Please remove those attributes that should not be searched.
-            array('id, name, snomed_code, snomed_term, ecds_code, specialty_id', 'safe', 'on'=>'search'),
+            array('id, name, snomed_code, snomed_term, ecds_code, specialty_id', 'safe', 'on' => 'search'),
         );
     }
 
@@ -101,7 +101,7 @@ class OphCiExamination_Investigation_Codes extends \BaseActiveRecordVersioned
     {
         // @todo Please modify the following code to remove attributes that should not be searched.
 
-        $criteria=new CDbCriteria;
+        $criteria = new CDbCriteria();
 
         $criteria->compare('id', $this->id);
         $criteria->compare('name', $this->name, true);
@@ -115,7 +115,7 @@ class OphCiExamination_Investigation_Codes extends \BaseActiveRecordVersioned
         $criteria->compare('created_date', $this->created_date, true);
 
         return new CActiveDataProvider($this, array(
-            'criteria'=>$criteria,
+            'criteria' => $criteria,
         ));
     }
 
