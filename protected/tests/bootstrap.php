@@ -4,6 +4,8 @@ if (PHP_MAJOR_VERSION >= 7 && PHP_MINOR_VERSION >= 1) {
     error_reporting(E_ALL & ~E_DEPRECATED);
 }
 
+ini_set("log_errors_max_len",0);
+
 set_include_path(get_include_path() . PATH_SEPARATOR . __DIR__);
 set_include_path(get_include_path() . PATH_SEPARATOR . __DIR__ . '/test-traits');
 set_include_path(get_include_path() . PATH_SEPARATOR . __DIR__ . '/test-helpers');
@@ -45,9 +47,11 @@ Yii::$autoloaderFilters = ['filterTestSuiteNames' => function ($className) {
  * would be good to abstract autoload dependencies from root index.php to ensure running consistently
  */
 if (!class_exists('HTMLPurifier_Bootstrap', false)) {
-    require_once(Yii::getPathOfAlias('system.vendors.htmlpurifier').DIRECTORY_SEPARATOR.'HTMLPurifier.standalone.php');
+    require_once(Yii::getPathOfAlias('system.vendors.htmlpurifier') . DIRECTORY_SEPARATOR . 'HTMLPurifier.standalone.php');
     HTMLPurifier_Bootstrap::registerAutoload();
 }
+
+require_once(__DIR__ . DIRECTORY_SEPARATOR . 'bootstrap_process_isolation.php');
 
 Yii::createWebApplication($config);
 
