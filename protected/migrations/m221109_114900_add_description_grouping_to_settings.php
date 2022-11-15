@@ -26,15 +26,15 @@ class m221109_114900_add_description_grouping_to_settings extends OEMigration
             $this->addForeignKey('fk_setting_group', 'setting_metadata', 'group_id', 'setting_group', 'id');
         }
 
-        $filename = Yii::app()->basePath . "/migrations/data/m221109_114900_add_description_grouping_to_settings/setting_metadata_202208211803.xlsx";
-        echo $filename;
-        $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($filename);
+        // CSV File with following order- key, element_type_id, name, group, description
+        $file = fopen(Yii::app()->basePath . "/migrations/data/m221109_114900_add_description_grouping_to_settings/setting_metadata_202208211803.csv", "r");
 
-        foreach ($spreadsheet->getSheet(0)->toArray() as $index => $data) {
-            //skip first row as it is column headers
-            if ($index == 0) {
+        while (($data = fgetcsv($file, 2000, ',')) !== false) {
+            // Skip the header row
+            if ($data[3] == 'group') {
                 continue;
             }
+
             // Add the group
             $this->execute("INSERT IGNORE INTO setting_group (`name`) VALUES (:group)", [':group' => $data[3]]);
 
