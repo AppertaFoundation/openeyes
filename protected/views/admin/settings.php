@@ -48,12 +48,12 @@
 
     foreach ($grouped_settings as $group) {
         // Skip the group if there are no items to show
-        if (empty($group['system_settings'])) {
+        if (empty($group->systemSettings)) {
             continue;
         }
         ?>
         <div class="collapse-data">
-        <div class="highlighter subtle-invert collapse-data-header-icon collapse"><?= $group['name'] ?></div>
+        <div class="highlighter subtle-invert collapse-data-header-icon collapse"><?= $group->name ?></div>
         <div class="collapse-data-content" style="display: block">
 
         <table class="standard last-right">
@@ -68,7 +68,7 @@
             <tbody>
                 <?php
 
-                foreach ($group['system_settings'] as $metadata) {
+                foreach ($group->systemSettings as $metadata) {
                     // Setting pulled from database
                     $metadata_value = $metadata->getSettingName($metadata->key, $allowed_classes, $institution_id, true);
 
@@ -81,8 +81,8 @@
                     $data_uri = $base_data_uri . $uri_param;
 
                     // Check to see if the param is being set in a config file
-                    if (array_key_exists($metadata->key, OEConfig::getMergedConfig('main')['params'])) {
-                        $param_value = OEConfig::getMergedConfig('main')['params'][$metadata->key];
+                    if (array_key_exists($metadata->key, $merged_config['params'])) {
+                        $param_value = $merged_config['params'][$metadata->key];
                     }
 
                     // If it isn't set, use the database value

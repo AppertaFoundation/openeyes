@@ -2775,9 +2775,10 @@ class AdminController extends BaseAdminController
 
         $this->group = "System";
         $this->render('/admin/settings', array(
-        'institution_id' => $institution_id,
-        'is_admin' => $is_admin,
-        'grouped_settings' => $this->getGroupedSettings()
+            'institution_id' => $institution_id,
+            'is_admin' => $is_admin,
+            'grouped_settings' => SettingGroup::model()->with('systemSettings')->findAll(['order' => 't.name ASC']),
+            'merged_config' => OEConfig::getMergedConfig('main')
         ));
     }
 
@@ -3007,31 +3008,5 @@ class AdminController extends BaseAdminController
                 return "The version check is disabled.";
             }
         }
-    }
-
-    /**
-     * Returns an array of setting groups with list of SettingMetadata for rendering
-     * in the settings admin screen.
-     */
-    protected function getGroupedSettings()
-    {
-        $criteria = new \CDbCriteria();
-        $criteria->order = 't.name ASC';
-        $grouped_settings = array_map(
-            function ($setting_group) {
-                return [
-                    'name' => $setting_group->name,
-                    'id' => $setting_group->id,
-                    'system_settings' => $setting_group->systemSettings
-                ];
-            },
-            SettingGroup::model()->with('systemSettings')->findAll($criteria)
-        );
-
-        $criteria = new CDbCriteria();
-        $criteria->addColumnCondition(['element_type_id' => null, 'group_id' => null]);
-        $criteria->order = 'name ASC';
-
-        return $grouped_settings;
     }
 }
