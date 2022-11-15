@@ -53,7 +53,7 @@
         }
         ?>
         <div class="collapse-data">
-        <div class="highlighter subtle-invert collapse-data-header-icon collapse"><?= $group['name'] ?? 'Ungrouped' ?></div>
+        <div class="highlighter subtle-invert collapse-data-header-icon collapse"><?= $group['name'] ?></div>
         <div class="collapse-data-content" style="display: block">
 
         <table class="standard last-right">
