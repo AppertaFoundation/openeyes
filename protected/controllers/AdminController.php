@@ -3032,12 +3032,6 @@ class AdminController extends BaseAdminController
         $criteria->addColumnCondition(['element_type_id' => null, 'group_id' => null]);
         $criteria->order = 'name ASC';
 
-        $grouped_settings[] = [
-            'name' => null,
-            'id' => '__none__',
-            'system_settings' => SettingMetadata::model()->findAll($criteria)
-        ];
-
         return $grouped_settings;
     }
 }
