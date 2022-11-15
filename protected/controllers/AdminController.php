@@ -2772,8 +2772,10 @@ class AdminController extends BaseAdminController
 
         $this->group = "System";
         $this->render('/admin/settings', array(
-        'institution_id' => $institution_id,
-        'is_admin' => $is_admin,
+            'institution_id' => $institution_id,
+            'is_admin' => $is_admin,
+            'grouped_settings' => SettingGroup::model()->with('systemSettings')->findAll(['order' => 't.name ASC']),
+            'merged_config' => OEConfig::getMergedConfig('main')
         ));
     }
 

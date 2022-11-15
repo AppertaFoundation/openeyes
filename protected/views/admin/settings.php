@@ -21,9 +21,11 @@
 ?>
 
 <div class="cols-full">
-    <div class="alert-box info">
-        <b>Info</b> Settings added here will be overridden by any settings in local config files. eg common or
+    <div class="alert-box warn">
+        <b>Note:</b> Settings added here will be overridden by any settings in local config files. eg common or
         core.php
+    </div>
+    <div class="row divider">
     </div>
     <div>
         <?php if ($is_admin) {
@@ -37,93 +39,136 @@
             echo 'Institution: ' . Institution::model()->findByPk($institution_id)->name;
         }?>
     </div>
+    <div class="row divider">
+    </div>
+    <?php
+    $allowed_classes = $institution_id ? ['SettingInstitution', 'SettingInstallation'] : ['SettingInstallation'];
 
-    <table class="standard">
-        <thead>
-            <tr>
-                <th width="35%">Setting</th>
-                <th>Value</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php
-            $purifier = new CHtmlPurifier();
-            $allowed_classes = $institution_id ? ['SettingInstitution', 'SettingInstallation'] : ['SettingInstallation'];
-            foreach (SettingMetadata::model()->byDisplayOrder()->findAll('element_type_id is null') as $metadata) {
-                // Setting pulled from database
-                $metadata_value = $metadata->getSettingName($metadata->key, $allowed_classes, $institution_id, true);
+    $purifier = new CHtmlPurifier();
 
-                $base_data_uri = "admin/editSystemSetting?key=" . $metadata->key;
-                if($metadata->lowest_setting_level === 'INSTITUTION' && $institution_id){
-                    $uri_param = "&class=SettingInstitution&institution_id={$institution_id}";
-                } else {
-                    $uri_param = '&class=SettingInstallation';
-                }
-                $data_uri = $base_data_uri . $uri_param;
+    foreach ($grouped_settings as $group) {
+        // Skip the group if there are no items to show
+        if (empty($group->systemSettings)) {
+            continue;
+        }
+        ?>
+        <div class="collapse-data">
+        <div class="highlighter subtle-invert collapse-data-header-icon collapse"><?= $group->name ?></div>
+        <div class="collapse-data-content" style="display: block">
 
-                // Check to see if the param is being set in a config file
-                if (array_key_exists($metadata->key, OEConfig::getMergedConfig('main')['params'])) {
-                    $param_value = OEConfig::getMergedConfig('main')['params'][$metadata->key];
-                }
+        <table class="standard last-right">
+            <thead>
+                <tr>
+                    <th class="cols-4">Setting</th>
+                    <th>Value</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
 
-                // If it isn't set, use the database value
-                if (isset($param_value)) {
-                    // Transform the param if need be
-                    if (is_array($param_value)) {
-                        // If it's an array, implode it to display as a string
-                        $param_value = implode(",", $param_value);
-                    } elseif ($data = @unserialize($metadata->data)) {
-                        // If it's an option for a serialised array get the value
-                        if (gettype($param_value) != "boolean" && array_key_exists($param_value, $data)) {
-                            $param_value = $data[$param_value];
-                        } elseif ($param_value === 1 || $param_value === true) {
-                            $param_value = $data['on'];
-                        } elseif ($param_value === 0 || $param_value === false) {
-                            $param_value = $data['off'];
-                        }
+                foreach ($group->systemSettings as $metadata) {
+                    // Setting pulled from database
+                    $metadata_value = $metadata->getSettingName($metadata->key, $allowed_classes, $institution_id, true);
+
+                    $base_data_uri = "admin/editSystemSetting?key=" . $metadata->key;
+                    if ($metadata->lowest_setting_level === 'INSTITUTION' && $institution_id) {
+                        $uri_param = "&class=SettingInstitution&institution_id={$institution_id}";
+                    } else {
+                        $uri_param = '&class=SettingInstallation';
                     }
-                    ?>
-                    <tr class="disabled">
-                        <td><span class="fade"><?php echo $metadata->name ?></span></td>
-                        <td><span class="fade"><?= $param_value ?> </span></td>
-                        <td><i class="oe-i info small js-has-tooltip" data-tooltip-content="This parameter is being overridden by a config file and cannot be modified."></i></td>
-                    </tr>
+                    $data_uri = $base_data_uri . $uri_param;
 
-                <?php } elseif ($institution_id && !$is_admin && $metadata->lowest_setting_level === 'INSTALLATION') { ?>
-                    <tr class="disabled">
-                        <td><span class="fade"><?php echo $metadata->name ?></span></td>
-                        <td><span class="fade"><?= $metadata_value ?> </span></td>
-                        <td><i class="oe-i info small js-has-tooltip" data-tooltip-content="This parameter can only be modified by a system administrator."></i></td>
-                    </tr>
-                <?php } elseif ($institution_id && $metadata->lowest_setting_level !== 'INSTALLATION') { ?>
-                    <tr class="clickable" data-uri="<?= $data_uri ?>">
-                        <td><?php echo $metadata->name ?></td>
-                        <td><?= $metadata_value ?></td>
-                        <td>
-                        <?php if ($is_admin) { ?>
-                            <i class="oe-i info small js-has-tooltip" data-tooltip-content="This parameter value is specific to the currently selected institution."></i>
-                        <?php } ?>
-                        </td>
-                    </tr>
-                <?php } else { ?>
-                    <tr class="clickable" data-uri="<?= $data_uri ?>">
-                        <td><?php echo $metadata->name ?></td>
-                        <td><?= $purifier->purify($metadata_value);?></td>
-                        <td></td>
-                    </tr>
-                    <?php
+                    // Check to see if the param is being set in a config file
+                    if (array_key_exists($metadata->key, $merged_config['params'])) {
+                        $param_value = $merged_config['params'][$metadata->key];
+                    }
+
+                    // If it isn't set, use the database value
+                    if (isset($param_value)) {
+                        // Transform the param if need be
+                        if (is_array($param_value)) {
+                            // If it's an array, implode it to display as a string
+                            $param_value = implode(",", $param_value);
+                        } elseif ($data = @unserialize($metadata->data)) {
+                            // If it's an option for a serialised array get the value
+                            if (gettype($param_value) != "boolean" && array_key_exists($param_value, $data)) {
+                                $param_value = $data[$param_value];
+                            } elseif ($param_value === 1 || $param_value === true) {
+                                $param_value = $data['on'];
+                            } elseif ($param_value === 0 || $param_value === false) {
+                                $param_value = $data['off'];
+                            }
+                        }
+                        ?>
+                        <tr class="disabled">
+                            <td><span class="fade"><?php echo $metadata->name ?></span></td>
+                            <td><span class="fade"><?= $param_value ?> </span></td>
+                            <td><i class="oe-i info small js-has-tooltip" data-tooltip-content="This parameter is being overridden by a config file and cannot be modified."></i></td>
+                            <td><?php if (!empty($metadata->description)) : ?>
+                                <i class="oe-i status-query small js-has-tooltip" data-tooltip-content="<?= $metadata->description ?>"></i>
+
+                                <?php endif ?>
+                            </td>
+                        </tr>
+
+                    <?php } elseif ($institution_id && !$is_admin && $metadata->lowest_setting_level === 'INSTALLATION') { ?>
+                        <tr class="disabled">
+                            <td><span class="fade"><?php echo $metadata->name ?></span></td>
+                            <td><span class="fade"><?= $metadata_value ?> </span></td>
+                            <td><i class="oe-i info small js-has-tooltip" data-tooltip-content="This parameter can only be modified by a system administrator."></i></td>
+                            <td><?php if (!empty($metadata->description)) : ?>
+                                <i class="oe-i status-query small js-has-tooltip" data-tooltip-content="<?= $metadata->description ?>"></i>
+
+                                <?php endif ?>
+                            </td>
+                        </tr>
+                    <?php } elseif ($institution_id && $metadata->lowest_setting_level !== 'INSTALLATION') { ?>
+                        <tr class="clickable" data-uri="<?= $data_uri ?>">
+                            <td><?php echo $metadata->name ?></td>
+                            <td><?= $metadata_value ?></td>
+                            <td>
+                            <?php if ($is_admin) { ?>
+                                <i class="oe-i info small js-has-tooltip" data-tooltip-content="This parameter value is specific to the currently selected institution."></i>
+                            <?php } ?>
+                            </td>
+                            <td><?php if (!empty($metadata->description)) : ?>
+                                <i class="oe-i status-query small js-has-tooltip" data-tooltip-content="<?= $metadata->description ?>"></i>
+
+                                <?php endif ?>
+                            </td>
+                        </tr>
+                    <?php } else { ?>
+                        <tr class="clickable" data-uri="<?= $data_uri ?>">
+                            <td><?php echo $metadata->name ?></td>
+                            <td><?= $purifier->purify($metadata_value);?></td>
+                            <td></td>
+                            <td><?php if (!empty($metadata->description)) : ?>
+                                <i class="oe-i status-query small js-has-tooltip" data-tooltip-content="<?= htmlspecialchars($metadata->description) ?>"></i>
+
+                                <?php endif ?>
+                            </td>
+                        </tr>
+                            <?php
+                    }
+
+                        unset($param_value, $metadata_value);
                 }
-
-                unset($param_value, $metadata_value);
-            } ?>
-        </tbody>
-    </table>
+                ?>
+            </tbody>
+        </table>
+    </div>
+    <?php } ?>
     <script type="text/javascript">
         $(document).ready(function() {
             $('#js-institution-setting-filter').change(function(e) {
                 window.location.href = 'settings?institution_id=' + e.target.value;
             });
-        })
+        });
+        $('body').on('click', '.collapse-data-header-icon', function () {
+                $(this).toggleClass('collapse expand');
+                $(this).next('div').toggle();
+            });
     </script>
 </div>

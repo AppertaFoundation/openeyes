@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2018
  * This file is part of OpenEyes.
@@ -20,10 +21,15 @@
 ?>
 
 <div>
-    <div class="row divider">
-        <h2>Edit setting: <?= $metadata->name ?></h2>
+<h2>Edit setting: <?= $metadata->name ?></h2>
+<?php if (!empty($metadata->description)) : ?>
+    <div class="alert-box info ">
+        <b>Info:</b>
+        <?= htmlspecialchars($metadata->description) ?>
     </div>
-
+<?php endif ?>
+    <div class="row divider">
+    </div>
     <?php
     $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         'id' => 'settingsform',
@@ -33,10 +39,12 @@
             'label' => 2,
             'field' => 5,
         )))?>
+    <span class="data label">Value:</span>
     <?php
     if (isset($institution_id)) {
-        echo CHtml::hiddenField($metadata->key.'_institution_id', $institution_id);
+        echo CHtml::hiddenField($metadata->key . '_institution_id', $institution_id);
     }
+
     $this->renderPartial(
         '_admin_setting_' . strtolower(str_replace(' ', '_', $metadata->field_type->name)),
         [
@@ -47,6 +55,7 @@
     );
     ?>
     <hr class="divider">
+    
     <div class="row">
         <?= CHtml::submitButton('Save ' . $metadata->name, [
                 'class' => 'green hint',
