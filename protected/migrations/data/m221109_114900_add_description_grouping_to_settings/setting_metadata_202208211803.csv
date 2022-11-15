@@ -183,3 +183,4 @@ close_incomplete_exam_elements,,Offer to automatically close incomplete examinat
 enable_imagenet_integration,,ImageNET: enable integration,Core,Enables or disables the integration to Topcon ImageNET 6 - this integration provides a contextual link to ImageNET for the current OpenEyes patient
 break_glass_patient_institution_field,,Field for break-glass patient institution,System,"If using the Break Glass feature, this setting toggles between the old behaviour - where the County field of the patient's address was used to determine the owning institution - and the new behaviour, which uses a dedicated Primary Institution field. If unsure, use Primary Institution"
 eclo_email,,ECLO Email,CVI,NOT USED - DELETE
+consent_show_patient_questions,,Consent show patient questions,Consent,No Longer used - DELETE
