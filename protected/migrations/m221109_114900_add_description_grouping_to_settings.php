@@ -54,6 +54,10 @@ class m221109_114900_add_description_grouping_to_settings extends OEMigration
             );
         }
 
+        // Deal with any left over settings in a customer DB that were unanticipated and not part of a standard install
+        $this->execute("UPDATE setting_metadata SET `description` = '' WHERE `description` is NULL");
+        $this->execute("UPDATE setting_metadata SET `group_id` = (SELECT id FROM setting_group WHERE `name` LIKE 'System') WHERE `group_id` is NULL");
+
         // Ensure that all future settings must have a group and description assigned
         $this->alterOEColumn('setting_metadata', 'description', 'TEXT NOT NULL', true);
         $this->alterOEColumn('setting_metadata', 'group_id', 'INT NOT NULL', true);
