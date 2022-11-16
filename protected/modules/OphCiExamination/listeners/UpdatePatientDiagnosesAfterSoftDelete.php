@@ -112,7 +112,7 @@ class UpdatePatientDiagnosesAfterSoftDelete
     protected function setPatientPrincipalDiagnosisFrom(?Element_OphCiExamination_Diagnoses $element): void
     {
 
-        $principal_diagnosis = $this->getPrincipalDiagnosisFrom($element);
+        $principal_diagnosis = $element ? $this->getPrincipalDiagnosisFrom($element) : null;
 
         if ($principal_diagnosis) {
             $this->clinical_event->episode->disorder_id = $principal_diagnosis->disorder_id;

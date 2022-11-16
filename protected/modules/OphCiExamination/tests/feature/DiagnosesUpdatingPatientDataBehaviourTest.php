@@ -74,6 +74,26 @@ class DiagnosesUpdatingPatientDataBehaviourTest extends \OEDbTestCase
     }
 
     /** @test */
+    public function deleting_sole_diagnosis_examination_removes_all_diagoses_from_patient()
+    {
+        $episode = \Episode::factory()->create();
+        $patient = $episode->patient;
+
+        $this->createOphthalmicDiagnosesElementThroughRequest($episode);
+        // retrieve the event that was created with this post
+        $latest_event = \Event::model()
+            ->findAll(['order' => 'id DESC', 'limit' => 1])[0];
+
+        $episode->refresh();
+        $this->assertNotNull($episode->disorder_id);
+        $latest_event->softDelete();
+        $episode->refresh();
+
+        $this->assertEmpty($patient->getOphthalmicDiagnoses());
+        $this->assertNull($episode->disorder_id);
+    }
+
+    /** @test */
     public function deleting_more_recent_examination_with_ophthalmic_diagnoses_reverts_to_previous()
     {
         list($initial_oph_diagnoses) = $this->createExaminationWithElements([Element_OphCiExamination_Diagnoses::class]);
@@ -289,6 +309,13 @@ class DiagnosesUpdatingPatientDataBehaviourTest extends \OEDbTestCase
         return $result;
     }
 
+    /**
+     * Note that this currently does not map diagnoses laterality. When test coverage
+     * is expanded, this should be dealt with.
+     *
+     * @param SystemicDiagnoses $element
+     * @return array
+     */
     protected function mapSystemicDiagnosesElementToFormData(SystemicDiagnoses $element): array
     {
         $result = [
@@ -301,7 +328,6 @@ class DiagnosesUpdatingPatientDataBehaviourTest extends \OEDbTestCase
                 'disorder_id' => $entry->disorder_id,
                 'date' => $entry->date,
                 'has_disorder' => $entry->has_disorder,
-                // TODO: map laterality of systemic for form data
                 'na_eye' => "-9"
             ];
         }
