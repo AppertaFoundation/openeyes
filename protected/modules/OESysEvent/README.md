@@ -24,15 +24,13 @@ class FooSystemEvent extends SystemEvent
 }
 ```
 
-This enables strict definition of the parameters required for the event to be dispatched. Dispatching can be triggered thus:
+This enables strict definition of the parameters required for the event to be dispatched. Dispatching is performed through the static `dispatch` accessor, the parameters of which are passed through to the `*SystemEvent` constructor:
 
 ```
 FooSystemEvent::dispatch(true);
 
 FooSystemEvent::dispatch(false, 5);
 ```
-
-As and when we shift to PHP 8, we will be able  to do:
 
 Note that for clarity, system event classnames should explicitly be postfixed with `SystemEvent`
 
