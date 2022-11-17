@@ -196,4 +196,12 @@ class Element_OphDrPrescription_Esign extends BaseEsignElement
     {
         return "Electronic Signature";
     }
+
+    public function getContainer_print_view()
+    {
+        $print_mode = Yii::app()->request->getParam('print_mode');
+        if ($print_mode === 'WP10' || $print_mode === 'FP10') {
+            return false;
+        }
+    }
 }
