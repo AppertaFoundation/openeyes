@@ -15,7 +15,7 @@
                 <label>Pincode:</label>
             </td>
             <td>
-                <?php if ($is_local_auth) { ?>
+                <?php if ($auth_required_for_pin) { ?>
                     <div class="js-pincode-content">
                         <input type="password" name="user_pwd" id="user_pwd" placeholder="Enter Your Password">
                     </div>
@@ -74,7 +74,7 @@
                 },
                 success: function(resp){
                     $(resp['msg']).insertBefore($(layout_table_selector))
-                    if(resp['is_verified']){
+                    if(resp['should_show_pincode']){
                         startPwdCountDown($btn, resp['pincode_html'], resp['pincode_regen_html']);
                         $('.js-pincode-label').append(resp['info_icon']);
                     }
