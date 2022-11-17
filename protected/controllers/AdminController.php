@@ -156,7 +156,7 @@ class AdminController extends BaseAdminController
                 $common_ophthalmic_disorder_group->createMapping(ReferenceData::LEVEL_INSTITUTION, $current_institution->id);
             }
         }
-            
+
         if (!empty($errors)) {
             foreach ($errors as $error) {
                 foreach ($error as $attribute => $error_array) {
@@ -168,7 +168,7 @@ class AdminController extends BaseAdminController
             $transaction->rollback();
             $this->redirect(Yii::app()->request->url);
         }
-            
+
         //Delete items
         $criteria = new CDbCriteria();
 
