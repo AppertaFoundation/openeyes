@@ -7,6 +7,8 @@
 * @covers OphDrPGDPSD_Assignment
 * @covers OphDrPGDPSD_AssignmentMeds
 * @covers OphDrPGDPSD_AssignmentComment
+*
+* @group pgdpsd
  */
 class OphDrPGDPSD_AssignmentTest extends \ActiveRecordTestCase
 {
