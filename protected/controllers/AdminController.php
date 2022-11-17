@@ -47,100 +47,24 @@ class AdminController extends BaseAdminController
     {
         $this->group = 'Disorders';
 
+        if (!Yii::app()->request->isPostRequest) {
+            $this->renderCommonOphthalmicDisorderGroupsView();
+        }
+
+        $json = $this->parseCommonOphthalmicDisorderGroupsJson();
+        if (!$json) {
+            Yii::app()->user->setFlash('warning.failure-form', 'There has been an error in saving, please contact support.');
+            $this->redirect(Yii::app()->request->url);
+        }
+
+        $this->updateCommonOphthalmicDisorderGroups($json);
+    }
+
+    protected function renderCommonOphthalmicDisorderGroupsView()
+    {
         $current_institution = $this->request->getParam('institution_id')
             ? Institution::model()->find('id = ' . $this->request->getParam('institution_id'))
             : Institution::model()->getCurrent();
-
-        $errors = array();
-
-        if (Yii::app()->request->isPostRequest) {
-            $transaction = Yii::app()->db->beginTransaction();
-            $JSON_string = Yii::app()->request->getParam('CommonOphthalmicDisorderGroups');
-            $json_error = false;
-            if (!$JSON_string || !array_key_exists('JSON_string', $JSON_string)) {
-                $json_error = true;
-            }
-
-            $JSON = json_decode(str_replace("'", '"', $JSON_string['JSON_string']), true);
-            if (json_last_error() != 0) {
-                $json_error = true;
-            }
-
-            $ids = array();
-
-            if (!$json_error) {
-                $display_orders = array_map(function ($entry) {
-                    return $entry['display_order'];
-                }, $JSON);
-
-                $groups = array_map(function ($entry) {
-                    return $entry['CommonOphthalmicDisorderGroup'];
-                }, $JSON);
-                foreach ($groups as $key => $group) {
-                    $common_ophthalmic_disorder_group = CommonOphthalmicDisorderGroup::model()->findByPk($group['id']);
-                    if (!$common_ophthalmic_disorder_group) {
-                        $common_ophthalmic_disorder_group = new CommonOphthalmicDisorderGroup();
-                        $group['id'] = null;
-                    }
-
-                    $common_ophthalmic_disorder_group->attributes = $group;
-                    $common_ophthalmic_disorder_group->display_order = $display_orders[$key];
-
-                    if (!$common_ophthalmic_disorder_group->save()) {
-                        $errors[] = $common_ophthalmic_disorder_group->getErrors();
-                    }
-
-                    $ids[$common_ophthalmic_disorder_group->id] = $common_ophthalmic_disorder_group->id;
-
-                    // map to institution if not already mapped
-                    if (!$common_ophthalmic_disorder_group->hasMapping(ReferenceData::LEVEL_INSTITUTION, $current_institution->id)) {
-                        $common_ophthalmic_disorder_group->createMapping(ReferenceData::LEVEL_INSTITUTION, $current_institution->id);
-                    }
-                }
-            } else {
-                $errors[] = ['Form Error' => ['There has been an error in saving, please contact support.']];
-            }
-
-            if (empty($errors)) {
-                //Delete items
-                $criteria = new CDbCriteria();
-
-                if ($ids) {
-                    $criteria->addNotInCondition('id', array_map(function ($id) {
-                        return $id;
-                    }, $ids));
-                }
-
-                $to_delete = CommonOphthalmicDisorderGroup::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION, $criteria, $current_institution);
-
-                foreach ($to_delete as $item) {
-                    // unmap deleted
-                    $item->deleteMapping(ReferenceData::LEVEL_INSTITUTION, $current_institution->id);
-
-                    if (!$item->delete()) {
-                        throw new Exception("Unable to delete CommonOphthalmicDisorderGroup:{$item->primaryKey}");
-                    }
-                    Audit::add('admin', 'delete', $item->primaryKey, null, array(
-                        'module' => (is_object($this->module)) ? $this->module->id : 'core',
-                        'model' => CommonOphthalmicDisorderGroup::getShortModelName(),
-                    ));
-                }
-
-                $transaction->commit();
-
-                Yii::app()->user->setFlash('success', 'List updated.');
-            } else {
-                foreach ($errors as $error) {
-                    foreach ($error as $attribute => $error_array) {
-                        $display_errors = '<strong>' . (new CommonOphthalmicDisorderGroup())->getAttributeLabel($attribute) . ':</strong> ' . implode(', ', $error_array);
-                        Yii::app()->user->setFlash('warning.failure-' . $attribute, $display_errors);
-                    }
-                }
-
-                $transaction->rollback();
-            }
-            $this->redirect(Yii::app()->request->url);
-        }
 
         // Get groups to list
         $criteria = new CDbCriteria();
@@ -174,6 +98,104 @@ class AdminController extends BaseAdminController
             'current_institution_id' => $current_institution->id,
             'current_institution' => $current_institution
         ));
+    }
+
+    protected function parseCommonOphthalmicDisorderGroupsJson()
+    {
+        $json_string = Yii::app()->request->getParam('CommonOphthalmicDisorderGroups');
+
+        $json_error = false;
+        if (!$json_string || !array_key_exists('JSON_string', $json_string)) {
+            $json_error = true;
+        }
+
+        $json = json_decode(str_replace("'", '"', $json_string['JSON_string']), true);
+        if (json_last_error() != 0) {
+            $json_error = true;
+        }
+
+        return $json_error ? null : $json;
+    }
+
+    protected function updateCommonOphthalmicDisorderGroups($json)
+    {
+        $transaction = Yii::app()->db->beginTransaction();
+        $errors = [];
+        $ids = [];
+
+        $current_institution = $this->request->getParam('institution_id')
+            ? Institution::model()->find('id = ' . $this->request->getParam('institution_id'))
+            : Institution::model()->getCurrent();
+
+        $display_orders = array_map(function ($entry) {
+            return $entry['display_order'];
+        }, $json);
+
+        $groups = array_map(function ($entry) {
+            return $entry['CommonOphthalmicDisorderGroup'];
+        }, $json);
+
+        foreach ($groups as $key => $group) {
+            $common_ophthalmic_disorder_group = CommonOphthalmicDisorderGroup::model()->findByPk($group['id']);
+            if (!$common_ophthalmic_disorder_group) {
+                $common_ophthalmic_disorder_group = new CommonOphthalmicDisorderGroup();
+                $group['id'] = null;
+            }
+
+            $common_ophthalmic_disorder_group->attributes = $group;
+            $common_ophthalmic_disorder_group->display_order = $display_orders[$key];
+
+            if (!$common_ophthalmic_disorder_group->save()) {
+                $errors[] = $common_ophthalmic_disorder_group->getErrors();
+            }
+
+            $ids[] = $common_ophthalmic_disorder_group->id;
+
+            // map to institution if not already mapped
+            if (!$common_ophthalmic_disorder_group->hasMapping(ReferenceData::LEVEL_INSTITUTION, $current_institution->id)) {
+                $common_ophthalmic_disorder_group->createMapping(ReferenceData::LEVEL_INSTITUTION, $current_institution->id);
+            }
+        }
+            
+        if (!empty($errors)) {
+            foreach ($errors as $error) {
+                foreach ($error as $attribute => $error_array) {
+                    $display_errors = '<strong>' . (new CommonOphthalmicDisorderGroup())->getAttributeLabel($attribute) . ':</strong> ' . implode(', ', $error_array);
+                    Yii::app()->user->setFlash('warning.failure-' . $attribute, $display_errors);
+                }
+            }
+
+            $transaction->rollback();
+            $this->redirect(Yii::app()->request->url);
+        }
+            
+        //Delete items
+        $criteria = new CDbCriteria();
+
+        if ($ids) {
+            $criteria->addNotInCondition('id', $ids);
+        }
+
+        $to_delete = CommonOphthalmicDisorderGroup::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION, $criteria, $current_institution);
+
+        foreach ($to_delete as $item) {
+            // unmap deleted
+            $item->deleteMapping(ReferenceData::LEVEL_INSTITUTION, $current_institution->id);
+
+            if (!$item->delete()) {
+                throw new Exception("Unable to delete CommonOphthalmicDisorderGroup:{$item->primaryKey}");
+            }
+            Audit::add('admin', 'delete', $item->primaryKey, null, array(
+                'module' => (is_object($this->module)) ? $this->module->id : 'core',
+                'model' => CommonOphthalmicDisorderGroup::getShortModelName(),
+            ));
+        }
+
+        $transaction->commit();
+
+        Yii::app()->user->setFlash('success', 'List updated.');
+
+        $this->redirect(Yii::app()->request->url);
     }
 
     public function actionAddMapping()

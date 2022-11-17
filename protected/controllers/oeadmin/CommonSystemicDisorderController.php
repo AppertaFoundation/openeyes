@@ -28,10 +28,10 @@ class CommonSystemicDisorderController extends BaseAdminController
                                     ? Institution::model()->find('id = ' . $this->request->getParam('institution_id'))
                                     : Institution::model()->getCurrent();
 
-        $groupModels = CommonSystemicDisorderGroup::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION, null, $current_institution);
+        $group_models = CommonSystemicDisorderGroup::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION, null, $current_institution);
         $groupData = array_map(function ($model) {
             return $model->getAttributes(array("id", "name"));
-        }, $groupModels);
+        }, $group_models);
 
         $this->jsVars['common_systemic_disorder_group_options'] = $groupData;
         Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/OpenEyes.UI.DiagnosesSearch.js'), ClientScript::POS_END);

@@ -66,14 +66,14 @@ class CommonSystemicDisorderGroupController extends BaseAdminController
             : Institution::model()->getCurrent();
 
         $transaction = Yii::app()->db->beginTransaction();
-        $JSON_string = Yii::app()->request->getParam('CommonSystemicDisorderGroups');
+        $json_string = Yii::app()->request->getParam('CommonSystemicDisorderGroups');
 
         $json_error = false;
-        if (!$JSON_string || !array_key_exists('JSON_string', $JSON_string)) {
+        if (!$json_string || !array_key_exists('JSON_string', $json_string)) {
             $json_error = true;
         }
 
-        $JSON = json_decode(str_replace("'", '"', $JSON_string['JSON_string']), true);
+        $json = json_decode(str_replace("'", '"', $json_string['JSON_string']), true);
         if (json_last_error() != 0) {
             $json_error = true;
         }
@@ -83,11 +83,11 @@ class CommonSystemicDisorderGroupController extends BaseAdminController
         if (!$json_error) {
             $display_orders = array_map(function ($entry) {
                 return $entry['display_order'];
-            }, $JSON);
+            }, $json);
 
             $groups = array_map(function ($entry) {
                 return $entry['CommonSystemicDisorderGroup'];
-            }, $JSON);
+            }, $json);
             foreach ($groups as $key => $group) {
                 $common_systemic_disorder_group = CommonSystemicDisorderGroup::model()->findByPk($group['id']);
                 if (!$common_systemic_disorder_group) {
