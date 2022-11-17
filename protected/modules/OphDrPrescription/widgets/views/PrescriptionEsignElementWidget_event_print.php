@@ -18,7 +18,8 @@
 ?>
 <?php /** @var PrescriptionEsignElementWidget $this */ ?>
 <?php $signatures = $this->element->getViewSignatures(); ?>
-<?php if (count($signatures) > 0) {
+<?php $print_mode = Yii::app()->request->getParam('print_mode'); ?>
+<?php if (count($signatures) > 0 && ($print_mode != 'WP10' && $print_mode != 'FP10')) {
     foreach ($signatures as $signature) { ?>
         <div class="box">
             <div class="flex">
