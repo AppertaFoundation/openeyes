@@ -153,6 +153,7 @@ class AdminController extends BaseAdminController
     }
 
     protected function deleteOtherCommonOphthalmicDisorderGroups($institution, $saved_group_ids){
+
         //Delete items
         $criteria = new CDbCriteria();
 
