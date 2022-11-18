@@ -209,9 +209,11 @@ class ProfileController extends BaseController
         // when the user access pincode page, calls the generatePin function without argument
         // it will check if the user has pincode, if no pincode, a new pincode will be generated for the user
         $user->generatePin();
+        $user_auth = Yii::app()->session['user_auth'];
         $pin_regen_status = $user->pincodeRegenStatus();
         $this->render('/profile/pincode', array(
-            'pin_regen_status' => $pin_regen_status
+            'pin_regen_status' => $pin_regen_status,
+            'auth_required_for_pin' => $user_auth->isLocalAuth()
         ));
     }
 
@@ -227,7 +229,9 @@ class ProfileController extends BaseController
 
         if ($user_auth->isLocalAuth()) {
             // verify password for local user
-            $is_verified = $user_auth->verifyPassword($password);
+            $should_show_pincode = $user_auth->verifyPassword($password);
+        } elseif ($user_auth->isSsoAuth()) {
+            $should_show_pincode = true;
         } else {
             // for external user, send username and password in a request for verification
             $institution_id = Yii::app()->session['selected_institution_id'];
@@ -237,14 +241,14 @@ class ProfileController extends BaseController
             // modify the password to the user input
             $user_auth_clone->password = $password;
             $user_identity = new UserIdentity($user_auth->username, $password, $institution_id, $site_id);
-            $is_verified = $user_identity->verifyExternalPassword($user_auth_clone);
+            $should_show_pincode = $user_identity->verifyExternalPassword($user_auth_clone);
         }
 
         $info_icon = null;
         $pincode_html = null;
         $pincode_regen_html = null;
 
-        if ($is_verified) {
+        if ($should_show_pincode) {
             $user = $user_auth->user;
             $msg = '<div class="alert-box success">Your password verification was successful</div>';
             $info_icon = '<i class="js-pwd-verification-info oe-i info small js-has-tooltip" data-tooltip-content="Your password verification will expire in 30 seconds or immediately after page refresh"></i>';
@@ -257,8 +261,12 @@ class ProfileController extends BaseController
             $msg = '<div class="alert-box warning">Password verification failed.</div>';
         }
 
+        if ($user_auth->isSsoAuth()) {
+            $msg = '';
+        }
+
         $this->renderJSON(array(
-            'is_verified' => $is_verified,
+            'should_show_pincode' => $should_show_pincode,
             'msg' => $msg,
             'info_icon' => $info_icon,
             'pincode_html' => $pincode_html,

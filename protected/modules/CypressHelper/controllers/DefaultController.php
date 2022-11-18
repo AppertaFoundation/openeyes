@@ -217,7 +217,6 @@ class DefaultController extends \CController
         echo '1';
     }
 
-
     protected function sendJsonResponse(array $data = [], int $status = 200)
     {
         header('HTTP/1.1 ' . $status);
@@ -252,7 +251,7 @@ class DefaultController extends \CController
                 continue;
             }
             if ($definition[0] === CActiveRecord::BELONGS_TO) {
-                $relations[$relation] = $instance->$relation->getAttributes();
+                $relations[$relation] = $instance->$relation ? $instance->$relation->getAttributes() : null;
             }
         }
         return $relations;
