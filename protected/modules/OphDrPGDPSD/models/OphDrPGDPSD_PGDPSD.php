@@ -1,5 +1,19 @@
 <?php
 /**
+ * (C) Copyright Apperta Foundation 2022
+ * This file is part of OpenEyes.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @link http://www.openeyes.org.uk
+ *
+ * @author OpenEyes <info@openeyes.org.uk>
+ * @copyright Copyright (C) 2022, Apperta Foundation
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+ */
+
+/**
  * This is the model class for table "ophdrpgdpsd_pgdpsd".
  *
  * The followings are the available columns in table 'ophdrpgdpsd_pgdpsd':
@@ -219,6 +233,8 @@ class OphDrPGDPSD_PGDPSD extends \BaseActiveRecordVersioned
     }
     public function medAssignmentValidator($attribute_name)
     {
+        $has_errors = false;
+
         if (!$this->assigned_meds && !$this->$attribute_name) {
             $this->addError('Medications', 'Medication List cannot be blank');
             return false;
@@ -226,19 +242,20 @@ class OphDrPGDPSD_PGDPSD extends \BaseActiveRecordVersioned
         foreach ($this->temp_meds as $temp_med) {
             $temp_med->pgdpsd = $this;
             $temp_med->validate();
-            $med_name = $temp_med->medication ? $temp_med->medication->getLabel(true) : '';
             $errors = $temp_med->getErrors();
             if ($errors) {
+                $med_name = $temp_med->medication ? $temp_med->medication->getLabel(true) : '';
+
                 foreach ($errors as $attr => $msg) {
                     if ($attr === 'pgdpsd_id') {
                         continue;
                     }
                     $this->addError('Medications', "{$med_name} {$msg[0]}");
                 }
-                return false;
+                $has_errors = true;
             }
         }
-        return true;
+        return !$has_errors;
     }
 
     public function getAssignedMedsInJSON($prepend_markup = true)
