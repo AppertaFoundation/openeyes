@@ -34,7 +34,7 @@ class PatientDiagnosesTest extends \OEDbTestCase
     public function db_view_shows_icd10_attributes_for_opthalmology()
     {
         $icd10_disorder = ModelFactory::factoryFor(Disorder::class)
-            ->forOpthalmology()
+            ->forOphthalmology()
             ->withICD10()
             ->create();
 
@@ -55,7 +55,7 @@ class PatientDiagnosesTest extends \OEDbTestCase
     public function db_view_will_discard_previous_diagnoses_when_newer_event_is_created_for_opthalmic_disorders()
     {
         $original_disorder = ModelFactory::factoryFor(Disorder::class)
-            ->forOpthalmology()
+            ->forOphthalmology()
             ->create();
 
         $initial_diagnoses_element = Element_OphCiExamination_Diagnoses::factory()
@@ -75,7 +75,7 @@ class PatientDiagnosesTest extends \OEDbTestCase
 
         // now override with new examination and diagnoses
         $later_disorders = ModelFactory::factoryFor(Disorder::class)
-            ->forOpthalmology()
+            ->forOphthalmology()
             ->count(2)
             ->create();
 

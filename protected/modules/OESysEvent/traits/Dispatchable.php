@@ -13,26 +13,14 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-namespace OEModule\OphCiExamination\factories\models;
+namespace OEModule\OESysEvent\traits;
 
-use Disorder;
-use Eye;
-use OE\factories\ModelFactory;
-use OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses;
+use Yii;
 
-class OphCiExamination_DiagnosisFactory extends ModelFactory
+trait Dispatchable
 {
-
-    /**
-     * @return array
-     */
-    public function definition(): array
+    public static function dispatch(...$arguments): void
     {
-        return [
-            'element_diagnoses_id' => Element_OphCiExamination_Diagnoses::factory(),
-            'eye_id' => Eye::factory()->useExisting(),
-            'disorder_id' => Disorder::factory()->forOphthalmology()->useExisting(),
-            'date' => $this->faker->dateTimeBetween('-3 weeks')->format('Y-m-d')
-        ];
+        Yii::app()->event->dispatch(new static(...$arguments));
     }
 }

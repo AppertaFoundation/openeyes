@@ -2,7 +2,7 @@
 /**
  * OpenEyes.
  *
- * 
+ *
  * Copyright OpenEyes Foundation, 2017
  *
  * This file is part of OpenEyes.
@@ -15,6 +15,14 @@
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright 2017, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+ */
+
+/**
+ * This was the original manager for a basic pub/sub model in OpenEyes.
+ * It's now been superceded by the OESysEvent module and will be removed in
+ * version 7 of OpenEyes.
+ *
+ * @deprecated since 6.5.0
  */
 class OEEventManager extends CApplicationComponent
 {

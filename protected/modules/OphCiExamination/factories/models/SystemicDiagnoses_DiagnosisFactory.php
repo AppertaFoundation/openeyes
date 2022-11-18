@@ -19,6 +19,7 @@ use OE\factories\ModelFactory;
 use OEModule\OphCiExamination\models\SystemicDiagnoses;
 use Disorder;
 use Eye;
+use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis;
 
 class SystemicDiagnoses_DiagnosisFactory extends ModelFactory
 {
@@ -30,7 +31,11 @@ class SystemicDiagnoses_DiagnosisFactory extends ModelFactory
     {
         return [
             'element_id' => SystemicDiagnoses::factory(),
-            'disorder_id' => Disorder::factory()
+            'disorder_id' => Disorder::factory(),
+            // because of how this model maps to the secondary_diagnosis model,
+            // we have to default this to the empty string
+            'date' => '',
+            'has_disorder' => SystemicDiagnoses_Diagnosis::$PRESENT
         ];
     }
 }

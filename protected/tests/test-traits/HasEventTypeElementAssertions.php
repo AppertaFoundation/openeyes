@@ -13,26 +13,21 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-namespace OEModule\OphCiExamination\factories\models;
-
-use Disorder;
-use Eye;
-use OE\factories\ModelFactory;
-use OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses;
-
-class OphCiExamination_DiagnosisFactory extends ModelFactory
+trait HasEventTypeElementAssertions
 {
+    use HasDatabaseAssertions;
 
-    /**
-     * @return array
-     */
-    public function definition(): array
+    protected function assertEventTypeElementCreatedFor(\Patient $patient, $element_class, $element_data)
     {
-        return [
-            'element_diagnoses_id' => Element_OphCiExamination_Diagnoses::factory(),
-            'eye_id' => Eye::factory()->useExisting(),
-            'disorder_id' => Disorder::factory()->forOphthalmology()->useExisting(),
-            'date' => $this->faker->dateTimeBetween('-3 weeks')->format('Y-m-d')
-        ];
+        $table = $element_class::model()->tableName();
+        $query = $this->generateDatabaseCountQuery($table, $element_data);
+        $this->joinPatientToEventTypeElementQuery($patient, $query, $table);
+        $this->assertGreaterThanOrEqual(1, $query->queryScalar(), "$table does not contain " . print_r($element_data, true) . "for given patient.");
+    }
+
+    protected function joinPatientToEventTypeElementQuery(\Patient $patient, $query, $table)
+    {
+        $query->join = ($query->join ?? '') . ' join event ev on ' . $table . '.event_id = ev.id join episode ep on ev.episode_id = ep.id';
+        $query->andWhere('ep.patient_id = :et_patient_id', [':et_patient_id' => $patient->id]);
     }
 }

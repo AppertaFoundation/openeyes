@@ -13,26 +13,14 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-namespace OEModule\OphCiExamination\factories\models;
+namespace OEModule\OESysEvent\events;
 
-use Disorder;
-use Eye;
-use OE\factories\ModelFactory;
-use OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses;
-
-class OphCiExamination_DiagnosisFactory extends ModelFactory
+class ClinicalEventSoftDeletedSystemEvent extends SystemEvent
 {
+    public \Event $clinical_event;
 
-    /**
-     * @return array
-     */
-    public function definition(): array
+    public function __construct(\Event $event)
     {
-        return [
-            'element_diagnoses_id' => Element_OphCiExamination_Diagnoses::factory(),
-            'eye_id' => Eye::factory()->useExisting(),
-            'disorder_id' => Disorder::factory()->forOphthalmology()->useExisting(),
-            'date' => $this->faker->dateTimeBetween('-3 weeks')->format('Y-m-d')
-        ];
+        $this->clinical_event = $event;
     }
 }

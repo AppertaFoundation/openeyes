@@ -13,6 +13,9 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OEModule\OESysEvent\events\ClinicalEventSoftDeletedSystemEvent;
+use OEModule\OphCiExamination\listeners\UpdatePatientDiagnosesAfterSoftDelete;
+
 return [
     'components' => [
         'event' => [
@@ -41,6 +44,10 @@ return [
                         'method' => 'createFollowUpStep'
                     ]
                 ],
+                [
+                    'system_event' => ClinicalEventSoftDeletedSystemEvent::class,
+                    'listener' => UpdatePatientDiagnosesAfterSoftDelete::class
+                ]
             ]
         ]
     ],
