@@ -23,8 +23,25 @@ if (isset($errors)) {
 }
 Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/OpenEyes.GenericFormJSONConverter.js'), CClientScript::POS_HEAD);
 ?>
+<form method="get">
+    <table class="cols-7">
+        <colgroup>
+            <col class="cols-3">
+            <col class="cols-4">
+        </colgroup>
+        <tbody>
+        <tr class="col-gap">            
+            <td>&nbsp;<br/><?=\CHtml::dropDownList(
+                    'institution_id',
+                    $current_institution_id,
+                    Institution::model()->getTenantedList(!Yii::app()->user->checkAccess('admin'))
+                ) ?></td>
+        </tr>
+        </tbody>
+    </table>
+</form>
 
-<form method="POST" action="/oeadmin/CommonSystemicDisorder/save">
+<form method="POST" action="/oeadmin/CommonSystemicDisorder/save?institution_id=<?= $current_institution_id; ?>">
     <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
     <?php
     $columns = [
@@ -63,19 +80,10 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl
             'header' => 'Group',
             'name' => 'group.name',
             'type' => 'raw',
-            'value' => function ($data, $row) {
+            'value' => function ($data, $row) use ($current_institution) {
                 $row++;
-                $options = CHtml::listData(CommonSystemicDisorderGroup::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION), 'id', 'name');
+                $options = CHtml::listData(CommonSystemicDisorderGroup::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION, null, $current_institution), 'id', 'name');
                 return CHtml::activeDropDownList($data, "[$row]group_id", $options, array('empty' => '-- select --'));
-            }
-        ],
-        [
-            'header' => 'Assigned to current institution',
-            'type' => 'raw',
-            'name' => 'assigned_insitution',
-            'value' => function($data, $row) {
-                $row++;
-                return CHtml::checkBox("assigned_institution[$row]", $data->hasMapping(ReferenceData::LEVEL_INSTITUTION, $data->getIdForLevel(ReferenceData::LEVEL_INSTITUTION)));
             }
         ],
         [
@@ -169,6 +177,10 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl
                     $(tr).find("[name$='display_order]']").val(index);
                 });
             }
+        });
+
+        $('#institution_id').on('change', function () {
+            $(this).closest('form').submit();
         });
 
         document.querySelector('.generic-admin-save').addEventListener('click', () => GenericFormJSONConverter.convert());

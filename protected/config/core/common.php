@@ -400,12 +400,12 @@ $config = array(
         'hie_usr_org' => trim(getenv('HIE_USR_ORG')) ?: null,
         'hie_usr_fac' => trim(getenv('HIE_USR_FAC')) ?: null,
         'hie_external' => trim(getenv('HIE_EXTERNAL')) ?: null,
-        'hie_org_user' => trim(@file_get_contents("/run/secrets/HIE_ORG_USER")) ?: (trim(getenv('HIE_ORG_USER')) ?: ''),
-        'hie_org_pass' => trim(@file_get_contents("/run/secrets/HIE_ORG_PASS")) ?: (trim(getenv('HIE_ORG_PASS')) ?: ''),
-        'hie_aes_encryption_password' => trim(@file_get_contents("/run/secrets/HIE_AES_ENCRYPTION_PASSWORD")) ?: (trim(getenv('HIE_AES_ENCRYPTION_PASSWORD')) ?: ''),
+        'hie_org_user' => trim(@file_get_contents("/run/secrets/HIE_ORG_USER")) ?: (trim(getenv('HIE_ORG_USER')) ?: null),
+        'hie_org_pass' => trim(@file_get_contents("/run/secrets/HIE_ORG_PASS")) ?: (trim(getenv('HIE_ORG_PASS')) ?: null),
+        'hie_aes_encryption_password' => trim(@file_get_contents("/run/secrets/HIE_AES_ENCRYPTION_PASSWORD")) ?: (trim(getenv('HIE_AES_ENCRYPTION_PASSWORD')) ?: null),
         'environment' => strtolower(getenv('OE_MODE')) == "live" ? 'live' : 'dev',
-        'csd_api_url' => getenv('OE_CSD_API_URL') ?: '',
-        'csd_api_key' => getenv('OE_CSD_API_KEY') ?: (rtrim(@file_get_contents("/run/secrets/OE_CSD_API_KEY")) ?: ''),
+        'csd_api_url' => getenv('OE_CSD_API_URL') ?: null,
+        'csd_api_key' => getenv('OE_CSD_API_KEY') ?: (rtrim(@file_get_contents("/run/secrets/OE_CSD_API_KEY")) ?: null),
         'csd_api_timeout' => getenv('OE_CSD_API_TIMEOUT') ?: 3,
         //'watermark' => '',
         'google_analytics_account' => '',
@@ -803,7 +803,7 @@ $config = array(
         'default_patient_import_subspecialty' => 'GL',
         //        Add elements that need to be excluded from the admin sidebar in settings
         'exclude_admin_structure_param_list' => getenv('OE_EXCLUDE_ADMIN_STRUCT_LIST') ? explode(",", getenv('OE_EXCLUDE_ADMIN_STRUCT_LIST')) : array(''),
-        'oe_version' => '6.4.1',
+        'oe_version' => '6.5.0',
         'gp_label' => !empty(trim(getenv('OE_GP_LABEL'))) ? getenv('OE_GP_LABEL') : null,
         'general_practitioner_label' => !empty(trim(getenv('OE_GENERAL_PRAC_LABEL'))) ? getenv('OE_GENERAL_PRAC_LABEL') : null,
         // allow duplicate entries on an automatic worklist for a patient (default = false)
@@ -995,6 +995,7 @@ $modules = array(
         'Api',
         'eyedraw',
         'Mirth',
+        'OESysEvent' => ['class' => \OEModule\OESysEvent\OESysEventModule::class],
         'OphCiExamination' => array('class' => '\OEModule\OphCiExamination\OphCiExaminationModule'),
         'OphCoCorrespondence',
         'OphCiPhasing',
@@ -1042,7 +1043,7 @@ if (strtolower(getenv('OE_MODE')) !== 'live') {
 $caches = array(
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '20221103215419',
+            'time' => '20221118164158',
         ),
 );
 

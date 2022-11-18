@@ -66,6 +66,7 @@ protected/modules/*
 !/protected/modules/CypressHelper/
 !/protected/modules/Genetics/
 !/protected/modules/OECaseSearch/
+!/protected/modules/OESysEvent/
 !/protected/modules/OETrial/
 !/protected/modules/OphCiDidNotAttend/
 !/protected/modules/OphCiExamination/

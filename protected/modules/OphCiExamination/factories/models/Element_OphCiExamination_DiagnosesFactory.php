@@ -34,6 +34,33 @@ class Element_OphCiExamination_DiagnosesFactory extends ModelFactory
         ];
     }
 
+    public function make($attributes = [], $canCreate = false)
+    {
+        // this has to happen at the end of the factory make chain
+        $this->afterMaking(function (Element_OphCiExamination_Diagnoses $element) {
+            if (!count($element->diagnoses)) {
+                return;
+            }
+            $this->ensureElementHasPrincipalDiagnosis($element);
+        });
+
+        return parent::make($attributes, $canCreate);
+    }
+
+    public function create($attributes = [])
+    {
+        $this->afterCreating(function (Element_OphCiExamination_Diagnoses $element) {
+            // if diagnoses have been "made" they must be associated with the created
+            // element record and saved.
+            foreach ($element->diagnoses as $diagnosis_entry) {
+                $diagnosis_entry->element_diagnoses_id = $element->id;
+                $diagnosis_entry->save();
+            }
+        });
+
+        return parent::create($attributes);
+    }
+
     public function noOphthalmicDiagnoses()
     {
         return $this->state(function ($attributes) {
@@ -72,20 +99,49 @@ class Element_OphCiExamination_DiagnosesFactory extends ModelFactory
 
     protected function withDiagnoses($disorders, $laterality): self
     {
-        return $this->afterCreating(function (Element_OphCiExamination_Diagnoses $element) use ($disorders, $laterality) {
+        return $this->afterMaking(function (Element_OphCiExamination_Diagnoses $element) use ($disorders, $laterality) {
             if (is_int($disorders)) {
+                // note that any single disorder should only feature once in the list
+                // for diagnoses ... multiple calls carry a small risk of duplicates
+                // which if it becomes an issue will necessitate a more robust retrieval
+                // approach here
                 $disorders = Disorder::factory()
-                    ->forOpthalmology()
+                    ->existingforOphthalmology()
                     ->count($disorders)
-                    ->create();
+                    ->make();
             }
-            foreach ($disorders as $disorder) {
-                OphCiExamination_Diagnosis::factory()->create([
-                    'element_diagnoses_id' => $element->id,
-                    'eye_id' => $laterality,
-                    'disorder_id' => $disorder->id
-                ]);
-            }
+            $this->addDisordersTo($element, $disorders, $laterality);
         });
+    }
+
+    private function ensureElementHasPrincipalDiagnosis(Element_OphCiExamination_Diagnoses $element): void
+    {
+        $has_principal_diagnosis = count(
+            array_filter($element->diagnoses, function ($diagnosis) {
+                return (bool) $diagnosis->principal;
+            })
+        ) > 0;
+
+        if (!$has_principal_diagnosis) {
+            $element->diagnoses[array_rand($element->diagnoses)]->principal = true;
+        }
+    }
+
+    private function addDisordersTo(Element_OphCiExamination_Diagnoses $element, array $disorders = [], $laterality): void
+    {
+        $element->diagnoses = array_merge(
+            $element->diagnoses ?? [],
+            array_map(
+                function ($disorder) use ($laterality) {
+                    return OphCiExamination_Diagnosis::factory()
+                        ->make([
+                            'element_diagnoses_id' => null,
+                            'eye_id' => $laterality,
+                            'disorder_id' => $disorder->id
+                        ]);
+                },
+                $disorders
+            )
+        );
     }
 }

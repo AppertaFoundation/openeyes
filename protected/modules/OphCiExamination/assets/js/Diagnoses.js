@@ -206,24 +206,50 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                 this.$popup.show();
             }
 
-            if (this.$table.find('.removeDiagnosis').length === 0) {
-                this.$noOphthalmicDiagnosesWrapper.show();
-                this.$table.hide();
+            // show no diagnoses check by default
+            this.$noOphthalmicDiagnosesWrapper.show();
+            /**
+             * if the selected diagnoses is empty, check the diagnoses readonly list
+             *  if it is empty as well, hide the diagnoses list table, otherwise display the table
+             *
+             * otherwise, hide the no diagnoses check, and show the diagnoses list table
+             */
+            if (this.isSelectedDiagnosesListEmpty()) {
+                if (this.isReadonlyDiagnosesEmpty()) {
+                    this.$table.hide();
+                } else {
+                    this.$table.show();
+                }
             } else {
                 this.$noOphthalmicDiagnosesWrapper.hide();
                 this.$table.show();
             }
         };
 
-        DiagnosesController.prototype.toggleTable = function () {
-            if (this.$table.find('.removeDiagnosis').length === 0 && this.$table.find('.read-only').length === 0) {
-                this.$table.hide();
-            } else if (this.$table.find('.removeDiagnosis').length === 0 && this.$table.find('.read-only').length === 1) {
-                this.$table.hide();
-            } else {
-                this.$table.show();
-            }
-        };
+    };
+
+    /**
+     * Check if the diagnoses readonly list is empty
+     * @returns {boolean} Return true or false.
+     */
+    DiagnosesController.prototype.isReadonlyDiagnosesEmpty = function() {
+        return this.$table.find('.read-only').length === 0;
+    }
+
+    /**
+     * Check if the selected diagnoses list is empty
+     * @returns {boolean} Return true or false.
+     */
+    DiagnosesController.prototype.isSelectedDiagnosesListEmpty = function () {
+        return this.$table.find('.removeDiagnosis').length === 0;
+    }
+
+    DiagnosesController.prototype.toggleTable = function () {
+        if (this.isSelectedDiagnosesListEmpty() && this.isReadonlyDiagnosesEmpty()) {
+            this.$table.hide();
+        } else {
+            this.$table.show();
+        }
     };
 
     DiagnosesController.prototype.popupSearch = function () {
@@ -327,7 +353,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     DiagnosesController.prototype.addEntry = function (selectedItems) {
         let controller = this;
         var rows = this.createRow(selectedItems);
-        
+
         for (var i in rows) {
             this.$table.find('tbody').append(rows[i]);
             this.appendSecondaryDiagnoses(selectedItems[i].secondary, this.$table.find('tbody tr:last'), selectedItems[i].alternate);

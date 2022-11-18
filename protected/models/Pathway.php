@@ -288,7 +288,7 @@ class Pathway extends BaseActiveRecordVersioned
             $criteria->compare('pathway_id', $this->id);
             $criteria->compare('status', $queue);
             $criteria->addInCondition('step_type_id', $step_type_id_list);
-            $criteria->order = 'queue_order '.$order_direction.', todo_order';
+            $criteria->order = 'queue_order ' . $order_direction . ', todo_order';
             $criteria->limit = 1;
             return PathwayStep::model()->find($criteria);
         }
@@ -313,7 +313,7 @@ class Pathway extends BaseActiveRecordVersioned
             case self::STATUS_BREAK:
                 return 'break';
             case self::STATUS_DISCHARGED:
-                return 'discharged';
+                return 'checked-out';
             case self::STATUS_DONE:
                 return 'done';
             default:
@@ -514,7 +514,7 @@ class Pathway extends BaseActiveRecordVersioned
 
         if ($start_time) {
             //start_time is a string in some cases, to be able to compare it to end_time it must be a DateTime object
-            if(gettype($start_time) === 'string') {
+            if (gettype($start_time) === 'string') {
                 $start_time = DateTime::createFromFormat('Y-m-d H:i:s', $this->start_time);
             }
 

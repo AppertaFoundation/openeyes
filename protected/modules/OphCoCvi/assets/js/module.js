@@ -52,6 +52,13 @@ $(document).ready(function() {
         setTimeout(enableButtons, 2000);
     });
 
+    handleButton($("#et_visually_impaired_footer"), function (e) {
+        $frame = $("<iframe src='/OphCoCvi/default/printVisualyImpaired?event_id="+OE_event_id+"' style='display: none;'></iframe>");
+        $frame.appendTo("body");
+        $frame.get(0).contentWindow.print();
+        setTimeout(enableButtons, 2000);
+    });
+
     $('#div_OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_describe_ethnics').hide();
     openIfOtherEthnicity();
 

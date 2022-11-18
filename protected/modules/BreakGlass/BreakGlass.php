@@ -83,8 +83,17 @@ class BreakGlass
     public function patientHealthboard(): ?string
     {
         $health_board = null;
+        // Get the break_glass_patient_institution_field setting
+        $break_glass_patient_institution_field = \SettingMetadata::model()->getSetting('break_glass_patient_institution_field');
+        if ($break_glass_patient_institution_field === 'primary_institution') {
+            $health_board = isset($this->patient->primary_institution->remote_id) ?
+                $this->resolveHealthboard($this->patient->primary_institution->remote_id) :
+                null;
+        }
         if ($this->patient->contact->address) {
-            $health_board = $this->patient->primary_institution->name ?? null;
+            if ($break_glass_patient_institution_field === 'county')  {
+                $health_board = $this->resolveHealthboard($this->patient->contact->address->county);
+            }
         }
 
         // If the patient's county doesn't match with a board, fall back to health board of created user

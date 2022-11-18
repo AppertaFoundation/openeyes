@@ -29,7 +29,7 @@ class PathwayTest extends ActiveRecordTestCase
             array('fixture_id' => 'pathway1', 'status_string' => 'later'),
             array('fixture_id' => 'pathway2', 'status_string' => 'active'),
             array('fixture_id' => 'pathway3', 'status_string' => 'long-wait'),
-            array('fixture_id' => 'pathway4', 'status_string' => 'discharged'),
+            array('fixture_id' => 'pathway4', 'status_string' => 'checked-out'),
             array('fixture_id' => 'pathway5', 'status_string' => 'done'),
         );
     }
@@ -131,7 +131,7 @@ class PathwayTest extends ActiveRecordTestCase
         $pathway = $this->pathways($fixture_id);
         $first_requested = empty($pathway->requested_steps) ? null : $pathway->requested_steps[0];
         $first_active = empty($pathway->started_steps) ? null : $pathway->started_steps[0];
-        $last_completed = empty($pathway->completed_steps) ? null : $pathway->completed_steps[count($pathway->completed_steps)-1];
+        $last_completed = empty($pathway->completed_steps) ? null : $pathway->completed_steps[count($pathway->completed_steps) - 1];
 
         $this->assertEquals($first_requested, $pathway->peek(PathwayStep::STEP_REQUESTED));
         $this->assertEquals($first_active, $pathway->peek(PathwayStep::STEP_STARTED));

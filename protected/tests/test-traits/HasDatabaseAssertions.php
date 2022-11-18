@@ -22,8 +22,12 @@ trait HasDatabaseAssertions
         $wheres = [];
         $params = [];
         foreach ($attributes as $col => $val) {
-            $wheres[] = "$col = :_$col";
-            $params[":_$col"] = $val;
+            if (is_null($val)) {
+                $wheres[] = "($table.$col IS NULL or $table.$col = '')";
+            } else {
+                $wheres[] = "$table.$col = :_$col";
+                $params[":_$col"] = $val;
+            }
         }
 
         return $this->getDbConnection()

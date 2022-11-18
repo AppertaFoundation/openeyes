@@ -32,42 +32,36 @@ class HistoryMacroController extends \ModuleAdminController
     public function actionEdit($id)
     {
         $model = HistoryMacro::model()->findByPk($id);
-        $errors = [];
 
         $request = Yii::app()->getRequest();
         if ($post = $request->getPost('OEModule_OphCiExamination_models_HistoryMacro')) {
             $model->attributes = $post;
-            $subspecialties = (array_key_exists('subspecialties', $post) && is_array($post['subspecialties'])) ? $post['subspecialties'] : [];
+            $subspecialty_ids = (array_key_exists('subspecialties', $post) && is_array($post['subspecialties'])) ? $post['subspecialties'] : [];
+
             if ($model->save()) {
-                HistoryMacro_Subspecialty::model()->deleteAll('history_macro_id = :macro_id', [':macro_id' => $id]);
-                $saved = $model->createMappings(ReferenceData::LEVEL_SUBSPECIALTY, $subspecialties);
-                if ($saved) {
-                    Audit::add('admin', 'edit', serialize($model->attributes), false, ['model' => 'OEModule_OphCiExamination_models_HistoryMacro']);
-                    Yii::app()->user->setFlash('success', 'History Macro saved');
-                    $this->redirect(['list']);
-                } else {
-                    $errors = $model->getErrors();
-                }
-            } else {
-                $errors = $model->getErrors();
+                $model->deleteMappings(ReferenceData::LEVEL_SUBSPECIALTY);
+                $model->createMappings(ReferenceData::LEVEL_SUBSPECIALTY, $subspecialty_ids);
             }
+
+            $this->redirectIfNoErrors($model, 'edit');
         }
 
         $this->render('/historymacros/edit', [
             'model' => $model,
-            'errors' => $errors,
+            'errors' => $model->getErrors(),
         ]);
     }
 
     public function actionCreate()
     {
         $model = new HistoryMacro();
-        $errors = [];
+        // default active field of the new record to 1, auto check the Active field on the UI
+        $model->active = 1;
 
         $request = Yii::app()->getRequest();
         if ($post = $request->getPost('OEModule_OphCiExamination_models_HistoryMacro')) {
             $model->attributes = $post;
-            $subspecialties = is_array($post['subspecialties']) ? $post['subspecialties'] : [];
+            $subspecialty_ids = isset($post['subspecialties']) && is_array($post['subspecialties']) ? $post['subspecialties'] : [];
 
             // Set display order
             $criteria=new CDbCriteria;
@@ -76,22 +70,15 @@ class HistoryMacroController extends \ModuleAdminController
             $model->display_order = (int)$order['display_order'] + 1;
 
             if ($model->save()) {
-                $saved = $model->createMappings(ReferenceData::LEVEL_SUBSPECIALTY, $subspecialties);
-                if ($saved) {
-                    Audit::add('admin', 'create', serialize($model->attributes), false, ['model' => 'OEModule_OphCiExamination_models_HistoryMacro']);
-                    Yii::app()->user->setFlash('success', 'History Macro saved');
-                    $this->redirect(['list']);
-                } else {
-                    $errors = $model->getErrors();
-                }
-            } else {
-                $errors = $model->getErrors();
+                $model->createMappings(ReferenceData::LEVEL_SUBSPECIALTY, $subspecialty_ids);
             }
+
+            $this->redirectIfNoErrors($model, 'create');
         }
 
         $this->render('/historymacros/edit', [
             'model' => $model,
-            'errors' => $errors,
+            'errors' => $model->getErrors(),
         ]);
     }
 
@@ -124,6 +111,21 @@ class HistoryMacroController extends \ModuleAdminController
         } else {
             $transaction->rollback();
             echo '0';
+        }
+    }
+
+
+    /**
+     * If the model is saved with no issue, audit the action and redirect to the list
+     *
+     * @param HistoryMacro $model
+     * @param string $action indicates if it is a create or edit action
+     * @return void
+     */
+    private function redirectIfNoErrors($model, $action) {
+        if (empty($model->getErrors())) {
+            Audit::add('admin', $action, serialize($model->attributes), false, ['model' => 'OEModule_OphCiExamination_models_HistoryMacro']);
+            $this->redirect(['list']);
         }
     }
 }

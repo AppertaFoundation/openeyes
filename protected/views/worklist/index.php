@@ -68,7 +68,7 @@ $initial_filter = $session_filter_info['filter'];
                     <div class="count"></div>
                 </li>
                 <li class="filter-btn js-clinic-btn-filter" data-filter="discharged">
-                    <div class="name">Departed</div>
+                    <div class="name">Checked-out</div>
                     <div class="count"></div>
                 </li>
                 <li class="filter-btn js-clinic-btn-filter" data-filter="done">
@@ -494,8 +494,8 @@ $initial_filter = $session_filter_info['filter'];
                     <div class="data">
                         <table>
                             <tbody>
-                                {{#ophthalmicDiagnosis.length}}
-                                    {{#ophthalmicDiagnosis}}
+                                {{#ophthalmicDiagnoses.length}}
+                                    {{#ophthalmicDiagnoses}}
                                         <tr>
                                             <td>{{name}}</td>
                                             <td>
@@ -508,15 +508,15 @@ $initial_filter = $session_filter_info['filter'];
                                                 <span class="oe-date">{{date}}</span>
                                             </td>
                                         </tr>
-                                    {{/ophthalmicDiagnosis}}
-                                {{/ophthalmicDiagnosis.length}}
-                                {{^ophthalmicDiagnosis.length}}
+                                    {{/ophthalmicDiagnoses}}
+                                {{/ophthalmicDiagnoses.length}}
+                                {{^ophthalmicDiagnoses.length}}
                                     <tr>
                                         <td>
                                             <div class="nil-recorded">Nil recorded</div>
                                          </td>
                                     </tr>
-                                {{/ophthalmicDiagnosis.length}}
+                                {{/ophthalmicDiagnoses.length}}
                              </tbody>
                         </table>
                     </div>

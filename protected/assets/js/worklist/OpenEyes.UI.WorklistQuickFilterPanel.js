@@ -1,9 +1,9 @@
 var OpenEyes = OpenEyes || {};
 OpenEyes.UI = OpenEyes.UI || {};
 
-(function(exports) {
+(function (exports) {
     const filterOptionTemplate =
-          '<div class="filter-btn js-filter-option" data-id="{{id}}">\
+        '<div class="filter-btn js-filter-option" data-id="{{id}}">\
                <div class="name">{{label}}</div>\
                <div class="count">{{count}}</div>\
            </div>';
@@ -24,11 +24,11 @@ OpenEyes.UI = OpenEyes.UI || {};
 
     WorklistQuickFilterPanel.prototype.constructor = WorklistQuickFilterPanel;
 
-    WorklistQuickFilterPanel.prototype.setupPanel = function() {
+    WorklistQuickFilterPanel.prototype.setupPanel = function () {
         const view = this;
         const controller = this.controller;
 
-        this.panel.find('.js-clinic-btn-filter').click(function() {
+        this.panel.find('.js-clinic-btn-filter').click(function () {
             controller.quick = $(this).data('filter');
         });
 
@@ -42,7 +42,7 @@ OpenEyes.UI = OpenEyes.UI || {};
             .useWrapperEvents(assignedTo);
 
         // Preserve current menu label contents for later, when they need to be restored
-        this.panel.find('.js-clinic-filter-menu > .filter-btn .name').each(function() {
+        this.panel.find('.js-clinic-filter-menu > .filter-btn .name').each(function () {
             const label = $(this);
 
             label.data('old-label', label.html());
@@ -53,7 +53,7 @@ OpenEyes.UI = OpenEyes.UI || {};
 
             clearTimeout(view.nameEntryTimeoutId);
 
-            view.nameEntryTimeoutId = setTimeout(function() {
+            view.nameEntryTimeoutId = setTimeout(function () {
                 controller.quickName = input.val();
             }, 500);
         });
@@ -61,15 +61,15 @@ OpenEyes.UI = OpenEyes.UI || {};
         if (this.sortByPopup) {
             const sortByPopup = this.sortByPopup;
 
-            this.panel.find('.popup-filter.table-sort').click(function() {
+            this.panel.find('.popup-filter.table-sort').click(function () {
                 sortByPopup.show();
             });
 
-            sortByPopup.find('.js-close-popup-btn').click(function() {
+            sortByPopup.find('.js-close-popup-btn').click(function () {
                 sortByPopup.hide();
             });
 
-            sortByPopup.find('.js-set-sort-by-btn').click(function() {
+            sortByPopup.find('.js-set-sort-by-btn').click(function () {
                 // Override the value set on the rhs panel
                 controller.quickSortBy = sortByPopup.find('.btn-list input:checked').val();
 
@@ -78,7 +78,7 @@ OpenEyes.UI = OpenEyes.UI || {};
         }
     }
 
-    WorklistQuickFilterPanel.prototype.setSortBy = function(idMappings, sortBy) {
+    WorklistQuickFilterPanel.prototype.setSortBy = function (idMappings, sortBy) {
         this.panel.find('.popup-filter.table-sort').text(idMappings[sortBy]);
 
         if (this.sortByPopup) {
@@ -87,13 +87,13 @@ OpenEyes.UI = OpenEyes.UI || {};
         }
     }
 
-    WorklistQuickFilterPanel.prototype.setQuickSelection = function(selected) {
+    WorklistQuickFilterPanel.prototype.setQuickSelection = function (selected) {
         this.panel.find('.js-clinic-btn-filter').removeClass('selected');
         this.panel.find('.js-filter-option').removeClass('selected');
         this.panel.find('.js-clinic-filter-menu').removeClass('selected');
         this.panel.find('.js-clinic-filter-menu').attr('data-selected-id', null);
 
-        this.panel.find('.js-clinic-filter-menu > .filter-btn .name').each(function() {
+        this.panel.find('.js-clinic-filter-menu > .filter-btn .name').each(function () {
             $(this).html($(this).data('old-label'));
         });
 
@@ -121,24 +121,24 @@ OpenEyes.UI = OpenEyes.UI || {};
         }
     }
 
-    WorklistQuickFilterPanel.prototype.setQuickName = function(name) {
+    WorklistQuickFilterPanel.prototype.setQuickName = function (name) {
         this.panel.find('input.search').val(name);
     }
 
-    WorklistQuickFilterPanel.prototype.setListsAndCounts = function(data) {
+    WorklistQuickFilterPanel.prototype.setListsAndCounts = function (data) {
         const controller = this.controller;
 
         const panelButtons = this.panel.find('.js-clinic-btn-filter');
         const panelMenus = this.panel.find('.js-clinic-filter-menu');
 
-        panelButtons.each(function() {
+        panelButtons.each(function () {
             const button = $(this);
             const name = button.data('filter');
 
             button.find('div.count').text(data[name]);
         });
 
-        panelMenus.each(function() {
+        panelMenus.each(function () {
             const menu = $(this);
             const name = menu.data('filter');
             const into = menu.children('nav.options');
@@ -151,13 +151,13 @@ OpenEyes.UI = OpenEyes.UI || {};
                 into.append(entry);
             }
 
-            into.find('.js-filter-option').off('click').on('click', function() {
+            into.find('.js-filter-option').off('click').on('click', function () {
                 controller.quick = { type: name, value: $(this).data('id') };
             });
         });
     }
 
-    WorklistQuickFilterPanel.prototype.changeWaitingFor = function(id, amount) {
+    WorklistQuickFilterPanel.prototype.changeWaitingFor = function (id, amount) {
         const controller = this.controller;
         const button = this.panel.find(`.js-clinic-filter-menu[data-filter="waitingFor"] .js-filter-option[data-id="${id}"]`);
 
@@ -180,13 +180,13 @@ OpenEyes.UI = OpenEyes.UI || {};
 
             this.panel.find('.js-clinic-filter-menu[data-filter="waitingFor"] nav.options').append(entry);
             this.panel.find(`.js-clinic-filter-menu[data-filter="waitingFor"] .js-filter-option[data-id="${id}"]`)
-                .click(function() {
+                .click(function () {
                     controller.quick = { type: 'waitingFor', value: $(this).data('id') };
                 });
         }
     }
 
-    WorklistQuickFilterPanel.prototype.changeAssignedTo = function(mappings, id, amount) {
+    WorklistQuickFilterPanel.prototype.changeAssignedTo = function (mappings, id, amount) {
         const controller = this.controller;
         const button = this.panel.find(`.js-clinic-filter-menu[data-filter="assignedTo"] .js-filter-option[data-id="${id}"]`);
 
@@ -209,13 +209,13 @@ OpenEyes.UI = OpenEyes.UI || {};
 
             this.panel.find('.js-clinic-filter-menu[data-filter="assignedTo"] nav.options').append(entry);
             this.panel.find(`.js-clinic-filter-menu[data-filter="assignedTo"] .js-filter-option[data-id="${id}"]`)
-                .click(function() {
+                .click(function () {
                     controller.quick = { type: 'assignedTo', value: $(this).data('id') };
                 });
         }
     }
 
-    WorklistQuickFilterPanel.prototype.changeCategoryCount = function(statusCategory, amount) {
+    WorklistQuickFilterPanel.prototype.changeCategoryCount = function (statusCategory, amount) {
         const controller = this.controller;
         const button = this.panel.find(`.js-clinic-btn-filter[data-filter="${statusCategory}"]`);
 
@@ -226,30 +226,30 @@ OpenEyes.UI = OpenEyes.UI || {};
         }
     }
 
-    WorklistQuickFilterPanel.prototype.changeStatusTypeCount = function(status, amount) {
+    WorklistQuickFilterPanel.prototype.changeStatusTypeCount = function (status, amount) {
         // The following string constants used in the switch statement need to reflect
         // those in getStatusString() inside protected/models/Pathway.php
         switch (status) {
-        case 'stuck':
-        case 'waiting':
-        case 'long-wait':
-        case 'break':
-            this.changeCategoryCount('clinic', amount);
-            this.changeCategoryCount('issues', amount);
-            break;
+            case 'stuck':
+            case 'waiting':
+            case 'long-wait':
+            case 'break':
+                this.changeCategoryCount('clinic', amount);
+                this.changeCategoryCount('issues', amount);
+                break;
 
-        case 'active':
-            this.changeCategoryCount('clinic', amount);
-            break;
+            case 'active':
+                this.changeCategoryCount('clinic', amount);
+                break;
 
-        case 'discharged':
-            this.changeCategoryCount('discharged', amount);
-            break;
+            case 'checked-out':
+                this.changeCategoryCount('discharged', amount);
+                break;
 
-        case 'done':
-            this.changeCategoryCount('clinic', amount);
-            this.changeCategoryCount('done', amount);
-            break;
+            case 'done':
+                this.changeCategoryCount('clinic', amount);
+                this.changeCategoryCount('done', amount);
+                break;
         }
     }
 

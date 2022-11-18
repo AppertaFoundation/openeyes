@@ -34,22 +34,49 @@ class SystemicDiagnosesFactory extends ModelFactory
         ];
     }
 
+    public function create($attributes = [])
+    {
+        $this->afterMaking(function (SystemicDiagnoses $element) {
+            // auto-relations causes related instances to be validated during a save
+            // regardless of whether the parent is validating or not.
+            // Systemic Diagnosis has an unusual behaviour that validates side_id is set
+            // and then nulls it if it's -9 (NA) prior to save
+            // so here we force unset values to -9 to ensure that they will validate
+            foreach ($element->diagnoses as $diagnosis_entry) {
+                if (!isset($diagnosis_entry->side_id)) {
+                    $diagnosis_entry->side_id = -9;
+                }
+            }
+        });
+
+        return parent::create($attributes);
+    }
     /**
      * @param mixed $disorders - array of disorders, or integer to represent the number of diagnoses to assign
      * @return void
      */
     public function withDiagnoses($disorders = []): self
     {
-        return $this->afterCreating(function (SystemicDiagnoses $element) use ($disorders) {
+        return $this->afterMaking(function (SystemicDiagnoses $element) use ($disorders) {
             if (is_int($disorders)) {
-                $disorders = Disorder::factory()->count($disorders)->create();
+                $disorders = Disorder::factory()
+                    ->existingForSystemic()
+                    ->count($disorders)
+                    ->make();
             }
-            foreach ($disorders as $disorder) {
-                SystemicDiagnoses_Diagnosis::factory()->create([
-                    'element_id' => $element->id,
-                    'disorder_id' => $disorder->id
-                ]);
-            }
+
+            $element->diagnoses = array_merge(
+                $element->diagnoses ?? [],
+                array_map(
+                    function ($disorder) {
+                        return SystemicDiagnoses_Diagnosis::factory()->make([
+                            'element_id' => null,
+                            'disorder_id' => $disorder->id
+                        ]);
+                    },
+                    $disorders
+                )
+            );
         });
     }
 }
