@@ -67,7 +67,7 @@ class AdminController extends BaseAdminController
 
     protected function renderCommonOphthalmicDisorderGroupsView($current_institution)
     {
-        // Get groups to list        
+        // Get groups to list
         $disorder_groups_for_institution = $this->getCommonOphthalimicDisorderGroupsForInstitution($current_institution);
 
         // Get which groups are in use to ensure they can't be deleted
@@ -113,7 +113,7 @@ class AdminController extends BaseAdminController
     protected function updateCommonOphthalmicDisorderGroups($current_institution, $json)
     {
         $transaction = Yii::app()->db->beginTransaction();
-        
+
         $display_orders = array_map(function ($entry) {
             return $entry['display_order'];
         }, $json);
@@ -135,13 +135,10 @@ class AdminController extends BaseAdminController
             $transaction->rollback();
             $this->redirect(Yii::app()->request->url);
         }
-            
-        try 
-        {
+
+        try {
             $this->deleteOtherCommonOphthalmicDisorderGroups($current_institution, $saved_group_ids);
-        } 
-        catch(Exception $e) 
-        {
+        } catch (Exception $e) {
             $transaction->rollback();
         }
 
@@ -152,7 +149,8 @@ class AdminController extends BaseAdminController
         $this->redirect(Yii::app()->request->url);
     }
 
-    protected function deleteOtherCommonOphthalmicDisorderGroups($institution, $saved_group_ids){
+    protected function deleteOtherCommonOphthalmicDisorderGroups($institution, $saved_group_ids)
+    {
 
         //Delete items
         $criteria = new CDbCriteria();
@@ -170,7 +168,7 @@ class AdminController extends BaseAdminController
             if (!$item->delete()) {
                 throw new Exception("Unable to delete CommonOphthalmicDisorderGroup:{$item->primaryKey}");
             }
-            
+
             Audit::add('admin', 'delete', $item->primaryKey, null, array(
                 'module' => (is_object($this->module)) ? $this->module->id : 'core',
                 'model' => CommonOphthalmicDisorderGroup::getShortModelName(),

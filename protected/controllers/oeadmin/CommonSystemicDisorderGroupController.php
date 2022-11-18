@@ -25,7 +25,7 @@ class CommonSystemicDisorderGroupController extends BaseAdminController
             ? Institution::model()->find('id = ' . $this->request->getParam('institution_id'))
             : Institution::model()->getCurrent();
 
-        // Get groups to list        
+        // Get groups to list
         $disorder_groups_for_institution = $this->getCommonSystemicDisorderGroupsForInstitution($current_institution);
 
         // Get which groups are in use to ensure they can't be deleted
@@ -46,7 +46,7 @@ class CommonSystemicDisorderGroupController extends BaseAdminController
             : Institution::model()->getCurrent();
 
         $json = $this->parseCommonSystemicDisorderGroupsJson();
-        
+
         if (!$json) {
             Yii::app()->user->setFlash('warning.failure-form', 'There has been an error in saving, please contact support.');
             $this->redirect(Yii::app()->request->urlReferrer);
@@ -85,7 +85,7 @@ class CommonSystemicDisorderGroupController extends BaseAdminController
     }
 
     protected function updateCommonSystemicDisorderGroups($current_institution, $json)
-    {    
+    {
         $transaction = Yii::app()->db->beginTransaction();
 
         $display_orders = array_map(function ($entry) {
@@ -95,9 +95,9 @@ class CommonSystemicDisorderGroupController extends BaseAdminController
         $groups = array_map(function ($entry) {
             return $entry['CommonSystemicDisorderGroup'];
         }, $json);
-        
+
         list($saved_group_ids, $errors) = $this->saveCommonSystemicDisorderGroups($current_institution, $groups, $display_orders);
-         
+
         if (!empty($errors)) {
             foreach ($errors as $error) {
                 foreach ($error as $attribute => $error_array) {
@@ -109,24 +109,22 @@ class CommonSystemicDisorderGroupController extends BaseAdminController
             $transaction->rollback();
             $this->redirect(Yii::app()->request->urlReferrer);
         }
-            
-        try 
-        {
+
+        try {
             $this->deleteOtherCommonSystemicDisorderGroups($current_institution, $saved_group_ids);
-        } 
-        catch(Exception $e) 
-        {
+        } catch (Exception $e) {
             $transaction->rollback();
         }
 
         $transaction->commit();
 
-        Yii::app()->user->setFlash('success', 'List updated.');        
+        Yii::app()->user->setFlash('success', 'List updated.');
 
         $this->redirect(Yii::app()->request->urlReferrer);
     }
 
-    protected function deleteOtherCommonSystemicDisorderGroups($institution, $saved_group_ids){
+    protected function deleteOtherCommonSystemicDisorderGroups($institution, $saved_group_ids)
+    {
         //Delete items
         $criteria = new CDbCriteria();
 

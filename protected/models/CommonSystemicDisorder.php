@@ -166,7 +166,7 @@ class CommonSystemicDisorder extends BaseActiveRecordVersioned
 
     /**
      * Fetch disorders that are in a group
-     * 
+     *
      * @return array
      */
     public static function getDisordersInGroup()
