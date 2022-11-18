@@ -133,8 +133,8 @@ foreach ($this->patient->episodes as $ep) {
         </tbody>
     </table>
 
-    <div class="add-data-actions flex-item-bottom" id="ophthalmic-diagnoses-popup">
-        <button class="button hint green add-entry" type="button" id="add-ophthalmic-diagnoses">
+    <div class="add-data-actions flex-item-bottom" id="ophthalmic-diagnoses-popup" data-test="ophthalmic-diagnoses-popup">
+        <button class="button hint green add-entry" type="button" id="add-ophthalmic-diagnoses" data-test="add-ophthalmic-diagnoses-button">
             <i class="oe-i plus pro-theme"></i>
         </button>
     </div>
@@ -186,7 +186,7 @@ foreach ($this->patient->episodes as $ep) {
             }
         }
 
-        $commonOphthalmicDisorderGroups = CommonOphthalmicDisorderGroup::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION);
+        $commonOphthalmicDisorderGroups = CommonOphthalmicDisorderGroup::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION, null, Institution::model()->getCurrent());
         $filteredOphthalmicDisorderGroups = [];
 
         foreach ($commonOphthalmicDisorderGroups as $disorderGroup) {

@@ -1,6 +1,6 @@
 <?php
 /**
- * (C) OpenEyes Foundation, 2019
+ * (C) OpenEyes Foundation, 2018
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -9,22 +9,10 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (C) 2019, OpenEyes Foundation
+ * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<h2>Common Systemic Disorder Groups</h2>
-<?php
-$this->renderPartial('//base/_messages');
-if (isset($errors)) {
-    $this->renderPartial('/admin/_form_errors', $errors);
-}
-?>
-
-<div class="alert-box error with-icon js-admin-errors" style="display:none">
-    <p>Could not be deleted:</p>
-    <div class="js-admin-error-container"></div>
-</div>
 
 <?php
 Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/OpenEyes.GenericFormJSONConverter.js'), CClientScript::POS_HEAD);
@@ -52,7 +40,7 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
 </form>
 
 <div class="cols-8">
-    <form method="POST" action="/oeadmin/CommonSystemicDisorderGroup/save?institution_id=<?= $current_institution_id; ?>">
+    <form method="POST" action="/admin/editcommonophthalmicdisordergroups?institution_id=<?= $current_institution_id; ?>">
         <input type="hidden" class="no-clear" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
         <?php
         $columns = array(
@@ -62,7 +50,7 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
                 'htmlOptions' => array('width' => '50px'),
                 'value' => function ($data, $row) {
                     return '<span>&uarr;&darr;</span>' .
-                        CHtml::hiddenField("CommonSystemicDisorderGroup[$row][id]", $data->id) .
+                        CHtml::hiddenField("CommonOphthalmicDisorderGroup[$row][id]", $data->id) .
                         CHtml::hiddenField("display_order[$row]", $data->display_order);
                 },
                 'cssClassExpression' => "'reorder'",
@@ -72,7 +60,7 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
                 'type' => 'raw',
                 'htmlOptions' => array('width' => '420px'),
                 'value' => function ($data, $row) {
-                    return CHtml::textField("CommonSystemicDisorderGroup[$row][name]", $data->name, array('style' => 'width:400px'));
+                    return CHtml::textField("CommonOphthalmicDisorderGroup[$row][name]", $data->name, array('style' => 'width:400px'));
                 }
             ),
             array(
@@ -108,14 +96,14 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
 <script>
 
     let formStructure = {
-        'name' : 'CommonSystemicDisorderGroups',
+        'name' : 'CommonOphthalmicDisorderGroups',
         'tableSelector': '.generic-admin.standard.sortable',
         'rowSelector': 'tr',
         'rowIdentifier': 'row',
         'structure': {
-            'CommonSystemicDisorderGroup[ROW_IDENTIFIER][id]' : '',
+            'CommonOphthalmicDisorderGroup[ROW_IDENTIFIER][id]' : '',
             'display_order[ROW_IDENTIFIER]' : '',
-            'CommonSystemicDisorderGroup[ROW_IDENTIFIER][name]' : '#CommonSystemicDisorderGroup_ROW_IDENTIFIER_name'
+            'CommonOphthalmicDisorderGroup[ROW_IDENTIFIER][name]' : '#CommonOphthalmicDisorderGroup_ROW_IDENTIFIER_name'
         }
     };
     let GenericFormJSONConverter = new OpenEyes.GenericFormJSONConverter(formStructure);
@@ -164,7 +152,7 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
             const $last_order_input = document.querySelector('table.generic-admin tbody tr:last-child input[name^="display_order"]');
             const order_value = $last_order_input ? +$last_order_input.value + 1 : 0;
 
-            let output = Mustache.render($('#common_systemic_disorder_group_template').text(), {
+            let output = Mustache.render($('#common_ophthalmic_disorder_group_template').text(), {
                 "row_count": OpenEyes.Util.getNextDataKey($tr, 'row'),
                 'even_odd': $tr.length % 2 ? 'odd' : 'even',
                 'order_value': order_value
@@ -185,18 +173,18 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
     }
 </script>
 
-<script type="text/template" id="common_systemic_disorder_group_template">
+<script type="text/template" id="common_ophthalmic_disorder_group_template">
     <tr data-row="{{row_count}}" class="{{even_odd}}">
         <td class="reorder">
             <span>↑↓</span>
-            <input type="hidden" value="" name="CommonSystemicDisorderGroup[{{row_count}}][id]"
-                   id="CommonSystemicDisorderGroup_{{row_count}}_id">
+            <input type="hidden" value="" name="CommonOphthalmicDisorderGroup[{{row_count}}][id]"
+                   id="CommonOphthalmicDisorderGroup_{{row_count}}_id">
             <input type="hidden" value="{{order_value}}" name="display_order[{{row_count}}]"
                    id="display_order_{{row_count}}">
         </td>
         <td width="400px">
-            <input type="text" name="CommonSystemicDisorderGroup[{{row_count}}][name]"
-                   id="CommonSystemicDisorderGroup_{{row_count}}_name" autocomplete="off" style="width:400px;">
+            <input type="text" name="CommonOphthalmicDisorderGroup[{{row_count}}][name]"
+                   id="CommonOphthalmicDisorderGroup_{{row_count}}_name" autocomplete="off" style="width:400px;">
         </td>
         <td>
             <button type="button"><a href="javascript:void(0)" class="delete">delete</a></button>

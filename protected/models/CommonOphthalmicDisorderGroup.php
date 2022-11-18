@@ -16,6 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "common_ophthalmic_disorder_group".
  *
@@ -28,6 +30,7 @@
  */
 class CommonOphthalmicDisorderGroup extends BaseActiveRecordVersioned
 {
+    use HasFactory;
     use MappedReferenceData;
 
     protected function getSupportedLevels(): int
