@@ -365,4 +365,28 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
     {
         return $this->subspecialty->name.' - '.($this->disorderOrFinding ? $this->disorderOrFinding->term : 'None');
     }
+
+    /**
+     * Fetch disorders that are in a group
+     * 
+     * @return array
+     */
+    public static function getDisordersInGroup()
+    {
+        $criteria = new CDbCriteria();
+        $criteria->addCondition('group_id IS NOT NULL');
+        $disorders_in_group = new CActiveDataProvider('CommonOphthalmicDisorder', array(
+            'criteria' => $criteria,
+            'pagination' => false,
+        ));
+        return array_values(
+            array_unique(
+                array_map(function ($disorder) {
+                        return $disorder->group_id;
+                },
+                    $disorders_in_group->getData()
+                )
+            )
+        );
+    }
 }

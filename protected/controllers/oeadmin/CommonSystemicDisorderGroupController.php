@@ -25,34 +25,14 @@ class CommonSystemicDisorderGroupController extends BaseAdminController
             ? Institution::model()->find('id = ' . $this->request->getParam('institution_id'))
             : Institution::model()->getCurrent();
 
-        // Get groups to list
-        $criteria = new CDbCriteria();
-        $criteria->join = "JOIN common_systemic_disorder_group_institution codgi ON t.id = codgi.common_systemic_disorder_group_id";
-        $criteria->compare('codgi.institution_id', $current_institution->id);
-        $data = new CActiveDataProvider('CommonSystemicDisorderGroup', array(
-            'criteria' => $criteria,
-            'pagination' => false,
-        ));
+        // Get groups to list        
+        $disorder_groups_for_institution = $this->getCommonSystemicDisorderGroupsForInstitution($current_institution);
 
         // Get which groups are in use to ensure they can't be deleted
-        $criteria = new CDbCriteria();
-        $criteria->addCondition('group_id IS NOT NULL');
-        $disorders_in_group = new CActiveDataProvider('CommonSystemicDisorder', array(
-            'criteria' => $criteria,
-            'pagination' => false,
-        ));
-        $active_group_ids = array_values(
-            array_unique(
-                array_map(function ($disorder) {
-                        return $disorder->group_id;
-                },
-                    $disorders_in_group->getData()
-                )
-            )
-        );
+        $active_group_ids = CommonSystemicDisorder::getDisordersInGroup();
 
         $this->render('/admin/listcommonsystemicdisordergroup', array(
-            'dataProvider' => $data,
+            'dataProvider' => $disorder_groups_for_institution,
             'active_group_ids' => $active_group_ids,
             'current_institution_id' => $current_institution->id,
             'current_institution' => $current_institution
@@ -65,7 +45,30 @@ class CommonSystemicDisorderGroupController extends BaseAdminController
             ? Institution::model()->find('id = ' . $this->request->getParam('institution_id'))
             : Institution::model()->getCurrent();
 
-        $transaction = Yii::app()->db->beginTransaction();
+        $json = $this->parseCommonSystemicDisorderGroupsJson();
+        
+        if (!$json) {
+            Yii::app()->user->setFlash('warning.failure-form', 'There has been an error in saving, please contact support.');
+            $this->redirect(Yii::app()->request->urlReferrer);
+        }
+
+        $this->updateCommonSystemicDisorderGroups($current_institution, $json);
+    }
+
+    protected function getCommonSystemicDisorderGroupsForInstitution($institution)
+    {
+        // Get groups to list
+        $criteria = new CDbCriteria();
+        $criteria->join = "JOIN common_systemic_disorder_group_institution codgi ON t.id = codgi.common_systemic_disorder_group_id";
+        $criteria->compare('codgi.institution_id', $institution->id);
+        return new CActiveDataProvider('CommonSystemicDisorderGroup', array(
+            'criteria' => $criteria,
+            'pagination' => false,
+        ));
+    }
+
+    protected function parseCommonSystemicDisorderGroupsJson()
+    {
         $json_string = Yii::app()->request->getParam('CommonSystemicDisorderGroups');
 
         $json_error = false;
@@ -78,70 +81,24 @@ class CommonSystemicDisorderGroupController extends BaseAdminController
             $json_error = true;
         }
 
-        $ids = array();
+        return $json_error ? null : $json;
+    }
 
-        if (!$json_error) {
-            $display_orders = array_map(function ($entry) {
-                return $entry['display_order'];
-            }, $json);
+    protected function updateCommonSystemicDisorderGroups($current_institution, $json)
+    {    
+        $transaction = Yii::app()->db->beginTransaction();
 
-            $groups = array_map(function ($entry) {
-                return $entry['CommonSystemicDisorderGroup'];
-            }, $json);
-            foreach ($groups as $key => $group) {
-                $common_systemic_disorder_group = CommonSystemicDisorderGroup::model()->findByPk($group['id']);
-                if (!$common_systemic_disorder_group) {
-                    $common_systemic_disorder_group = new CommonSystemicDisorderGroup();
-                    $group['id'] = null;
-                }
+        $display_orders = array_map(function ($entry) {
+            return $entry['display_order'];
+        }, $json);
 
-                $common_systemic_disorder_group->attributes = $group;
-                $common_systemic_disorder_group->display_order = $display_orders[$key];
-
-                if (!$common_systemic_disorder_group->save()) {
-                    $errors[] = $common_systemic_disorder_group->getErrors();
-                }
-
-                $ids[$common_systemic_disorder_group->id] = $common_systemic_disorder_group->id;
-
-                // map to institution if not already mapped
-                if (!$common_systemic_disorder_group->hasMapping(ReferenceData::LEVEL_INSTITUTION, $current_institution->id)) {
-                    $common_systemic_disorder_group->createMapping(ReferenceData::LEVEL_INSTITUTION, $current_institution->id);
-                }
-            }
-        } else {
-            $errors[] = ['Form Error' => ['There has been an error in saving, please contact support.']];
-        }
-
-        if (empty($errors)) {
-            //Delete items
-            $criteria = new CDbCriteria();
-
-            if ($ids) {
-                $criteria->addNotInCondition('id', array_map(function ($id) {
-                    return $id;
-                }, $ids));
-            }
-
-            $to_delete = CommonSystemicDisorderGroup::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION, $criteria, $current_institution);
-
-            foreach ($to_delete as $item) {
-                // unmap deleted
-                $item->deleteMapping(ReferenceData::LEVEL_INSTITUTION, $current_institution->id);
-
-                if (!$item->delete()) {
-                    throw new Exception("Unable to delete CommonSystemicDisorderGroup:{$item->primaryKey}");
-                }
-                Audit::add('admin', 'delete', $item->primaryKey, null, array(
-                    'module' => (is_object($this->module)) ? $this->module->id : 'core',
-                    'model' => CommonSystemicDisorderGroup::getShortModelName(),
-                ));
-            }
-
-            $transaction->commit();
-
-            Yii::app()->user->setFlash('success', 'List updated.');
-        } else {
+        $groups = array_map(function ($entry) {
+            return $entry['CommonSystemicDisorderGroup'];
+        }, $json);
+        
+        list($saved_group_ids, $errors) = $this->saveCommonSystemicDisorderGroups($current_institution, $groups, $display_orders);
+         
+        if (!empty($errors)) {
             foreach ($errors as $error) {
                 foreach ($error as $attribute => $error_array) {
                     $display_errors = '<strong>' . (new CommonSystemicDisorderGroup())->getAttributeLabel($attribute) . ':</strong> ' . implode(', ', $error_array);
@@ -150,8 +107,77 @@ class CommonSystemicDisorderGroupController extends BaseAdminController
             }
 
             $transaction->rollback();
+            $this->redirect(Yii::app()->request->urlReferrer);
+        }
+            
+        try 
+        {
+            $this->deleteOtherCommonSystemicDisorderGroups($current_institution, $saved_group_ids);
+        } 
+        catch(Exception $e) 
+        {
+            $transaction->rollback();
         }
 
+        $transaction->commit();
+
+        Yii::app()->user->setFlash('success', 'List updated.');        
+
         $this->redirect(Yii::app()->request->urlReferrer);
+    }
+
+    protected function deleteOtherCommonSystemicDisorderGroups($institution, $saved_group_ids){
+        //Delete items
+        $criteria = new CDbCriteria();
+
+        if ($saved_group_ids) {
+            $criteria->addNotInCondition('id', $saved_group_ids);
+        }
+
+        $to_delete = CommonSystemicDisorderGroup::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION, $criteria, $institution);
+
+        foreach ($to_delete as $item) {
+            // unmap deleted
+            $item->deleteMapping(ReferenceData::LEVEL_INSTITUTION, $institution->id);
+
+            if (!$item->delete()) {
+                throw new Exception("Unable to delete CommonSystemicDisorderGroup:{$item->primaryKey}");
+            }
+
+            Audit::add('admin', 'delete', $item->primaryKey, null, array(
+                'module' => (is_object($this->module)) ? $this->module->id : 'core',
+                'model' => CommonSystemicDisorderGroup::getShortModelName(),
+            ));
+        }
+    }
+
+    protected function saveCommonSystemicDisorderGroups($institution, $groups, $display_orders)
+    {
+        $errors = [];
+        $saved_group_ids = [];
+
+        foreach ($groups as $key => $group) {
+            $common_systemic_disorder_group = CommonSystemicDisorderGroup::model()->findByPk($group['id']);
+            if (!$common_systemic_disorder_group) {
+                $common_systemic_disorder_group = new CommonSystemicDisorderGroup();
+                $group['id'] = null;
+            }
+
+            $common_systemic_disorder_group->attributes = $group;
+            $common_systemic_disorder_group->display_order = $display_orders[$key];
+
+            if (!$common_systemic_disorder_group->save()) {
+                $errors[] = $common_systemic_disorder_group->getErrors();
+            }
+
+            $saved_group_ids[] = $common_systemic_disorder_group->id;
+
+            // map to institution if not already mapped
+            if (!$common_systemic_disorder_group->hasMapping(ReferenceData::LEVEL_INSTITUTION, $institution->id)) {
+                $common_systemic_disorder_group->createMapping(ReferenceData::LEVEL_INSTITUTION, $institution->id);
+            }
+        }
+
+        return [$saved_group_ids, $errors];
     }
 }
