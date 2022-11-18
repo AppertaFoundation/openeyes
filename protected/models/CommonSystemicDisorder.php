@@ -16,6 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "common_systemic_disorder".
  *
@@ -31,6 +33,7 @@
  */
 class CommonSystemicDisorder extends BaseActiveRecordVersioned
 {
+    use HasFactory;
     use MappedReferenceData;
 
     protected function getSupportedLevels(): int
@@ -131,7 +134,6 @@ class CommonSystemicDisorder extends BaseActiveRecordVersioned
     public static function getCommonSystemicDisorders()
     {
         return CommonSystemicDisorder::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION, array(
-            'condition' => 'specialty_id is null',//Why is this here? It's causing inconsistent results with configured common systemic disorders, versus their representation in the systemic diagnoses exam element
             'join' => 'JOIN disorder ON t.disorder_id = disorder.id',
             'order' => 't.display_order',
         ));
@@ -160,5 +162,29 @@ class CommonSystemicDisorder extends BaseActiveRecordVersioned
         // it's unclear why this method expects a firm parameter when it is unused
         // possibly a future proofing idea that never bore fruit
         return CHtml::listData(static::getDisorders(), 'id', 'term');
+    }
+
+    /**
+     * Fetch disorders that are in a group
+     *
+     * @return array
+     */
+    public static function getDisordersInGroup()
+    {
+        $criteria = new CDbCriteria();
+        $criteria->addCondition('group_id IS NOT NULL');
+        $disorders_in_group = new CActiveDataProvider('CommonSystemicDisorder', array(
+            'criteria' => $criteria,
+            'pagination' => false,
+        ));
+        return array_values(
+            array_unique(
+                array_map(function ($disorder) {
+                        return $disorder->group_id;
+                },
+                    $disorders_in_group->getData()
+                )
+            )
+        );
     }
 }
