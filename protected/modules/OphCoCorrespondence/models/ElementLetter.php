@@ -818,7 +818,7 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
         // and macros applicable only to the current institution are returned.
         $criteria->condition .= ')';/* AND (institution_id IS NULL OR institution_id = :institution_id)';
         $criteria->params[':institution_id'] = Yii::app()->session['selected_institution_id'];*/
-        $criteria->order = 'display_order asc';
+        $criteria->order = 'display_order asc, sites_sites.site_id asc, subspecialties_subspecialties.subspecialty_id asc, firms_firms.firm_id asc, t.name asc';
 
         foreach (LetterMacro::model()->findAll($criteria) as $macro) {
             if (!in_array($macro->name, $macro_names, false)) {
