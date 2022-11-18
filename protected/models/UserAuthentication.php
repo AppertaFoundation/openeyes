@@ -306,6 +306,11 @@ class UserAuthentication extends BaseActiveRecordVersioned
         return $this->institution_authentication_id ? ($this->getRelated('institutionAuthentication')->user_authentication_method == 'LOCAL') : true;
     }
 
+    public function isSsoAuth()
+    {
+        return $this->institution_authentication_id ? ($this->getRelated('institutionAuthentication')->user_authentication_method == 'SSO') : true;
+    }
+
     public static function fromAttributes($attributes)
     {
         $user_auth = !empty($attributes['id']) ? self::model()->findByPk($attributes['id']) : new self();
