@@ -43,6 +43,8 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
     protected $default_view_order = 10;
     public $no_ophthalmic_diagnoses = false;
 
+    protected $has_other_subspecialties_diagnoses = null;
+
     protected $errorExceptions = [
             'OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses_diagnoses' => 'OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses_diagnoses_table'
     ];
@@ -194,6 +196,47 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
         return new \CActiveDataProvider(get_class($this), array(
                 'criteria' => $criteria,
         ));
+    }
+
+    /**
+     * Return cached value $has_other_subspecialties_diagnoses,
+     * if $has_other_subspecialties_diagnoses is null, run the checkForOtherSubspecialtiesDiagnoses
+     * and assign the result to $has_other_subspecialties_diagnoses
+     *
+     * @return bool cached value has_other_subspecialties_diagnoses
+     */
+    public function patientHasOtherSubspecialtiesDiagnoses() {
+        if ($this->has_other_subspecialties_diagnoses === null) {
+            $this->has_other_subspecialties_diagnoses = $this->checkForOtherSubspecialtiesDiagnoses();
+        }
+
+        return $this->has_other_subspecialties_diagnoses;
+    }
+
+    /**
+     * Check if the patient has diagnoses in other subspecialties
+     *
+     * @return bool
+     * @throws Exception if there is no event, episode or patient data present, throw exception
+     */
+    public function checkForOtherSubspecialtiesDiagnoses() {
+        if (!$this->event || !$this->event->episode || !$this->event->episode->patient) {
+            throw new \RuntimeException("No event, episode or patient data found");
+        }
+
+        $current_episode = $this->event->episode;
+
+        $patient = $current_episode->patient;
+
+        foreach ($patient->episodes as $ep) {
+            /**
+             * return true once find a diagnosis that belongs to other subspecialties
+             */
+            if ($ep->id !== $current_episode->id && $ep->disorder_id) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -559,15 +602,11 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
             if (!$principal) {
                 $this->addError('diagnoses', 'Principal diagnosis required.');
             }
-        } elseif (!isset($this->no_ophthalmic_diagnoses_date) && !$this->diagnoses) {
-            $this->addError('no_ophthalmic_diagnoses_date', 'Please confirm patient has no ophthalmic diagnoses.');
         } else {
             // This isn't very nice but there isn't a clean alternative at the moment
             $controller = \Yii::app()->getController();
 
             if ($controller instanceof \BaseEventTypeController) {
-                $et_diagnoses = \ElementType::model()->find('class_name=?', array('OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses'));
-
                 $have_further_findings = false;
 
                 foreach ($controller->getElements() as $element) {
@@ -576,8 +615,18 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
                     }
                 }
 
-                if (!$have_further_findings && !$this->diagnoses && !isset($this->no_ophthalmic_diagnoses_date)) {
-                    $this->addError('diagnoses', 'Please select at least one diagnosis or please confirm patient has no ophthalmic diagnoses.');
+                /**
+                 * At this stage, for sure there is no diagnoses submitted for the current episode.
+                 * only check if the patient has diagnoses from other subspecialties when there is no "no_ophthalmic_diagnoses_date" recorded and no further findings record
+                 */
+                if (!isset($this->no_ophthalmic_diagnoses_date) && !$have_further_findings) {
+                    /**
+                     * as per the comment in ticket OE-13745, as long as the patient has diagnoses (from any subspecialty),
+                     * the validation should pass
+                     */
+                    if (!$this->patientHasOtherSubspecialtiesDiagnoses()) {
+                        $this->addError('diagnoses', 'Please select at least one diagnosis, one further findings from the Further findings element or please confirm patient has no ophthalmic diagnoses.');
+                    }
                 }
             }
         }

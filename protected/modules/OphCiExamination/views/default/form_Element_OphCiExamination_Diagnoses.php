@@ -38,7 +38,7 @@ $user_firm = Firm::model()->with(array(
     'serviceSubspecialtyAssignment' => array('subspecialty'),
 ))->findByPk(Yii::app()->session['selected_firm_id']);
 
-$current_episode = Episode::getCurrentEpisodeByFirm($this->patient->id, $user_firm);
+$current_episode = $this->event->episode ?? Episode::getCurrentEpisodeByFirm($this->patient->id, $user_firm);
 
 $read_only_diagnoses = [];
 foreach ($this->patient->episodes as $ep) {
@@ -53,6 +53,8 @@ foreach ($this->patient->episodes as $ep) {
         ];
     }
 }
+
+$total_diagnoses_count = count($element->diagnoses) + count($read_only_diagnoses);
 ?>
 
 <script type="text/javascript" src="<?= $js_path; ?>"></script>
@@ -65,16 +67,19 @@ foreach ($this->patient->episodes as $ep) {
 
     <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
 
-    <div class="cols-1 align-left <?= $model_name ?>_no_ophthalmic_diagnoses_wrapper" style="display: <?php echo count($element->diagnoses) === 0 ? '' : 'none'; ?>">
+    <!-- if there is no diagnoses for the current or other subspecialties, display the no diagnoses checkbox -->
+    <?php if ($total_diagnoses_count === 0) { ?>
+    <div class="cols-1 align-left <?= $model_name ?>_no_ophthalmic_diagnoses_wrapper">
         <label class="inline highlight" for="<?= $model_name ?>_no_ophthalmic_diagnoses">
             <?= \CHtml::checkBox(
                 $model_name . '[no_ophthalmic_diagnoses]',
                 $element->no_ophthalmic_diagnoses_date ? true : false,
                 array('class' => $model_name . '_no_ophthalmic_diagnoses')
             ); ?>
-            No ophthalmic diagnoses
+            No ophthalmic diagnoses for this Subspecialty.
         </label>
     </div>
+    <?php } ?>
 
     <table id="<?= $model_name ?>_diagnoses_table" class="cols-10" style="display: <?php echo count($element->diagnoses) >= 1 ? '' : 'none'; ?>">
             <colgroup>
@@ -120,6 +125,7 @@ foreach ($this->patient->episodes as $ep) {
 
         <tr>
             <td class="cols-1 align-left <?= $model_name ?>_no_ophthalmic_diagnoses_wrapper" style="display: <?php echo $element->no_ophthalmic_diagnoses_date ? '' : 'none'; ?>">
+            <?php if ($total_diagnoses_count === 0) { ?>
                 <label class="inline highlight" for="<?= $model_name ?>_no_ophthalmic_diagnoses">
                     <?= \CHtml::checkBox(
                         $model_name . '[no_ophthalmic_diagnoses]',
@@ -128,6 +134,7 @@ foreach ($this->patient->episodes as $ep) {
                     ); ?>
                     No ophthalmic diagnoses for this Subspecialty.
                 </label>
+            <?php } ?>
             </td>
         </tr>
         </tbody>
