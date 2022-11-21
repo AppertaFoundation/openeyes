@@ -110,25 +110,28 @@ if [ $founderrors = 1 ]; then
 	printf "\e[41m\e[97m  MIGRATE ERRORS ENCOUNTERED  \e[0m \n"
 	echo ""
 
-	select yn in "Continue" "Exit"; do
-		case $yn in
-		Continue)
-			echo "
+	if [ ${DEBIAN_FRONTEND,,} == "noninteractive" ]; then
+		exit 1
+	else
+		select yn in "Continue" "Exit"; do
+			case $yn in
+			Continue)
+				echo "
 
 Continuing. System is in unknown state and further errors may be encountered...
 
 			"
-			break
-			;;
-		Exit)
-			echo "
+				break
+				;;
+			Exit)
+				echo "
 Exiting. Please fix errors and try again...
 			"
-			exit 1
-			;;
-		esac
-	done
-
+				exit 1
+				;;
+			esac
+		done
+	fi
 elif
 	grep -q "applied" $WROOT/protected/runtime/migrate.log >/dev/null
 then
