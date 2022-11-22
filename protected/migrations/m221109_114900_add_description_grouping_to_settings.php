@@ -22,8 +22,11 @@ class m221109_114900_add_description_grouping_to_settings extends OEMigration
                 'name VARCHAR(40) UNIQUE',
                 'PRIMARY KEY (id)'
             ], false);
+        }
 
-            $this->addForeignKey('fk_setting_group', 'setting_metadata', 'group_id', 'setting_group', 'id');
+        // if th eFK already exists, drop it before we make table alterations (it will be recreated at the end)
+        if ($this->verifyForeignKeyExists('setting_metadata', 'fk_setting_group')) {
+            $this->dropForeignKey('fk_setting_group', 'setting_metadata');
         }
 
         // CSV File with following order- key, element_type_id, name, group, description
@@ -61,6 +64,8 @@ class m221109_114900_add_description_grouping_to_settings extends OEMigration
         // Ensure that all future settings must have a group and description assigned
         $this->alterOEColumn('setting_metadata', 'description', 'TEXT NOT NULL', true);
         $this->alterOEColumn('setting_metadata', 'group_id', 'INT NOT NULL', true);
+
+        $this->addForeignKey('fk_setting_group', 'setting_metadata', 'group_id', 'setting_group', 'id');
     }
 
     public function safeDown()
