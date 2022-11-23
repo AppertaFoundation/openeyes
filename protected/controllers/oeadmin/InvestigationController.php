@@ -128,6 +128,7 @@ class InvestigationController extends BaseAdminController
                         $investigationComments = new InvestigationComments();
                         $investigationComments->investigation_code = $investigation->id;
                         $investigationComments->comments = $comment;
+                        // empty comments will fail validation, so will not be saved. No need to flag this to the user.
                         $investigationComments->save();
                 }
                 $transaction->commit();
