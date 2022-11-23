@@ -124,13 +124,11 @@ class InvestigationController extends BaseAdminController
                 // before saving the comments, delete all the existing comments
                 InvestigationComments::model()->deleteAll('investigation_code = :investigation_code', array(':investigation_code' => $id));
 
-                if (isset($user_comments_data['comments'])) {
-                    foreach ($user_comments_data['comments'] as $comment) {
+                foreach ($user_comments_data['comments'] ?? [] as $comment) {
                         $investigationComments = new InvestigationComments();
                         $investigationComments->investigation_code = $investigation->id;
                         $investigationComments->comments = $comment;
                         $investigationComments->save();
-                    }
                 }
                 $transaction->commit();
                 $this->redirect('/oeadmin/investigation/list/');
