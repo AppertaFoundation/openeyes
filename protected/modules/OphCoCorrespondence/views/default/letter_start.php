@@ -53,7 +53,7 @@ $logo_helper = new LogoHelper();
             </div>
         </div>
 
-        <div class="address-from change-font large-font text-r">
+        <div class="address-from change-font large-font text-r cols-5">
             <?php if ($element->site) { ?>
                 <h5 <?= // OE-11074 This inline css is to solve the word-wrapping issue for Australia Clients
                     SettingMetadata::model()->getSetting('default_country') === 'Australia' ? "style='white-space: nowrap'" : null;
