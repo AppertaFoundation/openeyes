@@ -16,6 +16,9 @@
  *
 */
 
+use OEModule\OphCiExamination\models\InvestigationComments;
+use OEModule\OphCiExamination\models\OphCiExamination_Investigation_Codes;
+
 /**
  * Class InvestigationsController.
  */
@@ -95,12 +98,13 @@ class InvestigationController extends BaseAdminController
         $criteria = new CDbCriteria();
         $criteria->together = true;
 
-        $investigation = \OEModule\OphCiExamination\models\OphCiExamination_Investigation_Codes::model()->findByPk($id, $criteria);
+        $investigation = OphCiExamination_Investigation_Codes::model()->findByPk($id, $criteria);
         if (!$investigation) {
-            $investigation = new \OEModule\OphCiExamination\models\OphCiExamination_Investigation_Codes();
+            $investigation = new OphCiExamination_Investigation_Codes();
         }
 
         if (Yii::app()->request->isPostRequest) {
+            $transaction = Yii::app()->db->beginTransaction();
             // get data from POST
             $user_data = Yii::app()->request->getPost('OEModule_OphCiExamination_models_OphCiExamination_Investigation_Codes');
             // set user data
@@ -110,24 +114,25 @@ class InvestigationController extends BaseAdminController
             $investigation->snomed_code = $user_data['snomed_code'];
             $investigation->snomed_term = $user_data['snomed_term'];
 
-            $user_comments_data = Yii::app()->request->getPost('OEModule_OphCiExamination_models_InvestigationComments');
+            $user_comments_data = Yii::app()->request->getPost(CHtml::modelName(InvestigationComments::class));
 
             // try saving the data
             if (!$investigation->save()) {
                 $errors = $investigation->getErrors();
+                $transaction->rollback();
             } else {
                 // before saving the comments, delete all the existing comments
-                \OEModule\OphCiExamination\models\InvestigationComments::model()->deleteAll('investigation_code = :investigation_code', array(':investigation_code' => $id));
+                InvestigationComments::model()->deleteAll('investigation_code = :investigation_code', array(':investigation_code' => $id));
 
                 if (isset($user_comments_data['comments'])) {
                     foreach ($user_comments_data['comments'] as $comment) {
-                        $investigationComments = new \OEModule\OphCiExamination\models\InvestigationComments();
+                        $investigationComments = new InvestigationComments();
                         $investigationComments->investigation_code = $investigation->id;
                         $investigationComments->comments = $comment;
                         $investigationComments->save();
                     }
                 }
-
+                $transaction->commit();
                 $this->redirect('/oeadmin/investigation/list/');
             }
         }
