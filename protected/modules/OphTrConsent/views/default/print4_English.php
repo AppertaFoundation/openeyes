@@ -16,6 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OEModule\OphTrConsent\models\Element_OphTrConsent_CapacityAssessment;
+
 ?>
 <?php
 $institution_id = Institution::model()->getCurrent()->id;
@@ -117,30 +119,30 @@ $type_assessment = new OphTrConsent_Type_Assessment();
     </div>
     <?php endif; ?>
 
-    <?php if (isset($elements['OEModule\OphTrConsent\models\Element_OphTrConsent_CapacityAssessment']) && $type_assessment->existsElementInConsentForm($elements['OEModule\OphTrConsent\models\Element_OphTrConsent_CapacityAssessment']->elementType->id, Element_OphTrConsent_Type::TYPE_UNABLE_TO_CONSENT_ID)) : ?>
+    <?php if (isset($elements[Element_OphTrConsent_CapacityAssessment::class]) && $type_assessment->existsElementInConsentForm($elements[Element_OphTrConsent_CapacityAssessment::class]->elementType->id, Element_OphTrConsent_Type::TYPE_UNABLE_TO_CONSENT_ID)) : ?>
     <div class="group"><h4>Capacity Assessment</h4>
         <div class="indent"><h5>The patient lacks capacity to give or withhold consent to this procedure or course of
                 treatment because of:</h5>
             <ul>
-                <?php foreach ($elements['OEModule\OphTrConsent\models\Element_OphTrConsent_CapacityAssessment']->lackOfCapacityReasons as $reason) : ?>
+                <?php foreach ($elements[Element_OphTrConsent_CapacityAssessment::class]->lackOfCapacityReasons as $reason) : ?>
                     <li><?=CHtml::encode($reason->label)?></li>
                 <?php endforeach; ?>
             </ul>
             <h5>How were above judgements reached:</h5>
             <ul>
-                <li><?=$elements['OEModule\OphTrConsent\models\Element_OphTrConsent_CapacityAssessment']->how_judgement_was_made?></li>
+                <li><?=$elements[Element_OphTrConsent_CapacityAssessment::class]->how_judgement_was_made?></li>
             </ul>
             <h5>What evidence has been relied upon:</h5>
             <ul>
-                <li><?=$elements['OEModule\OphTrConsent\models\Element_OphTrConsent_CapacityAssessment']->evidence?></li>
+                <li><?=$elements[Element_OphTrConsent_CapacityAssessment::class]->evidence?></li>
             </ul>
             <h5>What attempts were made to assist the patient to make their own decision and why not successful:</h5>
             <ul>
-                <li><?=$elements['OEModule\OphTrConsent\models\Element_OphTrConsent_CapacityAssessment']->attempts_to_assist?></li>
+                <li><?=$elements[Element_OphTrConsent_CapacityAssessment::class]->attempts_to_assist?></li>
             </ul>
             <h5>Why patient lacks capacity and the basis for your decision:</h5>
             <ul>
-                <li><?=$elements['OEModule\OphTrConsent\models\Element_OphTrConsent_CapacityAssessment']->basis_of_decision?></li>
+                <li><?=$elements[Element_OphTrConsent_CapacityAssessment::class]->basis_of_decision?></li>
             </ul>
         </div>
     </div>
