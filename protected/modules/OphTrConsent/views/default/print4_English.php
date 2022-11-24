@@ -16,6 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OEModule\OphTrConsent\models\Element_OphTrConsent_CapacityAssessment;
+
 ?>
 <?php
 $institution_id = Institution::model()->getCurrent()->id;
@@ -71,14 +73,14 @@ $type_assessment = new OphTrConsent_Type_Assessment();
         <tr>
             <th>Special requirements <br> <small>(e.g other language/other communication method)</small></th>
             <td>
-                <?php if (isset($elements['Element_OphTrConsent_Specialrequirements']) && $type_assessment->existsElementInConsentForm($elements['Element_OphTrConsent_Specialrequirements']->elementType->id, Element_OphTrConsent_Type::TYPE_PATIENT_AGREEMENT_ID)) : ?>
+                <?php if (isset($elements['Element_OphTrConsent_Specialrequirements']) && $type_assessment->existsElementInConsentForm($elements['Element_OphTrConsent_Specialrequirements']->elementType->id, Element_OphTrConsent_Type::TYPE_UNABLE_TO_CONSENT_ID)) : ?>
                     <?= isset($elements['Element_OphTrConsent_Specialrequirements']) ?
                     nl2br(\CHtml::encode($elements['Element_OphTrConsent_Specialrequirements']->specialreq)) :
                     'None'?>
                 <?php endif; ?>
             </td>
         </tr>
-        <?php if (isset($elements['Element_OphTrConsent_Procedure']) && $type_assessment->existsElementInConsentForm($elements['Element_OphTrConsent_Procedure']->elementType->id, Element_OphTrConsent_Type::TYPE_PATIENT_AGREEMENT_ID)) : ?>
+        <?php if (isset($elements['Element_OphTrConsent_Procedure']) && $type_assessment->existsElementInConsentForm($elements['Element_OphTrConsent_Procedure']->elementType->id, Element_OphTrConsent_Type::TYPE_UNABLE_TO_CONSENT_ID)) : ?>
             <tr>
                 <th>Procedure(s)</th>
                 <td>
@@ -98,13 +100,13 @@ $type_assessment = new OphTrConsent_Type_Assessment();
     <h2>All sections to be completed by health professional proposing the procedure.</h2>
     <div class="group"><h4>Proposed procedure(s) or course of treatment:</h4>
         <div class="indent">
-            <?php if (isset($elements['Element_OphTrConsent_Procedure']) && $type_assessment->existsElementInConsentForm($elements['Element_OphTrConsent_Procedure']->elementType->id, Element_OphTrConsent_Type::TYPE_PATIENT_AGREEMENT_ID)) : ?>
+            <?php if (isset($elements['Element_OphTrConsent_Procedure']) && $type_assessment->existsElementInConsentForm($elements['Element_OphTrConsent_Procedure']->elementType->id, Element_OphTrConsent_Type::TYPE_UNABLE_TO_CONSENT_ID)) : ?>
                 <?= $this->renderPartial('_proposed_procedures', array('css_class' => 'large', 'procedures' => $elements['Element_OphTrConsent_Procedure']->procedure_assignments)) ?>
             <?php endif; ?>
         </div>
     </div>
 
-    <?php if (isset($elements['Element_OphTrConsent_Specialrequirements']) && $type_assessment->existsElementInConsentForm($elements['Element_OphTrConsent_Specialrequirements']->elementType->id, Element_OphTrConsent_Type::TYPE_PATIENT_AGREEMENT_ID)) : ?>
+    <?php if (isset($elements['Element_OphTrConsent_Specialrequirements']) && $type_assessment->existsElementInConsentForm($elements['Element_OphTrConsent_Specialrequirements']->elementType->id, Element_OphTrConsent_Type::TYPE_UNABLE_TO_CONSENT_ID)) : ?>
     <div class="group">
         <h4>Any special requirements:</h4>
         <?php if (!empty($elements['Element_OphTrConsent_Specialrequirements']->specialreq)) { ?>
@@ -117,30 +119,30 @@ $type_assessment = new OphTrConsent_Type_Assessment();
     </div>
     <?php endif; ?>
 
-    <?php if (isset($elements['Element_OphTrConsent_CapacityAssessment']) && $type_assessment->existsElementInConsentForm($elements['Element_OphTrConsent_CapacityAssessment']->elementType->id, Element_OphTrConsent_Type::TYPE_PATIENT_AGREEMENT_ID)) : ?>
+    <?php if (isset($elements[Element_OphTrConsent_CapacityAssessment::class]) && $type_assessment->existsElementInConsentForm($elements[Element_OphTrConsent_CapacityAssessment::class]->elementType->id, Element_OphTrConsent_Type::TYPE_UNABLE_TO_CONSENT_ID)) : ?>
     <div class="group"><h4>Capacity Assessment</h4>
         <div class="indent"><h5>The patient lacks capacity to give or withhold consent to this procedure or course of
                 treatment because of:</h5>
             <ul>
-                <?php foreach ($elements['Element_OphTrConsent_CapacityAssessment']->lackOfCapacityReasons as $reason) : ?>
+                <?php foreach ($elements[Element_OphTrConsent_CapacityAssessment::class]->lackOfCapacityReasons as $reason) : ?>
                     <li><?=CHtml::encode($reason->label)?></li>
                 <?php endforeach; ?>
             </ul>
             <h5>How were above judgements reached:</h5>
             <ul>
-                <li><?=$elements['Element_OphTrConsent_CapacityAssessment']->how_judgement_was_made?></li>
+                <li><?=$elements[Element_OphTrConsent_CapacityAssessment::class]->how_judgement_was_made?></li>
             </ul>
             <h5>What evidence has been relied upon:</h5>
             <ul>
-                <li><?=$elements['Element_OphTrConsent_CapacityAssessment']->evidence?></li>
+                <li><?=$elements[Element_OphTrConsent_CapacityAssessment::class]->evidence?></li>
             </ul>
             <h5>What attempts were made to assist the patient to make their own decision and why not successful:</h5>
             <ul>
-                <li><?=$elements['Element_OphTrConsent_CapacityAssessment']->attempts_to_assist?></li>
+                <li><?=$elements[Element_OphTrConsent_CapacityAssessment::class]->attempts_to_assist?></li>
             </ul>
             <h5>Why patient lacks capacity and the basis for your decision:</h5>
             <ul>
-                <li><?=$elements['Element_OphTrConsent_CapacityAssessment']->basis_of_decision?></li>
+                <li><?=$elements[Element_OphTrConsent_CapacityAssessment::class]->basis_of_decision?></li>
             </ul>
         </div>
     </div>
@@ -215,27 +217,6 @@ $type_assessment = new OphTrConsent_Type_Assessment();
         <?php if (empty($contacts)) : ?>
         </div></div>
         <?php endif; ?>
-    <?php endif; ?>
-
-    <?php if (isset($elements['Element_OphTrConsent_CapacityAssessment']) && $type_assessment->existsElementInConsentForm($elements['Element_OphTrConsent_CapacityAssessment']->elementType->id, Element_OphTrConsent_Type::TYPE_PATIENT_AGREEMENT_ID)) : ?>
-    <div class="group"><h4>Best Interests Decision</h4>
-        <div class="indent">
-            <h5>To the best of my knowledge, the patient has not refused this procedure in a valid
-                advance directive.</h5>
-            <h5>Where possible and appropriate, I have encouraged the patient to participate
-                in the decision and I have consulted with those close to the patient and with colleagues and those close
-                to the patient.</h5>
-            <h5>In the case of a patient who does not have anyone close enough to help in the
-                decision-making process and for whom serious medical treatment is proposed, I have consulted an
-                Independent Medical Capacity Advocate and I believe the procedure to be in the patient’s best interests
-                because:</h5>
-            <ul>
-                <li>
-                    <?=$elements['Element_OphTrConsent_CapacityAssessment']->reason_for_procedure?>
-                </li>
-            </ul>
-        </div>
-    </div>
     <?php endif; ?>
 
     <?php if (isset($elements['Element_OphTrConsent_OthersInvolvedDecisionMakingProcess'])) {
