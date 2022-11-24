@@ -219,27 +219,6 @@ $type_assessment = new OphTrConsent_Type_Assessment();
         <?php endif; ?>
     <?php endif; ?>
 
-    <?php if (isset($elements['Element_OphTrConsent_CapacityAssessment']) && $type_assessment->existsElementInConsentForm($elements['Element_OphTrConsent_CapacityAssessment']->elementType->id, Element_OphTrConsent_Type::TYPE_UNABLE_TO_CONSENT_ID)) : ?>
-    <div class="group"><h4>Best Interests Decision</h4>
-        <div class="indent">
-            <h5>To the best of my knowledge, the patient has not refused this procedure in a valid
-                advance directive.</h5>
-            <h5>Where possible and appropriate, I have encouraged the patient to participate
-                in the decision and I have consulted with those close to the patient and with colleagues and those close
-                to the patient.</h5>
-            <h5>In the case of a patient who does not have anyone close enough to help in the
-                decision-making process and for whom serious medical treatment is proposed, I have consulted an
-                Independent Medical Capacity Advocate and I believe the procedure to be in the patient’s best interests
-                because:</h5>
-            <ul>
-                <li>
-                    <?=$elements['Element_OphTrConsent_CapacityAssessment']->reason_for_procedure?>
-                </li>
-            </ul>
-        </div>
-    </div>
-    <?php endif; ?>
-
     <?php if (isset($elements['Element_OphTrConsent_OthersInvolvedDecisionMakingProcess'])) {
         $contact_element = $elements['Element_OphTrConsent_OthersInvolvedDecisionMakingProcess'];
         $contacts = $contact_element->consentContact;
