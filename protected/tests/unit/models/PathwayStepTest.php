@@ -46,7 +46,7 @@ class PathwayStepTest extends ActiveRecordTestCase
             'start_timestamp' => null,
             'pathway_id' => '1',
         ];
-        
+
         $step_json = $step->toJSON();
 
         foreach ($expected as $key => $expected_value) {
@@ -66,7 +66,7 @@ class PathwayStepTest extends ActiveRecordTestCase
             'start_timestamp' => null,
             'pathway_id' => 1,
         ];
-        
+
         $step_json = $step->toJSON();
 
         foreach ($expected as $key => $expected_value) {
