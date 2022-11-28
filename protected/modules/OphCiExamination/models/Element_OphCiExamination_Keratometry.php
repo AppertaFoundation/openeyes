@@ -17,6 +17,7 @@
  */
 
 namespace OEModule\OphCiExamination\models;
+use OE\factories\models\traits\HasFactory;
 
 /**
  * This is the model class for table "et_ophciexamination_keratometry".
@@ -58,17 +59,9 @@ namespace OEModule\OphCiExamination\models;
 class Element_OphCiExamination_Keratometry extends \SplitEventTypeElement
 {
     use traits\CustomOrdering;
-    public $service;
+    use HasFactory;
 
-    /**
-     * Returns the static model of the specified AR class.
-     *
-     * @return the static model class
-     */
-    public static function model($className = __CLASS__)
-    {
-        return parent::model($className);
-    }
+    public $service;
 
     /**
      * @return string the associated database table name
@@ -87,35 +80,29 @@ class Element_OphCiExamination_Keratometry extends \SplitEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-                array('eye_id, 
+                array('eye_id,
                 right_anterior_k1_value, right_axis_anterior_k1_value,
-                 right_anterior_k2_value, right_axis_anterior_k2_value, right_kmax_value, 
-                 right_posterior_k2_value, right_thinnest_point_pachymetry_value, right_ba_index_value, 
+                 right_anterior_k2_value, right_axis_anterior_k2_value, right_kmax_value,
+                 right_posterior_k2_value, right_thinnest_point_pachymetry_value, right_ba_index_value,
                  tomographer_id,
                  left_anterior_k1_value, left_axis_anterior_k1_value,
-                 left_anterior_k2_value, left_axis_anterior_k2_value, left_kmax_value, 
+                 left_anterior_k2_value, left_axis_anterior_k2_value, left_kmax_value,
                  left_posterior_k2_value, left_thinnest_point_pachymetry_value, left_ba_index_value,
-                 right_quality_front, right_quality_back, left_quality_front, left_quality_back, 
+                 right_quality_front, right_quality_back, left_quality_front, left_quality_back,
                  right_cl_removed, left_cl_removed, right_flourescein_value, left_flourescein_value', 'safe'),
-
-//            array('right_anterior_k1_value, left_anterior_k1_value, right_anterior_k2_value, left_anterior_k2_value,
-//                    right_quality_front, right_quality_back, left_quality_front, left_quality_back,
-//                    right_axis_anterior_k1_value, left_axis_anterior_k1_value, right_axis_anterior_k2_value, left_axis_anterior_k2_value,
-//                    right_kmax_value, left_kmax_value, right_thinnest_point_pachymetry_value, left_thinnest_point_pachymetry_value,
-//                    right_flourescein_value, left_flourescein_value, right_cl_removed, left_cl_removed', 'required'),
 
             array('right_anterior_k1_value, right_anterior_k2_value, right_kmax_value,
                     left_anterior_k1_value, left_anterior_k2_value, left_kmax_value', 'numerical',
-                'integerOnly'=>false,'min'=>1, 'max'=>150),
+                'integerOnly' => false, 'min' => 1, 'max' => 150),
 
 
-            array('right_axis_anterior_k1_value, right_axis_anterior_k2_value, 
+            array('right_axis_anterior_k1_value, right_axis_anterior_k2_value,
             left_axis_anterior_k1_value, left_axis_anterior_k2_value', 'numerical',
-                'integerOnly'=>false,'min'=>-150, 'max'=>-1),
+                'integerOnly' => false, 'min' => -150, 'max' => -1),
 
 
             array('right_thinnest_point_pachymetry_value, left_thinnest_point_pachymetry_value', 'numerical',
-                'integerOnly'=>false,'min'=>10, 'max'=>800),
+                'integerOnly' => false, 'min' => 10, 'max' => 800),
 
 
             array('right_ba_index_value, left_ba_index_value', 'numerical',
@@ -130,14 +117,19 @@ class Element_OphCiExamination_Keratometry extends \SplitEventTypeElement
                 // Please remove those attributes that should not be searched.
                 array('id, event_id,
                 right_anterior_k1_value, right_axis_anterior_k1_value,
-                 right_anterior_k2_value, right_axis_anterior_k2_value, right_kmax_value, 
-                 right_thinnest_point_pachymetry_value, right_ba_index_value, 
+                 right_anterior_k2_value, right_axis_anterior_k2_value, right_kmax_value,
+                 right_thinnest_point_pachymetry_value, right_ba_index_value,
                  tomographer_id,
                  left_anterior_k1_value, left_axis_anterior_k1_value,
-                 left_anterior_k2_value, left_axis_anterior_k2_value, left_kmax_value, 
+                 left_anterior_k2_value, left_axis_anterior_k2_value, left_kmax_value,
                  left_thinnest_point_pachymetry_value, left_ba_index_value,
-                 right_quality_front, right_quality_back, left_quality_front, left_quality_back, 
+                 right_quality_front, right_quality_back, left_quality_front, left_quality_back,
                  right_cl_removed, left_cl_removed, right_flourescein_value, left_flourescein_value', 'safe', 'on' => 'search'),
+
+            array('left_ba_index_value, left_anterior_k1_value, left_axis_anterior_k1_value, left_anterior_k2_value, left_axis_anterior_k2_value,
+                left_kmax_value, left_thinnest_point_pachymetry_value', 'requiredIfSide', 'side' => 'left'),
+            array('right_ba_index_value, right_anterior_k1_value, right_axis_anterior_k1_value, right_anterior_k2_value, right_axis_anterior_k2_value,
+                right_kmax_value, right_thinnest_point_pachymetry_value', 'requiredIfSide', 'side' => 'right'),
         );
     }
 
@@ -176,8 +168,8 @@ class Element_OphCiExamination_Keratometry extends \SplitEventTypeElement
             'right_quality_back' => array(self::BELONGS_TO, 'ophciexamination_cxl_quality_score', 'id'),
             'left_quality_front' => array(self::BELONGS_TO, 'ophciexamination_cxl_quality_score', 'id'),
             'left_quality_back' => array(self::BELONGS_TO, 'ophciexamination_cxl_quality_score', 'id'),
-            'right_cl_removed' => array(self::BELONGS_TO, 'ophciexamination_cxl_cl_removed', 'id'),
-            'left_cl_removed' => array(self::BELONGS_TO, 'ophciexamination_cxl_cl_removed', 'id'),
+            'right_cl_removed' => array(self::BELONGS_TO, OphCiExamination_CXL_CL_Removed::class, 'id'),
+            'left_cl_removed' => array(self::BELONGS_TO, OphCiExamination_CXL_CL_Removed::class, 'id'),
         );
     }
 
@@ -216,34 +208,27 @@ class Element_OphCiExamination_Keratometry extends \SplitEventTypeElement
         );
     }
 
-    public function afterValidate()
+    /**
+     * @return array
+     *
+     * @see parent::sidedFields()
+     */
+    public function sidedFields()
     {
-
-        // When an eye is closed we do not want to validate that eye's info.
-            $side_checks = array('_anterior_k1_value', '_axis_anterior_k1_value', '_anterior_k2_value',
-                '_axis_anterior_k2_value', '_kmax_value', '_thinnest_point_pachymetry_value');
-            foreach (array('left', 'right') as $side) {
-                $check = 'has' . ucfirst($side);
-                if ($this->$check()) {
-                    foreach ($side_checks as $f) {
-                        if (!$this->{$side . $f}) {
-                            $this->addError($side.$f, ucfirst($side) . ' ' . $this->getAttributeLabel($f) . ' cannot be blank');
-                        }
-                    }
-                }
-            }
-
-            parent::afterValidate();
-    }
-
-    public function beforeValidate()
-    {
-        foreach (['left', 'right'] as $side) {
-            if ($this->{$side . '_ba_index_value'} === '') {
-                $this->{$side . '_ba_index_value'} = null;
-            }
-        }
-        return parent::beforeValidate();
+        return [
+            'ba_index_value',
+            'anterior_k1_value',
+            'anterior_k2_value',
+            'kmax_value',
+            'axis_anterior_k1_value',
+            'axis_anterior_k2_value',
+            'posterior_k2_value',
+            'thinnest_point_pachymetry_value',
+            'quality_front',
+            'quality_back',
+            'cl_removed',
+            'flourescein_value'
+        ];
     }
 
     /**
