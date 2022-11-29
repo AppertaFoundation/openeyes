@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -14,6 +15,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 $user = Yii::app()->session['user'];
 $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $module_class . '.assets'), true) . '/';
 $message_type = array_key_exists('messages', $_GET) && $_GET['messages'] ? $_GET['messages'] : $default_folder;
@@ -171,10 +173,10 @@ $message_type = array_key_exists('messages', $_GET) && $_GET['messages'] ? $_GET
             <input type="text" id="OphCoMessaging_from" name="OphCoMessaging_from" placeholder="from" class="date datepicker-from" value="<?=\Yii::app()->request->getQuery('OphCoMessaging_from', '')?>" />
             <input type="text" id="OphCoMessaging_to" name="OphCoMessaging_to" placeholder="to" class="date datepicker-to" value="<?=\Yii::app()->request->getQuery('OphCoMessaging_to', '')?>" />
             <label class="inline highlight">
-                <?= CHtml::checkBox('OpCoMessaging_All', (Yii::app()->request->getQuery('OphCoMessaging_to', '') || Yii::app()->request->getQuery('OphCoMessaging_from', '')) ? false : true).'All' ?>
+                <?= CHtml::checkBox('OpCoMessaging_All', (Yii::app()->request->getQuery('OphCoMessaging_to', '') || Yii::app()->request->getQuery('OphCoMessaging_from', '')) ? false : true) . 'All' ?>
             </label>
         </div>
-        <div class="fast-date-range past">
+        <div class="set-date-range">
             <div class="selectors">
                 <div class="range" data-range="yesterday">Yesterday</div>
                 <div class="range" data-range="today">Today</div>

@@ -71,8 +71,13 @@ if (file_exists('buildinfo.txt')) {
     echo "nothing";
 }
 
+$imageinfo = '';
+if (file_exists('/imageinfo.txt')) {
+    $imageinfo = htmlspecialchars(trim(@file_get_contents('/imageinfo.txt')));
+}
+
 ?>
-<div id="debug-info-modal">
+<div id="debug-info-modal ">
     <p><strong>This information is provided to assist the helpdesk in diagnosing any problems</strong></p>
     <code class="js-to-copy-to-clipboard">
         Served by: <?php echo $hostname?><br />
@@ -91,6 +96,7 @@ if (file_exists('buildinfo.txt')) {
             } ?>
     </code>
     <br />
+    <p><?= $imageinfo ? 'Image info: ' . $imageinfo : '' ?></p>
     <p class="js-copy-to-clipboard" data-copy-content-selector=".js-to-copy-to-clipboard" style="cursor: pointer;">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19 19" class="oe-i-e" style="background: transparent;">
             <title>Copy to clipboard</title>
@@ -99,4 +105,5 @@ if (file_exists('buildinfo.txt')) {
             <polygon points="4 10.87 4 4 10.87 4 10.87 5.13 12.87 5.13 12.87 2 2 2 2 12.87 5.13 12.87 5.13 10.87 4 10.87"/>
         </svg>
     </p>
+    
 </div>
