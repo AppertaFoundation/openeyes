@@ -1129,6 +1129,23 @@ class OEMigration extends CDbMigration
     }
 
     /**
+     * Will return true if an index (of any type) exists for the given table with the given name
+     *
+     * @param [string] $table_name The table to search indexes on
+     * @param [sting] $index_name The index name to test for
+     * @return void
+     */
+    protected function verifyIndexExists($table_name, $index_name){
+        $index_exists = $this->dbConnection->createCommand('   SELECT count(*)
+                                                            FROM information_schema.table_constraints
+                                                            WHERE table_schema = DATABASE()
+                                                                AND table_name = :table_name
+                                                                AND constraint_name = :key_name')->queryScalar([ ':table_name' => $table_name, ':key_name' => $index_name ]);
+
+        return !empty($index_exists);
+    }
+
+    /**
      * @param $table_name
      * @param bool $warn
      * @return bool
