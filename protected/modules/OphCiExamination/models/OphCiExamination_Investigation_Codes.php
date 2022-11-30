@@ -41,6 +41,7 @@ class OphCiExamination_Investigation_Codes extends \BaseActiveRecordVersioned
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
+            array('name', 'required'),
             array('name, snomed_term', 'length', 'max' => 256),
             array('snomed_code, ecds_code', 'length', 'max' => 20),
             array('specialty_id, last_modified_user_id, created_user_id', 'length', 'max' => 10),
