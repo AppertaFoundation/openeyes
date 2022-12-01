@@ -30,4 +30,11 @@ class InstitutionAuthenticationFactory extends ModelFactory
             'active' => true
         ];
     }
+
+    public function forSSO()
+    {
+        return $this->state([
+            'user_authentication_method' => 'SSO'
+        ]);
+    }
 }

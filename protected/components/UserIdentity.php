@@ -578,18 +578,20 @@ class UserIdentity extends CUserIdentity
         }
 
         // Select site
-        if (!empty($this->site_id)) {
-            $app->session['selected_site_id'] = $this->site_id;
-        } else if (
-            $user->last_site_id
-            && Site::model()->find('id = :id', [':id' => $user->last_site_id])->institution_id === $app->session['selected_institution_id']
-        ) {
-            $app->session['selected_site_id'] = $user->last_site_id;
-        } elseif ($default_site = Site::model()->getDefaultSite()) {
-            $app->session['selected_site_id'] = $default_site->id;
-        } else {
-            throw new CException('Cannot find default site');
+        if (empty($this->site_id)) {
+            if (
+                $user->last_site_id
+                && Site::model()->find('id = :id', [':id' => $user->last_site_id])->institution_id === $app->session['selected_institution_id']
+            ) {
+                $this->site_id = $user->last_site_id;
+            } elseif ($default_site = Site::model()->getDefaultSite()) {
+                $this->site_id = $default_site->id;
+            } else {
+                throw new CException('Cannot find default site');
+            }
         }
+
+        $app->session['selected_site_id'] = $this->site_id;
 
         $user->last_site_id = $app->session['selected_site_id'];
 
