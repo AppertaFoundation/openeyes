@@ -58,7 +58,7 @@ $default_urls = $logo_helper->getLogoURLs();
 
 <?php endif; ?>
 
-<div class="cols-5">
+<div class="cols-full">
 
     <div class="row divider">
         <h2>
@@ -92,7 +92,7 @@ $default_urls = $logo_helper->getLogoURLs();
     <table class="standard cols-full">
         <colgroup>
             <col class="cols-3">
-            <col class="cols-5">
+            <col class="cols-full">
         </colgroup>
 
         <tbody>
@@ -103,7 +103,7 @@ $default_urls = $logo_helper->getLogoURLs();
                         echo \CHtml::activeDropDownList(
                             $site,
                             'institution_id',
-                            CHtml::listData(Institution::model()->getTenantedOr($site->institution_id), 'id', 'name'),
+                            CHtml::listData(Institution::model()->cache(30)->findAllByAttributes(['active' => true]), 'id', 'name'),
                             ['class' => 'cols-full']
                         );
                     } else {
@@ -268,6 +268,10 @@ $default_urls = $logo_helper->getLogoURLs();
                     }
                     ?>
                 </td>
+            </tr>
+            <tr>
+                <td><?= $site->getAttributeLabel('active'); ?></td>
+                <td><?= \CHtml::activeCheckBox($site, 'active'); ?></td>
             </tr>
         </tbody>
 
