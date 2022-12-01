@@ -4,6 +4,17 @@
         "bmewburn.vscode-intelephense-client",
         "valeryanm.vscode-phpsab",
         "neilbrayfield.php-docblocker",
-        "eamodio.gitlens"
+        "eamodio.gitlens",
+        "xdebug.php-debug",
+        "foxundermoon.shell-format",
+		"GitHub.vscode-pull-request-github",
+        "janisdd.vscode-edit-csv",
+		"junstyle.php-cs-fixer",
+		"mads-hartmann.bash-ide-vscode",
+		"mohd-akram.vscode-html-format",
+		"naumovs.color-highlight",
+		"redhat.vscode-yaml",
+		"slevesque.vscode-zipexplorer",
+		"timonwong.shellcheck"
     ]
 }

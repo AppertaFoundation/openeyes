@@ -20,7 +20,7 @@ class PSDObserver
             }
 
             $errors = array();
-            $transaction = Yii::app()->db->beginTransaction();
+            $transaction = Yii::app()->db->Yii::app()->db->beginInternalTransaction();
             $assignment = new OphDrPGDPSD_Assignment();
             $assignment->confirmed = 1;
             $assignment->patient_id = $pathway->worklist_patient->patient_id;
@@ -39,7 +39,6 @@ class PSDObserver
                 // Update the state data.
                 $data['step']->setState('assignment_id', $assignment->id);
                 $data['step']->save();
-
                 $transaction->commit();
                 $audit_assigned_psd = $assignment->pgdpsd_id ? ", Assigned PSD: $assignment->pgdpsd_id" : "";
                 Audit::add('PSD Assignment', 'created assignment', "Assignment id: $assignment->id$audit_assigned_psd");
