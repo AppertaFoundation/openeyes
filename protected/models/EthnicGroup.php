@@ -26,7 +26,7 @@
  * @property string $code
  * @property int $display_order
  */
-class EthnicGroup extends BaseActiveRecordVersioned
+class EthnicGroup extends BaseActiveRecordVersionedSoftDelete
 {
     const CVI_GROUPS = [
         'White' => ['A', 'B', 'C'],
@@ -63,7 +63,39 @@ class EthnicGroup extends BaseActiveRecordVersioned
         return array(
             array('name, code, display_order', 'required'),
             array('id, name, code, display_order', 'safe', 'on' => 'search'),
+            array('id_assignment', 'idAssignmentValidator'),
+            array('code', 'uniqueCodeValidator')
         );
+    }
+
+    public function uniqueCodeValidator($attribute, $params)
+    {
+        if ($this->exists('id <> :id AND code = :code', [':id' => $this->id, ':code' => $this->code])) {
+            $this->addError('code', 'This group has a code that is already in use: ' . $this->name);
+
+            return false;
+        }
+
+        return true;
+    }
+
+    public function idAssignmentValidator($attribute, $params)
+    {
+        if (empty($this->id_assignment)) {
+            return true;
+        }
+
+        if ($this->id_assignment == $this->id) {
+            $this->addError('id_assignment', 'This group is attempting to be set as a parent of itself: ' . $this->name);
+
+            return false;
+        } elseif ($this->exists('id_assignment = :id', [':id' => $this->id])) {
+            $this->addError('id_assignment', 'This group is a parent of other groups and cannot be a child of another: ' . $this->name);
+
+            return false;
+        }
+
+        return true;
     }
 
     /**

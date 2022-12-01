@@ -47,6 +47,7 @@ return array(
                 'Subspecialty Subsections' => ['uri' => '/oeadmin/subspecialtySubsections/list', 'restricted' => array('admin')],
                 'Event Type Custom Text' => ['uri' => '/admin/editEventTypeCustomText', 'restricted' => array('admin')],
                 'Element Type Custom Text' => ['uri' => '/admin/editElementTypeCustomText', 'restricted' => array('admin')],
+                'Ethnic Groups' => ['uri' => '/admin/editEthnicGroups', 'restricted' => ['admin']]
             ),
             'SSO Settings' => array(
                 'Default SSO Permissions' => ['uri' => '/sso/defaultssopermissions', 'restricted' => array('admin')],
