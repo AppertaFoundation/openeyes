@@ -630,6 +630,8 @@ $config = array(
         'docman_xml_template' => getenv('DOCMAN_XML_TEMPLATE') ?: 'default',
         // set this to false if you want to suppress XML output
 
+        // disables checking of peer SSL certificate for docman / correspondence delivery. This should never be required as docmandelivery should always be able to access localhost over http
+        'disable_ssl_certificate_check' => strtolower(getenv('DOCMAN_DISABLE_SSL_CERTIFICATE_CHECK')) == 'true',
 
         /**
          * Text to be displayed for sending correspondence electronically e.g.: 'Electronic (DocMan)'
