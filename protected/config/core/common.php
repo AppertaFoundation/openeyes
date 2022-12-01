@@ -606,7 +606,7 @@ $config = array(
         /* injecting autoprint JS into generated PDF */
         //'docman_inject_autoprint_js' => false,
 
-        'docman_generate_csv' => getenv('DOCMAN_GENERATE_CSV') ?: true,
+        'docman_generate_csv' => strtolower(getenv('DOCMAN_GENERATE_CSV')) == 'true',
 
         /*Docman ConsoleCommand can generate Internal referral XML/PDF along with it's own(Docman) XML/PDF
           In case a trust integrated engine can use the same XML to decide where to forward the document to */
@@ -630,6 +630,8 @@ $config = array(
         'docman_xml_template' => getenv('DOCMAN_XML_TEMPLATE') ?: 'default',
         // set this to false if you want to suppress XML output
 
+        // disables checking of peer SSL certificate for docman / correspondence delivery. This should never be required as docmandelivery should always be able to access localhost over http
+        'disable_ssl_certificate_check' => strtolower(getenv('DOCMAN_DISABLE_SSL_CERTIFICATE_CHECK')) == 'true',
 
         /**
          * Text to be displayed for sending correspondence electronically e.g.: 'Electronic (DocMan)'
@@ -672,11 +674,6 @@ $config = array(
          */
         'OphCoMessaging_copyto_user_limit' => 5,
 
-        /**
-         *  Operation bookings will be automatically scheduled to the next available slot (regardless of the firm)
-         */
-        "auto_schedule_operation" => false,
-        'docman_generate_csv' => false,
         'element_sidebar' => true,
         // flag to enable editing of clinical data at the patient summary level - editing is not fully implemented
         // in v2.0.0, so this should only be turned on if you really know what you are doing.
