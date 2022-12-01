@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -357,13 +358,7 @@ class UserAuthentication extends BaseActiveRecordVersioned
             }
             $match_type = $user_authentication->institutionAuthentication->match($institution_id, $site_id);
             if ($match_type > InstitutionAuthentication::NO_MATCH) {
-                if ($match_type == InstitutionAuthentication::PERMISSIVE_MATCH) {
-                    if (!self::userHasExactMatch($user_authentication->user, $institution_id, $site_id)) {
-                        $matches[$match_type][] = $user_authentication;
-                    }
-                } else {
                     $matches[$match_type][] = $user_authentication;
-                }
             }
         }
         $error = empty($matches) ? "Invalid login" : "success";
@@ -383,47 +378,51 @@ class UserAuthentication extends BaseActiveRecordVersioned
         return false;
     }
 
-    public function findSSOAuthentication($user_id, $username, $institution_id, $site_id)
+    public function findOrCreateSSOAuthentication($user_id, $username, $institution_id, $site_id)
     {
-        // Username not created in the institution, so create one
-        $institution_authentication_id = InstitutionAuthentication::model()->findByAttributes([
-            'user_authentication_method' => 'SSO',
-            'institution_id' => $institution_id,
-            'site_id' => $site_id
-        ])->id;
+         // Find institution Authentication that matches user
+         $institution_authentication = InstitutionAuthentication::model()
+            ->findByAttributes([
+                'user_authentication_method' => 'SSO',
+                'institution_id' => $institution_id,
+                'site_id' => $site_id
+            ]);
 
-        $this->user_id = $user_id;
-        $this->username = $username;
-        $this->institution_authentication_id = $institution_authentication_id;
-
-        if (!UserAuthentication::model()->findAllByAttributes([
-            'user_id' => $this->user_id,
-            'username' => $username,
-            'institution_authentication_id' => $institution_authentication_id,
-        ])) {
-            if (!$this->save()) {
-                $this->audit('login', 'login-failed', "Cannot create user with username: $this->username in institution: {$this->institutionAuthentication->institution->name}", true);
-                throw new Exception('Unable to save User: ' . print_r($this->getErrors(), true));
-            }
+        if (!$institution_authentication) {
+            $this->audit('login', 'login-failed', "No matching Institution Authentication available for: Method = SSO, Institution ID = $institution_id, Site ID= $site_id", true);
+            throw new RuntimeException('Unable to save User. Matching Institution Authentication not found');
         }
 
-        return $this;
+        $attrs = [
+            'user_id' => $user_id,
+            'username' =>  $username,
+            'institution_authentication_id' => $institution_authentication->id,
+        ];
+
+        $user_auth = $this->findAllByAttributes($attrs);
+
+        if (count($user_auth) > 1) {
+            throw new Exception('More than 1 user authentication matched the search. This is an enexpected situation');
+        }
+
+        if (count($user_auth) === 1) {
+            return $user_auth[0];
+        }
+
+        $new_auth = new self();
+        $new_auth->setAttributes($attrs);
+
+        # If UserAuthentication record doesn't already exist, create one
+        if (!$new_auth->save()) {
+            Audit::add('login', 'login-failed', "Cannot create user_authentication with username: $username in institution: {$institution_authentication->institution->name}", true);
+            throw new Exception('Unable to save User: ' . print_r($new_auth->getErrors(), true));
+        }
+
+        return $new_auth;
     }
 
     public function setSSOUserAuthentication($user_id, $username, $institution_id, $site_id)
     {
-        $user_authentication = $this->findSSOAuthentication($user_id, $username, $institution_id, $site_id);
-        return $user_authentication['username'];
-    }
-
-    /**
-     * Returns the static model of the specified AR class.
-     * Please note that you should have this exact method in all your CActiveRecord descendants!
-     * @param string $className active record class name.
-     * @return Tag the static model class
-     */
-    public static function model($className = __CLASS__)
-    {
-        return parent::model($className);
+        $this->findOrCreateSSOAuthentication($user_id, $username, $institution_id, $site_id);
     }
 }

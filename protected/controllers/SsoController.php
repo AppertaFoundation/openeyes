@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -16,7 +17,6 @@
  */
 class SsoController extends BaseAdminController
 {
-
     public $layout = 'admin';
     public $group = 'Core';
 
@@ -64,7 +64,7 @@ class SsoController extends BaseAdminController
 
             if ($auth->getErrors()) {
                 $error = $auth->getLastErrorReason();
-                throw new Exception("Error in SAML authentication: ".$error);
+                throw new Exception("Error in SAML authentication: " . $error);
             }
 
             if (!isset($userInfo['username'][0])) {
@@ -159,22 +159,13 @@ class SsoController extends BaseAdminController
 
             // Get institution and site for authentication
             $institution_id = $this->getInstitutionForAuthentication($userInfo);
-            $site_id = $this->getSiteForAuthentication($userInfo, $institution_id);
 
-            // Set user to default site if not provided
-            if (!$site_id) {
-                if (isset(Institution::model()->findByPk($institution_id)->first_used_site_id)) {
-                    $site_id = Institution::model()->findByPk($institution_id)->first_used_site_id;
-                } else {
-                    throw new Exception('Site ID needs to be provided for user to login');
-                }
-            }
-
-            // Authenticate user in institution and site
-            $identity = (new UserAuthentication())->setSSOUserAuthentication($user_id, $userInfo['username'], $institution_id, $site_id);
+            // Authenticate user in institution and site / create user if it does not exist
+            // Note that site_id is always null in this situation - until such time as a CR is made to add site-level SSO authentication
+            UserAuthentication::model()->findOrCreateSSOAuthentication($user_id, $userInfo['username'], $institution_id, null);
 
             // Set the user into the session then login
-            $userIdentity = new UserIdentity($identity, null, $institution_id, $site_id);
+            $userIdentity = new UserIdentity($userInfo['username'], null, $institution_id, null);
             if ($userIdentity->authenticate()) {
                 if (Yii::app()->user->login($userIdentity, 0)) {
                     // The login was successful so redirect to home page
@@ -194,16 +185,15 @@ class SsoController extends BaseAdminController
 
     public function getInstitutionForAuthentication($userInfo)
     {
-        // Check if user can select an institution to login into
-        if (SettingMetadata::model()->getSetting('institution_required') === 'on') {
-            if (array_key_exists('institution_id', $userInfo)) {
-                return $userInfo['institution_id'];
-            } else {
-                throw new Exception('Institution ID needs to be provided for user to login');
+        if (array_key_exists('institution_id', $userInfo)) {
+            return $userInfo['institution_id'];
+        } elseif (array_key_exists('institution_code', $userInfo)) {
+            $institution = Institution::model()->findByAttributes(['remote_id' => $userInfo['institution_code']]);
+            if ($institution) {
+                return $institution->id;
             }
         }
 
-        // User can only login to pre-configured institution
         if (!isset(Yii::app()->params['institution_code'])) {
             throw new Exception('Default institution code must be set');
         }
@@ -211,17 +201,7 @@ class SsoController extends BaseAdminController
         return Institution::model()->findByAttributes(['remote_id' => Yii::app()->params['institution_code']])->id;
     }
 
-    public function getSiteForAuthentication($userInfo, $institution_id)
-    {
-        // Check if user can select an institution to login to
-        if (SettingMetadata::model()->getSetting('institution_required') === 'on') {
-            if (array_key_exists('site_id', $userInfo)) {
-                return $userInfo['site_id'];
-            }
-        }
 
-        return null;
-    }
 
     public function actionredirectToSSOPortal()
     {
@@ -281,7 +261,7 @@ class SsoController extends BaseAdminController
                 $ssoRoles->saveRolesAuthAssignment($ssoAttributes['name'], $ssoAttributes['sso_roles_assignment'], $id);
                 $this->redirect('/sso/ssorolesauthassignment');
             } catch (Exception $e) {
-                $ssoRoles->addError('name', 'SSO Role "'.$ssoRoles->name.'" already exists');
+                $ssoRoles->addError('name', 'SSO Role "' . $ssoRoles->name . '" already exists');
                 $errors = $ssoRoles->getErrors();
             }
         }
@@ -303,7 +283,7 @@ class SsoController extends BaseAdminController
 
             $transaction->commit();
             Yii::app()->user->setFlash('Success', 'SSO Role successfully deleted');
-            Audit::add('SSO', 'SSO-role-modified', 'SSO Role was was deleted: '. $ssoRole->name);
+            Audit::add('SSO', 'SSO-role-modified', 'SSO Role was was deleted: ' . $ssoRole->name);
             $this->redirect('/sso/ssorolesauthassignment');
         } catch (Exception $e) {
             $transaction->rollback();
