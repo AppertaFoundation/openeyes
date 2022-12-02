@@ -58,20 +58,25 @@ class ComponentStubGenerator
         }
 
         static::$properties_cache[spl_object_id($stub)] = $properties;
+        if (method_exists($stub, '__set')) {
+            $stub->method('__set')
+                ->willReturnCallback(function (...$args) use ($stub) {
+                    static::$properties_cache[spl_object_id($stub)][$args[0]] = $args[1];
+                });
+        }
 
-        $stub->method('__set')
-            ->willReturnCallback(function (...$args) use ($stub) {
-                static::$properties_cache[spl_object_id($stub)][$args[0]] = $args[1];
-            });
+        if (method_exists($stub, '__isset')) {
+            $stub->method('__isset')
+                ->willReturnCallback(function (...$args) use ($stub) {
+                    return isset(static::$properties_cache[spl_object_id($stub)][$args[0]]);
+                });
+        }
 
-        $stub->method('__isset')
-            ->willReturnCallback(function (...$args) use ($stub) {
-                return isset(static::$properties_cache[spl_object_id($stub)][$args[0]]);
-            });
-
-        $stub->method('__get')
-            ->willReturnCallback(function (...$args) use ($stub) {
-                return static::$properties_cache[spl_object_id($stub)][$args[0]];
-            });
+        if (method_exists($stub, '__get')) {
+            $stub->method('__get')
+                ->willReturnCallback(function (...$args) use ($stub) {
+                    return static::$properties_cache[spl_object_id($stub)][$args[0]];
+                });
+        }
     }
 }
