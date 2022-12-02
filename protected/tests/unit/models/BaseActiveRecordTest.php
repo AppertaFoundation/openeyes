@@ -121,50 +121,23 @@ class BaseActiveRecordTest extends OEDbTestCase
      */
     public function test__set_has_many()
     {
-        $test = $this->getMockBuilder('BaseActiveRecord')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getMetaData', 'getPrimaryKey'))
-            ->getMock();
+        $without_auto_relations = new WithAutoRelationsDisabled();
+        $with_auto_relations = new WithAutoRelationsEnabled();
 
-        $hm_cls = new CHasManyRelation('has_many', 'RelationTestClass', 'element_id');
+        $without_auto_relations->has_many = ['test'];
+        $this->assertEquals('test', $without_auto_relations->has_many[0], 'should pass through assignment when behaviour turned off');
 
-        $meta = $this->getMockBuilder('CActiveRecordMetaData')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $with_auto_relations->has_many = ['test2'];
+        $this->assertInstanceOf(RelationTestClass::class, $with_auto_relations->has_many[0], 'should set relation class when behaviour turned on');
 
-        $meta->relations = array(
-            'has_many' => $hm_cls,
-        );
+        $with_auto_relations->setDefaultRelationProperties([
+            'has_many' => ['default_prop' => 'test']
+        ]);
 
-        $test
-            ->method('getMetaData')
-            ->willReturn($meta);
-        $test
-            ->method('getPrimaryKey')
-            ->willReturn(1);
-
-        $test->__set('has_many', array('test'));
-        $this->assertIsArray($test->has_many);
-        $this->assertEquals('test', $test->has_many[0], 'should pass through assignment when behaviour turned off');
-
-        $r = new ReflectionClass($test);
-        $p = $r->getProperty('auto_update_relations');
-        $p->setAccessible(true);
-        $p->setValue($test, true);
-
-        $test->__set('has_many', array('test2'));
-        $this->assertIsArray($test->has_many);
-        $this->assertInstanceOf('RelationTestClass', $test->has_many[0], 'should set relation class when behaviour turned on');
-
-        $rdp = $r->getProperty('relation_defaults');
-        $rdp->setAccessible(true);
-        $rdp->setValue($test, array('has_many' => array('default_prop' => 'test')));
-
-        $test->__set('has_many', array(array('test_value' => 'a string')));
-        $this->assertIsArray($test->has_many);
-        $this->assertInstanceOf('RelationTestClass', $test->has_many[0], 'should set relation class when behaviour turned on');
-        $this->assertEquals('a string', $test->has_many[0]->test_value);
-        $this->assertEquals('test', $test->has_many[0]->default_prop, 'should have picked up default property value');
+        $with_auto_relations->__set('has_many', array(array('test_value' => 'a string')));
+        $this->assertInstanceOf('RelationTestClass', $with_auto_relations->has_many[0], 'should set relation class when behaviour turned on');
+        $this->assertEquals('a string', $with_auto_relations->has_many[0]->test_value);
+        $this->assertEquals('test', $with_auto_relations->has_many[0]->default_prop, 'should have picked up default property value');
     }
 
     /**
@@ -173,33 +146,16 @@ class BaseActiveRecordTest extends OEDbTestCase
      */
     public function test__set_many_many()
     {
-        $mm_cls = new CManyManyRelation('many_many', 'RelationTestClass', 'many_many_ass(element_id, related_id)');
+        $without_auto_relations = new WithAutoRelationsDisabled();
 
-        $meta = ComponentStubGenerator::generate('CActiveRecordMetaData', array(
-            'tableSchema' => ComponentStubGenerator::generate('CDbTableSchema', array(
-                'primaryKey' => 'the_pk',
-            )),
-            'relations' => array(
-                'many_many' => $mm_cls,
-            ),
-        ));
+        $without_auto_relations->many_many = array('test');
+        $this->assertEquals('test', $without_auto_relations->many_many[0], 'should pass through assignment when behaviour turned off');
 
-        $test = new ManyManyOwnerTestClass();
-        $test->md = $meta;
+        $with_auto_relations = new WithAutoRelationsEnabled();
 
-        $test->many_many = array('test');
-        $this->assertIsArray($test->many_many);
-        $this->assertEquals('test', $test->many_many[0], 'should pass through assignment when behaviour turned off');
-
-        $r = new ReflectionClass($test);
-        $p = $r->getProperty('auto_update_relations');
-        $p->setAccessible(true);
-        $p->setValue($test, true);
-
-        $test->many_many = array('test2');
-        $this->assertIsArray($test->many_many);
-        $this->assertInstanceOf('RelationTestClass', $test->many_many[0], 'should set relation class when behaviour turned on');
-        $this->assertEquals('test2', $test->many_many[0]->getPrimaryKey());
+        $with_auto_relations->many_many = array('test2');
+        $this->assertIsArray($with_auto_relations->many_many);
+        $this->assertInstanceOf('RelationTestClass', $with_auto_relations->many_many[0], 'should set relation class when behaviour turned on');
     }
 
     public function getRelationMock($pk)
@@ -618,22 +574,6 @@ class RelationOwnerSaveClass extends BaseActiveRecord
     public $the_pk;
 }
 
-class ManyManyOwnerTestClass extends BaseActiveRecord
-{
-    public $the_pk;
-    public $md;
-
-    public function __construct()
-    {
-        //parent::__construct();
-    }
-
-    public function getMetaData()
-    {
-        return $this->md;
-    }
-}
-
 class SimpleBaseActiveRecordClass extends BaseActiveRecord
 {
     public $test_value;
@@ -736,11 +676,6 @@ class RelationTestAssClass extends BaseActiveRecord
     public $rel_id;
     public $element_id;
 
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     public function rules()
     {
         return array(
@@ -785,4 +720,44 @@ class RelationTestAssClass extends BaseActiveRecord
     {
         return true;
     }
+}
+abstract class ForAutoRelationsTesting extends BaseActiveRecord
+{
+    public function getMetaData()
+    {
+        $columns = array('test_pk', 'default_prop');
+        return ComponentStubGenerator::generate('CActiveRecordMetaData', array(
+            'tableSchema' => ComponentStubGenerator::generate('CDbTableSchema', array(
+                'primaryKey' => 'test_pk',
+                'columns' => $columns)),
+            'columns' => $columns,
+            'relations' => [
+                'has_many' => new CHasManyRelation('has_many', 'RelationTestClass', 'element_id'),
+                'many_many' => new CManyManyRelation('many_many', 'RelationTestClass', 'many_many_ass(element_id, related_id)')
+            ]
+        ));
+    }
+
+    public function getPrimaryKey()
+    {
+        return 'foo';
+    }
+}
+class WithAutoRelationsEnabled extends ForAutoRelationsTesting
+{
+    protected $auto_update_relations = true;
+
+
+    /**
+     * Convenience accessor for testing purposes
+     */
+    public function setDefaultRelationProperties(array $relation_defaults = [])
+    {
+        $this->relation_defaults = $relation_defaults;
+    }
+}
+
+class WithAutoRelationsDisabled extends ForAutoRelationsTesting
+{
+    protected $auto_update_relations = false;
 }
