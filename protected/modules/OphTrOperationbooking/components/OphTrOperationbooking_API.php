@@ -631,7 +631,7 @@ class OphTrOperationbooking_API extends BaseAPI
             $schedule_options = Element_OphTrOperationbooking_ScheduleOperation::model()->find('event_id = ?', array($operation->event->id));
 
             if ($session) {
-                $transaction = Yii::app()->db->beginTransaction();
+                $transaction = Yii::app()->db->beginInternalTransaction();
 
                 try {
                     $ward = OphTrOperationbooking_Operation_Ward::model()->find('site_id = ?', array($operation->site->id));
