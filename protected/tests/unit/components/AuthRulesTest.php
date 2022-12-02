@@ -398,6 +398,7 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
     {
         $firm = ComponentStubGenerator::generate('Firm', array('subspecialtyID' => $subspecialty_id));
         $firm->expects($this->any())->method('isSupportServicesFirm')->will($this->returnValue(false));
+        $firm->expects($this->any())->method('getSubspecialtyID')->will($this->returnValue($subspecialty_id));
 
         return $firm;
     }
