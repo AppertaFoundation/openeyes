@@ -24,7 +24,6 @@ class OphCoTherapyapplication_ProcessorTest extends CTestCase
 
     public static function setUpBeforeClass(): void
     {
-        // FIXME: Modules should be initialised by the test bootstrap once the core has support for running module tests
         Yii::app()->getModule('OphCiExamination');
         Yii::app()->getModule('OphCoTherapyapplication');
     }
@@ -60,12 +59,10 @@ class OphCoTherapyapplication_ProcessorTest extends CTestCase
         parent::tearDown();
     }
 
-    /**
-     * @expectedException Exception
-     */
     public function testConstruct_ValidateEventType()
     {
         $this->event_props['eventType']->class_name = 'foo';
+        $this->expectException(\Exception::class);
         new OphCoTherapyapplication_Processor($this->event);
     }
 
