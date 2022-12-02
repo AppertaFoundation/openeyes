@@ -244,7 +244,7 @@ class Element_OphCiExamination_DiagnosesTest extends ActiveRecordTestCase
         Yii::app()->session['selected_firm_id'] = 5;
 
         $etDiagString = $this->elDiagnoses('et_further_diagnoses12')->getLetter_string();
-        $this->assertCoassertStringContainsStringntains('Principal: LEFT Retinal lattice degeneration', strip_tags($etDiagString));
+        $this->assertStringContainsString('Principal: LEFT Retinal lattice degeneration', strip_tags($etDiagString));
         $this->assertStringContainsString('LEFT Vitreous haemorrhage', strip_tags($etDiagString));
 
         unset(Yii::app()->session['selected_firm_id']);
@@ -281,8 +281,8 @@ class Element_OphCiExamination_DiagnosesTest extends ActiveRecordTestCase
         Yii::app()->session['selected_firm_id'] = 5;
 
         $etDiagString = $this->elDiagnoses('et_further_diagnoses14')->getLetter_string();
-        $this->assertContains('RIGHT Essential hypertension', strip_tags($etDiagString));
-        $this->assertContains('Finding 1', strip_tags($etDiagString));
+        $this->assertStringContainsString('RIGHT Essential hypertension', strip_tags($etDiagString));
+        $this->assertStringContainsString('Finding 1', strip_tags($etDiagString));
 
         unset(Yii::app()->session['selected_firm_id']);
     }
@@ -317,8 +317,8 @@ class Element_OphCiExamination_DiagnosesTest extends ActiveRecordTestCase
         Yii::app()->session['selected_firm_id'] = 5;
 
         $etDiagString = $this->elDiagnoses('et_further_diagnoses16')->getLetter_string();
-        $this->assertContains('RIGHT Vitreous haemorrhage', strip_tags($etDiagString));
-        $this->assertContains('Finding 2', strip_tags($etDiagString));
+        $this->assertStringContainsString('RIGHT Vitreous haemorrhage', strip_tags($etDiagString));
+        $this->assertStringContainsString('Finding 2', strip_tags($etDiagString));
 
         unset(Yii::app()->session['selected_firm_id']);
     }
