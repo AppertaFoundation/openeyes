@@ -24,6 +24,8 @@ use OEModule\OphCiExamination\tests\traits\InteractsWithVisualAcuity;
  * Class OphCiExamination_Episode_VisualAcuityHistoryTest
  *
  * @package OEModule\OphCiExamination\tests\unit\widgets
+ *
+ * @group sample-data
  * @group strabismus
  * @group visual-acuity
  * @covers OphCiExamination_Episode_VisualAcuityHistory
