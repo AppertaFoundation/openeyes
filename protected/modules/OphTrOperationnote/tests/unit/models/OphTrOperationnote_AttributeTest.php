@@ -117,7 +117,7 @@ class OphTrOperationnote_AttributeTest extends ActiveRecordTestCase
         unset($record);
 
         $record = OphTrOperationnote_Attribute::model()->findByPk($r_id);
-        $this->assertInternalType("bool", $record->is_multiselect);
+        $this->assertIsBool($record->is_multiselect);
 
         $trans->rollback();
     }

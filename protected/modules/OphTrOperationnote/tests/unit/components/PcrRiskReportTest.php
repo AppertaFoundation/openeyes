@@ -103,13 +103,13 @@ class PcrRiskReportTest extends PHPUnit_Framework_TestCase
     public function testTracesJson()
     {
         $report = $this->getReport();
-        $this->assertInternalType('string', $report->tracesJson());
+        $this->assertIsString($report->tracesJson());
     }
 
     public function testTracesJsonWithEmptyDataSet()
     {
         $report = $this->getEmptyReport();
-        $this->assertInternalType('string', $report->tracesJson());
+        $this->assertIsString($report->tracesJson());
     }
 
     /**

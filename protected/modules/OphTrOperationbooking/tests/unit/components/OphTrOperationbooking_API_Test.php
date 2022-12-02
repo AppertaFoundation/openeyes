@@ -245,7 +245,7 @@ class OphTrOperationbooking_API_Test extends OEDbTestCase
     {
         $result = $this->api->autoScheduleOperationBookings($this->episodes('episode4'));
 
-        $this->assertInternalType('array', $result);
+        $this->assertIsArray($result);
     }
 
     public function testGetLastNonCompleteStatus()
