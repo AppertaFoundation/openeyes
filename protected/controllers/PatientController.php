@@ -2160,7 +2160,7 @@ class PatientController extends BaseController
     private function getPatientIdentifiers($patient, $pid_type_necessity_values)
     {
         $patient_identifiers = [];
-
+        $auto_increment_status = [];
         // fetch existing patient identifiers
         $existing_patient_identifiers = PatientIdentifier::model()->findAllByAttributes(['patient_id' => $patient->id, 'deleted' => 0]);
         foreach ($existing_patient_identifiers as $existing_patient_identifier) {
@@ -2174,22 +2174,26 @@ class PatientController extends BaseController
 
         // add not hidden patient identifiers
         foreach ($pid_type_necessity_values as $type_id => $value) {
+            $is_auto_incremented = false;
             if ($value['necessity'] !== 'hidden' && !array_key_exists($type_id, $patient_identifiers)) {
                 $patient_identifier = new PatientIdentifier();
                 $patient_identifier->patient_identifier_type_id = $type_id;
                 if ($value['auto_increment']) {
                     $patient_identifier->value = PatientIdentifierType::getNextValueForIdentifierType($type_id, $value['auto_increment_start']);
+                    $is_auto_incremented = true;
                 }
                 $patient_identifiers[$type_id] = $patient_identifier;
+                $auto_increment_status[$type_id] = $is_auto_incremented;
             }
         }
-
-
         // overwrite values if they are set in $_POST
         if (isset($_POST['PatientIdentifier'])) {
             foreach ($_POST['PatientIdentifier'] as $post_info) {
                 if (array_key_exists('patient_identifier_type_id', $post_info) && array_key_exists($post_info['patient_identifier_type_id'], $patient_identifiers)) {
-                    $patient_identifiers[$post_info['patient_identifier_type_id']]->value = @$post_info['value'];
+                    // only assign post value to non-auto-incremented identifier value
+                    if (!@$auto_increment_status[$post_info['patient_identifier_type_id']]) {
+                        $patient_identifiers[$post_info['patient_identifier_type_id']]->value = @$post_info['value'];
+                    }
                     if (array_key_exists('patient_identifier_status_id', $post_info)) {
                         $patient_identifiers[$post_info['patient_identifier_type_id']]->patient_identifier_status_id = $post_info['patient_identifier_status_id'];
                     }
