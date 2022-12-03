@@ -5,7 +5,7 @@ $institutions = \Institution::model()->with('authenticationMethods')->findAll();
 
 $institution_required = $settings->getSetting('institution_required') == 'on';
 $default_inst = !$institution_required ? Institution::model()->findByAttributes(['remote_id' => Yii::app()->params['institution_code']]) : null;
-$sites = \Site::model()->findAll();
+$sites = \Site::model()->findAllByAttributes(['active' => true ]);
 $site_map = [];
 $institution_defaults = [];
 foreach ($institutions as $institution) {

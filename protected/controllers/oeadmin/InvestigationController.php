@@ -41,6 +41,15 @@ class InvestigationController extends BaseAdminController
 
     public $group = 'Investigation Management';
 
+    public function beforeAction($action)
+    {
+        $assetManager = Yii::app()->getAssetManager();
+        $assetManager->registerScriptFile('/js/oeadmin/OpenEyes.admin.js');
+        $assetManager->registerScriptFile('/js/oeadmin/list.js');
+
+        return parent::beforeAction($action);
+    }
+
     /**
      * Lists investigations.
      *
@@ -49,6 +58,7 @@ class InvestigationController extends BaseAdminController
     public function actionList()
     {
         $criteria = new CDbCriteria();
+        $criteria->order .="name asc";
         $search = \Yii::app()->request->getPost('search', ['query' => '']);
 
         if (Yii::app()->request->isPostRequest) {
@@ -63,7 +73,7 @@ class InvestigationController extends BaseAdminController
                 $criteria->addSearchCondition('specialty_id', $query, true, 'OR');
             }
         }
-        $investigation = \OEModule\OphCiExamination\models\OphCiExamination_Investigation_Codes::model();
+        $investigation = OphCiExamination_Investigation_Codes::model();
 
         $this->render('/oeadmin/investigation/index', [
             'pagination' => $this->initPagination($investigation, $criteria),
@@ -73,10 +83,10 @@ class InvestigationController extends BaseAdminController
     }
 
     /**
-     * @param \OEModule\OphCiExamination\models\OphCiExamination_Investigation_Codes $investigation - investigation to look for dependencies
+     * @param OphCiExamination_Investigation_Codes $investigation - investigation to look for dependencies
      * @return bool|int - true if there are no tables depending on the given investigation
      */
-    protected function isInvestigationDeletable(\OEModule\OphCiExamination\models\OphCiExamination_Investigation_Codes $investigation)
+    protected function isInvestigationDeletable(OphCiExamination_Investigation_Codes $investigation)
     {
         $check_dependencies = 1;
 
@@ -151,7 +161,7 @@ class InvestigationController extends BaseAdminController
         $investigations = \Yii::app()->request->getPost('select', []);
 
         foreach ($investigations as $investigation_id) {
-            $investigation = \OEModule\OphCiExamination\models\OphCiExamination_Investigation_Codes::model()->findByPk($investigation_id);
+            $investigation = OphCiExamination_Investigation_Codes::model()->findByPk($investigation_id);
 
             if ($investigation && $this->isInvestigationDeletable($investigation)) {
                 if (!$investigation->save()) {

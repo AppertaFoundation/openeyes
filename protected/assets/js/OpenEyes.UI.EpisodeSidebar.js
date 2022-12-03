@@ -188,6 +188,9 @@ OpenEyes.UI = OpenEyes.UI || {};
 
             let imgs = $quickview.find('img[data-event-id=' + event_id + ']');
 
+            const isDocumentEvent = $li.data('event-icon').toLowerCase().indexOf('document');
+            let pageCount = imgs.length;
+
             // if no imgs we need to get the info from the server and
             // generate empty img tags accordingly
             if (!imgs.length) {
@@ -216,6 +219,13 @@ OpenEyes.UI = OpenEyes.UI || {};
                     if ($(img).attr('src') === undefined) {
                         fetch($(img).data('src')).then(response => response.text())
                             .then(url => {
+                                if (index > 0 && isDocumentEvent === -1) {
+                                    url += '&page=' + (index);
+                                }
+                                else if (isDocumentEvent !== -1 && pageCount > 1) {
+                                    url += index === 0 ? '&eye=2' : '&eye=1';
+                                }
+
                                 $(img).attr('src', url);
                                 $(img).data('loaded', true);
 
@@ -372,11 +382,12 @@ OpenEyes.UI = OpenEyes.UI || {};
 
         function generateImgTag(event_id, page_count) {
             let imgs = [];
-            page_count--;
 
-            for (let i=0; i <= page_count; i++) {
+            for (let i = 1; i <= page_count; i++) {
                 const url = new URL(`/eventImage/getImageUrl?event_id=${event_id}`, window.location.origin);
-                url.searchParams.set('page', i);
+                if (page_count > 1) {
+                    url.searchParams.set('page', i);
+                }
 
                 let img = document.querySelector(`img[data-page-num="${i}"][data-src="${url.href}"]`);
 

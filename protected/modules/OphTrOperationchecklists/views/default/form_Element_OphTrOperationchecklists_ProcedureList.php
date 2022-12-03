@@ -138,8 +138,7 @@ Yii::app()->clientScript->registerScript(
         </table>
     </div>
 
-<?php $diagnoses = CommonOSELECT * FROM INFORMATION_SCHEMA.TABLES
-WHERE TABLE_NAME LIKE '%%'phthalmicDisorder::getList(
+<?php $diagnoses = CommonOphthalmicDisorder::getList(
     Firm::model()->findByPk($this->selectedFirmId),
     false,
     true,
@@ -220,4 +219,3 @@ WHERE TABLE_NAME LIKE '%%'phthalmicDisorder::getList(
         toggleAdmissionChecklistQuestions(false);
     });
 </script>
-
