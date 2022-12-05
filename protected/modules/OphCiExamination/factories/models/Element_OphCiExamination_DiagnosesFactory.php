@@ -71,6 +71,11 @@ class Element_OphCiExamination_DiagnosesFactory extends ModelFactory
     }
 
     /**
+     * Generates bilateral diagnosis records to attach to the element.
+     * If count is provided, then the factory will ensure unique disorders are attached. Otherwise
+     * it is up to the calling code to ensure conflicting disorder ids are not attached to the same
+     * Diagnoses element.
+     *
      * @param mixed $disorders - array of disorders, or integer to represent the number of diagnoses to assign
      * @return void
      */
@@ -80,6 +85,11 @@ class Element_OphCiExamination_DiagnosesFactory extends ModelFactory
     }
 
     /**
+     * Generates right sided diagnosis records to attach to the element.
+     * If count is provided, then the factory will ensure unique disorders are attached. Otherwise
+     * it is up to the calling code to ensure conflicting disorder ids are not attached to the same
+     * Diagnoses element.
+     *
      * @param mixed $disorders - array of disorders, or integer to represent the number of diagnoses to assign
      * @return void
      */
@@ -89,6 +99,11 @@ class Element_OphCiExamination_DiagnosesFactory extends ModelFactory
     }
 
     /**
+     * Generates left sided diagnosis records to attach to the element.
+     * If count is provided, then the factory will ensure unique disorders are attached. Otherwise
+     * it is up to the calling code to ensure conflicting disorder ids are not attached to the same
+     * Diagnoses element.
+     *
      * @param mixed $disorders - array of disorders, or integer to represent the number of diagnoses to assign
      * @return void
      */
@@ -101,14 +116,7 @@ class Element_OphCiExamination_DiagnosesFactory extends ModelFactory
     {
         return $this->afterMaking(function (Element_OphCiExamination_Diagnoses $element) use ($disorders, $laterality) {
             if (is_int($disorders)) {
-                // note that any single disorder should only feature once in the list
-                // for diagnoses ... multiple calls carry a small risk of duplicates
-                // which if it becomes an issue will necessitate a more robust retrieval
-                // approach here
-                $disorders = Disorder::factory()
-                    ->existingforOphthalmology()
-                    ->count($disorders)
-                    ->make();
+                $disorders = $this->getUniqueDisordersFor($element, $disorders);
             }
             $this->addDisordersTo($element, $disorders, $laterality);
         });
@@ -127,7 +135,7 @@ class Element_OphCiExamination_DiagnosesFactory extends ModelFactory
         }
     }
 
-    private function addDisordersTo(Element_OphCiExamination_Diagnoses $element, array $disorders = [], $laterality): void
+    private function addDisordersTo(Element_OphCiExamination_Diagnoses $element, array $disorders = [], $laterality = Eye::BOTH): void
     {
         $element->diagnoses = array_merge(
             $element->diagnoses ?? [],
@@ -143,5 +151,64 @@ class Element_OphCiExamination_DiagnosesFactory extends ModelFactory
                 $disorders
             )
         );
+    }
+
+    /**
+     * Retrieves disorders for the given count that have not already been attached to the given Diagnoses element, so
+     * they can be reliably attached to the Diagnoses element
+     *
+     * @param Element_OphCiExamination_Diagnoses $element
+     * @param integer $count
+     * @param array $exclude_disorder_ids
+     * @return array
+     */
+    private function getUniqueDisordersFor(Element_OphCiExamination_Diagnoses $element, $count = 1): array
+    {
+        $current_disorder_ids = array_map(function ($diagnosis) { return $diagnosis->disorder_id; }, $element->diagnoses ?? []);
+
+        return $this->getDisordersThatAreNotIn($current_disorder_ids, $count);
+    }
+
+    /**
+     * Gets unique existing disorders
+     *
+     * @param mixed $exclude_disorder_ids
+     * @param mixed $count
+     * @return array
+     */
+    private function getDisordersThatAreNotIn(array $exclude_disorder_ids = [], $count = 1): array
+    {
+        $disorders = Disorder::factory()
+            ->existingforOphthalmology()
+            ->count($count)
+            ->make();
+
+        $unique_disorders = array_filter(
+            $disorders,
+            function ($disorder) use ($exclude_disorder_ids) {
+                return !in_array($disorder->id, $exclude_disorder_ids);
+            }
+        );
+
+        if (count($unique_disorders) < $count) {
+            // recursive call with the additional disorder ids to be excluded
+            return array_merge(
+                $unique_disorders,
+                $this->getDisordersThatAreNotIn(
+                    array_merge(
+                        $exclude_disorder_ids,
+                        array_map(
+                            function ($disorder) {
+                                return $disorder->id;
+                            },
+                            $unique_disorders
+                        )
+                    ),
+                    $count - count($unique_disorders)
+                )
+            );
+        }
+
+        return $unique_disorders;
     }
 }
