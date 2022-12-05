@@ -40,7 +40,8 @@
     "fakerphp/faker": "^1.13",
     "zhuravljov/yii2-debug": "^1.5",
     "symfony/dom-crawler": "^5.4",
-    "symfony/css-selector": "^5.4"
+    "symfony/css-selector": "^5.4",
+    "guzzlehttp/guzzle": "^7.0"
   },
   "config": {
     "bin-dir": "bin",
