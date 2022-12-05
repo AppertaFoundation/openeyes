@@ -34,7 +34,7 @@ class PASAPI_PatientAppointment_Test extends PASAPI_BaseTest
     'worklist_attribute' => 'WorklistAttribute',
     );
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->markTestSkipped('Appointment behaviour has been changed such that these tests need attention to make them relevant again.');
         parent::setUp();
@@ -42,10 +42,10 @@ class PASAPI_PatientAppointment_Test extends PASAPI_BaseTest
         $mgr->load($this->fixtures);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
-        $mgr = Yii::app()->getComponent('fixture');
+        $mgr = \Yii::app()->getComponent('fixture');
         foreach (array_reverse($this->fixtures) as $f) {
             if ($rows = $mgr->getRows($f)) {
                 foreach ($rows as $row) {
