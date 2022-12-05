@@ -37,7 +37,7 @@ class OphTrOperationbooking_Operation_SessionTest extends ActiveRecordTestCase
         'default_admission_time'
     ];
 
-    public static function setupBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         Yii::import('application.modules.OphTrOperationbooking.helpers.*');
     }
@@ -60,12 +60,9 @@ class OphTrOperationbooking_Operation_SessionTest extends ActiveRecordTestCase
         $this->assertNull($booking->session_id);
     }
 
-    /**
-     * @expectedException CDbException
-     * @expectedExceptionMessage constraint violation
-     */
     public function testDontDissociateFromNonCancelledBookingOnDelete()
     {
+        $this->expectException(\CDbException::class);
         $this->session('session5')->delete();
     }
 

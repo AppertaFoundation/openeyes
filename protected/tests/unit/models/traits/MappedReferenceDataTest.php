@@ -14,7 +14,7 @@ class MappedReferenceDataTest extends OEDbTestCase
 
     /**
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -36,7 +36,7 @@ class MappedReferenceDataTest extends OEDbTestCase
     /**
      *
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->instance, $this->softdelete_instance);
         parent::tearDown();

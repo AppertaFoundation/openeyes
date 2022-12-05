@@ -43,7 +43,7 @@ class ApplicationResponseWrapper
     {
         $this->assertRedirect();
 
-        PHPUnit::assertContains($partial, $this->redirect->url, $message);
+        PHPUnit::assertStringContainsString($partial, $this->redirect->url, $message);
     }
 
     protected function isRedirect()

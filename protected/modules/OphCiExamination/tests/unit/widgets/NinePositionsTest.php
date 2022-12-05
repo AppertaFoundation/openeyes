@@ -45,7 +45,7 @@ class NinePositionsTest extends \OEDbTestCase
 
     protected $element_type_id;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->element_type_id = \ElementType::model()->find('class_name = ?', [NinePositionsElement::class])->id;
@@ -79,12 +79,12 @@ class NinePositionsTest extends \OEDbTestCase
         $result = $this->getWidgetRender($widget);
 
         foreach ($element->readings as $reading) {
-            $this->assertContains($reading->comments, $result);
+            $this->assertStringContainsString($reading->comments, $result);
             foreach ($reading->alignments as $alignment) {
                 $this->assertNotEmpty($alignment->display_horizontal);
-                $this->assertContains($alignment->display_horizontal, $result);
+                $this->assertStringContainsString($alignment->display_horizontal, $result);
                 $this->assertNotEmpty($alignment->display_vertical);
-                $this->assertContains($alignment->display_vertical, $result);
+                $this->assertStringContainsString($alignment->display_vertical, $result);
             }
         }
     }

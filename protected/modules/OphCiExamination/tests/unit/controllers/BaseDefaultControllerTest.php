@@ -22,7 +22,7 @@ abstract class BaseDefaultControllerTest extends BaseControllerTest
 {
     use \InteractsWithEventTypeElements;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         // stub out components that will cause failures

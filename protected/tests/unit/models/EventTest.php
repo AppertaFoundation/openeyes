@@ -25,13 +25,13 @@ class EventTest extends OEDbTestCase
 
     protected $configured_event_manager = null;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->configured_event_manager = Yii::app()->getComponent('event');
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         Yii::app()->setComponent('event', $this->configured_event_manager);
         parent::tearDown();

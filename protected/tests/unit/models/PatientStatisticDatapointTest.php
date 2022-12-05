@@ -15,13 +15,13 @@ class PatientStatisticDatapointTest extends ActiveRecordTestCase
 
     protected PatientStatisticDatapoint $datapoint;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->datapoint = $this->datapoints('datapoint1');
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
         unset($this->datapoint);

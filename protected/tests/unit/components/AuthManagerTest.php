@@ -16,7 +16,7 @@ class AuthManagerTest extends PHPUnit_Framework_TestCase
 {
     private AuthManager $authManager;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->authManager = new AuthManager();

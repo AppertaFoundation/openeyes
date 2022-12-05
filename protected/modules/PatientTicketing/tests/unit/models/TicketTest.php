@@ -33,7 +33,7 @@ class TicketTest extends \ActiveRecordTestCase
         return Ticket::model();
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->original_service_manager = Yii::app()->service;
         $this->service_manager = new ServiceManagerWrapper2();
@@ -42,7 +42,7 @@ class TicketTest extends \ActiveRecordTestCase
         parent::setUp();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         Yii::app()->setComponent('service', $this->original_service_manager);
         parent::tearDown();

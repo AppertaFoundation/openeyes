@@ -12,9 +12,9 @@
  * @copyright Copyright (C) 2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class LookupTableTest extends CDbTestCase
+class LookupTableTest extends OEDbTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         $this->getFixtureManager()->dbConnection->createCommand(
             'create temporary table test_lookup_table (id int unsigned primary key, name varchar(63), active tinyint(1) unsigned not null default 1) engine=innodb'
@@ -31,7 +31,7 @@ class LookupTableTest extends CDbTestCase
         )->execute();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->getFixtureManager()->dbConnection->createCommand('drop temporary table test_lookup_table')->execute();
     }

@@ -28,12 +28,12 @@ class OphTrOperationbooking_Operation_SequenceTest extends ActiveRecordTestCase
         'default_admission_time'
     ];
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         date_default_timezone_set('UTC');
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->operationSequence = new OphTrOperationbooking_Operation_Sequence();
         parent::setUp();

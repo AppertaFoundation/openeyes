@@ -6,7 +6,7 @@ class DashboardHelperTest extends PHPUnit_Framework_TestCase
     protected $moduleAPI;
     protected $controller;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->_orig_moduleAPI = Yii::app()->moduleAPI;
 
@@ -18,7 +18,7 @@ class DashboardHelperTest extends PHPUnit_Framework_TestCase
         parent::setUp();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         \Yii::app()->setComponent('moduleAPI', $this->_orig_moduleAPI);
         \Yii::app()->setController(null);

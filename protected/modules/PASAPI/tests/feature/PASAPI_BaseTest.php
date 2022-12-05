@@ -70,8 +70,12 @@ abstract class PASAPI_BaseTest extends \RestTestCase
             $this->fail("API user with username {$this->username} not configured for 'special' treatment in authentication");
         }
 
-        $user_authentication = \UserAuthentication::model()
+        $user_authentication = \UserAuthentication::model()->with('user')
             ->findByAttributes(['username' => $this->username]);
+
+        if (!$user_authentication || !$user_authentication->user) {
+            $this->fail('required sample data user not found, database reset may be required to run tests');
+        }
 
         $user_authentication->password = $this->user_password;
         $user_authentication->password_repeat = $this->user_password;
@@ -101,7 +105,7 @@ abstract class PASAPI_BaseTest extends \RestTestCase
 
     protected $base_url_stub;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -119,7 +123,7 @@ abstract class PASAPI_BaseTest extends \RestTestCase
         );
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->cleanUpTestModels();
         parent::tearDown();

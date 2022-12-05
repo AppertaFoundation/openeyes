@@ -15,6 +15,13 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+/**
+ * N.B. has been added to the sample data group because of a couple of
+ * data dependencies. The tests here need further analysis to be sustainable.
+ *
+ * @group sample-data
+ */
 class WorklistManagerTest extends PHPUnit_Framework_TestCase
 {
     protected function getTransactionMock($methods = array())

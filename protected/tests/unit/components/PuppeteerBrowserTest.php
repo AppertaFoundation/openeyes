@@ -5,7 +5,7 @@
  *
  * @method patients($fixture_id)
  */
-class PuppeteerBrowserTest extends CDbTestCase
+class PuppeteerBrowserTest extends OEDbTestCase
 {
     protected $instance;
     protected $fixtures = array(
@@ -13,14 +13,14 @@ class PuppeteerBrowserTest extends CDbTestCase
         'events' => Event::class,
     );
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->instance = new PuppeteerBrowser();
         $this->instance->init();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
         unset($this->instance);
@@ -121,7 +121,7 @@ class PuppeteerBrowserTest extends CDbTestCase
         $this->instance->findOrCreateDirectory('./test_directory');
         $this->assertDirectoryExists('./test_directory');
         rmdir('./test_directory');
-        $this->assertDirectoryNotExists('./test_directory');
+        $this->assertDirectoryDoesNotExist('./test_directory');
     }
 
     /**
@@ -134,7 +134,7 @@ class PuppeteerBrowserTest extends CDbTestCase
         $contents = $this->instance->readFile('./test.txt');
         $this->assertEquals($contents, 'Test');
         unlink('./test.txt');
-        $this->assertFileNotExists('./test.txt');
+        $this->assertFileDoesNotExist('./test.txt');
 
         $this->expectException('Exception');
         $this->instance->readFile('./nofile.txt');
@@ -149,7 +149,7 @@ class PuppeteerBrowserTest extends CDbTestCase
         $actual = $this->instance->fileSize('./test.txt');
         $this->assertEquals($expected, $actual);
         unlink('./test.txt');
-        $this->assertFileNotExists('./test.txt');
+        $this->assertFileDoesNotExist('./test.txt');
     }
 
     /**
@@ -161,7 +161,7 @@ class PuppeteerBrowserTest extends CDbTestCase
         $this->instance->writeFile('./test.txt', 'Test');
         $this->assertFileExists('./test.txt');
         unlink('./test.txt');
-        $this->assertFileNotExists('./test.txt');
+        $this->assertFileDoesNotExist('./test.txt');
     }
 
     /**
@@ -172,7 +172,7 @@ class PuppeteerBrowserTest extends CDbTestCase
     {
         file_put_contents('./test.txt', 'Test');
         $this->instance->deleteFile('./test.txt');
-        $this->assertFileNotExists('./test.txt');
+        $this->assertFileDoesNotExist('./test.txt');
 
         $this->instance->deleteFile('./nofile.txt');
     }
@@ -186,6 +186,6 @@ class PuppeteerBrowserTest extends CDbTestCase
         $this->assertTrue($this->instance->fileExists('./test.txt'));
         $this->assertFalse($this->instance->fileExists('./nofile.txt'));
         unlink('./test.txt');
-        $this->assertFileNotExists('./test.txt');
+        $this->assertFileDoesNotExist('./test.txt');
     }
 }

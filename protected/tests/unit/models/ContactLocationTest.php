@@ -50,7 +50,7 @@ class ContactLocationTest extends ActiveRecordTestCase
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->model = new ContactLocation();
@@ -130,7 +130,7 @@ class ContactLocationTest extends ActiveRecordTestCase
         $expected = 'City Road';
         $result = $this->contactlocations('contactlocation1')->__toString();
 
-        $this->assertContains($expected, $result, $expected.' not found');
+        $this->assertStringContainsString($expected, $result, $expected . ' not found');
         $this->assertGreaterThan(0, strlen($result));
         $this->assertNotNull($result);
     }

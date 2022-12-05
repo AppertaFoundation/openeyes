@@ -36,7 +36,7 @@ class RestTestCase extends OEDbTestCase
     protected $capture_error_responses = false;
     protected $expected_response_code = 200;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -166,7 +166,7 @@ class RestTestCase extends OEDbTestCase
 
     protected function assertXPathRegExp($pattern, $path)
     {
-        $this->assertRegExp($pattern, $this->xPathEval($path));
+        $this->assertMatchesRegularExpression($pattern, $this->xPathEval($path));
     }
 
     protected function assertUrlEquals($expected, $actual)

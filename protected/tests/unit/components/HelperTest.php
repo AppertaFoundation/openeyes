@@ -18,13 +18,13 @@ class HelperTest extends CTestCase
 {
     private static string $tz;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         self::$tz = date_default_timezone_get();
         date_default_timezone_set('UTC');
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         date_default_timezone_set(self::$tz);
     }
@@ -548,7 +548,7 @@ class HelperTest extends CTestCase
     {
         $regex = '/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i';
 
-        $this->assertRegExp($regex, Helper::generateUuid());
+        $this->assertMatchesRegularExpression($regex, Helper::generateUuid());
     }
 
     /**

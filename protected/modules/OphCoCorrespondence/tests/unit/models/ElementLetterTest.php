@@ -24,7 +24,7 @@ class ElementLetterTest extends ActiveRecordTestCase
         return ElementLetter::model();
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $path = Yii::app()->getRuntimePath() . '/test.pdf';
@@ -48,7 +48,7 @@ class ElementLetterTest extends ActiveRecordTestCase
         $this->letter = $this->letters('letter1');
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
 

@@ -8,7 +8,7 @@ use OEModule\OphCiExamination\models\RetinopathyFeature;
  *
  * @property Element_OphCiExamination_DR_Retinopathy $element
  */
-class Element_OphCiExamination_DR_RetinopathyTest extends CDbTestCase
+class Element_OphCiExamination_DR_RetinopathyTest extends OEDbTestCase
 {
     protected $element;
     protected $fixtures = array(
@@ -18,13 +18,13 @@ class Element_OphCiExamination_DR_RetinopathyTest extends CDbTestCase
         'retinopathy_features' => RetinopathyFeature::class,
     );
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->element = new Element_OphCiExamination_DR_Retinopathy();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
         unset($this->element);

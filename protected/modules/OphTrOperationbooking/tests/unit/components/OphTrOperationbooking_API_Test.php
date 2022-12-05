@@ -13,7 +13,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-class OphTrOperationbooking_API_Test extends CDbTestCase
+class OphTrOperationbooking_API_Test extends OEDbTestCase
 {
     private $api;
 
@@ -36,12 +36,12 @@ class OphTrOperationbooking_API_Test extends CDbTestCase
         'sessions' => 'OphTrOperationbooking_Operation_Session',
     );
 
-    public static function setupBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         Yii::app()->getModule('OphTrOperationbooking');
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -245,7 +245,7 @@ class OphTrOperationbooking_API_Test extends CDbTestCase
     {
         $result = $this->api->autoScheduleOperationBookings($this->episodes('episode4'));
 
-        $this->assertInternalType('array', $result);
+        $this->assertIsArray($result);
     }
 
     public function testGetLastNonCompleteStatus()

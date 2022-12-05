@@ -9,24 +9,24 @@ use OEModule\OphCiExamination\models\FamilyHistorySide;
  * @covers FamilyHistoryParameter
  * @covers CaseSearchParameter
  */
-class FamilyHistoryParameterTest extends CDbTestCase
+class FamilyHistoryParameterTest extends OEDbTestCase
 {
     public FamilyHistoryParameter $parameter;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
         Yii::app()->getModule('OECaseSearch');
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->parameter = new FamilyHistoryParameter();
         $this->parameter->id = 0;
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
         unset($this->parameter);
@@ -189,8 +189,8 @@ class FamilyHistoryParameterTest extends CDbTestCase
         }
 
         $expected = "
-SELECT DISTINCT p.id 
-FROM patient p 
+SELECT DISTINCT p.id
+FROM patient p
 JOIN patient_family_history fh
   ON fh.patient_id = p.id
 WHERE 1=1 {$query_side} {$query_relative} {$query_condition}";

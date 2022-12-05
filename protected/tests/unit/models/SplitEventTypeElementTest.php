@@ -16,7 +16,7 @@
  *  @copyright  Copyright   (c) 2011-2013,  OpenEyes    Foundation
  *  @license    http://www.gnu.org/licenses/agpl-3.0.html   The GNU General Public  License V3.0
  */
-class SplitEventTypeElementTest extends CDbTestCase
+class SplitEventTypeElementTest extends OEDbTestCase
 {
     /**
      * @var SplitEventTypeElement
@@ -27,7 +27,7 @@ class SplitEventTypeElementTest extends CDbTestCase
         'eye' => 'Eye',
     );
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         Yii::app()->db->createCommand()->createTable('split_element_test', array('id' => 'pk',
             'title' => 'string NOT NULL',
@@ -40,7 +40,7 @@ class SplitEventTypeElementTest extends CDbTestCase
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->object = new SplitEventTypeElementMock();
@@ -90,7 +90,7 @@ class SplitEventTypeElementTest extends CDbTestCase
         $this->assertEquals(0, $this->object->right_number);
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         Yii::app()->db->createCommand()->dropTable('split_element_test');
         parent::tearDownAfterClass();

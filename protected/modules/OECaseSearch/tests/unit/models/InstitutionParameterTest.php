@@ -5,7 +5,7 @@
  * @covers CaseSearchParameter
  * @method institutions($fixtureId)
 */
-class InstitutionParameterTest extends CDbTestCase
+class InstitutionParameterTest extends OEDbTestCase
 {
     protected InstitutionParameter $parameter;
 
@@ -13,7 +13,7 @@ class InstitutionParameterTest extends CDbTestCase
         'institutions' => 'Institution',
     );
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->parameter = new InstitutionParameter();
@@ -21,13 +21,13 @@ class InstitutionParameterTest extends CDbTestCase
         $this->parameter->operation = '=';
     }
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         Yii::app()->getModule('OECaseSearch');
         parent::setUpBeforeClass();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
         unset($this->parameter);

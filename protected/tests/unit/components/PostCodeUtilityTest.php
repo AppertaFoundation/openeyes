@@ -19,7 +19,7 @@ class PostCodeUtilityTest extends CTestCase
 {
     protected PostCodeUtility $postcodeUtility;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->postcodeUtility = new PostCodeUtility();
@@ -106,7 +106,7 @@ class PostCodeUtilityTest extends CTestCase
         $this->assertFalse($this->postcodeUtility->isCounty('Carrapipi'));
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->postcodeUtility);
     }

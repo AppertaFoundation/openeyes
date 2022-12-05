@@ -1,6 +1,6 @@
 <?php
 
-class EDCardTest extends CDbTestCase
+class EDCardTest extends OEDbTestCase
 {
     private $imageCard;
 
@@ -8,18 +8,18 @@ class EDCardTest extends CDbTestCase
         'eyes' => Eye::class,
     );
 
-    public static function setupBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         Yii::import('application.modules.OphTrOperationbooking.components.*');
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->imageCard = new EDCard();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->imageCard);
         parent::tearDown();

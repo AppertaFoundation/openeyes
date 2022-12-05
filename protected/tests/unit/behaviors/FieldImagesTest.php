@@ -12,11 +12,11 @@
  * @copyright Copyright (C) 2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class FieldImagesTest extends CDbTestCase
+class FieldImagesTest extends OEDbTestCase
 {
     private $yiiMock;
     private $assetManagerMock;
-    public function setUp()
+    public function setUp(): void
     {
         $this->getFixtureManager()->dbConnection->createCommand(
             'create temporary table test_field_images_table (id int unsigned primary key, field varchar(63)) engine=innodb'
@@ -39,7 +39,7 @@ class FieldImagesTest extends CDbTestCase
             ->will($this->returnValue(''));
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->getFixtureManager()->dbConnection->createCommand('drop temporary table test_field_images_table')->execute();
     }
@@ -74,7 +74,7 @@ class FieldImagesTest extends CDbTestCase
         $yiiMock = new FieldImagesTest_FileHelper_Present();
 
         $results = FiledImagesTest_TestClass::model()->getFieldImages($yiiMock, $this->assetManagerMock);
-        $this->assertInternalType('array', $results);
+        $this->assertIsArray($results);
         $this->assertEquals(2, count($results));
         $this->assertTrue(isset($results['3']));
         $this->assertTrue(isset($results['5']));

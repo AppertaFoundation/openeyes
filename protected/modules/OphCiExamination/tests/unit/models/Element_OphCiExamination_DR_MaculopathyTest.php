@@ -8,7 +8,7 @@ use OEModule\OphCiExamination\models\MaculopathyFeature;
  *
  * @property Element_OphCiExamination_DR_Maculopathy $element
  */
-class Element_OphCiExamination_DR_MaculopathyTest extends CDbTestCase
+class Element_OphCiExamination_DR_MaculopathyTest extends OEDbTestCase
 {
     protected $element;
     protected $fixtures = array(
@@ -18,13 +18,13 @@ class Element_OphCiExamination_DR_MaculopathyTest extends CDbTestCase
         'maculopathy_features' => MaculopathyFeature::class,
     );
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->element = new Element_OphCiExamination_DR_Maculopathy();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
         unset($this->element);

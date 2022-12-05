@@ -47,7 +47,7 @@ class MacrosRequireTenantedInstitutionTest extends \OEDbTestCase
 
     protected $db_connection;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->db_connection = \Yii::app()->db;
