@@ -164,7 +164,9 @@ class Element_OphCiExamination_DiagnosesFactory extends ModelFactory
      */
     private function getUniqueDisordersFor(Element_OphCiExamination_Diagnoses $element, $count = 1): array
     {
-        $current_disorder_ids = array_map(function ($diagnosis) { return $diagnosis->disorder_id; }, $element->diagnoses ?? []);
+        $current_disorder_ids = array_map(function ($diagnosis) {
+            return $diagnosis->disorder_id;
+        }, $element->diagnoses ?? []);
 
         return $this->getDisordersThatAreNotIn($current_disorder_ids, $count);
     }
