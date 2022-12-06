@@ -81,6 +81,7 @@ class DefaultController extends \BaseEventTypeController
     protected $mandatoryElements;
     protected $allergies = array();
     protected $deletedAllergies = array();
+    private $assigned_element_set = null;
     private $step = false;
 
     /**
@@ -118,8 +119,6 @@ class DefaultController extends \BaseEventTypeController
             $event = $this->event;
         }
 
-        $assignment = $this->getElementSetAssignment($event);
-
         if (
             isset(Yii::app()->session['active_step_state_data']['workflow_step_id'])
             && Yii::app()->session['active_step_state_data']['workflow_step_id']
@@ -129,7 +128,7 @@ class DefaultController extends \BaseEventTypeController
             );
         }
 
-        return $assignment ? $assignment->step : $this->getFirstStep();
+        return $this->assigned_element_set ? $this->assigned_element_set->step : $this->getFirstStep();
     }
 
     /**
@@ -253,7 +252,6 @@ class DefaultController extends \BaseEventTypeController
      */
     protected function setCurrentSet()
     {
-        $element_assignment = $this->getElementSetAssignment();
         if (
             isset(Yii::app()->session['active_step_state_data']['workflow_step_id'])
             && Yii::app()->session['active_step_state_data']['workflow_step_id']
@@ -267,7 +265,7 @@ class DefaultController extends \BaseEventTypeController
                 $this->mandatoryElements = isset($this->set) ? $this->set->MandatoryElementTypes : null;
             }
 
-            if (!$element_assignment && $this->event) {
+            if (!$this->assigned_element_set && $this->event) {
                 \OELog::log("Assignment not found for event id: {$this->event->id}");
             }
 
@@ -275,18 +273,18 @@ class DefaultController extends \BaseEventTypeController
         } else {
             if (!$this->set) {
                 // Note: getCurrentStep() will return firstStep if there were no steps before
-                $this->set = $element_assignment && $this->action->id !== 'update' ? $this->getNextStep(
+                $this->set = $this->assigned_element_set && $this->action->id !== 'update' ? $this->getNextStep(
                 ) : $this->getCurrentStep();
 
                 //if $this->set is null than no workflow rule to apply
                 $this->mandatoryElements = isset($this->set) ? $this->set->MandatoryElementTypes : null;
             }
 
-            if (!$element_assignment && $this->event) {
+            if (!$this->assigned_element_set && $this->event) {
                 \OELog::log("Assignment not found for event id: {$this->event->id}");
             }
 
-            if ($this->action->id === 'update' && (!isset($element_assignment) || !$element_assignment->step_completed)) {
+            if ($this->action->id === 'update' && (!isset($this->assigned_element_set) || !$this->assigned_element_set->step_completed)) {
                 $this->step = $this->getCurrentStep();
             }
         }
@@ -692,7 +690,11 @@ class DefaultController extends \BaseEventTypeController
         $this->jsVars['default_iris_colour'] = \SettingMetadata::model()->getSetting(
             'OphCiExamination_default_iris_colour'
         );
-        return parent::beforeAction($action);
+        $parentBeforeAction = parent::beforeAction($action);
+
+        $this->assigned_element_set = $this->getElementSetAssignment();
+
+        return $parentBeforeAction;
     }
 
     /**
@@ -703,7 +705,7 @@ class DefaultController extends \BaseEventTypeController
     protected function getEventElements()
     {
         if (!$this->event || $this->event->isNewRecord) {
-            $elements = $this->getElementsByWorkflow(null, $this->episode);
+            $elements = $this->getElementsByWorkflow($this->set, $this->episode);
         } else {
             $elements = $this->getSortedElements();
             if ($this->step) {
@@ -968,15 +970,30 @@ class DefaultController extends \BaseEventTypeController
             Yii::app()->session['active_worklist_patient_id'] = \Yii::app()->request->getParam('worklist_patient_id');
             Yii::app()->session['active_step_id'] = \Yii::app()->request->getParam('worklist_step_id');
         }
-
-        if ($step_id) {
-            $this->step = models\OphCiExamination_ElementSet::model()->findByPk($step_id);
+        $target_step = models\OphCiExamination_ElementSet::model()->findByPk($step_id);
+        if ($target_step) {
+            $saved_step = $this->assigned_element_set->step ?? null;
+            $this->set = $target_step;
+            /**
+             * If the saved step and the target step belong to the same workflow
+             * and the saved step is at a later stage then the target step
+             *  then use saved step as the current step
+             * otherwise use target step as the current step
+             */
+            if ($saved_step
+            && $saved_step->workflow_id === $target_step->workflow_id
+            && $saved_step->position > $target_step->position) {
+                $this->step = $saved_step;
+            } else {
+                $this->step = $target_step;
+            }
         } else {
             $this->step = $this->getCurrentStep()->getNextStep();
+            $this->set = $this->step;
         }
 
         // This is the same as update, but with a few extras, so we call the update code and then pick up on the action later
-        $this->actionUpdate($id);
+        parent::actionUpdate($id);
     }
 
     /**
@@ -1197,7 +1214,7 @@ class DefaultController extends \BaseEventTypeController
         }
 
         //TODO: should we be passing episode here?
-        $extra_elements = $this->getElementsByWorkflow($this->step, $this->episode);
+        $extra_elements = $this->getElementsByWorkflow($this->set, $this->episode);
         $extra_by_etid = array();
 
         foreach ($extra_elements as $extra) {

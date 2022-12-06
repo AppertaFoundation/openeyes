@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -213,7 +214,7 @@ class ProfileController extends BaseController
         $pin_regen_status = $user->pincodeRegenStatus();
         $this->render('/profile/pincode', array(
             'pin_regen_status' => $pin_regen_status,
-            'auth_required_for_pin' => $user_auth->isLocalAuth()
+            'auth_required_for_pin' => !$user_auth->isSsoAuth()
         ));
     }
 
