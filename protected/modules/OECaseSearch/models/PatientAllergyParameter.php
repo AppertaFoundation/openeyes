@@ -52,7 +52,7 @@ class PatientAllergyParameter extends CaseSearchParameter implements DBProviderI
     {
         $allergies = Allergy::model()->findAllBySql('
 SELECT a.*
-FROM allergy a 
+FROM allergy a
 WHERE LOWER(a.name) LIKE LOWER(:term) ORDER BY a.name LIMIT  ' . self::_AUTOCOMPLETE_LIMIT, array('term' => "$term%"));
         return array_map(
             static function ($allergy) {
@@ -68,8 +68,8 @@ WHERE LOWER(a.name) LIKE LOWER(:term) ORDER BY a.name LIMIT  ' . self::_AUTOCOMP
      */
     public function query(): string
     {
-        $query = "SELECT DISTINCT p.id 
-FROM patient p 
+        $query = "SELECT DISTINCT p.id
+FROM patient p
 LEFT JOIN patient_allergy_assignment paa
   ON paa.patient_id = p.id
 LEFT JOIN allergy a

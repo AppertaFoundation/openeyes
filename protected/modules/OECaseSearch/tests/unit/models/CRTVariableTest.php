@@ -7,7 +7,7 @@ use OEModule\OphCiExamination\models\Element_OphCiExamination_OCT;
  * @covers CRTVariable
  * @covers CaseSearchVariable
  */
-class CRTVariableTest extends CDbTestCase
+class CRTVariableTest extends OEDbTestCase
 {
     protected CRTVariable $variable;
 
@@ -22,18 +22,18 @@ class CRTVariableTest extends CDbTestCase
         'subspecialties' => Subspecialty::class,
     );
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         Yii::app()->getModule('OECaseSearch');
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->variable = new CRTVariable([1, 2, 3]);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
         unset($this->variable);

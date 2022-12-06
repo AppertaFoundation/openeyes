@@ -6,7 +6,7 @@ use OEModule\OphCiExamination\models\OphCiExamination_Diagnosis;
 /**
  * @method Patient patient($fixtureId)
  */
-class OETrial_ReportTrialCohortTest extends CDbTestCase
+class OETrial_ReportTrialCohortTest extends OEDbTestCase
 {
     protected $instance;
 
@@ -33,7 +33,7 @@ class OETrial_ReportTrialCohortTest extends CDbTestCase
         'disorder' => Disorder::class,
     );
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         Yii::app()->session['selected_institution_id'] = 1;
         Yii::app()->session['selected_site_id'] = 1;
@@ -41,14 +41,14 @@ class OETrial_ReportTrialCohortTest extends CDbTestCase
         Yii::app()->getModule('OETrial');
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         unset(Yii::app()->session['selected_institution_id']);
         unset(Yii::app()->session['selected_site_id']);
         unset(Yii::app()->params['display_primary_number_usage_code']);
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->instance = new OETrial_ReportTrialCohort();
@@ -56,7 +56,7 @@ class OETrial_ReportTrialCohortTest extends CDbTestCase
         $this->instance->user_selected_site_id = 1;
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->instance);
         parent::tearDown();

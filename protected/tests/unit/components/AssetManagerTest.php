@@ -15,6 +15,16 @@
 class CustomBasePathAliasAssetManager extends AssetManager
 {
     const BASE_PATH_ALIAS = 'application.tests.fixtures.assets';
+
+    public function getRegisteredForType($type)
+    {
+        return $this->$type;
+    }
+
+    public function getPriorityForType($type)
+    {
+        return $this->{$type . 'Priority'};
+    }
 }
 
 class AssetManagerTest extends PHPUnit_Framework_TestCase
@@ -24,7 +34,7 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
 
     private $globalInstance;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->globalInstance = Yii::app()->assetManager;
 
@@ -44,34 +54,6 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         $instance->isAjaxRequest = false;
 
         return $instance;
-    }
-
-    /**
-     * @covers AssetManager
-     */
-    public function testInstanceCreated()
-    {
-        $this->assertTrue(
-            $this->globalInstance instanceof AssetManager,
-            'Yii::app()->assetManager should be an instance of AssetManager'
-        );
-
-        $this->assertTrue(
-            $this->globalInstance instanceof CAssetManager,
-            'AssetManager should extend CAssetManager'
-        );
-
-        $cacheBuster = PHPUnit_Framework_Assert::readAttribute($this->globalInstance, 'cacheBuster');
-        $this->assertTrue(
-            $cacheBuster instanceof CacheBuster,
-            'cacheBuster property on AssetManager instance should be an instance of CacheBuster'
-        );
-
-        $clientScript = PHPUnit_Framework_Assert::readAttribute($this->globalInstance, 'clientScript');
-        $this->assertTrue(
-            $clientScript instanceof ClientScript,
-            'clientScript property on AssetManager instance should be an instance of ClientScript'
-        );
     }
 
     /**
@@ -305,6 +287,7 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
     private function runTestAddingFiles($type = null)
     {
         $instance = self::getInstance();
+        $priority = $instance->getPriorityForType($type);
 
         $registerMethod = $type === 'css' ? 'registerCssFile' : 'registerScriptFile';
 
@@ -312,8 +295,7 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         $instance->{$registerMethod}("{$type}/file1.{$type}");
 
         $publishedPath = $instance->getPublishedPathOfAlias();
-        $files = PHPUnit_Framework_Assert::readAttribute($instance, $type);
-        $priority = PHPUnit_Framework_Assert::readAttribute(new AssetManager(), $type.'Priority');
+        $files = $instance->getRegisteredForType($type);
 
         /* Test the files were added to the relevant array. */
         $keys = array_keys($files);
@@ -358,7 +340,7 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         $alias = CustomBasePathAliasAssetManager::BASE_PATH_ALIAS.'.'.$type;
         $publishedPath = $instance->getPublishedPathOfAlias($alias);
         $instance->{$registerMethod}("file.{$type}", $alias);
-        $files = PHPUnit_Framework_Assert::readAttribute($instance, $type);
+        $files = $instance->getRegisteredForType($type);
         $keys = array_keys($files);
 
         $this->assertTrue(
@@ -368,7 +350,7 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
 
         // /* Test with custom priority.*/
         $instance->{$registerMethod}("{$type}/file2.{$type}", null, 10);
-        $files = PHPUnit_Framework_Assert::readAttribute($instance, $type);
+        $files = $instance->getRegisteredForType($type);
         $last = array_pop($files);
 
         $this->assertEquals(
@@ -379,7 +361,7 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
 
         // /* Test with custom output.*/
         $instance->{$registerMethod}("{$type}/file3.{$type}", null, null, AssetManager::OUTPUT_PRINT);
-        $files = PHPUnit_Framework_Assert::readAttribute($instance, $type);
+        $files = $instance->getRegisteredForType($type);
         $last = array_pop($files);
         $this->assertEquals(
             AssetManager::OUTPUT_PRINT,
@@ -404,7 +386,7 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         $instance->{$registerMethod}("{$type}/file4.{$type}", null, null, AssetManager::OUTPUT_ALL, false);
 
         $publishedPath = $instance->getPublishedPathOfAlias();
-        $files = PHPUnit_Framework_Assert::readAttribute($instance, $type);
+        $files = $instance->getRegisteredForType($type);
         $keys = array_keys($files);
         $lastKey = array_pop($keys);
 
@@ -668,8 +650,8 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         $instance->registerScriptFile('js/style.js');
         $instance->reset();
 
-        $css = PHPUnit_Framework_Assert::readAttribute($instance, 'css');
-        $js = PHPUnit_Framework_Assert::readAttribute($instance, 'js');
+        $css = $instance->getRegisteredForType('css');
+        $js = $instance->getRegisteredForType('js');
 
         $this->assertEquals(
             array(),

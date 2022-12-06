@@ -19,7 +19,7 @@
 
 require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'BaseEventTypeElementTestNS.php';
 
-class BaseEventTypeElementTest extends CDbTestCase
+class BaseEventTypeElementTest extends OEDbTestCase
 {
     /**
      * @covers BaseEventTypeElement::getElementType

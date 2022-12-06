@@ -125,7 +125,7 @@ class DefaultControllerVisualAcuityTest extends BaseDefaultControllerTest
 
         $this->assertNotEmpty($response);
         // brittle here as the attribute order is not guaranteed in the input element
-        $this->assertContains("value=\"{$record_mode_value}\" name=\"{$record_mode_field_name}\"", $response);
+        $this->assertStringContainsString("value=\"{$record_mode_value}\" name=\"{$record_mode_field_name}\"", $response);
     }
 
     /**

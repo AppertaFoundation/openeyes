@@ -48,7 +48,7 @@ class ColourVisionTest extends \OEDbTestCase
 
         // some very basic checks to verify no issues exist for basic rendering
         $this->assertNotEmpty($result);
-        $this->assertContains('id="OEModule_OphCiExamination_models_Element_OphCiExamination_ColourVision_form"', $result);
+        $this->assertStringContainsString('id="OEModule_OphCiExamination_models_Element_OphCiExamination_ColourVision_form"', $result);
     }
 
     public function side_provider()
@@ -97,7 +97,7 @@ class ColourVisionTest extends \OEDbTestCase
         // some very basic checks to verify no issues exist for basic rendering
         $this->assertNotEmpty($result);
         for ($i = 0; $i < count($readings); $i++) {
-            $this->assertContains("data-key=\"$i\"", $result);
+            $this->assertStringContainsString("data-key=\"$i\"", $result);
         }
     }
 }

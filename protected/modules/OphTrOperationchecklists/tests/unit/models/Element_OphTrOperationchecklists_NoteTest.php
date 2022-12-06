@@ -79,7 +79,7 @@ class Element_OphTrOperationchecklists_NoteTest extends ActiveRecordTestCase
         $this->assertCount(2, $case_notes);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         foreach ($this->elementIds as $id) {
             foreach (OphTrOperationchecklists_Notes::model()->findAll('element_id = :element_id', array(':element_id' => $id)) as $t) {

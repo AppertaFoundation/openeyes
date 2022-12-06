@@ -4,17 +4,17 @@ echo '<?php'; ?>
 /**
 * Class <?php echo $this->className; ?>VariableTest
 */
-class <?php echo $this->className; ?>VariableTest extends CDbTestCase
+class <?php echo $this->className; ?>VariableTest extends OEDbTestCase
 {
     protected $variable;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->variable = new <?php echo $this->className; ?>Variable([1, 2, 3]);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
         unset($this->variable);

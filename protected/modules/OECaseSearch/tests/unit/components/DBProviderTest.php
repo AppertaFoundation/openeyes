@@ -5,7 +5,7 @@
  * @covers DBProvider
  * @covers SearchProvider
  */
-class DBProviderTest extends CDbTestCase
+class DBProviderTest extends OEDbTestCase
 {
     public DBProvider $searchProvider;
 
@@ -14,18 +14,18 @@ class DBProviderTest extends CDbTestCase
         'procedures' => Procedure::class,
     );
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         Yii::app()->getModule('OECaseSearch');
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->searchProvider = new DBProvider();
         parent::setUp();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
         unset($this->searchProvider);

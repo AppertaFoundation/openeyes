@@ -22,12 +22,14 @@ class Element_OphTrOperationnote_RevisionAqueousShuntTest extends ActiveRecordTe
         'revision' => 'Element_OphTrOperationnote_RevisionAqueousShunt',
     );
 
-    public function setUp() {
+    public function setUp(): void
+    {
         $this->model = new Element_OphTrOperationnote_RevisionAqueousShunt();
         parent::setUp();
     }
 
-    public function tearDown() {
+    public function tearDown(): void
+    {
         parent::tearDown();
         unset($this->model);
     }

@@ -20,7 +20,7 @@ Yii::import('application.modules.OphTrOperationbooking.helpers.*');
  *
  * @group controllers
  */
-class BookingControllerTest extends CDbTestCase
+class BookingControllerTest extends OEDbTestCase
 {
     private $controller;
     private $audit;
@@ -40,7 +40,7 @@ class BookingControllerTest extends CDbTestCase
         'ophtroperationbooking_operation_procedures_procedures' => 'OphTrOperationbooking_Operation_Procedures',
     );
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -60,7 +60,7 @@ class BookingControllerTest extends CDbTestCase
         $this->controller->firm = Firm::model()->findByPk(1);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $_GET = array();
         unset(Yii::app()->session['selected_firm_id']);

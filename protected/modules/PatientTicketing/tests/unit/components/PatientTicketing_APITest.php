@@ -16,7 +16,7 @@
  */
 use OEModule\PatientTicketing\models;
 
-class PatientTicketing_APITest extends CDbTestCase
+class PatientTicketing_APITest extends OEDbTestCase
 {
     private $api;
 
@@ -29,18 +29,18 @@ class PatientTicketing_APITest extends CDbTestCase
         'ticketassignments' => 'OEModule\PatientTicketing\models\TicketQueueAssignment',
     );
 
-    public static function setupBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         Yii::app()->session['selected_institution_id'] = 1;
         Yii::app()->getModule('PatientTicketing');
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         unset(Yii::app()->session['selected_institution_id']);
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->orig_svcman = Yii::app()->service;
@@ -50,7 +50,7 @@ class PatientTicketing_APITest extends CDbTestCase
         $this->api = Yii::app()->moduleAPI->get('PatientTicketing');
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         Yii::app()->setComponent('service', $this->orig_svcman);
         parent::tearDown();

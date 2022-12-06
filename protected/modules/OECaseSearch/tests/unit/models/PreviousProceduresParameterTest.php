@@ -6,7 +6,7 @@
  * @covers CaseSearchParameter
  * @method procedures($fixtureId)
  */
-class PreviousProceduresParameterTest extends CDbTestCase
+class PreviousProceduresParameterTest extends OEDbTestCase
 {
     public PreviousProceduresParameter $parameter;
 
@@ -15,7 +15,7 @@ class PreviousProceduresParameterTest extends CDbTestCase
         'procedures' => Procedure::class,
     );
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         Yii::app()->getModule('OECaseSearch');
     }
@@ -32,14 +32,14 @@ class PreviousProceduresParameterTest extends CDbTestCase
         );
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->parameter = new PreviousProceduresParameter();
         $this->parameter->id = 0;
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
         unset($this->parameter);
@@ -114,7 +114,7 @@ class PreviousProceduresParameterTest extends CDbTestCase
         if ($operation === '!=') {
             $query = "
                 SELECT outer_pat.id
-                FROM patient outer_pat 
+                FROM patient outer_pat
                 WHERE outer_pat.id NOT IN (
                   {$query}
                 )";

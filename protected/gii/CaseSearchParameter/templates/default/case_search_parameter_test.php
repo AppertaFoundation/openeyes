@@ -4,20 +4,20 @@ echo '<?php'; ?>
 /**
 * Class <?php echo $this->className; ?>ParameterTest
 */
-class <?php echo $this->className; ?>ParameterTest extends CDbTestCase
+class <?php echo $this->className; ?>ParameterTest extends OEDbTestCase
 {
     protected $parameter;
     protected $searchProviders;
     protected $invalidProvider;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->parameter = new <?php echo $this->className; ?>Parameter();
         $this->parameter->id = 0;
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
         unset($this->parameter);

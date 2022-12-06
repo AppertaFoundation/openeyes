@@ -27,6 +27,12 @@ class _WrapperContactBehavior extends BaseActiveRecord
     {
         return "Excuse me I'm a tad unwell";
     }
+
+    // test override to check default behaviour when owner doesn't have a value for this
+    public function getSalutationName()
+    {
+        return null;
+    }
 }
 
 class _WrapperContactBehavior2 extends BaseActiveRecord
@@ -125,7 +131,7 @@ class _WrapperContactBehavior3 extends BaseActiveRecord
     }
 }
 
-class ContactBehaviorTest extends CDbTestCase
+class ContactBehaviorTest extends OEDbTestCase
 {
     private _WrapperContactBehavior $model;
     private _WrapperContactBehavior2 $model2;
@@ -143,7 +149,7 @@ class ContactBehaviorTest extends CDbTestCase
     /**
      * @throws ReflectionException
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -165,15 +171,13 @@ class ContactBehaviorTest extends CDbTestCase
         /**
          * @var $contact Contact
          */
-        $contact = ComponentStubGenerator::generate(
-            'Contact',
-            array(
-                'address' => $this->address,
-                'label' => $label,
-                'fullName' => 'Henry Krinkle',
-                'reversedFullName' => 'Krinkle Henry',
-            )
-        );
+        $contact = new Contact();
+        $contact->attributes = [
+            'last_name' => 'Krinkle',
+            'first_name' => 'Henry'
+        ];
+        $contact->address = $this->address;
+        $contact->label = $label;
 
         $this->model->contact = $contact;
 
@@ -225,7 +229,7 @@ class ContactBehaviorTest extends CDbTestCase
                 'County',
                 'Postcode',
             ),
-            $this->model->getLetterAddress(array('include_label'=>true))
+            $this->model->getLetterAddress(['include_label' => true])
         );
     }
 

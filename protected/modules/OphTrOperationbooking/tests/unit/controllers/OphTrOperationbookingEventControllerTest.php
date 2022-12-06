@@ -15,9 +15,9 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-class OphTrOperationbookingEventControllerTest extends CDbTestCase
+class OphTrOperationbookingEventControllerTest extends OEDbTestCase
 {
-    public static function setupBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         Yii::import('application.modules.OphTrOperationbooking.controllers.*');
     }

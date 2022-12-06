@@ -41,7 +41,7 @@ class AddressTest extends ActiveRecordTestCase
         );
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->model = new Address();

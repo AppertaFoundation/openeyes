@@ -21,13 +21,13 @@ class OphDrPrescription_ItemTaperTest extends ActiveRecordTestCase
         return $this->instance;
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->instance = $this->item_tapers('prescription_item_taper1');
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
         unset($this->instance);

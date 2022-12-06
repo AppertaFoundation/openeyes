@@ -35,7 +35,7 @@ class Element_OphCiExamination_CurrentManagementPlan_Test extends ActiveRecordTe
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->model = new OEModule\OphCiExamination\models\Element_OphCiExamination_CurrentManagementPlan();
@@ -80,7 +80,7 @@ class Element_OphCiExamination_CurrentManagementPlan_Test extends ActiveRecordTe
         $result = $this->model->getLatestIOP($patient, $api);
         $expected = array('leftIOP' => '10', 'rightIOP' => '20');
 
-        $this->assertInternalType('array', $result);
+        $this->assertIsArray($result);
         $this->assertEquals($expected, $result);
     }
 }

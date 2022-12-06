@@ -50,7 +50,7 @@ class ContrastSensitivityTest extends \OEDbTestCase
 
         // some very basic checks to verify no issues exist for basic rendering
         $this->assertNotEmpty($result);
-        $this->assertContains('id="OEModule_OphCiExamination_models_ContrastSensitivity_form"', $result);
+        $this->assertStringContainsString('id="OEModule_OphCiExamination_models_ContrastSensitivity_form"', $result);
     }
 
     /** @test */
@@ -84,7 +84,7 @@ class ContrastSensitivityTest extends \OEDbTestCase
         // some very basic checks to verify no issues exist for basic rendering
         $this->assertNotEmpty($output);
         for ($i = 0; $i < count($element->results); $i++) {
-            $this->assertContains("data-key=\"$i\"", $output);
+            $this->assertStringContainsString("data-key=\"$i\"", $output);
         }
     }
 
@@ -114,19 +114,19 @@ class ContrastSensitivityTest extends \OEDbTestCase
 
         // some very basic checks to verify no issues exist for basic rendering
         $this->assertNotEmpty($output);
-        $this->assertContains((string)$entry->contrastsensitivity_type, $output);
-        $this->assertContains((string)$entry->value, $output);
-        $this->assertContains((string)$entry->correctiontype, $output);
+        $this->assertStringContainsString((string)$entry->contrastsensitivity_type, $output);
+        $this->assertStringContainsString((string)$entry->value, $output);
+        $this->assertStringContainsString((string)$entry->correctiontype, $output);
 
         if ($entry->eye_id == ContrastSensitivity_Result::BEO) {
-            $this->assertContains('<i class="oe-i beo small pad"></i>', $output);
+            $this->assertStringContainsString('<i class="oe-i beo small pad"></i>', $output);
         } elseif ($entry->eye_id == ContrastSensitivity_Result::LEFT) {
-            $this->assertContains('<i class="oe-i laterality L small pad"></i>', $output);
+            $this->assertStringContainsString('<i class="oe-i laterality L small pad"></i>', $output);
         } elseif ($entry->eye_id == ContrastSensitivity_Result::RIGHT) {
-            $this->assertContains('<i class="oe-i laterality R small pad"></i>', $output);
+            $this->assertStringContainsString('<i class="oe-i laterality R small pad"></i>', $output);
         }
 
         // element comment
-        $this->assertContains(htmlentities($element->comments, ENT_QUOTES), $output);
+        $this->assertStringContainsString(htmlentities($element->comments, ENT_QUOTES), $output);
     }
 }

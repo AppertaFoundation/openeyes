@@ -31,7 +31,7 @@ class Element_OphCiExamination_DilationTest extends ActiveRecordTestCase
         return models\Element_OphCiExamination_Dilation::model();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         foreach ($this->delete_element_ids as $id) {
             foreach (models\OphCiExamination_Dilation_Treatment::model()->findAll('element_id = ?', array($id)) as $t) {

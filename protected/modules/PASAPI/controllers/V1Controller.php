@@ -66,6 +66,7 @@ class V1Controller extends \CController
     {
         if (in_array($actionID, static::$resources)) {
             $_GET['resource_type'] = $actionID;
+
             switch (\Yii::app()->getRequest()->getRequestType()) {
                 case 'PUT':
                     return parent::createAction('Update');
@@ -110,7 +111,7 @@ class V1Controller extends \CController
         }
 
         if (!in_array($this->output_format, static::$supported_formats)) {
-            $this->sendResponse(406, 'PASAPI only supports ' . implode(',', static::$supported_formats));
+            $this->sendResponse(406);
         }
 
         if (!isset($_SERVER['PHP_AUTH_USER'])) {
@@ -118,7 +119,9 @@ class V1Controller extends \CController
         }
 
         $identity = new UserIdentity($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW'], null, null);
-        if (!$identity->authenticate()) {
+        list($authentication_success, $authentication_msg) = $identity->authenticate();
+
+        if (!$authentication_success) {
             $this->sendResponse(401);
         }
 
@@ -137,7 +140,7 @@ class V1Controller extends \CController
     public function expectedParametersForAction($action)
     {
         return array(
-            'update' => 'id',
+            'update' => 'id, identifier-type',
             'delete' => 'id',
             'create' => null,
         )[strtolower($action->id)];

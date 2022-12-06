@@ -42,7 +42,7 @@ class ExaminationCreatorTest extends \OEDbTestCase
     use \WithFaker;
     use InteractsWithVisualAcuity;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
