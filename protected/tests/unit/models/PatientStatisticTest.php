@@ -16,13 +16,13 @@ class PatientStatisticTest extends ActiveRecordTestCase
 
     protected PatientStatistic $statistic;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->statistic = $this->stats('stat1');
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
         unset($this->statistic);

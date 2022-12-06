@@ -14,7 +14,7 @@
  */
 class OphTrOperationbooking_BookingHelperTest extends CTestCase
 {
-    public static function setupBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         Yii::import('application.modules.OphTrOperationbooking.helpers.*');
     }
@@ -24,7 +24,7 @@ class OphTrOperationbooking_BookingHelperTest extends CTestCase
     private $session;
     private $op;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->helper = new OphTrOperationbooking_BookingHelper();
 

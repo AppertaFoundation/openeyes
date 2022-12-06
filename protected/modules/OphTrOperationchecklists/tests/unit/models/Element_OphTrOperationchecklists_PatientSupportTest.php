@@ -102,7 +102,7 @@ class Element_OphTrOperationchecklists_PatientSupportTest extends ActiveRecordTe
         }
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         foreach ($this->elementIds as $id) {
             foreach (OphTrOperationchecklists_PatientSupportResults::model()->findAll('element_id = :element_id', array(':element_id' => $id)) as $t) {

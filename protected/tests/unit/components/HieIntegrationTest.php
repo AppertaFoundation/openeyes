@@ -41,7 +41,7 @@ class HieIntegrationTest extends CTestCase
      */
     protected $test_data = [];
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->test_data = json_decode($this->testJson, true);
 

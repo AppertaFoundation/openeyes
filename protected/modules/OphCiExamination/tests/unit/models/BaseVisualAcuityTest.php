@@ -126,7 +126,7 @@ abstract class BaseVisualAcuityTest extends \ModelTestCase
         $this->assertFalse($instance->validate());
         $errors = $instance->getErrors();
         $this->assertArrayHasKey($invalid_side, $errors);
-        $this->assertRegExp("/has no data/", $errors[$invalid_side][0]);
+        $this->assertMatchesRegularExpression("/has no data/", $errors[$invalid_side][0]);
     }
 
     /**

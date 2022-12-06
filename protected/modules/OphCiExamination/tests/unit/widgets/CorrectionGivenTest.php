@@ -66,11 +66,11 @@ class CorrectionGivenTest extends \OEDbTestCase
 
         $result = $this->getWidgetRender($widget);
         foreach (['right', 'left'] as $side) {
-            $this->assertContains(
+            $this->assertStringContainsString(
                 $instance->getOrderLabelForSide($side),
                 $result
             );
-            $this->assertContains($instance->{"{$side}_refraction"}, $result);
+            $this->assertStringContainsString($instance->{"{$side}_refraction"}, $result);
         }
     }
 }

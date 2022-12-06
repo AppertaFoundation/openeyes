@@ -5,7 +5,7 @@
  * @covers PatientAllergyParameter
  * @covers CaseSearchParameter
  */
-class PatientAllergyParameterTest extends CDbTestCase
+class PatientAllergyParameterTest extends OEDbTestCase
 {
     public PatientAllergyParameter $parameter;
 
@@ -14,7 +14,7 @@ class PatientAllergyParameterTest extends CDbTestCase
         'allergy' => ':allergy'
     );
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
         Yii::app()->getModule('OECaseSearch');
@@ -32,14 +32,14 @@ class PatientAllergyParameterTest extends CDbTestCase
         );
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->parameter = new PatientAllergyParameter();
         $this->parameter->id = 0;
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
         unset($this->parameter);
@@ -56,8 +56,8 @@ class PatientAllergyParameterTest extends CDbTestCase
 
         self::assertTrue($this->parameter->validate());
 
-        $query = "SELECT DISTINCT p.id 
-FROM patient p 
+        $query = "SELECT DISTINCT p.id
+FROM patient p
 LEFT JOIN patient_allergy_assignment paa
   ON paa.patient_id = p.id
 LEFT JOIN allergy a

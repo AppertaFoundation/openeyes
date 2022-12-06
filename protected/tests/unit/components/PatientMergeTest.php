@@ -33,7 +33,7 @@
  * @method genetics_study_subject($fixtureId)
  * @method secondary_diagnosis($fixtureId)
  */
-class PatientMergeTest extends CDbTestCase
+class PatientMergeTest extends OEDbTestCase
 {
     public $fixtures = array(
             'patients' => 'Patient',
@@ -63,17 +63,17 @@ class PatientMergeTest extends CDbTestCase
         return false;
     }
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         Yii::app()->session['selected_institution_id'] = 1;
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         unset(Yii::app()->session['selected_institution_id']);
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         if ($this->shouldTestGenetics()) {
             $this->fixtures = array_merge($this->fixtures, $this->genetic_fixtures);

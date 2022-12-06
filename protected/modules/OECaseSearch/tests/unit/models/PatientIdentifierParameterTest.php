@@ -5,7 +5,7 @@
  * @covers PatientIdentifierParameter
  * @covers CaseSearchParameter
  */
-class PatientIdentifierParameterTest extends CDbTestCase
+class PatientIdentifierParameterTest extends OEDbTestCase
 {
     protected $fixtures = array(
         'institution' => Institution::class,
@@ -18,7 +18,7 @@ class PatientIdentifierParameterTest extends CDbTestCase
     public PatientIdentifierParameter $parameter;
     private bool $ignoreTests = false;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         /**
          * @var $module OECaseSearchModule
@@ -26,7 +26,7 @@ class PatientIdentifierParameterTest extends CDbTestCase
         Yii::app()->getModule('OECaseSearch');
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->parameter = new PatientIdentifierParameter();
@@ -34,7 +34,7 @@ class PatientIdentifierParameterTest extends CDbTestCase
         $this->parameter->type = (int)(PatientIdentifierType::model()->findByPk(1))->id;
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
         unset($this->parameter);
@@ -147,7 +147,7 @@ class PatientIdentifierParameterTest extends CDbTestCase
         $this->parameter->operation = '=';
 
         self::assertTrue($this->parameter->validate());
-        $expected = "SELECT DISTINCT p.patient_id 
+        $expected = "SELECT DISTINCT p.patient_id
 FROM patient_identifier p
 WHERE (:p_type_0 IS NULL OR p.patient_identifier_type_id = :p_type_0)
   AND p.value = :p_id_number_0";

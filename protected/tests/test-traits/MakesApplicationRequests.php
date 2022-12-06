@@ -19,6 +19,11 @@ trait MakesApplicationRequests
 {
     use MocksSession;
 
+    public function setUpMakesApplicationRequests()
+    {
+        $this->removeRequestEventHandling();
+    }
+
     protected function actingAs($user, $for_institution = null)
     {
         $this->mockCurrentUser($user);
@@ -89,5 +94,18 @@ trait MakesApplicationRequests
     protected function crawl(string $contents)
     {
         return new Crawler($contents);
+    }
+
+    /**
+     * During the bootstrapping of the test environment, Yii::createWebApplication is called
+     * This will initialise the standard request object from configuration, which in turn
+     * sets up some basic internal yii event behaviour to occur at the start of requests.
+     *
+     * Here we remove that, to ensure that we can spoof the request successfully.
+     */
+    private function removeRequestEventHandling()
+    {
+        $event_handlers = \Yii::app()->getEventHandlers('onBeginRequest');
+        $event_handlers->clear();
     }
 }

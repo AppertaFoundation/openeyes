@@ -20,7 +20,7 @@ class OEFuzzyDateValidatorTest extends CTestCase
     protected $validator;
     protected $cModelMock;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->validator = new OEFuzzyDateValidator();
 
@@ -37,7 +37,7 @@ class OEFuzzyDateValidatorTest extends CTestCase
         $this->validator->validateAttribute($this->cModelMock, 'bar');
         $validDateMsg  = $this->cModelMock->getErrors('bar');
         $this->assertFalse($this->cModelMock->hasErrors());
-        $this->assertInternalType('array', $validDateMsg);
+        $this->assertIsArray($validDateMsg);
     }
 
     /**
@@ -87,7 +87,7 @@ class OEFuzzyDateValidatorTest extends CTestCase
         $this->assertEquals('Invalid month value', $invalidMonthMsg[0]);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->cModelMock);
     }

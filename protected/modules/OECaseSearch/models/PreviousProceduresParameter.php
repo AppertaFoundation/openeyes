@@ -116,7 +116,7 @@ class PreviousProceduresParameter extends CaseSearchParameter implements DBProvi
         if ($this->operation === '!=') {
             $query = "
                 SELECT outer_pat.id
-                FROM patient outer_pat 
+                FROM patient outer_pat
                 WHERE outer_pat.id NOT IN (
                   $query
                 )";

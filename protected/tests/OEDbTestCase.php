@@ -1,4 +1,7 @@
 <?php
+
+use PHPUnit\Framework\TestCase;
+
 /**
  * (C) Apperta Foundation, 2022
  * This file is part of OpenEyes.
@@ -13,8 +16,10 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-class OEDbTestCase extends CDbTestCase
+class OEDbTestCase extends TestCase
 {
+    use SupportsFixtures;
+
     public $test_tables = [];
     protected $_fixture_manager;
     protected $tear_down_callbacks = [];
@@ -22,7 +27,7 @@ class OEDbTestCase extends CDbTestCase
 
     private static $traits_have_setup = [];
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->setUpTraits();
@@ -42,7 +47,7 @@ class OEDbTestCase extends CDbTestCase
         $this->tear_down_callbacks[] = $callback;
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         foreach ($this->tear_down_callbacks as $callback) {
             $callback();

@@ -32,7 +32,7 @@ class HasCorrectionTypeTest extends ModelTestCase
 {
     protected $element_cls = HasCorrectionTypeTest_TestClass::class;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

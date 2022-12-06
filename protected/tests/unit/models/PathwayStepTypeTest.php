@@ -15,12 +15,12 @@ class PathwayStepTypeTest extends ActiveRecordTestCase
         'pathway_steps' => PathwayStep::class,
     );
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         Yii::app()->session['selected_institution_id'] = 1;
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         unset(Yii::app()->session['selected_institution_id']);
     }
@@ -28,7 +28,7 @@ class PathwayStepTypeTest extends ActiveRecordTestCase
     /**
      * @throws Exception
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         // Delete all custom step types created by these unit tests.
         parent::tearDown();

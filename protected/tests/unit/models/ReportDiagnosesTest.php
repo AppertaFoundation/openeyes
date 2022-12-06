@@ -16,7 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class ReportDiagnosesTest extends CDbTestCase
+class ReportDiagnosesTest extends OEDbTestCase
 {
     public $fixtures = array(
         'institution' => Institution::class,
@@ -28,19 +28,19 @@ class ReportDiagnosesTest extends CDbTestCase
         'episodes' => 'Episode',
     );
 
-    public static function setupBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         Yii::app()->session['selected_institution_id'] = 1;
         Yii::app()->params['display_primary_number_usage_code'] = 'LOCAL';
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         unset(Yii::app()->session['selected_institution_id']);
         unset(Yii::app()->params['display_primary_number_usage_code']);
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
     }
@@ -1093,7 +1093,7 @@ class ReportDiagnosesTest extends CDbTestCase
         $r = new ReportDiagnoses();
         $r->condition_type = 'or';
 
-        $this->assertRegExp('/Patients with any /', $r->description());
+        $this->assertMatchesRegularExpression('/Patients with any /', $r->description());
     }
 
     public function testDescription_and()
@@ -1101,7 +1101,7 @@ class ReportDiagnosesTest extends CDbTestCase
         $r = new ReportDiagnoses();
         $r->condition_type = 'and';
 
-        $this->assertRegExp('/Patients with all /', $r->description());
+        $this->assertMatchesRegularExpression('/Patients with all /', $r->description());
     }
 
     public function testDescription_Principal()
@@ -1110,8 +1110,8 @@ class ReportDiagnosesTest extends CDbTestCase
         $r->condition_type = 'and';
         $r->principal = array(1, 2);
 
-        $this->assertRegExp('/Myopia \(Principal\)/', $r->description());
-        $this->assertRegExp('/Retinal lattice degeneration \(Principal\)/', $r->description());
+        $this->assertMatchesRegularExpression('/Myopia \(Principal\)/', $r->description());
+        $this->assertMatchesRegularExpression('/Retinal lattice degeneration \(Principal\)/', $r->description());
     }
 
     public function testDescription_Secondary()
@@ -1120,8 +1120,8 @@ class ReportDiagnosesTest extends CDbTestCase
         $r->condition_type = 'and';
         $r->secondary = array(1, 2);
 
-        $this->assertRegExp('/Myopia \(Secondary\)/', $r->description());
-        $this->assertRegExp('/Retinal lattice degeneration \(Secondary\)/', $r->description());
+        $this->assertMatchesRegularExpression('/Myopia \(Secondary\)/', $r->description());
+        $this->assertMatchesRegularExpression('/Retinal lattice degeneration \(Secondary\)/', $r->description());
     }
 
     public function testDescription_Dates()
@@ -1132,7 +1132,7 @@ class ReportDiagnosesTest extends CDbTestCase
         $r->start_date = '10 May 2002';
         $r->end_date = '19 May 2002';
 
-        $this->assertRegExp('/Between 10 May 2002 and 19 May 2002/', $r->description());
+        $this->assertMatchesRegularExpression('/Between 10 May 2002 and 19 May 2002/', $r->description());
     }
 
     public function testToCSV()
@@ -1276,14 +1276,14 @@ Between 10 May 2002 and 19 May 2002
 
         $this->assertEquals('Principal', $first['type']);
         $this->assertEquals('Myopia (disorder)', $first['disorder']);
-        $this->assertRegExp('/^' . date('Y-m-d') . '/', $first['date']);
+        $this->assertMatchesRegularExpression('/^' . date('Y-m-d') . '/', $first['date']);
         $this->assertEquals('Left', $first['eye']);
 
         $second = array_shift($row['diagnoses']);
 
         $this->assertEquals('Principal', $second['type']);
         $this->assertEquals('Retinal lattice degeneration (disorder)', $second['disorder']);
-        $this->assertRegExp('/^' . date('Y-m-d') . '/', $second['date']);
+        $this->assertMatchesRegularExpression('/^' . date('Y-m-d') . '/', $second['date']);
         $this->assertEquals('Both', $second['eye']);
     }
 
@@ -1422,14 +1422,14 @@ Between 10 May 2002 and 19 May 2002
 
         $this->assertEquals('Principal', $fourth['type']);
         $this->assertEquals('Myopia (disorder)', $fourth['disorder']);
-        $this->assertRegExp('/^' . date('Y-m-d') . '/', $fourth['date']);
+        $this->assertMatchesRegularExpression('/^' . date('Y-m-d') . '/', $fourth['date']);
         $this->assertEquals('Left', $fourth['eye']);
 
         $fifth = array_shift($row['diagnoses']);
 
         $this->assertEquals('Principal', $fifth['type']);
         $this->assertEquals('Retinal lattice degeneration (disorder)', $fifth['disorder']);
-        $this->assertRegExp('/^' . date('Y-m-d') . '/', $fifth['date']);
+        $this->assertMatchesRegularExpression('/^' . date('Y-m-d') . '/', $fifth['date']);
         $this->assertEquals('Both', $fifth['eye']);
     }
 
@@ -1508,14 +1508,14 @@ Between 10 May 2002 and 19 May 2002
 
         $this->assertEquals('Principal', $second['type']);
         $this->assertEquals('Myopia (disorder)', $second['disorder']);
-        $this->assertRegExp('/^' . date('Y-m-d') . '/', $second['date']);
+        $this->assertMatchesRegularExpression('/^' . date('Y-m-d') . '/', $second['date']);
         $this->assertEquals('Left', $second['eye']);
 
         $third = array_shift($row['diagnoses']);
 
         $this->assertEquals('Principal', $third['type']);
         $this->assertEquals('Retinal lattice degeneration (disorder)', $third['disorder']);
-        $this->assertRegExp('/^' . date('Y-m-d') . '/', $second['date']);
+        $this->assertMatchesRegularExpression('/^' . date('Y-m-d') . '/', $second['date']);
         $this->assertEquals('Both', $third['eye']);
     }
 

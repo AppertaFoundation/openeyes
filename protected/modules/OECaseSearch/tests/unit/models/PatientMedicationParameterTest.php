@@ -6,7 +6,7 @@
  * @covers CaseSearchParameter
  * @method medications($fixtureId)
  */
-class PatientMedicationParameterTest extends CDbTestCase
+class PatientMedicationParameterTest extends OEDbTestCase
 {
     /**
      * @var $object PatientMedicationParameter
@@ -19,27 +19,27 @@ class PatientMedicationParameterTest extends CDbTestCase
         'medication_institutions' => Medication_Institution::class,
     );
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
         Yii::app()->session['selected_institution_id'] = 1;
         Yii::app()->getModule('OECaseSearch');
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         parent::setUpBeforeClass();
         unset(Yii::app()->session['selected_institution_id']);
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->object = new PatientMedicationParameter();
         $this->object->id = 0;
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->object);
         parent::tearDown();

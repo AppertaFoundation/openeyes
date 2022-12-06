@@ -14,7 +14,7 @@
  */
 class OphCoTherapyapplication_EmailTest extends ActiveRecordTestCase
 {
-    public static function setupBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         Yii::app()->getModule('OphCoTherapyapplication');
         Yii::app()->session['selected_institution_id'] = 1;
@@ -37,12 +37,12 @@ class OphCoTherapyapplication_EmailTest extends ActiveRecordTestCase
         'eye_id'
     ];
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         unset(Yii::app()->session['selected_institution_id']);
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

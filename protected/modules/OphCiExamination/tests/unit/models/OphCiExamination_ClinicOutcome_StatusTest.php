@@ -29,7 +29,7 @@ class OphCiExamination_ClinicOutcome_StatusTest extends ActiveRecordTestCase
         return $this->model;
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->model = new OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Status();

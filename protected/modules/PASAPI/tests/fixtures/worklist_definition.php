@@ -25,6 +25,7 @@ return array(
         'rrule' => 'FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR',
         'start_time' => '09:00',
         'end_time' => '17:00',
+        'active_from' => '2022-01-01',
         'scheduled' => true,
     ),
     'def2' => array(
@@ -33,6 +34,7 @@ return array(
         'rrule' => 'FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR',
         'start_time' => '09:00',
         'end_time' => '12:00',
+        'active_from' => '2022-01-01',
         'scheduled' => true,
     ),
     'def3' => array(
@@ -41,6 +43,7 @@ return array(
         'rrule' => 'FREQ=DAILY',
         'start_time' => '09:00',
         'end_time' => '17:00',
+        'active_from' => '2022-01-01',
         'scheduled' => true,
     ),
     'def4' => array(
@@ -49,6 +52,7 @@ return array(
         'rrule' => 'FREQ=DAILY',
         'start_time' => '09:00',
         'end_time' => '17:00',
+        'active_from' => '2022-01-01',
         'scheduled' => true,
     ),
     'def5' => array(
@@ -57,6 +61,7 @@ return array(
         'rrule' => 'FREQ=DAILY',
         'start_time' => '09:00',
         'end_time' => '17:00',
+        'active_from' => '2022-01-01',
         'scheduled' => true,
     ),
 );

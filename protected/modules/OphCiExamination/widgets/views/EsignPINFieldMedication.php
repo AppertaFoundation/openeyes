@@ -156,7 +156,7 @@ if (!$element->isSigned()) {
                 });
             }
 
-            let isset_mm_error = document.getElementById("OEModule_OphCiExamination_models_MedicationManagement_element").getElementsByClassName("error")[0];
+            let isset_mm_error = document.getElementById("OEModule_OphCiExamination_models_MedicationManagement_element")?.getElementsByClassName("error")[0];
             if(typeof isset_mm_error === "undefined"){
                 sessionStorage.setItem('mmesign_change', 'false');
             }

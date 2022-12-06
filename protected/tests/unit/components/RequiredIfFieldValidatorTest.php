@@ -16,7 +16,7 @@ class RequiredIfFieldValidatorTest extends PHPUnit_Framework_TestCase
 {
     private $val;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

@@ -21,6 +21,9 @@ use OEModule\PASAPI\models\RemapValue;
 use OEModule\PASAPI\models\XpathRemap;
 use OEModule\PASAPI\resources\BaseResource;
 
+/**
+ * @group sample-data
+ */
 class BaseResourceTest extends \PHPUnit_Framework_TestCase
 {
     /**

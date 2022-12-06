@@ -12,7 +12,7 @@
  * @copyright Copyright (C) 2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class ModuleAPITest extends CDbTestCase
+class ModuleAPITest extends OEDbTestCase
 {
     protected $orig_modules;
     protected $test_event_type;
@@ -23,7 +23,7 @@ class ModuleAPITest extends CDbTestCase
         'users' => 'User',
     );
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->orig_modules = Yii::app()->getModules();
@@ -39,7 +39,7 @@ class ModuleAPITest extends CDbTestCase
         $event_type->noVersion()->save();
         $this->test_event_type = $event_type;
     }
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
         Yii::app()->setModules($this->orig_modules);

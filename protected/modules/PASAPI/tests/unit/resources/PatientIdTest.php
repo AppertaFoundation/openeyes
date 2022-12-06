@@ -1,5 +1,4 @@
 <?php
-
 /**
  * OpenEyes.
  *
@@ -15,7 +14,13 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class PatientIdTest extends PHPUnit_Framework_TestCase
+
+namespace OEModule\PASAPI\tests\unit\resources;
+
+/**
+ * @group sample-data
+ */
+class PatientIdTest extends \PHPUnit_Framework_TestCase
 {
     public function getModelProvider()
     {
@@ -46,7 +51,7 @@ class PatientIdTest extends PHPUnit_Framework_TestCase
         $resource->$id_tag = 'Test Value';
 
         if (!$expect_exception) {
-            $test_result = new Patient();
+            $test_result = new \Patient();
             $resource->expects($this->once())
                 ->method($resolver_method)
                 ->will($this->returnValue($test_result));
@@ -61,7 +66,7 @@ class PatientIdTest extends PHPUnit_Framework_TestCase
 
     public function resolveModelId($pass)
     {
-        $rc = new ReflectionClass('\\OEModule\\PASAPI\\resources\\PatientId');
+        $rc = new \ReflectionClass('\\OEModule\\PASAPI\\resources\\PatientId');
         $m = $rc->getMethod('resolveModelId');
         $m->setAccessible(true);
 
@@ -86,7 +91,7 @@ class PatientIdTest extends PHPUnit_Framework_TestCase
             $resource->expects($this->never())
                 ->method('patientNotFound');
 
-            $result = ComponentStubGenerator::generate('Patient', array('id' => 'testId'));
+            $result = \ComponentStubGenerator::generate('Patient', array('id' => 'testId'));
             $patient->expects($this->once())
                 ->method('findByPk')
                 ->will($this->returnValue($result));

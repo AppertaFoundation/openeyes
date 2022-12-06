@@ -219,7 +219,7 @@ class CoverAndPrismCoverTest extends \ModelTestCase
         $my_letter_string = $instance->letter_string;
 
         foreach ($expected as $key => $value) {
-            $this->assertContains((string)$value, $my_letter_string);
+            $this->assertStringContainsString((string)$value, $my_letter_string);
         }
     }
 
