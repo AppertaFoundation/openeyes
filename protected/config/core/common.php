@@ -1047,10 +1047,12 @@ $caches = array(
 if (extension_loaded('apcu') && ini_get('apc.enabled')) {
     $caches['cache'] = array(
             'class' => 'system.caching.CApcCache',
+            'useApcu' => true,
     );
     $caches['settingCache'] = array(
             'class' => 'system.caching.CApcCache',
             'keyPrefix' => 'SettingMetadata',
+            'useApcu' => true,
     );
 } else {
     $caches['cache'] = array(
