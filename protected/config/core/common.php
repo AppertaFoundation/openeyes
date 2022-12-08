@@ -244,7 +244,7 @@ $config = array(
                 // Normal logging
                 'application' => array(
                     'class' => 'CFileLogRoute',
-                    'levels' => 'info, warning, error',
+                    'levels' => !empty(getenv('OE_APP_LOG_LEVELS')) ? trim(getenv('OE_APP_LOG_LEVELS')) : 'info, warning, error',
                     'logFile' => 'application.log',
                     'maxLogFiles' => 30,
                 ),
