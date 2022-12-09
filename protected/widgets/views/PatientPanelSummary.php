@@ -89,21 +89,21 @@ $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient($displa
         <div class="flex-layout flex-right">
                     <?php if (!$deceased) { ?>
                         <?php if ($this->patient->allergyAssignments || $this->patient->risks || $this->patient->getDiabetes()) { ?>
-                  <div class="patient-allergies-risks risk-warning js-allergies-risks-btn">
+                  <div class="patient-allergies-risks risk-warning js-allergies-risks-btn" data-test="summary-allergies-alert-btn">
                                         <?= $this->patient->allergyAssignments ? 'Allergies' : ''; ?>
                                         <?= $this->patient->allergyAssignments && $this->patient->risks ? ', ' : ''; ?>
                                         <?= $this->patient->risks || $this->patient->getDiabetes() ? 'Alerts' : ''; ?>
                   </div>
                         <?php } elseif (!$this->patient->hasAllergyStatus() && !$this->patient->hasRiskStatus()) { ?>
-                  <div class="patient-allergies-risks unknown js-allergies-risks-btn">
+                  <div class="patient-allergies-risks unknown js-allergies-risks-btn" data-test="summary-allergies-alert-btn">
                       Allergies, Alerts
                   </div>
                         <?php } elseif ($this->patient->no_risks_date && $this->patient->no_allergies_date) { ?>
-                  <div class="patient-allergies-risks no-risk js-allergies-risks-btn">
+                  <div class="patient-allergies-risks no-risk js-allergies-risks-btn" data-test="summary-allergies-alert-btn">
                       Allergies, Alerts
                   </div>
                         <?php } else { /*either risk or allergy status in unknown*/ ?>
-                  <div class="patient-allergies-risks unknown js-allergies-risks-btn">
+                  <div class="patient-allergies-risks unknown js-allergies-risks-btn" data-test="summary-allergies-alert-btn">
                       Allergies, Alerts
                   </div>
                         <?php }

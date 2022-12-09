@@ -4,6 +4,7 @@ namespace OE\factories\models;
 
 use DateTime;
 use Episode;
+use Event;
 use OE\factories\exceptions\FactoryNotFoundException;
 use OE\factories\ModelFactory;
 use OE\factories\models\traits\HasFirm;
@@ -14,6 +15,7 @@ class EventFactory extends ModelFactory
     use HasFirm;
 
     protected static ?array $availableEventTypes = null;
+    protected array $elementsWithStates = [];
 
     public static function forModule(string $moduleName)
     {
@@ -38,6 +40,25 @@ class EventFactory extends ModelFactory
         ];
     }
 
+    public function withElement(string $element_cls, array $states = []): self
+    {
+        $this->elementsWithStates[$element_cls] = $states;
+
+        return $this;
+    }
+
+    public function withElements(array $elements_with_states = []): self
+    {
+        foreach ($elements_with_states as $element_with_states) {
+            if (!is_array($element_with_states)) {
+                $element_with_states = [$element_with_states];
+            }
+            $this->withElement(...$element_with_states);
+        }
+
+        return $this;
+    }
+
     public function configure()
     {
         return $this->afterMaking(function ($event) {
@@ -49,6 +70,21 @@ class EventFactory extends ModelFactory
             $event->institution_id = $event->firm
                 ? $event->firm->institution_id
                 : ($event->episode->firm ? $event->episode->firm->institution_id : null);
+        })->afterCreating(function (Event $event) {
+            // Would be good to set these elements on the event to allow the getElements
+            // method to return them directly, rather than needing to go to the db again.
+            foreach ($this->elementsWithStates as $element_class => $states) {
+                $element_factory = ModelFactory::factoryFor($element_class);
+                foreach ($states as $state) {
+                    if (!is_array($state)) {
+                        $state = [$state];
+                    }
+
+                    $element_factory->{$state[0]}(...array_slice($state, 1));
+                }
+
+                $element_factory->create(['event_id' => $event->id]);
+            }
         });
     }
 
