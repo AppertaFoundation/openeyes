@@ -150,7 +150,7 @@ class OERequiredIfOtherAttributesEmptyValidatorTest extends TestCase
             ->getMock();
         $validator->attributes = [$attribute];
         $validator->other_attributes = $dependent_attrs;
-        $validator->expects($this->at(0))
+        $validator->expects($this->once())
             ->method('addError')
             ->with($obj, $attribute);
 
