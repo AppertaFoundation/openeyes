@@ -1096,7 +1096,7 @@ class OEMigration extends CDbMigration
      */
     protected function verifyColumnExists($table_name, $column_name)
     {
-        $cols = $this->dbConnection->createCommand("SHOW COLUMNS FROM `" . $table_name . "` LIKE '" .$column_name ."'")->queryScalar([ ':table_name' => $table_name ]);
+        $cols = $this->dbConnection->createCommand("SHOW COLUMNS FROM `" . $table_name . "` LIKE '" .$column_name ."'")->queryScalar();
         return !empty($cols);
     }
 

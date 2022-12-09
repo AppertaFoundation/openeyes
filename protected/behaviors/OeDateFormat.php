@@ -99,7 +99,7 @@ class OeDateFormat extends CActiveRecordBehavior
         $date = $this->Owner->{$this->fuzzy_date_field};
 
         // check date format
-        if (!strtotime($date)) {
+        if (!strtotime($date ?? '')) {
             return ['', '', ''];
         }
 

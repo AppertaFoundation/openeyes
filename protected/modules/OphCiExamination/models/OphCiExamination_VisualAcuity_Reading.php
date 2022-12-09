@@ -180,7 +180,7 @@ class OphCiExamination_VisualAcuity_Reading extends \BaseActiveRecordVersioned
             $unit_id = $this->unit_id;
         }
         $criteria = new \CDbCriteria();
-        $criteria->select = array('*', 'ABS(base_value - :base_value) AS delta');
+        $criteria->select = array('*', 'ABS(CAST(base_value AS SIGNED) - :base_value) AS delta');
         $criteria->condition = 'unit_id = :unit_id';
         $criteria->params = array(':unit_id' => $unit_id, ':base_value' => $base_value);
         $criteria->order = 'delta';

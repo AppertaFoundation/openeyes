@@ -29,12 +29,12 @@ class PathwayStepType extends BaseActiveRecordVersioned
 {
     use MappedReferenceData;
 
-    public function getSupportedLevels()
+    public function getSupportedLevels(): int
     {
         return ReferenceData::LEVEL_INSTITUTION;
     }
 
-    public function mappingColumn()
+    public function mappingColumn(int $level): string
     {
         return 'pathway_step_type_id';
     }

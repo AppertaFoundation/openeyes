@@ -106,7 +106,7 @@ class Helper
      */
     public static function convertDate2NHS($value, $empty_string = '-')
     {
-        $time = strtotime($value);
+        $time = strtotime($value ?? '');
         if ($time !== false) {
             return date(self::NHS_DATE_FORMAT, $time);
         } else {
@@ -194,7 +194,7 @@ class Helper
         }
 
         $dob_datetime = new DateTime($dob);
-        $check_datetime = new DateTime($check_date);
+        $check_datetime = new DateTime($check_date ?? '');
 
         if ($date_of_death) {
             $dod_datetime = new DateTime($date_of_death);
