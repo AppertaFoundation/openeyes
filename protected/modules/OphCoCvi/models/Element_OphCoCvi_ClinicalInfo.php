@@ -37,7 +37,6 @@ namespace OEModule\OphCoCvi\models;
  * The followings are the available model relations:
  *
  * @property \ElementType $element_type
- * @property \EventType $eventType
  * @property \Event $event
  * @property \User $user
  * @property \User $usermodified
@@ -138,7 +137,6 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
                 'id',
                 'on' => "element_type.class_name='" . get_class($this) . "'"
             ),
-            'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
             'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
