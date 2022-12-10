@@ -12,13 +12,13 @@ class SavedSearchTest extends ActiveRecordTestCase
         'saved_searches' => SavedSearch::class,
     );
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
         Yii::app()->getModule('OECaseSearch');
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->model = new SavedSearch();

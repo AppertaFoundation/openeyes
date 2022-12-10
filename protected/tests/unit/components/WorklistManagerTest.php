@@ -15,6 +15,13 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+/**
+ * N.B. has been added to the sample data group because of a couple of
+ * data dependencies. The tests here need further analysis to be sustainable.
+ *
+ * @group sample-data
+ */
 class WorklistManagerTest extends PHPUnit_Framework_TestCase
 {
     protected function getTransactionMock($methods = array())
@@ -185,16 +192,16 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
 
         $transaction = $this->getTransactionMock(array('commit'));
 
-        $manager->expects($this->at(0))
+        $manager->expects($this->once())
             ->method('startTransaction')
             ->will($this->returnValue($transaction));
 
-        $manager->expects($this->at(1))
+        $manager->expects($this->once())
             ->method('getInstanceForClass')
             ->with('WorklistPatient')
             ->will($this->returnValue($wp));
 
-        $manager->expects($this->at(2))
+        $manager->expects($this->once())
             ->method('setAttributesForWorklistPatient')
             ->with($wp, $attributes)
             ->will($this->returnValue(true));
@@ -223,11 +230,11 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
 
         $manager = $this->getMockBuilder('WorklistManager')
             ->disableOriginalConstructor()
-            ->setMethods(array('getInstanceForClass', 'startTransaction', 'setAttributesForWorklistPatient'))
+            ->onlyMethods(['getInstanceForClass', 'startTransaction', 'setAttributesForWorklistPatient'])
             ->getMock();
 
         $transaction = $this->getTransactionMock(array('rollback'));
-        $manager->expects($this->at(0))
+        $manager->expects($this->once())
             ->method('startTransaction')
             ->will($this->returnValue($transaction));
 
@@ -240,12 +247,12 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
             ->method('save')
             ->will($this->returnValue(true));
 
-        $manager->expects($this->at(1))
+        $manager->expects($this->once())
             ->method('getInstanceForClass')
             ->with('WorklistPatient')
             ->will($this->returnValue($wp));
 
-        $manager->expects($this->at(2))
+        $manager->expects($this->once())
             ->method('setAttributesForWorklistPatient')
             ->with($wp, $attributes)
             ->will($this->returnValue(false));
@@ -295,18 +302,18 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
 
         $manager = $this->getMockBuilder('WorklistManager')
             ->disableOriginalConstructor()
-            ->setMethods(array('getInstanceForClass', 'startTransaction'))
+            ->onlyMethods(['getInstanceForClass', 'startTransaction'])
             ->getMock();
 
         $transaction = $this->getTransactionMock(array('commit'));
 
-        $manager->expects($this->at(0))
+        $manager->expects($this->once())
             ->method('startTransaction')
             ->will($this->returnValue($transaction));
 
         $wpa = $this->getMockBuilder('WorklistPatientAttribute')
             ->disableOriginalConstructor()
-            ->setMethods(array('save'))
+            ->onlyMethods(['save'])
             ->getMock();
 
         $wpa->expects($this->any())
@@ -351,10 +358,10 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
 
         $manager = $this->getMockBuilder('WorklistManager')
             ->disableOriginalConstructor()
-            ->setMethods(array('getInstanceForClass', 'startTransaction'))
+            ->onlyMethods(['getInstanceForClass', 'startTransaction'])
             ->getMock();
 
-        $manager->expects($this->at(0))
+        $manager->expects($this->once())
             ->method('startTransaction')
             ->will($this->returnValue($this->getTransactionMock(array('commit'))));
 
@@ -629,12 +636,12 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
             ->getMock();
 
         $wi = ComponentStubGenerator::generate('Worklist');
-        $manager->expects($this->at(0))
+        $manager->expects($this->once())
             ->method('getWorklistForMapping')
             ->with($test_date, $attributes)
             ->will($this->returnValue($wi));
 
-        $manager->expects($this->at(1))
+        $manager->expects($this->once())
             ->method('addPatientToWorklist')
             ->with($patient, $wi, $test_date, $attributes)
             ->will($this->returnValue(true));
@@ -693,7 +700,7 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
             ->setMethods(array('search'))
             ->getMock();
 
-        $manager->expects($this->at(0))
+        $manager->expects($this->once())
             ->method('getModelForClass')
             ->with(Worklist::class)
             ->will($this->returnValue($wm));
@@ -709,20 +716,12 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
             ->method('search')
             ->will($this->returnValue($adp));
 
-        $manager->expects($this->at(1))
-            ->method('checkWorklistMappingMatch')
-            ->with($wls[0])
-            ->will($this->returnValue(false));
-
-        $manager->expects($this->at(2))
-            ->method('checkWorklistMappingMatch')
-            ->with($wls[1])
-            ->will($this->returnValue(false));
-
-        $manager->expects($this->at(3))
-            ->method('checkWorklistMappingMatch')
-            ->with($wls[2])
-            ->will($this->returnValue(true));
+        $manager->method('checkWorklistMappingMatch')
+            ->will($this->returnValueMap([
+                [$wls[0], $attributes, false],
+                [$wls[1], $attributes, false],
+                [$wls[2], $attributes, true]
+            ]));
 
         $r = new ReflectionClass('WorklistManager');
         $m = $r->getMethod('getWorklistForMapping');
@@ -1046,7 +1045,7 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
     {
         $manager = $this->getMockBuilder('WorklistManager')
             ->disableOriginalConstructor()
-            ->setMethods(array('getModelForClass', 'shouldDisplayWorklistForContext'))
+            ->onlyMethods(['getModelForClass', 'shouldDisplayWorklistForContext'])
             ->getMock();
 
         $adp = $this->getActiveDataProviderMock('Worklist', 2);
@@ -1054,14 +1053,14 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
 
         $wm = $this->getMockBuilder('Worklist')
             ->disableOriginalConstructor()
-            ->setMethods(array('search'))
+            ->onlyMethods(['search'])
             ->getMock();
 
         $wm->expects($this->once())
             ->method('search')
             ->will($this->returnValue($adp));
 
-        $manager->expects($this->at(0))
+        $manager->expects($this->once())
             ->method('getModelForClass')
             ->with('Worklist')
             ->will($this->returnValue($wm));
@@ -1071,14 +1070,13 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
         $site = ComponentStubGenerator::generate('Site');
         $firm = ComponentStubGenerator::generate('Firm');
 
-        $manager->expects($this->at(1))
-            ->method('shouldDisplayWorklistForContext')
-            ->with($wls[0], $institution, $site, $firm)
-            ->will($this->returnValue(true));
-        $manager->expects($this->at(2))
-            ->method('shouldDisplayWorklistForContext')
-            ->with($wls[1])
-            ->will($this->returnValue(false));
+        $return_value_map = [
+            [$wls[0], $institution, $site, $firm, true],
+            [$wls[1], $institution, $site, $firm, false],
+        ];
+
+        $manager->method('shouldDisplayWorklistForContext')
+            ->will($this->returnValueMap($return_value_map));
 
         $this->assertEquals(array($wls[0]), $manager->getCurrentAutomaticWorklistsForUserContext($institution, $site, $firm, new DateTime()));
     }

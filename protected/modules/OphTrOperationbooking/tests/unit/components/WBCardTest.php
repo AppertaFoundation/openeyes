@@ -1,10 +1,10 @@
 <?php
 
-class WBCardTest extends CDbTestCase
+class WBCardTest extends OEDbTestCase
 {
     protected $widget;
 
-    public static function setupBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         Yii::import('application.modules.OphTrOperationbooking.components.*');
     }
@@ -90,13 +90,13 @@ class WBCardTest extends CDbTestCase
         );
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->widget = new WBCard();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->widget);
         parent::tearDown();

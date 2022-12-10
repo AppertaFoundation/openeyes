@@ -53,7 +53,7 @@ class SynoptophoreTest extends \OEDbTestCase
         $this->assertNotEmpty($result);
         // have to check for mock derived name
         $model_name = \CHtml::modelName($widget->element);
-        $this->assertContains("id=\"{$model_name}_form\"", $result);
+        $this->assertStringContainsString("id=\"{$model_name}_form\"", $result);
     }
 
     /** @test */
@@ -78,6 +78,6 @@ class SynoptophoreTest extends \OEDbTestCase
 
         $this->assertStringContainsString((string)$element->angle_from_primary, $result);
         // element comment
-        $this->assertContains(htmlentities($element->comments, ENT_QUOTES), $result);
+        $this->assertStringContainsString(htmlentities($element->comments, ENT_QUOTES), $result);
     }
 }

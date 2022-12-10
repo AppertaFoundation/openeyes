@@ -30,7 +30,7 @@ use OEModule\OphCiExamination\models\traits\HasSidedData;
  */
 class HasSidedDataTest extends \OEDbTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

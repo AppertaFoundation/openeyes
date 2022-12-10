@@ -9,7 +9,7 @@ use OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnitValue;
  * @covers VAVariable
  * @covers CaseSearchVariable
  */
-class VAVariableTest extends CDbTestCase
+class VAVariableTest extends OEDbTestCase
 {
     protected VAVariable $variable;
 
@@ -26,18 +26,18 @@ class VAVariableTest extends CDbTestCase
         'subspecialties' => Subspecialty::class,
     );
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         Yii::app()->getModule('OECaseSearch');
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->variable = new VAVariable([1, 2, 3]);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
         unset($this->variable);

@@ -54,7 +54,7 @@ class CoverAndPrismCoverTest extends \OEDbTestCase
 
         // some very basic checks to verify no issues exist for basic rendering
         $this->assertNotEmpty($result);
-        $this->assertContains('id="OEModule_OphCiExamination_models_CoverAndPrismCover_form"', $result);
+        $this->assertStringContainsString('id="OEModule_OphCiExamination_models_CoverAndPrismCover_form"', $result);
     }
 
     /** @test */
@@ -88,7 +88,7 @@ class CoverAndPrismCoverTest extends \OEDbTestCase
         // some very basic checks to verify no issues exist for basic rendering
         $this->assertNotEmpty($result);
         for ($i = 0; $i < count($element->entries); $i++) {
-            $this->assertContains("data-key=\"$i\"", $result);
+            $this->assertStringContainsString("data-key=\"$i\"", $result);
         }
     }
 
@@ -109,16 +109,16 @@ class CoverAndPrismCoverTest extends \OEDbTestCase
 
         // some very basic checks to verify no issues exist for basic rendering
         $this->assertNotEmpty($result);
-        $this->assertContains((string)$entry->horizontal_prism, $result);
-        $this->assertContains((string)$entry->horizontal_value, $result);
-        $this->assertContains((string)$entry->vertical_prism, $result);
-        $this->assertContains((string)$entry->vertical_value, $result);
-        $this->assertContains((string)$entry->correctiontype, $result);
-        $this->assertContains($entry->display_with_head_posture, $result);
-        $this->assertContains((string)$entry->distance, $result);
+        $this->assertStringContainsString((string)$entry->horizontal_prism, $result);
+        $this->assertStringContainsString((string)$entry->horizontal_value, $result);
+        $this->assertStringContainsString((string)$entry->vertical_prism, $result);
+        $this->assertStringContainsString((string)$entry->vertical_value, $result);
+        $this->assertStringContainsString((string)$entry->correctiontype, $result);
+        $this->assertStringContainsString($entry->display_with_head_posture, $result);
+        $this->assertStringContainsString((string)$entry->distance, $result);
         // entry comment
-        $this->assertContains(htmlentities($entry->comments, ENT_QUOTES), $result);
+        $this->assertStringContainsString(htmlentities($entry->comments, ENT_QUOTES), $result);
         // element comment
-        $this->assertContains(htmlentities($element->comments, ENT_QUOTES), $result);
+        $this->assertStringContainsString(htmlentities($element->comments, ENT_QUOTES), $result);
     }
 }

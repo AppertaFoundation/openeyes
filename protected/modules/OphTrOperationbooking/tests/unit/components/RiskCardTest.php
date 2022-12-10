@@ -5,7 +5,7 @@ use \OEModule\OphCiExamination\models\OphCiExaminationRisk;
  * Class RiskCardTest
  * @property $widget RiskCard
  */
-class RiskCardTest extends CDbTestCase
+class RiskCardTest extends OEDbTestCase
 {
     protected $fixtures = array(
         'operations' => Element_OphTrOperationbooking_Operation::class,
@@ -25,14 +25,14 @@ class RiskCardTest extends CDbTestCase
     /**
      * @throws CException
      */
-    public static function setupBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         Yii::app()->getModule('OphCiExamination');
         Yii::import('application.modules.OphTrOperationbooking.components.*');
         Yii::import('application.modules.OphTrOperationbooking.models.*');
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->widget = new RiskCard();
@@ -40,7 +40,7 @@ class RiskCardTest extends CDbTestCase
         $this->widget->data->loadData($this->widget->data->event_id);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->widget);
         parent::tearDown();

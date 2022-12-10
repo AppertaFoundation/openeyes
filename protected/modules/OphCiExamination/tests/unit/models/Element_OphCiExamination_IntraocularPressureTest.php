@@ -38,7 +38,7 @@ class Element_OphCiExamination_IntraocularPressureTest extends ActiveRecordTestC
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->model = new OEModule\OphCiExamination\models\Element_OphCiExamination_IntraocularPressure();
@@ -64,13 +64,13 @@ class Element_OphCiExamination_IntraocularPressureTest extends ActiveRecordTestC
     public function testGetValues()
     {
         $values = $this->et_iop('et_iop2')->getValues();
-        $this->assertInternalType('array', $values);
+        $this->assertIsArray($values);
         $this->assertArrayHasKey('right', $values);
         $this->assertArrayHasKey('left', $values);
         $this->assertEmpty($values['right']);
         $this->assertEmpty($values['left']);
         $values = $this->et_iop('et_iop1')->getValues();
-        $this->assertInternalType('array', $values);
+        $this->assertIsArray($values);
         $this->assertArrayHasKey('right', $values);
         $this->assertArrayHasKey('left', $values);
         $this->assertCount(3, $values['left']);

@@ -33,12 +33,12 @@ class CatProm5QuestionsTest extends ActiveRecordTestCase
         );
     }
 
-    public static function setupBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         Yii::app()->getModule('OphOuCatprom5');
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->getFixtureManager()->basePath = Yii::getPathOfAlias('application.modules.OphOuCatprom5.tests.fixtures');
         parent::setUp();
@@ -49,7 +49,7 @@ class CatProm5QuestionsTest extends ActiveRecordTestCase
    * Tears down the fixture, for example, closes a network connection.
    * This method is called after a test is executed.
    */
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->getFixtureManager()->basePath = Yii::getPathOfAlias('application.modules.OphOuCatprom5.tests.fixtures');
         parent::tearDown();

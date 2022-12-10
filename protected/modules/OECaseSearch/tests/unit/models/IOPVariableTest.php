@@ -9,7 +9,7 @@ use OEModule\OphCiExamination\models\OphCiExamination_IntraocularPressure_Value;
  * @covers IOPVariable
  * @covers CaseSearchVariable
  */
-class IOPVariableTest extends CDbTestCase
+class IOPVariableTest extends OEDbTestCase
 {
     protected IOPVariable $variable;
 
@@ -22,18 +22,18 @@ class IOPVariableTest extends CDbTestCase
         'patients' => Patient::class,
     );
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         Yii::app()->getModule('OECaseSearch');
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->variable = new IOPVariable([1, 2, 3]);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
         unset($this->variable);

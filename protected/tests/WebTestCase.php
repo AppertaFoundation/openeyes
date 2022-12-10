@@ -17,7 +17,7 @@ class WebTestCase extends CWebTestCase
      * Sets up before each test method runs.
      * This mainly sets the base URL for the test application.
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->setBrowser('*chrome');

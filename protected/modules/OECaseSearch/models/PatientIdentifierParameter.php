@@ -125,7 +125,7 @@ class PatientIdentifierParameter extends CaseSearchParameter implements DBProvid
     public function query(): string
     {
         $op = $this->operation;
-        return "SELECT DISTINCT p.patient_id 
+        return "SELECT DISTINCT p.patient_id
 FROM patient_identifier p
 WHERE (:p_type_{$this->id} IS NULL OR p.patient_identifier_type_id {$op} :p_type_{$this->id})
   AND p.value {$op} :p_id_number_{$this->id}";

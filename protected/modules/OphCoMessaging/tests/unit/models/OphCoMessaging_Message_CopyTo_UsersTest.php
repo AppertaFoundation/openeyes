@@ -28,7 +28,7 @@ class OphCoMessaging_Message_CopyTo_UsersTest extends ActiveRecordTestCase
         return $this->model;
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->model = new OEModule\OphCoMessaging\models\OphCoMessaging_Message_CopyTo_Users();

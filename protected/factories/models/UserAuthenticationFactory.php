@@ -47,22 +47,35 @@ class UserAuthenticationFactory extends ModelFactory
 
     public function persistInstance($instance): bool
     {
-        // we are leveraging the validation behaviour of the UserAuthentication
-        // class, which checks the password strength. So we reset the value
-        // prior to creating the instance, and thereby allow simple passwords
-        // for testing purposes
-        $default_settings = $this->app->params['pw_restrictions'];
-        $this->app->setParams([
+        return self::disablePasswordRestrictionsFor(
+            function ($instance) {
+                return $instance->save(true);
+            },
+            [$instance],
+            $this->app
+        );
+    }
+
+    public static function disablePasswordRestrictionsFor(callable $callback, $args = [], $app = null)
+    {
+        if ($app === null) {
+            $app = \Yii::app();
+        }
+
+        $default_settings = $app->params['pw_restrictions'];
+
+        $app->setParams([
             'pw_restrictions' => [
                 'strength_regex' => '%\w*%'
             ]
         ]);
-        // need to validate to leverage the before and after validate hooks
-        return $instance->save(true);
 
-        // restore the normal password rules for consistency
-        $this->app->setParams([
+        $result = call_user_func_array($callback, $args);
+
+        $app->setParams([
             'pw_restrictions' => $default_settings
         ]);
+
+        return $result;
     }
 }

@@ -102,7 +102,7 @@ class Element_OphTrOperationchecklists_ClinicalAssessmentTest extends ActiveReco
         }
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         foreach ($this->elementIds as $id) {
             foreach (OphTrOperationchecklists_ClinicalResults::model()->findAll('element_id = :element_id', array(':element_id' => $id)) as $t) {

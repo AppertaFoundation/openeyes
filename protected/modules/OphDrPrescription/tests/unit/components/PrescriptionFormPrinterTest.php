@@ -9,7 +9,7 @@
  * @method firms($fixtureId)
  * @method sites($fixtureId)
  */
-class PrescriptionFormPrinterTest extends CDbTestCase
+class PrescriptionFormPrinterTest extends OEDbTestCase
 {
     protected $fixtures = array(
         'patients' => Patient::class,
@@ -25,7 +25,7 @@ class PrescriptionFormPrinterTest extends CDbTestCase
 
     private PrescriptionFormPrinter $instance;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->instance = new PrescriptionFormPrinter();
@@ -37,17 +37,17 @@ class PrescriptionFormPrinterTest extends CDbTestCase
         $this->instance->init();
     }
 
-    public static function setupBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         Yii::app()->session['selected_institution_id'] = 1;
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         unset(Yii::app()->session['selected_institution_id']);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
         unset($this->instance);

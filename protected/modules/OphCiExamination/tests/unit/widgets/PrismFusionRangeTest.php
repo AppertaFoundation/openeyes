@@ -51,7 +51,7 @@ class PrismFusionRangeTest extends \OEDbTestCase
 
         // very simple checks to verify no issues exist for basic rendering
         $this->assertNotEmpty($result);
-        $this->assertContains('id="OEModule_OphCiExamination_models_PrismFusionRange_form"', $result);
+        $this->assertStringContainsString('id="OEModule_OphCiExamination_models_PrismFusionRange_form"', $result);
     }
 
     /** @test */
@@ -81,12 +81,12 @@ class PrismFusionRangeTest extends \OEDbTestCase
         foreach ($element->entries as $entry) {
             foreach (['near', 'distance'] as $kind) {
                 foreach (['bo', 'bi', 'bu', 'bd'] as $attr) {
-                    $this->assertContains((string) $entry->{"{$kind}_{$attr}"}, $result);
+                    $this->assertStringContainsString((string) $entry->{"{$kind}_{$attr}"}, $result);
                 }
             }
-            $this->assertContains($entry->correctiontype->name, $entry->correctiontype);
-            $this->assertContains($entry->display_with_head_posture, $entry->display_with_head_posture);
+            $this->assertStringContainsString($entry->correctiontype->name, $entry->correctiontype);
+            $this->assertStringContainsString($entry->display_with_head_posture, $entry->display_with_head_posture);
         }
-        $this->assertContains($element->comments, $result);
+        $this->assertStringContainsString($element->comments, $result);
     }
 }

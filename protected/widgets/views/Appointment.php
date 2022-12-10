@@ -60,7 +60,7 @@
             </div>
             <div class="collapse-data-content">
                 <div class="restrict-data-shown">
-                    <div class="element-data full-width restrict-data-height rows-10"><div class="element-data full-width restrict-data-height rows-10">
+                    <div class="element-data full-width restrict-data-height rows-10">
                         <!-- restrict data height, overflow will scroll -->
                         <table class="patient-appointments">
                             <colgroup>

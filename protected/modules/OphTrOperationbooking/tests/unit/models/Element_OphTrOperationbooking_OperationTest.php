@@ -42,7 +42,7 @@ class Element_OphTrOperationbooking_OperationTest extends ActiveRecordTestCase
         'total_duration'
     ];
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         date_default_timezone_set('UTC');
     }
@@ -379,9 +379,6 @@ class Element_OphTrOperationbooking_OperationTest extends ActiveRecordTestCase
         Yii::app()->params['urgent_booking_notify_hours'] = $urgent;
     }
 
-    /**
-     * @expectedException     Exception
-     */
     public function testScheduleLocksRttNotInFuture()
     {
         $referral = $this->referrals('referral1');
@@ -436,9 +433,9 @@ class Element_OphTrOperationbooking_OperationTest extends ActiveRecordTestCase
         $booking->session->method('operationBookable')->willReturn(true);
         $booking->session->method('save')->willReturn(true);
 
-        $res = $op->schedule($booking, '', '', '', false, null, $schedule_op);
+        $this->expectException(\Exception::class);
 
-        $this->assertEquals($this->rtt('rtt1')->id, $op->rtt_id);
+        $op->schedule($booking, '', '', '', false, null, $schedule_op);
     }
 
     public function testScheduleLocksRtt()
@@ -650,6 +647,9 @@ class Element_OphTrOperationbooking_OperationTest extends ActiveRecordTestCase
                 'activeRTT' => $active_rtt,
             )
         );
+        $referral->method('getActiveRTT')
+            ->willReturn($active_rtt);
+
         $test->referral = $referral;
 
         $this->assertSame($active_rtt[0], $test->getRTT());
@@ -667,6 +667,9 @@ class Element_OphTrOperationbooking_OperationTest extends ActiveRecordTestCase
                 'activeRTT' => $active_rtt,
             )
         );
+        $referral->method('getActiveRTT')
+            ->willReturn($active_rtt);
+
         $test->referral = $referral;
 
         $this->assertNull($test->getRTT());

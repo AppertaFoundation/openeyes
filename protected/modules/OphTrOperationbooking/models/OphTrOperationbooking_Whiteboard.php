@@ -162,7 +162,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
             $this->comments = '';
         }
 
-        $transaction = Yii::app()->db->beginTransaction();
+        $transaction = Yii::app()->db->beginInternalTransaction();
 
         if ($this->save()) {
             // get the whiteboard procedure assignments

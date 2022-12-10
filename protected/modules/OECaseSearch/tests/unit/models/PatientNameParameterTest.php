@@ -7,7 +7,7 @@
  * @method Patient patient($fixtureId)
  * @method Contact contact($fixtureId)
  */
-class PatientNameParameterTest extends CDbTestCase
+class PatientNameParameterTest extends OEDbTestCase
 {
     protected PatientNameParameter $parameter;
     protected $fixtures = array(
@@ -15,20 +15,20 @@ class PatientNameParameterTest extends CDbTestCase
         'contact' => 'Contact',
     );
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
         Yii::app()->getModule('OECaseSearch');
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->parameter = new PatientNameParameter();
         $this->parameter->id = 0;
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
         unset($this->parameter);

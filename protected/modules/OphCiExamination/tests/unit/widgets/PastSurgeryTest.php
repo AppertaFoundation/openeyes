@@ -56,7 +56,7 @@ class PastSurgeryTest extends \OEDbTestCase
 
         // some very basic checks to verify no issues exist for basic rendering
         $this->assertNotEmpty($result);
-        $this->assertContains('id="OEModule_OphCiExamination_models_PastSurgery_form"', $result);
+        $this->assertStringContainsString('id="OEModule_OphCiExamination_models_PastSurgery_form"', $result);
     }
 
     /** @test */

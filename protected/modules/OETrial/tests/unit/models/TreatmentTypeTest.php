@@ -4,13 +4,13 @@ class TreatmentTypeTest extends ActiveRecordTestCase
 {
     public TreatmentType $instance;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->instance = new TreatmentType();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->instance);
         parent::tearDown();

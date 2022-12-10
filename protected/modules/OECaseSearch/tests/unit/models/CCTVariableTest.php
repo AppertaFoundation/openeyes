@@ -7,7 +7,7 @@ use OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment_CC
  * @covers CCTVariable
  * @covers CaseSearchVariable
  */
-class CCTVariableTest extends CDbTestCase
+class CCTVariableTest extends OEDbTestCase
 {
     protected CCTVariable $variable;
 
@@ -22,18 +22,18 @@ class CCTVariableTest extends CDbTestCase
         'subspecialties' => Subspecialty::class,
     );
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         Yii::app()->getModule('OECaseSearch');
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->variable = new CCTVariable([1, 2, 3]);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
         unset($this->variable);

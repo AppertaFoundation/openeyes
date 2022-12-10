@@ -102,7 +102,7 @@ class Element_OphTrOperationchecklists_DocumentationTest extends ActiveRecordTes
         }
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         foreach ($this->elementIds as $id) {
             foreach (OphTrOperationchecklists_DocumentationResults::model()->findAll('element_id = :element_id', array(':element_id' => $id)) as $t) {

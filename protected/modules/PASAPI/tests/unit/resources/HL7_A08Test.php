@@ -1,5 +1,7 @@
 <?php
 
+namespace OEModule\PASAPI\tests\unit\resources;
+
 use OEModule\PASAPI\components\PasApiObserver;
 use OEModule\PASAPI\resources\HL7_A08;
 use OEModule\PASAPI\resources\HL7_Patient;
@@ -9,7 +11,10 @@ use OEModule\PASAPI\resources\HL7_Diagnosis;
 use OEModule\PASAPI\resources\HL7_Procedure;
 use OEModule\PASAPI\resources\HL7_UK_Additional;
 
-class HL7_A08Test extends PHPUnit_Framework_TestCase
+/**
+ * @group sample-data
+ */
+class HL7_A08Test extends \PHPUnit_Framework_TestCase
 {
     function test_updateEmergencyCareVisit()
     {
@@ -140,10 +145,10 @@ class HL7_A08Test extends PHPUnit_Framework_TestCase
 
     function test_updateEmergencyCareVisitWithEventId()
     {
-        Yii::app()->session['selected_site_id'] = 1;
-        Yii::app()->session['selected_institution_id'] = 1;
-        Yii::app()->params['display_primary_number_usage_code'] = "LOCAL";
-        Yii::app()->params['display_secondary_number_usage_code'] = "GLOBAL";
+        \Yii::app()->session['selected_site_id'] = 1;
+        \Yii::app()->session['selected_institution_id'] = 1;
+        \Yii::app()->params['display_primary_number_usage_code'] = "LOCAL";
+        \Yii::app()->params['display_secondary_number_usage_code'] = "GLOBAL";
 
         $hl7_a08 = new HL7_A08();
 

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * OpenEyes.
  *
@@ -15,7 +14,13 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class AppointmentTest extends PHPUnit_Framework_TestCase
+
+namespace OEModule\PASAPI\tests\unit\resources;
+
+/**
+ * @group sample-data
+ */
+class AppointmentTest extends \PHPUnit_Framework_TestCase
 {
     public function getWhenProvider()
     {
@@ -56,7 +61,7 @@ class AppointmentTest extends PHPUnit_Framework_TestCase
             ->getMock();
 
         if (!is_null($default_when)) {
-            $app->setDefaultWhen(DateTime::createFromFormat('Y-m-d H:i', $default_when));
+            $app->setDefaultWhen(\DateTime::createFromFormat('Y-m-d H:i', $default_when));
         }
         if (!is_null($appointment_date)) {
             $app->AppointmentDate = $appointment_date;

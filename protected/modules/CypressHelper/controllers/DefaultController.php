@@ -3,6 +3,7 @@
 namespace OEModule\CypressHelper\controllers;
 
 use CWebLogRoute;
+use Event;
 use EventType;
 use Firm;
 use Institution;
@@ -77,15 +78,24 @@ class DefaultController extends \CController
 
     public function actionCreateEvent($moduleName)
     {
-        /** @var \Event */
-        $event = EventFactory::forModule($moduleName)->create();
+        $event_factory = EventFactory::forModule($moduleName);
 
-        $this->sendJsonResponse([
-            'id' => $event->id,
-            'urls' => [
-                'view' => $event->getEventViewPath()
+        $instances = $this->applyStatesTo($event_factory, $_POST['states'] ?? [])
+            ->count(isset($_POST['count']) ? (int) $_POST['count'] : 1)
+            ->create($_POST['attributes'] ?? []);
+
+        $this->sendJsonResponse(
+            count($instances) > 1
+            ? [
+                array_map(
+                    function ($event) {
+                        return $this->eventJson($event);
+                    },
+                    $instances
+                )
             ]
-        ]);
+            : $this->eventJson($instances[0])
+        );
     }
 
     public function actionCreatePatient()
@@ -102,13 +112,7 @@ class DefaultController extends \CController
 
         // TODO: create an appropriate DTO pattern for returning structured
         // data of a patient that can be used in testing.
-        $this->sendJsonResponse([
-            'id' => $patient->id,
-            'title' => $patient->title,
-            'surname' => $patient->last_name,
-            'first_name' => $patient->first_name,
-            'gender' => $patient->getGenderString()
-        ]);
+        $this->sendJsonResponse($this->patientJson($patient));
     }
 
     public function actionGetEventCreationUrl($patientId, $moduleName)
@@ -160,24 +164,14 @@ class DefaultController extends \CController
         }
 
         $model_factory = ModelFactory::factoryFor($model_class);
-        $states = $_POST['states'] ?? [];
-        if (!is_array($states)) {
-            $states = [$states];
-        }
 
-        foreach ($states as $state) {
-            if (is_array($state)) {
-                $model_factory = $model_factory->{$state[0]}(...array_slice($state, 1));
-            } else {
-                $model_factory = $model_factory->$state();
-            }
-        }
+        $this->applyStatesTo($model_factory, $_POST['states'] ?? []);
 
         $model_factory->count($_POST['count'] ? (int) $_POST['count'] : 1);
 
         $instances = $model_factory->create($_POST['attributes'] ?? []);
 
-        $this->sendJsonResponse(['models' => $this->getModelAttributes($instances)]);
+        $this->sendJsonResponse(['models' => $this->modelsToArrays($instances)]);
     }
 
     public function actionSetSystemSettingValue()
@@ -217,6 +211,22 @@ class DefaultController extends \CController
         echo '1';
     }
 
+    protected function applyStatesTo(ModelFactory $factory, $states = []): ModelFactory
+    {
+        if (!is_array($states)) {
+            $states = [$states];
+        }
+
+        foreach ($states as $state) {
+            if (is_array($state)) {
+                $factory = $factory->{$state[0]}(...array_slice($state, 1));
+            } else {
+                $factory = $factory->$state();
+            }
+        }
+
+        return $factory;
+    }
     protected function sendJsonResponse(array $data = [], int $status = 200)
     {
         header('HTTP/1.1 ' . $status);
@@ -236,24 +246,72 @@ class DefaultController extends \CController
         }
     }
 
-    protected function getModelAttributes(array $instances)
+    protected function modelsToArrays(array $instances, $exclude = [])
     {
-        return array_map(function ($instance) {
-            return array_merge($instance->getAttributes(), $this->getRelationsForModel($instance));
+        return array_map(function ($instance) use ($exclude) {
+            return $this->modelToArray($instance, $exclude);
         }, $instances);
     }
 
-    protected function getRelationsForModel(CActiveRecord $instance)
+    protected function modelToArray($instance, $exclude = [])
+    {
+        return array_merge(
+            array_filter(
+                $instance->getAttributes(),
+                function ($key, $value) use ($exclude) {
+                    return !in_array($key, $exclude);
+                },
+                ARRAY_FILTER_USE_BOTH
+            ),
+            $this->getRelationsForModel($instance, $exclude)
+        );
+    }
+
+    protected function getRelationsForModel(CActiveRecord $instance, $exclude = [])
     {
         $relations = [];
         foreach ($instance->relations() as $relation => $definition) {
-            if (in_array($relation, ['user', 'usermodified'])) {
+            if (in_array($relation, array_merge(['user', 'usermodified'], $exclude))) {
                 continue;
             }
             if ($definition[0] === CActiveRecord::BELONGS_TO) {
                 $relations[$relation] = $instance->$relation ? $instance->$relation->getAttributes() : null;
             }
+            if ($definition[0] === CActiveRecord::HAS_MANY) {
+                $relations[$relation] = $this->modelsToArrays($instance->$relation, $exclude);
+            }
         }
         return $relations;
+    }
+
+    protected function patientJson(Patient $patient): array
+    {
+        return [
+            'id' => $patient->id,
+            'title' => $patient->title,
+            'surname' => $patient->last_name,
+            'first_name' => $patient->first_name,
+            'gender' => $patient->getGenderString()
+        ];
+    }
+
+    protected function eventJson(Event $event): array
+    {
+        return [
+            'id' => $event->id,
+            'urls' => [
+                'view' => $event->getEventViewPath()
+            ],
+            'patient' => $this->patientJson($event->episode->patient),
+            'elements' => array_map(
+                function ($element) {
+                    return [
+                        'element_type' => $element->getElementTypeName(),
+                        'attributes' => array_merge($element->getAttributes(), $this->getRelationsForModel($element, ['event', 'element']))
+                    ];
+                },
+                $event->getElements()
+            )
+        ];
     }
 }

@@ -39,14 +39,6 @@ Cypress.Commands.add('login', (username, password) => {
     });
 });
 
-Cypress.Commands.add('createEvent', (eventType) => {
-    return cy.request({
-        method: 'POST',
-        url: '/CypressHelper/Default/createEvent/' + eventType
-    })
-    .its('body');
-});
-
 Cypress.Commands.add('createPatient', (states, attributes) => {
     if (attributes === undefined) {
         attributes = [];
@@ -108,6 +100,25 @@ Cypress.Commands.add('createModels', (className, states, attributes, count) => {
         }
         return response.body.models;
     });
+});
+
+Cypress.Commands.add('createEvent', (eventType, states, attributes, count) => {
+    if (count === undefined) {
+        count = 1;
+    }
+    if (states === undefined) {
+        states = [];
+    }
+    return cy.request({
+        method: 'POST',
+        url: '/CypressHelper/Default/createEvent/' + eventType,
+        form: true,
+        body: {
+            states: states,
+            attributes: attributes,
+            count: count
+        }
+    }).its('body');
 });
 
 Cypress.Commands.add('setSystemSettingValue', (settingKey, settingValue) => {

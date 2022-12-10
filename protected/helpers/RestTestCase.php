@@ -12,11 +12,13 @@
  * @copyright Copyright (C) 2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-use Guzzle\Http\Client;
-use Guzzle\Http\Exception\ClientErrorResponseException;
-use Guzzle\Http\Exception\ServerErrorResponseException;
+use GuzzleHttp\Client;
+use GuzzleHttp\RequestOptions;
+use GuzzleHttp\Exception\BadResponseException;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\ServerException;
 
-class RestTestCase extends PHPUnit_Framework_TestCase
+class RestTestCase extends OEDbTestCase
 {
     protected static $schema = null;
     protected static $namespaces = array();
@@ -34,29 +36,29 @@ class RestTestCase extends PHPUnit_Framework_TestCase
     protected $capture_error_responses = false;
     protected $expected_response_code = 200;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
         $this->client = new Client(
-            Yii::app()->params['rest_test_base_url'],
-            array(
-                Client::REQUEST_OPTIONS => array(
-                    'auth' => array('api', 'password'),
-                    'headers' => array(
-                        'Accept' => 'application/xml',
-                    ),
-                ),
-            )
+            [
+                'base_uri' => Yii::app()->params['rest_test_base_url'],
+                'auth' => ['api', 'password'],
+                'headers' => [
+                    'Accept' => 'application/xml',
+                ]
+            ]
         );
+
+
     }
 
     protected function setExpectedHttpError($code)
     {
         if (!$this->capture_error_responses) {
-            $this->expectException('Guzzle\Http\Exception\BadResponseException', "[status code] {$code}");
+            $this->expectException(BadResponseException::class, "[status code] {$code}");
         }
-        $this->expected_error_code = $code;
+        $this->expected_response_code = $code;
     }
 
     protected function get($url, $headers = null)
@@ -86,26 +88,39 @@ class RestTestCase extends PHPUnit_Framework_TestCase
         }
 
         try {
-            $this->response = $this->client->createRequest($method, $url, $headers, $body)->send();
-        } catch (ClientErrorResponseException $e) {
+            $this->response = $this->client->request(
+                $method,
+                $url,
+                [
+                    RequestOptions::HEADERS => $headers,
+                    RequestOptions::BODY => $body
+                ]
+            );
+        } catch (ClientException $e) {
             if (!$this->capture_error_responses) {
                 throw $e;
             }
             $this->response = $e->getResponse();
-        } catch (ServerErrorResponseException $e) {
+        } catch (ServerException $e) {
             if (!$this->capture_error_responses) {
                 throw $e;
             }
             $this->response = $e->getResponse();
         }
 
-        if (strpos($this->response->getContentType(), 'xml') !== false) {
+        if ((strpos($this->response->getHeader('content-type')[0], 'xml') !== false) && !empty((string) $this->response->getBody())) {
             $this->doc = new DOMDocument();
-            $this->doc->loadXML($this->response->getBody(true));
+            $this->doc->loadXML($this->response->getBody());
             if (static::$schema) {
                 $this->assertTrue($this->doc->schemaValidate(Yii::app()->getBasePath().'/'.static::$schema));
             }
         }
+
+        $this->assertEquals(
+            $this->expected_response_code,
+            $this->response->getStatusCode(),
+            "Incorrect status code " . $this->response->getStatusCode() . " has body response:" . $this->response->getBody()
+        );
     }
 
     protected function assertXmlEquals($xml)
@@ -151,7 +166,7 @@ class RestTestCase extends PHPUnit_Framework_TestCase
 
     protected function assertXPathRegExp($pattern, $path)
     {
-        $this->assertRegExp($pattern, $this->xPathEval($path));
+        $this->assertMatchesRegularExpression($pattern, $this->xPathEval($path));
     }
 
     protected function assertUrlEquals($expected, $actual)

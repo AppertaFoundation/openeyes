@@ -35,7 +35,7 @@ class UserTest extends ActiveRecordTestCase
         'has_selected_firms'
     ];
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $pf = $this->protected_file('0');
@@ -47,7 +47,7 @@ class UserTest extends ActiveRecordTestCase
         file_put_contents($path . "/$uid", "dummy");
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $pf = $this->protected_file('0');
         $uid = $pf->uid;
