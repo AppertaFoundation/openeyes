@@ -131,4 +131,19 @@ class Element_OphTrOperationnote_GlaucomaTube extends Element_OnDemand
                 'criteria' => $criteria,
         ));
     }
+
+    public function getPrefillableAttributeSet()
+    {
+        return [
+            'plate_position_id',
+            'plate_limbus',
+            'tube_position_id',
+            'stent',
+            'slit',
+            'visco_in_ac',
+            'flow_tested',
+            'eyedraw',
+            'description'
+        ];
+    }
 }

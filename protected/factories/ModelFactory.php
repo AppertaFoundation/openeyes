@@ -23,6 +23,7 @@ use Faker\Generator;
 use OE\factories\exceptions\CannotSaveModelException;
 use OE\factories\exceptions\FactoryNotFoundException;
 use OE\factories\exceptions\CannotMakeModelException;
+use OELog;
 use Yii;
 
 abstract class ModelFactory

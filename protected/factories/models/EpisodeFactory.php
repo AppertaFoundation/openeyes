@@ -41,7 +41,7 @@ class EpisodeFactory extends ModelFactory
         });
     }
 
-    public function forFirm(Firm $firm): self
+    public function forFirm(\Firm $firm): self
     {
         return $this->state(function () use ($firm) {
             return [

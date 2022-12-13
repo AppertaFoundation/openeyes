@@ -2,13 +2,13 @@
  * Selects options from the adder dialog menu based on text
  */
 Cypress.Commands.add('selectAdderDialogOptionText', (string) => {
-    cy.contains('div.oe-add-select-search :visible', string).click()
+    cy.get('div.oe-add-select-search :visible').contains(string).click()
 })
 
 /**
  * Selects an adder dialog based on data-adder-id and then text
  */
-Cypress.Commands.add('selectAdderDialogOptionHeading', (heading, string) => {
+Cypress.Commands.add('selectAdderDialogOptionAdderID', (heading, string) => {
     cy.get('[data-adder-id="' + heading + '"]').contains(string).click()
 })
 

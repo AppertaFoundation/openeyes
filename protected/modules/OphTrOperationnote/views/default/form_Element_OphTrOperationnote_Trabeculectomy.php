@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2014
  * This file is part of OpenEyes.
@@ -12,6 +13,7 @@
  * @copyright Copyright (C) 2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 $layoutColumns = $form->layoutColumns;
 $form->layoutColumns = array('label' => 3, 'field' => 9);
 ?>
@@ -27,6 +29,7 @@ $form->layoutColumns = array('label' => 3, 'field' => 9);
         <?php $this->renderPartial($element->form_view . '_OEEyeDraw_fields', array(
             'form' => $form,
             'element' => $element,
+            'template_data' => $template_data
         )); ?>
     </div>
   </div>

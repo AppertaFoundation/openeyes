@@ -81,6 +81,8 @@ class BaseEventTypeController extends BaseModuleController
         'EDTagSearch' => self::ACTION_TYPE_FORM,
         'renderEventImage' => self::ACTION_TYPE_VIEW,
         'removed' => self::ACTION_TYPE_VIEW,
+        'saveTemplate' => self::ACTION_TYPE_FORM,
+        'updateTemplate' => self::ACTION_TYPE_FORM,
     );
 
     /**
@@ -96,6 +98,7 @@ class BaseEventTypeController extends BaseModuleController
     public $site;
     /* @var Event */
     public $event;
+    public ?EventTemplate $template = null;
     public $editable = true;
     public $editing;
     private $title;
@@ -171,6 +174,11 @@ class BaseEventTypeController extends BaseModuleController
      */
     public array $external_errors = [];
     protected $has_conflict = false;
+
+    public function hasConflict()
+    {
+        return $this->has_conflict;
+    }
 
     public function behaviors()
     {
@@ -710,6 +718,10 @@ class BaseEventTypeController extends BaseModuleController
         $this->event->episode_id = $this->episode->id;
         $this->event->event_type_id = $this->event_type->id;
         $this->event->last_modified_user_id = $this->event->created_user_id = Yii::app()->user->id;
+
+        if (isset($_GET['template_id'])) {
+            $this->template = EventTemplate::model()->findByPk($_GET['template_id']);
+        }
     }
 
     /**
@@ -753,6 +765,10 @@ class BaseEventTypeController extends BaseModuleController
         $this->moduleStateCssClass = 'edit';
 
         $this->initWithEventId(@$_GET['id']);
+
+        if (isset($_GET['template_id'])) {
+            $this->template = EventTemplate::model()->findByPk($_GET['template_id']);
+        }
     }
 
     /**
@@ -925,7 +941,22 @@ class BaseEventTypeController extends BaseModuleController
                                 )
                             );
                         } else {
-                            $this->redirect(array($this->successUri . $this->event->id));
+                            if (!empty($this->event->eventType->template_class_name)) {
+                                if (!empty($this->template)) {
+                                    $existing_template_data = json_decode($this->template->getDetailRecord()->template_data, true);
+                                    $template_status = $this->event->getTemplateUpdateStatusForEvent($existing_template_data);
+
+                                    if ($template_status !== 'UNNEEDED') {
+                                        $this->redirect(array($this->successUri . $this->event->id . '?template=' . $template_status));
+                                    } else {
+                                        $this->redirect(array($this->successUri . $this->event->id));
+                                    }
+                                } else {
+                                    $this->redirect(array($this->successUri . $this->event->id . '?template=' . EventTemplate::UPDATE_CREATE_ONLY));
+                                }
+                            } else {
+                                $this->redirect(array($this->successUri . $this->event->id));
+                            }
                         }
                         return;
                     }
@@ -1138,6 +1169,8 @@ class BaseEventTypeController extends BaseModuleController
                 $this->redirect(array('default/view/' . $this->event->id));
             }
 
+            $old_template_data = $this->event->getPrefillElementsData();
+
             $errors = $this->setAndValidateElementsFromData($_POST);
 
             // update the event
@@ -1232,7 +1265,13 @@ class BaseEventTypeController extends BaseModuleController
                                 )
                             );
                         } else {
-                            $this->redirect([$this->successUri]);
+                            $template_status = $this->event->getTemplateUpdateStatusForEvent($old_template_data);
+
+                            if ($template_status !== 'UNNEEDED') {
+                                $this->redirect([$this->successUri . '?template=' . $template_status]);
+                            } else {
+                                $this->redirect([$this->successUri]);
+                            }
                         }
                         return;
                     } else {
@@ -1386,7 +1425,20 @@ class BaseEventTypeController extends BaseModuleController
             'htmlOptions' => array('class' => 'sliding'),
         ));
 
-        $this->renderElement($element, 'create', $form, null, array(
+        $template_data = array();
+        if ($this->template) {
+            $template_detail = $this->template->getDetailRecord();
+            $template_data = json_decode($template_detail->template_data, true);
+        } elseif ($this->event && $this->event->template) {
+            $template_detail = $this->event->template->getDetailRecord();
+            $template_data = json_decode($template_detail->template_data, true);
+        }
+
+        $element_class = $element->elementType->class_name;
+        $template_data_exists = !empty($template_data) && array_key_exists($element_class, $template_data);
+        $element_template_data = $template_data_exists ? $template_data[$element_class] : [];
+
+        $this->renderElement($element, 'create', $form, null, $element_template_data, array(
             'previous_parent_id' => $previous_id,
         ), false, true);
     }
@@ -1932,6 +1984,7 @@ class BaseEventTypeController extends BaseModuleController
         $action,
         $form,
         $data,
+        $template_data = array(),
         $view_data = array(),
         $return = false,
         $processOutput = false
@@ -1962,6 +2015,8 @@ class BaseEventTypeController extends BaseModuleController
                                          'data' => $data,
                                          'form' => $form,
                                          'container_view' => $container_view,
+                                         'template_data' => $template_data,
+                                         'prefilled' => !empty($template_data),
                                      ), $view_data);
 
             // Render the view.
@@ -1975,6 +2030,8 @@ class BaseEventTypeController extends BaseModuleController
                             'patient' => $this->patient,
                             'element' => $view_data['element'],
                             'data' => $view_data['data'],
+                            'template_data' => $view_data['template_data'],
+                            'prefilled' => !empty($view_data['prefilled']),
                             'mode' => $this->getElementWidgetMode($action),
                         )
                     );
@@ -2076,8 +2133,26 @@ class BaseEventTypeController extends BaseModuleController
         if (count($elements) < 1) {
             return;
         }
+        $template_data = array();
+        if ($this->template) {
+            $template_detail = $this->template->getDetailRecord();
+            $template_data = json_decode($template_detail->template_data, true);
+        } elseif ($this->event && $this->event->template) {
+            $template_detail = $this->event->template->getDetailRecord();
+            $template_data = json_decode($template_detail->template_data, true);
+        }
+
         foreach ($elements as $element) {
-            $this->renderElement($element, $action, $form, $data);
+            $element_class = $element->elementType->class_name;
+            $template_data_exists = !empty($template_data) && array_key_exists($element_class, $template_data);
+            $element_template_data = $template_data_exists ? $template_data[$element_class] : [];
+            $this->renderElement(
+                $element,
+                $action,
+                $form,
+                $data,
+                $element_template_data
+            );
         }
     }
 
@@ -3343,6 +3418,41 @@ class BaseEventTypeController extends BaseModuleController
         ), $this->extraViewProperties);
         $this->jsVars['OE_event_last_modified'] = strtotime($this->event->last_modified_date);
         $this->render('//deleted_events/removed', $viewData);
+    }
+
+    public function actionSaveTemplate()
+    {
+        $template_name = \Yii::app()->request->getParam('template_name');
+        $event_id = \Yii::app()->request->getParam('event_id');
+        $event = Event::model()->findByPk($event_id);
+
+        if ($event) {
+            $template = $event->createTemplateFromEvent($template_name);
+
+            if ($template) {
+                $this->redirect(array($this->successUri . $event->id));
+            } else {
+                throw new Exception("Could not create template: unable to save data");
+            }
+        } else {
+            throw new Exception("Could not create template: event not found");
+        }
+    }
+
+    public function actionUpdateTemplate()
+    {
+        $template_id = \Yii::app()->request->getParam('template_id');
+        $event_id = \Yii::app()->request->getParam('event_id');
+
+        $event = Event::model()->findByPk($event_id);
+
+        if ($event) {
+            $event->updateTemplateFromEvent($template_id);
+
+            $this->redirect(array($this->successUri . $event->id));
+        } else {
+            throw new Exception("Could not update template: event not found");
+        }
     }
 
     private function updateFollowUpAggregate()

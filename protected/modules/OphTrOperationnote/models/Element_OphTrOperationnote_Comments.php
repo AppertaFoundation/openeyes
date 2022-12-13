@@ -136,6 +136,14 @@ class Element_OphTrOperationnote_Comments extends Element_OpNote
         ));
     }
 
+    public function getPrefillableAttributeSet()
+    {
+        return [
+            'comments',
+            'postop_instructions'
+        ];
+    }
+
     public function getPostop_instructions_list()
     {
         $criteria = new CDbCriteria();

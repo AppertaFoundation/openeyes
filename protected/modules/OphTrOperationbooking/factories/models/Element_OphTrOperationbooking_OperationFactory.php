@@ -32,4 +32,35 @@ class Element_OphTrOperationbooking_OperationFactory extends ModelFactory
             'status_id' => OphTrOperationbooking_Operation_Status::factory()->useExisting(),
         ];
     }
+
+    public function withProcedureNames(array $procedure_names = []): self {
+        $procedure_ids = array_map(function(string $procedure_name) {
+            return Procedure::model()->findByAttributes(['term' => $procedure_name])->id;
+        }, $procedure_names);
+
+        return $this->withProcedures($procedure_ids);
+    }
+
+    public function withProcedures(array $procedure_ids): self {
+        return $this->afterCreating(function (Element_OphTrOperationbooking_Operation $element) use ($procedure_ids) {
+            foreach ($procedure_ids as $procedure_id) {
+                OphTrOperationbooking_Operation_Procedures::factory()->create([
+                    'element_id' => $element->id,
+                    'proc_id' => $procedure_id
+                ]);
+            }
+        });
+    }
+
+    public function withSingleEye(): self {
+        return $this->state([
+            'eye_id' => $this->faker->randomElement([\Eye::LEFT, \Eye::RIGHT])
+        ]);
+    }
+
+    public function withRequiresScheduling(): self {
+        return $this->state([
+            'status_id' => \OphTrOperationbooking_Operation_Status::model()->findByAttributes(['name' => 'Requires scheduling'])->id
+        ]);
+    }
 }

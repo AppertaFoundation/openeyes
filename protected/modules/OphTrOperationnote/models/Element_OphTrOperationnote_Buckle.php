@@ -119,4 +119,16 @@ class Element_OphTrOperationnote_Buckle extends Element_OnDemandEye
                 'criteria' => $criteria,
             ));
     }
+
+    public function getPrefillableAttributeSet()
+    {
+        return [
+            'drainage_type_id',
+            'drain_haem',
+            'deep_suture',
+            'eyedraw',
+            'report',
+            'comments'
+        ];
+    }
 }

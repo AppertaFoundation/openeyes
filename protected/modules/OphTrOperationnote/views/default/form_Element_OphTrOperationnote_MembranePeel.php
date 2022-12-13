@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <div class="element-fields full-width flex-layout" id="div_Element_OphTrOperationnote_GenericProcedure_comments">
 
@@ -30,7 +32,7 @@
                 <?php echo $element->getAttributeLabel('membrane_blue'); ?>
           </td>
           <td>
-                <?php echo $form->radioBoolean($element, 'membrane_blue', array('nowrapper' => true)) ?>
+                <?php echo $form->radioBoolean($element, 'membrane_blue', array('nowrapper' => true, 'prefilled_value' => $template_data['membrane_blue'] ?? '')) ?>
           </td>
         </tr>
         <tr>
@@ -38,7 +40,7 @@
                 <?php echo $element->getAttributeLabel('brilliant_blue'); ?>
           </td>
           <td>
-                <?php echo $form->radioBoolean($element, 'brilliant_blue', array('nowrapper' => true)) ?>
+                <?php echo $form->radioBoolean($element, 'brilliant_blue', array('nowrapper' => true, 'prefilled_value' => $template_data['brilliant_blue'] ?? '')) ?>
           </td>
         </tr>
         </tbody>
@@ -60,7 +62,7 @@
                 <?php echo $form->textField(
                     $element,
                     'other_dye',
-                    array('nowrapper' => true, 'class' => 'cols-12', 'placeholder' => 'Other dye;'),
+                    array('nowrapper' => true, 'class' => 'cols-12', 'placeholder' => 'Other dye;', 'data-prefilled-value' => $template_data['other_dye'] ?? ''),
                     array()
                 ) ?>
           </td>
@@ -75,7 +77,7 @@
                     'comments',
                     array('nowrapper' => true, 'class' => 'cols-11'),
                     false,
-                    array('placeholder' => 'Comments')
+                    array('placeholder' => 'Comments', 'data-prefilled-value' => $template_data['comments'] ?? '')
                 ) ?>
           </td>
         </tr>

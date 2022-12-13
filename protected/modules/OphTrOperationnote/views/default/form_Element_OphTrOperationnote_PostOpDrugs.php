@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <div class="element-fields full-width flex-layout">
     <ul class="oe-multi-select inline cols-8" id="postop-drugs">
@@ -46,10 +48,10 @@
             openButton: $('#add-postop-drugs-btn'),
             itemSets: [
                 new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-                        array_map(function ($key, $item) {
+                    array_map(function ($key, $item) {
                             return ['label' => $item, 'id' => $key];
-                        }, array_keys($drugs), $drugs)
-                    )?>,
+                    }, array_keys($drugs), $drugs)
+                )?>,
                     {'multiSelect': true})],
             onReturn: function (adderDialog, selectedItems) {
                 selectedItems.forEach(function (item) {

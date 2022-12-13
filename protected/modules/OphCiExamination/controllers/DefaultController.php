@@ -1013,6 +1013,7 @@ class DefaultController extends \BaseEventTypeController
         $action,
         $form,
         $data,
+        $template_data = array(),
         $view_data = array(),
         $return = false,
         $processOutput = false
@@ -1035,7 +1036,7 @@ class DefaultController extends \BaseEventTypeController
             'active_check' => $active_check,
         ), $view_data);
 
-        parent::renderElement($element, $action, $form, $data, $view_data, $return, $processOutput);
+        parent::renderElement($element, $action, $form, $data, $template_data, $view_data, $return, $processOutput);
     }
 
     /**

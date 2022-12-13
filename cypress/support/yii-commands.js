@@ -102,6 +102,19 @@ Cypress.Commands.add('createModels', (className, states, attributes, count) => {
     });
 });
 
+Cypress.Commands.add('runSeeder', (seederModuleName, seederClassName, additionalData = null) => {
+    return cy.request({
+        method: 'POST',
+        url: '/CypressHelper/Default/runSeeder',
+        form: true,
+        body: {
+            seeder_module_name: seederModuleName,
+            seeder_class_name: seederClassName,
+            additional_data: additionalData,
+        }
+    }).its('body');
+});
+
 Cypress.Commands.add('createEvent', (eventType, states, attributes, count) => {
     if (count === undefined) {
         count = 1;

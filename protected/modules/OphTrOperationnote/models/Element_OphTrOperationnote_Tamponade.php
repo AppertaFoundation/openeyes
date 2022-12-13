@@ -129,4 +129,13 @@ class Element_OphTrOperationnote_Tamponade extends Element_OnDemand
 
         return parent::beforeSave();
     }
+
+    public function getPrefillableAttributeSet()
+    {
+        return [
+            'gas_type_id',
+            'gas_percentage_id',
+            'gas_volume_id'
+        ];
+    }
 }

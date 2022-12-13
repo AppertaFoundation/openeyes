@@ -58,4 +58,20 @@ $this->event_actions[] = EventAction::button(
 
 <?php $this->endWidget(); ?>
 
+<?php
+$template = !empty($this->template) ? $this->template : ((!empty($this->event) && $this->event->template) ? $this->event->template : null);
+
+if ($template) {
+    $opnote_template = $template->opnote_templates;
+    $procedure_set = $opnote_template->procedure_set;
+    $filtered_templates = EventTemplate::model()->with('opnote_templates')->findAll('proc_set_id = ?', [$procedure_set->id]);
+
+    $this->renderPartial('OphTrOperationnote_Template_prefill_selection', [
+    'procedures' => $procedure_set->procedures,
+    'filtered_templates' => $filtered_templates,
+    'selected_template_id' => $template->id
+    ]);
+}
+?>
+
 <?php $this->endContent(); ?>

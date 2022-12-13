@@ -28,7 +28,11 @@ $is_outpatient_minor_op = isset($data['outpatient_minor_op']) && $data['outpatie
             'comments',
             array(),
             false,
-            ['cols' => 30, 'class' => 'autosize cols-full'],
+            [
+                'cols' => 30,
+                'class' => 'autosize cols-full',
+                'data-prefilled-value' => $template_data['comments'] ?? ''
+            ],
             array('label' => 2, 'field' => 'full')
         ) ?>
     </div>
@@ -38,7 +42,11 @@ $is_outpatient_minor_op = isset($data['outpatient_minor_op']) && $data['outpatie
                 'postop_instructions',
                 array(),
                 false,
-                ['cols' => 30, 'class' => 'autosize cols-full'],
+                [
+                    'cols' => 30,
+                    'class' => 'autosize cols-full',
+                    'data-prefilled-value' => $template_data['postop_instructions'] ?? ''
+                ],
                 array('label' => 2, 'field' => 'full')
             ) ?>
       </div>

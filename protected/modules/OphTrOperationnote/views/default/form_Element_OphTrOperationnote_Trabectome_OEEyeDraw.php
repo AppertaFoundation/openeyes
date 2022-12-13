@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -14,6 +15,7 @@
  * @copyright Copyright (c) 2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
     'doodleToolBarArray' => array(
         0 => array('Trabectome', 'SidePort', 'CornealSuture'),
@@ -33,5 +35,5 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
     'offsetX' => 10,
     'offsetY' => 10,
     'scale' => 0.72,
-    'autoReport'=>'Element_OphTrOperationnote_Trabectome_description',
+    'autoReport' => 'Element_OphTrOperationnote_Trabectome_description',
 ));

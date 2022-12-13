@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <div class="element-fields full-width">
     <?php
@@ -79,7 +81,9 @@
         $default_interpulse_duration_id = OphTrOperationnote_CXL_Interpulse_Duration::model()->getDefault();
     } else {
         $default_interpulse_duration_id = $element->interpulse_duration_id;
-    } ?>
+    }
+
+    ?>
     <div class="cols-11 flex-layout flex-top col-gap">
     <div class="cols-7">
     <table class="standard">
@@ -90,7 +94,7 @@
                     $element,
                     'protocol_id',
                     CHtml::listData(OphTrOperationnote_CXL_Protocol::model()->findAll(), 'id', 'name'),
-                    array('options' => array($default_protocol_id => array('selected' => true))),
+                    array('options' => array($default_protocol_id => array('selected' => true)), 'prefilled_value' => $template_data['protocol_id'] ?? ''),
                     null,
                     array('field' => 3)
                 ); ?>
@@ -108,7 +112,7 @@
                     false,
                     false,
                     false,
-                    ['class' => 'cols-full']
+                    ['class' => 'cols-full', 'prefilled_value' => $template_data['epithelial_removal_method_id'] ?? '']
                 ) ?>
             </td>
         </tr>
@@ -123,7 +127,7 @@
                     false,
                     false,
                     false,
-                    ['class' => 'cols-full']
+                    ['class' => 'cols-full', 'prefilled_value' => $template_data['mitomycin_c'] ?? '']
                 ); ?>
             </td>
         </tr>
@@ -138,7 +142,7 @@
                     false,
                     false,
                     false,
-                    ['class' => 'cols-full']
+                    ['class' => 'cols-full', 'prefilled_value' => $template_data['iontophoresis_id'] ?? '']
                 ); ?>
             </td>
         </tr>
@@ -147,7 +151,7 @@
                 <?= $form->textField(
                     $element,
                     'iontophoresis_current_value',
-                    array('size' => 10, 'maxlength' => 10, 'field' => 2),
+                    array('size' => 10, 'maxlength' => 10, 'field' => 2, 'data-prefilled-value' => $template_data['iontophoresis_current_value'] ?? ''),
                     false,
                     array('field' => 1)
                 ); ?>
@@ -158,7 +162,7 @@
                 <?= $form->textField(
                     $element,
                     'iontophoresis_duration_value',
-                    array('size' => 10, 'maxlength' => 10, 'field' => 2),
+                    array('size' => 10, 'maxlength' => 10, 'field' => 2, 'data-prefilled-value' => $template_data['iontophoresis_duration_value'] ?? ''),
                     false,
                     array('field' => 1)
                 ) ?>
@@ -175,7 +179,7 @@
                     false,
                     false,
                     false,
-                    ['class' => 'cols-full']
+                    ['class' => 'cols-full', 'prefilled_value' => $template_data['riboflavin_preparation_id'] ?? '']
                 ) ?>
             </td>
         </tr>
@@ -183,7 +187,7 @@
 
         <tr>
             <td colspan="2">
-                <?= $form->textArea($element, 'cxl_comments', array(), false, array('rows' => 4, 'cols' => 40)) ?>
+                <?= $form->textArea($element, 'cxl_comments', array(), false, array('rows' => 4, 'cols' => 40, 'data-prefilled-value' => $template_data['cxl_comments'] ?? '')) ?>
             </td>
         </tr>
         </tbody>
@@ -201,7 +205,7 @@
                         CHtml::listData(OphTrOperationnote_CXL_Device::model()->findAll(), 'id', 'name'),
                         array('options' => array($default_device_id => array('selected' => true))),
                         null,
-                        array('field' => 3, 'class' => 'cols-full')
+                        array('field' => 3, 'class' => 'cols-full', 'data-prefilled-value' => $template_data['device_id'] ?? '')
                     ); ?>
                 </td>
             </tr>
@@ -213,7 +217,7 @@
                         CHtml::listData(OphTrOperationnote_CXL_Epithelial_Status::model()->findAll(), 'id', 'name'),
                         array('options' => array($epithelial_status_id => array('selected' => true))),
                         null,
-                        array('field' => 3, 'class' => 'cols-full')
+                        array('field' => 3, 'class' => 'cols-full', 'data-prefilled-value' => $template_data['epithelial_status_id'] ?? '')
                     ); ?>
                 </td>
             </tr>
@@ -225,7 +229,7 @@
                         CHtml::listData(OphTrOperationnote_CXL_Epithelial_Removal_Diameter::model()->findAll(), 'id', 'name'),
                         array('options' => array($default_epithelial_removal_diameter_id => array('selected' => true))),
                         null,
-                        array('field' => 2, 'class' => 'cols-full')
+                        array('field' => 2, 'class' => 'cols-full', 'data-prefilled-value' => $template_data['epithelial_removal_diameter_id'] ?? '')
                     );  ?>
                 </td>
             </tr>
@@ -237,7 +241,7 @@
                         CHtml::listData(OphTrOperationnote_CXL_Soak_Duration::model()->findAll(), 'id', 'name'),
                         array('options' => array($default_soak_duration_range_id => array('selected' => true))),
                         null,
-                        array('field' => 2, 'class' => 'cols-full')
+                        array('field' => 2, 'class' => 'cols-full', 'data-prefilled-value' => $template_data['soak_duration_range_id'] ?? '')
                     ); ?>
                 </td>
             </tr>
@@ -249,7 +253,7 @@
                         CHtml::listData(OphTrOperationnote_CXL_UV_Pulse_Duration::model()->findAll(), 'id', 'name'),
                         array('options' => array($default_uv_pulse_duration_id => array('selected' => true))),
                         null,
-                        array('field' => 2, 'class' => 'cols-full')
+                        array('field' => 2, 'class' => 'cols-full', 'data-prefilled-value' => $template_data['uv_pulse_duration_id'] ?? '')
                     ); ?>
                 </td>
             </tr>
@@ -263,7 +267,7 @@
                             'id',
                             'name'
                         ),
-                        array('options' => array($default_uv_irradiance_range_id => array('selected' => true))),
+                        array('options' => array($default_uv_irradiance_range_id => array('selected' => true)), 'data-prefilled-value' => $template_data['uv_irradiance_range_id'] ?? ''),
                         null,
                         array('field' => 1)
                     ); ?>
@@ -274,7 +278,7 @@
                     <?= $form->textField(
                         $element,
                         'uv_total_energy_value',
-                        array('size' => 10, 'maxlength' => 10, 'field' => 2),
+                        array('size' => 10, 'maxlength' => 10, 'field' => 2, 'data-prefilled-value' => $template_data['uv_total_energy_value'] ?? ''),
                         false,
                         array('field' => 1)
                     ) ?>
@@ -286,7 +290,7 @@
                         $element,
                         'total_exposure_time_id',
                         CHtml::listData(OphTrOperationnote_CXL_Total_Exposure_Time::model()->findAll(), 'id', 'name'),
-                        array('options' => array($default_total_exposure_time_id => array('selected' => true))),
+                        array('options' => array($default_total_exposure_time_id => array('selected' => true)), 'data-prefilled-value' => $template_data['total_exposure_time_id'] ?? ''),
                         null,
                         array('field' => 1)
                     ); ?>
@@ -298,7 +302,7 @@
                         $element,
                         'interpulse_duration_id',
                         CHtml::listData(OphTrOperationnote_CXL_Interpulse_Duration::model()->findAll(), 'id', 'name'),
-                        array('options' => array($default_interpulse_duration_id => array('selected' => true))),
+                        array('options' => array($default_interpulse_duration_id => array('selected' => true)), 'data-prefilled-value' => $template_data['interpulse_duration_id'] ?? ''),
                         null,
                         array('field' => 2)
                     ); ?>
@@ -315,7 +319,7 @@
                         false,
                         false,
                         false,
-                        ['class' => 'cols-full']
+                        ['class' => 'cols-full', 'prefilled_value' => $template_data['interval_between_drops_id'] ?? '']
                     ) ?>
                 </td>
             </tr>

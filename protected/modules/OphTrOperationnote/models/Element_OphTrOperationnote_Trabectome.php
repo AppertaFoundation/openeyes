@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -86,7 +87,7 @@ class Element_OphTrOperationnote_Trabectome extends Element_OnDemand
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-                'element_type' => array(self::HAS_ONE, 'ElementType', 'id', 'on' => "element_type.class_name='".get_class($this)."'"),
+                'element_type' => array(self::HAS_ONE, 'ElementType', 'id', 'on' => "element_type.class_name='" . get_class($this) . "'"),
                 'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
                 'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
                 'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
@@ -138,6 +139,25 @@ class Element_OphTrOperationnote_Trabectome extends Element_OnDemand
         ));
     }
 
+    public function getPrefillableAttributeSet()
+    {
+        $attributes = [
+            'power_id',
+            'blood_reflux',
+            'hpmc',
+            'eyedraw',
+            'description'
+        ];
+
+
+        if (SettingMetadata::model()->checkSetting('allow_complications_in_pre_fill_templates', 'on')) {
+            $attributes['complications'] = 'id';
+            $attributes[] = 'complication_other';
+        }
+
+        return $attributes;
+    }
+
     /**
      * Ensures the attribute is provided when an 'other' complication is selected.
      *
@@ -147,7 +167,7 @@ class Element_OphTrOperationnote_Trabectome extends Element_OnDemand
     public function requiredIfComplicationOther($attribute, $params)
     {
         if ($this->hasOtherComplication() && !$this->$attribute) {
-            $this->addError($attribute, $this->getAttributeLabel($attribute).' cannot be blank.');
+            $this->addError($attribute, $this->getAttributeLabel($attribute) . ' cannot be blank.');
         }
     }
 
@@ -238,14 +258,26 @@ class Element_OphTrOperationnote_Trabectome extends Element_OnDemand
 
         foreach ($save as $s) {
             if (!$s->save()) {
-                throw new Exception('Unable to save complication assignment:'.print_r($s->getErrors(), true));
+                throw new Exception('Unable to save complication assignment:' . print_r($s->getErrors(), true));
             };
         }
 
         foreach ($curr_by_id as $curr) {
             if (!$curr->delete()) {
-                throw new Exception('unable to delete complication assignment:'.print_r($curr->getErrors(), true));
+                throw new Exception('unable to delete complication assignment:' . print_r($curr->getErrors(), true));
             }
         }
+    }
+
+    protected function applyComplexData($data, $index): void
+    {
+        $model_name = CHtml::modelName($this);
+        $complications = array();
+        if (@$data[$model_name]['complications']) {
+            foreach ($data[$model_name]['complications'] as $id) {
+                $complications[] = OphTrOperationnote_Trabectome_Complication::model()->findByPk($id);
+            }
+        }
+        $this->complications = $complications;
     }
 }

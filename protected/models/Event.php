@@ -123,7 +123,7 @@ class Event extends BaseActiveRecordVersioned
             array('worklist_patient_id', 'length', 'max' => 40),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, episode_id, event_type_id, created_date, event_date, parent_id, worklist_patient_id', 'safe', 'on' => 'search'),
+            array('id, episode_id, event_type_id, created_date, event_date, parent_id, worklist_patient_id, template_id', 'safe', 'on' => 'search'),
             array('event_date', 'OEDateValidatorNotFuture', 'except' => 'allowFutureEvent'),
             array('event_date', 'eventDateValidator'),
         );
@@ -152,7 +152,8 @@ class Event extends BaseActiveRecordVersioned
             'institution' => [self::BELONGS_TO, 'Institution', 'institution_id'],
             'site' => [self::BELONGS_TO, 'Site', 'site_id'],
             'worklist_patient' => [self::BELONGS_TO, 'WorklistPatient', 'worklist_patient_id'],
-            'step' => [self::BELONGS_TO, 'PathwayStep', 'step_id']
+            'step' => [self::BELONGS_TO, 'PathwayStep', 'step_id'],
+            'template' => [self::BELONGS_TO, 'EventTemplate', 'template_id']
         );
     }
 
@@ -962,5 +963,152 @@ class Event extends BaseActiveRecordVersioned
             'event_issue_class' => $class,
             'event_issue_text' => $text,
         );
+    }
+
+    public function getPrefillElementsData()
+    {
+        $template_class = $this->eventType->template_class_name;
+
+        if (!$template_class) {
+            return [];
+        }
+
+        $elements = $this->getElements();
+
+        $prefilled = [];
+
+        foreach ($elements as $element) {
+            $result = $element->getPrefilledAttributes();
+
+            if ($result !== null) {
+                if ($element->canHaveMultipleOf()) {
+                    $prefilled[get_class($element)][$element->templateIndex] = $result;
+                } else {
+                    $prefilled[get_class($element)] = $result;
+                }
+            }
+        }
+
+        return $prefilled;
+    }
+
+    public function createTemplateFromEvent($template_name)
+    {
+        $template_class = $this->eventType->template_class_name;
+        $template_json = json_encode($this->getPrefillElementsData());
+
+        if (!$template_class) {
+            return null;
+        }
+
+        $template = new $template_class;
+
+        $transaction = Yii::app()->db->beginTransaction();
+
+        $event_template = new EventTemplate();
+        $event_template->event_type_id = $this->event_type_id;
+        $event_template->source_event_id = $this->id;
+        $event_template->name = $template_name;
+
+        if (!$event_template->save()) {
+            $transaction->rollback();
+
+            return null;
+        }
+
+        $event_template_user = new EventTemplateUser();
+        $event_template_user->event_template_id = $event_template->id;
+        $event_template_user->user_id = Yii::app()->user->id;
+
+        if (!$event_template_user->save()) {
+            $transaction->rollback();
+
+            return null;
+        }
+
+        if (!$template->setupAndSave($this, $event_template, $template_json)) {
+            $transaction->rollback();
+
+            return null;
+        }
+
+        if (empty($this->template_id)) {
+            $this->template_id = $event_template->id;
+
+            if (!$this->save()) {
+                $transaction->rollback();
+
+                return null;
+            }
+        }
+
+        $transaction->commit();
+
+        return $template;
+    }
+
+    public function updateTemplateFromEvent($event_template_id)
+    {
+        $template_class = $this->eventType->template_class_name;
+        $template_json = json_encode($this->getPrefillElementsData());
+
+        $template = $template_class::model()->find('event_template_id = ?', [$event_template_id]);
+
+        if ($template) {
+            if (
+                !EventTemplateUser::model()->exists(
+                    'event_template_id = :template_id AND user_id = :user_id',
+                    [':template_id' => $event_template_id, ':user_id' => Yii::app()->user->id]
+                )
+            ) {
+                throw new Exception("Cannot update template by this user");
+            }
+
+            if (!$template->updateTemplate($template_json)) {
+                throw new Exception("Could not update template from event");
+            }
+        } else {
+            throw new Exception("Could not update template from event: template not found");
+        }
+    }
+
+    public function getTemplateUpdateStatusForEvent($old_data)
+    {
+        $template_class = $this->eventType->template_class_name;
+
+        if (!$template_class) {
+            return EventTemplate::UPDATE_UNNEEDED;
+        }
+
+        if (!$this->template_id) {
+            return EventTemplate::UPDATE_CREATE_ONLY;
+        }
+
+        $template = $template_class::model()->find('event_template_id = ?', [$this->template_id]);
+
+        if (!$template) {
+            return EventTemplate::UPDATE_CREATE_ONLY;
+        }
+
+        $new_data = $this->getPrefillElementsData();
+
+        // The following equality check assumes that the data consists of arrays,
+        // either associative or indexed, that points to other arrays or simple values of integers/strings.
+        // The order matters with indexed arrays, e.g. ['foo', 'bar'] === ['foo', 'bar'] but ['foo', 'bar'] !== ['bar', 'foo'].
+        // As such this ordering is assumed - if it doesn't hold, a separate recursive equality function will be needed.
+        $data_has_changed = $old_data !== $new_data;
+
+        $status = $template->getUpdateStatus($this, $old_data, $new_data, $data_has_changed);
+        $user_can_update = EventTemplateUser::model()->exists(
+            'event_template_id = :template_id AND user_id = :user_id',
+            [':template_id' => $this->template_id, ':user_id' => Yii::app()->user->id]
+        );
+
+        // A template should only be updated by its owner
+        if ($status === EventTemplate::UPDATE_OR_CREATE && !$user_can_update) {
+            return EventTemplate::UPDATE_CREATE_ONLY;
+        } else {
+            return $status;
+        }
     }
 }

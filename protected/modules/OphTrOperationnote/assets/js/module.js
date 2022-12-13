@@ -42,13 +42,34 @@ $(document).ready(function () {
     });
 })
 
+function applyPrefillClassesTo(container)
+{
+    $(container).find('input, textarea, select').each(function() {
+        let prefilled_value = String($(this).data('prefilled-value'));
+        if (prefilled_value
+            && (
+                (prefilled_value === 'true' && $(this).prop('type') === 'checkbox' && $(this).is(':checked'))
+                || prefilled_value === $(this).val() && ($(this).prop('type') !== 'radio' || $(this).is(':checked'))
+            )
+        ) {
+            $(this).addClass('prefilled');
+        }
+    });
+}
+
 async function callbackAddProcedure(procedure_id) {
     var eye = $('input[name="Element_OphTrOperationnote_ProcedureList\\[eye_id\\]"]:checked').val();
     let surgeon_id = $('#Element_OphTrOperationnote_Surgeon_surgeon_id').val();
 
+    const event_id = $('.js-procedures-event-id').val();
+    const event_param = event_id ? `&event_id=${event_id}` : '';
+
+    const template_id = (new URL(window.location)).searchParams.get('template_id');
+    const template_param = template_id ? `&template_id=${template_id}` : '';
+
     $.ajax({
         'type': 'GET',
-        'url': baseUrl + '/OphTrOperationnote/Default/loadElementByProcedure?procedure_id=' + procedure_id + '&eye=' + eye +'&patientId=' + OE_patient_id + "&surgeon_id=" + surgeon_id,
+        'url': baseUrl + '/OphTrOperationnote/Default/loadElementByProcedure?procedure_id=' + procedure_id + '&eye=' + eye +'&patient_id=' + OE_patient_id + "&surgeon_id=" + surgeon_id + event_param + template_param,
         'success': function (html) {
             if (html.length > 0) {
                 if (html.match(/must-select-eye/)) {
@@ -71,7 +92,9 @@ async function callbackAddProcedure(procedure_id) {
                         m[1] = m[1].replace(/ .*$/, '');
 
                         if (m[1] === 'Element_OphTrOperationnote_GenericProcedure' || $('.' + m[1]).length < 1) {
-                            $(html).insertBefore($('.Element_OphTrOperationnote_ProcedureList').nextAll('.element.required').first());
+                            const new_element = $(html);
+                            new_element.insertBefore($('.Element_OphTrOperationnote_ProcedureList').nextAll('.element.required').first());
+                            applyPrefillClassesTo(new_element);
 
                             var $lastMatchedElement = $('section.' + m[1] + ':last');
                             var $customHintBlock = $('.alert-box.' + m[1] + ':last');
@@ -170,9 +193,39 @@ $(document).ready(function () {
         e.preventDefault();
     });
 
+    applyPrefillClassesTo(this);
+
     $(this).on('click', '#et_print', function (e) {
         e.preventDefault();
         printEvent(null);
+    });
+
+    $('body').on('keyup', 'input, textarea', function() {
+        if ($(this).hasClass('prefilled') && $(this).val() != $(this).data('prefilled-value')) {
+            $(this).removeClass('prefilled');
+        }
+    });
+
+    $('body').on('change', 'input[type="checkbox"]', function() {
+        // Remove 'prefilled' class from only the selected checkbox.
+        if ($(this).hasClass('prefilled') && !$(this).prop('checked') && $(this).data('prefilled-value') === 'true') {
+            $(this).removeClass('prefilled');
+        }
+    });
+
+    $('body').on('change', 'input[type="radio"]', function() {
+        // Remove 'prefilled' class from all radio buttons that form part of the same group.
+        $('input[type="radio"][name="' + $(this).prop('name') + '"]').each(function () {
+            if ($(this).hasClass('prefilled')) {
+                $(this).removeClass('prefilled');
+            }
+        });
+    });
+
+    $('body').on('change', 'select', function() {
+        if ($(this).hasClass('prefilled') && $(this).val() != $(this).data('prefilled-value')) {
+            $(this).removeClass('prefilled');
+        }
     });
 
     var last_Element_OphTrOperationnote_ProcedureList_eye_id = null;
@@ -1088,7 +1141,12 @@ function loadBiometryElementData() {
     iolPower = $higlightedEye.find('.js-iol-display').text();
     selectedLens = $higlightedEye.find('.js-selected_lens').val();
 
-    if (predictedRefraction && ($('#Element_OphTrOperationnote_Cataract_predicted_refraction').val() == "" || $('#Element_OphTrOperationnote_Cataract_predicted_refraction').val() == 0)) {
+    is_templated = (new URL(window.location)).searchParams.get('template_id') !== null;
+
+    let nonzero_predicted_refraction = $('#Element_OphTrOperationnote_Cataract_predicted_refraction').val() == ""
+        || $('#Element_OphTrOperationnote_Cataract_predicted_refraction').val() == 0;
+
+    if (predictedRefraction && (nonzero_predicted_refraction || is_templated)) {
         if (predictedRefraction == "None") {
             $('#Element_OphTrOperationnote_Cataract_predicted_refraction').val('');
         } else {
@@ -1096,7 +1154,9 @@ function loadBiometryElementData() {
         }
     }
 
-    if (iolPower && ($('#Element_OphTrOperationnote_Cataract_iol_power').val() == "" || $('#Element_OphTrOperationnote_Cataract_iol_power').val() == 0)) {
+    let nonzero_iol_power = $('#Element_OphTrOperationnote_Cataract_iol_power').val() == "" || $('#Element_OphTrOperationnote_Cataract_iol_power').val() == 0
+
+    if (iolPower && (nonzero_iol_power || is_templated)) {
         $.isNumeric(iolPower)
         {
             $('#Element_OphTrOperationnote_Cataract_iol_power').val(iolPower);
@@ -1125,4 +1185,25 @@ function highlightBiometryElement() {
         $('#ophCiExaminationPCRRiskLeftEye').show();
     }
 
+}
+
+function loadOrClearTemplate(newTemplateId, eye) {
+    const url = new URL(window.location);
+    const currentTemplateId = url.searchParams.get('template_id') ?? '';
+
+    if (currentTemplateId !== newTemplateId && newTemplateId != '') {
+      url.searchParams.set('template_id', newTemplateId);
+      url.searchParams.delete('template_clear');
+
+      if (eye) {
+        url.searchParams.set('eye', eye);
+      }
+    } else {
+      url.searchParams.delete('template_id');
+      url.searchParams.set('template_clear', '1');
+      url.searchParams.delete('eye');
+    }
+
+    window.onbeforeunload = null;
+    window.location = url;
 }

@@ -185,6 +185,12 @@ $config = array(
             'charset' => 'utf8',
             'schemaCachingDuration' => 300,
         ),
+        'eventBuilder' => array(
+            'class' => 'EventBuilder',
+        ),
+        'eventDefaults' => array(
+            'class' => 'EventDefaults',
+        ),
         'testdb' => array(
             'class' => 'OEDbConnection',
             'emulatePrepare' => true,

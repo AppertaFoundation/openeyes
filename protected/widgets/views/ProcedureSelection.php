@@ -26,6 +26,15 @@ $formatted_subsections = array_merge(
     array_keys($subsections),
     $subsections
 ));
+
+if ($templates) {
+    $formatted_templates = array_map(
+        static function ($template) {
+            return ['label' => $template->name, 'id' => $template->id, 'source' => 'unbooked_templates'];
+        },
+        $templates
+    );
+}
 ?>
 <div class="flex-layout procedure-selection eventDetail<?= $last ? 'eventDetailLast' : '' ?>" id="typeProcedure" style="<?= $hidden ? 'display: none;' : '' ?>">
     <?php if ($label && sizeof($label)) { ?>
@@ -462,10 +471,19 @@ $formatted_subsections = array_merge(
                 openButton: $('#add-procedure-list-btn-<?= $identifier ?>'),
                 showEmptyItemSets: true,
                 itemSets: [
+                    <?php if ($templates) { ?>
+                    new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+                        $formatted_templates
+                                                        ) ?>, {
+                        'id': 'templates',
+                        'header': 'Templates'
+                    }),
+                    <?php } ?>
                     new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
                         $formatted_subsections
                     ) ?>, {
-                        'id': 'subsections'
+                        'id': 'subsections',
+                        'header': 'Subsections'
                     }),
                     new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
                         array_map(function ($key, $item) {
@@ -474,8 +492,9 @@ $formatted_subsections = array_merge(
                     ) ?>, {
                         'id': 'select',
                         'multiSelect': true,
-                        'liClass': ' restrict-width extended'
-                    })
+                        'liClass': ' restrict-width extended',
+                        'header': 'Procedures'
+                    }),
                 ],
                 liClass: 'restrict-width extended',
                 popupClass: 'oe-add-select-search js-test-adder',
@@ -499,6 +518,11 @@ $formatted_subsections = array_merge(
                     for (let index = 0; index < selectedItems.length; index++) {
                         if (selectedItems[index]['source'] === 'subsections') {
                             continue;
+                        }
+                        if (selectedItems[index]['source'] === 'unbooked_templates') {
+                            const eye = $('input[name="Element_OphTrOperationnote_ProcedureList\\[eye_id\\]"]:checked').val();
+
+                            loadOrClearTemplate(selectedItems[index]['id'], eye)
                         }
                         var existingProc = document.querySelector('#procedureList_' + identifier + ' .body input[value="' + selectedItems[index]['id'] + '"]');
                         if (existingProc) {

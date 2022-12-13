@@ -18,7 +18,6 @@ namespace OE\factories\models;
 use OE\factories\ModelFactory;
 use Procedure;
 use ProcedureSubspecialtyAssignment;
-use OELog;
 
 class ProcedureFactory extends ModelFactory
 {
@@ -46,8 +45,6 @@ class ProcedureFactory extends ModelFactory
 
     public function forSubspecialtyIds(array $subspecialty_ids, $institution_id)
     {
-        OELog::log(print_r($subspecialty_ids, true));
-        OELog::log($institution_id);
         return $this->afterCreating(function (Procedure $procedure) use ($subspecialty_ids, $institution_id) {
             // the relation is currently misnamed in the procedure model
             foreach ($subspecialty_ids as $subspecialty_id) {

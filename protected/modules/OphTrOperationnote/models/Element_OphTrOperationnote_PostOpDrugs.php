@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -109,6 +110,13 @@ class Element_OphTrOperationnote_PostOpDrugs extends Element_OpNote
             ));
     }
 
+    public function getPrefillableAttributeSet()
+    {
+        return [
+            'drugs' => 'id'
+        ];
+    }
+
     /**
      * Need to delete associated records.
      *
@@ -124,10 +132,9 @@ class Element_OphTrOperationnote_PostOpDrugs extends Element_OpNote
     public function updateDrugs($drug_ids)
     {
         $curr_by_id = array();
-        foreach (OphTrOperationnote_OperationDrug::model()->findAll(
-            'ophtroperationnote_postop_drugs_id = :drugsId',
-            array(':drugsId' => $this->id)
-        ) as $od) {
+        foreach (
+            OphTrOperationnote_OperationDrug::model()->findAll('ophtroperationnote_postop_drugs_id = :drugsId', array(':drugsId' => $this->id)) as $od
+        ) {
             $curr_by_id[$od->drug_id] = $od;
         }
 
@@ -138,7 +145,7 @@ class Element_OphTrOperationnote_PostOpDrugs extends Element_OpNote
                     $da->ophtroperationnote_postop_drugs_id = $this->id;
                     $da->drug_id = $d_id;
                     if (!$da->save()) {
-                        throw new Exception('Unable to save drug assignment: '.print_r($da->getErrors(), true));
+                        throw new Exception('Unable to save drug assignment: ' . print_r($da->getErrors(), true));
                     }
                 } else {
                     unset($curr_by_id[$d_id]);
@@ -148,7 +155,7 @@ class Element_OphTrOperationnote_PostOpDrugs extends Element_OpNote
 
         foreach ($curr_by_id as $curr) {
             if (!$curr->delete()) {
-                throw new Exception('Unable to delete drug assignment: '.print_r($curr->getErrors(), true));
+                throw new Exception('Unable to delete drug assignment: ' . print_r($curr->getErrors(), true));
             }
         }
     }
@@ -157,5 +164,20 @@ class Element_OphTrOperationnote_PostOpDrugs extends Element_OpNote
     {
         $action_list = array('view', 'createImage', 'removed');
         return in_array($action, $action_list) ? 1 : null;
+    }
+
+    protected function applyComplexData($data, $index): void
+    {
+        $drugs = array();
+        if (isset($data['Drug']) && (!empty($data['Drug']))) {
+            foreach ($data['Drug'] as $d_id) {
+                $drugs[] = OphTrOperationnote_PostopDrug::model()->findByPk($d_id);
+            }
+        } elseif (isset($data[$this->elementType->class_name]['drugs']) && (!empty($data[$this->elementType->class_name]['drugs']))) {
+            foreach ($data[$this->elementType->class_name]['drugs'] as $d_id) {
+                $drugs[] = OphTrOperationnote_PostopDrug::model()->findByPk($d_id);
+            }
+        }
+        $this->drugs = $drugs;
     }
 }

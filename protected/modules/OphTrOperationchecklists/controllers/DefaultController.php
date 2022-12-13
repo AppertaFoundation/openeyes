@@ -1194,7 +1194,7 @@ class DefaultController extends BaseEventTypeController
      * @param bool $processOutput
      * @throws Exception
      */
-    protected function renderElement($element, $action, $form, $data, $view_data = array(), $return = false, $processOutput = false)
+    protected function renderElement($element, $action, $form, $data, $template_data = array(), $view_data = array(), $return = false, $processOutput = false)
     {
         if (($action === 'step') || ($action === 'update')) {
             $view_data = array_merge(array(
@@ -1244,7 +1244,7 @@ class DefaultController extends BaseEventTypeController
             }
         }
 
-        parent::renderElement($element, $action, $form, $data, $view_data, $return, $processOutput);
+        parent::renderElement($element, $action, $form, $data, $template_data, $view_data, $return, $processOutput);
     }
 
     public function renderOpenElements($action, $form = null, $date = null)

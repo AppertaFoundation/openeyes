@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <?php
@@ -24,7 +26,10 @@ if (count($element->anaesthetic_type) > count($element->anaesthetic_type_assignm
     if (count($element->anaesthetic_type) == 0) {
         $la_hidden = true;
         $sed_hidden = true;
-    } elseif (count($element->anaesthetic_type) == 1 && ($element->anaesthetic_type[0]->code == 'GA' || $element->anaesthetic_type[0]->code == 'NoA')) {
+    } elseif (
+        count($element->anaesthetic_type) == 1
+        && ($element->anaesthetic_type[0]->code == 'GA' || $element->anaesthetic_type[0]->code == 'NoA')
+    ) {
         $la_hidden = true;
         $sed_hidden = true;
     } elseif (count($element->anaesthetic_type) == 1 && $element->anaesthetic_type[0]->code === 'Sed') {
@@ -34,7 +39,13 @@ if (count($element->anaesthetic_type) > count($element->anaesthetic_type_assignm
     if (count($element->anaesthetic_type_assignments) == 0) {
         $la_hidden = true;
         $sed_hidden = true;
-    } elseif (count($element->anaesthetic_type_assignments) == 1 && ($element->anaesthetic_type_assignments[0]->anaesthetic_type->code == 'GA' || $element->anaesthetic_type_assignments[0]->anaesthetic_type->code == 'NoA')) {
+    } elseif (
+        count($element->anaesthetic_type_assignments) == 1
+        && (
+            $element->anaesthetic_type_assignments[0]->anaesthetic_type->code == 'GA'
+            || $element->anaesthetic_type_assignments[0]->anaesthetic_type->code == 'NoA'
+        )
+    ) {
         $la_hidden = true;
         $sed_hidden = true;
     } elseif (count($element->anaesthetic_type_assignments) == 1 && $element->anaesthetic_type_assignments[0]->anaesthetic_type->code === 'Sed') {
@@ -43,6 +54,31 @@ if (count($element->anaesthetic_type) > count($element->anaesthetic_type_assignm
 }
 
 $is_outpatient_minor_op = isset($data['outpatient_minor_op']) && $data['outpatient_minor_op'];
+$anaesthetic_ids = array_map(
+    static function ($item) {
+        return $item->id;
+    },
+    $element->anaesthetic_type
+);
+$delivery_ids = array_map(
+    static function ($item) {
+        return $item->id;
+    },
+    $element->anaesthetic_delivery
+);
+
+$type_options = array();
+$delivery_options = array();
+
+if ($prefilled) {
+    foreach ($template_data['anaesthetic_type'] as $anaesthetic_type_id) {
+        $type_options[$anaesthetic_type_id] = array('data-prefilled-value' => 'true');
+    }
+    foreach ($template_data['anaesthetic_delivery'] as $anaesthetic_type_id) {
+        $delivery_options[$anaesthetic_type_id] = array('data-prefilled-value' => 'true');
+    }
+}
+
 ?>
 
 <div class="element-fields full-width flex-layout flex-top" id="OphTrOperationnote_Anaesthetic"
@@ -57,24 +93,27 @@ $is_outpatient_minor_op = isset($data['outpatient_minor_op']) && $data['outpatie
                 <tr>
                     <td>Type</td>
                     <td>
-                        <?php echo $form->checkBoxes(
-                            $element,
-                            'AnaestheticType',
-                            'anaesthetic_type',
-                            null,
-                            false,
-                            false,
-                            false,
-                            false,
-                            array('label-class' => $element->getError('anaesthetic_type') ? 'error' : ''),
-                            array('field' => 12)
-                        ); ?>
+                        <?= $form->checkBoxes(
+                                $element,
+                                'AnaestheticType',
+                                'anaesthetic_type',
+                                null,
+                                false,
+                                false,
+                                false,
+                                false,
+                                array(
+                                    'label-class' => $element->getError('anaesthetic_type') ? 'error' : '',
+                                    'options' => $type_options,
+                                    'extra_fieldset_attributes' => [
+                                        'data-test' => 'anaesthetic-type',
+                                    ]
+                                ),
+                                array('field' => 12)) ?>
                     </td>
                 </tr>
                 <tr id="Element_OphTrOperationnote_Anaesthetic_AnaestheticDelivery_container"
-                    style="<?php if ($la_hidden) :
-                        ?>display: none;<?php
-                    endif; ?>">
+                    style="<?= $la_hidden ? 'display: none;' : '' ?>">
                     <td>LA Delivery Methods</td>
                     <td>
                         <?php echo $form->checkBoxes(
@@ -86,14 +125,15 @@ $is_outpatient_minor_op = isset($data['outpatient_minor_op']) && $data['outpatie
                             false,
                             false,
                             false,
-                            array('label-class' => $element->getError('anaesthetic_delivery') ? 'error' : '')
+                            array(
+                                'label-class' => $element->getError('anaesthetic_delivery') ? 'error' : '',
+                                'options' => $delivery_options,
+                            )
                         ); ?>
                     </td>
                 </tr>
                 <tr id="Element_OphTrOperationnote_Anaesthetic_anaesthetist_id_container"
-                    style="<?php if ($sed_hidden) :
-                        ?>display: none;<?php
-                    endif; ?>">
+                    style="<?= $sed_hidden ? 'display: none;' : ''?>">
                     <td>
                         Given by:
                     </td>
@@ -111,6 +151,7 @@ $is_outpatient_minor_op = isset($data['outpatient_minor_op']) && $data['outpatie
                                 array(
                                     'nowrapper' => true,
                                     'label-class' => $element->getError('Anaesthetist') ? 'error' : '',
+                                    'prefilled_value' => $template_data['anaesthetist_id'] ?? ''
                                 )
                             ); ?>
                         </fieldset>
@@ -126,7 +167,11 @@ $is_outpatient_minor_op = isset($data['outpatient_minor_op']) && $data['outpatie
                                 $element,
                                 'anaesthetic_witness_id',
                                 CHtml::listData($element->surgeons, 'id', 'FullName'),
-                                array('empty' => 'Select', 'nowrapper' => true),
+                                array(
+                                    'empty' => 'Select',
+                                    'nowrapper' => true,
+                                    'data-prefilled-value' => $template_data['anaesthetic_witness_id'] ?? '',
+                                ),
                                 $element->witness_hidden,
                                 array('field' => 3)
                             ); ?>
@@ -199,9 +244,7 @@ $is_outpatient_minor_op = isset($data['outpatient_minor_op']) && $data['outpatie
                     </td>
                 </tr>
                 <tr id="Element_OphTrOperationnote_Anaesthetic_anaesthetic_comment_container"
-                    style="<?php if (!$element->anaesthetic_comment) :
-                        ?>display: none;<?php
-                    endif ?>"
+                    style="<?=!$element->anaesthetic_comment ? 'display: none;' : ''?>"
                     class="comment-group js-comment-container"
                     data-comment-button="#Element_OphTrOperationnote_Anaesthetic_anaesthetic_comment_button">
                     <td>
@@ -217,6 +260,7 @@ $is_outpatient_minor_op = isset($data['outpatient_minor_op']) && $data['outpatie
                                 'rows' => 4,
                                 'cols' => 40,
                                 'class' => 'js-comment-field autosize',
+                                'data-prefilled-value' => $template_data['anaesthetic_comment'] ?? ''
                             )
                         ) ?>
                     </td>

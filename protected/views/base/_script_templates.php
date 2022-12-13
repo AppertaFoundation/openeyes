@@ -21,7 +21,7 @@
 <script type="text/html" id="dialog-alert-template">
     <p>{{{content}}}</p>
     <div class="buttons">
-        <button class="secondary small confirm ok" type="button">
+        <button class="secondary small confirm ok" type="button" data-test="alert-ok">
             OK
         </button>
     </div>

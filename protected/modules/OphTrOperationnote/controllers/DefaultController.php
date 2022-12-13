@@ -25,6 +25,7 @@ class DefaultController extends BaseEventTypeController
         'getImage' => self::ACTION_TYPE_FORM,
         'getTheatreOptions' => self::ACTION_TYPE_FORM,
         'whiteboard' => self::ACTION_TYPE_VIEW,
+        'findTemplatesFor' => self::ACTION_TYPE_FORM,
     );
 
     /* @var Element_OphTrOperationbooking_Operation operation that this note is for when creating */
@@ -75,7 +76,12 @@ class DefaultController extends BaseEventTypeController
 
         if (!empty($_POST)) {
             if (preg_match('/^booking([0-9]+)$/', @$_POST['SelectBooking'], $m)) {
-                $this->redirect(array('/OphTrOperationnote/Default/create?patient_id=' . $this->patient->id . '&booking_event_id=' . $m[1]));
+                $this->redirect(
+                    '/OphTrOperationnote/Default/create?patient_id='
+                        . $this->patient->id
+                        . '&booking_event_id=' . $m[1]
+                        . ($_POST['template_id'] ? ('&template_id=' . $_POST['template_id']) : '')
+                );
             } elseif (@$_POST['SelectBooking'] == 'emergency') {
                 $this->redirect(array('/OphTrOperationnote/Default/create?patient_id=' . $this->patient->id . '&unbooked=1&unbooked_type=emergency'));
             } elseif (@$_POST['SelectBooking'] == 'outpatient-minor-op') {
@@ -89,9 +95,6 @@ class DefaultController extends BaseEventTypeController
             $this->createOpNote();
         } else {
             // set up form for selecting a booking for the Op note
-            $bookings = array();
-
-
             $element_enabled = Yii::app()->params['disable_theatre_diary'];
             $theatre_diary_disabled = isset($element_enabled) && $element_enabled == 'on';
 
@@ -99,7 +102,6 @@ class DefaultController extends BaseEventTypeController
             if ($api = Yii::app()->moduleAPI->get('OphTrOperationbooking')) {
                 $operations = $api->getOpenOperations($this->patient);
             }
-
 
             $this->title = 'Please select booking';
             $this->event_tabs = array(
@@ -126,9 +128,49 @@ class DefaultController extends BaseEventTypeController
         }
     }
 
+    public function actionUpdate($id)
+    {
+        if (empty($_GET['template_id']) && empty($_GET['template_clear']) && $this->event->template_id) {
+            $this->redirect(
+                '/OphTrOperationnote/Default/update/' . $this->event->id
+                    . '?template_id=' . $this->event->template_id
+            );
+        } else {
+            if (!empty($_GET['template_clear'])) {
+                $this->event->template_id = null;
+            } elseif (!empty($_POST) && $this->template && $this->template->id !== $this->event->template_id) {
+                $this->event->template_id = $this->template->id;
+            }
+
+            return parent::actionUpdate($id);
+        }
+    }
+
     public function actionWhiteboard($id)
     {
         $this->redirect(Yii::app()->createUrl('/OphTrOperationbooking/whiteboard/view/' . $id));
+    }
+
+    protected function setOpenElementsFromCurrentEvent($action)
+    {
+        if ($action === 'create' || ($this->template && $this->template->id !== $this->event->template_id)) {
+            $template_data = json_decode($this->template ? $this->template->getDetailRecord()->template_data : '{}', true);
+
+            $eye = null;
+
+            if ($this->unbooked) {
+                $eye_id = $this->getApp()->request->getParam('eye');
+                $eye = Eye::model()->findByPk($eye_id);
+            }
+
+            $this->open_elements = $this->buildEventElements($template_data, $this->getEventElements(), $eye);
+        } else {
+            if (!empty($_POST) && $this->template && $this->template->id !== $this->event->template_id) {
+                $this->event->template_id = $this->template->id;
+            }
+
+            parent::setOpenElementsFromCurrentEvent($action);
+        }
     }
 
     protected function createOpNote()
@@ -151,6 +193,7 @@ class DefaultController extends BaseEventTypeController
                 $transaction = Yii::app()->db->beginTransaction();
 
                 try {
+                    $this->event->template_id = $this->template->id ?? null;
                     $success = $this->saveEvent($_POST);
 
                     if ($success) {
@@ -178,7 +221,19 @@ class DefaultController extends BaseEventTypeController
                         if ($this->event->parent_id) {
                             $this->redirect(Yii::app()->createUrl('/' . $this->event->parent->eventType->class_name . '/default/view/' . $this->event->parent_id));
                         } else {
-                            $this->redirect(array($this->successUri . $this->event->id));
+                            if (!empty($this->template)) {
+                                $existing_template_data = json_decode($this->template->getDetailRecord()->template_data, true);
+
+                                $template_status = $this->event->getTemplateUpdateStatusForEvent($existing_template_data);
+
+                                if ($template_status !== 'UNNEEDED') {
+                                    $this->redirect(array($this->successUri . $this->event->id . '?template=' . $template_status));
+                                } else {
+                                    $this->redirect(array($this->successUri . $this->event->id));
+                                }
+                            } else {
+                                $this->redirect(array($this->successUri . $this->event->id . '?template=' . EventTemplate::UPDATE_CREATE_ONLY));
+                            }
                         }
                     } else {
                         throw new Exception('could not save event');
@@ -210,10 +265,35 @@ class DefaultController extends BaseEventTypeController
             ),
         );
 
+        if ($this->unbooked) {
+            $templates_criteria = new CDbCriteria();
+
+            $templates_criteria->join = 'JOIN ophtroperationnote_template ont ON ont.event_template_id = t.id JOIN event_template_user etu ON etu.event_template_id = t.id';
+            $templates_criteria->addCondition('user_id = :user_id');
+            $templates_criteria->params = [':user_id' => \Yii::app()->user->id];
+
+            $templates_for_unbooked = \EventTemplate::model()->findAll($templates_criteria);
+        }
+
         $this->render('create', array(
             'errors' => @$errors,
             'outpatient_minor_op' => $this->outpatient_minor_op,
+            'templates_for_unbooked' => $templates_for_unbooked ?? []
         ));
+    }
+
+    public function getDefaultsContextData()
+    {
+        return array(
+            'patient' => $this->patient,
+            'booking' => $this->booking_operation,
+            'event' => $this->event,
+            'booking_procedures' => $this->getBookingProcedures(),
+            'site' => Yii::app()->session['selected_site_id'],
+            'firm' => $this->firm,
+            'action' => $this->action->id,
+            'controller' => $this
+        );
     }
 
 
@@ -315,12 +395,12 @@ class DefaultController extends BaseEventTypeController
      */
     public function actionLoadElementByProcedure()
     {
-        if (!$proc = Procedure::model()->findByPk((integer)@$_GET['procedure_id'])) {
+        if (!$proc = Procedure::model()->findByPk((int)@$_GET['procedure_id'])) {
             throw new SystemException('Procedure not found: ' . @$_GET['procedure_id']);
         }
 
-        if (!$patient_id = $this->getApp()->request->getParam('patientId')) {
-            throw new SystemException('patientId required for procedure element loading.');
+        if (!$patient_id = $this->getApp()->request->getParam('patient_id')) {
+            throw new SystemException('patient_id required for procedure element loading.');
         }
         $this->setPatient($patient_id);
 
@@ -328,32 +408,71 @@ class DefaultController extends BaseEventTypeController
 
         $procedureSpecificElements = $this->getProcedureSpecificElements($proc->id);
 
-        foreach ($procedureSpecificElements as $i => $element) {
-            $class_name = $element->element_type->class_name;
+        $template_data = array();
 
-            $element = new $class_name();
-            $element->patientId = $this->patient->id;
-
-            if ($element->requires_eye) {
-                $eye_id = $this->getApp()->request->getParam('eye');
-                if (!in_array($eye_id, array(Eye::LEFT, Eye::RIGHT))) {
-                    echo 'must-select-eye';
-                    return;
-                }
-                $element->eye = Eye::model()->findByPk($eye_id);
+        if ($this->template) {
+            $template_detail = $this->template->getDetailRecord();
+            $template_data = json_decode($template_detail->template_data, true);
+        } elseif ($this->event && $this->event->template) {
+            $template_detail = $this->event->template->getDetailRecord();
+            $template_data = json_decode($template_detail->template_data, true);
+        } elseif ($template_id = \Yii::app()->request->getParam('template_id')) {
+            if ($this->template = \EventTemplate::model()->findByPk($template_id)) {
+                $template_detail = $this->template->getDetailRecord();
+                $template_data = json_decode($template_detail->template_data, true);
             }
-
-            $element->setDefaultOptions($this->patient);
-
-            $postProcess = ($i == count($procedureSpecificElements) - 1);
-            $this->renderElement($element, 'create', $form, array(), array('ondemand' => true), false, $postProcess);
         }
 
-        if (count($procedureSpecificElements) == 0) {
+        if (count($procedureSpecificElements) === 0) {
             $element = new Element_OphTrOperationnote_GenericProcedure();
             $element->proc_id = $proc->id;
-            $element->setDefaultOptions();
-            $this->renderElement($element, 'create', $form, array(), array('ondemand' => true), false, true);
+
+            if (!empty($template_data)) {
+                $processed_elements = $this->buildEventElements($template_data, [$element]);
+            } else {
+                $processed_elements = [$element];
+            }
+        } elseif (!empty($template_data)) {
+            $processed_elements = $this->buildEventElements($template_data, $procedureSpecificElements);
+        } else {
+            $processed_elements = array_map(function ($element) {
+                $class_name = $element->element_type->class_name;
+
+                $element = new $class_name();
+                $element->patientId = $this->patient->id;
+
+                if ($element->requires_eye) {
+                    $eye_id = $this->getApp()->request->getParam('eye');
+                    if (!in_array($eye_id, array(Eye::LEFT, Eye::RIGHT))) {
+                        echo 'must-select-eye';
+                        return;
+                    }
+                    $element->eye = Eye::model()->findByPk($eye_id);
+                }
+
+                $element->setDefaultOptions($this->patient);
+
+                return $element;
+            }, $procedureSpecificElements);
+        }
+
+        foreach ($processed_elements as $i => $element) {
+            $postProcess = ($i == count($processed_elements) - 1);
+
+            $element_class = $element->elementType->class_name;
+            $template_data_exists = !empty($template_data) && array_key_exists($element_class, $template_data);
+            $element_template_data = $template_data_exists ? $template_data[$element_class] : [];
+
+            $this->renderElement(
+                $element,
+                'create',
+                $form,
+                array(),
+                $element_template_data,
+                array('ondemand' => true),
+                false,
+                $postProcess
+            );
         }
     }
 
@@ -387,7 +506,12 @@ class DefaultController extends BaseEventTypeController
         $elements = array();
 
         foreach ($this->getProcedureSpecificElements($proc->id) as $element) {
-            if (empty($procedures) || !OphTrOperationnote_ProcedureListOperationElement::model()->find('procedure_id in (' . implode(',', $procedures) . ') and element_type_id = ' . $element->element_type->id)) {
+            if (
+                empty($procedures)
+                || !OphTrOperationnote_ProcedureListOperationElement::model()->find(
+                    'procedure_id in (' . implode(',', $procedures) . ') and element_type_id = ' . $element->element_type->id
+                )
+            ) {
                 $elements[] = $element->element_type->class_name;
             }
         }
@@ -405,9 +529,26 @@ class DefaultController extends BaseEventTypeController
      */
     public function renderAllProcedureElements($action, $form = null, $data = null)
     {
+        $template_data = array();
+        if ($this->template) {
+            $template_detail = $this->template->getDetailRecord();
+            $template_data = json_decode($template_detail->template_data, true);
+        } elseif ($this->event && $this->event->template) {
+            $template_detail = $this->event->template->getDetailRecord();
+            $template_data = json_decode($template_detail->template_data, true);
+        }
         foreach ($this->open_elements as $el) {
             if (is_subclass_of($el, 'Element_OnDemand')) {
-                $this->renderElement($el, $action, $form, $data);
+                $element_class = $el->elementType->class_name;
+                $template_data_exists = !empty($template_data) && array_key_exists($element_class, $template_data);
+                $element_template_data = $template_data_exists ? $template_data[$element_class] : [];
+                $this->renderElement(
+                    $el,
+                    $action,
+                    $form,
+                    $data,
+                    $element_template_data
+                );
             }
         }
     }
@@ -759,21 +900,21 @@ class DefaultController extends BaseEventTypeController
     public function formatAconst($aconst)
     {
         /* based on the requirements:
-        Valid results*
-        * 118.0
-        * 118.1*
-        * 118.12*
-        * 118.123*
-        * 118.102
-        * 118.001*
+            Valid results*
+            * 118.0
+            * 118.1*
+            * 118.12*
+            * 118.123*
+            * 118.102
+            * 118.001*
 
-        *Invalid results*
-        * 118
-        * 118.000
-        * 118.100
-        * 118.120
+            *Invalid results*
+            * 118
+            * 118.000
+            * 118.100
+            * 118.120
 
-        */
+            */
         $formatted = (float)$aconst;
         if ($formatted == (int)$formatted) {
             $formatted .= '.0';
@@ -802,7 +943,13 @@ class DefaultController extends BaseEventTypeController
             //TODO: check for missing elements for procedures
         } else {
             $elements = $this->event_type->getDefaultElements();
-            if ($procedures = $this->getBookingProcedures()) {
+            $procedures = $this->getBookingProcedures();
+
+            if (empty($procedures) && $this->unbooked) {
+                $procedures = $this->getTemplateProcedures();
+            }
+
+            if ($procedures) {
                 // Splice the elements array to place the extra elements in the correct order
                 // As it is when operation note has no booked procedures
                 $elements_before_procedures = [];
@@ -860,9 +1007,23 @@ class DefaultController extends BaseEventTypeController
                 $api = Yii::app()->moduleAPI->get('OphTrOperationbooking');
                 $this->booking_procedures = $api->getProceduresForOperation($this->booking_operation->event_id);
             }
-
             return $this->booking_procedures;
         }
+        return array();
+    }
+
+    /**
+     * returns list of procudures for the template set on the controller.
+     *
+     * @return Proc[]
+     */
+    protected function getTemplateProcedures()
+    {
+        if ($this->template) {
+            return $this->template->opnote_templates->procedure_set->procedures;
+        }
+
+        return [];
     }
 
     /**
@@ -883,6 +1044,20 @@ class DefaultController extends BaseEventTypeController
         parent::setElementDefaultOptions($element, $action);
     }
 
+    protected function getElementDefaultOptions($element, $action)
+    {
+        $fields = array();
+        if ($action == 'create' && $this->getBookingProcedures()) {
+            // we are loading procedure elements directly, so if they need the
+            // eye setting, we must take care of this first.
+            if (is_a($element, 'Element_OnDemandEye')) {
+                $api = Yii::app()->moduleAPI->get('OphTrOperationbooking');
+                $fields['eye'] = $api->getEyeForOperation($this->booking_operation->event_id);
+            }
+        }
+        return array_merge($fields, parent::getElementDefaultOptions($element, $action));
+    }
+
     /**
      * For new notes for a specific operation, initialise procedure list with relevant procedures.
      *
@@ -898,6 +1073,24 @@ class DefaultController extends BaseEventTypeController
             $element->eye = $api->getEyeForOperation($this->booking_operation->event_id);
             $element->booking_event_id = $this->booking_operation->event_id;
         }
+    }
+
+    public function getElementDefaultOptions_Element_OphTrOperationnote_ProcedureList($element, $action)
+    {
+        $fields = array();
+        if ($action == 'create' && $procedures = $this->getBookingProcedures()) {
+            $fields['procedures'] = array_map(
+                static function ($item) {
+                    return $item->id;
+                },
+                $procedures
+            );
+
+            $api = Yii::app()->moduleAPI->get('OphTrOperationbooking');
+            $fields['eye_id'] = $api->getEyeForOperation($this->booking_operation->event_id)->id;
+            $fields['booking_event_id'] = $this->booking_operation->event_id;
+        }
+        return $fields;
     }
 
     /**
@@ -924,6 +1117,26 @@ class DefaultController extends BaseEventTypeController
         }
     }
 
+    public function getElementDefaultOptions_Element_OphTrOperationnote_Anaesthetic($element, $action)
+    {
+        $fields = array();
+        if ($action == 'create') {
+            if ($this->booking_operation) {
+                $fields['anaesthetic_type'] = $this->booking_operation->anaesthetic_type;
+            } else {
+                $key = $this->patient->isChild() ? 'ophtroperationnote_default_anaesthetic_child' : 'ophtroperationnote_default_anaesthetic';
+
+                if (isset(Yii::app()->params[$key])) {
+                    if ($at = AnaestheticType::model()->find('code=?', array(Yii::app()->params[$key]))) {
+                        $fields['anaesthetic_type'] = array($at);
+                    }
+                }
+            }
+            $fields['anaesthetic_agents'] = $this->getAnaestheticAgentsBySiteAndSubspecialty('siteSubspecialtyAssignmentDefaults');
+        }
+        return $fields;
+    }
+
     /**
      * Set the default drugs from site and subspecialty.
      *
@@ -937,6 +1150,15 @@ class DefaultController extends BaseEventTypeController
         }
     }
 
+    public function getElementDefaultOptions_Element_OphTrOperationnote_PostOpDrugs($element, $action)
+    {
+        $fields = array();
+        if ($action == 'create') {
+            $efields['drugs'] = $this->getPostOpDrugsBySiteAndSubspecialty(true);
+        }
+        return $fields;
+    }
+
     /**
      * Set the default operative devices from the site and subspecialty.
      *
@@ -948,6 +1170,15 @@ class DefaultController extends BaseEventTypeController
         if ($action == 'create') {
             $element->operative_devices = $this->getOperativeDevicesBySiteAndSubspecialty(true);
         }
+    }
+
+    public function getElementDefaultOptions_Element_OphTrOperationnote_Cataract($element, $action)
+    {
+        $fields = array();
+        if ($action == 'create') {
+            $fields['operative_devices'] = $this->getOperativeDevicesBySiteAndSubspecialty(true);
+        }
+        return $fields;
     }
 
     protected function getUserSettings($surgeon_id): array
@@ -976,6 +1207,32 @@ class DefaultController extends BaseEventTypeController
     public function actionGetUserSettingsValues($surgeon_id)
     {
         echo json_encode($this->getUserSettings($surgeon_id));
+    }
+
+    public function actionFindTemplatesFor()
+    {
+        $surgeon_id = \Yii::app()->request->getParam('surgeon_id');
+        $procedures = \Yii::app()->request->getParam('procedures');
+
+        $procedure_set = ProcedureSet::findForProcedures($procedures);
+
+        if ($procedure_set) {
+            $templates_criteria = new CDbCriteria();
+
+            $templates_criteria->join = 'JOIN ophtroperationnote_template ont ON ont.event_template_id = t.id JOIN event_template_user etu ON etu.event_template_id = t.id';
+            $templates_criteria->addCondition('user_id = :user_id');
+            $templates_criteria->addCondition('proc_set_id = :procedure_set_id');
+            $templates_criteria->params = [':user_id' => $surgeon_id, ':procedure_set_id' => $procedure_set->id];
+
+            $procedures = array_map(static function ($procedure) {
+                return $procedure->term;
+            }, $procedure_set->procedures);
+            $templates = CHtml::listData(EventTemplate::model()->findAll($templates_criteria), 'id', 'name');
+
+            $this->renderJSON(['procedures' => $procedures, 'templates' => $templates]);
+        } else {
+            $this->renderJSON(null);
+        }
     }
 
     /**
@@ -1035,7 +1292,25 @@ class DefaultController extends BaseEventTypeController
     protected function initActionUpdate()
     {
         parent::initActionUpdate();
+
         $this->initEdit();
+    }
+
+    /**
+     * Initialise a dummy event for loading elements
+     *
+     */
+    protected function initActionLoadElementByProcedure()
+    {
+        if (isset($_GET['event_id'])) {
+            $this->initWithEventId($_GET['event_id']);
+        } else {
+            parent::initActionCreate();
+        }
+
+        if (isset($_GET['template_id'])) {
+            $this->template = EventTemplate::model()->findByPk($_GET['template_id']);
+        }
     }
 
     /**
@@ -1122,9 +1397,9 @@ class DefaultController extends BaseEventTypeController
     {
         $element->updateComplications(isset($data['OphTrOperationnote_CataractComplications']) ? $data['OphTrOperationnote_CataractComplications'] : array());
         $element->updateOperativeDevices(isset($data['OphTrOperationnote_CataractOperativeDevices']) ? $data['OphTrOperationnote_CataractOperativeDevices'] : array());
-                $procedure_list  = Element_OphTrOperationnote_ProcedureList::model()->find('event_id = ?', [$element->event_id]);
-                $eye = $procedure_list->eye;
-                $this->patient->removeBiologicalLensDiagnoses($eye);
+        $procedure_list  = Element_OphTrOperationnote_ProcedureList::model()->find('event_id = ?', [$element->event_id]);
+        $eye = $procedure_list->eye;
+        $this->patient->removeBiologicalLensDiagnoses($eye);
     }
 
     /**
@@ -1237,16 +1512,32 @@ class DefaultController extends BaseEventTypeController
 
         $element->anaesthetic_type_assignments = $type_assessments;
 
-        $anaesthetic_GA_id = Yii::app()->db->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name', array(':name' => 'GA'))->queryScalar();
+        $anaesthetic_GA_id = Yii::app()->db->createCommand()
+            ->select('id')
+            ->from('anaesthetic_type')
+            ->where('name=:name', array(':name' => 'GA'))
+            ->queryScalar();
         if (count($element->anaesthetic_type_assignments) == 1 && $element->anaesthetic_type_assignments[0]->anaesthetic_type_id == $anaesthetic_GA_id) {
             $data['AnaestheticDelivery'] = array(
-                Yii::app()->db->createCommand()->select('id')->from('anaesthetic_delivery')->where('name=:name', array(':name' => 'Other'))->queryScalar()
+                Yii::app()->db->createCommand()
+                    ->select('id')
+                    ->from('anaesthetic_delivery')
+                    ->where('name=:name', array(':name' => 'Other'))
+                    ->queryScalar()
             );
 
-            $element->anaesthetist_id = Yii::app()->db->createCommand()->select('id')->from('anaesthetist')->where('name=:name', array(':name' => 'Anaesthetist'))->queryScalar();
+            $element->anaesthetist_id = Yii::app()->db->createCommand()
+                ->select('id')
+                ->from('anaesthetist')
+                ->where('name=:name', array(':name' => 'Anaesthetist'))
+                ->queryScalar();
         }
 
-        $anaesthetic_NoA_id = Yii::app()->db->createCommand()->select('id')->from('anaesthetic_type')->where('code=:code', array(':code' => 'NoA'))->queryScalar();
+        $anaesthetic_NoA_id = Yii::app()->db->createCommand()
+            ->select('id')
+            ->from('anaesthetic_type')
+            ->where('code=:code', array(':code' => 'NoA'))
+            ->queryScalar();
         if (count($element->anaesthetic_type_assignments) == 1 && $element->anaesthetic_type_assignments[0]->anaesthetic_type_id == $anaesthetic_NoA_id) {
             $data['AnaestheticDelivery'] = array();
             $element->anaesthetist_id = null;
@@ -1339,7 +1630,6 @@ class DefaultController extends BaseEventTypeController
     /**
      * @inheritdoc
      */
-
     protected function setAndValidateElementsFromData($data)
     {
         $errors = array();
@@ -1371,7 +1661,7 @@ class DefaultController extends BaseEventTypeController
         }
 
         // assign
-        $this->open_elements = $elements;
+        $this->open_elements = $this->buildEventElements($data, $elements);
 
         // validate
         foreach ($this->open_elements as $element) {
@@ -1440,5 +1730,42 @@ class DefaultController extends BaseEventTypeController
         $crit->order = "display_order";
 
         return OphTrOperationnote_Attribute::model()->findAll($crit);
+    }
+
+    private function buildEventElements($data, $elements, $eye = null)
+    {
+        $context = $this->getDefaultsContextData();
+
+        if ($eye) {
+            $context['unbooked_eye'] = $eye;
+        }
+
+        $event_defaults =
+            Yii::app()
+            ->eventDefaults
+            ->forEventType($this->event_type)
+            ->forElements($elements)
+            ->withContext($context)
+            ->getDefaults();
+
+        $unprocessed_elements =
+            Yii::app()
+            ->eventBuilder
+            ->forEventType($this->event_type)
+            ->forElements($elements)
+            ->getElements();
+
+        $priorities = \EventTemplate::getPrefillablePriorities($unprocessed_elements);
+
+        $built_elements =
+            Yii::app()
+            ->eventBuilder
+            ->setPriorities($priorities)
+            ->addData($event_defaults, \EventTemplate::PRIORITY_PATIENT)
+            ->addData($data, \EventTemplate::PRIORITY_TEMPLATE)
+            ->applyData()
+            ->getElements();
+
+        return $built_elements;
     }
 }

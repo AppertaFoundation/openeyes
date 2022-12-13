@@ -1,0 +1,103 @@
+{
+    "patientBiometryData": {
+        "lens": "MA60AC",
+        "predictedRefraction": -1.03
+    },
+    "templateData": {
+        "name": "Testing template",
+        "elementData": {
+            "location": {
+                "theatre": "Emergency Theatre 1"
+            },
+            "procedureSide": "1",
+            "procedures": {
+                "Phacoemulsification and Intraocular lens": {
+                    "procedureName": "Phacoemulsification and Intraocular lens",
+                    "values": {
+                        "incisionSite": { 
+                            "testid": "incision-site",
+                            "inputType": "select",
+                            "inputValue": "Limbal",
+                            "verifyValue": true
+                        },
+                        "length": { 
+                            "testid": "length",
+                            "inputType": "textField",
+                            "inputValue": "2.99",
+                            "verifyValue": true
+                        },
+                        "meridian": { 
+                            "testid": "meridian",
+                            "inputType": "textField",
+                            "inputValue": "0",
+                            "verifyValue": false
+                        },
+                        "incisionType": { 
+                            "testid": "incision-type",
+                            "inputType": "select",
+                            "inputValue": "Section",
+                            "verifyValue": true
+                        },
+                        "iolPosition": { 
+                            "testid": "iol-position",
+                            "inputType": "select",
+                            "inputValue": "In the sulcus",
+                            "verifyValue": true
+                        },
+
+                        "iolType": {
+                            "testid": "iol-type",
+                            "inputType": "select",
+                            "inputValue": "MA60AC",
+                            "verifyValue": false
+                        },
+                        "iolPower": {
+                            "testid": "iol-power",
+                            "inputType": "textField",
+                            "inputValue": "22.5",
+                            "verifyValue": false
+                        },
+                        "predictedRefraction": {
+                            "testid": "predicted-refraction",
+                            "inputType": "textField",
+                            "inputValue": "1.0",
+                            "verifyValue": false
+                        },
+
+                        "complications": {
+                            "testid": "complications",
+                            "inputType": "multiSelect",
+                            "inputValue": ["Anterior Capsular tear"],
+                            "verifyValue": true
+                        }
+                    }
+                }
+            },
+            "pcrRisk": [
+                {"column": "glaucoma", "value": "No Glaucoma"},
+                {"column": "diabetic", "value": "No Diabetes"},
+                {"column": "no_fundal_view", "value": "No"},
+                {"column": "brunescent_white_cataract", "value": "No"},
+                {"column": "axial_length", "value": "< 26"},
+                {"column": "arb", "value": "No"},
+                {"column": "abletolieflat", "value": "Yes"}
+            ],
+            "anaesthetic": {
+                "anaestheticType": "GA"
+            },
+            "comments": {
+                "operationComments": "Testing operation comment",
+                "postOpInstructions": "Testing post op instruction"
+            }
+        }
+    },
+    "operationBookingData": {
+        "procedures": [
+            "Phacoemulsification and Intraocular lens"
+        ],
+        "operation": {
+            "operationComplexity": true,
+            "anaestheticType": "LA"
+        }
+    }
+}

@@ -624,6 +624,94 @@ class ProfileController extends BaseController
         return SettingUser::model()->findAll('user_id = :user_id AND element_type_id = :element_type_id', array(':user_id' => Yii::app()->user->id, ':element_type_id' => $elementType->id));
     }
 
+    public function actionManageEventTemplates()
+    {
+        $user = Yii::app()->session['user_auth']->user;
+
+        $user_templates = EventTemplateUser::model()->findAllByAttributes(['user_id' => $user->id]);
+
+        $op_note_event_type_id = EventType::model()->findByAttributes(['class_name' => 'OphTrOperationnote'])->id;
+
+        $command = Yii::app()->db->createCommand()
+            ->select('t.id, t.name, et.id event_type_id, et.name event_type_name, ot.proc_set_id proc_set_id')
+            ->from('event_template t')
+            ->leftJoin('event_type et', 'et.id = t.event_type_id')
+            ->join('ophtroperationnote_template ot', 'ot.event_template_id = t.id')
+            ->leftJoin('event_template_user etu', 'etu.event_template_id = t.id')
+            ->where('etu.user_id = :user_id', [':user_id' => $user->id]);
+
+        $op_note_templates = $command->queryAll();
+
+        $structured_templates = [];
+
+        foreach ($op_note_templates as $template) {
+            $structured_templates[$template['event_type_name']][$template['proc_set_id']][] = ['id' => $template['id'], 'name' => $template['name']];
+        }
+
+        $this->render(
+            '/profile/manage_event_templates',
+            array(
+                'structured_templates' => $structured_templates,
+            )
+        );
+    }
+
+    public function actionModifyEventTemplates()
+    {
+        $template_data = Yii::app()->request->getPost('template_data');
+
+        $transaction = Yii::app()->db->beginTransaction();
+
+        $errors = [];
+
+        foreach ($template_data as $id => $name) {
+            $template = EventTemplate::model()->findByPk($id);
+
+            $template->name = $name;
+
+            if (!$template->save()) {
+                $errors[] = $template->errors;
+            }
+        }
+
+        if (!empty($errors)) {
+            $transaction->rollback();
+            $this->renderJSON(['success' => false, 'errors' => $errors]);
+        }
+
+        $transaction->commit();
+        $this->renderJSON(['success' => true]);
+    }
+
+    public function actionDeleteEventTemplates()
+    {
+        $template_ids = Yii::app()->request->getPost('template_ids');
+
+        $transaction = Yii::app()->db->beginTransaction();
+
+        foreach ($template_ids as $template_id) {
+            $template = EventTemplate::model()->findByPk($template_id);
+
+            if (!$template->opnote_templates->delete()) {
+                $transaction->rollback();
+                $this->renderJSON(['success' => false]);
+            }
+
+            if (!$template->user_assignment->delete()) {
+                $transaction->rollback();
+                $this->renderJSON(['success' => false]);
+            }
+
+            if (!$template->delete()) {
+                $transaction->rollback();
+                $this->renderJSON(['success' => false]);
+            }
+        }
+
+        $transaction->commit();
+        $this->renderJSON(['success' => true]);
+    }
+
     protected function getNotSelectedFirmList(User $user)
     {
         $firms = Yii::app()->db->createCommand()

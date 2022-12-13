@@ -11,6 +11,11 @@ class CypressHelperModule  extends \BaseModule
         // import the module-level components
         // $this->setImport(['CypressHelper.components.*']);
 
+        $this->setImport(array(
+            'CypressHelper.seeders.*',
+            'CypressHelper.resources.*',
+        ));
+
         parent::init();
     }
 }

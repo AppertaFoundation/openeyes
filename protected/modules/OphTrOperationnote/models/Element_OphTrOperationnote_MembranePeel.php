@@ -117,4 +117,14 @@ class Element_OphTrOperationnote_MembranePeel extends Element_OnDemand
                 'criteria' => $criteria,
             ));
     }
+
+    public function getPrefillableAttributeSet()
+    {
+        return [
+            'membrane_blue',
+            'brilliant_blue',
+            'other_dye',
+            'comments'
+        ];
+    }
 }

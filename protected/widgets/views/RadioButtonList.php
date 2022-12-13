@@ -37,7 +37,14 @@ $label_class = isset($htmlOptions['label-class']) ? $htmlOptions['label-class'] 
             foreach ($htmlOptions['options'][$id] as $k => $v) {
                 $options[$k] = $v;
             }
-        } ?>
+        }
+        if (array_key_exists('prefilled_value', $htmlOptions) && $htmlOptions['prefilled_value'] !== null) {
+            $options['data-prefilled-value'] = $htmlOptions['prefilled_value'];
+        }
+        if (array_key_exists('test', $htmlOptions) && $htmlOptions['test'] !== null) {
+            $options['data-test'] = $htmlOptions['test'];
+        }
+        ?>
     <label class="inline highlight <?= $label_class ?>">
         <?=\CHtml::radioButton(
             $name,
@@ -90,6 +97,10 @@ $label_class = isset($htmlOptions['label-class']) ? $htmlOptions['label-class'] 
                 }
 
                 $class = isset($options['class']) ? ($options['class'] . " ") : '';
+
+                if (array_key_exists('prefilled_value', $htmlOptions) && $htmlOptions['prefilled_value'] !== null) {
+                    $options['data-prefilled-value'] = $htmlOptions['prefilled_value'];
+                }
                 $options['class'] = $class . str_replace(' ', '', $data_value);
 
                 echo CHtml::radioButton(

@@ -15,6 +15,8 @@
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+ *
+ * @var $Element_OphTrOperationbooking_Operation[] $operations
  */
 
 ?>
@@ -55,6 +57,7 @@ $warnings = $this->patient->getWarnings($clinical);
       </header>
 
       <input type="hidden" name="SelectBooking"/>
+      <input type="hidden" name="template_id"/>
 
       <div class="data-group">
           <div class="data-value flex-layout">
@@ -80,7 +83,14 @@ $warnings = $this->patient->getWarnings($clinical);
               </thead>
               <tbody>
 
-                <?php foreach ($operations as $operation) : ?>
+                <?php foreach ($operations as $operation) :
+                    $procedure_set = ProcedureSet::findForBooking($operation->id);
+
+                    $templates = array();
+                    if ($procedure_set) {
+                        $templates = OphTrOperationnote_Template::model()->findAll('proc_set_id = :id', [':id' => $procedure_set->id]);
+                    }
+                    ?>
                 <tr>
                   <td>
                     <span class="cols-4 column <?php echo $theatre_diary_disabled ? 'hide' : '' ?>">
@@ -119,9 +129,30 @@ $warnings = $this->patient->getWarnings($clinical);
                         <?php } ?>
                   </td>
                   <td>
-                    <button class="booking-select" data-eye-id="<?=$operation->eye->id?>" data-booking="booking<?= $operation->event_id ?>">
-                      Create op note
-                    </button>
+                    <ul class="row-list">
+                        <li>
+                            <button class="booking-select" data-eye-id="<?=$operation->eye->id?>" data-booking="booking<?= $operation->event_id ?>">
+                                Create op note
+                            </button>
+                        </li>
+                        <?php
+                        if (count($templates) == 0) { ?>
+                            <li><small class="fade">No pre-fill templates</small></li>
+                        <?php } else {
+                            foreach ($templates as $template) { ?>
+                            <li>
+                                <button class="booking-select"
+                                    data-eye-id="<?=$operation->eye->id?>"
+                                    data-booking="booking<?= $operation->event_id ?>"
+                                    data-template="<?= $template->id ?>"
+                                    data-test="template-entry">
+                                    <i class="oe-i starline small pad-r"></i>
+                                    <?= $template->event_template->name ?>
+                                </button>
+                            </li>
+                            <?php }
+                        } ?>
+                    </ul>
                   </td>
                 </tr>
                 <?php endforeach; ?>
@@ -158,8 +189,9 @@ $warnings = $this->patient->getWarnings($clinical);
      * set the selected booking and submit the form
      * @param booking
      */
-    function selectBooking(booking) {
+    function selectBooking(booking, template) {
         $('[name="SelectBooking"]').val(booking);
+        $('[name="template_id"]').val(template);
         $('#operation-note-select').submit();
     }
 
@@ -167,9 +199,20 @@ $warnings = $this->patient->getWarnings($clinical);
     $('.booking-select').on('click', function () {
         let eyeId = $(this).data('eye-id');
         let booking = $(this).data('booking');
-        
-        selectBooking(booking);
 
+        let template_id = $(this).data('template') ? $(this).data('template') : null;
+        if (eyeId === 3) {
+            // if the procedure is for BOTH eyes, show an alert:
+            new OpenEyes.UI.Dialog.Alert({
+                content: "Bilateral cataract operation notes are not currently supported. Please complete details for the first eye in this event, then create a second operation note event for the second eye.",
+                closeCallback: function () {
+                    selectBooking(booking, template_id);
+                }
+            }).open();
+        }
+        else {
+            selectBooking(booking, template_id);
+        }
     });
   });
 </script>

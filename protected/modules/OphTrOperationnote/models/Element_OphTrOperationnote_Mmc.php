@@ -79,6 +79,18 @@ class Element_OphTrOperationnote_Mmc extends Element_OnDemand
         parent::afterValidate();
     }
 
+    public function getPrefillableAttributeSet()
+    {
+        return [
+            'application_type_id',
+            'concentration_id',
+            'volume_id',
+            'duration',
+            'number',
+            'washed'
+        ];
+    }
+
     /**
      * @return string
      */

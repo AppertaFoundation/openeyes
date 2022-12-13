@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <?php
@@ -41,13 +43,13 @@ $biometry_data = [
             <tr>
                 <td>
                     <div class="data-label">
-                        <?=\CHtml::encode($element->getAttributeLabel('lens_id_'.$side)) ?>
+                        <?= \CHtml::encode($element->getAttributeLabel('lens_id_' . $side)) ?>
                     </div>
                 </td>
                 <td>
                     <div class="data-value"
-                         id="lens_<?php echo $side ?>"><?php echo $element->{'lens_display_name_'.$side} ? $element->{'lens_display_name_'.$side} : 'None' ?>
-                        <input type="hidden" class="js-selected_lens" value="<?php echo $element->{'lens_id_'.$side} ?>">
+                         id="lens_<?= $side ?>"><?= $element->{'lens_display_name_' . $side} ? $element->{'lens_display_name_' . $side} : 'None' ?>
+                        <input type="hidden" class="js-selected_lens" value="<?php echo $element->{'lens_id_' . $side} ?>">
                     </div>
                 </td>
                 <td colspan="2"></td>
@@ -62,11 +64,11 @@ $biometry_data = [
                     </div>
                 </td>
                 <td>
-                    <div class="data-value large-text highlighter orange js-iol-display"><?=\CHtml::encode($element->{'iol_power_'.$side}) ?></div>
+                    <div class="data-value large-text highlighter orange js-iol-display"><?=\CHtml::encode($element->{'iol_power_' . $side}) ?></div>
                 </td>
                 <td>
                     <div class="data-label">
-                        <?=\CHtml::encode($element->getAttributeLabel('predicted_refraction_'.$side)) ?>
+                        <?=\CHtml::encode($element->getAttributeLabel('predicted_refraction_' . $side)) ?>
                     </div>
                 </td>
                 <td>

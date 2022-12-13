@@ -63,11 +63,20 @@ OpenEyes.OphTrOperationnote.AnaestheticController = (function () {
             if( $(this).hasClass('NoAnaesthetic')){
                 //uncheck all other Type options
                 $(this).closest('div').find('input:not(".NoAnaesthetic")').prop('checked', false);
+                $(this).closest('div').find('input:not(".NoAnaesthetic")').each(function() {
+                    if ($(this).hasClass('prefilled')) {
+                        $(this).removeClass('prefilled');
+                    }
+                });
 
                 //this cannot be unchecked by clicking at
                 $(this).prop('checked', true);
             } else {
+                
                 $(this).closest('div').find(".NoAnaesthetic").prop('checked', false);
+                if ($(this).closest('div').find(".NoAnaesthetic").hasClass('prefilled')) {
+                    $(this).closest('div').find(".NoAnaesthetic").removeClass('prefilled');
+                }
             }
 
             if( $(this).closest('div').find('input:checked').length === 0 ){
@@ -80,15 +89,19 @@ OpenEyes.OphTrOperationnote.AnaestheticController = (function () {
 
                 if( $GA.is(':checked') ){
                     $(options['deliverySelector']).find('input').prop('checked', false);
+                    $(options['deliverySelector']).find('input').removeClass('prefilled');
                     $(options['deliverySelector']).find('input.Other').prop('checked', true);
 
                     $(options['anaestheticSelector']).find('input').prop('checked', false);
+                    $(options['anaestheticSelector']).find('input').removeClass('prefilled');
                     $(options['anaestheticSelector']).find('input.Anaesthetist').prop('checked', true);
                 }
 
                 if($no_anaesthetic.is(':checked')){
                     $(options['deliverySelector']).find('input').prop('checked', false);
+                    $(options['deliverySelector']).find('input').removeClass('prefilled');
                     $(options['anaestheticSelector']).find('input').prop('checked', false);
+                    $(options['anaestheticSelector']).find('input').removeClass('prefilled');
 
                     $.each( $(options['anaestheticSelector']).find('input') , function( key, input ) {
                         /* Default to 'Surgeon' when it is a outpatient minor operation, per OE-11107.
