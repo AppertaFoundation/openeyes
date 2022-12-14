@@ -609,7 +609,7 @@ class CaseSearchController extends BaseModuleController
         // If there are no IDs found, pass -1 as the value (as this will not match with anything).
         $criteria->compare('t.id', empty($ids) ? -1 : $ids);
 
-        $criteria->with = ['contact', 'localIdentifiers', 'localIdentifiers.patientIdentifierType'];
+        $criteria->with = ['contact', 'localIdentifiers.patientIdentifierType'];
         $criteria->together = true;
         $criteria->compare('t.deleted', 0);
         $institution = Institution::model()->getCurrent();
