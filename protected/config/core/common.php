@@ -34,6 +34,7 @@ if (file_exists('/etc/openeyes/db.conf')) {
         'username' => rtrim(@file_get_contents("/run/secrets/DATABASE_USER")) ?: (getenv('DATABASE_USER') ? : 'openeyes'),
         'password' => rtrim(@file_get_contents("/run/secrets/DATABASE_PASS")) ?: (getenv('DATABASE_PASS') ? : 'openeyes'),
     );
+
 }
 
 $db_test = array(

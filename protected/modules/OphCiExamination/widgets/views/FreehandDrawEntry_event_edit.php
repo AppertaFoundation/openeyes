@@ -19,9 +19,9 @@ if (!isset($values)) {
     $values = array(
         'id' => $entry->id,
         'protected_file_id' => $entry->protected_file_id,
-        'template_url' => $entry->protected_file->getDownloadURL(),
-        'filename' => $entry->protected_file->name,
-        'full_name' => $entry->protected_file->user->fullName,
+        'template_url' => isset($entry->protected_file) ?? $entry->protected_file->getDownloadURL(),
+        'filename' => isset($entry->protected_file) ?? $entry->protected_file->name,
+        'full_name' => isset($entry->protected_file) ?? $entry->protected_file->user->fullName,
         'date' => \Helper::convertMySQL2NHS($entry->last_modified_date),
         'comments' => $entry->comments,
     );
