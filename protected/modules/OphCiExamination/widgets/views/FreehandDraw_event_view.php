@@ -22,7 +22,7 @@
             <div class="flex-t col-gap">
 
                 <div class="cols-6">
-                    <img src="<?= isset($entry->protected_file) ?? $entry->protected_file->getDownloadURL() ?>" width="100%">
+                    <img src="<?= $entry->protected_file->getDownloadURL() ?>" width="100%">
                 </div>
 
 
@@ -30,7 +30,7 @@
                     <table class="cols-full last-left">
                         <tbody>
                         <tr>
-                            <td><?= isset($entry->protected_file) ?? $entry->protected_file->name ?></td>
+                            <td><?= $entry->protected_file->name ?></td>
                         </tr>
                         <tr>
                             <td>
