@@ -160,4 +160,11 @@ class Element_OphTrOperationnote_SiteTheatre extends Element_OpNote
     {
         return 'Location';
     }
+
+    public function getPrefillableAttributeSet()
+    {
+        return [
+            'theatre_id',
+        ];
+    }
 }
