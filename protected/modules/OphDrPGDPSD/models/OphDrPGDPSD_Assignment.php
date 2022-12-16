@@ -241,11 +241,12 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
 
     public function saveComment($comment)
     {
-        if (!$this->comment) {
-            $comment_obj = new \OphDrPGDPSD_Assignment_Comment();
-        } else {
+        if ($this->comment && ($this->comment instanceof \OphDrPGDPSD_Assignment_Comment)) {
             $comment_obj = $this->comment;
+        } else {
+            $comment_obj = new \OphDrPGDPSD_Assignment_Comment();
         }
+
         $comment_obj->comment = $comment;
         $comment_obj->commented_by = \Yii::app()->user->id;
         if ($comment_obj->isModelDirty()) {
