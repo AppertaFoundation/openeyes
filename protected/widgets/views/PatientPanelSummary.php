@@ -46,18 +46,17 @@ $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient($displa
             </a>
     </div>
 
-    <div class="flex-layout">
+
         <div class="patient-details">
             <?php if ($display_primary_number_usage_code) { ?>
                 <div class="hospital-number">
                     <span><?= PatientIdentifierHelper::getIdentifierPrompt($primary_identifier); ?> </span>
-                    <div class="js-copy-to-clipboard hospital-number" style="cursor: pointer;">
+                    <span class="js-copy-to-clipboard number" style="cursor: pointer;">
                         <?= PatientIdentifierHelper::getIdentifierValue($primary_identifier); ?>
-
                         <?php if ($display_primary_number_usage_code === 'GLOBAL' && $primary_identifier && $primary_identifier->patientIdentifierStatus) { ?>
                             <i class="oe-i <?= isset($primary_identifier->patientIdentifierStatus->icon->class_name) ? $primary_identifier->patientIdentifierStatus->icon->class_name : 'exclamation' ?> small"></i>
                         <?php } ?>
-                    </div>
+                        </span>
                 </div>
             <?php }
             if ($display_secondary_number_usage_code) { ?>
@@ -145,7 +144,7 @@ $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient($displa
               </div>
                     <?php } ?>
         </div>
-    </div>
+
       <?php if (Yii::app()->getAuthManager()->checkAccess('OprnViewClinical', Yii::app()->user->id)) : ?>
         <ul class="patient-widgets" >
             <?php foreach ($this->widgets as $widget) {
