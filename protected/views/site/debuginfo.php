@@ -52,12 +52,12 @@ if (file_exists('buildinfo.txt')) {
     $buildinfo .= "Commit Date: " . htmlspecialchars(exec(" git log -1 --format=%cd " . $commit)) . ' <br/> ';
     if (strtolower($thisEnv == 'dev')) {
         $lines = shell_exec(Yii::app()->basePath . '/scripts/oe-which.sh');
-        $branch = nl2br(htmlspecialchars(trim(strtr($lines, array(
+        $branch = htmlspecialchars(trim(strtr($lines, array(
             chr(27) . '[32m' => '',
             chr(27) . '[39m' => '',
             '--' => ':',
             'Done' => ''
-        )))));
+        ))));
     } else {
         if (file_exists('.git/HEAD')) {
             $ex = explode('/', file_get_contents('.git/HEAD'));
@@ -93,7 +93,7 @@ if (file_exists('/imageinfo.txt')) {
             <tbody>
                 <tr>
                     <td>Branches: </td>
-                    <td><?= $branch ?></td>
+                    <td><pre><?= $branch ?></pre></td>
                 </tr>
             </tbody>
         </table>

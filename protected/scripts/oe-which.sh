@@ -55,8 +55,10 @@ for module in "${modules[@]%=*}"; do
 
     # check if this is a git repo (and exists)
     if [ -d "$MODGITROOT/.git" ]; then
-        printf "\e[32m%s\e[39m  -- $module\n" "$(gitbranch ${MODGITROOT})"
+        printf "\e[32m%-20s\e[39m  -- $module\n" "$(gitbranch ${MODGITROOT})"
     fi
 done
+## Output newblue tag
+printf "\e[32m%-20s\e[39m  -- newblue\n" "$(git -C "/var/www/openeyes/protected/assets/newblue" tag --points-at HEAD)"
 
 printf "Done\n\n"
