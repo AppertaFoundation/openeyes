@@ -1,6 +1,7 @@
 const { defineConfig } = require("cypress");
 
 module.exports = defineConfig({
+  reporter: 'dot',
   e2e: {
     baseUrl: 'http://localhost',
     viewportWidth: 1280,
