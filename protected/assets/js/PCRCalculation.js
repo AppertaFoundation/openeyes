@@ -561,16 +561,16 @@ function calculatePcrValue(ORValue) {
         pcrRisk = pcrRisk.toFixed(2);
 
         if (pcrRisk <= 1) {
-            pcrColour = 'green';
+            pcrColour = 'good';
         } else if (pcrRisk > 1 && pcrRisk <= 5) {
-            pcrColour = 'orange';
+            pcrColour = 'issue';
         } else {
-            pcrColour = 'red';
+            pcrColour = 'warning';
         }
     } else {
         pcrRisk = "N/A";
         excessRisk = "N/A";
-        pcrColour = 'blue';
+        pcrColour = 'subtle-invert';
     }
 
     return {
@@ -594,7 +594,7 @@ function pcrCalculate($eyeSide, side) {
     side = capitalizeFirstLetter(side);
     pcrData = calculatePcrValue(ORValue);
 
-    $eyeSide.find('#pcr-risk-div, .pcr-risk-div label').css('background', pcrData.pcrColour);
+    $eyeSide.find('#pcr-risk-div, .pcr-risk-div label').attr('class', 'highlighter large-text ' + pcrData.pcrColour);
     $eyeSide.find('.pcr-span').html(pcrData.pcrRisk);
     $eyeSide.find('.pcr-erisk').html(pcrData.excessRisk);
     if (pcrData.pcrRisk !== 'N/A') {
