@@ -14,11 +14,16 @@ class OpBookingWithProceduresSeeder
 
     public function __invoke()
     {
-        $episode = EpisodeFactory::new(['patient_id' => $this->context->additional_data['patient_id']])->create();
+        $episode = EpisodeFactory::new(
+                [
+                    'patient_id' => $this->context->additional_data['patient_id'],
+                    'firm_id' => \Yii::app()->session['selected_firm_id']
+                ]
+            )->create();
 
         $procedure_names = $this->context->additional_data['procedure_names'];
 
-        $procedures = array_map(function(string $procedure_name) {
+        $procedures = array_map(function (string $procedure_name) {
             return \Procedure::factory()->useExisting(['term' => $procedure_name])->create();
         }, $procedure_names);
 

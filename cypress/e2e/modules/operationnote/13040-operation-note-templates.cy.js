@@ -168,9 +168,9 @@ describe('test operation note template functionality', () => {
         })
 
         it('renames an operation note template', () => {
-            cy.getBySel("template-edit-button").click();
+            cy.getBySel("template-edit-button").first().click();
             cy.getBySel("template-name-field").first().clear().type("Edited template name");
-            cy.getBySel("template-save-button").click();
+            cy.getBySel("template-save-button").first().click();
 
             cy.getBySel("user-profile-link").click();
             cy.contains("Pre-fill templates").click();
@@ -179,8 +179,11 @@ describe('test operation note template functionality', () => {
         });
 
         it('deletes operation note templates', () => {
-            cy.getBySel("template-delete-button").click();
-            cy.getBySel("alert-ok").click();
+            cy.getBySel("template-delete-button").each(($el) => {
+                cy.wrap($el).click();
+
+                cy.getBySel("alert-ok").click();
+            });
 
             cy.getBySel("user-profile-link").click();
             cy.contains("Pre-fill templates").click();

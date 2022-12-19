@@ -3,9 +3,9 @@
 <div class="flex-l row"><i class="oe-i-e i-TrOperationNotes"></i>  <?= $event_type_name ?></div>
 <table class="standard last-right no-pad">
     <colgroup>
-        <col class="cols-5">
-        <col class="cols-6">
-        <col class="cols-1">
+        <col class="cols-5" />
+        <col class="cols-6" />
+        <col class="cols-1" />
     </colgroup>
     <thead>
         <tr>
@@ -27,32 +27,43 @@
                 </ul>
             </td>
             <td>
-                <ul class="row-list cols-11 js-template-list">
-                    <?php foreach ($templates as $template) { ?>
-                        <li>
-                            <input class="js-template-id" type="hidden" value="<?= $template['id'] ?>">
-                            <span class="js-template-label" data-test="template-name-label"><?= $template['name'] ?></span>
-                            <div class="flex">
-                                <input value=""
-                                class="cols-10 js-template-input"
-                                placeholder="<?= $template['name'] ?>"
-                                minlength="4"
-                                maxlength="48"
-                                required=""
-                                style="display: none;"
-                                data-test="template-name-field">
-                            </div>
-                        </li>
-                    <?php } ?>
-                </ul>
+                <table class="standard cols-11 js-template-list">
+                    <colgroup>
+                        <col class="cols-7" />
+                        <col class="cols-1" />
+                    </colgroup>
+                    <tbody>
+                        <?php foreach ($templates as $template) { ?>
+                            <tr>
+                                <td>
+                                    <input class="js-template-id" type="hidden" value="<?= $template['id'] ?>">
+                                    <span class="js-template-label" data-test="template-name-label"><?= $template['name'] ?></span>
+                                    <div class="flex">
+                                        <input value=""
+                                        class="cols-10 js-template-input"
+                                        placeholder="<?= $template['name'] ?>"
+                                        minlength="4"
+                                        maxlength="48"
+                                        required=""
+                                        style="display: none;"
+                                        data-test="template-name-field">
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="flex nowrap">
+                                        <i class="oe-i edit-blue js-edit-templates" data-test="template-edit-button"></i>
+                                        <i class="oe-i undo small-icon js-undo-changes" style="display: none;" data-test="template-undo-button"></i>
+                                        <i class="oe-i trash js-trash-templates" data-test="template-delete-button"></i>
+                                        <i class="oe-i save js-save-changes" style="display: none;" data-test="template-save-button"></i>
+                                    </div>
+                                </td>
+                            </tr>
+                        <?php } ?>
+                    <tbody>
+                </table>
             </td>
             <td>
-                <div class="flex nowrap">
-                    <i class="oe-i edit-blue js-edit-templates" data-test="template-edit-button"></i>
-                    <i class="oe-i undo small-icon js-undo-changes" style="display: none;" data-test="template-undo-button"></i>
-                    <i class="oe-i trash js-trash-templates" data-test="template-delete-button"></i>
-                    <i class="oe-i save js-save-changes" style="display: none;" data-test="template-save-button"></i>
-                </div>
+
             </td>
         </tr>
         <?php } ?>
@@ -82,10 +93,8 @@
     $(document).ready(function() {
         $('.js-edit-templates').click(function() {
             $parent_tr = $(this).parent().parent().parent();
-            $parent_tr.find('ul.js-template-list > li').each(function() {
-                $label = $(this).find('span.js-template-label');
-                $input = $(this).find('input.js-template-input').val($label.text());
-            });
+            $label = $parent_tr.find('span.js-template-label');
+            $input = $parent_tr.find('input.js-template-input').val($label.text());
 
             enableEdit($parent_tr);
         });
@@ -101,15 +110,10 @@
         $('.js-trash-templates').click(function() {
             $parent_tr = $(this).parent().parent().parent();
 
-            let template_ids = new Array();
-
-            $parent_tr.find('ul.js-template-list > li').each(function() {
-                let id = $(this).find('input.js-template-id').val();
-                template_ids.push(id);
-            });
+            let template_ids = [$parent_tr.find('input.js-template-id').val()];
 
             new OpenEyes.UI.Dialog.Alert({
-                content: `Are you sure you wish to delete ${template_ids.length} event templates?`,
+                content: 'Are you sure you wish to delete this event template?',
                 closeCallback: function() {
                     $.ajax({
                         'type': 'POST',
@@ -138,15 +142,13 @@
 
             let template_data = {};
 
-            $parent_tr.find('ul.js-template-list > li').each(function() {
-                let id = $(this).find('input.js-template-id').val();
+            let id = $parent_tr.find('input.js-template-id').val();
 
-                let $input = $(this).find('input.js-template-input');
-                let input_text = $input.val();
-                let $label = $(this).find('span.js-template-label').text(input_text);
+            let $input = $parent_tr.find('input.js-template-input');
+            let input_text = $input.val();
+            let $label = $parent_tr.find('span.js-template-label').text(input_text);
 
-                template_data[id] = input_text;
-            });
+            template_data[id] = input_text;
 
             $.ajax({
                 'type': 'POST',
