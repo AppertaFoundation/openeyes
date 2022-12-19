@@ -20,11 +20,6 @@ class m220822_214511_add_complications_pre_fill_system_setting extends OEMigrati
             
  When disabled, complications will not be part of any template and must be manually completed each time. For better data quiality it is recommended to keep this setting off, otherwise users may "forget" to record any complications that occurred during the surgery'
         ));
-
-        $this->insert('setting_installation', array(
-            'key' => 'allow_complications_in_pre_fill_templates',
-            'value' => 'off'
-        ));
     }
 
     public function safeDown()
