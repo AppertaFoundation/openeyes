@@ -136,7 +136,7 @@ WHERE (:p_type_{$this->id} IS NULL OR p.patient_identifier_type_id {$op} :p_type
         $patients = Yii::app()->db->createCommand(
             "SELECT DISTINCT p.value FROM patient_identifier p
 WHERE p.value LIKE :term
-ORDER BY p.value LIMIT " . self::_AUTOCOMPLETE_LIMIT,
+ORDER BY CAST(p.value AS unsigned), p.value LIMIT " . self::_AUTOCOMPLETE_LIMIT,
 
         )
             ->bindValues(array('term' => "%$term%"))
