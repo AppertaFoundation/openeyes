@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <div class="cols-full">
     <table class="cols-full last-left">
@@ -36,7 +38,9 @@
                             'empty' => 'Select',
                             'textAttribute' => 'data-value',
                             'nolabel' => true,
-                            'style' => 'width: 100%;'
+                            'style' => 'width: 100%;',
+                            'data-prefilled-value' => $template_data['incision_site_id'] ?? '',
+                            'data-test' => 'incision-site'
                         ),
                         false,
                         array('field' => 12)
@@ -50,7 +54,16 @@
             </td>
             <td>
                 <div class="cols-6">
-                    <?php echo $form->textField($element, 'length', ['nowrapper' => true, 'style' => 'width: 100%;']) ?>
+                    <?php echo $form->textField(
+                        $element,
+                        'length',
+                        [
+                            'nowrapper' => true,
+                            'style' => 'width: 100%;',
+                            'data-prefilled-value' => $template_data['length'] ?? '',
+                            'data-test' => 'length'
+                        ]
+                    ) ?>
                 </div>
             </td>
         </tr>
@@ -60,7 +73,16 @@
             </td>
             <td>
                 <div class="cols-6">
-                    <?php echo $form->textField($element, 'meridian', ['nowrapper' => true, 'style' =>'width:100%;']) ?>
+                    <?php echo $form->textField(
+                        $element,
+                        'meridian',
+                        [
+                            'nowrapper' => true,
+                            'style' => 'width:100%;',
+                            'data-prefilled-value' => $template_data['meridian'] ?? '',
+                            'data-test' => 'meridian'
+                        ]
+                    ) ?>
                 </div>
             </td>
         </tr>
@@ -78,7 +100,9 @@
                             'empty' => 'Select',
                             'textAttribute' => 'data-value',
                             'nolabel' => true,
-                            'style' => 'width: 100%;'
+                            'style' => 'width: 100%;',
+                            'data-prefilled-value' => $template_data['incision_type_id'] ?? '',
+                            'data-test' => 'incision-type'
                         ),
                         false,
                         array('field' => 12)
@@ -89,12 +113,22 @@
 
         <tr>
             <td colspan="2">
-                <?php echo $form->textArea($element, 'report', [], false, ['rows' => 6, 'readonly' => true]) ?>
+                <?php echo $form->textArea(
+                    $element,
+                    'report',
+                    [],
+                    false,
+                    [
+                        'rows' => 6,
+                        'readonly' => true,
+                        'data-prefilled-value' => $template_data['report'] ?? ''
+                    ]
+                ) ?>
             </td>
         </tr>
         <tr>
             <td colspan="2">
-                <?php echo $form->textArea($element, 'comments', [], false, [ 'rows' => 1 ]) ?>
+                <?php echo $form->textArea($element, 'comments', [], false, ['rows' => 1]) ?>
             </td>
         </tr>
         <tr id="tr_Element_OphTrOperationnote_Cataract_iol_type">
@@ -127,7 +161,12 @@
                                 'id',
                                 'display_name'
                             ),
-                            array('empty' => 'Select', 'nolabel' => true),
+                            array(
+                                'empty' => 'Select',
+                                'nolabel' => true,
+                                'data-prefilled-value' => $template_data['iol_type_id'] ?? '',
+                                'data-test' => 'iol-type'
+                            ),
                             $element->iol_hidden,
                             array('field' => 12)
                         ); ?>
@@ -151,7 +190,13 @@
                                     'order' => 'display_order',
                                 )), 'id', 'name'),
                             ),
-                            array('empty' => 'Select', 'divided' => true, 'nolabel' => true),
+                            array(
+                                'empty' => 'Select',
+                                'divided' => true,
+                                'nolabel' => true,
+                                'data-prefilled-value' => $template_data['iol_type_id'] ?? '',
+                                'data-test' => 'iol-type'
+                            ),
                             $element->iol_hidden,
                             array('field' => 12)
                         ) ?>
@@ -170,8 +215,14 @@
                 <label>IOL power</label>
             </td>
             <td>
-                <?= \CHtml::activeTextField($element, 'iol_power'); ?>
-
+                <?= \CHtml::activeTextField(
+                    $element,
+                    'iol_power',
+                    [
+                        'data-prefilled-value' => $template_data['iol_power'] ?? '',
+                        'data-test' => 'iol-power'
+                    ]
+                ); ?>
             </td>
         </tr>
         <tr>
@@ -179,7 +230,14 @@
                 <label for="Element_OphTrOperationnote_Cataract_predicted_refraction">Predicted refraction:</label>
             </td>
             <td>
-                <?= \CHtml::activeTextField($element, 'predicted_refraction'); ?>
+                <?= \CHtml::activeTextField(
+                    $element,
+                    'predicted_refraction',
+                    [
+                        'data-prefilled-value' => $template_data['predicted_refraction'] ?? '',
+                        'data-test' => 'predicted-refraction'
+                    ]
+                ); ?>
             </td>
         </tr>
         <tr>
@@ -198,6 +256,8 @@
                                 8 => array('disabled' => 'disabled'),
                             ),
                             'nolabel' => true,
+                            'data-prefilled-value' => $template_data['iol_position_id'] ?? '',
+                            'data-test' => 'iol-position'
                         ),
                         $element->iol_hidden,
                         array('field' => 12)
@@ -221,7 +281,12 @@
                     'id',
                     $this->getOperativeDeviceList($element),
                     $this->getOperativeDeviceDefaults(),
-                    array('empty' => '- Agents -', 'label' => 'Agents', 'nowrapper' => true),
+                    array(
+                        'empty' => '- Agents -',
+                        'label' => 'Agents',
+                        'nowrapper' => true,
+                        'options' => array('data-test' => 'agents')
+                    ),
                     false,
                     false,
                     null,
@@ -236,7 +301,11 @@
                 Phaco CDE:
             </td>
             <td>
-                <?= \CHtml::activeTextField($element, 'phaco_cde');?>
+                <?= \CHtml::activeTextField(
+                    $element,
+                    'phaco_cde',
+                    ['data-prefilled-value' => $template_data['phaco_cde'] ?? '']
+                );?>
                 <i class="oe-i info small pad js-has-tooltip "
                    data-tooltip-content="Cumulative Dissipated Energy, in 'seconds'"></i>
             </td>
@@ -260,7 +329,8 @@
                     array('empty' => '- Complications -',
                         'label' => 'Complications',
                         'nowrapper' => true ,
-                        'class' => $element->hasErrors('Complications') ? 'error': ''),
+                        'class' => $element->hasErrors('Complications') ? 'error' : '',
+                        'data-test' => 'complications'),
                     false,
                     false,
                     null,
@@ -281,6 +351,7 @@
                         'rows' => 6,
                         'cols' => 40,
                         'placeholder' => $element->getAttributeLabel('complication_notes'),
+                        'data-prefilled-value' => $template_data['complication_notes'] ?? ''
                     )
                 ) ?>
             </td>

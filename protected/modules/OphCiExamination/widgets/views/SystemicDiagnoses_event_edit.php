@@ -46,7 +46,8 @@ $required_diagnoses_ids = array_map(function ($r) {
             No systemic diagnoses
         </label>
     </div>
-    <table class="cols-8" id="<?= $model_name ?>_diagnoses_table">
+    <div class="data-group cols-10">
+    <table class="cols-full" id="<?= $model_name ?>_diagnoses_table">
         <colgroup>
             <col class="cols-3">
             <col class="cols-3">
@@ -91,6 +92,7 @@ $required_diagnoses_ids = array_map(function ($r) {
         ?>
         </tbody>
     </table>
+    </div>
     <div class="add-data-actions flex-item-bottom" id="systemic-diagnoses-popup" data-test="systemic-diagnoses-popup"
          style="display: <?php echo $element->no_systemic_diagnoses_date ? 'none' : ''; ?>">
         <button class="button hint green js-add-select-search" type="button" id="add-history-systemic-diagnoses" data-test="add-systemic-diagnoses-button">

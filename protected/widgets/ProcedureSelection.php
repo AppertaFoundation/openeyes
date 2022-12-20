@@ -41,6 +41,7 @@ class ProcedureSelection extends BaseFieldWidget
     public $popupButton = true;
     public $complexity = null;
     public $showEstimatedDuration = true;
+    public $templates = []; // Shown only when the array is not empty
 
     public function run()
     {

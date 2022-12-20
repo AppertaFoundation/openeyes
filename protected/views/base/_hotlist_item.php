@@ -38,8 +38,8 @@ $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient($display_
     </td>
     <td>
         <div class="js-hotlist-comment-readonly">
-            <?= CHtml::encode(substr($hotlistItem->user_comment, 0, 30) .
-                (strlen($hotlistItem->user_comment) > 30 ? '...' : '')) ?>
+            <?= CHtml::encode(substr($hotlistItem->user_comment ?? '', 0, 30) .
+                (strlen($hotlistItem->user_comment ?? '') > 30 ? '...' : '')) ?>
         </div>
 
     </td>

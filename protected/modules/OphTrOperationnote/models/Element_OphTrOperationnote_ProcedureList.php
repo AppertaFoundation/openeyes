@@ -132,6 +132,14 @@ class Element_OphTrOperationnote_ProcedureList extends Element_OpNote
         ));
     }
 
+    public function getPrefillableAttributeSet()
+    {
+        return [
+            'eye_id',
+            'procedures' => 'id',
+        ];
+    }
+
     /**
      * Update the procedures for this element with the given ids.
      *
@@ -228,5 +236,20 @@ class Element_OphTrOperationnote_ProcedureList extends Element_OpNote
     public function getContainer_form_view()
     {
         return false;
+    }
+
+    protected function applyComplexData($data, $index): void
+    {
+        $procs = array();
+        if (isset($data['Procedures_procs'])) {
+            foreach ($data['Procedures_procs'] as $proc_id) {
+                $procs[] = Procedure::model()->findByPk($proc_id);
+            }
+        } elseif (isset($data[$this->elementType->class_name]['procedures'])) {
+            foreach ($data[$this->elementType->class_name]['procedures'] as $proc_id) {
+                $procs[] = Procedure::model()->findByPk($proc_id);
+            }
+        }
+        $this->procedures = $procs;
     }
 }

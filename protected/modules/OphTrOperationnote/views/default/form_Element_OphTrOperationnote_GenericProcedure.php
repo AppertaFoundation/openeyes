@@ -44,6 +44,8 @@ foreach ($attributes as $attribute) {
         'multiSelect' => $attribute->is_multiselect
     ];
 }
+
+$template_data = !empty($template_data[$element->templateIndex]) ? $template_data[$element->templateIndex] : $template_data;
 ?>
 
 <section
@@ -87,10 +89,15 @@ foreach ($attributes as $attribute) {
                   Comments:          </label>
         </div>
         <div class="cols-full column">
-          <?=\CHtml::textArea(
+          <?= \CHtml::textArea(
               get_class($element) . '[' . $element->proc_id . '][comments]',
               $element->comments,
-              array('cols' => 30, 'class' => 'cols-full autosize', 'id' => get_class($element) . '_comments_' . $numHash)
+              array(
+                'cols' => 30,
+                'class' => 'cols-full autosize',
+                'id' => get_class($element) . '_comments_' . $numHash,
+                'data-prefilled-value' => $template_data['comments'] ?? ''
+              )
           ) ?>
         </div>
       </div>

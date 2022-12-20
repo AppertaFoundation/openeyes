@@ -294,7 +294,7 @@ class EventType extends BaseActiveRecordVersioned
         }
     }
 
-    public function getDefaultElements($action = 'edit')
+    public function getDefaultElements()
     {
         $criteria = new CDbCriteria();
         $criteria->compare('event_type_id', $this->id);

@@ -36,12 +36,23 @@
         <?=$label?>
     </a>
     <?php } ?>
-<?php } ?>
-
-<?php if (in_array($this->action->id, ['create', 'update', 'step']) && $this->show_index_search) : ?>
-    <button class="button header-tab icon" name="exam-search" id="js-search-in-event">
-        <i class="oe-i search"></i>
+<?php }
+if (in_array($this->action->id, ['create', 'update', 'step'])) {
+    if ($this->template) { ?>
+        <button id="js-template-prefill-popup-open" type="button" href="#">
+        <i class="oe-i starline small pad-r"></i>
+        <?= $this->template->name ?>
     </button>
-<?php endif; ?>
-
-<?php $this->endWidget() ?>
+    <?php } elseif ($this->event->template_id) { ?>
+    <button id="js-template-prefill-popup-open" type="button" href="#">
+        <i class="oe-i starline small pad-r"></i>
+        <?= $this->event->template->name ?>
+    </button>
+    <?php }
+    if ($this->show_index_search) { ?>
+        <button class="button header-tab icon" name="exam-search" id="js-search-in-event">
+            <i class="oe-i search"></i>
+        </button>
+    <?php }
+}
+$this->endWidget() ?>

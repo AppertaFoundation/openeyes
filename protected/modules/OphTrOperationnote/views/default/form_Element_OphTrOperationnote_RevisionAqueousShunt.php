@@ -22,13 +22,13 @@ $layoutColumns = $form->layoutColumns;
 $form->layoutColumns = array('label' => 3, 'field' => 3);
 ?>
 <div class="element-fields">
-    <?php $form->dropDownList($element, 'plate_pos_id', $element::PLATE_POSITIONS); ?>
-    <?php $form->checkBox($element, 'is_shunt_explanted', [], array('field' => 3)) ?>
-    <?php $form->dropDownList($element, 'final_tube_position_id', $element::TUBE_POSITIONS, ['empty' => '-- Please select --']); ?>
-    <?php $form->dropDownList($element, 'intraluminal_stent_id', $element::RIPCORD_SUTURES); ?>
-    <?php $form->checkBox($element, 'is_visco_in_ac', [], array('field' => 3)) ?>
-    <?php $form->checkBox($element, 'is_flow_tested', [], array('field' => 3)) ?>
-    <?php $form->textArea($element, 'comments', [], false, array('field' => 3), array('label' => 3, 'field' => 6)) ?>
+    <?php $form->dropDownList($element, 'plate_pos_id', $element::PLATE_POSITIONS, array('data-prefilled-value' => $template_data['plate_pos_id'] ?? '')); ?>
+    <?php $form->checkBox($element, 'is_shunt_explanted', ['data-prefilled-value' => array_key_exists('is_shunt_explained', $template_data) && $template_data['is_shunt_explained'] === '1' ? 'true' : ''], array('field' => 3)) ?>
+    <?php $form->dropDownList($element, 'final_tube_position_id', $element::TUBE_POSITIONS, ['empty' => '-- Please select --', 'data-prefilled-value' => $template_data['final_tube_position_id'] ?? '']); ?>
+    <?php $form->dropDownList($element, 'intraluminal_stent_id', $element::RIPCORD_SUTURES, array('data-prefilled-value' => $template_data['intraluminal_stent_id'] ?? '')); ?>
+    <?php $form->checkBox($element, 'is_visco_in_ac', ['data-prefilled-value' => array_key_exists('is_visco_in_ac', $template_data) && $template_data['is_visco_in_ac'] === '1' ? 'true' : ''], array('field' => 3)) ?>
+    <?php $form->checkBox($element, 'is_flow_tested', ['data-prefilled-value' => array_key_exists('is_flow_tested', $template_data) && $template_data['is_flow_tested'] === '1' ? 'true' : ''], array('field' => 3)) ?>
+    <?php $form->textArea($element, 'comments', [], false, array('field' => 3, 'data-prefilled-value' => $template_data['comments'] ?? ''), array('label' => 3, 'field' => 6)) ?>
 
 </div>
 <?php $form->layoutColumns = $layoutColumns;?>

@@ -70,7 +70,7 @@ if (!Yii::app()->user->isGuest) {
         <ul class="oe-user-profile-context">
             <li><?= $user->first_name . ' ' . $user->last_name; ?>
                 <?php if (Yii::app()->params['profile_user_can_edit']) { ?>
-                    <a href="<?= Yii::app()->createUrl('/profile'); ?>">profile</a>
+                    <a href="<?= Yii::app()->createUrl('/profile'); ?>" data-test="user-profile-link">profile</a>
                 <?php } ?>
             </li>
             <li id="user-profile-site-institution"><?= Site::model()->findByPk($this->selectedSiteId)->short_name . ' (' .

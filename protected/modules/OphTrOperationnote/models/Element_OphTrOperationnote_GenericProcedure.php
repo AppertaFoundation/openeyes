@@ -116,6 +116,15 @@ class Element_OphTrOperationnote_GenericProcedure extends Element_OnDemand
             ));
     }
 
+    public function getPrefillableAttributeSet()
+    {
+        return [
+            'proc_id',
+            'comments',
+            'element_index'
+        ];
+    }
+
     /**
      * Name is defined by the procedure assigned to this element.
      *
@@ -141,7 +150,28 @@ class Element_OphTrOperationnote_GenericProcedure extends Element_OnDemand
             'proc_id =:proc_id',
             ['proc_id' => $this->proc_id]
         );
-        $this->comments = isset($genericProcedureData) ? $genericProcedureData->default_text: null;
+        $this->comments = isset($genericProcedureData) ? $genericProcedureData->default_text : null;
         parent::setDefaultOptions($patient);
+    }
+
+    public function getDefaultFormOptions(array $context): array
+    {
+        $fields = array();
+        $genericProcedureData = OphTrOperationNote_Generic_Procedure_Data::model()->find(
+            'proc_id =:proc_id',
+            ['proc_id' => $this->proc_id]
+        );
+        $fields['comments'] = isset($genericProcedureData) ? $genericProcedureData->default_text : null;
+        return array_merge($fields, parent::getDefaultFormOptions($context));
+    }
+
+    public static function canHaveMultipleOf()
+    {
+        return true;
+    }
+
+    public function getTemplateIndex()
+    {
+        return $this->proc_id ?? null;
     }
 }

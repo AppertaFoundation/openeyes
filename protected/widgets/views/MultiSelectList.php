@@ -72,10 +72,8 @@ $widgetOptionsJson = json_encode(array(
     <div class="multi-select<?php if (!$inline) {
         echo ' multi-select-list';
                             } ?>"
-         data-options='<?php echo $widgetOptionsJson; ?>'
-            <?php if ($through) :
-                ?>data-statuses='<?= json_encode($through['options']) ?>' <?php
-            endif; ?>
+         data-options='<?= $widgetOptionsJson ?>'
+            <?= $through ? "data-statuses='" . json_encode($through['options']) : ''?>
     >
       <input type="hidden" name="<?=\CHtml::modelName($element) ?>[MultiSelectList_<?php echo $field ?>]"
              class="multi-select-list-name"/>
@@ -93,6 +91,9 @@ $widgetOptionsJson = json_encode(array(
             <?php } ?>
             <?php if (isset($htmlOptions['data-linked-values'])) { ?>
               data-linked-values="<?php echo $htmlOptions['data-linked-values'] ?>"
+            <?php } ?>
+            <?php if (isset($htmlOptions['data-test'])) { ?>
+              data-test="<?php echo $htmlOptions['data-test'] ?>"
             <?php } ?>
                 data-searchable="<?php echo isset($htmlOptions['searchable']) && $htmlOptions['searchable'] ?>"
                 data-placeholder="Add <?php echo (isset($htmlOptions['label']) && $htmlOptions['label']) ? 'a ' . $htmlOptions['label'] : '' ?>"

@@ -354,9 +354,9 @@ class User extends BaseActiveRecordVersioned
 
     public function getFirmsForCurrentInstitution()
     {
-        return array_filter($this->getAvailableFirms(), static function ($item) {
-            return Yii::app()->session['selected_institution_id'] === $item->institution_id;
-        });
+        $criteria = new CDbCriteria();
+        $criteria->addCondition('institution_id = ' . Yii::app()->session['selected_institution_id']);
+        return $this->getAvailableFirms($criteria);
     }
 
     public function getInitials()
@@ -603,9 +603,11 @@ class User extends BaseActiveRecordVersioned
      *
      * @return Firm[]
      */
-    public function getAvailableFirms()
+    public function getAvailableFirms(CDbCriteria $crit = null)
     {
-        $crit = new CDbCriteria();
+        if (!$crit) {
+            $crit = new CDbCriteria();
+        }
         $crit->compare('t.active', 1);
         if (!$this->global_firm_rights) {
             $crit->join =
@@ -846,7 +848,8 @@ class User extends BaseActiveRecordVersioned
         return $ret;
     }
 
-    public function setSAMLSSOUserInformation($response) {
+    public function setSAMLSSOUserInformation($response)
+    {
 
         $this->first_name = $response['FirstName'][0];
         $this->last_name = $response['LastName'][0];
@@ -884,7 +887,8 @@ class User extends BaseActiveRecordVersioned
         }
     }
 
-    public function setOIDCSSOUserInformation($response) {
+    public function setOIDCSSOUserInformation($response)
+    {
         $defaultRights = SsoDefaultRights::model()->findByAttributes(['source' => 'SSO']);
         if (!$defaultRights['default_enabled']) {
             $this->checkRolesFromSSOToken($response);

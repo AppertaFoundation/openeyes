@@ -1,22 +1,4 @@
 <?php
-
-/**
- * OpenEyes.
- *
- *
- * Copyright OpenEyes Foundation, 2017
- *
- * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
- * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
- *
- * @link http://www.openeyes.org.uk
- *
- * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright 2017, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
- */
 class OEMigration extends CDbMigration
 {
     private $migrationPath;
@@ -1096,7 +1078,7 @@ class OEMigration extends CDbMigration
      */
     protected function verifyColumnExists($table_name, $column_name)
     {
-        $cols = $this->dbConnection->createCommand("SHOW COLUMNS FROM `" . $table_name . "` LIKE '" .$column_name ."'")->queryScalar([ ':table_name' => $table_name ]);
+        $cols = $this->dbConnection->createCommand("SHOW COLUMNS FROM `" . $table_name . "` LIKE '" .$column_name ."'")->queryScalar();
         return !empty($cols);
     }
 
@@ -1126,6 +1108,23 @@ class OEMigration extends CDbMigration
     protected function verifyTableExists($table_name)
     {
         return $this->dbConnection->schema->getTable($table_name) !== null;
+    }
+
+    /**
+     * Will return true if an index (of any type) exists for the given table with the given name
+     *
+     * @param [string] $table_name The table to search indexes on
+     * @param [sting] $index_name The index name to test for
+     * @return void
+     */
+    protected function verifyIndexExists($table_name, $index_name){
+        $index_exists = $this->dbConnection->createCommand('   SELECT count(*)
+                                                            FROM information_schema.table_constraints
+                                                            WHERE table_schema = DATABASE()
+                                                                AND table_name = :table_name
+                                                                AND constraint_name = :key_name')->queryScalar([ ':table_name' => $table_name, ':key_name' => $index_name ]);
+
+        return !empty($index_exists);
     }
 
     /**
@@ -1238,5 +1237,53 @@ class OEMigration extends CDbMigration
         foreach ($setting_tables as $table) {
             $this->delete('setting_' . $table, '`key` = :key', [':key' => $setting_key]);
         }
+    }
+
+    /**
+     * Creates a new system setting entry in setting_metadata
+     *
+     * @param [string] $setting_key The string that identifies this setting
+     * @param [string] $name A human readable name for the setting (a brief descriptive title)
+     * @param [string] $description A full text description of the setting purpose and usage
+     * @param [string] $group_name Which group the setting should sit under in the settings page. E.g., Core, Examination, Operation Note, Correspondence, System, etc.
+     * @param [string] $field_type_name Which type of setting is this (Checkbox, Dropdown list, Radio buttons, Text field, Textarea, HTML)  
+     * @param [string] $data Depending on the fields type, this can be used to define the available options
+     * @param [string] $default_value Default value for this setting, if no overrides are given in any of the other setting tables
+     * @param [string] $lowest_level The minimum level at which this setting can be applied (INSTALLATION or INSTITUTION)
+     * @return void
+     */
+    public function addSetting( string $setting_key, string $name, string $description, string $group_name, string $field_type_name, string $data, $default_value, string $lowest_level = 'INSTALLATION'){
+        $group_id = $this->dbConnection->createCommand("SELECT id FROM setting_group WHERE `name` = :group_name")->queryScalar([':group_name' => $group_name]);
+
+        if (empty($group_id)){
+            throw new CException("Unknown group, please check your spelling");
+        }
+
+        // deal with some common typos for field types:
+        $field_type_name = strtolower($field_type_name) == 'text field' ? 'Text Field' : $field_type_name;
+        $field_type_name = strtolower($field_type_name) == 'textfield' ? 'Text Field' : $field_type_name;
+        $field_type_name = strtolower($field_type_name) == 'text' ? 'Text Field' : $field_type_name;
+        $field_type_name = strtolower($field_type_name) == 'radio buttons' ? 'Radio buttons' : $field_type_name;
+        $field_type_name = strtolower($field_type_name) == 'textarea' ? 'Textarea' : $field_type_name;
+        $field_type_name = strtolower($field_type_name) == 'text area' ? 'Textarea' : $field_type_name;
+
+
+        $field_type_id = $this->dbConnection->createCommand('SELECT id FROM setting_field_type WHERE name = :field_type_name')->queryScalar([ ':field_type_name' => $field_type_name ]);
+        if (empty($field_type_id)){
+            throw new CException("Unknown field type, please check your spelling");
+        }
+
+        $this->insert('setting_metadata', array(
+            'element_type_id' => null,
+            'display_order' => 0,
+            'key' => $setting_key,
+            'name' => $name,
+            'field_type_id' => $field_type_id,
+            'data' => $data,
+            'default_value' => $default_value,
+            'group_id' => $group_id,
+            'description' => $description,
+            'lowest_setting_level' => strtoupper($lowest_level),
+        ));
     }
 }

@@ -185,6 +185,12 @@ $config = array(
             'charset' => 'utf8',
             'schemaCachingDuration' => 300,
         ),
+        'eventBuilder' => array(
+            'class' => 'EventBuilder',
+        ),
+        'eventDefaults' => array(
+            'class' => 'EventDefaults',
+        ),
         'testdb' => array(
             'class' => 'OEDbConnection',
             'emulatePrepare' => true,
@@ -244,7 +250,7 @@ $config = array(
                 // Normal logging
                 'application' => array(
                     'class' => 'CFileLogRoute',
-                    'levels' => 'info, warning, error',
+                    'levels' => !empty(getenv('OE_APP_LOG_LEVELS')) ? trim(getenv('OE_APP_LOG_LEVELS')) : 'info, warning, error',
                     'logFile' => 'application.log',
                     'maxLogFiles' => 30,
                 ),
@@ -1040,17 +1046,19 @@ if (strtolower(getenv('OE_MODE')) !== 'live') {
 $caches = array(
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '20221220124243',
+            'time' => '20221128114530',
         ),
 );
 
 if (extension_loaded('apcu') && ini_get('apc.enabled')) {
     $caches['cache'] = array(
             'class' => 'system.caching.CApcCache',
+            'useApcu' => true,
     );
     $caches['settingCache'] = array(
             'class' => 'system.caching.CApcCache',
             'keyPrefix' => 'SettingMetadata',
+            'useApcu' => true,
     );
 } else {
     $caches['cache'] = array(

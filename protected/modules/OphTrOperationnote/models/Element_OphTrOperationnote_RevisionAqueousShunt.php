@@ -208,4 +208,17 @@ class Element_OphTrOperationnote_RevisionAqueousShunt extends Element_OnDemand
 
         return parent::beforeSave();
     }
+
+    public function getPrefillableAttributeSet()
+    {
+        return [
+            'plate_pos_id',
+            'is_shunt_explanted',
+            'final_tube_position_id',
+            'intraluminal_stent_id',
+            'is_visco_in_ac',
+            'is_flow_tested',
+            'comments'
+        ];
+    }
 }

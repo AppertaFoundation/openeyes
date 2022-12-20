@@ -3156,4 +3156,64 @@ class AdminController extends BaseAdminController
             }
         }
     }
+
+    public function actionEditEthnicGroups()
+    {
+        $groups = [];
+        $errors = [];
+
+        if (Yii::app()->request->isPostRequest) {
+            $data = Yii::app()->request->getParam('EthnicGroup');
+
+            $ids_to_preserve = array_map(
+                static function ($datum) { return $datum['id']; },
+                $data
+            );
+
+            $soft_delete_criteria = new CDbCriteria();
+
+            $soft_delete_criteria->addNotInCondition('id', $ids_to_preserve);
+
+            $transaction = Yii::app()->db->beginTransaction();
+
+            // EthnicGroup derives from BaseActiveRecordVersionedSoftDelete
+            \EthnicGroup::model()->deleteAll($soft_delete_criteria);
+
+            foreach ($data as $datum) {
+                $group = \EthnicGroup::model()->findByPk($datum['id']) ?? new \EthnicGroup();
+
+                $group->name = $datum['name'];
+                $group->code = $datum['code'];
+
+                if (!empty($datum['id_assignment'])) {
+                    $group->id_assignment = $datum['id_assignment'];
+                }
+
+                $group->describe_needs = $datum['describe_needs'];
+
+                $groups[] = $group;
+
+                if (!$group->save()) {
+                    $errors[] = $group->getErrors();
+                }
+            }
+
+            if (empty($errors)) {
+                $transaction->commit();
+            } else {
+                $transaction->rollback();
+            }
+        } else {
+            $groups = \EthnicGroup::model()->notDeleted()->findAll();
+        }
+
+        $this->render(
+            '/admin/edit_ethnic_groups',
+            [
+                'groups' => $groups,
+                'parent_groups' => \EthnicGroup::model()->notDeleted()->findAll('id_assignment IS NULL'),
+                'errors' => $errors,
+            ]
+        );
+    }
 }

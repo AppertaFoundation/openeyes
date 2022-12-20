@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -18,9 +19,9 @@
 class SplitEventTypeElement extends BaseEventTypeElement
 {
     // these are legacy and should be removed one switch to using the constants on the Eye model
-    const LEFT = Eye::LEFT;
-    const RIGHT = Eye::RIGHT;
-    const BOTH = Eye::BOTH;
+    public const LEFT = Eye::LEFT;
+    public const RIGHT = Eye::RIGHT;
+    public const BOTH = Eye::BOTH;
 
     public function hasLeft()
     {
@@ -90,9 +91,9 @@ class SplitEventTypeElement extends BaseEventTypeElement
         if ($this->eye->id != Eye::BOTH) {
             foreach ($this->sidedFields() as $field_suffix) {
                 if ($this->eye->id == Eye::LEFT) {
-                    $this->{'right_'.$field_suffix} = null;
+                    $this->{'right_' . $field_suffix} = null;
                 } else {
-                    $this->{'left_'.$field_suffix} = null;
+                    $this->{'left_' . $field_suffix} = null;
                 }
             }
         }
@@ -114,8 +115,17 @@ class SplitEventTypeElement extends BaseEventTypeElement
     protected function setSideDefaultOptions($side)
     {
         foreach ($this->sidedDefaults() as $field => $default) {
-            $this->{$side.'_'.$field} = $default;
+            $this->{$side . '_' . $field} = $default;
         }
+    }
+
+    protected function getSideDefaultOptions($side)
+    {
+        $fields = array();
+        foreach ($this->sidedDefaults() as $field => $default) {
+            $fields["{$side}_{$field}"] = $default;
+        }
+        return $fields;
     }
 
     /**
@@ -130,6 +140,16 @@ class SplitEventTypeElement extends BaseEventTypeElement
         }
     }
 
+    public function getUpdateOptions($context): array
+    {
+        if ($this->eye->id == Eye::LEFT) {
+            $fields = $this->getSideDefaultOptions('right');
+        } elseif ($this->eye->id == Eye::RIGHT) {
+            $fields = $this->getSideDefaultOptions('left');
+        }
+        return $fields;
+    }
+
     /**
      * Check numeric values within min and max range for the selected eye.
      *
@@ -142,12 +162,12 @@ class SplitEventTypeElement extends BaseEventTypeElement
             if ($this->$attribute != null) {
                 if ($this->$attribute < $params['min']) {
                     if (!@$params['message']) {
-                        $params['message'] = ucfirst($params['side']).' {attribute} is too small (need to be more than '.$params['min'].').';
+                        $params['message'] = ucfirst($params['side']) . ' {attribute} is too small (need to be more than ' . $params['min'] . ').';
                     }
                     $params['{attribute}'] = $this->getAttributeLabel($attribute);
                 } elseif ($this->$attribute > $params['max']) {
                     if (!@$params['message']) {
-                        $params['message'] = ucfirst($params['side']).' {attribute} is too big (need to be less than '.$params['max'].').';
+                        $params['message'] = ucfirst($params['side']) . ' {attribute} is too big (need to be less than ' . $params['max'] . ').';
                     }
                     $params['{attribute}'] = $this->getAttributeLabel($attribute);
                 }

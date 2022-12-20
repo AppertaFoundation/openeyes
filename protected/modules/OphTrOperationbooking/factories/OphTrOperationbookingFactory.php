@@ -44,7 +44,6 @@ class OphTrOperationbookingFactory extends EventFactory
     public function configure()
     {
         parent::configure();
-
         foreach (static::$requiredElements as $requiredElementClass) {
             $this->afterCreating(function ($event) use ($requiredElementClass) {
                 ModelFactory::factoryFor($requiredElementClass)
@@ -60,7 +59,7 @@ class OphTrOperationbookingFactory extends EventFactory
 
     public function bookedWithStates($states = [])
     {
-        return $this->applyElementStates(Element_OphTrOperationbooking_Operation::class, $states);
+        return $this->applyElementStates(\Element_OphTrOperationbooking_Operation::class, $states);
     }
 
     public function applyElementStates(string $element_cls, array $states)
@@ -69,5 +68,7 @@ class OphTrOperationbookingFactory extends EventFactory
             $this->elementStates[$element_cls] ?? [],
             $states
         );
+
+        return $this;
     }
 }

@@ -39,8 +39,7 @@ $cols = array(
             $institution = Institution::model()->getCurrent();
             $selected_site_id = Yii::app()->session['selected_site_id'];
             $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $data->event->episode->patient->id, $institution->id, $selected_site_id);
-            $patient_identifier_widget = $this->widget('application.widgets.PatientIdentifiers', ['patient' => $data->event->episode->patient, 'show_all' => true, 'tooltip_size' => 'small'], true);
-            return PatientIdentifierHelper::getIdentifierValue($primary_identifier) . $patient_identifier_widget;
+            return PatientIdentifierHelper::getIdentifierValue($primary_identifier);
         },
         'type' => 'raw'
     ),

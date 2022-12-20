@@ -10,9 +10,11 @@ class DataContext
      */
     protected $app;
 
-    protected static $VALID_ATTRIBUTES = array(
-        'subspecialties', 'support_services'
-    );
+    protected static $VALID_ATTRIBUTES = [
+        'subspecialties', 
+        'support_services', 
+        'additional_data'
+    ];
 
     protected static ?Firm $firm = null;
 

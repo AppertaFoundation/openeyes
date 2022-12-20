@@ -18,6 +18,8 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "ophciexamination_cxl_quality_score".
  *
@@ -31,6 +33,8 @@ namespace OEModule\OphCiExamination\models;
  */
 class OphCiExamination_CXL_Quality_Score extends \SplitEventTypeElement
 {
+    use HasFactory;
+
     public $service;
 
     /**

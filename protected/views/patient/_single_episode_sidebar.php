@@ -180,7 +180,7 @@ if (
                                 <span class="event-extra">
                                     <?php
                                     $api = Yii::app()->moduleAPI->get($event->eventType->class_name);
-                                    if (method_exists($api, 'getLaterality')) {
+                                    if ($api !== false && method_exists($api, 'getLaterality')) {
                                         $this->widget('EyeLateralityWidget', [
                                             'show_if_both_eyes_are_null' =>
                                               !property_exists($api, 'show_if_both_eyes_are_null') ||

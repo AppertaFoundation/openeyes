@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -120,6 +121,35 @@ class Element_OphTrOperationnote_SiteTheatre extends Element_OpNote
         }
     }
 
+    public function getDefaultFormOptions(array $context): array
+    {
+        $fields = array();
+        if (Yii::app()->controller->getBookingOperation()) {
+            $api = Yii::app()->moduleAPI->get('OphTrOperationbooking');
+            $event = Event::model()->findByPk($context['booking']->event_id);
+
+            if (!$this->site_id) {
+                $site = $api->findSiteForBookingEvent($event);
+                if ($site) {
+                    $fields['site_id'] = $site->id;
+                } elseif (isset($context['booking']->site_id)) {
+                    $fields['site_id'] = $context['booking']->site_id;
+                }
+            }
+            if (!$this->theatre_id) {
+                $theatre = $api->findTheatreForBookingEvent($event);
+                if ($theatre) {
+                    $fields['theatre_id'] = $theatre->id;
+                }
+            }
+        } else {
+            if (!$this->site_id) {
+                $fields['site_id'] = Yii::app()->session['selected_site_id'];
+            }
+        }
+        return $fields;
+    }
+
     public function getTileSize($action)
     {
         $action_list = array('view', 'createImage', 'removed');
@@ -129,5 +159,12 @@ class Element_OphTrOperationnote_SiteTheatre extends Element_OpNote
     public function getFormTItle()
     {
         return 'Location';
+    }
+
+    public function getPrefillableAttributeSet()
+    {
+        return [
+            'theatre_id',
+        ];
     }
 }

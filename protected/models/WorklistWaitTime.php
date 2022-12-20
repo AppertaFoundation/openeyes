@@ -21,7 +21,7 @@ class WorklistWaitTime extends BaseActiveRecordVersioned
 {
     use MappedReferenceData;
 
-    public function getSupportedLevels()
+    public function getSupportedLevels(): int
     {
         return
             ReferenceData::LEVEL_SITE |
@@ -30,7 +30,7 @@ class WorklistWaitTime extends BaseActiveRecordVersioned
             ReferenceData::LEVEL_FIRM;
     }
 
-    public function mappingColumn()
+    public function mappingColumn(int $level): string
     {
         return $this->tableName() . '_id';
     }

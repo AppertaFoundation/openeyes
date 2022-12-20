@@ -79,7 +79,11 @@ if ($element->booking_event_id) {
                 null,
                 null,
                 null,
-                array('nowrapper' => true),
+                array(
+                  'nowrapper' => true,
+                  'test' => 'procedure-side',
+                  'prefilled_value' => $template_data['eye_id'] ?? '',
+                ),
                 array()
             ) ?>
         </td>
@@ -95,6 +99,7 @@ if ($element->booking_event_id) {
                 'hidden' => ($this->action->id == 'create'
                     && $element->eye == null
                     && !@$_POST['Element_OphTrOperationnote_ProcedureList']['eye_id']),
+                'templates' => $data['templates_for_unbooked'] ?? []
             ));
             ?>
           <style>

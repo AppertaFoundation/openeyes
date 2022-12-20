@@ -270,7 +270,7 @@ class DefaultController extends BaseEventTypeController
             'htmlOptions' => array('class' => 'sliding'),
         ));
 
-        $this->renderElement($element, 'create', $form, null, array(
+        $this->renderElement($element, 'create', $form, null, array(), array(
             'previous_parent_id' => $previous_id,
         ), false, true);
     }

@@ -38,6 +38,7 @@ class OphInBiometryModule extends BaseEventTypeModule
         $this->setImport(array(
             'OphInBiometry.models.*',
             'OphInBiometry.components.*',
+            'OphInBiometry.seeders.*',
         ));
 
         $this->moduleShortSuffix = 'biometry';

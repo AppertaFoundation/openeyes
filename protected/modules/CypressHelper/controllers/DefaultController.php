@@ -13,7 +13,6 @@ use OE\factories\ModelFactory;
 use Patient;
 use User;
 use CActiveRecord;
-use OELog;
 use SettingInstallation;
 use SettingMetadata;
 
@@ -209,6 +208,28 @@ class DefaultController extends \CController
         \Yii::app()->settingCache->flush();
 
         echo '1';
+    }
+
+    public function actionRunSeeder()
+    {
+        $seeder_class_name = $_POST['seeder_class_name'];
+        $seeder_module_name = $_POST['seeder_module_name'];
+        $additional_data = $_POST['additional_data'];
+
+        $dataContext = new \DataContext(
+            \Yii::app(),
+            [
+                'subspecialties' => \Subspecialty::model()->findByPk(1),
+                'additional_data' => $additional_data
+            ]);
+
+        $fully_qualified_seeder_class_name = '\\OEModule\\' . $seeder_module_name . '\\seeders\\' . $seeder_class_name;
+
+        $seeder = new $fully_qualified_seeder_class_name($dataContext);
+
+        $seeder_result = $seeder();
+
+        $this->sendJsonResponse($seeder_result);
     }
 
     protected function applyStatesTo(ModelFactory $factory, $states = []): ModelFactory

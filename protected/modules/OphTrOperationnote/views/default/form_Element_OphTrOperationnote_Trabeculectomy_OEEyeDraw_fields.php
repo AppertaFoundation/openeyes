@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2014
  * This file is part of OpenEyes.
@@ -12,6 +13,9 @@
  * @copyright Copyright (C) 2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+$stay_suture_prefill = array_key_exists('stay_suture', $template_data) && $template_data['stay_suture'] === '1' ? 'true' : '';
+$viscoelastic_removed_prefill = array_key_exists('viscoelastic_removed', $template_data) && $template_data['viscoelastic_removed'] === '1' ? 'true' : '';
 ?>
 
 <div class="cols-full">
@@ -29,7 +33,11 @@
                 $element,
                 'conjunctival_flap_type_id',
                 'OphTrOperationnote_Trabeculectomy_Conjunctival_Flap_Type',
-                array('textAttribute' => 'data-value', 'nolabel' => true),
+                array(
+                    'textAttribute' => 'data-value',
+                    'nolabel' => true,
+                    'data-prefilled-value' => $template_data['conjunctival_flap_type_id'] ?? ''
+                ),
                 false,
                 array('field' => 4)
             ) ?>
@@ -40,10 +48,17 @@
             <?php echo $element->getAttributeLabel('stay_suture') ?>
       </td>
       <td>
-            <?php echo $form->checkBox(
+            <?php
+            $prefill_value = array_key_exists('stay_suture', $template_data) && $template_data['stay_suture'] === '1' ? 'true' : '';
+            echo $form->checkBox(
                 $element,
                 'stay_suture',
-                array('text-align' => 'right', 'nowrapper' => true, 'no-label' => true),
+                array(
+                    'text-align' => 'right',
+                    'nowrapper' => true,
+                    'no-label' => true,
+                    'data-prefilled-value' => $prefill_value
+                ),
                 array('field' => 4)
             ) ?>
       </td>
@@ -57,7 +72,7 @@
                 $element,
                 'site_id',
                 'OphTrOperationnote_Trabeculectomy_Site',
-                array('textAttribute' => 'data-value', 'nolabel' => true),
+                array('textAttribute' => 'data-value', 'nolabel' => true, 'data-prefilled-value' => $template_data['site_id'] ?? ''),
                 false,
                 array('field' => 4)
             ) ?>
@@ -72,7 +87,7 @@
                 $element,
                 'size_id',
                 'OphTrOperationnote_Trabeculectomy_Size',
-                array('textAttribute' => 'data-value', 'nolabel' => true),
+                array('textAttribute' => 'data-value', 'nolabel' => true, 'data-prefilled-value' => $template_data['size_id'] ?? ''),
                 false,
                 array('field' => 4)
             ) ?>
@@ -87,7 +102,7 @@
                 $element,
                 'sclerostomy_type_id',
                 'OphTrOperationnote_Trabeculectomy_Sclerostomy_Type',
-                array('textAttribute' => 'data-value', 'nolabel' => true),
+                array('textAttribute' => 'data-value', 'nolabel' => true, 'data-prefilled-value' => $template_data['sclerostomy_type_id'] ?? ''),
                 false,
                 array('field' => 4)
             ) ?>
@@ -102,7 +117,7 @@
                 $element,
                 'viscoelastic_type_id',
                 'OphTrOperationnote_Trabeculectomy_Viscoelastic_Type',
-                array('nolabel' => true),
+                array('nolabel' => true, 'data-prefilled-value' => $template_data['viscoelastic_type_id'] ?? ''),
                 false,
                 array('field' => 4)
             ) ?>
@@ -113,10 +128,17 @@
             <?php echo $element->getAttributeLabel('viscoelastic_removed') ?>
       </td>
       <td>
-            <?php echo $form->checkBox(
+            <?php
+            $prefill_value = array_key_exists('viscoelastic_removed', $template_data) && $template_data['viscoelastic_removed'] === '1' ? 'true' : '';
+            echo $form->checkBox(
                 $element,
                 'viscoelastic_removed',
-                array('text-align' => 'right', 'nowrapper' => true, 'no-label' => true),
+                array(
+                    'text-align' => 'right',
+                    'nowrapper' => true,
+                    'no-label' => true,
+                    'data-prefilled-value' => $prefill_value
+                ),
                 array('field' => 4)
             ) ?>
       </td>
@@ -130,7 +152,7 @@
                 $element,
                 'viscoelastic_flow_id',
                 'OphTrOperationnote_Trabeculectomy_Viscoelastic_Flow',
-                array('nowrapper' => true),
+                array('nowrapper' => true, 'data-prefilled-value' => $template_data['viscoelastic_flow_id'] ?? ''),
                 false,
                 array('field' => 4)
             ) ?>
@@ -138,13 +160,18 @@
     </tr>
     <tr>
         <td colspan="2">
-            <?php echo $form->textArea($element, 'report', array('nowrapper' => true), false,
-                array('rows' => 6, 'cols' => 40, 'placeholder' => 'Report', 'readonly' => true)) ?>
+            <?php echo $form->textArea(
+                $element,
+                'report',
+                array('nowrapper' => true),
+                false,
+                array('rows' => 6, 'cols' => 40, 'placeholder' => 'Report', 'readonly' => true, 'data-prefilled-value' => $template_data['report'] ?? '')
+            ) ?>
         </td>
     </tr>
     <tr>
         <td colspan="2">
-            <?php echo $form->textArea($element, 'comments', [], false, [ 'rows' => 1 ]) ?>
+            <?php echo $form->textArea($element, 'comments', [], false, [ 'rows' => 1, 'data-prefilled-value' => $template_data['comments'] ?? '' ]) ?>
         </td>
     </tr>
     <tr>
@@ -182,12 +209,12 @@
       </td>
     </tr>
     <tr id="<?=  CHtml::modelName($element) ?>_difficulty_other"
-        style="<?= !$element->hasMultiSelectValue('difficulties', 'Other') ? "display: none;":"" ?>">
+        style="<?= !$element->hasMultiSelectValue('difficulties', 'Other') ? "display: none;" : "" ?>">
       <td>
             <?php echo $element->getAttributeLabel('difficulty_other') ?>
       </td>
       <td>
-            <?php echo $form->textArea($element, 'difficulty_other', array('nowrapper'=>true)) ?>
+            <?php echo $form->textArea($element, 'difficulty_other', array('nowrapper' => true), false, array('data-prefilled-value' => $template_data['difficulty_other'] ?? '')) ?>
       </td>
     </tr>
     <tr>
@@ -229,7 +256,7 @@
             <?php echo $element->getAttributeLabel('complication_other') ?>
       </td>
       <td>
-            <?php echo $form->textArea($element, 'complication_other', array('nowrapper'=>true)) ?>
+            <?php echo $form->textArea($element, 'complication_other', array('nowrapper' => true), false, array('data-prefilled-value' => $template_data['complication_other'] ?? '')) ?>
       </td>
     </tr>
     </tbody>

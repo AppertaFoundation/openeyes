@@ -16,11 +16,11 @@ SCRIPTDIR="$(cd -P "$(dirname "$SOURCE")" && pwd)"
 WROOT="$(cd -P "$SCRIPTDIR/../../" && pwd)"
 
 function gitbranch {
-    branch=$(git -C $1 rev-parse --abbrev-ref HEAD)
+    branch=$(git -C "$1" rev-parse --abbrev-ref HEAD 2>&1)
     if [ "$branch" == "HEAD" ]; then
-        branch=$(git -C $1 describe --all 2>/dev/null)
+        branch=$(git -C $1 describe --all 2>/dev/null 2>&1)
     fi
-    echo $branch
+    echo "${branch}"
 }
 
 # load in modules list
@@ -55,8 +55,10 @@ for module in "${modules[@]%=*}"; do
 
     # check if this is a git repo (and exists)
     if [ -d "$MODGITROOT/.git" ]; then
-        printf "\e[32m%-20s\e[39m-- $module\n" "$(gitbranch $MODGITROOT)"
+        printf "\e[32m%-20s\e[39m  -- $module\n" "$(gitbranch ${MODGITROOT})"
     fi
 done
+## Output newblue tag
+printf "\e[32m%-20s\e[39m  -- newblue\n" "$(git -C "/var/www/openeyes/protected/assets/newblue" tag --points-at HEAD)"
 
 printf "Done\n\n"

@@ -41,7 +41,7 @@ class MultiSelectList extends BaseFieldWidget
             if (isset($safe_options[1])) {
                 $this->filtered_options = $safe_options[1];
             }
-            $this->options = array_merge ( $firstval, $lasttval);
+            $this->options = array_merge($firstval, $lasttval);
         } else {
             $this->filtered_options = $this->options;
         }

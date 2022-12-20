@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -94,22 +95,38 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'element_type' => array(self::HAS_ONE, 'ElementType', 'id', 'on' => "element_type.class_name='".get_class($this)."'"),
+            'element_type' => array(self::HAS_ONE, 'ElementType', 'id', 'on' => "element_type.class_name='" . get_class($this) . "'"),
             'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
             'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-            'anaesthetic_type_assignments' => array(self::HAS_MANY, 'OphTrOperationnote_OperationAnaestheticType', 'et_ophtroperationnote_anaesthetic_id'),
+            'anaesthetic_type_assignments' => array(
+                self::HAS_MANY,
+                'OphTrOperationnote_OperationAnaestheticType',
+                'et_ophtroperationnote_anaesthetic_id'
+            ),
             'anaesthetic_type' => array(self::HAS_MANY, 'AnaestheticType', 'anaesthetic_type_id',
                 'through' => 'anaesthetic_type_assignments', ),
-            'anaesthetic_delivery_assignments' => array(self::HAS_MANY, 'OphTrOperationnote_OperationAnaestheticDelivery', 'et_ophtroperationnote_anaesthetic_id'),
+            'anaesthetic_delivery_assignments' => array(
+                self::HAS_MANY,
+                'OphTrOperationnote_OperationAnaestheticDelivery',
+                'et_ophtroperationnote_anaesthetic_id'
+            ),
             'anaesthetic_delivery' => array(self::HAS_MANY, 'AnaestheticDelivery', 'anaesthetic_delivery_id',
                 'through' => 'anaesthetic_delivery_assignments', ),
             'anaesthetist' => array(self::BELONGS_TO, 'Anaesthetist', 'anaesthetist_id'),
-            'anaesthetic_agent_assignments' => array(self::HAS_MANY, 'OphTrOperationnote_OperationAnaestheticAgent', 'et_ophtroperationnote_anaesthetic_id'),
+            'anaesthetic_agent_assignments' => array(
+                self::HAS_MANY,
+                'OphTrOperationnote_OperationAnaestheticAgent',
+                'et_ophtroperationnote_anaesthetic_id'
+            ),
             'anaesthetic_agents' => array(self::HAS_MANY, 'AnaestheticAgent', 'anaesthetic_agent_id',
                 'through' => 'anaesthetic_agent_assignments', ),
-            'anaesthetic_complication_assignments' => array(self::HAS_MANY, 'OphTrOperationnote_AnaestheticComplication', 'et_ophtroperationnote_anaesthetic_id'),
+            'anaesthetic_complication_assignments' => array(
+                self::HAS_MANY,
+                'OphTrOperationnote_AnaestheticComplication',
+                'et_ophtroperationnote_anaesthetic_id'
+            ),
             'anaesthetic_complications' => array(self::HAS_MANY, 'OphTrOperationnote_AnaestheticComplications', 'anaesthetic_complication_id',
                 'through' => 'anaesthetic_complication_assignments', ),
         );
@@ -160,9 +177,16 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
     public function getHidden()
     {
         $ga = Yii::app()->db->createCommand()->select('id')->from('anaesthetic_type')->where('code=:code', array(':code' => 'GA'))->queryScalar();
-        $no_anaesthetic = Yii::app()->db->createCommand()->select('id')->from('anaesthetic_type')->where('code=:code', array(':code' => 'NoA'))->queryScalar();
+        $no_anaesthetic = Yii::app()->db->createCommand()
+            ->select('id')
+            ->from('anaesthetic_type')
+            ->where('code=:code', array(':code' => 'NoA'))
+            ->queryScalar();
 
-        if ( count($this->anaesthetic_type) == 1 && ( $this->anaesthetic_type[0]->id == $ga->id || $this->anaesthetic_type[0]->id == $no_anaesthetic->id ) ) {
+        if (
+            count($this->anaesthetic_type) == 1
+            && ( $this->anaesthetic_type[0]->id == $ga->id || $this->anaesthetic_type[0]->id == $no_anaesthetic->id)
+        ) {
             return true;
         }
 
@@ -180,6 +204,34 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
         OphTrOperationnote_AnaestheticComplication::model()->deleteAllByAttributes(array('et_ophtroperationnote_anaesthetic_id' => $this->id));
 
         return parent::beforeDelete();
+    }
+
+    public function getPrefillableAttributeSet()
+    {
+        $attributes = [
+            'anaesthetist_id',
+            'anaesthetic_comment',
+            'anaesthetic_witness_id',
+            'anaesthetic_type' => 'id',
+            'anaesthetic_delivery' => 'id',
+            'anaesthetic_agents' => 'id',
+        ];
+
+        if (SettingMetadata::model()->checkSetting('allow_complications_in_pre_fill_templates', 'on')) {
+            $attributes['anaesthetic_complications'] = 'id';
+        }
+
+        return $attributes;
+    }
+
+    public function getPrefillablePriorities()
+    {
+        return [
+            'anaesthetic_type' => \EventTemplate::PRIORITY_PATIENT,
+            'anaesthetic_delivery' => \EventTemplate::PRIORITY_PATIENT,
+            'anaesthetic_agents' => \EventTemplate::PRIORITY_TEMPLATE,
+            'anaesthetic_complications' => \EventTemplate::PRIORITY_TEMPLATE, // Only need to run the setting check above
+        ];
     }
 
     /**
@@ -204,7 +256,7 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
                     $aa->anaesthetic_agent_id = $aa_id;
 
                     if (!$aa->save()) {
-                        throw new Exception('Unable to save anaesthetic agent assignment: '.print_r($aa->getErrors(), true));
+                        throw new Exception('Unable to save anaesthetic agent assignment: ' . print_r($aa->getErrors(), true));
                     }
                 } else {
                     unset($curr_by_id[$aa_id]);
@@ -213,7 +265,7 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
         }
         foreach ($curr_by_id as $aa) {
             if (!$aa->delete()) {
-                throw new Exception('Unable to delete anaesthetic agent assignment: '.print_r($aa->getErrors(), true));
+                throw new Exception('Unable to delete anaesthetic agent assignment: ' . print_r($aa->getErrors(), true));
             }
         }
     }
@@ -227,11 +279,10 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
     public function updateAnaestheticType($type_ids)
     {
         $curr_by_id = array();
-        foreach ($this->anaesthetic_type as $type) {
-            $curr_by_id[$type->id] = OphTrOperationnote_OperationAnaestheticType::model()->findByAttributes(array(
-                                        'et_ophtroperationnote_anaesthetic_id' => $this->id,
-                                        'anaesthetic_type_id' => $type->id
-                                    ));
+        foreach ($this->anaesthetic_type_assignments as $type) {
+            if (!$type->isNewRecord) {
+                $curr_by_id[$type->anaesthetic_type_id] = $type;
+            }
         }
 
         if (!empty($type_ids)) {
@@ -242,7 +293,7 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
                     $type->anaesthetic_type_id = $type_id;
 
                     if (!$type->save()) {
-                        throw new Exception('Unable to save anaesthetic agent assignment: '.print_r($type->getErrors(), true));
+                        throw new Exception('Unable to save anaesthetic type assignment: ' . print_r($type->getErrors(), true));
                     }
                 } else {
                     unset($curr_by_id[$type_id]);
@@ -252,7 +303,7 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
 
         foreach ($curr_by_id as $type) {
             if (!$type->delete()) {
-                throw new Exception('Unable to delete anaesthetic agent assignment: '.print_r($type->getErrors(), true));
+                throw new Exception('Unable to delete anaesthetic type assignment: ' . print_r($type->getErrors(), true));
             }
         }
     }
@@ -265,13 +316,11 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
      */
     public function updateAnaestheticDelivery($delivery_ids)
     {
-
         $curr_by_id = array();
-        foreach ($this->anaesthetic_delivery as $delivery) {
-            $curr_by_id[$delivery->id] = OphTrOperationnote_OperationAnaestheticDelivery::model()->findByAttributes(array(
-                                                'et_ophtroperationnote_anaesthetic_id' => $this->id,
-                                                'anaesthetic_delivery_id' => $delivery->id
-                                            ));
+        foreach ($this->anaesthetic_delivery_assignments as $delivery) {
+            if (!$delivery->isNewRecord) {
+                $curr_by_id[$delivery->anaesthetic_delivery_id] = $delivery;
+            }
         }
 
         if (!empty($delivery_ids)) {
@@ -282,7 +331,7 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
                     $delivery->anaesthetic_delivery_id = $delivery_id;
 
                     if (!$delivery->save()) {
-                        throw new Exception('Unable to save anaesthetic agent assignment: '.print_r($delivery->getErrors(), true));
+                        throw new Exception('Unable to save anaesthetic agent assignment: ' . print_r($delivery->getErrors(), true));
                     }
                 } else {
                     unset($curr_by_id[$delivery_id]);
@@ -292,7 +341,7 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
 
         foreach ($curr_by_id as $delivery) {
             if (!$delivery->delete()) {
-                throw new Exception('Unable to delete anaesthetic agent assignment: '.print_r($delivery->getErrors(), true));
+                throw new Exception('Unable to delete anaesthetic agent assignment: ' . print_r($delivery->getErrors(), true));
             }
         }
     }
@@ -320,7 +369,7 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
                     $ca->anaesthetic_complication_id = $c_id;
 
                     if (!$ca->save()) {
-                        throw new Exception('Unable to save complication assignment: '.print_r($ca->getErrors(), true));
+                        throw new Exception('Unable to save complication assignment: ' . print_r($ca->getErrors(), true));
                     }
                 } else {
                     unset($curr_by_id[$c_id]);
@@ -330,7 +379,7 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
 
         foreach ($curr_by_id as $ca) {
             if (!$ca->delete()) {
-                throw new Exception('Unable to delete complication assignment: '.print_r($ca->getErrors(), true));
+                throw new Exception('Unable to delete complication assignment: ' . print_r($ca->getErrors(), true));
             }
         }
     }
@@ -389,13 +438,13 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
          * @return string
          */
     public function getAnaestheticTypeDisplay()
-        {
+    {
             return implode(', ', $this->anaesthetic_type);
     }
 
     public function afterValidate()
     {
-        if ( !count($this->anaesthetic_type_assignments)) {
+        if (!count($this->anaesthetic_type_assignments)) {
             $this->addError('anaesthetic_type', 'Type cannot be empty.');
         }
 
@@ -409,10 +458,13 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
         // GA is selected,
         // delivery method should be other (all other delivery options un-checked)
         // given by should be Anaesthetist
-        if ( ($assignments_count == 1) && ($this->anaesthetic_type_assignments[0]->anaesthetic_type_id == $type_ga->id) ) {
+        if ($assignments_count == 1 && $this->anaesthetic_type_assignments[0]->anaesthetic_type_id == $type_ga->id) {
             $anaesthetist_delivery_other = AnaestheticDelivery::model()->findByAttributes(array('name' => 'Other'));
 
-            if ($delivery_method_count != 1 || $this->anaesthetic_delivery_assignments[0]->anaesthetic_delivery_id != $anaesthetist_delivery_other->id) {
+            if (
+                $delivery_method_count != 1
+                || $this->anaesthetic_delivery_assignments[0]->anaesthetic_delivery_id != $anaesthetist_delivery_other->id
+            ) {
                 $this->addError('anaesthetic_delivery', 'If anaesthetic Type is "GA" than LA Delivery Methods must only be "Other"');
             }
 
@@ -426,7 +478,7 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
         //No Anaesthetic selected
         //delivery option should be empty
         //anaesthetist_id should be null
-        if ( ($assignments_count == 1) && ($this->anaesthetic_type_assignments[0]->anaesthetic_type_id == $type_noA->id) ) {
+        if (($assignments_count == 1) && ($this->anaesthetic_type_assignments[0]->anaesthetic_type_id == $type_noA->id)) {
             if ($delivery_method_count != 0) {
                 $this->addError('anaesthetic_delivery', 'If anaesthetic Type is "No Anaesthetic" than no LA Delivery Methods should be selected');
             }
@@ -437,7 +489,12 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
         }
 
         //Anything else seleted than GA(alone) or No Anaesthetic
-        if ( $assignments_count > 1 || ( $assignments_count == 1 && !in_array($this->anaesthetic_type_assignments[0]->anaesthetic_type_id, array($type_ga->id, $type_noA->id))) ) {
+        if (
+            $assignments_count > 1
+            || (
+                $assignments_count == 1 && !in_array($this->anaesthetic_type_assignments[0]->anaesthetic_type_id, array($type_ga->id, $type_noA->id))
+            )
+        ) {
             if ($this->anaesthetic_type_assignments[0]->anaesthetic_type_id === $type_la->id && !count($this->anaesthetic_delivery_assignments)) {
                 $this->addError('anaesthetic_delivery', 'LA Delivery Methods cannot be empty.');
             }
@@ -457,5 +514,195 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
                 'class' => 'application.behaviors.OeAnaestheticFormat'
             ),
         );
+    }
+
+    protected function applyComplexData($data, $index): void
+    {
+        $type_assessments = array();
+        $anaesthetic_types = array();
+        if (
+            isset($data[$this->elementType->class_name]['anaesthetic_type'])
+            && is_array($data[$this->elementType->class_name]['anaesthetic_type'])
+        ) {
+            $type_assessments_by_id = array();
+            foreach ($this->anaesthetic_type_assignments as $type_assignments) {
+                $type_assessments_by_id[$type_assignments->anaesthetic_type_id] = $type_assignments;
+            }
+
+            foreach ($data[$this->elementType->class_name]['anaesthetic_type'] as $anaesthetic_type) {
+                if (is_object($anaesthetic_type)) {
+                    $anaesthetic_types[] = AnaestheticType::model()->findByPk($anaesthetic_type->id);
+                    if (!array_key_exists($anaesthetic_type->id, $type_assessments_by_id)) {
+                        $anaesthetic_type_assesment = new OphTrOperationnote_OperationAnaestheticType();
+                    } else {
+                        $anaesthetic_type_assesment = $type_assessments_by_id[$anaesthetic_type->id];
+                    }
+
+                    $anaesthetic_type_assesment->et_ophtroperationnote_anaesthetic_id = $this->id;
+                    $anaesthetic_type_assesment->anaesthetic_type_id = $anaesthetic_type->id;
+                } else {
+                    $anaesthetic_types[] = AnaestheticType::model()->findByPk($anaesthetic_type);
+                    if (!array_key_exists($anaesthetic_type, $type_assessments_by_id)) {
+                        $anaesthetic_type_assesment = new OphTrOperationnote_OperationAnaestheticType();
+                    } else {
+                        $anaesthetic_type_assesment = $type_assessments_by_id[$anaesthetic_type];
+                    }
+
+                    $anaesthetic_type_assesment->et_ophtroperationnote_anaesthetic_id = $this->id;
+                    $anaesthetic_type_assesment->anaesthetic_type_id = $anaesthetic_type;
+                }
+
+                $type_assessments[] = $anaesthetic_type_assesment;
+            }
+        } elseif (isset($data['AnaestheticType']) && is_array($data['AnaestheticType'])) {
+            $type_assessments_by_id = array();
+            foreach ($this->anaesthetic_type_assignments as $type_assignments) {
+                $type_assessments_by_id[$type_assignments->anaesthetic_type_id] = $type_assignments;
+            }
+
+            foreach ($data['AnaestheticType'] as $anaesthetic_type_id) {
+                $anaesthetic_types[] = AnaestheticType::model()->findByPk($anaesthetic_type_id);
+                if (!array_key_exists($anaesthetic_type_id, $type_assessments_by_id)) {
+                    $anaesthetic_type_assesment = new OphTrOperationnote_OperationAnaestheticType();
+                } else {
+                    $anaesthetic_type_assesment = $type_assessments_by_id[$anaesthetic_type_id];
+                }
+
+                $anaesthetic_type_assesment->et_ophtroperationnote_anaesthetic_id = $this->id;
+                $anaesthetic_type_assesment->anaesthetic_type_id = $anaesthetic_type_id;
+
+                $type_assessments[] = $anaesthetic_type_assesment;
+            }
+        }
+
+        $this->anaesthetic_type_assignments = $type_assessments;
+        $this->anaesthetic_type = $anaesthetic_types;
+
+        $anaesthetic_GA_id = Yii::app()->db->createCommand()
+            ->select('id')
+            ->from('anaesthetic_type')
+            ->where('name=:name', array(':name' => 'GA'))
+            ->queryScalar();
+        if (count($this->anaesthetic_type_assignments) == 1 && $this->anaesthetic_type_assignments[0]->anaesthetic_type_id == $anaesthetic_GA_id) {
+            $data['AnaestheticDelivery'] = array(
+                Yii::app()->db->createCommand()
+                    ->select('id')
+                    ->from('anaesthetic_delivery')
+                    ->where('name=:name', array(':name' => 'Other'))
+                    ->queryScalar()
+            );
+            $this->anaesthetist_id = Yii::app()->db->createCommand()
+                ->select('id')
+                ->from('anaesthetist')
+                ->where('name=:name', array(':name' => 'Anaesthetist'))
+                ->queryScalar();
+        }
+
+        $anaesthetic_NoA_id = Yii::app()->db->createCommand()
+            ->select('id')
+            ->from('anaesthetic_type')
+            ->where('code=:code', array(':code' => 'NoA'))
+            ->queryScalar();
+        if (count($this->anaesthetic_type_assignments) == 1 && $this->anaesthetic_type_assignments[0]->anaesthetic_type_id == $anaesthetic_NoA_id) {
+            $data['AnaestheticDelivery'] = array();
+            $this->anaesthetist_id = null;
+        }
+
+        //AnaestheticDelivery
+        $delivery_assessments = array();
+        $delivery = array();
+
+        // Check if the delivery is set from the template first
+        if (
+            isset($data[$this->elementType->class_name]['anaesthetic_delivery'])
+            && is_array($data[$this->elementType->class_name]['anaesthetic_delivery'])
+        ) {
+            $delivery_assessments_by_id = array();
+            foreach ($this->anaesthetic_delivery_assignments as $delivery_assignments) {
+                $delivery_assessments_by_id[$delivery_assignments->anaesthetic_delivery_id] = $delivery_assignments;
+            }
+
+            foreach ($data[$this->elementType->class_name]['anaesthetic_delivery'] as $anaesthetic_delivery_id) {
+                $delivery[] = AnaestheticDelivery::model()->findByPk($anaesthetic_delivery_id);
+                if (!array_key_exists($anaesthetic_delivery_id, $delivery_assessments_by_id)) {
+                    $anaesthetic_delivery_assesment = new OphTrOperationnote_OperationAnaestheticDelivery();
+                } else {
+                    $anaesthetic_delivery_assesment = $delivery_assessments_by_id[$anaesthetic_delivery_id];
+                }
+
+                $anaesthetic_delivery_assesment->et_ophtroperationnote_anaesthetic_id = $this->id;
+                $anaesthetic_delivery_assesment->anaesthetic_delivery_id = $anaesthetic_delivery_id;
+
+                $delivery_assessments[] = $anaesthetic_delivery_assesment;
+            }
+        } elseif (isset($data['AnaestheticDelivery']) && is_array($data['AnaestheticDelivery'])) {
+            $delivery_assessments_by_id = array();
+            foreach ($this->anaesthetic_delivery_assignments as $delivery_assignments) {
+                $delivery_assessments_by_id[$delivery_assignments->anaesthetic_delivery_id] = $delivery_assignments;
+            }
+
+            foreach ($data['AnaestheticDelivery'] as $anaesthetic_delivery_id) {
+                $delivery[] = AnaestheticDelivery::model()->findByPk($anaesthetic_delivery_id);
+                if (!array_key_exists($anaesthetic_delivery_id, $delivery_assessments_by_id)) {
+                    $anaesthetic_delivery_assesment = new OphTrOperationnote_OperationAnaestheticDelivery();
+                } else {
+                    $anaesthetic_delivery_assesment = $delivery_assessments_by_id[$anaesthetic_delivery_id];
+                }
+
+                $anaesthetic_delivery_assesment->et_ophtroperationnote_anaesthetic_id = $this->id;
+                $anaesthetic_delivery_assesment->anaesthetic_delivery_id = $anaesthetic_delivery_id;
+
+                $delivery_assessments[] = $anaesthetic_delivery_assesment;
+            }
+        }
+
+        $this->anaesthetic_delivery_assignments = $delivery_assessments;
+        $this->anaesthetic_delivery = $delivery;
+
+        $agents = array();
+        if (
+            isset($data[$this->elementType->class_name]['anaesthetic_agents'])
+            && is_array($data[$this->elementType->class_name]['anaesthetic_agents'])
+        ) {
+            foreach ($data[$this->elementType->class_name]['anaesthetic_agents'] as $agent) {
+                if (is_object($agent)) {
+                    $agents[] = $agent;
+                } else {
+                    $agents[] = AnaestheticAgent::model()->findByPk($agent);
+                }
+            }
+        } elseif (
+            isset($data['anaesthetic_agents'])
+            && is_array($data['anaesthetic_agents'])
+        ) {
+            foreach ($data['anaesthetic_agents'] as $agent) {
+                if (is_object($agent)) {
+                    $agents[] = $agent;
+                } else {
+                    $agents[] = AnaestheticAgent::model()->findByPk($agent);
+                }
+            }
+        }
+
+        $this->anaesthetic_agents = $agents;
+
+        $complications = array();
+        if (
+            isset($data[$this->elementType->class_name]['anaesthetic_complications'])
+            && is_array($data[$this->elementType->class_name]['anaesthetic_complications'])
+        ) {
+            foreach ($data[$this->elementType->class_name]['anaesthetic_complications'] as $complication) {
+                $complications[] = AnaestheticComplication::model()->findByPk($complication);
+            }
+        } elseif (
+            isset($data['anaesthetic_complications'])
+            && is_array($data['anaesthetic_complications'])
+        ) {
+            foreach ($data['anaesthetic_agents'] as $complication) {
+                $complications[] = AnaestheticComplication::model()->findByPk($complication);
+            }
+        }
+
+        $this->anaesthetic_complications = $complications;
     }
 }

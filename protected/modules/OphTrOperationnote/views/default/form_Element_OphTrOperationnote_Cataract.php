@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
@@ -12,6 +13,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <?php
@@ -36,7 +38,7 @@ $form->layoutColumns = array('label' => 3, 'field' => 9);
 
   <div class="element-fields js-element-eye full-width" data-side="<?=$element->eye?>">
     <div class="eyedraw-row cataract cols-11 flex-layout col-gap"
-         data-is-new="<?= $element->isNewRecord ? 'true' : 'false' ?>">
+         data-is-new="<?= $element->isNewRecord && empty($template_data) ? 'true' : 'false' ?>">
       <div class="cols-6">
             <?php $this->renderPartial($element->form_view . '_OEEyeDraw', array(
               'element' => $element,
@@ -47,6 +49,7 @@ $form->layoutColumns = array('label' => 3, 'field' => 9);
             <?php $this->renderPartial($element->form_view . '_OEEyeDraw_fields', array(
               'form' => $form,
               'element' => $element,
+              'template_data' => $template_data
           )); ?>
       </div>
     </div>

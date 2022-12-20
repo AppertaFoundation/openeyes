@@ -193,6 +193,17 @@ class BaseEventTypeElement extends BaseElement
         }
     }
 
+    public function getDefaultFormOptions(array $context): array
+    {
+        $fields = array();
+        if ($this->default_from_previous && $context['patient']) {
+            if ($previous = $this->getMostRecentForPatient($context['patient'])) {
+                $fields = $this->getFromExisting($previous);
+            }
+        }
+        return $fields;
+    }
+
     /**
      * Get the most recent instance of this element type for the given patient. If there isn't one,
      * then returns $this
@@ -467,6 +478,93 @@ class BaseEventTypeElement extends BaseElement
     public function getWidgetClass()
     {
         return $this->widgetClass;
+    }
+
+    /**
+     * If an element has a method getPrefillableAttributeSet, it will be called to get a structure
+     * to process and then use to extract the attribute data stored in the template.
+     *
+     * If that method does not exist in the element, null will be returned.
+     * This permits elements to be ignored entirely.
+     *
+     * The structure returned by getPrefillableAttributeSet should be as follows:
+     * - A string value (not key) naming an attribute in the element pulls that value directly from the element e.g. ['event_id'] yields '1'
+     * - A string key mapping to a string or array of strings, with the key being a relation in the element and the value(s) being attributes in the relation.
+     * An array of attribute names will retain those names. e.g. ['event' => 'id'] yields ['1', '2'], ['event' => ['id', 'created_user_id']] yields [['id' => 1, 'created_user_id' => 3]]
+     * - A string key mapping to a function or an array with a key 'callable' mapping to a callable will invoke that function/callable with the element and the key
+     * to allow for special processing
+     *
+     * With the second point, the relation is examined to see if it is an array or not and processed suitably.
+     * e.g. 'event' => 'id' yielding '1', 'events' => 'id' yields ['1', '2'] where event is an object and events is an array of objects.
+     *
+     * @return array<string, mixed>|null
+     */
+    public function getPrefilledAttributes()
+    {
+        if (!method_exists($this, 'getPrefillableAttributeSet')) {
+            return null;
+        }
+
+        $attributes = $this->getAttributes();
+        $prefill_set = $this->getPrefillableAttributeSet();
+        $prefilled = [];
+
+        foreach ($prefill_set as $key => $value) {
+            if (!is_string($key)) {
+                $prefilled[$value] = $attributes[$value];
+            } elseif (is_string($value)) {
+                if (is_array($this->{$key})) {
+                    $prefilled[$key] = array_map(static function ($item) use ($value) {
+                        return $item->{$value};
+                    }, $this->{$key});
+                } else {
+                    $prefilled[$key] = $this->{$key}->{$value};
+                }
+            } elseif (is_array($value)) {
+                if (!empty($value['callable'])) {
+                    $prefilled[$key] = call_user_func($value['callable'], $this, $key);
+                } else {
+                    $reducer = static function ($item) use ($value) {
+                        return array_reduce(
+                            $value,
+                            static function ($result, $name) use ($item) {
+                                $result[$name] = $item->{$name};
+
+                                return $result;
+                            },
+                            []
+                        );
+                    };
+
+                    $prefilled[$key] = is_array($this->{$key}) ? array_map($reducer, $this->{$key}) : $reducer($this->{$key});
+                }
+            } elseif (is_callable($value)) {
+                $prefilled[$key] = call_user_func($value, $this, $key);
+            } else {
+                throw new Exception("Invalid prefill structure entry");
+            }
+        }
+
+        return $prefilled;
+    }
+
+    public function getPrefilledAttributeNames()
+    {
+        if (!method_exists($this, 'getPrefillableAttributeSet')) {
+            return [];
+        }
+
+        $names = [];
+
+        foreach ($this->getPrefillableAttributeSet() as $key_name => $value_name) {
+            if (!is_string($key_name)) {
+                $names[] = $value_name;
+            } else {
+                $names[] = $key_name;
+            }
+        }
+
+        return $names;
     }
 
     /**

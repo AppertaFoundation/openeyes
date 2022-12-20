@@ -111,6 +111,13 @@ class Element_OphTrOperationnote_VteAssessment extends Element_OpNote
             ));
     }
 
+    public function getPrefillableAttributeSet()
+    {
+        return [
+            'selected_option'
+        ];
+    }
+
     /**
      * @return bool
      *

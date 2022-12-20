@@ -377,6 +377,22 @@ EOSQL;
         }
     }
 
+    public function getElementEyedrawDoodles(Patient $patient, $element, $side, $attribute)
+    {
+        $fields = array();
+        if (!in_array((int)$side, array(Eye::RIGHT, Eye::LEFT))) {
+            $side = Eye::RIGHT;
+        }
+        $canvas_mnemonic = $this->getCanvasMnemonicForElementType($element->getElementType()->id);
+
+        if ($doodle_data = $this->retrieveDoodlesForSide($patient->id, $canvas_mnemonic, $side)) {
+            $fields[$attribute] = '[' . implode(',', $doodle_data) . ']';
+        } else {
+            $fields[$attribute] = '[' . implode(',', $this->getInitDoodlesForCanvas($canvas_mnemonic)) . ']';
+        }
+        return $fields;
+    }
+
     /**
      * Add doodles to the given element attribute, unless certain doodles are already defined in that attribute
      *
@@ -396,15 +412,95 @@ EOSQL;
         foreach ($doodles as $doodle_spec) {
             $doodle_class = $doodle_spec['doodle_class'];
             $unless = array_key_exists('unless', $doodle_spec) ? $doodle_spec['unless'] : array();
-            if (!array_intersect($unless, array_map(function($c) { return $c['subclass']; }, $current))) {
-                $d = $this->getInitDoodles(array($doodle_class));
-                if ($d[0] === '') {
+
+            if (!array_intersect($unless, array_map(function($class) { return $class['subclass']; }, $current))) {
+                $init_doodles = $this->getInitDoodles(array($doodle_class));
+                if ($init_doodles[0] === '') {
                     throw new CException("Attempt to add eyedraw doodle $doodle_class when no init json defined. Have you loaded the latest config?");
                 }
-                $append[] = json_decode($d[0]);
+                $append[] = json_decode($init_doodles[0]);
             }
         }
 
         $element->$attribute = json_encode(array_merge($current, $append));
+    }
+
+    public function buildElementEyedrawDoodles($ed_field, $doodles = array())
+    {
+        $current = json_decode($ed_field, true);
+        if (!is_array($current)) {
+            $current = array();
+        }
+
+        $append = array();
+        foreach ($doodles as $doodle_spec) {
+            $doodle_class = $doodle_spec['doodle_class'];
+            $unless = array_key_exists('unless', $doodle_spec) ? $doodle_spec['unless'] : array();
+
+            if (!array_intersect($unless, array_map(function($class) { return $class['subclass']; }, $current))) {
+                $init_doodles = $this->getInitDoodles(array($doodle_class));
+                if ($init_doodles[0] === '') {
+                    throw new CException("Attempt to add eyedraw doodle $doodle_class when no init json defined. Have you loaded the latest config?");
+                }
+                $append[] = json_decode($init_doodles[0]);
+            }
+        }
+
+        return json_encode(array_merge($current, $append));
+    }
+
+    public function applyNewElementEyedrawData($element_type_id, $patient_json, $new_json)
+    {
+        $patient_data = json_decode($patient_json, true);
+        $new_data = json_decode($new_json, true);
+
+        // Remap as associative arrays addressed by subclass to make life easier below - any existing data without subclasses will be dropped.
+        // Only data with a subclass that is marked as being 'carry forward' is to copied over the new (template) data
+        $patient_data = array_reduce(
+            $patient_data,
+            static function ($into, $data) {
+                if (array_key_exists('subclass', $data)) {
+                    $into[$data['subclass']] = $data;
+                }
+
+                return $into;
+            },
+            []
+        );
+
+        // New data without subclasses is preserved however.
+        $new_data = array_reduce(
+            $new_data,
+            static function ($into, $data) {
+                if (array_key_exists('subclass', $data)) {
+                    $into[$data['subclass']] = $data;
+                } else {
+                    $into[] = $data;
+                }
+
+                return $into;
+            },
+            []
+        );
+
+        $canvas_mnemonic = $this->getCanvasMnemonicForElementType($element_type_id);
+
+        $carry_forward_doodles = \Yii::app()->db
+                               ->createCommand()
+                               ->select('eyedraw_class_mnemonic')
+                               ->from('eyedraw_canvas_doodle')
+                               ->where([
+                                   'and',
+                                   ['and', 'eyedraw_carry_forward_canvas_flag <> 0', 'canvas_mnemonic = :canvas_mnemonic'],
+                                   ['in', 'eyedraw_class_mnemonic', array_keys($patient_data)]
+                               ],
+                               [':canvas_mnemonic' => $canvas_mnemonic])
+                               ->queryColumn();
+
+        foreach ($carry_forward_doodles as $subclass) {
+            $new_data[$subclass] = $patient_data[$subclass];
+        }
+
+        return json_encode(array_values($new_data));
     }
 }

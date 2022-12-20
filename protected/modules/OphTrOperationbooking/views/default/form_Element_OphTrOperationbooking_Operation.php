@@ -45,8 +45,12 @@ $procedure_readonly = $this->procedure_readonly;
                     '',
                     array(
                         'nowrapper' => true,
-                        'label-class' => $event_errors ? 'error' : ''
-                    )
+                        'extra_fieldset_attributes' => [
+                            'data-test' => 'procedure-side',
+                        ],
+                        'label-class' => $event_errors ? 'error' : '',
+                    ),
+                    array()
                 );
             } else {
                 echo $form->radioButtons(
@@ -58,7 +62,13 @@ $procedure_readonly = $this->procedure_readonly;
                     '',
                     '',
                     '',
-                    array('label-class' => $event_errors ? 'error' : '')
+                    array(
+                        'extra_fieldset_attributes' => [
+                            'data-test' => 'anaesthetic-type',
+                        ],
+                        'label-class' => $event_errors ? 'error' : ''
+                    ),
+                    array()
                 );
             }
             ?>

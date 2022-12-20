@@ -182,18 +182,18 @@ class Element_OphCiExamination_CataractSurgicalManagement extends \SplitEventTyp
         $is_zero = $raw_target_refraction === '0.00';
         $index = 0;
         $output = '';
-        if (!in_array($raw_target_refraction{$index}, ['-', '+']) && !$is_zero) {
+        if (!in_array($raw_target_refraction[$index], ['-', '+']) && !$is_zero) {
             $output .= '+';
-        } elseif (in_array($raw_target_refraction{$index}, ['-', '+'])) {
-            $output .= $raw_target_refraction{$index++};
+        } elseif (in_array($raw_target_refraction[$index], ['-', '+'])) {
+            $output .= $raw_target_refraction[$index++];
         }
-        if ($raw_target_refraction{$index + 1} === '.') {
+        if ($raw_target_refraction[$index + 1] === '.') {
             $output .= '0';
         }
         while ($index < strlen($raw_target_refraction)) {
-            $output .= $raw_target_refraction{$index++};
+            $output .= $raw_target_refraction[$index++];
         }
-        if ($raw_target_refraction{--$index} !== 'D') {
+        if ($raw_target_refraction[--$index] !== 'D') {
             $output .= 'D';
         }
         return $output;

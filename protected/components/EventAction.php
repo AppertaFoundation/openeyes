@@ -125,6 +125,8 @@ class EventAction
             $this->htmlOptions['disabled'] = 'disabled';
         }
 
+        $this->htmlOptions['data-test'] = 'event-action-' . str_replace(' ', '-', strtolower($label));
+
         if ($this->type === 'button') {
             return CHtml::htmlButton($label, $this->htmlOptions);
         } elseif ($this->type === 'link') {

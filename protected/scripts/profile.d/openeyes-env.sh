@@ -163,3 +163,6 @@
 # export OE_WORKLIST_DEFAULT_END_TIME = '17:00',
 # export OE_WORKLIST_IGNORE_DATE = '',
 # export OE_WORKLIST_SHOW_EMPTY = 'true',
+
+## System settings
+# export OE_APP_LOG_LEVELS = 'info, warning, error'
