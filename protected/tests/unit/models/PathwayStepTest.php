@@ -102,4 +102,48 @@ class PathwayStepTest extends ActiveRecordTestCase
         $step->nextStatus();
         self::assertEquals(PathwayStep::STEP_COMPLETED, $step->status);
     }
+
+    /**
+     * @throws Exception
+     */
+    public function testGetStepStartTime(): void
+    {
+        $pathway = $this->pathways('pathway6');
+        $pathway->startPathway();
+        $checkin_time = null;
+        foreach($pathway->steps as $step) {
+            if ($step->short_name === 'checkin') {
+                // getStepStartTime returns mm:ss string, convert it to datetime
+                $checkin_time = DateTime::createFromFormat('H:i', $step->getStepStartTime());
+                break;
+            }
+        }
+        // assert checkin_time is a DateTime instance
+        self::assertEquals(true, $checkin_time instanceof DateTime);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testGetStepStartTimeDNA(): void
+    {
+        $pathway = $this->pathways('pathway6');
+        $checkin_time = null;
+
+        foreach($pathway->steps as $step) {
+            if ($step->short_name === 'checkin') {
+                // setup DNA state
+                $step->status = (string)PathwayStep::STEP_COMPLETED;
+                $step->start_time = date('Y-m-d H:i:s');
+                $step->end_time = date('Y-m-d H:i:s');
+                $pathway->did_not_attend = true;
+                $pathway->save();
+                $pathway->refresh();
+                $checkin_time = $step->getStepStartTime();
+                break;
+            }
+        }
+
+        self::assertEquals('DNA', $checkin_time);
+    }
 }

@@ -79,4 +79,14 @@ return array(
         'short_name' => 'bio',
         'long_name' => 'Biometry',
     ),
+    'checkInStep1' => array(
+        'id' => 9,
+        'pathway_id' => 6,
+        'step_type_id' => 13,
+        'status' => PathwayStep::STEP_REQUESTED,
+        'todo_order' => 1,
+        'queue_order' => 1,
+        'short_name' => 'checkin',
+        'long_name' => 'Check in',
+    ),
 );
