@@ -19,7 +19,7 @@ class GetSignatureByPinAction extends \CAction
 {
     use RenderJsonTrait;
 
-    protected User $user;
+    protected User $user_for_signature;
     protected string $pin;
     protected DateTime $date_time;
     protected string $signature_proof;
@@ -32,8 +32,8 @@ class GetSignatureByPinAction extends \CAction
 
     protected function getUser() : void
     {
-        $this->user = User::model()->findByPk(Yii::app()->user->id);
-        if (!$this->user) {
+        $this->user_for_signature = User::model()->findByPk(Yii::app()->user->id);
+        if (!$this->user_for_signature) {
             throw new Exception("An error occurred while trying to fetch your signature. Please contact support.");
         }
 
@@ -48,7 +48,7 @@ class GetSignatureByPinAction extends \CAction
     protected function getSignatureFile() : void
     {
         if(!$this->is_secretary_signing) {
-            $signature_data = SignatureHelper::getUserSignatureFile($this->user->id);
+            $signature_data = SignatureHelper::getUserSignatureFile($this->user_for_signature->id);
             $this->signature_file_id = $signature_data['signature_file_id'];
             $this->thumbnail_src1 = $signature_data['thumbnail_src1'];
             $this->thumbnail_src2 = $signature_data['thumbnail_src2'];
@@ -63,7 +63,7 @@ class GetSignatureByPinAction extends \CAction
             if(strlen($this->pin) === 0) {
                 throw new Exception("Empty PIN was provided, please enter PIN and click 'PIN sign' again.");
             }
-            if(!$this->user->checkPin($this->pin)) {
+            if(!$this->user_for_signature->checkPin($this->pin)) {
                 throw new Exception("Incorrect PIN");
             }
         }
@@ -91,14 +91,14 @@ class GetSignatureByPinAction extends \CAction
         try {
             $this->checkIsSecretarySigning();
 
+            $user_id = Yii::app()->request->getPost('user_id');
             if ($this->is_secretary_signing) {
-                $user_id = Yii::app()->request->getPost('user_id');
-                $this->user = User::model()->findByPk($user_id);
-                if (!$this->user) {
+                $this->user_for_signature = User::model()->findByPk($user_id);
+                if (!$this->user_for_signature) {
                     throw new Exception("An error occurred while trying to fetch your signature. Please contact support.");
                 }
             } else {
-                $this->user = SignatureHelper::getUserForSigning();
+                $this->user_for_signature = SignatureHelper::getUserForSigning($user_id);
             }
 
             // Check if the user has the necessary permissions to sign this event, if not throw an exception.
@@ -165,7 +165,7 @@ class GetSignatureByPinAction extends \CAction
         return (new EncryptionDecryptionHelper())->encryptData(serialize([
             "signature_file_id" => $signature_file_id,
             "timestamp" => $this->date_time->getTimestamp(),
-            "user_id" => $this->user->id,
+            "user_id" => $this->user_for_signature->id,
         ]));
     }
 
@@ -193,7 +193,7 @@ class GetSignatureByPinAction extends \CAction
                     "element_id" => $element_id,
                     "timestamp" => $this->date_time->getTimestamp(),
                     "signature_file_id" => $this->signature_file_id,
-                    "signed_user_id" => $this->user->id,
+                    "signed_user_id" => $this->user_for_signature->id,
                     "type" => $signature_type,
                     "signatory_role" => urldecode(Yii::app()->request->getPost("signatory_role")),
                     "signatory_name" => urldecode(Yii::app()->request->getPost("signatory_name")),
