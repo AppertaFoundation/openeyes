@@ -279,24 +279,36 @@ abstract class ModelFactory
      */
     protected function getExpandedAttributes(array $definition, $canCreate = true): array
     {
-        $result = [];
-
-        foreach ($definition as $attribute => $value) {
+        $expandAttributes = function ($value) use ($canCreate) {
             if ($value instanceof self) {
-                if (!$canCreate) {
-                    $value = $value->make()->getPrimaryKey();
-                    if (!$value) {
-                        throw new CannotMakeModelException("Need to create {$value->modelName()} for {$attribute}.");
-                    }
-                } else {
-                    $value = $value->create()->getPrimaryKey();
+                if ($canCreate) {
+                    return $value->create()->getPrimaryKey();
+                }
+                $value = $value->make()->getPrimaryKey();
+                if (!$value) {
+                    throw new CannotMakeModelException("Need to create {$value->modelName()} for {$attribute}.");
                 }
             } elseif ($value instanceof CActiveRecord) {
                 $value = $value->getPrimaryKey();
             }
-            $result[$attribute] = $value;
+
+            return $value;
+        };
+        // first do any generic expansion
+        $definition = array_map($expandAttributes, $definition);
+
+        // then callbacks that may need to refer to the expanded
+        // definition values
+        foreach ($definition as $attribute => $value) {
+            if (is_callable($value)) {
+                $value = $value($definition);
+            }
+            // expand again in case any callback returns something
+            // that needs to be expanded
+            $definition[$attribute] = $expandAttributes($value);
         }
-        return $result;
+
+        return $definition;
     }
 
     /**
