@@ -165,7 +165,20 @@ if (in_array($this->controller->id, ['caseSearch','trial','worklist'])) {
                             $('.js-trial-shortlist-candidates li').remove();
                         }
                     }
-                );
+                )
+                .fail(function(err) {
+                    let content = "Something went wrong trying to shortlist the patient, please try again or contact support for assistance.";
+                    switch(err.status) {
+                        case 403:
+                            content = "You are not authorized to shortlist the patient to the target Trial"
+                            break;
+                        default:
+                            // leave blank for now for potential future use.
+                            break;
+                    }
+                    let dlg = new OpenEyes.UI.Dialog.Alert({content});
+                    dlg.open();
+                });
             });
         });
     </script>
