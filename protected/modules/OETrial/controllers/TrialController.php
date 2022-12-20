@@ -424,7 +424,7 @@ class TrialController extends BaseModuleController
         $criteria->join = 'JOIN user_trial_assignment uta ON uta.trial_id = t.id JOIN trial_permission tp ON tp.id = uta.trial_permission_id';
 
         $criteria->addCondition('uta.user_id = :user_id');
-        $criteria->addCondition('tp.can_edit = 1 OR tp.can_view = 1');
+        $criteria->addCondition('tp.can_edit = 1');
         $criteria->addCondition('t.is_open = 1 AND t.closed_date IS NULL');
         $criteria->addCondition('t.id NOT IN (SELECT trial_id FROM trial_patient WHERE patient_id = :patient_id)');
         $criteria->params = [':user_id' => Yii::app()->user->id, ':patient_id' => $patient_id];
