@@ -30,7 +30,7 @@ $procedure_readonly = $this->procedure_readonly;
              */
             $episode = $this->patient->getEpisodeForCurrentSubspecialty();
 
-            if (SettingMetadata::model()->getSetting('opbooking_disable_both_eyes') == 1) {
+            if (SettingMetadata::model()->getSetting('opbooking_disable_both_eyes') == 'on') {
                 echo $form->radioButtons(
                     $element,
                     'eye_id',

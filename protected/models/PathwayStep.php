@@ -407,4 +407,24 @@ class PathwayStep extends BaseActiveRecordVersioned
 
         return false;
     }
+
+    /**
+     * Get step start time
+     *
+     * @return string return start time string or null
+     */
+    public function getStepStartTime() {
+        /**
+         * if the step is a checkin step and the pathway is marked as did not attend
+         * return "DNA" string instead of start time
+         */
+        if ($this->pathway
+        && $this->pathway->did_not_attend
+        && $this->short_name === "checkin"
+        && $this->status === (string)self::STEP_COMPLETED
+        ) {
+            return "DNA";
+        }
+        return $this->start_time ? DateTime::createFromFormat('Y-m-d H:i:s', $this->start_time)->format('H:i') : null;
+    }
 }
