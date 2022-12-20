@@ -87,6 +87,7 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
             'patient' => array(self::BELONGS_TO, 'Patient', 'patient_id'),
             'worklist_patient' => array(self::BELONGS_TO, 'WorklistPatient', 'visit_id'),
             'assigned_meds' => array(self::HAS_MANY, 'OphDrPGDPSD_AssignmentMeds', 'assignment_id'),
+            'assignments' => array(self::HAS_MANY, 'Element_DrugAdministration_Assignments', 'assignment_id'),
             'elements' => array(
                 self::MANY_MANY,
                 'Element_DrugAdministration',
@@ -163,7 +164,7 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
                 'elements' => array(
                     'with' => array(
                         'event' => array(
-                            'condition' => "deleted != 1",
+                            'condition' => "deleted != 1 or (deleted is null and elements.id is null)",
                         )
                     )
                 )
@@ -241,11 +242,12 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
 
     public function saveComment($comment)
     {
-        if (!$this->comment) {
-            $comment_obj = new \OphDrPGDPSD_Assignment_Comment();
-        } else {
+        if ($this->comment && ($this->comment instanceof \OphDrPGDPSD_Assignment_Comment)) {
             $comment_obj = $this->comment;
+        } else {
+            $comment_obj = new \OphDrPGDPSD_Assignment_Comment();
         }
+
         $comment_obj->comment = $comment;
         $comment_obj->commented_by = \Yii::app()->user->id;
         if ($comment_obj->isModelDirty()) {

@@ -46,7 +46,6 @@ use PatientIdentifierHelper;
  * @property \Event $event
  * @property \User $usermodified
  * @property \User $user
- * @property \EventType $eventType
  */
 class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
 {
@@ -140,7 +139,6 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
                 'id',
                 'on' => "element_type.class_name='" . get_class($this) . "'"
             ),
-            'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
             'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),

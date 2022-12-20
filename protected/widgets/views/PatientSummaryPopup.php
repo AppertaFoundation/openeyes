@@ -584,7 +584,7 @@
     </div><!-- flex -->
 </div>
 
-<div class="oe-patient-popup patient-popup-allergies-risks" style="display: none;">
+<div class="oe-patient-popup patient-popup-allergies-risks" style="display: none;" data-test="summary-allergies-popup">
     <div class="flex-layout flex-top">
         <div class="cols-left">
             <!-- Warnings: Allergies -->
@@ -619,4 +619,3 @@
         </div>
     </div>
 <?php } ?>
-
