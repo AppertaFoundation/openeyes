@@ -316,7 +316,6 @@ class Element_DrugAdministration extends BaseMedicationElement
      */
     public function softDelete()
     {
-        $new_assignments = array();
         foreach ($this->assignments as $assignment) {
             $duplicate = new OphDrPGDPSD_Assignment();
             $assignment_attrs = $assignment->attributes;
@@ -335,10 +334,12 @@ class Element_DrugAdministration extends BaseMedicationElement
                 $duplicate_comment->attributes = $assignment->comment->attributes;
                 $duplicate->saveComment($duplicate_comment);
             }
-            $new_assignments[] = $duplicate;
+            // creating a new drug administration assignment for the newly created pgdpsd_assignment
+            $element_drugAdministration_assignments = new Element_DrugAdministration_Assignments();
+            $element_drugAdministration_assignments->element_id = $assignment->elements[0]->id;
+            $element_drugAdministration_assignments->assignment_id = $duplicate->id;
+            $element_drugAdministration_assignments->save();
         }
-        $this->assignments = $new_assignments;
-        $this->save();
     }
 
     // in the function setAndValidateElementsFromData in BaseEventTypeController

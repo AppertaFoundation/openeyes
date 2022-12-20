@@ -105,7 +105,7 @@ class CsvController extends BaseController
             $mime = finfo_file($finfo, $_FILES['Csv']['tmp_name']['csvFile']);
             $is_csv = in_array($mime, self::$csvMimes);
             finfo_close($finfo);
-            
+
             //if the file is a csv, we can open it in read mode otherwise ignore
 
             if($is_csv){
@@ -129,7 +129,7 @@ class CsvController extends BaseController
                     }
                     fclose($handle);
                 }
-            
+
                 //We use an md5 hash of the csv file to obscure any sensitive data
                 $csv_id = md5_file($_FILES['Csv']['tmp_name']['csvFile']);
 
@@ -863,8 +863,14 @@ class CsvController extends BaseController
             $errors[] = 'Study Identifier accepts maximum of 100 characters.';
             return $errors;
         }
+        // Parse the incoming date string to DD/MM/YYYY
+        $created_date = date_create_from_format("d/m/Y", $trial_patient['created_date']);
+        if (!$created_date) {
+            $errors[] = 'Invalid created date format. Please try DD/MM/YYYY';
+            return $errors;
+        }
 
-        $new_trial_pat->status_update_date = $trial_patient['created_date'];
+        $new_trial_pat->status_update_date = $created_date->format('Y-m-d 00:00:00');
         $new_trial_pat->external_trial_identifier = $trial_patient['study_identifier'];
 
         $new_trial_pat->patient_id = $patient->id;

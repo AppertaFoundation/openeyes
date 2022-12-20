@@ -40,4 +40,12 @@ return array(
         'short_name' => 'done',
         'long_name' => 'Closed pathway',
     ),
+    'pathway6' => array(
+        'id' => 6,
+        'worklist_patient_id' => 1,
+        'pathway_type_id' => 1,
+        'status' => Pathway::STATUS_LATER,
+        'short_name' => 'default',
+        'long_name' => 'Default pathway',
+    ),
 );

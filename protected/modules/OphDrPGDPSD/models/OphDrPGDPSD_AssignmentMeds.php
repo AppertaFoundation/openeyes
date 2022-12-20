@@ -140,7 +140,7 @@ class OphDrPGDPSD_AssignmentMeds extends BaseActiveRecordVersioned
         if ($assignment && !(bool)$assignment->active) {
             return $this->administered ? self::ADMINISTERED_CANCELLED : self::CANCELLED;
         }
-        if ($assignment && $this->administered) {
+        if ($this->administered) {
             return self::ADMINISTERED;
         }
 

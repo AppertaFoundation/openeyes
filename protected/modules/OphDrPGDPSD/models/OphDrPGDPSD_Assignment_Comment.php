@@ -34,7 +34,7 @@ class OphDrPGDPSD_Assignment_Comment extends \BaseActiveRecordVersioned
             array('last_modified_user_id, created_user_id', 'length', 'max'=>10),
             // The following rule is used by search().
             array('comment, commented_by', 'safe'),
-            array('id, text, commented_by', 'safe', 'on'=>'search'),
+            array('id, comment, commented_by', 'safe', 'on'=>'search'),
         );
     }
 

@@ -16,8 +16,6 @@ $pathway = $visit->pathway;
             $check_in_completed = $check_in_completed || (int)$step->step_type_id === (int)$checkin_step_type->id;
 
             $status_class = $step->getStatusString();
-            $time = $step->start_time;
-            $formatted_time = $time ? DateTime::createFromFormat('Y-m-d H:i:s', $time)->format('H:i') : null;
             if (in_array($step->type->short_name, PathwayStep::NON_GENERIC_STEP)) {
                 $short_name = str_replace(' ', '_', $step->type->short_name);
                 $view_file = "_{$short_name}_step_icon";
@@ -36,7 +34,8 @@ $pathway = $visit->pathway;
                         <?= !$step->type->large_icon ? $step->short_name : '' ?>
                     </span>
                     <span class="info">
-                        <?= $formatted_time ?>
+                        <!-- PathwayStep getter: getStepStartTime() -->
+                        <?= $step->stepStartTime ?>
                     </span>
                 </span>
                 <?php
@@ -60,10 +59,7 @@ $pathway = $visit->pathway;
             }
         }
         foreach ($pathway->started_steps as $step) {
-            $status_class = $step->getStatusString();
-            $formatted_time = $step->start_time ? DateTime::createFromFormat('Y-m-d H:i:s', $step->start_time)->format(
-            'H:i'
-            ) : null; ?>
+            $status_class = $step->getStatusString(); ?>
             <?php if (in_array($step->type->short_name, PathwayStep::NON_GENERIC_STEP)) {
                 $short_name = str_replace(' ', '_', $step->type->short_name);
                 $view_file = "_{$short_name}_step_icon";
@@ -81,7 +77,10 @@ $pathway = $visit->pathway;
                 <span class="step<?= $step->type->large_icon ? " {$step->type->large_icon}" : '' ?>">
                     <?= !$step->type->large_icon ? $step->short_name : '' ?>
                 </span>
-                <span class="info"><?= $formatted_time ?></span>
+                <span class="info">
+                    <!-- PathwayStep getter: getStepStartTime() -->
+                    <?= $step->stepStartTime ?>
+                </span>
             </span>
             <?php }
         }
@@ -104,10 +103,7 @@ $pathway = $visit->pathway;
         </span>
         <?php }
         foreach ($pathway->requested_steps as $step) {
-            $status_class = $step->getStatusString();
-            $formatted_time = $step->start_time ? DateTime::createFromFormat('Y-m-d H:i:s', $step->start_time)->format(
-                'H:i'
-            ) : null; ?>
+            $status_class = $step->getStatusString(); ?>
             <?php if (in_array($step->type->short_name, PathwayStep::NON_GENERIC_STEP)) {
                 $short_name = str_replace(' ', '_', $step->type->short_name);
                 $view_file = "_{$short_name}_step_icon";
@@ -125,7 +121,10 @@ $pathway = $visit->pathway;
                 <span class="step<?= $step->type->large_icon ? " {$step->type->large_icon}" : '' ?>">
                     <?= !$step->type->large_icon ? $step->short_name : '' ?>
                 </span>
-                <span class="info" style="display: none;"><?= $formatted_time ?></span>
+                <span class="info" style="display: none;">
+                    <!-- PathwayStep getter: getStepStartTime() -->
+                    <?= $step->stepStartTime ?>
+                </span>
             </span>
             <?php }
         }
@@ -154,16 +153,16 @@ $pathway = $visit->pathway;
             <?php }
         }
     }
-    if ($pathway && (int)$pathway->status === Pathway::STATUS_DONE) {
-        $formatted_time = $pathway->end_time ? DateTime::createFromFormat('Y-m-d H:i:s', $pathway->end_time)->format(
-            'H:i'
-        ) : date('H:i') ?>
+    if ($pathway && (int)$pathway->status === Pathway::STATUS_DONE) { ?>
         <span class="oe-pathstep-btn done buff finish" data-pathstep-id="finished"
               data-pathstep-type-id=""
               data-patient-id="<?= $pathway->worklist_patient->patient_id ?>"
               data-visit-id="<?= $pathway->worklist_patient_id ?>">
             <span class="step i-fin"></span>
-            <span class="info"><?= $formatted_time ?></span>
+            <span class="info">
+                <!-- PathwayStep getter: getStepStartTime() -->
+                <?= $step->stepStartTime ?>
+            </span>
         </span>
     <?php } ?>
 </div>
