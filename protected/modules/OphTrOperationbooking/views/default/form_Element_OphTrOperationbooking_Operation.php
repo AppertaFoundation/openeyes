@@ -29,8 +29,8 @@ $procedure_readonly = $this->procedure_readonly;
              * Check if opbooking_disable_both_eyes is true.  Used to remove BOTH eyes option for Cataract operations. Default is true, but it can be overridden for different subspecialties.
              */
             $episode = $this->patient->getEpisodeForCurrentSubspecialty();
-            $test = SettingMetadata::model()->getSetting('opbooking_disable_both_eyes');
-            if (SettingMetadata::model()->getSetting('opbooking_disable_both_eyes') == 1) {
+
+            if (SettingMetadata::model()->getSetting('opbooking_disable_both_eyes') == 'on') {
                 echo $form->radioButtons(
                     $element,
                     'eye_id',

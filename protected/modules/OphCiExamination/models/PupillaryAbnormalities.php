@@ -239,23 +239,23 @@ class PupillaryAbnormalities extends \SplitEventTypeElement
      */
     public function afterValidate()
     {
-        $hasLeft = false;
-        $hasRight = false;
+        $hasLeftEntry = false;
+        $hasRightEntry = false;
 
         foreach ($this->entries as $i => $entry) {
-            if ($entry->eye_id == \Eye::LEFT && $hasLeft === false) {
-                $hasLeft = true;
-                continue;
+            if ($entry->eye_id == \Eye::LEFT) {
+                $hasLeftEntry = true;
             }
-            if ($entry->eye_id == \Eye::RIGHT && $hasRight === false) {
-                $hasRight = true;
+            if ($entry->eye_id == \Eye::RIGHT) {
+                $hasRightEntry = true;
             }
         }
 
-        if (!$hasLeft && !$this->no_pupillaryabnormalities_date_left) {
+        if (!$hasLeftEntry && !$this->no_pupillaryabnormalities_date_left && $this->hasLeft()) {
             $this->addError('left', 'Left side has no data.');
         }
-        if (!$hasRight && !$this->no_pupillaryabnormalities_date_right) {
+
+        if (!$hasRightEntry && !$this->no_pupillaryabnormalities_date_right && $this->hasRight()) {
             $this->addError('right', 'Right side has no data.');
         }
 

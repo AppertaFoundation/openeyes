@@ -23,9 +23,9 @@
  */
 
 class SignatureHelper {
-    public static function getUserForSigning() : User
+    public static function getUserForSigning($user_id = null) : User
     {
-        $user = User::model()->findByPk(Yii::app()->user->id);
+        $user = User::model()->findByPk($user_id ?? Yii::app()->user->id);
         if (!$user) {
             throw new Exception("An error occurred while trying to fetch your signature. Please contact support.");
         }
@@ -138,7 +138,7 @@ class SignatureHelper {
 
         //Find the text size for each axis
         $component_text_sizes = [
-            'x' => $image_size['width'] / $raw_text_size['width'], 
+            'x' => $image_size['width'] / $raw_text_size['width'],
             'y' => $image_size['height'] / $raw_text_size['height']
         ];
 
@@ -151,17 +151,17 @@ class SignatureHelper {
         //Usig our final text size, determine how large the text will be rendered and compute the coordinates needed to center it in the area
         $resulting_text_bounds = imagettfbbox($final_text_size, 0.0, $font_path, $user_name);
         $resulting_text_size = [
-            'width' => $resulting_text_bounds[4] - $resulting_text_bounds[1], 
+            'width' => $resulting_text_bounds[4] - $resulting_text_bounds[1],
             'height' => $resulting_text_bounds[1] - $resulting_text_bounds[5]
         ];
         $center_text_position = [
-            'x' => $image_size['width'] / 2 - $resulting_text_size['width'] / 2, 
+            'x' => $image_size['width'] / 2 - $resulting_text_size['width'] / 2,
             'y' => ($image_size['height'] + $resulting_text_size['height']) / 2
         ];
 
         //Rasterise the text to the image
         imagettftext($image, $final_text_size, 0, $center_text_position['x'], $center_text_position['y'], $text_color, $font_path, $user_name);
-        
+
         //Output the image to a buffer to capture the raw data
         ob_start();
         imagejpeg($image);

@@ -30,9 +30,6 @@ OpenEyes.UI = OpenEyes.UI || {};
         this.element = $(element);
         this.sendImageUrlAjaxRequest = true;
         this.options = $.extend(true, {}, EpisodeSidebar._defaultOptions, options);
-        if(this.options.deleted_event_category){
-            groupings.push({id: 'deleted', label: 'Deleted events'});
-        }
         this.create();
     }
 
@@ -43,7 +40,8 @@ OpenEyes.UI = OpenEyes.UI || {};
         // removed due to similiarity to Year filtering
         //{id: 'event-date-display', label: 'Date'},
         {id: 'event-type', label: 'Events by type'},
-        {id: 'subspecialty', label: 'Specialty'}
+        {id: 'subspecialty', label: 'Specialty'},
+        {id: 'deleted', label: 'Deleted events'}
     ];
 
     let pinned_quickview_id = null;
@@ -58,7 +56,8 @@ OpenEyes.UI = OpenEyes.UI || {};
         grouping_picker_class: 'grouping-picker',
         default_sort: 'desc',
         scroll_selector: 'div.oe-scroll-wrapper',
-        close_quicview_selector: '#close-quickview'
+        close_quicview_selector: '#close-quickview',
+        deleted_event_category: false
     };
 
     const sidebarCookie = 'oe-sidebar-state';
@@ -491,13 +490,17 @@ OpenEyes.UI = OpenEyes.UI || {};
         });
     };
 
+    EpisodeSidebar.prototype.getGroupingLabel = function (id) {
+        return groupings.filter((grouping) => { return grouping.id === id; })[0].label;
+    }
+
     EpisodeSidebar.prototype.resetGrouping = function () {
-        this.element.find('.collapse-group').remove();
+        this.element.find('.groupings').remove();
         this.orderEvents();
         this.element.find(this.options.event_list_selector).parent().show();
         // in case the active events were hidden by clicking the deleted events group
         this.element.find(this.options.event_list_selector).show();
-        // if the setting is on, hide the deleted events
+        // if the setting is on, hide the deleted events (will be shown in categories when extracted)
         if(this.options.deleted_event_category){
             this.element.find(this.options.deleted_event_list_selector).hide();
         }
@@ -505,22 +508,22 @@ OpenEyes.UI = OpenEyes.UI || {};
     EpisodeSidebar.prototype.showDeletedEvents = function(){
         this.element.find(this.options.event_list_selector).hide();
         this.element.find(this.options.deleted_event_list_selector).show();
-    }
+    };
     EpisodeSidebar.prototype.updateGrouping = function () {
         const self = this;
         self.resetGrouping();
-        if (self.grouping.id === 'none')
-            return;
-        if (self.grouping.id === 'deleted'){
-            self.showDeletedEvents();
-            return;
-        }
+        const deleteEventsLabel = self.getGroupingLabel('deleted');
+
         let itemsByGrouping = {};
         let groupingVals = [];
         self.element.find(self.options.event_list_selector).each(function () {
-            const groupingVal = $(this).data(self.grouping.id);
+            let groupingVal = self.options.deleted_event_category && $(this).hasClass('deleted') ? deleteEventsLabel : $(this).data(self.grouping.id);
             if (!groupingVal) {
-                console.log('ERROR: missing grouping data attribute ' + self.grouping.id);
+                if (self.grouping.id === 'none') {
+                    groupingVal = self.getGroupingLabel('none');
+                } else {
+                    console.log('ERROR: missing grouping data attribute ' + self.grouping.id);
+                }
             } else {
                 if (!itemsByGrouping[groupingVal]) {
                     itemsByGrouping[groupingVal] = [this];
@@ -532,31 +535,50 @@ OpenEyes.UI = OpenEyes.UI || {};
         });
 
         let groupingElements = '<div class="groupings">';
-        $(groupingVals).each(function () {
-            let grouping = '<div class="collapse-group" data-grouping-val="' + this + '">' +
-                '<div class="collapse-group-icon">' +
-                '<i class="oe-i minus pro-theme"></i>' +
-                '<i class="oe-i plus pro-theme"></i>' +
-                '</div>' +
-                '<h3 class="collapse-group-header">' +
-                this + ' <span class="count">(' + itemsByGrouping[this].length.toString() + ')</span>' +
-                '</h3>' +
-                '<ol class="events">';
 
-            $(itemsByGrouping[this]).each(function () {
-                grouping += $(this).prop('outerHTML');
-            });
-            grouping += '</ol></div>';
-            groupingElements += grouping;
-        });
+        groupingElements += groupingVals
+            .filter(function (groupingVal) {
+                return groupingVal !== deleteEventsLabel;
+            })
+            .map(function (groupingVal) {
+                return self.buildGrouping(groupingVal, itemsByGrouping[groupingVal]);
+            })
+            .join('');
+
+        if (groupingVals.includes(deleteEventsLabel)) {
+            groupingElements += self.buildGrouping(deleteEventsLabel, itemsByGrouping[deleteEventsLabel]);
+        }
+
         groupingElements += '</div>';
 
         $(groupingElements).insertAfter(self.element.find(this.options.event_list_selector).parent());
+        if (self.grouping.id === 'none') {
+            return;
+        }
         self.element.find(this.options.event_list_selector).parent().hide();
         $(self.element.find('select')).val(self.grouping.id);
-        // TODO: here we should expand or collapse based on current state
         self.processGroupingState();
 
+    };
+
+    EpisodeSidebar.prototype.buildGrouping = function (groupingName, items) {
+        let grouping = '<div class="collapse-group" data-grouping-val="' + groupingName + '">' +
+            '<div class="collapse-group-icon">' +
+            '<i class="oe-i minus pro-theme"></i>' +
+            '<i class="oe-i plus pro-theme"></i>' +
+            '</div>' +
+            '<h3 class="collapse-group-header">' +
+            groupingName + ' <span class="count">(' + items.length.toString() + ')</span>' +
+            '</h3>' +
+            '<ol class="events">';
+
+        $(items).each(function () {
+            const item = $(this).prop('outerHTML');
+            grouping += $(item).prop('style', 'display: block;').prop('outerHTML');
+        });
+        grouping += '</ol></div>';
+
+        return grouping;
     };
 
     EpisodeSidebar.prototype.setGroupingState = function (groupingValue, state) {

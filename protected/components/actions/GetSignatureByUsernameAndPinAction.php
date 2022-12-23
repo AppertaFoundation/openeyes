@@ -22,8 +22,8 @@ class GetSignatureByUsernameAndPinAction extends GetSignatureByPinAction
     protected function getUser(): void
     {
         $user_id = Yii::app()->request->getPost('user_id');
-        $this->user = User::model()->findByPk($user_id);
-        if (!$this->user) {
+        $this->user_for_signature = User::model()->findByPk($user_id);
+        if (!$this->user_for_signature) {
             throw new Exception("An error occurred while trying to fetch your signature. Please contact support.");
         }
     }

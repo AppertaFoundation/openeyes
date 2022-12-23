@@ -20,7 +20,7 @@ class PSDObserver
             }
 
             $errors = array();
-            $transaction = Yii::app()->db->Yii::app()->db->beginInternalTransaction();
+            $transaction = Yii::app()->db->beginInternalTransaction();
             $assignment = new OphDrPGDPSD_Assignment();
             $assignment->confirmed = 1;
             $assignment->patient_id = $pathway->worklist_patient->patient_id;

@@ -52,8 +52,8 @@ if (
             array(
             'dependency' => array(
               'class' => 'system.caching.dependencies.CDbCacheDependency',
-              'sql' => "SELECT MAX(ev.last_modified_date) 
-                        FROM `event` ev 
+              'sql' => "SELECT MAX(ev.last_modified_date)
+                        FROM `event` ev
                           INNER JOIN episode ep ON ep.id = ev.episode_id
                         WHERE ep.patient_id = " . $this->patient->id
               )
@@ -73,6 +73,9 @@ if (
                 <option id="event-year-display" value="event-year-display">Events by year</option>
                 <option id="event-type" value="event-type">Events by type</option>
                 <option id="subspecialty" value="subspecialty">Specialty</option>
+                <?php if ($display_deleted_events_in_deleted_category) { ?>
+                    <option id="deleted" value="deleted">Deleted</option>
+                <?php } ?>
             </select>
         </div>
         <div class="sidebar-list-controls">
@@ -82,14 +85,14 @@ if (
             <button type="button" class="sorting-order desc">
                 <i class="oe-i small direction-down"></i>
     </button>
-            
+
                 <button type="button" class="expand-all">
                     <i class="oe-i small increase-height"></i>
     </button>
                 <button type="button" class="collapse-all">
                     <i class="oe-i small reduce-height"></i>
     </button>
-         
+
         </div>
         <ul class="events" id="js-events-by-date">
             <?php foreach ($ordered_episodes as $specialty_episodes) {
@@ -128,7 +131,6 @@ if (
                             <?php if ($event_image !== null) { ?>
                                 data-event-image-url="<?= $event_image->getImageUrl() ?>"
                             <?php } ?>
-                            style="<?=$event->deleted && $display_deleted_events_in_deleted_category ? 'display:none;' : ''?>"
                         >
                             <div class="tooltip quicklook" style="display: none; ">
                                 <div class="event-name"><?php echo $event_name ?></div>

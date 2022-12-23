@@ -23,7 +23,6 @@ class PatientNameParameter extends CaseSearchParameter implements DBProviderInte
     {
         parent::__construct($scenario);
         $this->name = 'patient_name';
-        $this->operation = '=';
     }
 
     public function rules()
@@ -63,9 +62,9 @@ class PatientNameParameter extends CaseSearchParameter implements DBProviderInte
      */
     public function query(): string
     {
-        return "SELECT DISTINCT p.id 
-FROM patient p 
-WHERE p.id = :p_n_name_{$this->id}
+        return "SELECT DISTINCT p.id
+FROM patient p
+WHERE p.id {$this->operation} :p_n_name_{$this->id}
 ";
     }
 
