@@ -326,7 +326,7 @@ $(document).ready(function () {
                 surgeon_id: selected_surgeon_id
             },
             success: function (settings) {
-                if ((typeof cataract_drawing !== 'undefined') && settings && settings.length) {
+                if ((typeof cataract_drawing !== 'undefined') && settings.length != 0) {
 
                     let eye_side = cataract_drawing.eye === 0 ? 'right' : 'left';
                     let surgeon_doodle = surgeon_drawing.firstDoodleOfClass('Surgeon');
@@ -820,7 +820,7 @@ function sidePortController(_drawing) {
                         if (typeof incision_centre_position !== 'undefined' && incision_centre_position[eye_id] !== 'undefined') {
                             incision_meridian = ''+incision_centre_position[eye_id];
                         }
-                        
+
                         if (window.event_has_errors !== true) {
 
                             setTimeout(() => {
