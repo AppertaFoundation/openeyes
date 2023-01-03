@@ -43,7 +43,7 @@
                     ondrop="drop(event)" ondragover="allowDrop(event)">
                         <i class="oe-i download no-click large"></i>
                         <br>
-                        <span class="js-upload-box-text">Click to select file or DROP here</span>
+                        <span class="js-upload-box-text">Click to select file, DROP here or press Ctrl + V to paste</span>
                     </label>
                     <?= $form->fileField(new Csv(), 'csvFile',
                     [
@@ -112,7 +112,7 @@
                         new OpenEyes.UI.Dialog.Alert({
                             content: response
                         }).open();
-                        $('.js-upload-box-text').text("Click to select file or DROP here");
+                        $('.js-upload-box-text').text("Click to select file, DROP here or press Ctrl + V to paste");
                         $("#CSV_upload_area_id").val("");
                     } else {
                         $('.js-upload-box-text').text("Upload complete");
@@ -124,14 +124,14 @@
                 }
             });
         } else {
-            $('.js-upload-box-text').text("Click to select file or DROP here");
+            $('.js-upload-box-text').text("Click to select file, DROP here or press Ctrl + V to paste");
         }
     });
 
     $('#CSV_remove_file').on('click', function () {
         if (!$('#CSV_remove_file').hasClass('disabled')) {
             $("#CSV_upload_area_id").val("");
-            $('.js-upload-box-text').text("Click to select file or DROP here");
+            $('.js-upload-box-text').text("Click to select file, DROP here or press Ctrl + V to paste");
             $('#CSV_remove_file').addClass('disabled');
         }
     });
