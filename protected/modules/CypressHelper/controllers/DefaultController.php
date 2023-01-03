@@ -183,6 +183,10 @@ class DefaultController extends \CController
         }
 
         $setting = SettingInstallation::model()->findByAttributes(['key' => $system_setting_key]);
+        if (!isset($setting)) {
+            $setting = new SettingInstallation();
+            $setting->key = $system_setting_key;
+        }
         $setting->value = $system_setting_value;
         $setting->save();
 
@@ -221,7 +225,8 @@ class DefaultController extends \CController
             [
                 'subspecialties' => \Subspecialty::model()->findByPk(1),
                 'additional_data' => $additional_data
-            ]);
+            ]
+        );
 
         $fully_qualified_seeder_class_name = '\\OEModule\\' . $seeder_module_name . '\\seeders\\' . $seeder_class_name;
 
