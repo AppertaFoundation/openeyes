@@ -1027,7 +1027,7 @@ $modules = array(
         'OETrial',
         'SSO',
         'OphOuCatprom5',
-        'OphTrOperationchecklists',
+        // 'OphTrOperationchecklists', DEPREACATED and disabled by default, but can be manually enabled for those requiring time to transition the new custom checklists
         'OphDrPGDPSD',
         'BreakGlass' => array('class' => '\OEModule\BreakGlass\BreakGlassModule'),
         );
