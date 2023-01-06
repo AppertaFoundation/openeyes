@@ -370,12 +370,26 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
      *
      * @return string
      */
+
     public function toCSV()
     {
         $output = $this->description() . "\n\n";
 
         if (!$this->summary) {
-            $output .= 'Date,' . $this->getPatientIdentifierPrompt() . ',' . Patient::model()->getAttributeLabel('first_name') . ',' . Patient::model()->getAttributeLabel('last_name') . ',' . Patient::model()->getAttributeLabel('gender') . ',' . Patient::model()->getAttributeLabel('dob') . ',Eye,Site,Left drug,Left injection no,Right drug,Right injection no,Left Pre-injection Antiseptics,Right Pre-injection Antiseptics,Left Injection given by,Right Injection given by,Left Lens Status,Right Lens Status,Left Diagnosis,Right Diagnosis';
+            $output .=
+                $this->getPatientIdentifierPrompt() . ',' .
+                Patient::model()->getAttributeLabel('first_name') . ',' .
+                Patient::model()->getAttributeLabel('last_name') . ',' .
+                Patient::model()->getAttributeLabel('gender') . ',' .
+                Patient::model()->getAttributeLabel('dob') . ',Eye,Drug,Site,First injection date,Last injection date,Injection no,Patient IDs';
+        } else { // SUMMARY
+            $output .=
+                'Date,' .
+                $this->getPatientIdentifierPrompt() . ',' .
+                Patient::model()->getAttributeLabel('first_name') . ',' .
+                Patient::model()->getAttributeLabel('last_name') . ',' .
+                Patient::model()->getAttributeLabel('gender') . ',' .
+                Patient::model()->getAttributeLabel('dob') . ',Eye,Site,Left drug,Left injection no,Right drug,Right injection no,Left Pre-injection Antiseptics,Right Pre-injection Antiseptics,Left Injection given by,Right Injection given by,Left Lens Status,Right Lens Status,Left Diagnosis,Right Diagnosis,Patient IDs';
 
             if ($this->pre_va) {
                 $output .= ',Left pre-injection VA,Right pre-injection VA';
@@ -383,19 +397,9 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
             if ($this->post_va) {
                 $output .= ',Left post-injection VA,Right post-injection VA';
             }
-            $output .= ',Patient IDs' . "\n";
-        } else {
-            $output .= $this->getPatientIdentifierPrompt() . ',' . Patient::model()->getAttributeLabel('first_name') . ',' . Patient::model()->getAttributeLabel('last_name') . ',' . Patient::model()->getAttributeLabel('gender') . ',' . Patient::model()->getAttributeLabel('dob') . ',Eye,Drug,Site,First injection date,Last injection date,Injection no';
-
-            if ($this->pre_va) {
-                $output .= ',Left pre-injection VA,Right pre-injection VA';
-            }
-            if ($this->post_va) {
-                $output .= ',Left post-injection VA,Right post-injection VA';
-            }
-            $output .= ',Patient IDs' . "\n";
         }
 
+        $output .= "\n";
         return $output . $this->array2Csv($this->injections);
     }
 
@@ -406,7 +410,7 @@ class OphTrIntravitrealinjection_ReportInjections extends BaseReport
             ->from('event e')
             ->join('episode ep', 'e.episode_id = ep.id')
             ->where(
-                'e.deleted = 0 and ep.deleted = 0 and ep.patient_id = :patient_id and 
+                'e.deleted = 0 and ep.deleted = 0 and ep.patient_id = :patient_id and
                 e.event_type_id = :etype_id and e.event_date <= :close_date',
                 array(':patient_id' => $patient_id, ':etype_id' => $event_type_id, ':close_date' => $close_to_date)
             )->order('event_date desc')->limit(1);
