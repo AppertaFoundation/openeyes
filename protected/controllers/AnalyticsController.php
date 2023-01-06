@@ -59,7 +59,7 @@ class AnalyticsController extends BaseController
         $ret = null;
         $params = Yii::app()->request->getParam('params');
 
-        if ($params['report_type'] === 'vf') {
+        if (array_key_exists('report_type',$params) && $params['report_type'] === 'vf') {
             $ret = $this->getVfPatientList($params);
         } else {
             $ret = $this->getPatientList($params);
