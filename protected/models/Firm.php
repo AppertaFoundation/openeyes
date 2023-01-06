@@ -483,11 +483,11 @@ class Firm extends BaseActiveRecordVersioned
 
     public function beforeValidate()
     {
+        // get the service_subspeciality_assignment_id from the service_id
+        $serviceSubspecialityAssignmentId = ServiceSubspecialtyAssignment::model()->find('subspecialty_id = ?', array($this->subspecialty_id));
         if ($this->can_own_an_episode && $this->service_email != '') {
             // check if there is an email already existing for this subspeciality
             $criteria = new CDbCriteria();
-            // get the service_subspeciality_assignment_id from the service_id
-            $serviceSubspecialityAssignmentId = ServiceSubspecialtyAssignment::model()->find('subspecialty_id = ?', array($this->subspecialty_id));
             $criteria->addCondition('service_subspecialty_assignment_id = :service_subspecialty_assignment_id and service_email IS NOT NULL');
             $criteria->params[':service_subspecialty_assignment_id'] = $serviceSubspecialityAssignmentId->id;
             if (!$this->isNewRecord) {
@@ -498,6 +498,15 @@ class Firm extends BaseActiveRecordVersioned
             if (count($firm) >= 1) {
                 $this->addError('service_email', 'Email already set for another service of this specialty.');
             }
+        }
+        $criteria = new CDbCriteria();
+        $criteria->addCondition('name = :name AND institution_id = :institution_id AND service_subspecialty_assignment_id = :service_subspecialty_assignment_id');
+        $criteria->params[':name'] = $this->name;
+        $criteria->params[':institution_id'] = $this->institution_id;
+        $criteria->params[':service_subspecialty_assignment_id'] = $serviceSubspecialityAssignmentId->id;
+        $firm = $this->findAll($criteria);
+        if (count($firm) >= 1) {
+            $this->addError('name', 'A firm set with the name '.$this->name.' already exists with the following settings: '.($this->institution_id ? $this->institution->name.', ' : '').($serviceSubspecialityAssignmentId ? $serviceSubspecialityAssignmentId->service->name.', '.$serviceSubspecialityAssignmentId->subspecialty->name : ''));
         }
         return parent::beforeValidate();
     }
