@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <?php $this->beginWidget('CondenseHtmlWidget') ?>
@@ -27,7 +29,7 @@
     $label = $tab['label'] ?? null;
     $active = isset($tab['active']) && $tab['active'] ? 'selected' : null;
     $href = $tab['href'] ?? '#';
-    if (isset($tab['type']) && $tab['type']){ ?>
+    if (isset($tab['type']) && $tab['type']) { ?>
     <div class="button header-tab <?=$active?>">
         <<?=$tab['type']?> class="<?=$class?>"><?=$label?></<?=$tab['type']?>>
     </div>
@@ -43,7 +45,7 @@ if (in_array($this->action->id, ['create', 'update', 'step'])) {
         <i class="oe-i starline small pad-r"></i>
         <?= $this->template->name ?>
     </button>
-    <?php } elseif ($this->event->template_id) { ?>
+    <?php } elseif ($this->event->template_id && isset($this->event->template)) { ?>
     <button id="js-template-prefill-popup-open" type="button" href="#">
         <i class="oe-i starline small pad-r"></i>
         <?= $this->event->template->name ?>

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <script src="<?= Yii::app()->assetManager->createUrl('../../node_modules/fabric/dist/fabric.min.js')?>"></script>
 <script src="<?= Yii::app()->assetManager->createUrl('../../node_modules/pdfjs-dist/build/pdf.min.js')?>"></script>
@@ -118,7 +120,7 @@
                                    class="upload-label">
                                 <i class="oe-i download no-click large"></i>
                                 <br>
-                                <span class="js-upload-box-text">Click to select file or DROP here</span>
+                                <span class="js-upload-box-text">Click to select file, DROP here or press Ctrl + V to paste</span>
                             </label>
                             <input autocomplete="off"
                                    type="file"
@@ -184,13 +186,13 @@
                 <tr class="valign-top">
                     <?php
                     foreach (['right', 'left'] as $side) :
-                        $document = $side.'_document';
-                        $document_id = $side.'_document_id';
+                        $document = $side . '_document';
+                        $document_id = $side . '_document_id';
                         ?>
                         <td data-side="<?=$side?>">
-                            <input type="hidden" value="<?=!empty($element->{$side."_document"}->rotate) ? $element->{$side."_document"}->rotate : ''?>" name="<?=$side?>_document_rotate" id="<?=$side?>_document_rotate">
-                            <div class="pdf-actions"<?= (!$element->{$side."_document_id"} ||
-                            $element->{$side.'_document'}->mimetype != "application/pdf" ?
+                            <input type="hidden" value="<?=!empty($element->{$side . "_document"}->rotate) ? $element->{$side . "_document"}->rotate : ''?>" name="<?=$side?>_document_rotate" id="<?=$side?>_document_rotate">
+                            <div class="pdf-actions"<?= (!$element->{$side . "_document_id"} ||
+                            $element->{$side . '_document'}->mimetype != "application/pdf" ?
                                 'style="display:none"' :
                                 ''); ?>>
                                 <label>Page:</label>
@@ -198,12 +200,12 @@
                                 <i class="oe-i direction-right large pad-left js-pdf-next"></i>
                             </div>
                             <div class="upload-box"
-                                 id="<?=$side?>_document_id_row" <?= $element->{$side."_document_id"} ? 'style="display:none"' : ''; ?>>
+                                 id="<?=$side?>_document_id_row" <?= $element->{$side . "_document_id"} ? 'style="display:none"' : ''; ?>>
                                 <label for="Document_<?=$side?>_document_row_id" id="upload_box_<?=$side?>_document"
                                        class="upload-label">
                                     <i class="oe-i download no-click large"></i>
                                     <br>
-                                    <span class="js-upload-box-text">Click to select file or DROP here</span>
+                                    <span class="js-upload-box-text">Click to select file, DROP here or press Ctrl + V to paste</span>
                                 </label>
                                 <input autocomplete="off"
                                        type="file"
@@ -214,14 +216,14 @@
                                        data-side="<?=$side?>"
                                 >
                             </div>
-                            <?php $this->generateFileField($element, $side.'_document', $side); ?>
+                            <?php $this->generateFileField($element, $side . '_document', $side); ?>
 
-                            <input type="hidden" id="original-<?=$side?>-doc" value="<?= $element->{$side."_document_id"} ?>">
+                            <input type="hidden" id="original-<?=$side?>-doc" value="<?= $element->{$side . "_document_id"} ?>">
 
-                            <?= CHtml::activeHiddenField($element, $side.'_document_id', ['class' => 'js-document-id']); ?>
+                            <?= CHtml::activeHiddenField($element, $side . '_document_id', ['class' => 'js-document-id']); ?>
 
                             <div class="js-comment-container flex-layout flex-left" id="document-<?= $side ?>-comments"
-                                <?= $element->{$side."_comment"} || array_key_exists("{$side}_comment", $element->getErrors()) ? '' : 'style="display:none;"' ?>
+                                <?= $element->{$side . "_comment"} || array_key_exists("{$side}_comment", $element->getErrors()) ? '' : 'style="display:none;"' ?>
                                  data-comment-button="#document_<?= $side ?>_comment_button">
                                 <?= $form->textArea(
                                     $element,
@@ -237,7 +239,7 @@
                                     data-comment-container="#document-<?= $side ?>-comments"
                                     type="button"
                                     data-hide-method="display"
-                                    style="display: <?= $element->{$side."_comment"} || array_key_exists("{$side}_comment", $element->getErrors()) ? 'none;' : 'block;' ?>">
+                                    style="display: <?= $element->{$side . "_comment"} || array_key_exists("{$side}_comment", $element->getErrors()) ? 'none;' : 'block;' ?>">
                                 <i class="oe-i comments small-icon"></i>
                             </button>
 

@@ -183,6 +183,10 @@ class DefaultController extends \CController
         }
 
         $setting = SettingInstallation::model()->findByAttributes(['key' => $system_setting_key]);
+        if (!isset($setting)) {
+            $setting = new SettingInstallation();
+            $setting->key = $system_setting_key;
+        }
         $setting->value = $system_setting_value;
         $setting->save();
 
@@ -200,9 +204,11 @@ class DefaultController extends \CController
             throw new \CHttpException(400, 'system setting key must be provided');
         }
 
+        // Delete the setting installation key, the setting then falls back to the value specified as default in SettingMetadata
         $setting = SettingInstallation::model()->findByAttributes(['key' => $system_setting_key]);
-        $setting->value = SettingMetadata::model()->findByAttributes(['key' => $system_setting_key])->default_value;
-        $setting->save();
+        if (isset($setting)) {
+            $setting->delete();
+        }
 
         // ensure the change takes immediate effect for further requests
         \Yii::app()->settingCache->flush();
@@ -221,7 +227,8 @@ class DefaultController extends \CController
             [
                 'subspecialties' => \Subspecialty::model()->findByPk(1),
                 'additional_data' => $additional_data
-            ]);
+            ]
+        );
 
         $fully_qualified_seeder_class_name = '\\OEModule\\' . $seeder_module_name . '\\seeders\\' . $seeder_class_name;
 

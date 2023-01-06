@@ -6,11 +6,13 @@ class m221128_172700_disable_opbooking_disable_both_eyes_for_relevant_subs exten
 
     public function up()
     {
-        $this->execute("ALTER TABLE openeyes.setting_subspecialty DROP KEY IF EXISTS setting_subspecialty_UN;");
+        if ($this->verifyIndexExists('setting_subspecialty','setting_subspecialty_UN')) {
+            $this->execute("DROP INDEX setting_subspecialty_UN ON setting_subspecialty");
+        }
         $this->execute("ALTER TABLE setting_subspecialty ADD CONSTRAINT setting_subspecialty_UN UNIQUE KEY (subspecialty_id,element_type_id,`key`);");
 
         // Originally this was supposed to use an INSERT ON DUPLICATE KEY UPDATE command, but for some reason, even with the unique contraint, it still added duplicate keys!
-        // I've left the unique constraint in, as it should be there. But there is possibly a bug in mariaDB that is cuasing it not to trigger.
+        // I've left the unique constraint in, as it should be there. But there is possibly a bug in mariaDB that is causing it not to trigger.
         // If the underlying issue is resolved, then the index should function correctly in future migrations
 
         foreach ($this->subs as $sub) {

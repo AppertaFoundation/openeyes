@@ -13,7 +13,7 @@ Yii::app()->clientScript->registerCssFile($assetManager->getPublishedUrl($newblu
 <link rel="stylesheet" type="text/css" data-theme="dark"
       href="<?= $assetManager->getPublishedUrl($newblue_path, true) . '/dist/css/style_oe_dark.3.css' ?>" media="<?= $display_theme !== 'dark' ? 'none' : '' ?>">
 <link rel="stylesheet" type="text/css" data-theme="light"
-      href="<?= $assetManager->getPublishedUrl($newblue_path, true) . '/dist/css/style_oe_light.3.css' ?>" media="<?= $display_theme === 'dark' ? 'none' : '' ?>">
+      href="<?= $assetManager->getPublishedUrl($newblue_path, true) . '/dist/css/style_oe_light.3.css' ?>" <?= $display_theme === 'dark' ? 'media="none"' : '' ?>>
 
 <?php $assetManager->registerScriptFile('js/modernizr.custom.js')?>
 <?php $assetManager->registerCoreScript('jquery')?>
