@@ -83,7 +83,7 @@ $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(
                 <?=\CHtml::label('Comments: ', 'cancellation_comment'); ?>
             </div>
             <div class="cols-10">
-                <textarea id="cancellation_comment" name="cancellation_comment"></textarea>
+                <textarea id="cancellation_comment" name="cancellation_comment" class="cols-8 autosize" placeholder="Please provide a comment. Maximum of 200 characters"></textarea>
             </div>
         </div>
         <div class="flex-layout">
