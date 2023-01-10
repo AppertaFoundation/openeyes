@@ -148,31 +148,31 @@ class TemplateController extends BaseAdminController
         $result['errors'] = "";
 
         if (!empty($_POST['templates'])) {
-            foreach (OphTrConsent_Template::model()->findAllByPk($_POST['templates']) as $template) {
-                $templateProcedures = \OphTrConsent_TemplateProcedure::model()->findAll('template_id = :template_id', array(':template_id' => $template->id));
+            foreach (OphTrConsent_Template::model()->findAllByPk($_POST['templates']) as $consent_template) {
+                $templateProcedures = \OphTrConsent_TemplateProcedure::model()->findAll('template_id = :template_id', array(':template_id' => $consent_template->id));
                 foreach ($templateProcedures as $templateProcedure) {
                     try {
                         if (!$templateProcedure->delete()) {
                             $result['status'] = 0;
-                            $result['errors'][]= $templateProcedure->getErrors();
+                            $result['errors'][] = $templateProcedure->getErrors();
                         } else {
                             Audit::add('admin-templateprocedure', 'delete', $templateProcedure);
                         }
                     } catch (Exception $e) {
                         $result['status'] = 0;
-                        $result['errors'][]= "TemplateProcedure: " . $templateProcedure->name . " is in use";
+                        $result['errors'][] = "TemplateProcedure: " . $templateProcedure->name . " is in use";
                     }
                 }
                 try {
-                    if (!$template->delete()) {
+                    if (!$consent_template->delete()) {
                         $result['status'] = 0;
-                        $result['errors'][]= $template->getErrors();
+                        $result['errors'][] = $consent_template->getErrors();
                     } else {
-                        Audit::add('admin-template', 'delete', $template);
+                        Audit::add('admin-template', 'delete', $consent_template);
                     }
                 } catch (Exception $e) {
                     $result['status'] = 0;
-                    $result['errors'][]= "Template: " . $template->name . " is in use";
+                    $result['errors'][] = "Template: " . $consent_template->name . " is in use";
                 }
             }
         }

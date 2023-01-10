@@ -63,7 +63,7 @@ class DefaultController extends BaseEventTypeController
     public $booking_operation;
     public $unbooked = false;
     public $type_id = null;
-    public $template;
+    public $consent_template;
     public $template_eye;
 
     public function actions()
@@ -151,11 +151,11 @@ class DefaultController extends BaseEventTypeController
                 }
                 $element->procedure_assignments = $assigned_procedures;
             }
-        } elseif ($action == 'create' && $this->template) {
+        } elseif ($action == 'create' && $this->consent_template) {
             if ($this->template_eye) {
                 $eye_id = $this->template_eye->id;
                 $assigned_procedures = array();
-                foreach ($this->template->procedures as $booked_proc) {
+                foreach ($this->consent_template->procedures as $booked_proc) {
                     $assigned_proc = new OphtrconsentProcedureProceduresProcedures();
                     $assigned_proc->proc_id = $booked_proc->id;
                     $assigned_proc->eye_id = $eye_id;
@@ -183,8 +183,8 @@ class DefaultController extends BaseEventTypeController
     {
         if ($action == 'create' && $this->booking_operation) {
             $element->setBenefitsAndRisksFromProcedures($this->booking_operation->procedures);
-        } elseif ($action == 'create' && $this->template) {
-            $element->setBenefitsAndRisksFromProcedures($this->template->procedures);
+        } elseif ($action == 'create' && $this->consent_template) {
+            $element->setBenefitsAndRisksFromProcedures($this->consent_template->procedures);
         }
     }
 
@@ -202,8 +202,8 @@ class DefaultController extends BaseEventTypeController
             $element->type_id = $this->type_id;
         }
 
-        if ($action == 'create' && $this->template) {
-            $element->type_id = $this->template->type_id;
+        if ($action == 'create' && $this->consent_template) {
+            $element->type_id = $this->consent_template->type_id;
             if ($this->type_id) {
                 $element->type_id = $this->type_id;
             }
@@ -297,9 +297,9 @@ class DefaultController extends BaseEventTypeController
             }
         } elseif (isset($_GET['unbooked'])) {
             $this->unbooked = true;
-        } elseif (isset($_GET['template_id'])) {
-            if (!($this->template = OphTrConsent_Template::model()->findByPk($_GET['template_id']))) {
-                throw new Exception('booking event not found');
+        } elseif (isset($_GET['consent_template_id'])) {
+            if (!($this->consent_template = OphTrConsent_Template::model()->findByPk($_GET['consent_template_id']))) {
+                throw new Exception('consent template not found');
             }
 
             if (isset($_GET['template_eye_id'])) {
@@ -352,7 +352,7 @@ class DefaultController extends BaseEventTypeController
      */
     public function renderSidebar($default_view)
     {
-        if (!$this->booking_event && !$this->unbooked && !$this->template) {
+        if (!$this->booking_event && !$this->unbooked && !$this->consent_template) {
             $this->show_element_sidebar = false;
         }
         parent::renderSidebar($default_view);
@@ -382,8 +382,8 @@ class DefaultController extends BaseEventTypeController
                     $errors = array('Consent form' => array('Please select laterality to add procedures for the template'));
                 } else {
                     $template_eye_id = \Helper::getEyeIdFromArray($_POST["template" . $m[1]]);
-                    $template = OphTrConsent_Template::model()->findByPk($m[1]);
-                    $this->redirect(array('/OphTrConsent/Default/create?patient_id=' . $this->patient->id . '&template_id=' . $m[1] . '&type_id=' . $template->type_id . '&template_eye_id=' . $template_eye_id));
+                    $consent_template = OphTrConsent_Template::model()->findByPk($m[1]);
+                    $this->redirect(array('/OphTrConsent/Default/create?patient_id=' . $this->patient->id . '&consent_template_id=' . $m[1] . '&type_id=' . $consent_template->type_id . '&template_eye_id=' . $template_eye_id));
                 }
             }
             if (!isset($errors)) {
@@ -391,7 +391,7 @@ class DefaultController extends BaseEventTypeController
             }
         }
 
-        if ($this->booking_event || $this->unbooked || $this->template) {
+        if ($this->booking_event || $this->unbooked || $this->consent_template) {
             parent::actionCreate();
         } else {
             if ($api = Yii::app()->moduleAPI->get('OphTrOperationbooking')) {
@@ -444,7 +444,7 @@ class DefaultController extends BaseEventTypeController
                     $criteria->addCondition('subspecialty_id = ' . $subspecialty . ' OR subspecialty_id IS NULL');
                 }
             }
-            $templates = OphTrConsent_Template::model()->findAll($criteria);
+            $consent_templates = OphTrConsent_Template::model()->findAll($criteria);
 
             $this->title = 'Please select booking';
             $this->event_tabs = array(
@@ -465,7 +465,7 @@ class DefaultController extends BaseEventTypeController
             $this->render('select_event', array(
                 'errors' => $errors,
                 'bookings' => $bookings ? $bookings : [],
-                'templates' => $templates ? $templates : [],
+                'consent_templates' => $consent_templates ? $consent_templates : [],
                 'no_operation_booking' => $no_operation_booking ? $no_operation_booking : [],
             ), false, true);
         }
@@ -500,11 +500,11 @@ class DefaultController extends BaseEventTypeController
         }
 
         preg_match('/^([0-9]+)/', $elements['Element_OphTrConsent_Type']->type->name, $m);
-        $template_id = $m[1];
+        $consent_template_id = $m[1];
 
-        $template = "print{$template_id}_English";
+        $print_filename = "print{$consent_template_id}_English";
 
-        $this->render($template, array('elements' => $elements, 'css_class' => isset($_GET['vi']) && $_GET['vi'] ? 'impaired' : 'normal'));
+        $this->render($print_filename, array('elements' => $elements, 'css_class' => isset($_GET['vi']) && $_GET['vi'] ? 'impaired' : 'normal'));
     }
 
     public function actionPDFPrint($id)
@@ -1214,8 +1214,7 @@ class DefaultController extends BaseEventTypeController
             "&element_id=" . $element->id .
             "&initiator_element_type_id=" . \Yii::app()->request->getParam("initiator_element_type_id") .
             "&initiator_row_id=" . \Yii::app()->request->getParam("initiator_row_id") .
-            "&deviceSign=" . \Yii::app()->request->getParam("deviceSign")
-        );
+            "&deviceSign=" . \Yii::app()->request->getParam("deviceSign"));
     }
 
     protected function saveComplexAttributes_Element_OphTrConsent_Esign(

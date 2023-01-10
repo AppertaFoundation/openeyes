@@ -104,7 +104,7 @@ $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(
                     <?= \CHtml::textArea(
                         'cancellation_comment',
                         @$_POST['cancellation_comment'],
-                        array('rows' => 6, 'cols' => 40)
+                        array('rows' => 6, 'cols' => 40, 'class' => 'cols-full autosize')
                     ) ?>
                 </div>
             </div>

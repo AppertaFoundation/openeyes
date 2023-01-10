@@ -42,16 +42,18 @@ if (empty($patient)) {
                     }
 
                     $event = json_decode($api->{$method}($patient));
-                    $event_id = $event->id;
+                    $event_id = $event->id ?? null;
 
-                    $attachments[$event_id] = [
+                    if (isset($event_id)) {
+                        $attachments[$event_id] = [
                         'event_id' => $event_id,
                         'display_title' => $val->display_title,
                         'protected_file_id' => $val->init_protected_file_id,
                         'is_system_hidden' => $val->is_system_hidden,
                         'is_print_appended' => $val->is_print_appended,
                         'short_code' => $val->short_code,
-                    ];
+                        ];
+                    }
                 }
             }
 

@@ -88,17 +88,17 @@ $laterality_option = array(
                     false,
                     array(
                         'fieldset-class' => $element->getError('anaesthetic_type') ? 'highlighted-error error' : '',
-                        'field'=>'AnaestheticType',
+                        'field' => 'AnaestheticType',
                     )
                 ); ?>
                 </td>
                 <td></td>
             </tr>
         </tbody>
-    </table>        
+    </table>
 </div>
 <div class="add-data-actions flex-item-bottom ">
-    <button id="js-add-proc-btn" class="adder" data-popup="add-to-idg-consent-procedures-additional-unbooked"></button>         
+    <button id="js-add-proc-btn" class="adder" data-popup="add-to-idg-consent-procedures-additional-unbooked"></button>
 </div>
 <script type="text/template" class="hidden" id="js-new-procedure-row">
     <tr data-key="{{key}}" class="js-proc-row">

@@ -225,7 +225,7 @@ OpenEyes.UI = OpenEyes.UI || {};
             $image.prependTo(this.$signatureWrapper);
         }
         else if(is_secretary) {
-            const $txt = $("<span>ELECTRONIC VERIFIED, NOT SIGNED TO AVOID DELAYS</span>");
+            const $txt = $("<span>VERIFIED ELECTRONICALLY, NOT SIGNED TO AVOID DELAYS</span>");
             $txt.prependTo(this.$signatureWrapper);
         }
         this.$date.text(date).show();

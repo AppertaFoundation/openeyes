@@ -126,7 +126,7 @@ if (!$reschedule) {
                     </td>
                     <td>
                     <textarea id="Session_comments" name="Session[comments]"
-                              class="cols-full"><?=\CHtml::encode($_POST['Session']['comments']) ?></textarea>
+                              class="cols-full autosize"><?=\CHtml::encode($_POST['Session']['comments']) ?></textarea>
                     </td>
                 </tr>
                 </tbody>
@@ -175,7 +175,7 @@ if (!$reschedule) {
                             <?=\CHtml::label('<strong>Reschedule Comments:</strong> ', 'cancellation_comment'); ?>
                         </td>
                         <td>
-                            <textarea name="cancellation_comment" class="cols-full"><?=\CHtml::encode(@$_POST['cancellation_comment']) ?></textarea>
+                            <textarea name="cancellation_comment" class="cols-full autosize"><?=\CHtml::encode(@$_POST['cancellation_comment']) ?></textarea>
                         </td>
                     </tr>
                 <?php } ?>
@@ -184,7 +184,7 @@ if (!$reschedule) {
                         <?=\CHtml::label('<strong>Operation Comments:</strong>', 'operation_comments'); ?>
                     </td>
                     <td>
-                        <textarea id="operation_comments" name="Operation[comments]" class="cols-full"><?=\CHtml::encode($_POST['Operation']['comments']) ?></textarea>
+                        <textarea id="operation_comments" name="Operation[comments]" class="cols-full autosize"><?=\CHtml::encode($_POST['Operation']['comments']) ?></textarea>
                     </td>
                 </tr>
                 <tr>
@@ -192,7 +192,7 @@ if (!$reschedule) {
                         <?=\CHtml::label('<strong>RTT Comments:</strong>', 'rtt_comments'); ?>
                     </td>
                     <td>
-                        <textarea id="operation_comments" name="Operation[comments_rtt]" class="cols-full"><?=\CHtml::encode($_POST['Operation']['comments_rtt']) ?></textarea>
+                        <textarea id="operation_comments" name="Operation[comments_rtt]" class="cols-full autosize"><?=\CHtml::encode($_POST['Operation']['comments_rtt']) ?></textarea>
                     </td>
                 </tr>
                 </tbody>
