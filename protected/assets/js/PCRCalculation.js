@@ -602,7 +602,12 @@ function pcrCalculate($eyeSide, side) {
     } else {
         $eyeSide.find('.pcr-input').val('');
     }
-    $eyeSide.find('.pcr-erisk-input').val(pcrData.excessRisk);
+
+    if (pcrData.excessRisk !== 'N/A') {
+        $eyeSide.find('.pcr-erisk-input').val(pcrData.excessRisk);
+    } else {
+        $eyeSide.find('.pcr-erisk-input').val('');
+    }
 
     $('#ophCiExaminationPCRRisk' + side + 'EyeLabel').find('a').css('color', pcrData.pcrColour);
     $('#ophCiExaminationPCRRisk' + side + 'EyeLabel').find('.pcr-span1').html(pcrData.pcrRisk);

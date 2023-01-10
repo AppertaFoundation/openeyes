@@ -156,6 +156,14 @@ class Element_OphCiExamination_PcrRisk extends \SplitEventTypeElement
             $this->right_pcr_risk = null;
         }
 
+        if($this->left_excess_risk === '') {
+            $this->left_excess_risk = null;
+        }
+
+        if($this->right_excess_risk === '') {
+            $this->right_excess_risk = null;
+        }
+
         $pcr = new \PcrRisk();
         foreach (array('left', 'right') as $side) {
             $data = array(

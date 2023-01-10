@@ -18,8 +18,10 @@
                     </td>
                     <td>
                       <span>
-                      Risk compared  to average eye <span
-                            class="pcr-erisk highlighter large-text">x<?php echo $element->{$eye_side . '_excess_risk'} ?></span>
+                      Risk compared to average eye
+                          <span class="pcr-erisk highlighter large-text">
+                              <?php echo ($element->{$eye_side . '_excess_risk'} ? 'x'.$element->{$eye_side . '_excess_risk'} : 'N/A') ?>
+                          </span>
                       </span>
                     </td>
                   </tr>
