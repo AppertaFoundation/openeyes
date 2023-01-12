@@ -161,7 +161,7 @@ class Patient extends BaseActiveRecordVersioned
         );
     }
 
-//    Generates an auto incremented Hospital Number
+    //    Generates an auto incremented Hospital Number
 
     /**
      * @return array relational rules.
@@ -169,13 +169,16 @@ class Patient extends BaseActiveRecordVersioned
     public function relations()
     {
         return array(
-            'legacyepisodes' => array(self::HAS_MANY, 'Episode', 'patient_id',
+            'legacyepisodes' => array(
+                self::HAS_MANY, 'Episode', 'patient_id',
                 'condition' => 'legacy=1',
             ),
-            'supportserviceepisodes' => array(self::HAS_MANY, 'Episode', 'patient_id',
+            'supportserviceepisodes' => array(
+                self::HAS_MANY, 'Episode', 'patient_id',
                 'condition' => 'support_services=1',
             ),
-            'episodes' => array(self::HAS_MANY, 'Episode', 'patient_id',
+            'episodes' => array(
+                self::HAS_MANY, 'Episode', 'patient_id',
                 'condition' => '(patient_episode.legacy=0 or patient_episode.legacy is null) and (patient_episode.change_tracker=0 or patient_episode.change_tracker is null)',
                 'alias' => 'patient_episode',
                 'order' => 'patient_episode.start_date',
@@ -184,9 +187,11 @@ class Patient extends BaseActiveRecordVersioned
             'gp' => array(self::BELONGS_TO, 'Gp', 'gp_id'),
             'practice' => array(self::BELONGS_TO, 'Practice', 'practice_id'),
             'contactAssignments' => array(self::HAS_MANY, 'PatientContactAssignment', 'patient_id'),
-            'allergies' => array(self::MANY_MANY, 'Allergy', 'patient_allergy_assignment(patient_id, allergy_id)',
+            'allergies' => array(
+                self::MANY_MANY, 'Allergy', 'patient_allergy_assignment(patient_id, allergy_id)',
                 'alias' => 'patient_allergies',
-                'order' => 'patient_allergies.name',),
+                'order' => 'patient_allergies.name',
+            ),
             'allergyAssignments' => array(self::HAS_MANY, 'PatientAllergyAssignment', 'patient_id'),
             'risks' => array(
                 self::MANY_MANY,
@@ -205,7 +210,7 @@ class Patient extends BaseActiveRecordVersioned
             'adherence' => array(self::HAS_ONE, 'MedicationAdherence', 'patient_id'),
             'geneticsPatient' => array(self::HAS_ONE, 'GeneticsPatient', 'patient_id'),
             'trials' => array(self::HAS_MANY, 'TrialPatient', 'patient_id', 'order' => 'ISNULL(trials.status_update_date) DESC, trials.status_update_date DESC, trials.created_date DESC'),
-            'patientuserreferral' => array(self::HAS_MANY, 'PatientUserReferral', 'patient_id','alias' => 'patient_user_referral','order' => 'patient_user_referral.created_date DESC' ),
+            'patientuserreferral' => array(self::HAS_MANY, 'PatientUserReferral', 'patient_id', 'alias' => 'patient_user_referral', 'order' => 'patient_user_referral.created_date DESC'),
             'archiveIdentifiers' => array(self::HAS_MANY, 'ArchivePatientIdentifier', 'patient_id'),
             'identifiers' => array(self::HAS_MANY, 'PatientIdentifier', 'patient_id'),
             'globalIdentifier' => array(self::HAS_ONE, 'PatientIdentifier', 'patient_id', 'condition' => 'patientIdentifierType.usage_type="GLOBAL"', 'with' => 'patientIdentifierType'),
@@ -498,7 +503,7 @@ class Patient extends BaseActiveRecordVersioned
 
         $local_results_count = $data_provider->getItemCount();
         $results_from_pas = array();
-        if ($this->use_pas && $local_results_count === 0) {
+        if ($this->use_pas && ($local_results_count === 0 || $params['is_name_search'])) {
             Yii::app()->event->dispatch(
                 $pas_event,
                 [
@@ -817,12 +822,12 @@ class Patient extends BaseActiveRecordVersioned
         ?>
         <table class="standard">
             <tbody>
-            <?php foreach ($this->getOphthalmicDiagnosesSummary() as $diagnosis) : ?>
-                <?php list($side, $disorder_term, $date) = explode('~', $diagnosis, 3); ?>
-                <tr>
-                    <td><?= mb_strtoupper($side) . ' ' . $disorder_term ?></td>
-                </tr>
-            <?php endforeach; ?>
+                <?php foreach ($this->getOphthalmicDiagnosesSummary() as $diagnosis) : ?>
+                    <?php list($side, $disorder_term, $date) = explode('~', $diagnosis, 3); ?>
+                    <tr>
+                        <td><?= mb_strtoupper($side) . ' ' . $disorder_term ?></td>
+                    </tr>
+                <?php endforeach; ?>
             </tbody>
         </table>
         <?php
@@ -2324,7 +2329,7 @@ class Patient extends BaseActiveRecordVersioned
         ORDER BY c.first_name, c.last_name
         ';
 
-    //Note: The dates processed by this function will always be assumed to be in full ascending/descending order
+        //Note: The dates processed by this function will always be assumed to be in full ascending/descending order
         //Ex: dd/mm/yyyy and yyyy/mm/dd will work, but mm/dd/yyyy or yyyy/dd/mm will not
         //This is normally handled by php: '/' delimited dates are american, '-' delimited dates are european
         $mysqlDob = Helper::convertNHS2MySQL(date('d M Y', strtotime(str_replace('/', '-', $dob))));
@@ -2337,7 +2342,7 @@ class Patient extends BaseActiveRecordVersioned
         $validPatient->dob = $dob;
 
         if ($validPatient->validate(array('dob')) && $validContact->validate(array('first_name', 'last_name'))) {
-                return Patient::model()->findAllBySql($sql, array(':dob' => $mysqlDob, ':first_name' => $firstName, ':last_name' => $last_name, ':id' => $id));
+            return Patient::model()->findAllBySql($sql, array(':dob' => $mysqlDob, ':first_name' => $firstName, ':last_name' => $last_name, ':id' => $id));
         }
 
         return array('error' => array_merge($validPatient->getErrors(), $validContact->getErrors()));
@@ -2467,11 +2472,11 @@ class Patient extends BaseActiveRecordVersioned
         return Contact::model()->find($criteria);
     }
 
-        /**
-         * Pass through use_pas flag to allow pas supression.
-         *
-         * @see CActiveRecord::instantiate()
-         */
+    /**
+     * Pass through use_pas flag to allow pas supression.
+     *
+     * @see CActiveRecord::instantiate()
+     */
     protected function instantiate($attributes)
     {
         $model = parent::instantiate($attributes);
@@ -2480,11 +2485,11 @@ class Patient extends BaseActiveRecordVersioned
         return $model;
     }
 
-        /**
-         * Raise event to allow external data sources to update patient.
-         *
-         * @see CActiveRecord::afterFind()
-         */
+    /**
+     * Raise event to allow external data sources to update patient.
+     *
+     * @see CActiveRecord::afterFind()
+     */
     protected function afterFind()
     {
         $this->use_pas = $this->is_local ? false : true;
@@ -2580,27 +2585,27 @@ class Patient extends BaseActiveRecordVersioned
      *
      * @return array
      */
-//    public function getOperationsSummary()
-//    {
-//        $summary = array();
-//        if ($op_api = Yii::app()->moduleAPI->get('OphTrOperationnote')) {
-//            $summary = array_merge($summary, $op_api->getOperationsSummaryData($this));
-//        }
-//
-//        foreach ($this->previousOperations as $prev) {
-//            $summary[] = array(
-//                'date' => $prev->date,
-//                'description' => $prev->getSummaryDescription()
-//            );
-//        }
-//
-//        // date descending sort
-//        uasort($summary, function($a , $b) {
-//            return $a['date'] >= $b['date'] ? -1 : 1;
-//        });
-//
-//        return array_map(
-//            function($item) { return $item['description'];},
-//            $summary);
-//    }
+    //    public function getOperationsSummary()
+    //    {
+    //        $summary = array();
+    //        if ($op_api = Yii::app()->moduleAPI->get('OphTrOperationnote')) {
+    //            $summary = array_merge($summary, $op_api->getOperationsSummaryData($this));
+    //        }
+    //
+    //        foreach ($this->previousOperations as $prev) {
+    //            $summary[] = array(
+    //                'date' => $prev->date,
+    //                'description' => $prev->getSummaryDescription()
+    //            );
+    //        }
+    //
+    //        // date descending sort
+    //        uasort($summary, function($a , $b) {
+    //            return $a['date'] >= $b['date'] ? -1 : 1;
+    //        });
+    //
+    //        return array_map(
+    //            function($item) { return $item['description'];},
+    //            $summary);
+    //    }
 }
