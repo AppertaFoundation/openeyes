@@ -44,32 +44,34 @@
             <?php $errors = $this->event->getErrors();
             $error_class = isset($errors['event_date']) ? 'error' : '';
             ?>
-            <?php
-            $this->widget('application.widgets.DatePicker', array(
-                'element' => $this->event,
-                'name' => CHtml::modelName($this->event) . "[event_date]",
-                'field' => 'event_date',
-                'options' => array('maxDate' => 'today'),
-                'htmlOptions' => array(
-                    'style' => 'display:none;',
-                    'form' => $form_id,
-                    'nowrapper' => true,
-                    'class' => 'js-event-date-input ' . $error_class
-                ),
-                'layoutColumns' => array(
-                    'label' => 2,
-                    'field' => 2,
-                ),
-            ));
-            $this->widget('application.widgets.HiddenField', array(
-                'element' => $this->event,
-                'name' => CHtml::modelName($this->event) . "[last_modified_date]",
-                'field' => 'last_modified_date',
-                'htmlOptions' => array(
-                    'form' => $form_id,
-                ),
-            ));
-            ?>
+            <div class="extra-info">
+                <?php
+                    $this->widget('application.widgets.DatePicker', array(
+                        'element' => $this->event,
+                        'name' => CHtml::modelName($this->event) . "[event_date]",
+                        'field' => 'event_date',
+                        'options' => array('maxDate' => 'today'),
+                        'htmlOptions' => array(
+                            'style' => 'display:none;',
+                            'form' => $form_id,
+                            'nowrapper' => true,
+                            'class' => 'js-event-date-input ' . $error_class
+                        ),
+                        'layoutColumns' => array(
+                            'label' => 2,
+                            'field' => 1,
+                        ),
+                    ));
+                    $this->widget('application.widgets.HiddenField', array(
+                        'element' => $this->event,
+                        'name' => CHtml::modelName($this->event) . "[last_modified_date]",
+                        'field' => 'last_modified_date',
+                        'htmlOptions' => array(
+                            'form' => $form_id,
+                        ),
+                    ));
+                ?>
+            </div>
             <script>
                 $(document).ready(function() {
                     const $date_input = $('.js-event-date-input');
@@ -94,13 +96,13 @@
                 });
             </script>
 
-          <span class="extra-info js-event-date"><?= Helper::convertDate2NHS($this->event->event_date) ?></span>
-        <span class="js-has-tooltip" data-tooltip-content="Change Event date">
-            <i class="oe-i history large pad-left js-change-event-date"
-               style="display:<?= in_array($this->action->id, array('view', 'removed')) ? 'none' : 'block' ?>"></i>
-        </span>
+            <span class="extra-info js-event-date"><?= Helper::convertDate2NHS($this->event->event_date) ?></span>
+            <span class="js-has-tooltip" data-tooltip-content="Change Event date">
+                <i class="oe-i history large pad-left js-change-event-date"
+                   style="display:<?= in_array($this->action->id, array('view', 'removed')) ? 'none' : 'block' ?>"></i>
+            </span>
         <?php } ?>
-        </div>
+    </div>
 
     <?php $this->renderPartial('//patient/_patient_alerts') ?>
     <?php $this->renderPartial('//base/_messages'); ?>
