@@ -48,6 +48,7 @@ class SetupPathwayStepPickerBehavior extends CBehavior
             },
             $vf_presets
         );
+        array_unshift($vf_preset_json, array('id' => null, 'name' => 'preset_id', 'label' => 'None'));
         $vf_test_type_json = array_map(
             static function ($item) {
                 return array('id' => $item->id, 'name' => 'test_type_id', 'label' => $item->short_name);

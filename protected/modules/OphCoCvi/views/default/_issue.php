@@ -214,7 +214,7 @@ if ($demographics_element->isNewRecord) {
         <span class="tickbox <?= $clinical_info->low_vision_service === "3" ? 'checked' : '' ?>"></span> Don't know
         <span class="tickbox <?= $clinical_info->low_vision_service === "4" ? 'checked' : '' ?>"></span> Not required
         <hr class="divider"/>
-        <h2>Part 2a: Diagnosis (for patients 18 years of age or over)</h2><h4>Tick each that applies. <b>Tick "Main" if
+        <h2>Part 2a: Diagnosis (for patients <?= ($clinical_info->isForAdult()) ? "18 years of age or over" : "under the age of 18" ?>)</h2><h4>Tick each that applies. <b>Tick "Main" if
                 this
                 is the main cause for the impairment.</b></h4><h6>Please note that this is not intended to be a
             comprehensive list of all possible diagnoses.</h6>
