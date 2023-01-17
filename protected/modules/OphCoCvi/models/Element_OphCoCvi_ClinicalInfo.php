@@ -315,6 +315,26 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
         ));
     }
 
+    public static function isPatientTypeAdult($patient_type): bool
+    {
+        return (int) $patient_type === static::CVI_TYPE_ADULT;
+    }
+
+    public static function isPatientTypeChild($patient_type): bool
+    {
+        return (int) $patient_type === static::CVI_TYPE_CHILD;
+    }
+
+    public function isForAdult()
+    {
+        return static::isPatientTypeAdult($this->patient_type);
+    }
+
+    public function isForChild()
+    {
+        return static::isPatientTypeChild($this->patient_type);
+    }
+
     /**
      * @TODO: determine encryption/decryption process for the sig file
      * @return mixed
@@ -1076,7 +1096,7 @@ class Element_OphCoCvi_ClinicalInfo extends \BaseEventTypeElement
     private function getPatientDiagnosisForPDF()
     {
         //If patient over 18
-        if ($this->patient_type == 0) {
+        if ($this->isForAdult()) {
             return [
                 'age-related macular degeneration – choroidal neovascularisation (wet): Right eye' => $this->getDisorderAnswerForPDF( \Eye::RIGHT, 23),
                 'age-related macular degeneration – choroidal neovascularisation (wet): Left eye' => $this->getDisorderAnswerForPDF( \Eye::LEFT, 23),
