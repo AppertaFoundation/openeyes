@@ -243,8 +243,6 @@
 
         hotlistButton.click(hotlistPanelClickFunc);
         hotlistButton.hover(hotlistPanelEnterFunc, hotlistPanelExitFunc);
-        hotlistPanel.hide();
-        hotlistButton.removeClass('open');
 
         // only auto show worklist filter panel if first time opened for each user (10000 day expiry)
         if ($.cookie('have_shown_worklist_filter_panel_<?php echo \Yii::app()->user->id ?>') !== 'yes') {
