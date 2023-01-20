@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2018
  * This file is part of OpenEyes.
@@ -12,6 +13,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <div class="cols-5">
@@ -34,11 +36,13 @@
                         (isset($_GET['parent_id']) ? $_GET['parent_id'] : null),
                         CHtml::listData(
                             array_filter(
-                                CommonOphthalmicDisorder::model()->findAll('disorder_id IS NOT NULL OR finding_id IS NOT NULL'),
-                                static function($item) { return $item->disorder !== null || $item->finding !== null; } // Exclude inactive entries
+                                CommonOphthalmicDisorder::model()->with('disorder')->findAll([ 'condition' => 'disorder_id IS NOT NULL OR finding_id IS NOT NULL', 'group' => 'disorder.term, subspecialty_id', 'distinct' => true,'order' => 'disorder.term ASC']),
+                                static function ($item) {
+                                    return $item->disorder !== null || $item->finding !== null;
+                                } // Exclude inactive entries
                             ),
                             'id',
-                            static function($item) {
+                            static function ($item) {
                                 if ($item->disorder !== null) {
                                     return $item->disorder->term . ' (' . $item->subspecialty->name . ')';
                                 } else {
@@ -72,7 +76,7 @@
                 'header' => 'Disorder',
                 'name' => 'disorder.term',
                 'type' => 'raw',
-                'htmlOptions'=>array('width'=>'200px'),
+                'htmlOptions' => array('width' => '200px'),
                 'value' => function ($data, $row) {
                     $term = null;
                     if ($data->disorder) {
@@ -117,8 +121,8 @@
 
                     $name_span = CHtml::tag('span', array('class' => 'finding-name name'), $finding_data['name']);
                     $rename_span = CHtml::tag('span', array(
-                        'class'=>"finding-display display",
-                        'style'=>'display: ' . ($finding_data['finding_id'] ? 'inline' : 'none') . ';'
+                        'class' => "finding-display display",
+                        'style' => 'display: ' . ($finding_data['finding_id'] ? 'inline' : 'none') . ';'
                     ), $remove_a . ' ' . $name_span);
 
                     $input = CHtml::textField(
@@ -126,7 +130,7 @@
                         $finding_data['name'],
                         [
                             'class' => 'finding-search-autocomplete finding-search-inputfield ui-autocomplete-input',
-                            'style' => 'display: '. ($finding_data['finding_id'] ? 'none' : 'inline') .';',
+                            'style' => 'display: ' . ($finding_data['finding_id'] ? 'none' : 'inline') . ';',
                             'autocomplete' => 'off',
                         ]
                     );
@@ -148,7 +152,7 @@
                 }
             ),
             array(
-                'header'=>'Actions',
+                'header' => 'Actions',
                 'type' => 'raw',
                 'value' => function ($data) {
                     return '<a href="javascript:void(0)" class="delete button large">delete</a>';
@@ -158,7 +162,7 @@
                 'header' => 'Assigned to current institution',
                 'type' => 'raw',
                 'name' => 'assigned_insitution',
-                'value' => function($data, $row) {
+                'value' => function ($data, $row) {
                     return CHtml::checkBox("assigned_institution[$row]", $data->hasMapping(ReferenceData::LEVEL_INSTITUTION, $data->getIdForLevel(ReferenceData::LEVEL_INSTITUTION)));
                 }
             ),
@@ -169,7 +173,7 @@
             'itemsCssClass' => 'generic-admin standard sortable',
             'template' => '{items}',
             "emptyTagName" => 'span',
-            'rowHtmlOptionsExpression'=>'array("data-row"=>$row)',
+            'rowHtmlOptionsExpression' => 'array("data-row"=>$row)',
             'enableSorting' => false,
             'columns' => $columns
         ));
