@@ -75,7 +75,7 @@ class DisorderFactory extends ModelFactory
         });
     }
 
-    protected function persist($instances)
+    protected function persist($instances): void
     {
         // Because the ID used for disorders is the SNOMED CT code
         // we have to define a value PK when persisting instances
