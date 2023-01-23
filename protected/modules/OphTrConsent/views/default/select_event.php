@@ -40,7 +40,7 @@ $this->moduleNameCssClass .= ' edit';
             Booked procedures without consent forms
         </div>
 
-        
+
         <?php if ($bookings) {?>
             <table class="cols-full">
                 <colgroup>
@@ -60,7 +60,7 @@ $this->moduleNameCssClass .= ' edit';
                         <th>Comments</th>
                         <th><!-- blank --></th>
                     </tr>
-                </thead>        
+                </thead>
                 <tbody>
                     <?php foreach ($bookings as $operation) { ?>
                         <?php
@@ -242,12 +242,12 @@ $this->moduleNameCssClass .= ' edit';
                                 <td><!-- blank --></td>
                                 <td><button class="blue delete-consent-button" data-id="<?= $consent_event->id ?>">Delete &amp; replace consent</button></td>
                             </tr>
-                    <?php } ?>                
+                    <?php } ?>
                 </tbody>
             </table>
             <hr class="divider" />
-        <?php } ?>     
-        
+        <?php } ?>
+
         <div class="row large-text">
                 Create New Consent for Unbooked Procedure(s)
             </div>
@@ -261,31 +261,31 @@ $this->moduleNameCssClass .= ' edit';
             </tbody>
         </table>
 
-        <?php if ($templates) { ?>
+        <?php if ($consent_templates) { ?>
             <table class="cols-full">
                 <colgroup>
                     <col class="cols-2">
                 </colgroup">
                 <tbody>
-                    <?php foreach ($templates as $template) { ?>
+                    <?php foreach ($consent_templates as $consent_template) { ?>
                         <tr>
                             <th>Form template</th>
-                            <td><?= $template->name ?></td>
+                            <td><?= $consent_template->name ?></td>
                             <td>
                                 <?php
                                     echo CHtml::openTag('label', ['class' => 'inline highlight']);
-                                    echo CHtml::checkBox("template" . $template->id . "[right_eye]", null, ['class' => 'js-right-eye', 'data-eye-side' => 'right']) . ' R';
+                                    echo CHtml::checkBox("template" . $consent_template->id . "[right_eye]", null, ['class' => 'js-right-eye', 'data-eye-side' => 'right']) . ' R';
                                     echo CHtml::closeTag('label');
                                 ?>
                             </td>
                             <td>
                                 <?php
                                     echo CHtml::openTag('label', ['class' => 'inline highlight']);
-                                    echo CHtml::checkBox("template" . $template->id . "[left_eye]", null, ['class' => 'js-left-eye', 'data-eye-side' => 'left']) . ' L';
+                                    echo CHtml::checkBox("template" . $consent_template->id . "[left_eye]", null, ['class' => 'js-left-eye', 'data-eye-side' => 'left']) . ' L';
                                     echo CHtml::closeTag('label');
                                 ?>
                             </td>
-                            <td><button class="booking-select" data-booking="template<?= $template->id ?>" >Consent</button></td>
+                            <td><button class="booking-select" data-booking="template<?= $consent_template->id ?>" >Consent</button></td>
                         </tr>
                     <?php } ?>
                 </tbody>

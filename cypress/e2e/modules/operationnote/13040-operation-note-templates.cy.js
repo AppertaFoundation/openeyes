@@ -1,3 +1,4 @@
+// Covers functionality introduced by OE-13040 - templates for operation notes
 describe('test operation note template functionality', () => {
     before(() => {
         cy.login();

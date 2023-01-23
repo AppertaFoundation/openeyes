@@ -167,10 +167,9 @@ class AdminController extends \ModuleAdminController
         $criteria = new CDbCriteria();
 
         $criteria->with = ['institutions', 'sites', 'firms', 'subspecialties'];
-        if (@$_GET['institution_id']) {
-            $criteria->addCondition('institutions_institutions.institution_id = :institution_id');
-            $criteria->params[':institution_id'] = $_GET['institution_id'];
-        }
+        $selected_institution = $_GET['institution_id'] ?? Institution::model()->getCurrent()->id;
+        $criteria->addCondition('institutions_institutions.institution_id = :institution_id');
+        $criteria->params[':institution_id'] = $selected_institution;
 
         if (@$_GET['site_id']) {
             $criteria->addCondition('sites_sites.site_id = :site_id');

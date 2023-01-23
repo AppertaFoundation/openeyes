@@ -29,7 +29,7 @@
                 </div>
                 <div class="dotted-area">
                     <div class="label">Date</div>
-                    <?= $signature->getSignedTime(); ?>
+                    <?= $signature->getSignedDate() . ", " . $signature->getSignedTime(); ?>
                 </div>
             </div>
             <div class="flex">

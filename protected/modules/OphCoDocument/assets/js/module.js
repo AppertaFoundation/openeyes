@@ -545,7 +545,7 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
 
         $td.find('.ophco-image-container').remove();
         $('#' + side + '_document_rotate').val(0);
-        $td.find(".upload-box").show().find('.js-upload-box-text').text("Click to select file or DROP here");
+        $td.find(".upload-box").show().find('.js-upload-box-text').text("Click to select file, DROP here or press Ctrl + V to paste");
 
         const tdEl = $td[0];
         hideElement(tdEl.querySelector('.pdf-actions'));

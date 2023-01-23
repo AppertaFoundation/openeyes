@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -40,7 +41,7 @@
  */
 class OphCoCorrespondence_Signature extends BaseSignature
 {
-    const LBL_ELECTRONIC_VERIFIED = "ELECTRONIC VERIFIED, NOT SIGNED TO AVOID DELAYS";
+    const LBL_ELECTRONIC_VERIFIED = "VERIFIED ELECTRONICALLY, NOT SIGNED TO AVOID DELAYS";
 
     /**
      * @return string the associated database table name
@@ -59,13 +60,13 @@ class OphCoCorrespondence_Signature extends BaseSignature
         // will receive user inputs.
         return array(
             array('element_id, type, secretary', 'required'),
-            array('element_id, id, type', 'numerical', 'integerOnly'=>true),
+            array('element_id, id, type', 'numerical', 'integerOnly' => true),
             array('signature_file_id', 'validateSignatureFile'),
-            array('signatory_role, signatory_name', 'length', 'max'=>64),
+            array('signatory_role, signatory_name', 'length', 'max' => 64),
             array('last_modified_date, created_date, date, time, type, signature_file_id', 'safe'),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
-            array('id, element_id, signature_file_id, signed_user_id, signatory_role, signatory_name, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
+            array('id, element_id, signature_file_id, signed_user_id, signatory_role, signatory_name, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on' => 'search'),
         );
     }
 
@@ -131,7 +132,7 @@ class OphCoCorrespondence_Signature extends BaseSignature
     {
         // @todo Please modify the following code to remove attributes that should not be searched.
 
-        $criteria=new CDbCriteria;
+        $criteria = new CDbCriteria();
 
         $criteria->compare('element_id', $this->element_id);
         $criteria->compare('signature_file_id', $this->signature_file_id, true);
@@ -144,7 +145,7 @@ class OphCoCorrespondence_Signature extends BaseSignature
         $criteria->compare('created_date', $this->created_date, true);
 
         return new CActiveDataProvider($this, array(
-            'criteria'=>$criteria,
+            'criteria' => $criteria,
         ));
     }
 
@@ -174,26 +175,26 @@ class OphCoCorrespondence_Signature extends BaseSignature
     /**
      * @inheritDoc
      */
-    public function getPrintout() : string
+    public function getPrintout(): string
     {
         return ($this->secretary ? self::LBL_ELECTRONIC_VERIFIED . "<br/>" : $this->getSignatureImage())
             . nl2br(CHtml::encode($this->getSignatureText()));
     }
 
-    private function getSignatureImage() : string
+    private function getSignatureImage(): string
     {
         if ($thumb = $this->signatureFile->getThumbnail("150x50")) {
             $data = file_get_contents($thumb["path"]);
             if ($data !== false) {
                 $img = base64_encode($data);
-                return "<img alt=\"Signature\" src=\"data:{$this->signatureFile->mimetype};base64,$img\"/><br/>Signed on ".CHtml::encode(date("j M Y, H:i", strtotime($this->last_modified_date)))."<br/><br/>";
+                return "<img alt=\"Signature\" src=\"data:{$this->signatureFile->mimetype};base64,$img\"/><br/>Signed on " . CHtml::encode(date("j M Y, H:i", strtotime($this->last_modified_date))) . "<br/><br/>";
             }
         }
         // Display nothing in case of failure
         return "";
     }
 
-    private function getSignatureText() : string
+    private function getSignatureText(): string
     {
         /** @var OphCoCorrespondence_API $api */
         $api = Yii::app()->moduleAPI->get("OphCoCorrespondence");

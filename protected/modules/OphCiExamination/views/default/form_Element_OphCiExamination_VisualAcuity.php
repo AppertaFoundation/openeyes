@@ -70,7 +70,7 @@ if (( null !== SettingMetadata::model()->getSetting('COMPLog_port')) && SettingM
                 @$element->unit_id,
                 CHtml::listData(
                     OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::
-                    model()->activeOrPk(@$element->unit_id)->findAllByAttributes(array('is_va' => '1')),
+                    model()->activeOrPk(@$element->unit_id)->findAllByAttributes(array('is_va' => '1', 'complex_only' => '0')),
                     'id',
                     'name'
                 ),

@@ -40,11 +40,13 @@ class ProfileTest extends OEDbTestCase
 
         $expected_firm = ModelFactory::factoryFor(Firm::class)->create([
             'runtime_selectable' => 1,
-            'name' => 'Expected Foo'
+            'name' => 'Expected Foo',
+            'institution_id' => $institution->id
         ]);
         $unexpected_firm = ModelFactory::factoryFor(Firm::class)->create([
             'runtime_selectable' => 0,
-            'name' => 'Unexpected Bar'
+            'name' => 'Unexpected Bar',
+            'institution_id' => $institution->id
         ]);
 
         $response = $this->actingAs($user, $institution)
@@ -69,12 +71,14 @@ class ProfileTest extends OEDbTestCase
 
         $expected_firm = ModelFactory::factoryFor(Firm::class)->create([
             'runtime_selectable' => 1,
-            'name' => 'Expected Foo'
+            'name' => 'Expected Foo',
+            'institution_id' => $institution->id
         ]);
 
         $unexpected_firm = ModelFactory::factoryFor(Firm::class)->create([
             'runtime_selectable' => 1,
-            'name' => 'Unexpected Foo'
+            'name' => 'Unexpected Foo',
+            'institution_id' => $institution->id
         ]);
 
         // Add User to Firm
@@ -104,16 +108,16 @@ class ProfileTest extends OEDbTestCase
     public function added_firm_with_runtime_selectable_false_highlighted_in_list()
     {
         list($user, $institution) = $this->createUserWithInstitution();
-
         $expected_firm = ModelFactory::factoryFor(Firm::class)->create([
             'runtime_selectable' => 0,
-            'name' => 'Expected Foo'
+            'name' => 'Expected Foo',
+            'institution_id' => $institution->id
         ]);
 
         // Add User to Firm
         ModelFactory::factoryFor(UserFirm::class)->create([
             'user_id' => $user->id,
-            'firm_id' => $expected_firm->id
+            'firm_id' => $expected_firm->id,
         ]);
 
         $response = $this->actingAs($user, $institution)
@@ -132,6 +136,37 @@ class ProfileTest extends OEDbTestCase
         }
     }
 
+    /** @test */
+    public function only_firms_under_current_institution_are_available_to_add_to_user_contexts()
+    {
+        list($user, $institution) = $this->createUserWithInstitution();
+
+        $expected_firm = ModelFactory::factoryFor(Firm::class)->create([
+            'runtime_selectable' => 1,
+            'name' => 'Expected Foo',
+            'institution_id' => $institution->id
+        ]);
+        $unexpected_firm = ModelFactory::factoryFor(Firm::class)->create([
+            'runtime_selectable' => 1,
+            'name' => 'Unexpected Bar',
+            'institution_id' => Institution::factory()
+        ]);
+
+        $response = $this->actingAs($user, $institution)
+            ->get('/profile/firms');
+
+        $this->assertCount(
+            1,
+            $response->filter('[data-test="unselected_firms"] select option[value="' . $expected_firm->id . '"]'),
+            'Could not find firm in options for selection in firm profile page'
+        );
+        $this->assertCount(
+            0,
+            $response->filter('[data-test="unselected_firms"] select option[value="' . $unexpected_firm->id . '"]'),
+            'Found unexpected firm in options for selection in firm profile page'
+        );
+    }
+
     // TODO: Set up user rather then use admin
     protected function createUserWithInstitution()
     {
@@ -143,4 +178,5 @@ class ProfileTest extends OEDbTestCase
 
         return [$user, $institution];
     }
+
 }

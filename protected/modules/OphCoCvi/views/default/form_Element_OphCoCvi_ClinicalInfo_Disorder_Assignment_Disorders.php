@@ -27,7 +27,7 @@ use OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo;
             </div>
         <?php endif; ?>
     <?php } else {
-        if ($this->getGetPatientAge() == 17 && $this->getGetPatientMonthDiff() <= 2 && $element->patient_type == Element_OphCoCvi_ClinicalInfo::CVI_TYPE_CHILD) : ?>
+        if ($this->getGetPatientAge() == 17 && $this->getGetPatientMonthDiff() <= 2 && $element->isForChild()) : ?>
             <div class="alert-box error with-icon">
                 <p>This patient is 2 months away from his/her 18th birthday. The suggested children diagnosis list might
                     need to be changed.</p>

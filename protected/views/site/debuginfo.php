@@ -106,9 +106,11 @@ if (file_exists('/imageinfo.txt')) {
                 <tr>
                     <td>Modules running: </td>
                     <td>
-                        <?php foreach (Yii::app()->modules as $key => $val) {
-                            echo $key . "<br/>";
-                        } ?>
+                        <div style="column-count: 3">
+                            <?php foreach (Yii::app()->modules as $key => $val) {
+                                echo $key . "<br/>";
+                            } ?>
+                        </div>
                     </td>
                 </tr>
             </tbody>

@@ -432,7 +432,7 @@ class BaseController extends Controller
 
     public function sanitizeInput($input)
     {
-        $allowable_tags = ["b","strong","p","input","option","select","table","thead","tbody","tr","th","td","i","em","span","br","ul","ol","li","div","col","colgroup","h1","h2","h3","h4","h5"];
+        $allowable_tags = ["hr","b","strong","p","input","option","select","table","thead","tbody","tr","th","td","i","em","span","br","ul","ol","li","div","col","colgroup","h1","h2","h3","h4","h5"];
         if (count($input) > 0) {
             foreach ($input as $key => $value) {
                 if (is_array($value) || is_object($value)) {

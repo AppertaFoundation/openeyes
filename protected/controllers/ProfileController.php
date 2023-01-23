@@ -715,24 +715,29 @@ class ProfileController extends BaseController
     protected function getNotSelectedFirmList(User $user)
     {
         $firms = Yii::app()->db->createCommand()
-            ->select('f.id, f.name, s.name AS subspecialty')
+        ->select('f.id, f.name, s.name AS subspecialty, i.name AS institution')
             ->from('firm f')
+            ->join('institution i', 'i.id = f.institution_id')
+            ->join('institution_authentication ia', 'ia.institution_id = i.id and ia.active = 1')
+            ->join('user_authentication ua', 'ua.institution_authentication_id = ia.id and ua.active = 1 and ua.user_id = ' . $user->id)
             ->leftJoin('service_subspecialty_assignment ssa', 'f.service_subspecialty_assignment_id = ssa.id')
             ->leftJoin('subspecialty s', 'ssa.subspecialty_id = s.id')
-            ->leftJoin('user_firm uf', 'uf.firm_id = f.id and uf.user_id = ' . $user->id)
+            ->leftJoin('user_firm uf', 'uf.firm_id = f.id')
             ->where('uf.id is null and f.active = 1 and f.runtime_selectable = 1')
             ->order('f.name, s.name')
             ->queryAll();
         $data = [];
         foreach ($firms as $firm) {
+            if (!array_key_exists($firm['institution'], $data)) {
+                $data[$firm['institution']] = [];
+            }
             if ($firm['subspecialty']) {
-                $data[$firm['id']] = $firm['name'] . ' (' . $firm['subspecialty'] . ')';
+                $data[$firm['institution']][$firm['id']] = $firm['name'] . ' (' . $firm['subspecialty'] . ')';
             } else {
-                $data[$firm['id']] = $firm['name'];
+                $data[$firm['institution']][$firm['id']] = $firm['name'];
             }
         }
 
-        natcasesort($data);
         return $data;
     }
 }

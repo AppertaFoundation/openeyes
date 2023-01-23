@@ -430,10 +430,12 @@ class TrialController extends BaseModuleController
         $criteria->params = [':user_id' => Yii::app()->user->id, ':patient_id' => $patient_id];
 
         $criteria->addNotInCondition('t.id', $already_selected_ids);
+        $criteria->order = 'LOWER(t.name)';
 
         $criteria2 = new CDbCriteria();
         $criteria2->addSearchCondition('LOWER(t.name)', strtolower($term));
         $criteria2->addSearchCondition('LOWER(t.description)', strtolower($term), true, 'OR');
+        $criteria2->order = 'LOWER(t.name)';
         $criteria->mergeWith($criteria2);
 
         $trials = array_map(
