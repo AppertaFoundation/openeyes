@@ -355,13 +355,8 @@ abstract class ModelFactory
      *
      * @param array $instances
      */
-    protected function persist(array $instances)
+    protected function persist(array $instances): void
     {
-        if (method_exists($this, 'mapDisplayOrderAttributes')) {
-            // @see OE\factories\models\traits\MapsDisplayOrderForFactory
-            $instances = $this->mapDisplayOrderAttributes($instances);
-        }
-
         foreach ($instances as $instance) {
             if ($instance->isNewRecord && !$this->persistInstance($instance)) {
                 throw new CannotSaveModelException($instance->getErrors(), $instance->getAttributes());
@@ -378,20 +373,49 @@ abstract class ModelFactory
         return $instance->save(false);
     }
 
-    protected function callAfterMaking(array $instances)
+    protected function callAfterMaking(array $instances): void
     {
         foreach ($instances as $instance) {
             foreach ($this->afterMaking as $callback) {
                 $callback($instance);
             }
         }
+
+        if (method_exists($this, 'mapDisplayOrderAttributes')) {
+            // @see OE\factories\models\traits\MapsDisplayOrderForFactory
+            $this->mapDisplayOrderAttributes($instances);
+        }
+
+        $this->castAttributes($instances);
     }
 
-    protected function callAfterCreating(array $instances)
+    protected function callAfterCreating(array $instances): void
     {
         foreach ($instances as $instance) {
             foreach ($this->afterCreating as $callback) {
                 $callback($instance);
+            }
+        }
+    }
+
+    /**
+     * This casts attributes that may be recorded directly in the db to
+     * string so that they are consistent with how they will be set when
+     * retrieved, and when instantiated through POST requests in the
+     * application framework.
+     *
+     * @param CActiveRecord $instance
+     * @return void
+     */
+    protected function castAttributes(array $instances): void
+    {
+        foreach ($instances as $instance) {
+            foreach ($instance->getAttributes() as $attr => $value) {
+                if (is_bool($value)) {
+                    $instance->$attr = $value ? '1' : '0';
+                } elseif (is_integer($value) || is_float($value)) {
+                    $instance->$attr = (string) $value;
+                }
             }
         }
     }
