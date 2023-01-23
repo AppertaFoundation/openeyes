@@ -24,6 +24,7 @@
                     <th><input type="checkbox" id="checkall" style="min-width: 20px"  /></th>
                     <th>Name</th>
                     <th>Subspecialty</th>
+                    <th>Institution</th>
                 </tr>
             </thead>
             <tbody>
@@ -33,12 +34,13 @@
                     <td><input type="checkbox" name="firms[]" value="<?php echo $firm->id?>" <?= !$firm->runtime_selectable ? "disabled=disabled" : ""; ?> /></td>
                     <td><?php echo $firm->name . (!$firm->runtime_selectable ? " <sup>*</sup>" : ""); ?></td>
                     <td><?php echo $firm->subspecialtyText?></td>
+                    <td><?php echo $firm->institution->name?></td>
                 </tr>
             <?php }?>
             </tbody>
         </table>
     </form>
-    
+
     <div class="data-group flex-layout">
         <div style="flex-grow:1;" data-test="unselected_firms">
             <label for="profile_firm_id" class="inline">Add <?php echo strtolower(Firm::contextLabel())?>:</label>
@@ -48,10 +50,10 @@
 
         <?php echo EventAction::button('Remove selected ' . strtolower(Firm::contextLabel()), 'delete', array(), array('class' => 'button large hint blue'))->toHtml(); ?>
     </div>
-    
+
     <div class="row">
         <br/>
-        <p><sup>*</sup> Some firm's context are no longer available for selection because of changes by an Admin user.</p>  
+        <p><sup>*</sup> Some firm's context are no longer available for selection because of changes by an Admin user.</p>
         <p>Note: you can also set the sites you work at, <?=\CHtml::link('click here', Yii::app()->createUrl('/profile/sites'))?> to do so.</p>
     </div>
 
