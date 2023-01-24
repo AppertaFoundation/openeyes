@@ -1,5 +1,4 @@
 <?php
-
 /**
  * OpenEyes.
  *
@@ -16,6 +15,8 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+use OE\factories\models\traits\HasFactory;
 
 /**
  * This is the model class for table "firm".
@@ -41,6 +42,8 @@
  */
 class Firm extends BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     const SELECTION_ORDER = 'name';
 
     public $subspecialty_id;
