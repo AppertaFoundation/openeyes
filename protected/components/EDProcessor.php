@@ -449,58 +449,97 @@ EOSQL;
         return json_encode(array_merge($current, $append));
     }
 
-    public function applyNewElementEyedrawData($element_type_id, $patient_json, $new_json)
+    public function applyNewElementEyedrawData($element_type_id, string $patient_json, string $new_json): string
     {
         $patient_data = json_decode($patient_json, true);
         $new_data = json_decode($new_json, true);
 
-        // Remap as associative arrays addressed by subclass to make life easier below - any existing data without subclasses will be dropped.
-        // Only data with a subclass that is marked as being 'carry forward' is to copied over the new (template) data
-        $patient_data = array_reduce(
-            $patient_data,
-            static function ($into, $data) {
-                if (array_key_exists('subclass', $data)) {
-                    $into[$data['subclass']] = $data;
-                }
-
-                return $into;
-            },
-            []
-        );
-
-        // New data without subclasses is preserved however.
-        $new_data = array_reduce(
-            $new_data,
-            static function ($into, $data) {
-                if (array_key_exists('subclass', $data)) {
-                    $into[$data['subclass']] = $data;
-                } else {
-                    $into[] = $data;
-                }
-
-                return $into;
-            },
-            []
-        );
-
-        $canvas_mnemonic = $this->getCanvasMnemonicForElementType($element_type_id);
-
-        $carry_forward_doodles = \Yii::app()->db
-                               ->createCommand()
-                               ->select('eyedraw_class_mnemonic')
-                               ->from('eyedraw_canvas_doodle')
-                               ->where([
-                                   'and',
-                                   ['and', 'eyedraw_carry_forward_canvas_flag <> 0', 'canvas_mnemonic = :canvas_mnemonic'],
-                                   ['in', 'eyedraw_class_mnemonic', array_keys($patient_data)]
-                               ],
-                               [':canvas_mnemonic' => $canvas_mnemonic])
-                               ->queryColumn();
-
-        foreach ($carry_forward_doodles as $subclass) {
-            $new_data[$subclass] = $patient_data[$subclass];
-        }
+        $doodles_to_overwrite = $this->getCarryForwardDoodlesForElementType($element_type_id, $this->getDoodleClassesFromEyedrawData($patient_data));
+        $new_data = $this->removeDoodleClasses($new_data, $doodles_to_overwrite);
+        $new_data = $this->addDoodleClasses($new_data, $patient_data, $doodles_to_overwrite);
 
         return json_encode(array_values($new_data));
+    }
+
+    /**
+     * From the given doodle classes, returns a list of those classes that should be
+     * carried forward to the given the element type (from its id)
+     *
+     * @param mixed $element_type_id
+     * @param array $doodle_classes
+     * @return array
+     */
+    public function getCarryForwardDoodlesForElementType($element_type_id, array $doodle_classes = []): array
+    {
+        $canvas_mnemonic = $this->getCanvasMnemonicForElementType($element_type_id);
+
+        return $this->app->db
+            ->createCommand()
+            ->select('eyedraw_class_mnemonic')
+            ->from('eyedraw_canvas_doodle')
+            ->where([
+                'and',
+                ['and', 'eyedraw_carry_forward_canvas_flag <> 0', 'canvas_mnemonic = :canvas_mnemonic'],
+                ['in', 'eyedraw_class_mnemonic', $doodle_classes]
+            ],
+            [':canvas_mnemonic' => $canvas_mnemonic])
+            ->queryColumn();
+    }
+
+    /**
+     * Get the distinct list of Eyedraw doodles contained within the structured data
+     *
+     * @param array $eyedraw_data
+     * @return array
+     */
+    protected function getDoodleClassesFromEyedrawData(array $eyedraw_data): array
+    {
+        return array_unique(
+            array_filter(
+                array_map(function ($possible_doodle) {
+                    return $possible_doodle['subclass'] ?? null;
+                }, $eyedraw_data),
+                function ($doodle_class) {
+                    return $doodle_class !== null;
+                }
+            )
+        );
+    }
+
+    /**
+     * Remove all instances of the given doodle classes from the structured data
+     *
+     * @param array $eyedraw_data
+     * @param array $doodle_classes
+     * @return array
+     */
+    protected function removeDoodleClasses(array $eyedraw_data, array $doodle_classes): array
+    {
+        return array_filter(
+            $eyedraw_data,
+            function ($possible_doodle) use ($doodle_classes) {
+                return !array_key_exists('subclass', $possible_doodle)
+                    || !in_array($possible_doodle['subclass'], $doodle_classes);
+            }
+        );
+    }
+
+    /**
+     * Take all instances of the given doodle classes from source, and add them to the target
+     *
+     * @param array $target
+     * @param array $source
+     * @param [type] $doodle_classes
+     * @return array
+     */
+    protected function addDoodleClasses(array $target, array $source, $doodle_classes): array
+    {
+        foreach ($source as $possible_doodle) {
+            if (array_key_exists('subclass', $possible_doodle) && in_array($possible_doodle['subclass'], $doodle_classes)) {
+                $target[] = $possible_doodle;
+            }
+        }
+
+        return $target;
     }
 }
