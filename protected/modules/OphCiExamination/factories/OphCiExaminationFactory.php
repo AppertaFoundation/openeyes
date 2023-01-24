@@ -17,6 +17,7 @@ namespace OEModule\OphCiExamination\factories;
 
 use OE\factories\models\EventFactory;
 use OEModule\OphCiExamination\models\Allergies;
+use OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses;
 
 class OphCiExaminationFactory extends EventFactory
 {
@@ -33,5 +34,10 @@ class OphCiExaminationFactory extends EventFactory
     public function withAllergies($states = [])
     {
         return $this->withElement(Allergies::class, is_array($states) ? $states : [$states]);
+    }
+
+    public function withOphthalmicDiagnoses($states = [])
+    {
+        return $this->withElement(Element_OphCiExamination_Diagnoses::class, is_array($states) ? $states : [$states]);
     }
 }

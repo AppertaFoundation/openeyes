@@ -79,7 +79,7 @@ class Element_OphCiExamination_DiagnosesFactory extends ModelFactory
      * @param mixed $disorders - array of disorders, or integer to represent the number of diagnoses to assign
      * @return void
      */
-    public function withBilateralDiagnoses($disorders = []): self
+    public function withBilateralDiagnoses($disorders = 1): self
     {
         return $this->withDiagnoses($disorders, Eye::BOTH);
     }
@@ -93,7 +93,7 @@ class Element_OphCiExamination_DiagnosesFactory extends ModelFactory
      * @param mixed $disorders - array of disorders, or integer to represent the number of diagnoses to assign
      * @return void
      */
-    public function withRightDiagnoses($disorders = []): self
+    public function withRightDiagnoses($disorders = 1): self
     {
         return $this->withDiagnoses($disorders, Eye::RIGHT);
     }
@@ -107,7 +107,7 @@ class Element_OphCiExamination_DiagnosesFactory extends ModelFactory
      * @param mixed $disorders - array of disorders, or integer to represent the number of diagnoses to assign
      * @return void
      */
-    public function withLeftDiagnoses($disorders = []): self
+    public function withLeftDiagnoses($disorders = 1): self
     {
         return $this->withDiagnoses($disorders, Eye::LEFT);
     }
@@ -117,6 +117,9 @@ class Element_OphCiExamination_DiagnosesFactory extends ModelFactory
         return $this->afterMaking(function (Element_OphCiExamination_Diagnoses $element) use ($disorders, $laterality) {
             if (is_int($disorders)) {
                 $disorders = $this->getUniqueDisordersFor($element, $disorders);
+            }
+            if (!is_array($disorders)) {
+                $disorders = array($disorders);
             }
             $this->addDisordersTo($element, $disorders, $laterality);
         });
@@ -131,7 +134,8 @@ class Element_OphCiExamination_DiagnosesFactory extends ModelFactory
         ) > 0;
 
         if (!$has_principal_diagnosis) {
-            $element->diagnoses[array_rand($element->diagnoses)]->principal = true;
+            $diagnosis = $element->diagnoses[array_rand($element->diagnoses)];
+            $diagnosis->principal = true;
         }
     }
 
@@ -142,10 +146,10 @@ class Element_OphCiExamination_DiagnosesFactory extends ModelFactory
             array_map(
                 function ($disorder) use ($laterality) {
                     return OphCiExamination_Diagnosis::factory()
+                        ->withDisorder($disorder)
                         ->make([
                             'element_diagnoses_id' => null,
-                            'eye_id' => $laterality,
-                            'disorder_id' => $disorder->id
+                            'eye_id' => $laterality
                         ]);
                 },
                 $disorders

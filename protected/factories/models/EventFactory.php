@@ -5,15 +5,14 @@ namespace OE\factories\models;
 use DateTime;
 use Episode;
 use Event;
+use Firm;
+use OE\factories\exceptions\CannotMakeModelException;
 use OE\factories\exceptions\FactoryNotFoundException;
 use OE\factories\ModelFactory;
-use OE\factories\models\traits\HasFirm;
 use Patient;
 
 class EventFactory extends ModelFactory
 {
-    use HasFirm;
-
     protected static ?array $availableEventTypes = null;
     protected array $elementsWithStates = [];
 
@@ -36,7 +35,7 @@ class EventFactory extends ModelFactory
     {
         return [
             'episode_id' => ModelFactory::factoryFor(Episode::class),
-            'event_type_id' => $this->faker->randomElement($this->availableEventTypes())
+            'event_type_id' => $this->faker->randomElement($this->availableEventTypes()),
         ];
     }
 
@@ -99,6 +98,38 @@ class EventFactory extends ModelFactory
 
             return [
                 'episode_id' => $attributes['episode_id']
+            ];
+        });
+    }
+
+    public function forFirm(Firm $firm): self
+    {
+        return $this->state(function ($attributes) use ($firm) {
+            if ($attributes['episode_id'] instanceof ModelFactory) {
+                $attributes['episode_id'] = $attributes['episode_id']->ForFirm($firm);
+            } else {
+                $attributes['episode_id']->firm = $firm->id;
+            }
+
+            return [
+                'episode_id' => $attributes['episode_id'],
+                'firm_id' => $firm->id
+            ];
+        });
+    }
+
+    public function forFirmWithName(string $firmName)
+    {
+        return $this->state(function ($attributes) use ($firmName) {
+            if (!($attributes['episode_id'] instanceof ModelFactory)) {
+                throw new CannotMakeModelException('forFirmName state only applicable when generating an episode for the event.');
+            }
+
+            return [
+                'episode_id' => $attributes['episode_id']->forFirmWithName($firmName),
+                'firm_id' => Firm::factory()->useExisting([
+                    'name' => $firmName
+                ])
             ];
         });
     }
