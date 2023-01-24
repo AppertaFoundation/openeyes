@@ -404,7 +404,7 @@ abstract class ModelFactory
      * retrieved, and when instantiated through POST requests in the
      * application framework.
      *
-     * @param CActiveRecord $instance
+     * @param array $instance
      * @return void
      */
     protected function castAttributes(array $instances): void
