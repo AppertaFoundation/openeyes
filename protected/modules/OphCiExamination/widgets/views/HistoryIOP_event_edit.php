@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -33,7 +34,7 @@ endif; ?>
 <div class="element-fields element-eyes">
     <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) :?>
         <div class="cols-6 js-element-eye <?=$eye_side?>-eye <?=$page_side?>" data-side="<?=$eye_side?>">
-            <div class="active-form data-group flex-layout">
+            <div class="active-form data-group">
                 <?php $this->render(
                     'HistoryIOP_event_edit_side',
                     [
