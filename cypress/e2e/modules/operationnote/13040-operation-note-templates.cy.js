@@ -25,11 +25,15 @@ describe('test operation note template functionality', () => {
                     cy.fillOperationNote(fixture.templateData);
 
                     cy.getBySel('event-action-save').first().click();
-        
+
                     cy.getBySel('save-new-template').click();
                     cy.getBySel('template-name').type(fixture.templateData.name);
 
+                    cy.intercept('/OphTrOperationnote/Default/saveTemplate').as('saveTemplate');
                     cy.getBySel('save-template').click();
+                    // ensure template is saved before test completes
+                    cy.waitFor('@saveTemplate');
+                    // TODO: check for success message?
                 });
         });
 
@@ -49,13 +53,13 @@ describe('test operation note template functionality', () => {
                                 return body.event.procedureSetId;
                             })
                             .as('procedureSetId');
-                        
+
                         cy.getEventCreationUrl(patientId, 'OphTrOperationnote')
                             .then((url) => {
-                                cy.visit(url) 
+                                cy.visit(url)
                             }).then(() => {
                                 cy.getBySel('template-entry').contains(fixture.templateData.name).click();
-        
+
                                 cy.verifyOperationNoteData(fixture.templateData);
                             });
                     });
@@ -94,7 +98,7 @@ describe('test operation note template functionality', () => {
                                 return body.event.procedureSetId;
                             })
                             .as('procedureSetId');
-                        
+
                         cy.getEventCreationUrl(patientId, 'OphTrOperationnote')
                             .then((url) => {
                                 cy.visit(url);
@@ -129,7 +133,7 @@ describe('test operation note template functionality', () => {
                     cy.fillOperationNote(fixture.templateData);
 
                     cy.getBySel('event-action-save').first().click();
-        
+
                     cy.getBySel('save-new-template').click();
                     cy.getBySel('template-name').type(templateName);
 
@@ -142,7 +146,7 @@ describe('test operation note template functionality', () => {
                                 return body.event.procedureSetId;
                             })
                             .as('procedureSetId');
-                        
+
                         cy.getEventCreationUrl(patientId, 'OphTrOperationnote')
                             .then((url) => {
                                 cy.visit(url);
