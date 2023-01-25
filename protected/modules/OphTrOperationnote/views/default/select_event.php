@@ -147,10 +147,10 @@ $warnings = $this->patient->getWarnings($clinical);
                                 <button class="booking-select"
                                     data-eye-id="<?=$operation->eye->id?>"
                                     data-booking="booking<?= $operation->event_id ?>"
-                                    data-template="<?= $template->id ?>"
+                                    data-template="<?= $template->event_template_id ?>"
                                     data-test="template-entry">
                                     <i class="oe-i starline small pad-r"></i>
-                                    <?= $template->event_template->name ?>
+                                    <?= $template->name ?>
                                 </button>
                             </li>
                             <?php }
