@@ -20,8 +20,8 @@ $selected_template_id = $selected_template_id ?? null;
           <h4>Your pre-fill templates</h4>
           <ul class="btn-list js-template-prefill-selection-choices">
             <?php foreach ($filtered_templates as $template) {
-                $class = $template->id === $selected_template_id ? ' class="selected"' : '';
-                echo '<li data-template-id="' . $template->id . '"' . $class . '>' . CHtml::encode($template->name) . '</li>';
+                $class = $template->event_template_id === $selected_template_id ? ' class="selected"' : '';
+                echo '<li data-template-id="' . $template->event_template_id . '"' . $class . '>' . CHtml::encode($template->name) . '</li>';
             } ?>
           </ul>
           <hr class="divider">
