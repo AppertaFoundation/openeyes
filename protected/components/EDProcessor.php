@@ -463,7 +463,7 @@ EOSQL;
 
     /**
      * From the given doodle classes, returns a list of those classes that should be
-     * carried forward to the given the element type (from its id)
+     * carried forward to the given element type (from its id)
      *
      * @param mixed $element_type_id
      * @param array $doodle_classes
