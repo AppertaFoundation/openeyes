@@ -22,18 +22,18 @@ describe('test operation note template functionality', () => {
             cy.contains('Create default op note').click();
             cy.fixture('13040-operation-note-templates')
                 .then((fixture) => {
-                    cy.fillOperationNote(fixture.templateData);
+                    cy.fillOperationNote(fixture.templateData).then(() => {
+                        cy.getBySel('event-action-save').first().click();
 
-                    cy.getBySel('event-action-save').first().click();
+                        cy.getBySel('save-new-template').click();
+                        cy.getBySel('template-name').type(fixture.templateData.name);
 
-                    cy.getBySel('save-new-template').click();
-                    cy.getBySel('template-name').type(fixture.templateData.name);
-
-                    cy.intercept('/OphTrOperationnote/Default/saveTemplate').as('saveTemplate');
-                    cy.getBySel('save-template').click();
-                    // ensure template is saved before test completes
-                    cy.waitFor('@saveTemplate');
-                    // TODO: check for success message?
+                        cy.intercept('/OphTrOperationnote/Default/saveTemplate').as('saveTemplate');
+                        cy.getBySel('save-template').click();
+                        // ensure template is saved before test completes
+                        cy.waitFor('@saveTemplate');
+                        // TODO: check for success message?
+                    });
                 });
         });
 
@@ -49,19 +49,17 @@ describe('test operation note template functionality', () => {
                     let procedureNames = Object.entries(fixture.templateData.elementData.procedures).map(proc => proc[0]);
                     cy.get('@patientId').then((patientId) => {
                         cy.runSeeder('OphTrOperationbooking', 'OpBookingWithProceduresSeeder', {procedure_names: procedureNames, patient_id: patientId})
-                            .then((body) => {
-                                return body.event.procedureSetId;
+                            .then(() => {
+                                return cy.getEventCreationUrl(patientId, 'OphTrOperationnote');
                             })
-                            .as('procedureSetId');
-
-                        cy.getEventCreationUrl(patientId, 'OphTrOperationnote')
                             .then((url) => {
-                                cy.visit(url)
-                            }).then(() => {
-                                cy.getBySel('template-entry').contains(fixture.templateData.name).click();
+                                cy.visit(url);
 
+                                cy.getBySel('template-entry').contains(fixture.templateData.name).click();
                                 cy.verifyOperationNoteData(fixture.templateData);
                             });
+
+
                     });
                 });
         });

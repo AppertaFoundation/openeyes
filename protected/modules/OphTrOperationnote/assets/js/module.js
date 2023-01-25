@@ -894,8 +894,12 @@ function sidePortController(_drawing) {
                     }
                 }
 
-                break;
+                // this attribute is used by cypress testing to indicate that eyedraw is ready
+                // ideally we would actually verify that all the fields have been synced before
+                // setting this state.
+                $('#eyedrawwidget_Cataract').attr('data-cy-ed-ready', 'true');
 
+                break;
             case 'beforeReset': {
                 iol_position = $('#Element_OphTrOperationnote_Cataract_iol_position_id').val();
                 let surgeonDrawing = ED.getInstance('ed_drawing_edit_Position');
