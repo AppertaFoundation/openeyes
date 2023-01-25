@@ -11,4 +11,31 @@ abstract class BaseEventTemplate extends BaseActiveRecordVersioned
 
         return $this->save();
     }
+
+    /**
+     * Scope to limit to templates owned by the given user id
+     *
+     * @param mixed $user_id
+     * @return BaseEventTemplate
+     */
+    public function forUserId($user_id): self
+    {
+        $this->getDbCriteria()
+            ->mergeWith([
+                'with' => [
+                    'user_assignment' => [
+                        'joinType' => 'INNER JOIN',
+                        'condition' => 'user_id = :forUserUserId',
+                        'params' => [':forUserUserId' => $user_id]
+                    ]
+                ]
+            ]);
+
+        return $this;
+    }
+
+    public function getname()
+    {
+        return $this->event_template->name;
+    }
 }

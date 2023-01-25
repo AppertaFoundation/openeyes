@@ -266,13 +266,9 @@ class DefaultController extends BaseEventTypeController
         );
 
         if ($this->unbooked) {
-            $templates_criteria = new CDbCriteria();
-
-            $templates_criteria->join = 'JOIN ophtroperationnote_template ont ON ont.event_template_id = t.id JOIN event_template_user etu ON etu.event_template_id = t.id';
-            $templates_criteria->addCondition('user_id = :user_id');
-            $templates_criteria->params = [':user_id' => \Yii::app()->user->id];
-
-            $templates_for_unbooked = \EventTemplate::model()->findAll($templates_criteria);
+            $templates_for_unbooked = OphTrOperationnote_Template::model()
+                ->forUserId(\Yii::app()->user->id)
+                ->findAll();
         }
 
         $this->render('create', array(

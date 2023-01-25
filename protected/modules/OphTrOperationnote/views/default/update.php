@@ -64,7 +64,7 @@ $template = !empty($this->template) ? $this->template : ((!empty($this->event) &
 if ($template) {
     $opnote_template = $template->opnote_templates;
     $procedure_set = $opnote_template->procedure_set;
-    $filtered_templates = EventTemplate::model()->with('opnote_templates')->findAll('proc_set_id = ?', [$procedure_set->id]);
+    $filtered_templates = OphTrOperationnote_Template::model()->forUserId(\Yii::app()->user->id)->forProcedureSet($procedure_set)->findAll();
 
     $this->renderPartial('OphTrOperationnote_Template_prefill_selection', [
     'procedures' => $procedure_set->procedures,

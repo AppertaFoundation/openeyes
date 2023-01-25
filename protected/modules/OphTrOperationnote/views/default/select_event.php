@@ -88,7 +88,10 @@ $warnings = $this->patient->getWarnings($clinical);
 
                     $templates = array();
                     if ($procedure_set) {
-                        $templates = OphTrOperationnote_Template::model()->findAll('proc_set_id = :id', [':id' => $procedure_set->id]);
+                        $templates = OphTrOperationnote_Template::model()
+                          ->forUserId(Yii::app()->user->id)
+                          ->forProcedureSet($procedure_set)
+                          ->findAll();
                     }
                     ?>
                 <tr>

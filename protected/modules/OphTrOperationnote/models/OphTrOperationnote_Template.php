@@ -73,6 +73,10 @@ class OphTrOperationnote_Template extends BaseEventTemplate
             'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'procedure_set' => array(self::BELONGS_TO, 'ProcedureSet', 'proc_set_id'),
             'event_template' => array(self::BELONGS_TO, 'EventTemplate', 'event_template_id'),
+            'user_assignment' => [
+                self::HAS_MANY,
+                'EventTemplateUser', ['id' => 'event_template_id'], 'through' => 'event_template'
+            ]
         );
     }
 
@@ -170,5 +174,22 @@ class OphTrOperationnote_Template extends BaseEventTemplate
         }
 
         return $data_has_changed ? EventTemplate::UPDATE_OR_CREATE : EventTemplate::UPDATE_UNNEEDED;
+    }
+
+    /**
+     * Scope to limit to procedure set
+     *
+     * @param ProcedureSet $procedure_set
+     * @return OphTrOperationnote_Template
+     */
+    public function forProcedureSet(ProcedureSet $procedure_set): self
+    {
+        $this->getDbCriteria()
+        ->mergeWith([
+            'condition' => 't.proc_set_id = :forProcedureSetId',
+            'params' => [':forProcedureSetId' => $procedure_set->id]
+        ]);
+
+        return $this;
     }
 }
