@@ -29,17 +29,6 @@ class OphTrOperationnote_Template extends BaseEventTemplate
     }
 
     /**
-     * Returns the static model of the specified AR class.
-     * Please note that you should have this exact method in all your CActiveRecord descendants!
-     * @param string $className active record class name.
-     * @return BaseEventTemplate the static model class
-     */
-    public static function model($className = __CLASS__)
-    {
-        return parent::model($className);
-    }
-
-    /**
      * @return array validation rules for model attributes.
      */
     public function rules()
