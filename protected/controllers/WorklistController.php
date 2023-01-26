@@ -1454,7 +1454,7 @@ class WorklistController extends BaseController
             $temp['date'] = \Helper::convertDate2NHS($worklistPatient->worklist->start);
             $temp['name'] = $worklistPatient->worklist->name;
             $worklistStatus = $worklistPatient->getWorklistPatientAttribute('Status');
-            $event = Event::model()->findByAttributes(['worklist_patient_id' => $worklistPatient->id]);
+            $event = $appointment->did_not_attend_events[$worklistPatient->id] ?? null;
 
             if (isset($worklistStatus)) {
                 $temp['status'] = $worklistStatus->attribute_value;
@@ -1471,17 +1471,19 @@ class WorklistController extends BaseController
             $criteria->addCondition('t.when < "' . $start_of_today . '"');
             $criteria->order = 't.when desc';
 
-            $past_worklist_patients = WorklistPatient::model()->findAllByAttributes(
-                ['patient_id' => $patient->id],
-                $criteria
-            );
+            $past_worklist_patients = WorklistPatient::model()
+                ->with('worklist', 'worklist_attributes.worklistattribute')
+                ->findAllByAttributes(
+                    ['patient_id' => $patient->id],
+                    $criteria
+                );
             foreach ($past_worklist_patients as $worklistPatient) {
                 $temp = [];
                 $temp['time'] = date('H:i', strtotime($worklistPatient->when));
                 $temp['date'] = \Helper::convertDate2NHS($worklistPatient->worklist->start);
                 $temp['name'] = $worklistPatient->worklist->name;
                 $worklistStatus = $worklistPatient->getWorklistPatientAttribute('Status');
-                $event = Event::model()->findByAttributes(['worklist_patient_id' => $worklistPatient->id]);
+                $event = $appointment->did_not_attend_events[$worklistPatient->id] ?? null;
 
                 if (isset($worklistStatus)) {
                     $temp['status'] = $worklistStatus->attribute_value;

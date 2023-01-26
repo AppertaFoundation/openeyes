@@ -1,4 +1,5 @@
 <?php
+
 use OE\factories\models\traits\HasFactory;
 
 /**
@@ -147,15 +148,10 @@ class Institution extends BaseActiveRecordVersioned
      */
     public function getCurrent()
     {
-        if (Yii::app()->session->get('selected_institution_id', null) === null) {
-            throw new Exception('Institution id is not set');
-        }
-
-        $institution = $this->findByPk(Yii::app()->session->get('selected_institution_id'));
+        $institution = Yii::app()->session->getSelectedInstitution();
         if (!$institution) {
-            throw new Exception("Institution with id '" . Yii::app()->session->get('selected_institution_id') . "' not found");
+            throw new RuntimeException('Institution is not set for application session');
         }
-
         return $institution;
     }
 

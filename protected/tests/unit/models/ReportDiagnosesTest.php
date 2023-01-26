@@ -19,6 +19,8 @@
 class ReportDiagnosesTest extends OEDbTestCase
 {
     public $fixtures = array(
+        'contact' => Contact::class,
+        'disorder' => Disorder::class,
         'institution' => Institution::class,
         'site' => Site::class,
         'patient_identifier_type' => PatientIdentifierType::class,
@@ -31,18 +33,15 @@ class ReportDiagnosesTest extends OEDbTestCase
     public static function setUpBeforeClass(): void
     {
         Yii::app()->session['selected_institution_id'] = 1;
+        Yii::app()->session['selected_site_id'] = 1;
         Yii::app()->params['display_primary_number_usage_code'] = 'LOCAL';
     }
 
     public static function tearDownAfterClass(): void
     {
-        unset(Yii::app()->session['selected_institution_id']);
+        Yii::app()->setComponent('session', null);
+        $_SESSION = [];
         unset(Yii::app()->params['display_primary_number_usage_code']);
-    }
-
-    public function setUp(): void
-    {
-        parent::setUp();
     }
 
     public function testAfterValidate_NoDiagnoses()
@@ -233,7 +232,7 @@ class ReportDiagnosesTest extends OEDbTestCase
     {
         $r = $this->getMockBuilder('ReportDiagnoses')
             ->disableOriginalConstructor()
-            ->setMethods(array('getDbCommand', 'joinDisorders', 'addDiagnosesResultItem'))
+            ->onlyMethods(['getDbCommand', 'joinDisorders', 'addDiagnosesResultItem'])
             ->getMock();
 
         $r->principal = array(1, 2, 3);
@@ -248,17 +247,13 @@ class ReportDiagnosesTest extends OEDbTestCase
             ->method('getDbCommand')
             ->will($this->returnValue($query));
 
-        $r->expects($this->at(1))
+        $r->expects($this->exactly(3))
             ->method('joinDisorders')
-            ->with('Principal', array(1, 2, 3), 'p.id, c.first_name, c.last_name, p.dob', array(), array(), $query);
-
-        $r->expects($this->at(2))
-            ->method('joinDisorders')
-            ->with('Secondary', array(4, 5, 6), 'p.id, c.first_name, c.last_name, p.dob', array(), array(), $query);
-
-        $r->expects($this->at(3))
-            ->method('joinDisorders')
-            ->with('All', array(7, 8, 9), 'p.id, c.first_name, c.last_name, p.dob', array(), array(), $query);
+            ->withConsecutive(
+                ['Principal', array(1, 2, 3), 'p.id, c.first_name, c.last_name, p.dob', array(), array(), $query],
+                ['Secondary', array(4, 5, 6), 'p.id, c.first_name, c.last_name, p.dob', array(), array(), $query],
+                ['All', array(7, 8, 9), 'p.id, c.first_name, c.last_name, p.dob', array(), array(), $query]
+            );
 
         $r->run();
     }
@@ -267,12 +262,12 @@ class ReportDiagnosesTest extends OEDbTestCase
     {
         $r = $this->getMockBuilder('ReportDiagnoses')
             ->disableOriginalConstructor()
-            ->setMethods(array('getDbCommand', 'addDiagnosesResultItem'))
+            ->onlyMethods(['getDbCommand', 'addDiagnosesResultItem'])
             ->getMock();
 
         $query = $this->getMockBuilder('CDbCommand')
             ->disableOriginalConstructor()
-            ->setMethods(array('select', 'where', 'leftJoin', 'queryAll'))
+            ->onlyMethods(['select', 'where', 'leftJoin', 'queryAll'])
             ->getMock();
 
         $r->expects($this->once())
@@ -301,12 +296,12 @@ class ReportDiagnosesTest extends OEDbTestCase
     {
         $r = $this->getMockBuilder('ReportDiagnoses')
             ->disableOriginalConstructor()
-            ->setMethods(array('getDbCommand', 'addDiagnosesResultItem'))
+            ->onlyMethods(['getDbCommand', 'addDiagnosesResultItem'])
             ->getMock();
 
         $query = $this->getMockBuilder('CDbCommand')
             ->disableOriginalConstructor()
-            ->setMethods(array('select', 'where', 'leftJoin', 'queryAll'))
+            ->onlyMethods(['select', 'where', 'leftJoin', 'queryAll'])
             ->getMock();
 
         $r->expects($this->once())
@@ -403,6 +398,10 @@ class ReportDiagnosesTest extends OEDbTestCase
             ),
         );
 
+        // These assertions don't cover all the calls that will be made to addDiagnosesResultItem
+        // it's not clear why null diagnosis rows are being queried with the report object set up
+        // as it is in this test. It warrants further investigation if this test needs to be refactored
+        // to cover deprecation.
         foreach ($results as $i => $result) {
             $r->expects($this->at($i))
                 ->method('addDiagnosesResultItem')

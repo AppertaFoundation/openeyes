@@ -828,7 +828,7 @@ $config = array(
         // any appointments sent in before this date will not trigger errors when sent in (use YYYY-mm-dd format)
         'worklist_ignore_date' => !empty(getenv('OE_WORKLIST_IGNORE_DATE')) ? getenv('OE_WORKLIST_IGNORE_DATE') : null,
         // whether we should render empty worklists in the dashboard or not (default = true)
-        'worklist_show_empty' => strtolower(getenv('OE_WORKLIST_SHOW_EMPTY')) != 'false',
+        'worklist_show_empty' => !empty(getenv('OE_WORKLIST_SHOW_EMPTY')) ? (strtolower(getenv('OE_WORKLIST_SHOW_EMPTY')) != 'false' ? 'on' : 'off') : null,
         'tech_support_provider' => !empty(trim(getenv(@'OE_TECH_SUPPORT_PROVIDER'))) ? htmlspecialchars(getenv(@'OE_TECH_SUPPORT_PROVIDER')) :  null,
         'tech_support_url' => !empty(trim(getenv('OE_TECH_SUPPORT_URL'))) ? getenv('OE_TECH_SUPPORT_URL') :  null,
         'pw_restrictions' => array(
@@ -1046,7 +1046,7 @@ if (strtolower(getenv('OE_MODE')) !== 'live') {
 $caches = array(
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '20221128114530',
+            'time' => '20230110162840',
         ),
 );
 

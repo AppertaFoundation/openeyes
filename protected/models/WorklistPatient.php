@@ -168,6 +168,27 @@ class WorklistPatient extends BaseActiveRecordVersioned
 
     public function getWorklistPatientAttribute($attribute_name): ?WorklistPatientAttribute
     {
+        if ($this->hasRelated('worklist_attributes')) {
+            return $this->getWorklistPatientAttributeFromRelation($attribute_name);
+        }
+
+        return $this->getWorklistPatientAttributeFromQuery($attribute_name);
+    }
+
+    protected function getWorklistPatientAttributeFromRelation($attribute_name): ?WorklistPatientAttribute
+    {
+        $attributes = array_filter(
+            $this->worklist_attributes,
+            function ($attr) use ($attribute_name) {
+                return $attr->worklistattribute->name == $attribute_name;
+            }
+        );
+
+        return $attributes[0] ?? null;
+    }
+
+    protected function getWorklistPatientAttributeFromQuery($attribute_name): ?WorklistPatientAttribute
+    {
         $criteria = new CDbCriteria();
         $criteria->join = " JOIN worklist_attribute wa ON wa.id = t.worklist_attribute_id";
         $criteria->addCondition('t.worklist_patient_id = :worklist_patient_id');
