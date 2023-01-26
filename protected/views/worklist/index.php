@@ -1471,7 +1471,7 @@ $initial_filter = $session_filter_info['filter'];
         const patientId = $(element).parent().attr('data-patient-id');
         const mode = $patientQuickOverviewElem.attr('data-mode');
         $patientQuickOverviewElem.get(0).style.cssText = " ";
-        
+
         let rect = element.getBoundingClientRect();
 
         if( mode === "float"){
@@ -1523,6 +1523,10 @@ $initial_filter = $session_filter_info['filter'];
         .on('change', '#visual-fields-form input[name="preset_id"]', function () {
             if ($(this).val() === '') {
                 $(this).closest('#visual-fields-form').find('.js-field-custom').show();
+                // Set the height
+                const $pathstepPopup = $(this).closest('.oe-pathstep-popup.arrow-t');
+                const currentHeight = $pathstepPopup.height();
+                $pathstepPopup.height(currentHeight + 90);
             } else {
                 $(this).closest('#visual-fields-form').find('.js-field-custom').hide();
                 $(this).closest('#visual-fields-form').find('.js-field-custom input').prop('checked', false);
