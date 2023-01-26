@@ -18,6 +18,8 @@ testtorun=""
 phpunitconfigxml="$WROOT/protected/tests/phpunit.xml"
 phpunitpath="$WROOT/vendor/phpunit/phpunit/phpunit"
 groupOrExclude=0
+xdebugide="VSCODE"
+extraenvs=""
 
 while [[ $# -gt 0 ]]; do
   p="$1"
@@ -31,6 +33,10 @@ while [[ $# -gt 0 ]]; do
     groupOrExclude=1
     testtorun="$testtorun $p"
     ;;
+  --xdebug-ide)
+    xdebugide="$2"
+    shift
+    ;;
   *)
     testtorun="$testtorun $p"
     # pass all remaining commands to phpunit
@@ -39,6 +45,13 @@ while [[ $# -gt 0 ]]; do
 
   shift # move to next parameter
 done
+
+if [ -n "${XDEBUG_CONFIG_OVERRIDE}" ]; then
+  extraenvs="XEDBUG_CONFIG=\"${XDEBUG_OVERRIDE_CONFIG}\""
+else
+  extraenvs="XDEBUG_CONFIG=\"${xdebugide}\""
+fi
+
 status=1
 if [ "$OE_TEST_NO_GROUP" != "1" ] && [ "$groupOrExclude" -eq 0 ] && [ -z "$testtorun" ]; then
   echo "***************************************************************************"
@@ -60,7 +73,7 @@ if [ "$OE_TEST_NO_GROUP" != "1" ] && [ "$groupOrExclude" -eq 0 ] && [ -z "$testt
   fi
 
 else
-  eval php $phpunitpath --configuration $phpunitconfigxml $testtorun
+  eval $extraenvs php $phpunitpath --configuration $phpunitconfigxml $testtorun
   status=$?
 fi
 
