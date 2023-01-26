@@ -153,16 +153,17 @@ $pathway = $visit->pathway;
             <?php }
         }
     }
-    if ($pathway && (int)$pathway->status === Pathway::STATUS_DONE) { ?>
+    if ($pathway && (int)$pathway->status === Pathway::STATUS_DONE) {
+        $formatted_time = $pathway->end_time ? DateTime::createFromFormat('Y-m-d H:i:s', $pathway->end_time)->format(
+            'H:i'
+        ) : date('H:i') ?>
+
         <span class="oe-pathstep-btn done buff finish" data-pathstep-id="finished"
               data-pathstep-type-id=""
               data-patient-id="<?= $pathway->worklist_patient->patient_id ?>"
               data-visit-id="<?= $pathway->worklist_patient_id ?>">
             <span class="step i-fin"></span>
-            <span class="info">
-                <!-- PathwayStep getter: getStepStartTime() -->
-                <?= $step->stepStartTime ?>
-            </span>
+            <span class="info"><?= $formatted_time ?></span>
         </span>
     <?php } ?>
 </div>
