@@ -1,6 +1,6 @@
 <?php
 /**
- * (C) Apperta Foundation, 2022
+ * (C) Apperta Foundation, 2023
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -9,35 +9,39 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (C) 2022, Apperta Foundation
+ * @copyright Copyright (C) 2023, Apperta Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-namespace OEModule\OphCiExamination\factories;
+namespace OEModule\OphCiExamination\factories\models;
 
+use OE\factories\ModelFactory;
 use OE\factories\models\EventFactory;
-use OEModule\OphCiExamination\models\Allergies;
-use OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses;
 
-class OphCiExaminationFactory extends EventFactory
+class Element_OphCiExamination_CommunicationPreferencesFactory extends ModelFactory
 {
     public function definition(): array
     {
-        return array_merge(
-            parent::definition(),
-            [
-                'event_type_id' => $this->getEventTypeByName('Examination')
-            ]
-        );
+        return [
+            'event_id' => EventFactory::forModule('OphCiExamination'),
+            'correspondence_in_large_letters' => $this->faker->randomElement([0, 1]),
+            'agrees_to_insecure_email_correspondence' => $this->faker->randomElement([0, 1]),
+            'language_id' => \Language::factory()->useExisting(),
+            'interpreter_required_id' => \Language::factory()->useExisting()
+        ];
     }
 
-    public function withAllergies($states = [])
+    public function withOtherLanguage()
     {
-        return $this->withElement(Allergies::class, is_array($states) ? $states : [$states]);
+        return $this->state([
+            'language_id' => 0
+        ]);
     }
 
-    public function withOphthalmicDiagnoses($states = [])
+    public function withOtherInterpreterRequired()
     {
-        return $this->withElement(Element_OphCiExamination_Diagnoses::class, is_array($states) ? $states : [$states]);
+        return $this->state([
+            'interpreter_required_id' => 0
+        ]);
     }
 }

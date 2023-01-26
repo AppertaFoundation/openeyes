@@ -17,13 +17,11 @@
 namespace OE\factories\models;
 
 use OE\factories\ModelFactory;
-use OE\factories\models\traits\HasFirm;
 use Patient;
+use Firm;
 
 class EpisodeFactory extends ModelFactory
 {
-    use HasFirm;
-
     public function definition(): array
     {
         return [
@@ -41,11 +39,22 @@ class EpisodeFactory extends ModelFactory
         });
     }
 
-    public function forFirm(\Firm $firm): self
+    public function forFirm(Firm $firm): self
     {
         return $this->state(function () use ($firm) {
             return [
                 'firm_id' => $firm->id
+            ];
+        });
+    }
+
+    public function forFirmWithName(string $firmName)
+    {
+        return $this->state(function ($attributes) use ($firmName) {
+            return [
+                'firm_id' => Firm::factory()->useExisting([
+                    'name' => $firmName
+                ])
             ];
         });
     }

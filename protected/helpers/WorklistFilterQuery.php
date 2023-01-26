@@ -114,9 +114,9 @@ class WorklistFilterQuery
         }
 
         if ($this->context === self::ALL_CONTEXTS) {
-            $this->firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+            $this->firm = Yii::app()->session->getSelectedFirm();
         } else {
-            $this->firm = Firm::model()->findByPk($this->context);
+            $this->firm = Firm::model()->with('serviceSubspecialtyAssignment.subspecialty')->findByPk($this->context);
         }
 
         if (!empty($this->quick) && !empty($this->quick->sortBy)) {

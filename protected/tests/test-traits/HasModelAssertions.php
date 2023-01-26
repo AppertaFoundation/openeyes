@@ -160,6 +160,14 @@ trait HasModelAssertions
         $this->assertEquals($attribute, $defined_relation[2]);
     }
 
+    public function assertModelIs($expected, $model)
+    {
+        $this->assertNotNull($model);
+        $this->assertEquals(get_class($expected), get_class($model));
+        $this->assertNotNull($expected->getPrimaryKey(), 'expected model must be saved instance');
+        $this->assertEquals($expected->getPrimaryKey(), $model->getPrimaryKey());
+    }
+
     public function assertModelArraysMatch($expected, $received)
     {
         $this->assertTrue(is_array($expected));

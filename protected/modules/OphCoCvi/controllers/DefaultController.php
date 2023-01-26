@@ -385,7 +385,7 @@ class DefaultController extends \BaseEventTypeController
                     $element->{$side . '_cvi_disorder_assignments'} = $assignments;
                 }
             }
-            $element->patient_type = ($this->getGetPatientAge() < 18) ? 1 : 0;
+            $element->patient_type = ($this->getGetPatientAge() < 18) ? Element_OphCoCvi_ClinicalInfo::CVI_TYPE_CHILD : Element_OphCoCvi_ClinicalInfo::CVI_TYPE_ADULT;
         }
     }
 

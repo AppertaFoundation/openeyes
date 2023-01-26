@@ -608,12 +608,12 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemandEye
         $attributes = $this->getPrefilledAttributeNames();
         $priorities = array_fill_keys($attributes, \EventTemplate::PRIORITY_TEMPLATE);
 
-        $priorities['eyedraw'] = function($patient_json, $new_json, $priority) {
+        $priorities['eyedraw'] = function ($patient_json, $new_json, $priority) {
             if ($priority !== \EventTemplate::PRIORITY_TEMPLATE) {
                 $temp = $patient_json;
 
                 $patient_json = $new_json;
-                $new_json = $temp_json;
+                $new_json = $temp;
             }
 
             $processor = new \EDProcessor();

@@ -2,6 +2,8 @@
 
 class InstitutionTest extends ActiveRecordTestCase
 {
+    use HasModelAssertions;
+
     protected $fixtures = array(
         'import_sources' => 'ImportSource',
         'institutions' => 'Institution',
@@ -12,14 +14,11 @@ class InstitutionTest extends ActiveRecordTestCase
         return Institution::model();
     }
 
-    public static function setUpBeforeClass(): void
+    public function tearDown(): void
     {
-        Yii::app()->session['selected_institution_id'] = 1;
-    }
-
-    public static function tearDownAfterClass(): void
-    {
-        unset(Yii::app()->session['selected_institution_id']);
+        // clear out session dependency
+        Yii::app()->setComponent('session', null);
+        $_SESSION = [];
     }
 
     /**
@@ -27,7 +26,8 @@ class InstitutionTest extends ActiveRecordTestCase
      */
     public function testGetCurrent_Success()
     {
-        $this->assertEquals($this->institutions('moorfields'), Institution::model()->getCurrent());
+        Yii::app()->session['selected_institution_id'] = 1;
+        $this->assertModelIs($this->institutions('moorfields'), $this->getModel()->getCurrent());
     }
 
     /**
@@ -35,10 +35,9 @@ class InstitutionTest extends ActiveRecordTestCase
      */
     public function testGetCurrent_CodeNotSet()
     {
-        $this->expectExceptionMessage("Institution id is not set");
-        $this->expectException(Exception::class);
-        unset(Yii::app()->session['selected_institution_id']);
-        Institution::model()->getCurrent();
+        $this->expectExceptionMessage("Institution is not set for application session");
+        $this->expectException(RuntimeException::class);
+        $this->getModel()->getCurrent();
     }
 
     /**
@@ -49,6 +48,6 @@ class InstitutionTest extends ActiveRecordTestCase
         $this->expectExceptionMessage("Institution with id '7' not found");
         $this->expectException(Exception::class);
         Yii::app()->session['selected_institution_id'] = 7;
-        Institution::model()->getCurrent();
+        $this->getModel()->getCurrent();
     }
 }

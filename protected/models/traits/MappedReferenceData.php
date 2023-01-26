@@ -139,10 +139,10 @@ trait MappedReferenceData
             $institution = Institution::model()->getCurrent();
         }
 
-        $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+        $firm = Yii::app()->session->getSelectedFirm();
         $subspecialty = $firm ? $firm->serviceSubspecialtyAssignment->subspecialty : null;
         $specialty = $subspecialty ? $subspecialty->specialty : null;
-        $site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
+        $site = Yii::app()->session->getSelectedSite();
 
         if ($this->getSupportedLevels() & $level) {
             switch ($level) {

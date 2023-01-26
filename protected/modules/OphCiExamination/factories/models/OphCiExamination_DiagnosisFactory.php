@@ -35,4 +35,15 @@ class OphCiExamination_DiagnosisFactory extends ModelFactory
             'date' => $this->faker->dateTimeBetween('-3 weeks')->format('Y-m-d')
         ];
     }
+
+    public function withDisorder($disorder): self
+    {
+        return $this->state([
+            'disorder_id' => is_string($disorder)
+            ? Disorder::factory()->forOphthalmology()->useExisting([
+                'term' => $disorder
+            ])
+            : $disorder
+        ]);
+    }
 }

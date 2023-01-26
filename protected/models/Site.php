@@ -1,4 +1,5 @@
 <?php
+use OE\factories\models\traits\HasFactory;
 
 /**
  * (C) Copyright Apperta Foundation 2022
@@ -39,6 +40,8 @@
  */
 class Site extends BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     /**
      * Returns the static model of the specified AR class.
      *
@@ -272,13 +275,9 @@ class Site extends BaseActiveRecordVersioned
      */
     public function getCurrent(): Site
     {
-        if (!isset(Yii::app()->session['selected_site_id'])) {
-            throw new Exception('Site id is not set');
-        }
-
-        $site = $this->findByPk(Yii::app()->session['selected_site_id']);
+        $site = Yii::app()->session->getSelectedSite();
         if (!$site) {
-            throw new Exception("Site with id '" . Yii::app()->session['selected_site_id'] . "' not found");
+            throw new RuntimeException('Site is not set for application session');
         }
 
         return $site;

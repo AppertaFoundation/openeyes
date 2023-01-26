@@ -2283,7 +2283,7 @@ class OphCiExamination_API extends \BaseAPI
         // find the latest follow up element with risk status entry for each none discharged episode
         foreach ($patient->episodes as $episode) {
             // get discharged episode status object
-            $discharge_status = \EpisodeStatus::model()->find('`key` = :key', array(':key' => 'discharged'));
+            $discharge_status = \EpisodeStatus::model()->cache(5)->find('`key` = :key', array(':key' => 'discharged'));
             $latest_risk_status_entry_criteria = new \CDbCriteria();
             $latest_risk_status_entry_criteria->join = "JOIN ophciexamination_clinicoutcome_entry oce ON oce.element_id = t.id";
             $latest_risk_status_entry_criteria->addCondition("oce.risk_status_id IS NOT NULL");

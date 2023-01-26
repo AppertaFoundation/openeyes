@@ -30,22 +30,31 @@ class PatientIdentifierHelper
      */
     public static function getPatientIdentifierTypeDisplayOrders($usage_type, $institution_id, $site_id = null)
     {
-        $condition = 'patientIdentifierType.usage_type=:usage_type AND t.institution_id=:institution_id';
-        $site_condition = ' AND t.site_id IS NULL';
+        $cache_key = implode(':', [self::class, $usage_type, $institution_id, $site_id ?? '0']);
+        $display_orders = Yii::app()->cache->get($cache_key);
 
-        $criteria = new CDbCriteria();
-        $criteria->order = 'display_order';
-        $criteria->with = 'patientIdentifierType';
-        $criteria->params = [':usage_type' => $usage_type, ':institution_id' => $institution_id];
+        if ($display_orders === false) {
+            $condition = 'patientIdentifierType.usage_type=:usage_type AND t.institution_id=:institution_id';
+            $site_condition = ' AND t.site_id IS NULL';
 
-        if ($site_id) {
-            $site_condition = ' AND t.site_id=:site_id';
-            $criteria->params[':site_id'] = $site_id;
+            $criteria = new CDbCriteria();
+            $criteria->order = 'display_order';
+            $criteria->with = 'patientIdentifierType';
+            $criteria->params = [':usage_type' => $usage_type, ':institution_id' => $institution_id];
+
+            if ($site_id) {
+                $site_condition = ' AND t.site_id=:site_id';
+                $criteria->params[':site_id'] = $site_id;
+            }
+
+            $criteria->condition = $condition . $site_condition;
+
+            $display_orders = PatientIdentifierTypeDisplayOrder::model()->findAll($criteria);
+
+            Yii::app()->cache->set($cache_key, $display_orders, 5);
         }
 
-        $criteria->condition = $condition . $site_condition;
-
-        return PatientIdentifierTypeDisplayOrder::model()->findAll($criteria);
+        return $display_orders;
     }
 
     /**
@@ -129,15 +138,23 @@ class PatientIdentifierHelper
         $cases = $site_id ? ['site', 'institution'] : ['institution'];
         $current_site_id = $site_id;
 
+        $identifiers_by_type_id = array_reduce(
+            PatientIdentifier::model()->with('patientIdentifierType', 'patientIdentifierStatus')->cache(3)->findAll("patient_id=:patient_id and deleted = 0", [':patient_id' => $patient_id]),
+            function ($by_id, $patient_identifier) {
+                $by_id[$patient_identifier->patient_identifier_type_id] = $patient_identifier;
+                return $by_id;
+            },
+            []
+        );
+
         foreach ($cases as $case) {
             if ($case === 'institution') {
                 $current_site_id = null;
             }
             $order_rules = self::getPatientIdentifierTypeDisplayOrders($usage_type, $institution_id, $current_site_id);
             foreach ($order_rules as $rule) {
-                $identifier = PatientIdentifier::model()->find("patient_id=:patient_id AND patient_identifier_type_id=:patient_identifier_type_id AND deleted = 0", [':patient_id' => $patient_id, ':patient_identifier_type_id' => $rule->patient_identifier_type_id]);
-                if ($identifier) {
-                    return $identifier;
+                if (array_key_exists($rule->patient_identifier_type_id, $identifiers_by_type_id)) {
+                    return $identifiers_by_type_id[$rule->patient_identifier_type_id];
                 }
             }
         }
@@ -155,14 +172,14 @@ class PatientIdentifierHelper
             }
             $identifier_type = self::getPatientIdentifierType($usage_type, $institution_id, $current_site_id);
             if ($identifier_type) {
-                $criteria = new CDbCriteria();
-                $criteria->condition = "patient_id=:patient_id AND patient_identifier_type_id=:patient_identifier_type_id";
-                $criteria->params = [':patient_id' => $patient_id, ':patient_identifier_type_id' => $identifier_type->id];
-
                 if ($disable_default_scope) {
+                    $criteria = new CDbCriteria();
+                    $criteria->condition = "patient_id=:patient_id AND patient_identifier_type_id=:patient_identifier_type_id";
+                    $criteria->params = [':patient_id' => $patient_id, ':patient_identifier_type_id' => $identifier_type->id];
+
                     $identifier = PatientIdentifier::model()->disableDefaultScope()->find($criteria);
                 } else {
-                    $identifier = PatientIdentifier::model()->find($criteria);
+                    $identifier = $identifiers_by_type_id[$identifier_type->id] ?? null;
                 }
 
                 if ($identifier) {

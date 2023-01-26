@@ -88,7 +88,10 @@ $warnings = $this->patient->getWarnings($clinical);
 
                     $templates = array();
                     if ($procedure_set) {
-                        $templates = OphTrOperationnote_Template::model()->findAll('proc_set_id = :id', [':id' => $procedure_set->id]);
+                        $templates = OphTrOperationnote_Template::model()
+                          ->forUserId(Yii::app()->user->id)
+                          ->forProcedureSet($procedure_set)
+                          ->findAll();
                     }
                     ?>
                 <tr>
@@ -144,10 +147,10 @@ $warnings = $this->patient->getWarnings($clinical);
                                 <button class="booking-select"
                                     data-eye-id="<?=$operation->eye->id?>"
                                     data-booking="booking<?= $operation->event_id ?>"
-                                    data-template="<?= $template->id ?>"
+                                    data-template="<?= $template->event_template_id ?>"
                                     data-test="template-entry">
                                     <i class="oe-i starline small pad-r"></i>
-                                    <?= $template->event_template->name ?>
+                                    <?= $template->name ?>
                                 </button>
                             </li>
                             <?php }

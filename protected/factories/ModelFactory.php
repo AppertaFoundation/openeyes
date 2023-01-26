@@ -279,24 +279,38 @@ abstract class ModelFactory
      */
     protected function getExpandedAttributes(array $definition, $canCreate = true): array
     {
-        $result = [];
-
-        foreach ($definition as $attribute => $value) {
+        $expandAttributes = function ($value) use ($canCreate) {
             if ($value instanceof self) {
-                if (!$canCreate) {
-                    $value = $value->make()->getPrimaryKey();
-                    if (!$value) {
-                        throw new CannotMakeModelException("Need to create {$value->modelName()} for {$attribute}.");
-                    }
-                } else {
-                    $value = $value->create()->getPrimaryKey();
+                if ($canCreate) {
+                    return $value->create()->getPrimaryKey();
+                }
+                $modelName = $value->modelName();
+
+                $value = $value->make()->getPrimaryKey();
+                if (!$value) {
+                    throw new CannotMakeModelException("Need to create {$modelName}.");
                 }
             } elseif ($value instanceof CActiveRecord) {
                 $value = $value->getPrimaryKey();
             }
-            $result[$attribute] = $value;
+
+            return $value;
+        };
+        // first do any generic expansion
+        $definition = array_map($expandAttributes, $definition);
+
+        // then callbacks that may need to refer to the expanded
+        // definition values
+        foreach ($definition as $attribute => $value) {
+            if (is_callable($value)) {
+                $value = $value($definition);
+            }
+            // expand again in case any callback returns something
+            // that needs to be expanded
+            $definition[$attribute] = $expandAttributes($value);
         }
-        return $result;
+
+        return $definition;
     }
 
     /**
@@ -343,13 +357,8 @@ abstract class ModelFactory
      *
      * @param array $instances
      */
-    protected function persist(array $instances)
+    protected function persist(array $instances): void
     {
-        if (method_exists($this, 'mapDisplayOrderAttributes')) {
-            // @see OE\factories\models\traits\MapsDisplayOrderForFactory
-            $instances = $this->mapDisplayOrderAttributes($instances);
-        }
-
         foreach ($instances as $instance) {
             if ($instance->isNewRecord && !$this->persistInstance($instance)) {
                 throw new CannotSaveModelException($instance->getErrors(), $instance->getAttributes());
@@ -366,20 +375,49 @@ abstract class ModelFactory
         return $instance->save(false);
     }
 
-    protected function callAfterMaking(array $instances)
+    protected function callAfterMaking(array $instances): void
     {
         foreach ($instances as $instance) {
             foreach ($this->afterMaking as $callback) {
                 $callback($instance);
             }
         }
+
+        if (method_exists($this, 'mapDisplayOrderAttributes')) {
+            // @see OE\factories\models\traits\MapsDisplayOrderForFactory
+            $this->mapDisplayOrderAttributes($instances);
+        }
+
+        $this->castAttributes($instances);
     }
 
-    protected function callAfterCreating(array $instances)
+    protected function callAfterCreating(array $instances): void
     {
         foreach ($instances as $instance) {
             foreach ($this->afterCreating as $callback) {
                 $callback($instance);
+            }
+        }
+    }
+
+    /**
+     * This casts attributes that may be recorded directly in the db to
+     * string so that they are consistent with how they will be set when
+     * retrieved, and when instantiated through POST requests in the
+     * application framework.
+     *
+     * @param array $instance
+     * @return void
+     */
+    protected function castAttributes(array $instances): void
+    {
+        foreach ($instances as $instance) {
+            foreach ($instance->getAttributes() as $attr => $value) {
+                if (is_bool($value)) {
+                    $instance->$attr = $value ? '1' : '0';
+                } elseif (is_integer($value) || is_float($value)) {
+                    $instance->$attr = (string) $value;
+                }
             }
         }
     }
