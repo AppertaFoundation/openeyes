@@ -23,7 +23,7 @@ trait MocksSession
         $session = \Yii::app()->getComponent('session', false);
 
         if (!$session instanceof MockObject) {
-            $session = $this->getMockBuilder(\CHttpSession::class)
+            $session = $this->getMockBuilder(\OESession::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -39,6 +39,21 @@ trait MocksSession
             $session->method('offsetExists')
                 ->willReturnCallback(function ($attr) {
                     return isset($this->session_values[$attr]);
+                });
+
+            $session->method('getSelectedFirm')
+                ->willReturnCallback(function () {
+                    return Firm::model()->findByPk($this->session_values['selected_firm_id']);
+                });
+
+            $session->method('getSelectedFirm')
+                ->willReturnCallback(function () {
+                    return Site::model()->findByPk($this->session_values['selected_site_id']);
+                });
+
+            $session->method('getSelectedInstitution')
+                ->willReturnCallback(function () {
+                    return Institution::model()->findByPk($this->session_values['selected_institution_id']);
                 });
 
             \Yii::app()->setComponent('session', $session);

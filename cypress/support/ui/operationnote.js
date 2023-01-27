@@ -8,46 +8,54 @@ Cypress.Commands.add('fillOperationNote', (data) => {
         let procedure = procedureRaw[1];
         cy.getBySel('add-procedure-btn').click();
         cy.selectAdderDialogOptionText(procedure.procedureName);
+        cy.intercept('OphTrOperationnote/Default/loadElementByProcedure*').as(`loadProcedureElements${procedure.procedureName}`)
         cy.confirmAdderDialog();
 
-        for (const procedureValueRaw of Object.entries(procedure.values)) {
-            let procedureValue = procedureValueRaw[1];
-            cy.getBySel(procedureValue.testid).then((element) => {
-                let inputValue = procedureValue.inputValue;
+        cy.waitFor(`@loadProcedureElements${procedure.procedureName}`);
+        // TODO: when testing other procedures, will need to conditionally check for this
+        cy.get('[data-cy-ed-ready="true"]').then(() => {
 
-                //select field and type value
-                switch(procedureValue.inputType) {
-                    //Pass the dataid for the checkbox and true/false for checked/unchecked
-                    case 'checkbox':
-                        if (inputValue) {
-                            cy.get(element).check();
-                        }   else {
-                            cy.get(element).uncheck();
-                        }
-                        break;
-                    //Pass the dataid for the radio button group and the value of the button to be selected
-                    case 'radioButton':
-                        cy.get(element).check(inputValue);
-                        break;
-                    //Pass the dataid for the text field and a string to be typed
-                    case 'textField':
-                        cy.get(element).click().clear().type(inputValue);
-                        break;
-                    //Pass the dataid for the select element and the string to select
-                    case 'select':
-                        cy.get(element).select(inputValue);
-                        break;
-                    //Pass the dataid for the select element and the strings to select
-                    case 'multiSelect':
-                        for (const toSelect of inputValue) {
-                            cy.get(element).select(toSelect);
-                        }
-                        break;
-                    default:
-                        throw new Error(`input type ${inputType} is not recognised`);
-                }
-            });
-        }
+            for (const procedureValueRaw of Object.entries(procedure.values)) {
+                let procedureValue = procedureValueRaw[1];
+                cy.getBySel(procedureValue.testid).then((element) => {
+                    let inputValue = procedureValue.inputValue;
+
+                    //select field and type value
+                    switch(procedureValue.inputType) {
+                        //Pass the dataid for the checkbox and true/false for checked/unchecked
+                        case 'checkbox':
+                            if (inputValue) {
+                                cy.get(element).check();
+                            }   else {
+                                cy.get(element).uncheck();
+                            }
+                            break;
+                        //Pass the dataid for the radio button group and the value of the button to be selected
+                        case 'radioButton':
+                            cy.get(element).check(inputValue);
+                            break;
+                        //Pass the dataid for the text field and a string to be typed
+                        case 'textField':
+                            cy.get(element).click().clear().type(inputValue);
+                            break;
+                        //Pass the dataid for the select element and the string to select
+                        case 'select':
+                            cy.get(element).select(inputValue);
+                            break;
+                        //Pass the dataid for the select element and the strings to select
+                        case 'multiSelect':
+                            for (const toSelect of inputValue) {
+                                cy.get(element).select(toSelect);
+                            }
+                            break;
+                        default:
+                            throw new Error(`input type ${inputType} is not recognised`);
+                    }
+                });
+            }
+        });
+
+
     }
 
     cy.get('[data-test=add-pcr-risk-btn]:visible').click();

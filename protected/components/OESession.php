@@ -18,6 +18,10 @@
  */
 class OESession extends CDbHttpSession
 {
+    protected $selected_firm;
+    protected $selected_site;
+    protected $selected_institution;
+
     //Note to any future developers: OELog does not work reliably in this function. Use error_log() instead and (most likely) find logs in /var/logs/apache2/error.log
     public function writeSession($id, $data)
     {
@@ -79,5 +83,61 @@ class OESession extends CDbHttpSession
             return false;
         }
         return true;
+    }
+
+    public function getSelectedFirm()
+    {
+        if (!$this->selected_firm) {
+            $firm_id = $this->get('selected_firm_id');
+            if (!$firm_id) {
+                return null;
+            }
+
+            $this->selected_firm = Firm::model()
+                ->with('serviceSubspecialtyAssignment.subspecialty.specialty')
+                ->findByPk($firm_id);
+
+            if (!$this->selected_firm) {
+                throw new Exception("Firm with id '$firm_id' not found");
+            }
+
+        }
+
+        return $this->selected_firm;
+    }
+
+    public function getSelectedSite()
+    {
+        if (!$this->selected_site) {
+            $site_id = $this->get('selected_site_id');
+            if (!$site_id) {
+                return null;
+            }
+
+            $this->selected_site = Site::model()->findByPk($this->get('selected_site_id'));
+            if (!$this->selected_site) {
+                throw new Exception("Site with id '$site_id' not found");
+            }
+        }
+
+        return $this->selected_site;
+    }
+
+    public function getSelectedInstitution()
+    {
+        if (!$this->selected_institution) {
+            $institution_id = $this->get('selected_institution_id');
+
+            if (!$institution_id) {
+                return null;
+            }
+
+            $this->selected_institution = Institution::model()->findByPk($institution_id);
+            if (!$this->selected_institution) {
+                throw new Exception("Institution with id '$institution_id' not found");
+            }
+        }
+
+        return $this->selected_institution;
     }
 }

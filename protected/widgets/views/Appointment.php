@@ -35,7 +35,7 @@
                 $date = \Helper::convertDate2NHS($worklist_patient->worklist->start);
                 $worklist_name = $worklist_patient->worklist->name;
                 $worklist_status = $worklist_patient->getWorklistPatientAttribute('Status');
-                $event = Event::model()->findByAttributes(['worklist_patient_id' => $worklist_patient->id]);
+                $event = $did_not_attend_events[$worklist_patient->id] ?? null;
                 ?>
                     <tr>
                         <td><span class="time"><?= $time ?></span></td>

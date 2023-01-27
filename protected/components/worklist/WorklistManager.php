@@ -343,9 +343,7 @@ class WorklistManager extends CComponent
      */
     public function shouldRenderEmptyWorklist()
     {
-        return !is_null($this->getAppParam('worklist_show_empty')) ?
-            $this->getAppParam('worklist_show_empty')
-            : self::$DEFAULT_SHOW_EMPTY;
+        return SettingMetadata::model()->getSetting('worklist_show_empty') == 'on';
     }
 
     /**
@@ -669,7 +667,25 @@ class WorklistManager extends CComponent
 
         $days = $this->getDashboardRenderDates($start_date ? $start_date : new DateTime(), $end_date);
 
+        //FIXME: remove this debug logging before merge
+        $sql="show variables like 'version'";
+        $dataReader=Yii::app()->db->createCommand($sql)->query();
+        // bind the 1st column (username) with the $username variable
+        $dataReader->bindColumn(1,$var);
+        // bind the 2nd column (email) with the $email variable
+        $dataReader->bindColumn(2,$val);
+        while($dataReader->read()!==false)
+        {
+            Yii::Log('DATABASE VERSION: ' . $val);
+        }
+
+        Yii::Log("Future days: " . $this->getAppParam('worklist_dashboard_future_days'));
+        Yii::Log("Skip days: " . implode(',', $this->getAppParam('worklist_dashboard_skip_days')));
+        
+
+        // End FIXME
         foreach ($days as $when) {
+            Yii::Log("LIST GENERATING FOR: " . $when->format('Y-m-d H:i:s')); // FIXME: Remove this debug line before merging
             foreach ($this->getCurrentAutomaticWorklistsForUserContext($institution, $site, $firm, $when) as $worklist) {
                 $worklist_patients = $this->getPatientsForWorklist($worklist);
                 if ($this->shouldRenderEmptyWorklist() || $worklist_patients->getTotalItemCount() > 0) {
@@ -760,7 +776,7 @@ class WorklistManager extends CComponent
         $model = $this->getModelForClass('Worklist');
         $model->automatic = true;
         $model->on = $when;
-        foreach ($model->with(array('worklist_definition', 'worklist_definition.display_contexts', 'worklist_patients'))->search(false)->getData() as $wl) {
+        foreach ($model->with(['worklist_definition', 'worklist_definition.patient_identifier_type', 'worklist_definition.display_contexts', 'worklist_patients'])->search(false)->getData() as $wl) {
             if ($this->shouldDisplayWorklistForContext($wl, $institution, $site, $firm)) {
                 $worklists[] = $wl;
             }
@@ -1666,4 +1682,3 @@ class WorklistManager extends CComponent
         return \Yii::app()->user->getState("worklist_patient_id", null);
     }
 }
-

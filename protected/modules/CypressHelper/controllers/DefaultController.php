@@ -302,6 +302,10 @@ class DefaultController extends \CController
             if (in_array($relation, array_merge(['user', 'usermodified'], $exclude))) {
                 continue;
             }
+            if ($relation === 'event') {
+                $relations[$relation] = $this->eventJson($instance->$relation, false);
+                continue;
+            }
             if ($definition[0] === CActiveRecord::BELONGS_TO) {
                 $relations[$relation] = $instance->$relation ? $instance->$relation->getAttributes() : null;
             }
@@ -323,15 +327,18 @@ class DefaultController extends \CController
         ];
     }
 
-    protected function eventJson(Event $event): array
+    protected function eventJson(Event $event, bool $with_elements = true): array
     {
-        return [
+        $data = [
             'id' => $event->id,
             'urls' => [
                 'view' => $event->getEventViewPath()
             ],
-            'patient' => $this->patientJson($event->episode->patient),
-            'elements' => array_map(
+            'patient' => $this->patientJson($event->episode->patient)
+        ];
+
+        if ($with_elements) {
+            $data['elements'] = array_map(
                 function ($element) {
                     return [
                         'element_type' => $element->getElementTypeName(),
@@ -339,7 +346,9 @@ class DefaultController extends \CController
                     ];
                 },
                 $event->getElements()
-            )
-        ];
+            );
+        }
+
+        return $data;
     }
 }
