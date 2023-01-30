@@ -23,8 +23,12 @@ OpenEyes.OphCoCorrespondence = OpenEyes.OphCoCorrespondence || {};
         var controller = this;
 
         var tinymce_options = Object.assign(
+            options,
             {
                 selector: '#' + editor_id,
+                plugins: 'hr lists table paste code pagebreak',
+                valid_elements : 'hr',
+                toolbar: 'undo redo | fontselect fontsizeselect | bold italic underline | alignleft aligncenter alignright | bullist numlist | table | subtitle | labelitem | label-r-l | inputcheckbox | pagebreak hr code',
                 setup: function (editor) {
 
                     editor.on('keydown', function (e) {
@@ -148,8 +152,7 @@ OpenEyes.OphCoCorrespondence = OpenEyes.OphCoCorrespondence || {};
                         });
                     });
                 }
-            },
-            options
+            }
         );
 
         tinyMCE.init(tinymce_options)

@@ -1544,6 +1544,18 @@ class DefaultController extends BaseEventTypeController
         Element_OphCoCorrespondence_Esign $element,
         $action
     ) {
-        $element->attemptAutoSign();
+        $signatures = $element->getSignatures();
+        $role_name = Element_OphCoCorrespondence_Esign::PRIMARY_ROLE;
+
+        $sign_arr = array_filter(
+            $signatures,
+            function ($signature) use ($role_name) {
+                return $signature->signatory_role === $role_name;
+            }
+        );
+
+        if(empty($sign_arr) || !$sign_arr[0]->isSigned()) {
+            $element->attemptAutoSign();
+        }
     }
 }
