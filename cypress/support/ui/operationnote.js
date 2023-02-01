@@ -14,7 +14,9 @@ Cypress.Commands.add('fillOperationNote', (data) => {
         cy.waitFor(`@loadProcedureElements${procedure.procedureName}`);
         // TODO: when testing other procedures, will need to conditionally check for this
         cy.get('[data-cy-ed-ready="true"]').then(() => {
-
+            // in lieue of a more robust check on the eyedraw field bindings
+            // we wait half a second to ensure EyeDraw is syncing
+            cy.wait(500);
             for (const procedureValueRaw of Object.entries(procedure.values)) {
                 let procedureValue = procedureValueRaw[1];
                 cy.getBySel(procedureValue.testid).then((element) => {
