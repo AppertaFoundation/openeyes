@@ -20,49 +20,50 @@
 <div class="oe-worklists-panel" id="js-worklists-filter-panel">
     <table class="site-context">
         <tbody>
-            <tr>
-                <td>Institution</td>
-                <td>
-                    <?php $current_institution = Institution::model()->getCurrent(); ?>
-                    <span>
-                        <?= $current_institution->name ?>
-                    </span>
-                </td>
-            </tr>
-            <tr>
-                <td>Site</td>
-                <td>
-                    <select class="cols-full js-worklists-sites">
-                        <?php
-                        $current_site = Site::model()->getCurrent();
-                        $sites = Site::model()->getListForCurrentInstitution();
+        <tr>
+            <td>Institution</td>
+            <td>
+                <?php $current_institution = Institution::model()->getCurrent(); ?>
+                <select disabled>
+                    <option selected><?= $current_institution->name ?></option>
+                </select>
 
-                        foreach ($sites as $id => $name) : ?>
-                            <option value="<?= $id ?>" <?= $current_site->id == $id ? 'selected' : '' ?>>
-                                <?= $name ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <td>Context</td>
-                <td>
-                    <select class="cols-full js-worklists-contexts">
-                        <option value="all">
-                            Any context (Show all pathways)
+            </td>
+        </tr>
+        <tr>
+            <td>Site</td>
+            <td>
+                <select class="cols-full js-worklists-sites">
+                    <?php
+                    $current_site = Site::model()->getCurrent();
+                    $sites = Site::model()->getListForCurrentInstitution();
+
+                    foreach ($sites as $id => $name) : ?>
+                        <option value="<?= $id ?>" <?= $current_site->id == $id ? 'selected' : '' ?>>
+                            <?= $name ?>
                         </option>
-                        <?php
-                        $contexts = Firm::model()->getList($current_institution->id, null, null, true, null, true);
+                    <?php endforeach; ?>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>Context</td>
+            <td>
+                <select class="cols-full js-worklists-contexts">
+                    <option value="all">
+                        Any context (Show all pathways)
+                    </option>
+                    <?php
+                    $contexts = Firm::model()->getList($current_institution->id, null, null, true, null, true);
 
-                        foreach ($contexts as $id => $name) : ?>
-                            <option value="<?= $id ?>">
-                                <?= $name ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </td>
-            </tr>
+                    foreach ($contexts as $id => $name) : ?>
+                        <option value="<?= $id ?>">
+                            <?= $name ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </td>
+        </tr>
         </tbody>
     </table>
 
@@ -78,7 +79,8 @@
         <div class="set-date-range">
             <div class="date-inputs">
                 <?php $date_today = (new DateTime())->format('Y-m-d'); ?>
-                <input type="text" size="11" class="date js-filter-date-from" placeholder="from" value="<?= $date_today ?>">
+                <input type="text" size="11" class="date js-filter-date-from" placeholder="from"
+                       value="<?= $date_today ?>">
                 <input type="text" size="11" class="date js-filter-date-to" placeholder="to">
             </div>
             <fieldset class="js-quick-date">
@@ -127,16 +129,16 @@
         <div class="search-filters">
             <table class="filters">
                 <tbody class="js-filters-table">
-                    <tr>
-                        <th>Lists</th>
-                        <td class="js-lists-value">All</td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <th>Sort by</th>
-                        <td class="js-sort-by-value">Time</td>
-                        <td></td>
-                    </tr>
+                <tr>
+                    <th>Lists</th>
+                    <td class="js-lists-value">All</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th>Sort by</th>
+                    <td class="js-sort-by-value">Time</td>
+                    <td></td>
+                </tr>
                 </tbody>
             </table>
 
@@ -171,7 +173,7 @@
 </div>
 
 <script type="text/javascript">
-    $(document).ready(function() {
+    $(document).ready(function () {
         const hidePanelWidth = 1890;
         const worklistButton = $('#js-nav-worklist-btn');
         const worklistFilterPanel = $('#js-worklists-filter-panel');
@@ -192,7 +194,7 @@
             }
         };
 
-        let worklistsFilterPanelClickFunc = function() {
+        let worklistsFilterPanelClickFunc = function () {
             if (worklistButton.hasClass('open')) {
                 worklistFilterPanel.hide();
                 worklistButton.removeClass('open');
@@ -225,7 +227,7 @@
             }
         };
 
-        let hotlistPanelClickFunc = function() {
+        let hotlistPanelClickFunc = function () {
             if (hotlistButton.hasClass('open')) {
                 hotlistPanel.hide();
                 hotlistButton.removeClass('open');
@@ -248,10 +250,10 @@
         if ($.cookie('have_shown_worklist_filter_panel_<?php echo \Yii::app()->user->id ?>') !== 'yes') {
             worklistFilterPanel.show();
             worklistButton.addClass('open');
-            $.cookie('have_shown_worklist_filter_panel_<?php echo \Yii::app()->user->id ?>', 'yes', { expires: 10000 });
+            $.cookie('have_shown_worklist_filter_panel_<?php echo \Yii::app()->user->id ?>', 'yes', {expires: 10000});
         }
 
-        $(window).resize(function() {
+        $(window).resize(function () {
             if (worklistButton.hasClass('open')) {
                 if ($(this).width() > hidePanelWidth) {
                     worklistFilterPanel.show();
