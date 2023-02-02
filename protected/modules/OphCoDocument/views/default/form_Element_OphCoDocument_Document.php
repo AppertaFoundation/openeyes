@@ -308,32 +308,30 @@
 
     window.addEventListener("unload", function () {
         let documents = [];
-        let controller = $('.js-document-upload-wrapper').data('controller');
+        let controller = $('.js-document-upload-wrapper').data("controller");
         let removed_docs = $('#removed-docs');
 
-        if (controller.options.action === 'cancel' || controller.options.action === '') {
-            $('.js-document-id').each(function () {
-                if ($(this).val() !== "") {
-                    $(this).parents('td').find(controller.options.removeButtonSelector).trigger('click');
+        if (controller.options.action === "cancel" || controller.options.action === '') {
+            document.querySelectorAll(".js-document-id").forEach(id => {
+                if (id.value !== '') {
+                    let side = id.closest("td").dataset.side;
+                    document.querySelector(".js-remove-document-action[data-side='" + side + "']").click();
                 }
             });
 
             documents = removed_docs.data('documents');
 
             if (window.location.href.includes('update')) {
-                if ($('#upload_single').prop('checked')) {
-                    let original_doc = $('#original-doc').val();
+                let original_doc = $('#original-doc').val();
+                documents = documents.filter(function (document) {
+                    return document !== original_doc;
+                });
+                removed_docs.data('documents', documents);
+                for (let side of ['left', 'right']) {
                     documents = documents.filter(function (document) {
-                        return document !== original_doc;
+                        return document !== $('#original-' + side + '-doc').val();
                     });
                     removed_docs.data('documents', documents);
-                } else {
-                    for (let side of ['left', 'right']) {
-                        documents = documents.filter(function (document) {
-                            return document !== $('#original-' + side + '-doc').val();
-                        });
-                        removed_docs.data('documents', documents);
-                    }
                 }
             }
         }
