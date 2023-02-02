@@ -1,5 +1,4 @@
 <?php
-
 /**
  * OpenEyes
  *
@@ -16,6 +15,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OE\factories\models\traits\HasFactory;
 use OEModule\OphCiExamination\models\OphCiExaminationAllergy;
 
 /**
@@ -59,6 +59,7 @@ use OEModule\OphCiExamination\models\OphCiExaminationAllergy;
  */
 class Medication extends BaseActiveRecordVersioned
 {
+    use HasFactory;
     use MappedReferenceData;
 
     use MappedReferenceData {
@@ -317,6 +318,10 @@ class Medication extends BaseActiveRecordVersioned
 
         if ($this->isAMP() && $this->vtm_term) {
             $name .= " (" . $this->vtm_term . ")";
+        }
+
+        if($this->isPreservativeFree()) {
+            $name .= ' (No Preservative)';
         }
 
         return $name;
