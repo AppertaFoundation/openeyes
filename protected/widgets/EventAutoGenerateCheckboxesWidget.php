@@ -93,15 +93,7 @@ class EventAutoGenerateCheckboxesWidget extends BaseCWidget
             $this->default_set_id = $default_set->id ?? null;
         }
 
-
-        $params = [':subspecialty_id' => $subspecialty_id];
-
-        $this->sets = MedicationSet::model()->findAll([
-            'condition' => 'subspecialty_id = :subspecialty_id',
-            'params' => $params,
-            'with' => 'medicationSetRules',
-            'together' => true
-        ]);
+        $this->sets = \MedicationSet::model()->findByUsageCode('PRESCRIPTION_SET', \Site::model()->getCurrent()->id, $subspecialty_id);
 
         parent::init();
     }

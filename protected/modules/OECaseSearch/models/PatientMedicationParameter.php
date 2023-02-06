@@ -95,10 +95,14 @@ SELECT p.id
 FROM patient p
 LEFT JOIN patient_medication_assignment m
 ON m.patient_id = p.id
-LEFT JOIN medication md
-ON md.id = m.medication_drug_id
-WHERE md.id $op :p_m_value_$this->id
-OR m.id IS NULL";
+LEFT JOIN medication d
+ON d.id = m.medication_drug_id
+WHERE NOT EXISTS (
+    SELECT md.id
+    FROM patient_medication_assignment pm
+    JOIN medication md ON md.id = pm.medication_drug_id
+    WHERE pm.patient_id = p.id AND md.id = :p_m_value_$this->id
+) OR m.id IS NULL";
     }
 
     /**

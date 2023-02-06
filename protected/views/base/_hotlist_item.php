@@ -30,6 +30,7 @@ $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient($display_
 
 <tr class="js-hotlist-<?= $hotlistItem->is_open ? 'open' : 'closed' ?>-patient"
     data-id="<?= $hotlistItem->id ?>"
+    data-test="hotlist-patient"
     data-patient-href="<?= $core_api->generatePatientLandingPageLink($hotlistItem->patient) ?>"
 >
     <td><?= CHtml::encode(PatientIdentifierHelper::getIdentifierValue($primary_identifier)) ?></td>
