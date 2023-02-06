@@ -96,11 +96,6 @@ class BreakGlass
             }
         }
 
-        // If the patient's county doesn't match with a board, fall back to health board of created user
-        if (!$health_board && $this->patient_created_by) {
-            $health_board = $this->resolveHealthboard($this->patient_created_by->{Yii::app()->params['user_breakglass_field']});
-        }
-
         return $health_board;
     }
 
