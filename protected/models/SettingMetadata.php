@@ -605,8 +605,8 @@ class SettingMetadata extends BaseActiveRecordVersioned
     public static function getCorrespondenceSubstitutions($element_letter = null, $recipient_address = null)
     {
         // Use the firm and site that the correspondence event was created under
-        $firm = isset($element_letter) ? $element_letter->event->firm : null;
-        $site = isset($element_letter) ? $element_letter->event->site : null;
+        $firm = isset($element_letter) ? $element_letter->event->firm : Firm::model()->findByPk(Yii::app()->session->getSelectedFirm());
+        $site = isset($element_letter) ? $element_letter->event->site : Site::model()->findByPk(Yii::app()->session->getSelectedSite());
 
         $site_contact = isset($site) ? $site->contact : null;
         $site_address = isset($site_contact) ? $site_contact->address : null;
