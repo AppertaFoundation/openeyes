@@ -1124,10 +1124,10 @@ class DefaultController extends BaseEventTypeController
             }
 
 
-            //if the letter_type is Internal referral than the GP and Patient are mandatory to copy into
-            //$internalreferral_letter_type = LetterType::model()->findByAttributes(['name' => 'Internal Referral']);
+        //if the letter_type is Internal referral than the GP and Patient are mandatory to copy into
+        //$internalreferral_letter_type = LetterType::model()->findByAttributes(['name' => 'Internal Referral']);
 
-            //this throws an error if GP or Patient not found in Internal referral
+        //this throws an error if GP or Patient not found in Internal referral
 
             /**
              * awaiting for requirements... ...
@@ -1153,7 +1153,6 @@ class DefaultController extends BaseEventTypeController
      */
     protected function verifyActionAccess(CAction $action)
     {
-
         if (($this->action->id === 'PDFprint' || $this->action->id === 'printForRecipient') && Yii::app()->request->getParam('is_view') === '1') {
             return;
         }
@@ -1547,14 +1546,14 @@ class DefaultController extends BaseEventTypeController
         $signatures = $element->getSignatures();
         $role_name = Element_OphCoCorrespondence_Esign::PRIMARY_ROLE;
 
-        $sign_arr = array_filter(
+        $sign_arr = array_values(array_filter(
             $signatures,
             function ($signature) use ($role_name) {
                 return $signature->signatory_role === $role_name;
             }
-        );
+        ));
 
-        if(empty($sign_arr) || !$sign_arr[0]->isSigned()) {
+        if (empty($sign_arr) || !$sign_arr[0]->isSigned()) {
             $element->attemptAutoSign();
         }
     }
