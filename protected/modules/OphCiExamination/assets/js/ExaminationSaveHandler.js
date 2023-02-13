@@ -68,7 +68,14 @@ $(document).ready(() => {
             }
         });
 
-        if (empty_mandatory_element || dirty_elements.length === 0) {
+        if (
+            // submit the form when one or more of the incomplete elements IS mandatory
+            empty_mandatory_element
+            // submit the form when there is no dirty element
+            || dirty_elements.length === 0
+            // submit the form when all elements are filled
+            || !empty_elements.length
+        ) {
             // There should be at least one dirtied element in an examination event, and there must be no empty mandatory elements.
             $form.submit();
         } else if (empty_elements.length > 0) {
