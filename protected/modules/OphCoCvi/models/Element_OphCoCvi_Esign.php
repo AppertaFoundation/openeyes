@@ -159,6 +159,17 @@ class Element_OphCoCvi_Esign extends \BaseEsignElement
         return false;
     }
 
+    public function isSignedByPatient(): bool
+    {
+        foreach ($this->getSignatures() as $signature) {
+            if ((int)$signature->type === \BaseSignature::TYPE_PATIENT) {
+                return $signature->isSigned();
+            }
+        }
+
+        return false;
+    }
+
     /**
      * @inheritDoc
      */

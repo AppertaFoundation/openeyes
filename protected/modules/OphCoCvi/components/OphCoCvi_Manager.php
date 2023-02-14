@@ -447,7 +447,7 @@ class OphCoCvi_Manager extends \CComponent
 
         if ($signature) {
             /** @var Element_OphCoCvi_Esign $signature */
-            if (!$signature->isSignedByConsultant()) {
+            if (!$signature->isSignedByConsultant() || !$signature->isSignedByPatient()) {
                 return false;
             }
         } else {
