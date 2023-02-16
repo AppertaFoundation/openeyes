@@ -1222,9 +1222,15 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
             foreach ($this->document_instance as $instance) {
                 foreach ($instance->document_target as $target) {
                     if ($target->ToCc === 'To') {
-                        if (($newlines_setting = (int) SettingMetadata::model()->getSetting('correspondence_address_max_lines')) >= 0) {
-                            $addressPart = explode("\n", $target->address);
-                            $address = '';
+                        $addressPart = explode("\n", $target->address);
+                        $address = '';
+                        if ((string)SettingMetadata::model()->getSetting('correspondence_address_force_city_state_postcode_on_same_line') === "on") {
+                            $firstAddress = array_slice($addressPart, 0, -3);
+                            $lastAddress = array_slice($addressPart, -3);
+                            $address .= implode("\n", array_map('trim', $firstAddress));
+                            $address .= "\n";
+                            $address .= implode(" ", array_map('trim', $lastAddress));
+                        } elseif (($newlines_setting = (int) SettingMetadata::model()->getSetting('correspondence_address_max_lines')) >= 0) {
                             foreach ($addressPart as $index => $part) {
                                 $part = trim($part);
                                 if ($index == 0) {
@@ -1235,10 +1241,11 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
                                     $address = $address . " " . $part;
                                 }
                             }
-                            return $target->contact_name . "\n" . $address;
                         } else {
-                            return $target->contact_name . "\n" . $target->address;
+                            $address = $target->address;
                         }
+
+                        return $target->contact_name . "\n" . $address;
                     }
                 }
             }

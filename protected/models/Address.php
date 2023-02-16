@@ -171,8 +171,20 @@ class Address extends BaseActiveRecordVersioned
         foreach (array('address1', 'address2', 'city', 'county', 'postcode') as $field) {
             if (!empty($this->$field) && trim($this->$field) != ',' && trim($this->$field) != "") {
                 $line = $this->$field;
-                if (($newlines_setting = SettingMetadata::model()->getSetting('correspondence_address_max_lines')) >= 0) {
-                    $addressParts = explode("\n", $line);
+                $addressParts = explode("\n", $line);
+                if ((string)SettingMetadata::model()->getSetting('correspondence_address_force_city_state_postcode_on_same_line') === "on") {
+                    foreach ($addressParts as $part) {
+                        if ($tempAddress === null) {
+                            $tempAddress = $part . "\n";
+                        } elseif ($field === 'city') {
+                            $tempAddress .= $part;
+                        } elseif ($field === 'county' || $field === 'postcode') {
+                            $tempAddress .= ', ' . $part;
+                        } else {
+                            $tempAddress .= $part . "\n";
+                        }
+                    }
+                } elseif (($newlines_setting = SettingMetadata::model()->getSetting('correspondence_address_max_lines')) >= 0) {
                     foreach ($addressParts as $part) {
                         if ($linecount == 0 && $tempAddress == null){
                             $tempAddress = $part;
@@ -202,7 +214,9 @@ class Address extends BaseActiveRecordVersioned
             }
         }
         // add the tempAddress to address[] if setting set to not -1 (if we have a value in tempAddress)
-        if ($tempAddress !== null &&(SettingMetadata::model()->getSetting('correspondence_address_max_lines')) >= 0) {
+        if ($tempAddress !== null &&
+            ((SettingMetadata::model()->getSetting('correspondence_address_max_lines')) >= 0) ||
+            (string)SettingMetadata::model()->getSetting('correspondence_address_force_city_state_postcode_on_same_line') === "on") {
             foreach (explode("\n", $tempAddress) as $part) {
                 $part = trim($part);
                 if ($part != null &&  $part != ',' && $part != '') {

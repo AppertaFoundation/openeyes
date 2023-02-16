@@ -42,7 +42,8 @@ if (!@$no_header) { ?>
         <?php
         $ccString = $element->getCCString();
         $toAddress = $element->getToAddress();
-        if ((int)SettingMetadata::model()->getSetting('correspondence_address_max_lines') >= 0) {
+        if ((string)SettingMetadata::model()->getSetting('correspondence_address_force_city_state_postcode_on_same_line') === "on" ||
+            (int)SettingMetadata::model()->getSetting('correspondence_address_max_lines') >= 0) {
             $letter_address = $toAddress;
         }
 
