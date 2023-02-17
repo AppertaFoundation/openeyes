@@ -111,13 +111,15 @@ class GpController extends BaseController
         if (isset($_POST['Contact'])) {
             $contact->attributes = $_POST['Contact'];
             $contact->created_institution_id = Yii::app()->session['selected_institution_id'];
-            $gp->is_active = $_POST['Gp']['is_active'];
             $this->performAjaxValidation($contact);
-            list($contact, $gp) = $this->performGpSave($contact, $gp);
+
+            $gp->is_active = $_POST['Gp']['is_active'];
 
             // if context is AJAX then it means that this action is called from add patient screen, or it will go
             // to the else condition if it is called from the practitioners screen.
             if ($context === 'AJAX') {
+                list($contact, $gp) = $this->performGpSave($contact, $gp, true);
+
                 $contactPracticeAssociate = new ContactPracticeAssociate();
 
                 if ($contact->validate()) {
@@ -170,8 +172,6 @@ class GpController extends BaseController
                     echo CJSON::encode(array('error' => CHtml::errorSummary($contact)));
                 }
             } else {
-                $gp->is_active = $_POST['Gp']['is_active'];
-
                 $this->performAjaxValidation($contact);
 
                 /* For Australian setups, check for duplicate practitioners which are not allowed */
@@ -416,8 +416,9 @@ class GpController extends BaseController
             if ($isAjax) {
                 if (strpos($ex->getMessage(), 'errorSummary')) {
                     echo $ex->getMessage();
+                    Yii::app()->end();
                 } else {
-                    echo "<div class=\"errorSummary\"><p>Unable to save Practitioner information, please contact your support.</p></div>";
+                    throw new Exception('Unable to save gp: ' . print_r($gp->getErrors(), true));
                 }
             }
         }
