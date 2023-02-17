@@ -394,10 +394,10 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
                     if ($identifier_instance->patientIdentifierType->usage_type === 'GLOBAL') {
                         $identifier->Domain = 'NHS';
                     } else {
-                        $identifier->Domain = $identifier_instance->patientIdentifierType->institution->pas_key;
+                        $identifier->Domain = isset($identifier_instance->patientIdentifierType->patientIdentifierCodes) ? $identifier_instance->patientIdentifierType->patientIdentifierCodes[0]->code : $identifier_instance->patientIdentifierType->institution->pas_key;
                     }
 
-                    $identifier->Value = $identifier_instance->value;
+                    $identifier->Value = str_replace("(*)", "", $identifier_instance->value); // Removing (*) from identifiers
                     $identifiers[] = $identifier;
                 }
 
