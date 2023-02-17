@@ -1640,6 +1640,7 @@ class BaseEventTypeController extends BaseModuleController
         // only process data for elements that are part of the element type set for the controller event type
         foreach ($this->getAllElementTypes() as $element_type) {
             $from_data = $this->getElementsForElementType($element_type, $data);
+
             if (count($from_data) > 0) {
                 $elements = array_merge($elements, $from_data);
             } elseif ($element_type->required) {
