@@ -1,6 +1,7 @@
 <?php
 
 use Nesk\Puphpeteer\Resources\HTTPResponse;
+use OEModule\OESysEvent\events\PathwayCheckoutSystemEvent;
 
 /**
  * OpenEyes.
@@ -2142,6 +2143,8 @@ class WorklistController extends BaseController
         $pathway->status = Pathway::STATUS_DISCHARGED;
         $pathway->end_time = date('Y-m-d H:i:s');
         $pathway->save();
+
+        PathwayCheckoutSystemEvent::dispatch($this);
 
         $this->renderJSON(
             [

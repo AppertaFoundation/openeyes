@@ -23,6 +23,10 @@ $institution_id = Institution::model()->getCurrent()->id;
 $site_id = Yii::app()->session['selected_site_id'];
 $display_primary_number_usage_code = SettingMetadata::model()->getSetting('display_primary_number_usage_code');
 
+$is_editing_event = false;
+if ($this instanceof BaseEventTypeController) {
+    $is_editing_event = in_array($this->action->id, ["update", "create"]);
+}
 ?>
 <div class="oe-hotlist-panel" id="js-hotlist-panel">
     <?php $this->beginWidget('CActiveForm', [
@@ -37,7 +41,7 @@ $display_primary_number_usage_code = SettingMetadata::model()->getSetting('displ
                         'class' => 'search',
                         'placeholder' => 'Search',
                   ]); ?>
-                <button type="submit" id="js-hotlist-find-patient" class="button pro-theme">Find Patient</button>
+                <button type="submit" id="js-hotlist-find-patient" class="button pro-theme" data-test="hotlist-find-patient-btn">Find Patient</button>
             </div>
         </div>
     <?php $this->endWidget(); ?>
@@ -99,12 +103,5 @@ $display_primary_number_usage_code = SettingMetadata::model()->getSetting('displ
 </div>
 
 <script>
-    let enterKeyCode = 13;
-    $(document).ready(function () {
-        $('#hotlist-search-text-field').keydown(function(event) {
-            if (event.which === enterKeyCode) {
-                this.form.submit();
-            }
-        });
-    });
+    window.is_editing_event = <?= json_encode($is_editing_event) ?>;
 </script>

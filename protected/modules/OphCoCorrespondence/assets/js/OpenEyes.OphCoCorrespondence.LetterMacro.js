@@ -27,7 +27,6 @@ OpenEyes.OphCoCorrespondence = OpenEyes.OphCoCorrespondence || {};
             {
                 selector: '#' + editor_id,
                 plugins: 'hr lists table paste code pagebreak',
-                valid_elements : 'hr',
                 toolbar: 'undo redo | fontselect fontsizeselect | bold italic underline | alignleft aligncenter alignright | bullist numlist | table | subtitle | labelitem | label-r-l | inputcheckbox | pagebreak hr code',
                 setup: function (editor) {
 

@@ -99,6 +99,7 @@
                         </div>
                     </td>
                 </tr>
+                <?php echo CHtml::hiddenField('Gp[is_active]', 1); ?>
                 <tr>
                     <td colspan="2" class="align-right">
                         <?php
@@ -107,11 +108,8 @@
                             array(
                                 'type' => 'POST',
                                 'success' => 'js:function(event){
-                                    let response = JSON.parse(event);
-                                    if ("error" in response){
-                                        $("#extra_gp_errors").html(response.error);
-                                        $("#extra_gp_practitioner-alert-box").css("display","");
-                                    } else{
+                                    if (isJsonString(event)) {
+                                        let response = JSON.parse(event);
                                         $(".js-contact-title").val(response.title);
                                         $(".js-contact-first-name").val(response.firstName);
                                         $(".js-contact-last-name").val(response.lastName);
@@ -144,8 +142,15 @@
                                         gp.role = response.labelId;
                                         // Saving the data in the hidden field
                                         $(".gp_data_retrieved").val(gp.toString());
+                                    } else {
+                                        $("#extra_gp_errors").html(event);
+                                        $("#extra_gp_practitioner-alert-box").css("display","");
                                     }
                                   }',
+                                'error' => 'js:function(event){
+                                    $("#extra_gp_errors").html("<div class=\"errorSummary\"><p>Unable to save Practitioner information, please contact your support.</p></div>");
+                                    $("#extra_gp_practitioner-alert-box").css("display","");
+                                }',
                             ),
                             array('class' => 'button hint green')
                         );
@@ -396,6 +401,16 @@ $extra_practice_address_type_ids = CHtml::listData(AddressType::model()->findAll
 </div>
 
 <script>
+    // This function checks if the string is a valid JSON.
+    function isJsonString(str) {
+        try {
+            JSON.parse(str);
+        } catch (e) {
+            return false;
+        }
+        return true;
+    }
+
     OpenEyes.UI.AutoCompleteSearch.init({
         input: $('#extra_gp_autocomplete_contact_label_id'),
         url: '/gp/contactLabelList',

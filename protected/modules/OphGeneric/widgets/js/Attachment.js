@@ -157,21 +157,6 @@ $(document).ready(function () {
             '</div>';
         $('.open-eyes').prepend($bigIMG);
 
-        let $instructions =
-            '<div class="js-instructions" style="opacity: 0.2; pointer-events: none; text-align:center; background-color: #1e2e42; border-radius: 15px; ' +
-            'position: fixed; width: 50%; left: 25%; top: 25%; z-index: 1001">' +
-            '<h2 class="event-title" style="font-family: Roboto, Helvetica, Arial, sans-serif; color: cyan; font-size: 150%; display:inline-block;">' +
-            'Click to open the attachment.<br>Double click to open it in a popup.' +
-            '</h2>' +
-            '</div>';
-        $('.open-eyes').prepend($instructions);
-        // fade in
-        $('.js-instructions').animate({"opacity": "1"}, 600);
-        // fade out
-        $('.js-instructions').delay(1000).animate({"opacity": "0"}, 600, '', function () {
-            // remove div
-            $(this).remove();
-        });
     }));
 
     // hovering out of an attachment

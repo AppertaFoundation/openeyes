@@ -559,14 +559,15 @@ class DefaultController extends BaseEventTypeController
     }
 
     /**
-     * The normal print action had been replaced by the PDFPrint in Correspondence...
+     * The normal print method has been replaced by PDFPrint in Correspondence. So if the default actionPrint is triggered, forward it to the correct action
+     * The setPDFprintData method in protected/controllers/BaseEventTypeController.php file calls this method
      *
      * @param int $id
      * @return bool
      */
     public function actionPrint($id)
     {
-        return true;
+        $this->actionPrintForRecipient($id);
     }
 
     /**
@@ -1124,10 +1125,10 @@ class DefaultController extends BaseEventTypeController
             }
 
 
-            //if the letter_type is Internal referral than the GP and Patient are mandatory to copy into
-            //$internalreferral_letter_type = LetterType::model()->findByAttributes(['name' => 'Internal Referral']);
+        //if the letter_type is Internal referral than the GP and Patient are mandatory to copy into
+        //$internalreferral_letter_type = LetterType::model()->findByAttributes(['name' => 'Internal Referral']);
 
-            //this throws an error if GP or Patient not found in Internal referral
+        //this throws an error if GP or Patient not found in Internal referral
 
             /**
              * awaiting for requirements... ...
@@ -1153,7 +1154,6 @@ class DefaultController extends BaseEventTypeController
      */
     protected function verifyActionAccess(CAction $action)
     {
-
         if (($this->action->id === 'PDFprint' || $this->action->id === 'printForRecipient') && Yii::app()->request->getParam('is_view') === '1') {
             return;
         }
@@ -1547,14 +1547,14 @@ class DefaultController extends BaseEventTypeController
         $signatures = $element->getSignatures();
         $role_name = Element_OphCoCorrespondence_Esign::PRIMARY_ROLE;
 
-        $sign_arr = array_filter(
+        $sign_arr = array_values(array_filter(
             $signatures,
             function ($signature) use ($role_name) {
                 return $signature->signatory_role === $role_name;
             }
-        );
+        ));
 
-        if(empty($sign_arr) || !$sign_arr[0]->isSigned()) {
+        if (empty($sign_arr) || !$sign_arr[0]->isSigned()) {
             $element->attemptAutoSign();
         }
     }

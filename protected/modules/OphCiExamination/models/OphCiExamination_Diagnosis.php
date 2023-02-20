@@ -34,6 +34,10 @@ class OphCiExamination_Diagnosis extends \BaseActiveRecordVersioned
 {
     use HasFactory;
 
+    protected $attr_dirty_check_methods = [
+        "eye_id" => "isIntAttributeDirty",
+        "principal" => "isBoolAttributeDirty"
+    ];
     /**
      * @return string the associated database table name
      */
@@ -86,6 +90,56 @@ class OphCiExamination_Diagnosis extends \BaseActiveRecordVersioned
         );
     }
 
+    /**
+     * Cast attribute types and Check if the model dirty.
+     * Override the parent implementation
+     *
+     * @return bool true if the model dirty
+     */
+    public function isAttributeDirty($attrName)
+    {
+        if ($this->{$attrName} === null || is_string($this->{$attrName})) {
+            return parent::isAttributeDirty($attrName);
+        }
+        $attr_check_method = $this->attr_dirty_check_methods[$attrName] ?? null;
+
+        // if there is no special attribute dirty check or no attribute check method exits,
+        // execute parent attribute dirty check
+        if (!$attr_check_method || !method_exists($this, $attr_check_method)) {
+            return parent::isAttributeDirty($attrName);
+        }
+
+        return $this->{$attr_check_method}($attrName);
+    }
+
+    /**
+     * Cast the target attribute from bool to string, then compare with the original attribute value
+     *
+     * If the target attribute is not bool type, convert it to string
+     *
+     * @param mixed $attrName
+     * @return bool
+     */
+    private function isBoolAttributeDirty($attrName): bool {
+        $original_attr = $this->originalAttributes[$attrName];
+        $current_attr = $this->getAttributes()[$attrName];
+        if (!is_bool($this->{$attrName})) {
+            return $original_attr !== (string)$current_attr;
+        }
+
+        return $original_attr !== ($current_attr ? "1" : "0");
+    }
+
+    /**
+     * Cast the target attribute to string, then compare with the original attribute value
+     *
+     *
+     * @param mixed $attrName
+     * @return bool
+     */
+    private function isIntAttributeDirty($attrName): bool {
+        return $this->originalAttributes[$attrName] !== (string)$this->getAttributes()[$attrName];
+    }
 
     /**
      * @param \BaseEventTypeElement $element

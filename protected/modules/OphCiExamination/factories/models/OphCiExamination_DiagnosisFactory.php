@@ -32,7 +32,9 @@ class OphCiExamination_DiagnosisFactory extends ModelFactory
             'element_diagnoses_id' => Element_OphCiExamination_Diagnoses::factory(),
             'eye_id' => Eye::factory()->useExisting(),
             'disorder_id' => Disorder::factory()->forOphthalmology()->useExisting(),
-            'date' => $this->faker->dateTimeBetween('-3 weeks')->format('Y-m-d')
+            'date' => $this->faker->dateTimeBetween('-3 weeks')->format('Y-m-d'),
+            'principal' => false,
+            'attr_dirty_check_methods' => [] // turning off the data type casting
         ];
     }
 

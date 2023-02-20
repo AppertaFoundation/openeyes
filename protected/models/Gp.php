@@ -26,6 +26,7 @@ use OE\factories\models\traits\HasFactory;
  * @property int $id
  * @property string $obj_prof
  * @property string $nat_id
+ * @property string $is_active
  *
  * The followings are the available model relations:
  * @property Contact $contact
@@ -90,7 +91,8 @@ class Gp extends BaseActiveRecordVersioned
         // will receive user inputs.
         return array(
             array('id', 'required', 'on' => array('manage_practice'), 'message'=>'Please select at least one practitioner.'),
-            array('obj_prof, nat_id', 'required'),
+            array('obj_prof, nat_id, is_active', 'required'),
+            array('is_active', 'boolean'),
             array('obj_prof, nat_id', 'length', 'max' => 20),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.

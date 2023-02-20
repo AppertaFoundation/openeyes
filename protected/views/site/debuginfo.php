@@ -42,10 +42,9 @@ if (is_object($user_auth)) {
 $thisEnv = Yii::app()->params['environment'];
 
 $buildinfo = "";
-
-
-if (file_exists('buildinfo.txt')) {
-    $buildinfo = '<pre>' . htmlspecialchars(@file_get_contents('buildinfo.txt')) . '</pre>';
+$root_path = dirname(Yii::app()->basePath);
+if (file_exists($root_path . '/buildinfo.txt')) {
+    $buildinfo = '<pre>' . htmlspecialchars(@file_get_contents($root_path . '/buildinfo.txt')) . '</pre>';
 } elseif (file_exists('.git/HEAD')) {
     $commit = preg_replace('/[\s\t].*$/s', '', @file_get_contents(Yii::app()->basePath . '/../.git/FETCH_HEAD'));
     $buildinfo .= "Commit: " . htmlspecialchars($commit) . '</br>';
@@ -85,18 +84,20 @@ if (file_exists('/imageinfo.txt')) {
         Username: <?php echo $username?><br />
         Firm: <?php echo $firm?><br />
         <?= $buildinfo ?>
-        <table style="margin: 0;">
-            <colgroup>
-                <col class="cols-1">
-                <col class="cols-10">
-            </colgroup>
-            <tbody>
-                <tr>
-                    <td>Branches: </td>
-                    <td><pre><?= $branch ?></pre></td>
-                </tr>
-            </tbody>
-        </table>
+        <?php if (isset($branch)) { ?>
+            <table style="margin: 0;">
+                <colgroup>
+                    <col class="cols-1">
+                    <col class="cols-10">
+                </colgroup>
+                <tbody>
+                    <tr>
+                        <td>Branches: </td>
+                        <td><pre><?= $branch ?></pre></td>
+                    </tr>
+                </tbody>
+            </table>
+        <?php } ?>
         <table style="margin: 0;">
             <colgroup>
                 <col class="cols-1">

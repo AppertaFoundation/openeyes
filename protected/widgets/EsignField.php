@@ -70,7 +70,7 @@ abstract class EsignField extends BaseCWidget
     {
         if ($this->isSigned()) {
             if ($this->signature->hasAttribute("secretary") && $this->signature->secretary) {
-                echo "<span>ELECTRONIC VERIFIED, NOT SIGNED TO AVOID DELAYS</span>";
+                echo "<span>ELECTRONICALLY VERIFIED, NOT SIGNED TO AVOID DELAYS</span>";
                 return;
             }
             $file = $this->getSignatureFile();

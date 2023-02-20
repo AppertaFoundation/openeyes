@@ -202,6 +202,60 @@ class DiagnosesUpdatingPatientDataBehaviourTest extends \OEDbTestCase
         $this->assertSecondaryDiagnosesRecordedFor($episode->patient, $expected_sys->diagnoses, false);
     }
 
+    /** @test */
+    public function not_at_tip_ophthalmic_diagnoses_can_not_be_modified()
+    {
+        list($old_oph) = $this->createExaminationWithElements(
+            [Element_OphCiExamination_Diagnoses::class],
+            null,
+            '-8 weeks',
+            '-6 weeks'
+        );
+
+        $episode = $old_oph->event->episode;
+
+        list($new_oph) = $this->createExaminationWithElements(
+            [Element_OphCiExamination_Diagnoses::class],
+            $episode,
+            '-5 weeks',
+            '-4 weeks'
+        );
+
+        $this->assertTrue(
+            $old_oph->save(),
+            "Should be able to save old ophthalmic diagnoses when no changes made"
+        );
+
+        // remove one diagnoses from old record
+        $old_oph->diagnoses = array_slice($old_oph->diagnoses, 1);
+
+        $this->assertFalse(
+            $old_oph->save(),
+            "Should not be able save altered diagnoses when not at tip"
+        );
+    }
+
+    /** @test */
+    public function model_is_dirty_after_changes() {
+        list($oph) = $this->createExaminationWithElements(
+            [Element_OphCiExamination_Diagnoses::class],
+            null,
+            '-8 weeks',
+            '-6 weeks'
+        );
+        $oph->no_ophthalmic_diagnoses_date = date('Y-m-d H:i:s');
+        $this->assertTrue($oph->isModelDirty(), "Element_OphCiExamination_Diagnoses model is not dirty after setting no ophthalmic diagnoses date");
+
+        // assert the associated diagnosis if there is at least one record
+        if (count($oph->diagnoses) > 0) {
+            $oph->diagnoses[0]->principal = !$oph->diagnoses[0]->principal;
+
+            $this->assertTrue($oph->diagnoses[0]->isModelDirty(), "OphCiExamination_Diagnosis model is not dirty after changing the principal state");
+
+            $this->assertTrue($oph->isModelDirty(), "Element_OphCiExamination_Diagnoses model is not dirty after changing the first diagnosis principal state");
+        }
+    }
+
     protected function createExaminationWithElements(
         array $element_classes,
         ?\Episode $episode = null,
