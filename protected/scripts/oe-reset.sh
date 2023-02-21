@@ -80,6 +80,7 @@ showhelp=0
 checkoutparams="--sample-only --no-fix --depth 1 --single-branch"
 cleanbase=0
 migrateparams="-q"
+noclean=0
 nofix=0
 dwservrunning=0
 restorefile=""
@@ -99,6 +100,11 @@ while [[ $# -gt 0 ]]; do
         nobanner=1
         echo "Banner will not be (re)set"
         ## Do not update the user banner after reset
+        ;;
+    --no-clean)
+        noclean=1
+        echo "Restore file will not be cleaned"
+        ## Do not attempt to make compatability fixes before import
         ;;
     --no-migrate | -nm | --nomigrate)
         migrate=0
@@ -363,14 +369,15 @@ if [ $cleanbase = "0" ]; then
         exit 1
     fi
 
-    # run cleanup on exports to maximise compatibility with different mysql/mariadb versions
-    echo "cleaning restore file for compatability..."
-    sed 's/NO_AUTO_CREATE_USER,\?//g' 0-a-restore.sql >tmp_restore.sql && mv tmp_restore.sql 0-a-restore.sql
-    sed "s|CREATE.\+DEFINER.\+ TRIGGER|CREATE TRIGGER|" 0-a-restore.sql >tmp_restore.sql && mv tmp_restore.sql 0-a-restore.sql
-    sed "s|CREATE.\+DEFINER.\+ FUNCTION|CREATE FUNCTION|" 0-a-restore.sql >tmp_restore.sql && mv tmp_restore.sql 0-a-restore.sql
-    sed "s|CREATE.\+DEFINER.\+ PROCEDURE|CREATE PROCEDURE|" 0-a-restore.sql >tmp_restore.sql && mv tmp_restore.sql 0-a-restore.sql
-    sed "s|\/\*\![0-9]\+ DEFINER.\+SQL SECURITY DEFINER.\?\*\/| |g" 0-a-restore.sql >tmp_restore.sql && mv tmp_restore.sql 0-a-restore.sql
-
+    if [ $noclean -eq 0 ]; then
+        # run cleanup on exports to maximise compatibility with different mysql/mariadb versions
+        echo "cleaning restore file for compatability..."
+        sed 's/NO_AUTO_CREATE_USER,\?//g' 0-a-restore.sql >tmp_restore.sql && mv tmp_restore.sql 0-a-restore.sql
+        sed "s|CREATE.\+DEFINER.\+ TRIGGER|CREATE TRIGGER|" 0-a-restore.sql >tmp_restore.sql && mv tmp_restore.sql 0-a-restore.sql
+        sed "s|CREATE.\+DEFINER.\+ FUNCTION|CREATE FUNCTION|" 0-a-restore.sql >tmp_restore.sql && mv tmp_restore.sql 0-a-restore.sql
+        sed "s|CREATE.\+DEFINER.\+ PROCEDURE|CREATE PROCEDURE|" 0-a-restore.sql >tmp_restore.sql && mv tmp_restore.sql 0-a-restore.sql
+        sed "s|\/\*\![0-9]\+ DEFINER.\+SQL SECURITY DEFINER.\?\*\/| |g" 0-a-restore.sql >tmp_restore.sql && mv tmp_restore.sql 0-a-restore.sql
+    fi
     # import the cleaned file
     restorefilesize=$(numfmt --to=iec-i --suffix=B $(du -b "0-a-restore.sql" | cut -f1))
     echo "importing $restorefile (Size: $restorefilesize. This can take some time)...."
