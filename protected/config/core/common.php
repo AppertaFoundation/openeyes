@@ -587,7 +587,8 @@ $config = array(
         'event_lock_days' => getenv('OE_EVENT_LOCK_DAYS') ? getenv('OE_EVENT_LOCK_DAYS') : null,
         'event_lock_disable' => false,
         'reports' => array(),
-        'html_autocomplete' => getenv('OE_MODE') == "LIVE" ? 'off' : 'on',
+        # html_autocomplete is deprecated and should be removed from code. In the meantime, setting it to off by default
+        'html_autocomplete' => 'off',
         // html|pdf, pdf requires puppeteer
         'event_print_method' => 'pdf',
         'curl_proxy' => null,
