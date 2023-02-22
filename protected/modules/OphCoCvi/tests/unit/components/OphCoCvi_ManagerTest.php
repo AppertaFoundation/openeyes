@@ -24,7 +24,6 @@ use OEModule\OphCoCvi\models\Element_OphCoCvi_EventInfo;
 use OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo;
 use OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo;
 use OEModule\OphCoCvi\models\Element_OphCoCvi_Demographics;
-use OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo_Disorder_Assignment;
 use \OphCoCvi_Signature;
 use OEDbTestCase;
 
