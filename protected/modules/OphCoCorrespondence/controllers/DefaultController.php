@@ -610,9 +610,11 @@ class DefaultController extends BaseEventTypeController
             SettingMetadata::getCorrespondenceSubstitutions($letter, $recipient_address)
         );
 
-        $letter_header_html = SettingMetadata::performSubstitutions($letter_header_raw, $substitutions, false);
-
-        $letter_header_html = self::hideTableBorders($letter_header_html);
+        $letter_header_html = $letter_header_raw;
+        if (!empty(trim($letter_header_html))) {
+            $letter_header_html = SettingMetadata::performSubstitutions($letter_header_raw, $substitutions, false);
+            $letter_header_html = self::hideTableBorders($letter_header_html);
+        }
 
         $this->printInit($id);
         $this->layout = '//layouts/print';
