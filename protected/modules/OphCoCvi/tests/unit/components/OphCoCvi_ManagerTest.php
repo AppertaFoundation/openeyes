@@ -112,6 +112,7 @@ class OphCoCvi_ManagerTest extends OEDbTestCase
         $esign->status = 1;
         $esign->signature_file_id = $signatory_user->signature_file_id;
         $esign->save(false);
+        return $esign;
     }
 
     private function addPatientSignature()
@@ -129,6 +130,7 @@ class OphCoCvi_ManagerTest extends OEDbTestCase
         $esign->status = 1;
         $esign->signature_file_id = $signatory_user->signature_file_id;
         $esign->save(false);
+        return $esign;
     }
 
     public function testcanIssueWithoutSignatures()
@@ -165,5 +167,19 @@ class OphCoCvi_ManagerTest extends OEDbTestCase
         $this->addPatientSignature();
         $can_issue = $this->mock_manager->canIssueCvi($this->event);
         $this->assertTrue($can_issue);
+    }
+
+    public function testSignatoryIsPatient()
+    {
+        $this->addPatientSignature();
+        $result = $this->esign_element->isSignedByPatient();
+        $this->assertTrue($result);
+    }
+
+    public function testSignatoryIsNotPatient()
+    {
+        $this->addConsultantSignature();
+        $result = $this->esign_element->isSignedByPatient();
+        $this->assertFalse($result);
     }
 }
