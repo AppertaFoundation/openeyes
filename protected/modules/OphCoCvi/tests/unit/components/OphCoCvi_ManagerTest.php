@@ -166,5 +166,4 @@ class OphCoCvi_ManagerTest extends OEDbTestCase
         $can_issue = $this->mock_manager->canIssueCvi($this->event);
         $this->assertTrue($can_issue);
     }
-
 }
