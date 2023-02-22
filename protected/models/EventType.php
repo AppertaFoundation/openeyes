@@ -23,6 +23,7 @@
  *
  * @property int $id
  * @property string $name
+ * @property string $class_name
  * @property ElementGroup[] $elementGroups
  *
  * The followings are the available model relations:

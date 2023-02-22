@@ -38,7 +38,8 @@
     "sbs/yii-debug-toolbar": "^1.5",
     "symfony/dom-crawler": "^5.4",
     "symfony/css-selector": "^5.4",
-    "guzzlehttp/guzzle": "^7.0"
+    "guzzlehttp/guzzle": "^7.0",
+    "phpstan/phpstan": "^1.9"
   },
   "config": {
     "bin-dir": "bin",

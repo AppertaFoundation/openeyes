@@ -37,6 +37,7 @@ Clinician',
         'created_date' => '2014-09-15 11:11:11',
         'last_modified_date' => '2014-09-15 11:11:11',
         'created_user_id' => 2,
+        'letter_type_id' => 1
     ),
      'letter2' => array(
         'id' => 2,
@@ -59,5 +60,6 @@ Clinician',
         'created_date' => '2014-01-15 11:11:11',
         'last_modified_date' => '2014-01-15 11:11:11',
         'created_user_id' => 3,
+        'letter_type_id' => 1
     ),
 );

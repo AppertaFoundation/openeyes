@@ -428,7 +428,7 @@ class Patient extends BaseActiveRecordVersioned
         $criteria = new CDbCriteria();
         $criteria->compare('t.id', $this->id);
         $criteria->join = 'JOIN contact ON contact_id = contact.id';
-        if ($params['first_name']) {
+        if (isset($params['first_name']) && $params['first_name']) {
             $criteria->addSearchCondition('contact.first_name', $params['first_name'] . '%', false);
         }
         if (isset($params['last_name']) && $params['last_name']) {

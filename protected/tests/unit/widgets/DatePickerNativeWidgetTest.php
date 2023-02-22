@@ -22,7 +22,7 @@ use PHPUnit\Framework\MockObject\Builder\Stub;
  * @group widgets
  * @group date-picker-native
  */
-class DatePickerNativeTest extends OEDbTestCase
+class DatePickerNativeWidgetTest extends OEDbTestCase
 {
     use CreatesWidgets;
     use WithFaker;
@@ -228,9 +228,12 @@ class DatePickerNativeTest extends OEDbTestCase
     public function value_defaults_to_today()
     {
         $widget = $this->createWidgetWithProps(
-            DatePickerNative::class
+            DatePickerNative::class,
+            [
+                'field' => 'foo'
+            ]
         );
-        $widget->element = ComponentStubGenerator::generate('BaseElement', []);
+        $widget->element = ComponentStubGenerator::generate('BaseElement', ['foo' => null]);
 
         ob_start();
         $widget->run();

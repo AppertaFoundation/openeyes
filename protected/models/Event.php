@@ -25,9 +25,9 @@ use OEModule\OESysEvent\events\ClinicalEventSoftDeletedSystemEvent;
  * The followings are the available columns in table 'event':
  *
  * @property string $id
- * @property string $episode_id
- * @property string $user_id
- * @property string $event_type_id
+ * @property string|int $episode_id
+ * @property string|int $user_id
+ * @property string|int $event_type_id
  * @property string $info
  * @property boolean $deleted
  * @property string $delete_reason
@@ -36,15 +36,21 @@ use OEModule\OESysEvent\events\ClinicalEventSoftDeletedSystemEvent;
  * @property string $event_date
  * @property string $created_date
  * @property string $last_modified_date
- * @property string $worklist_patient_id
+ * @property string|int $worklist_patient_id
  * @property int $firm_id
  * @property int $step_id
+ * @property string|int $parent_id
  *
  * The followings are the available model relations:
  * @property Episode $episode
  * @property User $user
+ * @property User $usermodified
  * @property EventType $eventType
  * @property Institution $institution
+ * @property ?Event $parent
+ * @property EventSubTypeItem[] $eventSubtypeItems
+ * @property ?EventSubTypeItem $firstEventSubtypeItem
+ * @property ?EventTemplate $template
  */
 class Event extends BaseActiveRecordVersioned
 {

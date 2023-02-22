@@ -1833,7 +1833,7 @@ class DefaultController extends \BaseEventTypeController
             if (isset($diagnoses_data['entries'])) {
                 foreach ($diagnoses_data['entries'] as $i => $disorder) {
                     $diagnoses[] = [
-                        'id' => $disorder['id'],
+                        'id' => $disorder['id'] ?? null,
                         'eye_id' => \Helper::getEyeIdFromArray($disorder),
                         'disorder_id' => $disorder['disorder_id'],
                         'principal' => ($principal_diagnosis_row_key == $disorder['row_key']),

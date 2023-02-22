@@ -19,8 +19,13 @@
 /**
  * A class that all OpenEyes active record classes should extend.
  *
- * Currently its only purpose is to remove all html tags to
- * prevent XSS.
+ * @property mixed $id
+ * @property ?CDbSchema $tableSchema
+ * @property mixed $created_date
+ * @property mixed $created_user_id
+ * @property mixed $last_modified_date
+ * @property mixed $last_modified_user_id
+ * @property boolean $isNewRecord
  */
 class BaseActiveRecord extends CActiveRecord
 {
@@ -59,7 +64,7 @@ class BaseActiveRecord extends CActiveRecord
      * @see self::getChangeUser
      * @var User
      */
-    private $change_user;
+    private $change_user = null;
 
     /**
      * Flag to indicate that model should only save to the db if actual changes have taken place on the model.
@@ -132,7 +137,7 @@ class BaseActiveRecord extends CActiveRecord
     /**
      * @var CApplication
      */
-    protected $app;
+    protected $app = null;
 
     /**
      * @param CApplication $app
@@ -147,7 +152,7 @@ class BaseActiveRecord extends CActiveRecord
      */
     public function getApp()
     {
-        if (!$this->app) {
+        if ($this->app === null) {
             $this->app = Yii::app();
         }
 
@@ -276,7 +281,7 @@ class BaseActiveRecord extends CActiveRecord
      */
     protected function getChangeUser()
     {
-        if (!$this->change_user) {
+        if ($this->change_user === null) {
             $this->change_user = \User::model()->findByPk($this->getChangeUserId());
         }
         return $this->change_user;
@@ -290,13 +295,11 @@ class BaseActiveRecord extends CActiveRecord
      */
     protected function getChangeUserId()
     {
-        try {
-            if (isset($this->getApp()->user)) {
-                return $this->getApp()->user->id === null ? 1 : $this->getApp()->user->id;
-            }
-        } catch (Exception $e) {
-            return 1;
+        if (method_exists($this->getApp(), 'getUser')) {
+            return $this->getApp()->getUser()?->id ?? 1;
         }
+
+        return 1;
     }
 
     /**
@@ -688,16 +691,22 @@ class BaseActiveRecord extends CActiveRecord
      */
     public function NHSDate($attribute, $empty_string = '-')
     {
-        if ($value = $this->getAttribute($attribute)) {
-            return Helper::convertMySQL2NHS($value, $empty_string);
+        $value = $this->getAttribute($attribute);
+        if (!$value) {
+            return $empty_string;
         }
+
+        return Helper::convertMySQL2NHS($value, $empty_string);
     }
 
     public function shortDate($attribute, $empty_string = '-')
     {
-        if ($value = $this->getAttribute($attribute)) {
-            return Helper::convertDate2Short($value, $empty_string);
+        $value = $this->getAttribute($attribute);
+        if (!$value) {
+            return $empty_string;
         }
+
+        return Helper::convertDate2Short($value, $empty_string);
     }
 
     /**
@@ -709,9 +718,11 @@ class BaseActiveRecord extends CActiveRecord
     public function NHSDateAsHTML($attribute, $empty_string = '-')
     {
         $value = $this->getAttribute($attribute);
-        if ($value) {
-            return Helper::convertMySQL2HTML($value, $empty_string);
+        if (!$value) {
+            return $empty_string;
         }
+
+        return Helper::convertMySQL2HTML($value, $empty_string);
     }
 
     /**

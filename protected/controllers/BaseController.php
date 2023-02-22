@@ -20,6 +20,8 @@
 /**
  * A base controller class that helps display the firm dropdown and the patient name.
  * It is extended by all other controllers.
+ *
+ * @property CAction $action - defined by magic method in Yii
  */
 class BaseController extends Controller
 {
@@ -185,14 +187,14 @@ class BaseController extends Controller
             if ($user_authentication && !in_array($user_authentication->username, $special_usernames)) {
                 $user = $user_authentication->user;
                 // if not a active user, force log out
-                if (!$user_authentication->active || PasswordUtils::testStatus('locked', $user_authentication)) {
+                if (!$user_authentication->active || PasswordUtils::testStatus($user_authentication)) {
                     $user->audit('BaseController', 'force-logout', null, "User $user_authentication->username logged out because their account is not active");
                     Yii::app()->user->logout();
                     $this->redirect(Yii::app()->homeUrl);
                 }
                 PasswordUtils::testPasswordExpiry($user_authentication);
 
-                if (PasswordUtils::testStatus('softlocked', $user_authentication) && $user_authentication->password_softlocked_until < date("Y-m-d H:i:s")) {
+                if (PasswordUtils::testStatus($user_authentication, 'softlocked') && $user_authentication->password_softlocked_until < date("Y-m-d H:i:s")) {
                     $user_authentication->password_failed_tries = 0;
                     $user_authentication->password_status = 'current';
                     $user_authentication->saveAttributes(array('password_status', 'password_failed_tries'));
@@ -202,7 +204,7 @@ class BaseController extends Controller
                 $whitelistedRequestCheck = $user->CheckRequestOnExpiryWhitelist($_SERVER['REQUEST_URI']);
 
                 // if user is expired, force them to change their password
-                if (PasswordUtils::testStatus('expired', $user_authentication) && !$whitelistedRequestCheck) {
+                if (PasswordUtils::testStatus($user_authentication, 'expired') && !$whitelistedRequestCheck) {
                     Yii::app()->user->setFlash('alert', 'Your password has expired, please reset it now.');
                     $this->redirect(array('/profile/password'));
                 }

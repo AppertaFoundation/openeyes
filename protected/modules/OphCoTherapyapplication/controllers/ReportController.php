@@ -107,7 +107,7 @@ class ReportController extends BaseReportController
         }
     }
 
-    protected function getApplications($date_from, $date_to, $firm = null, $institution_id)
+    protected function getApplications($date_from, $date_to, $firm = null, $institution_id = null)
     {
         $command = Yii::app()->db->createCommand()
             ->select(

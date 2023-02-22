@@ -216,12 +216,12 @@ class OphCoCorrespondence_API extends BaseAPI
      * Internal abstraction of getting data from before the most recent op note.
      *
      * @param $patient
-     * @param bool $use_context
      * @param $api
      * @param $method
+     * @param bool $use_context
      * @return string|null
      */
-    private function getPreOpValuesFromAPIMethod($patient, $use_context = false, $api, $method)
+    private function getPreOpValuesFromAPIMethod($patient, $api, $method, $use_context = false)
     {
         $note_api = $this->yii->moduleAPI->get('OphTrOperationnote');
         if (!$note_api) {
@@ -300,7 +300,7 @@ class OphCoCorrespondence_API extends BaseAPI
     public function getPreOpVABothEyes($patient, $use_context = false)
     {
         if ($api = $this->yii->moduleAPI->get('OphCiExamination')) {
-            return $this->getPreOpValuesFromAPIMethod($patient, $use_context, $api, 'getBestVisualAcuityFromEvent');
+            return $this->getPreOpValuesFromAPIMethod($patient, $api, 'getBestVisualAcuityFromEvent', $use_context);
         }
     }
 
@@ -314,7 +314,7 @@ class OphCoCorrespondence_API extends BaseAPI
     public function getPreOpRefraction($patient, $use_context = false)
     {
         if ($api = $this->yii->moduleAPI->get('OphCiExamination')) {
-            return $this->getPreOpValuesFromAPIMethod($patient, $use_context, $api, 'getRefractionTextFromEvent');
+            return $this->getPreOpValuesFromAPIMethod($patient, $api, 'getRefractionTextFromEvent', $use_context);
         }
     }
 

@@ -21,6 +21,9 @@
  * @property bool $useContainerView When rendering the element, wrap the element
  * in a container view?
  * @property Event $event
+ * @property string|int $event_id
+ * @property EventType $eventType
+ * @property ElementType $elementType
  */
 class BaseEventTypeElement extends BaseElement
 {

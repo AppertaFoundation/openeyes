@@ -32,28 +32,19 @@ class PupillaryAbnormalities extends \BaseEventElementWidget
     }
 
     /**
-     * @param PupillaryAbnormalityElement $element
+     * @param PupillaryAbnormalitiesElement $element
      * @param $data
      * @throws \CException
      */
     protected function updateElementFromData($element, $data)
     {
-        $sides = array(strtolower($data['eye_id']));
-        if ($sides[0] == \Eye::BOTH) {
-            $sides = array('left', 'right');
-        } elseif ($sides[0] == \Eye::RIGHT) {
-            $sides = array('right');
-        } else {
-            $sides = array('left');
-        }
-        if (!is_a($element, 'OEModule\OphCiExamination\models\PupillaryAbnormalities')) {
+        if (!is_a($element, PupillaryAbnormalitiesElement::class)) {
             throw new \CException('invalid element class ' . get_class($element) . ' for ' . static::class);
         }
-        if (array_key_exists('eye_id', $data)) {
-            $element->eye_id = $data['eye_id'];
-        }
-        $entries_by_id = array();
-        $entries = array();
+        $element->eye_id = $data['eye_id'] ?? \Eye::BOTH;
+        $entries_by_id = [];
+        $entries = [];
+        $sides = $this->resolveSideStringsForElement($element);
 
         foreach ($sides as $side) {
             if (array_key_exists($side . '_no_pupillaryabnormalities', $data) && $data[$side . '_no_pupillaryabnormalities'] === "1") {
@@ -138,5 +129,14 @@ class PupillaryAbnormalities extends \BaseEventElementWidget
     {
         return \Helper::elementFinder(\CHtml::modelName($this->element) . ".entries_.$side.$row.has_abnormality", $_POST)
             === PupillaryAbnormalityEntry::$NOT_CHECKED;
+    }
+
+    private function resolveSideStringsForElement(PupillaryAbnormalitiesElement $element): array
+    {
+        return [
+            \Eye::BOTH => ['right', 'left'],
+            \Eye::RIGHT => ['right'],
+            \Eye::LEFT => ['left']
+        ][(int)$element->eye_id] ?? [];
     }
 }

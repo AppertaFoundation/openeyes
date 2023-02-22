@@ -12,11 +12,10 @@
  * @copyright Copyright (C) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-?>
 
-
-<?php
-
+ /**
+  * @property string $display_name
+  */
 class EventSubtype extends BaseActiveRecordVersioned
 {
     public static function model($className = __CLASS__)

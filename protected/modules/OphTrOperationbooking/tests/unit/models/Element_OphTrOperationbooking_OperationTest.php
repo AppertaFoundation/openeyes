@@ -63,7 +63,7 @@ class Element_OphTrOperationbooking_OperationTest extends ActiveRecordTestCase
     protected function getMalePatient($is_stub = true)
     {
         if ($is_stub) {
-            $p = ComponentStubGenerator::generate('Patient', array('gender' => 'M'));
+            $p = ComponentStubGenerator::generate('Patient', array('gender' => 'M', 'id' => 1));
             $p->method('isChild')->willReturn(false);
 
             return $p;
@@ -74,7 +74,7 @@ class Element_OphTrOperationbooking_OperationTest extends ActiveRecordTestCase
 
     protected function getFemalePatient()
     {
-        $p = ComponentStubGenerator::generate('Patient', array('gender' => 'F'));
+        $p = ComponentStubGenerator::generate('Patient', array('gender' => 'F', 'id' => 1));
         $p->method('isChild')->willReturn(false);
 
         return $p;
@@ -82,7 +82,7 @@ class Element_OphTrOperationbooking_OperationTest extends ActiveRecordTestCase
 
     protected function getBoyPatient()
     {
-        $p = ComponentStubGenerator::generate('Patient', array('gender' => 'M'));
+        $p = ComponentStubGenerator::generate('Patient', array('gender' => 'M', 'id' => 1));
         $p->method('isChild')->willReturn(true);
 
         return $p;
@@ -90,7 +90,7 @@ class Element_OphTrOperationbooking_OperationTest extends ActiveRecordTestCase
 
     protected function getGirlPatient()
     {
-        $p = ComponentStubGenerator::generate('Patient', array('gender' => 'F'));
+        $p = ComponentStubGenerator::generate('Patient', array('gender' => 'F', 'id' => 1));
         $p->method('isChild')->willReturn(true);
 
         return $p;
@@ -124,6 +124,7 @@ class Element_OphTrOperationbooking_OperationTest extends ActiveRecordTestCase
             array(
                 'id' => 1,
                 'theatre' => $theatre,
+                'theatre_id' => $theatre->id,
                 'date' => $dt,
             )
         );
@@ -211,7 +212,7 @@ class Element_OphTrOperationbooking_OperationTest extends ActiveRecordTestCase
     {
         $theatre = ComponentStubGenerator::generate(
             'OphTrOperationbooking_Operation_Theatre',
-            array('site_id' => 2)
+            ['id' => 1, 'site_id' => 2]
         );
         $session = $this->getSessionForTheatre($theatre);
 

@@ -96,8 +96,7 @@ class BaseEventTypeController extends BaseModuleController
     public $patient;
     /* @var Site */
     public $site;
-    /* @var Event */
-    public $event;
+    public ?Event $event = null;
     public ?EventTemplate $template = null;
     public $editable = true;
     public $editing;
@@ -203,7 +202,7 @@ class BaseEventTypeController extends BaseModuleController
 
     public function getTitle()
     {
-        if ($this->event->firstEventSubtypeItem) {
+        if ($this->event?->firstEventSubtypeItem) {
             return $this->event->firstEventSubtypeItem->eventSubtype->display_name;
         }
         if (isset($this->title)) {
@@ -320,7 +319,7 @@ class BaseEventTypeController extends BaseModuleController
      */
     protected function setOpenElementsFromCurrentEvent($action)
     {
-        $this->open_elements = $this->getEventElements($action);
+        $this->open_elements = $this->getEventElements();
         $this->setElementOptions($action);
     }
 
@@ -655,11 +654,11 @@ class BaseEventTypeController extends BaseModuleController
      *
      * @param ElementType $element_type
      * @param int $previous_id
-     * @param array()     $additional   - additional attributes for the element
+     * @param array $additional - additional attributes for the element
      *
      * @return \BaseEventTypeElement
      */
-    protected function getElementForElementForm($element_type, $previous_id = 0, $additional)
+    protected function getElementForElementForm($element_type, $previous_id = 0, $additional = [])
     {
         $element_class = $element_type->class_name;
         $element = $element_type->getInstance();
@@ -669,11 +668,10 @@ class BaseEventTypeController extends BaseModuleController
             $previous_element = $element_class::model()->findByPk($previous_id);
             $element->loadFromExisting($previous_element);
         }
-        if ($additional) {
-            foreach (array_keys($additional) as $add) {
-                if ($element->isAttributeSafe($add)) {
-                    $element->$add = $additional[$add];
-                }
+
+        foreach (array_keys($additional) as $add) {
+            if ($element->isAttributeSafe($add)) {
+                $element->$add = $additional[$add];
             }
         }
 
@@ -874,14 +872,13 @@ class BaseEventTypeController extends BaseModuleController
     /**
      * Carries out the base create action.
      *
-     * @return bool|string
-     *
      * @throws CHttpException
      * @throws Exception
      */
     public function actionCreate()
     {
         $this->event->firm_id = $this->selectedFirmId;
+        $errors = [];
         if (!empty($_POST)) {
             // form has been submitted
             if (isset($_POST['cancel'])) {
@@ -1056,7 +1053,7 @@ class BaseEventTypeController extends BaseModuleController
         );
 
         $params = array(
-            'errors' => @$errors,
+            'errors' => $errors,
         );
         if (isset($this->eur_res) && isset($this->eur_answer_res)) {
             $params['eur_res'] = $this->eur_res;
@@ -1162,6 +1159,7 @@ class BaseEventTypeController extends BaseModuleController
      */
     public function actionUpdate($id)
     {
+        $errors = [];
         if (!empty($_POST)) {
             // somethings been submitted
             if (isset($_POST['cancel'])) {
@@ -1278,7 +1276,6 @@ class BaseEventTypeController extends BaseModuleController
                         throw new Exception('Unable to save edits to event');
                     }
                 } catch (Exception $e) {
-                    throw $e;
                     $transaction->rollback();
                     throw $e;
                 }
@@ -1357,7 +1354,7 @@ class BaseEventTypeController extends BaseModuleController
             ),
         );
         $params = array(
-            'errors' => @$errors,
+            'errors' => $errors,
         );
         if (isset($this->eur_res) && isset($this->eur_answer_res)) {
             $params['eur_res'] = $this->eur_res;
@@ -1438,7 +1435,7 @@ class BaseEventTypeController extends BaseModuleController
         $template_data_exists = !empty($template_data) && array_key_exists($element_class, $template_data);
         $element_template_data = $template_data_exists ? $template_data[$element_class] : [];
 
-        $this->renderElement($element, 'create', $form, null, $element_template_data, array(
+        $this->renderElement($element, 'create', $form, [], $element_template_data, array(
             'previous_parent_id' => $previous_id,
         ), false, true);
     }
@@ -1489,7 +1486,7 @@ class BaseEventTypeController extends BaseModuleController
      *
      * @param $element
      * @param $data
-     * @param null $index
+     * @param string|int|null $index
      */
     protected function setElementAttributesFromData($element, $data, $index = null)
     {
@@ -1944,7 +1941,7 @@ class BaseEventTypeController extends BaseModuleController
      * Extend the parent method to support inheritance of modules (and rendering the element views from the parent module).
      *
      * @param string $view
-     * @param null $data
+     * @param ?array $data
      * @param bool $return
      * @param bool $processOutput
      *
@@ -1974,6 +1971,7 @@ class BaseEventTypeController extends BaseModuleController
      * @param string $action
      * @param BaseCActiveBaseEventTypeCActiveForm $form
      * @param array $data
+     * @param array $template_data
      * @param array $view_data Data to be passed to the view.
      * @param bool $return Whether the rendering result should be returned instead of being displayed to end users.
      * @param bool $processOutput Whether the rendering result should be postprocessed using processOutput.
@@ -2219,7 +2217,7 @@ class BaseEventTypeController extends BaseModuleController
     /**
      * Get the current episode for the firm and patient.
      *
-     * @return Episode
+     * @return ?Episode
      */
     public function getEpisode()
     {

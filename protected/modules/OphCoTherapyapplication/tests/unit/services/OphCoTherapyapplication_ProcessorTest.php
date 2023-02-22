@@ -197,7 +197,7 @@ class OphCoTherapyapplication_ProcessorTest extends CTestCase
 
         $exam_api = $this->getMockBuilder('ModuleAPI')
                 ->disableOriginalConstructor()
-                ->setMethods(array(
+                ->onlyMethods(array(
                     'getInjectionManagementComplexInEpisodeForDisorder',
                     'getSnellenVisualAcuityForLeft',
                     'getSnellenVisualAcuityForRight',

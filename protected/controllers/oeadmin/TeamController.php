@@ -203,12 +203,12 @@ class TeamController extends BaseAdminController
     }
 
     // for team search in adder popup
-    public function actionAutocomplete($team_id = null, $term)
+    public function actionAutocomplete($team_id = null, $term = '')
     {
         $res = array();
         if (\Yii::app()->request->isAjaxRequest && !empty($term)) {
             $term = strtolower($term);
-            $criteria = new \CDbCriteria;
+            $criteria = new \CDbCriteria();
             $criteria->compare("LOWER(t.name)", $term, true, 'OR');
             $criteria->compare('t.active', true);
             $criteria->with = ['is_parentTeam'];

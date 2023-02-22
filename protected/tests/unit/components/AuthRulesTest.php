@@ -342,7 +342,12 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
         $this->becomeNormalUserWithCreatePermission();
         $event_type = ComponentStubGenerator::generate(
             'EventType',
-            array()
+            [
+                'disabled' => false,
+                'support_services' => false,
+                'rbac_operation_suffix' => null,
+                'class_name' => 'foo'
+            ]
         );
         $this->assertTrue($this->rules->canCreateEvent($this->getNormalFirm(), $this->getNormalEpisode(), $event_type));
     }
@@ -355,7 +360,12 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
         $this->becomeTestUserWithCreatePermission();
         $event_type = ComponentStubGenerator::generate(
             'EventType',
-            array('rbac_operation_suffix' => 'Test')
+            [
+                'rbac_operation_suffix' => 'Test',
+                'disabled' => false,
+                'support_services' => false,
+                'class_name' => 'foo'
+            ]
         );
         $this->assertTrue($this->rules->canCreateEvent($this->getNormalFirm(), $this->getNormalEpisode(), $event_type));
     }
@@ -368,7 +378,12 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
         $this->becomeTestUserWithNoCreatePermission();
         $event_type = ComponentStubGenerator::generate(
             'EventType',
-            array('rbac_operation_suffix' => 'Test')
+            [
+                'rbac_operation_suffix' => 'Test',
+                'disabled' => false,
+                'support_services' => false,
+                'class_name' => 'foo'
+            ]
         );
         $this->assertFalse($this->rules->canCreateEvent($this->getNormalFirm(), $this->getNormalEpisode(), $event_type));
     }
@@ -381,7 +396,12 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
         $this->becomeTestUserWithNoCreatePermission();
         $event_type = ComponentStubGenerator::generate(
             'EventType',
-            array('rbac_operation_suffix' => 'Test')
+            [
+                'rbac_operation_suffix' => 'Test',
+                'disabled' => false,
+                'support_services' => false,
+                'class_name' => 'foo'
+            ]
         );
         $this->assertFalse($this->rules->canCreateEvent($this->getNormalFirm(), $this->getNormalEpisode(), $event_type));
     }
@@ -413,22 +433,24 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
 
     private function getLegacyEpisode()
     {
-        return $this->getEpisode(array('legacy' => true));
+        return $this->getEpisode(['legacy' => true, 'change_tracker' => false]);
     }
 
     private function getSupportServicesEpisode()
     {
-        return $this->getEpisode(array('support_services' => true));
+        return $this->getEpisode(['legacy' => false, 'support_services' => true, 'change_tracker' => false]);
     }
 
     private function getNormalEpisode($subspecialty_id = 42)
     {
         return $this->getEpisode(
-            array(
+            [
                 'firm' => $this->getNormalFirm($subspecialty_id),
                 'support_services' => false,
                 'subspecialtyID' => $subspecialty_id,
-            )
+                'change_tracker' => false,
+                'legacy' => false
+            ]
         );
     }
 
@@ -436,7 +458,7 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
     {
         return ComponentStubGenerator::generate(
             'EventType',
-            array('disabled' => true, 'support_services' => false)
+            ['disabled' => true, 'support_services' => false]
         );
     }
 
@@ -444,7 +466,7 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
     {
         return ComponentStubGenerator::generate(
             'EventType',
-            array('disabled' => false, 'support_services' => true)
+            ['disabled' => false, 'support_services' => true, 'rbac_operation_suffix' => null, 'class_name' => 'foo']
         );
     }
 
@@ -452,17 +474,18 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
     {
         return ComponentStubGenerator::generate(
             'EventType',
-            array('disabled' => false, 'support_services' => false)
+            ['disabled' => false, 'support_services' => false, 'rbac_operation_suffix' => null, 'class_name' => 'foo']
         );
     }
 
     private function getEvent(array $props = array())
     {
-        $props += array(
+        $props += [
             'episode' => $this->getNormalEpisode(42),
             'created_user_id' => 1,
             'created_date' => date('Y-m-d'),
-        );
+            'delete_pending' => false
+        ];
 
         return ComponentStubGenerator::generate('Event', $props);
     }

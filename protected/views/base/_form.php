@@ -32,7 +32,7 @@ if (!Yii::app()->user->isGuest) {
         $user_auth = Yii::app()->params['user_auth'];
         if (
             $user_auth && $user_auth->institutionAuthentication->user_authentication_method == "LOCAL"
-            && PasswordUtils::testStatus('stale', $user_auth) && empty(Yii::app()->session['shown_pw_reminder'])
+            && PasswordUtils::testStatus($user_auth, 'stale') && empty(Yii::app()->session['shown_pw_reminder'])
         ) {
             Yii::app()->session['shown_pw_reminder'] = true;
             $this->widget('PasswordStaleWidgetReminder');

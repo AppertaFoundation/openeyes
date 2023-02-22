@@ -42,8 +42,10 @@ class BaseDeliveryCommandTest extends OEDbTestCase
     public function filename_output_id_and_date()
     {
         [$event, $output_id] = $this->createEventAndIdForFormat('{document_output.id}{date}');
+        $now = new DateTimeImmutable();
+        BaseDeliveryCommand::setNow($now);
 
-        $this->assertEquals($output_id . date('YmdHis'), BaseDeliveryCommand::getFileName($event, $output_id));
+        $this->assertEquals($output_id . $now->format('YmdHis'), BaseDeliveryCommand::getFileName($event, $output_id));
     }
 
     /** @test */

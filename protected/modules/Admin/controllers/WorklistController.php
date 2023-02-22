@@ -48,7 +48,7 @@ class WorklistController extends BaseAdminController
      * @param $message - the message to display
      * @param string $id - the flash element id suffix. defaults to message
      */
-    protected function flashMessage($type = 'success', $message, $id = 'message')
+    protected function flashMessage($type, $message, $id = 'message')
     {
         Yii::app()->user->setFlash("{$type}.{$id}", $message);
     }

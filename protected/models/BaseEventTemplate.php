@@ -2,6 +2,8 @@
 
 abstract class BaseEventTemplate extends BaseActiveRecordVersioned
 {
+    public $template_data = null;
+
     abstract public function setupAndSave($event, $event_template, $template_json): bool;
     abstract public function getUpdateStatus($event, $old_data, $new_data, $data_has_changed);
 

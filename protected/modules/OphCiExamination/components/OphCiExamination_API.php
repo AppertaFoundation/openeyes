@@ -1347,19 +1347,19 @@ class OphCiExamination_API extends \BaseAPI
      * regardless of whether it is part of the most recent examination event, or an earlier one.
      *
      * @param Patient $patient
-     * @param boole $use_context
      * @param string $side
      * @param int $disorder1_id
      * @param int $disorder2_id
+     * @param bool $use_context
      *
      * @return models\Element_OphCiExamination_InjectionManagementComplex
      */
     public function getInjectionManagementComplexInEpisodeForDisorder(
         $patient,
-        $use_context = false,
         $side,
         $disorder1_id,
-        $disorder2_id
+        $disorder2_id,
+        $use_context = false
     ) {
         $events = $this->getEvents($patient, $use_context);
         $elements = array();

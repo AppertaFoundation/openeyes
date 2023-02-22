@@ -90,7 +90,7 @@ class EpisodeSummaryItem extends BaseActiveRecord
         $this->dbConnection->createCommand()->delete(
             'episode_summary',
             $subspecialty_id ? 'subspecialty_id = :subspecialty_id' : 'subspecialty_id is null',
-            array('subspecialty_id' => $subspecialty_id)
+            $subspecialty_id ? ['subspecialty_id' => $subspecialty_id] : []
         );
 
         if ($item_ids) {

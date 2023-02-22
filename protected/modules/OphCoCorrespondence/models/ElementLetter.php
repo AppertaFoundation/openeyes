@@ -831,8 +831,9 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
 
     public function beforeSave()
     {
+        $controller = Yii::app()->getController();
 
-        if (in_array(Yii::app()->getController()->getAction()->id, array('create', 'update'))) {
+        if ($controller && in_array($controller->getAction()?->id, array('create', 'update'))) {
             if (isset($_POST['saveprint'])) {
                 Yii::app()->request->cookies['savePrint'] = new CHttpCookie('savePrint', $this->event_id, [
                     'expire' => strtotime('+30 seconds')
@@ -1403,7 +1404,8 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
 
     public function attachAssociatedEvent()
     {
-        if (Yii::app()->getController()->getAction()->id === 'create' || Yii::app()->getController()->getAction()->id === 'update') {
+        $controller = Yii::app()->getController();
+        if ($controller && in_array($controller->getAction()?->id, ['create', 'update'])) {
             EventAssociatedContent::model()->deleteAll(
                 '`parent_event_id` = :parent_event_id',
                 array(':parent_event_id' => $this->event->id)

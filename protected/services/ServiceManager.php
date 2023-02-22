@@ -93,9 +93,10 @@ class ServiceManager extends \CApplicationComponent
 
         // Unambiguous resource type
         if (count($candidates) == 1) {
-            list($name, $config) = each($candidates);
-            if (!$config['fhir_prefix']) {
-                return $this->{$name};
+            foreach ($candidates as $name => $config) {
+                if (!isset($config['fhir_prefix']) || !$config['fhir_prefix']) {
+                    return $this->{$name};
+                }
             }
         }
 

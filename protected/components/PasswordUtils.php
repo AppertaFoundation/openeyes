@@ -98,7 +98,7 @@ class PasswordUtils
         return md5($salt . $password);
     }
 
-    public static function testStatus($status = 'locked', $user_authentication, $is_special = false)
+    public static function testStatus(UserAuthentication $user_authentication, $status = 'locked', $is_special = false)
     {
         if (!$is_special && $user_authentication->institutionAuthentication->user_authentication_method != 'LOCAL') {
             return null;
@@ -124,7 +124,7 @@ class PasswordUtils
         if (self::$password_statuses[$status] <= self::$password_statuses[$user_authentication->password_status]) {
             $user_authentication->password_status = $status;
 
-            if (PasswordUtils::testStatus('softlocked', $user_authentication)) {
+            if (PasswordUtils::testStatus($user_authentication, 'softlocked')) {
                 $temp_now = new DateTime();
                 $pw_timeout = !empty(Yii::app()->params['pw_status_checks']['pw_softlock_timeout']) ? Yii::app()->params['pw_status_checks']['pw_softlock_timeout'] : '10 mins';
                 $user_authentication->password_softlocked_until = date_format(date_add($temp_now, date_interval_create_from_date_string($pw_timeout)), "Y-m-d H:i:s");

@@ -47,10 +47,10 @@ Diagnosis: <?= $diagnosis->getDiagnosisStringForSide($side) . "\n" ?>
 if (
     $exam_info = $exam_api->getInjectionManagementComplexInEpisodeForDisorder(
         $patient,
-        $use_context = true,
         $side,
         $diagnosis->{$side . '_diagnosis1_id'},
-        $diagnosis->{$side . '_diagnosis2_id'}
+        $diagnosis->{$side . '_diagnosis2_id'},
+        true
     )
 ) {
     foreach ($exam_info->{$side . '_answers'} as $answer) {

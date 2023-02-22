@@ -1,0 +1,13 @@
+parameters:
+  scanDirectories:
+    - vendor/yiisoft
+    - protected/behaviors
+    - protected/components
+    - protected/controllers
+    - protected/helpers
+    - protected/models
+    - protected/modules
+    - protected/widgets
+  ignoreErrors:
+    - '#Access to an undefined property C[a-zA-Z]+::*#'
+    - '#Call to an undefined method CApplication::[a-zA-Z]+\(\)#'
