@@ -296,7 +296,8 @@ class BaseActiveRecord extends CActiveRecord
     protected function getChangeUserId()
     {
         if (method_exists($this->getApp(), 'getUser')) {
-            return $this->getApp()->getUser()?->id ?? 1;
+            $user = $this->getApp()->getUser();
+            return $user && $user->id ? $user->id : 1;
         }
 
         return 1;

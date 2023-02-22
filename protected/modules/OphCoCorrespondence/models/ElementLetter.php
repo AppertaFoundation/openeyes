@@ -831,16 +831,12 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
 
     public function beforeSave()
     {
-        $controller = Yii::app()->getController();
-
-        if ($controller && in_array($controller->getAction()?->id, array('create', 'update'))) {
-            if (isset($_POST['saveprint'])) {
-                Yii::app()->request->cookies['savePrint'] = new CHttpCookie('savePrint', $this->event_id, [
-                    'expire' => strtotime('+30 seconds')
-                ]);
-                $this->print = 1;
-                $this->print_all = 1;
-            }
+        if ($this->isSavingForPrint()) {
+            Yii::app()->request->cookies['savePrint'] = new CHttpCookie('savePrint', $this->event_id, [
+                'expire' => strtotime('+30 seconds')
+            ]);
+            $this->print = 1;
+            $this->print_all = 1;
         }
 
         foreach (array('address', 'introduction', 're', 'body', 'footer', 'cc') as $field) {
@@ -1404,13 +1400,13 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
 
     public function attachAssociatedEvent()
     {
-        $controller = Yii::app()->getController();
-        if ($controller && in_array($controller->getAction()?->id, ['create', 'update'])) {
+        if ($this->inACreateOrUpdateRequest()) {
             EventAssociatedContent::model()->deleteAll(
                 '`parent_event_id` = :parent_event_id',
                 array(':parent_event_id' => $this->event->id)
             );
         }
+
         if (isset($_POST['attachments_event_id'])) {
             $attachments_last_event_id = Yii::app()->request->getPost('attachments_event_id');
             $attachments_system_hidden = Yii::app()->request->getPost('attachments_system_hidden');
@@ -1471,5 +1467,25 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
             $signature_text = $api->getFooterText($signOffUser, $firm);
             $this->footer = $signOffUser->correspondence_sign_off_text . "{e-signature}" . ($signature_text ? "\n" . nl2br($signature_text) : '');
         }
+    }
+
+    protected function inACreateOrUpdateRequest(): bool
+    {
+        $controller = Yii::app()->getController();
+        if (!$controller) {
+            return false;
+        }
+
+        $action = $controller->getAction();
+        return $action && in_array($action->id, array('create', 'update'));
+    }
+
+    protected function isSavingForPrint(): bool
+    {
+        if (!$this->inACreateOrUpdateRequest()) {
+            return false;
+        }
+
+        return Yii::app()->request->getPost('saveprint', null) !== null;
     }
 }

@@ -202,7 +202,7 @@ class BaseEventTypeController extends BaseModuleController
 
     public function getTitle()
     {
-        if ($this->event?->firstEventSubtypeItem) {
+        if (isset($this->event) && $this->event->firstEventSubtypeItem) {
             return $this->event->firstEventSubtypeItem->eventSubtype->display_name;
         }
         if (isset($this->title)) {
