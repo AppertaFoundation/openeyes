@@ -107,7 +107,7 @@ class OphCoCvi_ManagerTest extends OEDbTestCase
         $esign->signatory_name = 'Test signatory';
         $esign->signatory_role = 'Consultant';
         $esign->timestamp = mktime();
-        $esign->type = 1;
+        $esign->type = $esign::TYPE_LOGGEDIN_USER;
         $esign->signed_user_id = $signatory_user->id;
         $esign->status = 1;
         $esign->signature_file_id = $signatory_user->signature_file_id;
@@ -124,7 +124,7 @@ class OphCoCvi_ManagerTest extends OEDbTestCase
         $esign->signatory_name = $this->patient->getFullName();
         $esign->signatory_role = 'Patient';
         $esign->timestamp = mktime();
-        $esign->type = 3;
+        $esign->type = $esign::TYPE_PATIENT;
         $esign->signed_user_id = null;
         $esign->status = 1;
         $esign->signature_file_id = $signatory_user->signature_file_id;
