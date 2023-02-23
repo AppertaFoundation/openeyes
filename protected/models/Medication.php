@@ -646,9 +646,9 @@ class Medication extends BaseActiveRecordVersioned
         return "{$unmapped_string}{$number}";
     }
 
-    protected function buildCriteriaForFindAllAtLevel(int $level, Institution $institution)
+    protected function buildCriteriaForFindAllAtLevel(int $level, ?Institution $institution = null, bool $anyLevel = true)
     {
-        $baseCriteria = $this->baseBuildCriteriaForFindAllAtLevel($level, $institution);
+        $baseCriteria = $this->baseBuildCriteriaForFindAllAtLevel($level, $institution, $anyLevel);
         $baseCriteria->addCondition('source_type != :_localSourceType', 'OR');
         $baseCriteria->params[':_localSourceType'] = static::SOURCE_TYPE_LOCAL;
 
