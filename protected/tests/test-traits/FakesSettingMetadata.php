@@ -13,36 +13,35 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-namespace OE\factories\models;
-
-use OE\factories\ModelFactory;
-use Contact;
-use Country;
-
-class AddressFactory extends ModelFactory
+trait FakesSettingMetadata
 {
+    use FakesModels;
 
-    /**
-     *
-     * @return array
-     */
-    public function definition(): array
+    protected $settingsmetadata_cache = [];
+
+    protected function fakeSettingMetadata($key, $value)
     {
-        return [
-            'address1' => $this->faker->streetAddress(),
-            'city' => $this->faker->city(),
-            'postcode' => $this->faker->postcode(),
-            'country_id' => ModelFactory::factoryFor(Country::class)->useExisting(['code' => 'GB']),
-            'contact_id' => Contact::factory()
-        ];
+        $this->settingsmetadata_cache[$key] = $value;
+
+        $this->ensureModelFaked(SettingMetadata::class, ['getSetting']);
+
+        SettingMetadata::model()
+            ->method('getSetting')
+            ->willReturnCallback(function ($key) {
+                return $this->settingsmetadata_cache[$key] ?? null;
+            });
     }
 
-    public function full(): self
+    protected function ensureModelFaked($model_class, $methods = [])
     {
-        return $this->state([
-            'address1' => $this->faker->secondaryAddress(),
-            'address2' => $this->faker->streetAddress(),
-            'county' => $this->faker->county()
-        ]);
+        if (ModelFakeTracker::getFakeForModel(SettingMetadata::class)) {
+            return;
+        }
+
+        $mock = $this->getMockBuilder(SettingMetadata::class)
+            ->onlyMethods($methods)
+            ->getMock();
+
+        SettingMetadata::fakeWith($mock);
     }
 }

@@ -13,36 +13,34 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-namespace OE\factories\models;
+namespace OE\concerns;
 
-use OE\factories\ModelFactory;
-use Contact;
-use Country;
+use ModelFakeTracker;
 
-class AddressFactory extends ModelFactory
+trait CanBeFaked
 {
-
-    /**
-     *
-     * @return array
-     */
-    public function definition(): array
+    public static function fakeWith($mock)
     {
-        return [
-            'address1' => $this->faker->streetAddress(),
-            'city' => $this->faker->city(),
-            'postcode' => $this->faker->postcode(),
-            'country_id' => ModelFactory::factoryFor(Country::class)->useExisting(['code' => 'GB']),
-            'contact_id' => Contact::factory()
-        ];
+        ModelFakeTracker::setFakeForModel(self::class, $mock);
+
+        return $mock;
     }
 
-    public function full(): self
+    public static function model($class_name = null)
     {
-        return $this->state([
-            'address1' => $this->faker->secondaryAddress(),
-            'address2' => $this->faker->streetAddress(),
-            'county' => $this->faker->county()
-        ]);
+        $fake = ModelFakeTracker::getFakeForModel(self::class);
+
+        return $fake ?? parent::model($class_name);
+    }
+
+    public static function fakeExpects()
+    {
+        $fake = ModelFakeTracker::getFakeForModel(self::class);
+
+        if (!$fake) {
+            throw new \RuntimeException('model must be faked before setting expectations');
+        }
+
+        return $fake->expects(...func_get_args());
     }
 }
