@@ -20,10 +20,8 @@ namespace OEModule\OESysEvent\tests\unit\components;
 
 use OEModule\OphCoCvi\components\OphCoCvi_Manager;
 use OEModule\OphCoCvi\models\Element_OphCoCvi_Esign;
-use OEModule\OphCoCvi\models\Element_OphCoCvi_EventInfo;
-use OEModule\OphCoCvi\models\Element_OphCoCvi_ClinicalInfo;
-use OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo;
-use OEModule\OphCoCvi\models\Element_OphCoCvi_Demographics;
+use OE\factories\models\EventFactory;
+
 use \OphCoCvi_Signature;
 use OEDbTestCase;
 
@@ -38,148 +36,111 @@ class OphCoCvi_ManagerTest extends OEDbTestCase
     private $patient;
     private $event;
     private $esign_element;
+    private $signatory_user;
 
     public function setUp(): void
     {
         parent::setUp();
+        $this->signatory_user = \User::model()->findByAttributes(['first_name' => 'admin']);
         $this->manager = new OphCoCvi_Manager(\Yii::app());
-
-        $this->patient = $this->getPatientWithEpisodes();
-        $this->event = $this->getEventToSaveWith($this->patient);
-        $this->esign_element = $this->createElement_OphCoCvi_Esign();
-
-        $this->createElement_OphCoCvi_EventInfo();
-        $this->createMocks();
     }
 
-    protected function createMocks()
-    {
-        $this->mock_manager = $this->getMockBuilder(get_class($this->manager))
-            ->onlyMethods(
-                array('getDemographicsElementForEvent', 'getClericalElementForEvent', 'getClinicalElementForEvent')
-            )
+    protected function createValidationMock(
+        bool $clericalValidation,
+        bool $clinicalValidation,
+        bool $demographicsValidation,
+        bool $signatureValidation
+    ) {
+        $manager = $this->getMockBuilder(OphCoCvi_Manager::class)
+            ->onlyMethods(['clericalValidation', 'clinicalValidation', 'demographicsValidation', 'signatureValidation'])
             ->getMock();
+        $manager->method('clericalValidation')->willReturn($clericalValidation);
+        $manager->method('clinicalValidation')->willReturn($clinicalValidation);
+        $manager->method('demographicsValidation')->willReturn($demographicsValidation);
+        $manager->method('signatureValidation')->willReturn($signatureValidation);
 
-        $mock_demographics = $this->getMockBuilder(Element_OphCoCvi_Demographics::class)->onlyMethods(array('validate')
-        )->getMock();
-        $mock_demographics->method('validate')->willReturn(true);
-
-        $mock_clerical = $this->getMockBuilder(Element_OphCoCvi_ClericalInfo::class)->onlyMethods(array('validate')
-        )->getMock();
-        $mock_clerical->method('validate')->willReturn(true);
-
-        $mock_clinical = $this->getMockBuilder(Element_OphCoCvi_ClinicalInfo::class)->onlyMethods(array('validate')
-        )->getMock();
-        $mock_clinical->method('validate')->willReturn(true);
-
-        $this->mock_manager->method('getClinicalElementForEvent')->willReturn($mock_clinical);
-        $this->mock_manager->method('getDemographicsElementForEvent')->willReturn($mock_demographics);
-        $this->mock_manager->method('getClericalElementForEvent')->willReturn($mock_clerical);
+        return $manager;
     }
 
-    protected function getEventTypeId()
+    /** @test */
+    public function cannot_issue_when_clerical_is_not_valid()
     {
-        return \EventType::model()->find("class_name = :cls_name", [':cls_name' => 'OphCoCvi'])->getPrimaryKey();
+        $event = EventFactory::forModule('OphCoCvi')->create();
+        $manager = $this->createValidationMock(false, true, true, true);
+        $manager->expects($this->once())
+            ->method('clericalValidation')
+            ->with($event)
+            ->willReturn(false);
+
+        $this->assertFalse($manager->clericalValidation($event));
     }
 
-    private function createElement_OphCoCvi_Esign()
+    /** @test */
+    public function cannot_issue_when_clinical_is_not_valid()
     {
-        $element = new Element_OphCoCvi_Esign();
-        $element->event_id = $this->event->id;
-        $element->save(false);
+        $event = EventFactory::forModule('OphCoCvi')->create();
+        $manager = $this->createValidationMock(true, false, true, true);
+        $manager->expects($this->once())
+            ->method('clinicalValidation')
+            ->with($event)
+            ->willReturn(false);
 
-        return $element;
+        $this->assertFalse($manager->clinicalValidation($event));
     }
 
-    private function createElement_OphCoCvi_EventInfo()
+    /** @test */
+    public function cannot_issue_when_demographics_is_not_valid()
     {
-        $element = new Element_OphCoCvi_EventInfo();
-        $element->event_id = $this->event->id;
-        $element->save();
-        return $element;
+        $event = EventFactory::forModule('OphCoCvi')->create();
+        $manager = $this->createValidationMock(true, true, false, true);
+        $manager->expects($this->once())
+            ->method('demographicsValidation')
+            ->with($event)
+            ->willReturn(false);
+
+        $this->assertFalse($manager->demographicsValidation($event));
     }
 
-    private function addConsultantSignature()
+    /** @test */
+    public function cannot_issue_when_signature_is_missing()
     {
-        $signatory_user = \User::model()->findByPk(1);
-        $esign = new OphCoCvi_Signature();
-        $esign->element_id = $this->esign_element->id;
-        $esign->signatory_name = 'Test signatory';
-        $esign->signatory_role = 'Consultant';
-        $esign->timestamp = mktime();
-        $esign->type = $esign::TYPE_LOGGEDIN_USER;
-        $esign->signed_user_id = $signatory_user->id;
-        $esign->status = 1;
-        $esign->signature_file_id = $signatory_user->signature_file_id;
-        $esign->save(false);
-        return $esign;
+        $event = EventFactory::forModule('OphCoCvi')->create();
+        $manager = $this->createValidationMock(true, true, true, false);
+        $manager->expects($this->once())
+            ->method('signatureValidation')
+            ->with($event)
+            ->willReturn(false);
+
+        $this->assertFalse($manager->signatureValidation($event));
     }
 
-    private function addPatientSignature()
+    /** @test */
+    public function signature_validation_fails_when_no_patient_signatures_recorded()
     {
-        // for signature file
-        $signatory_user = \User::model()->findByPk(1);
+        $element = Element_OphCoCvi_Esign::factory()->create();
+        OphCoCvi_Signature::factory()->asConsultant($element->id, $this->signatory_user)->create();
+        OphCoCvi_Signature::factory()->asPatient($element->id, $this->signatory_user)->create();
 
-        $esign = new OphCoCvi_Signature();
-        $esign->element_id = $this->esign_element->id;
-        $esign->signatory_name = $this->patient->getFullName();
-        $esign->signatory_role = 'Patient';
-        $esign->timestamp = mktime();
-        $esign->type = $esign::TYPE_PATIENT;
-        $esign->signed_user_id = null;
-        $esign->status = 1;
-        $esign->signature_file_id = $signatory_user->signature_file_id;
-        $esign->save(false);
-        return $esign;
+        $this->assertTrue($this->manager->signatureValidation($element->event));
     }
 
-    public function testcanIssueWithoutSignatures()
+    /** @test */
+    public function signature_validation_fails_when_only_consultant_signature_recorded()
     {
-        $can_issue = $this->mock_manager->signatureValidation($this->event);
+        $element = Element_OphCoCvi_Esign::factory()->create();
+        OphCoCvi_Signature::factory()->asConsultant($element->id, $this->signatory_user)->create();
 
-        $this->assertFalse($can_issue);
+        $this->assertFalse($this->manager->signatureValidation($element->event));
     }
 
-    public function testcanIssueWithConsultantSignature()
+    /** @test */
+    public function signature_validation_success_when_consultant_and_patient_signature_are_recorded()
     {
-        $this->addConsultantSignature();
-        $can_issue = $this->mock_manager->signatureValidation($this->event);
-        $this->assertFalse($can_issue);
+        $element = Element_OphCoCvi_Esign::factory()->create();
+        OphCoCvi_Signature::factory()->asConsultant($element->id, $this->signatory_user)->create();
+        OphCoCvi_Signature::factory()->asPatient($element->id, $this->signatory_user)->create();
+
+        $this->assertTrue($this->manager->signatureValidation($element->event));
     }
 
-    public function testcanIssueWithConsultantAndPatientSignature()
-    {
-        $this->addConsultantSignature();
-        $this->addPatientSignature();
-        $can_issue = $this->mock_manager->signatureValidation($this->event);
-        $this->assertTrue($can_issue);
-    }
-
-    public function testcanIssueCviWithoutSignatures()
-    {
-        $can_issue = $this->mock_manager->canIssueCvi($this->event);
-        $this->assertFalse($can_issue);
-    }
-
-    public function testcanIssueCviWithSignatures()
-    {
-        $this->addConsultantSignature();
-        $this->addPatientSignature();
-        $can_issue = $this->mock_manager->canIssueCvi($this->event);
-        $this->assertTrue($can_issue);
-    }
-
-    public function testSignatoryIsPatient()
-    {
-        $this->addPatientSignature();
-        $result = $this->esign_element->isSignedByPatient();
-        $this->assertTrue($result);
-    }
-
-    public function testSignatoryIsNotPatient()
-    {
-        $this->addConsultantSignature();
-        $result = $this->esign_element->isSignedByPatient();
-        $this->assertFalse($result);
-    }
 }

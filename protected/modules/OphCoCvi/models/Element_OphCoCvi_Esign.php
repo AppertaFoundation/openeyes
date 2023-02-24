@@ -17,6 +17,7 @@
 namespace OEModule\OphCoCvi\models;
 
 use AutoSignTrait;
+use OE\factories\models\traits\HasFactory;
 
 /**
  * Class Element_OphCoCvi_Esign
@@ -30,6 +31,8 @@ use AutoSignTrait;
 class Element_OphCoCvi_Esign extends \BaseEsignElement
 {
     use AutoSignTrait;
+    use HasFactory;
+
     private $signature_class = \OphCoCvi_Signature::class;
     private $pin_required_setting_name = 'require_pin_for_cvi';
 
