@@ -44,7 +44,12 @@ class DefaultControllerRetinoscopyTest extends BaseDefaultControllerTest
         $savedElement = $this->createElementWithDataWithController($data);
 
         $this->assertNotNull($savedElement);
+
+        $attrs_to_not_check = ['id', 'event_id', 'created_date', 'last_modified_date'];
         foreach ($data as $attr => $value) {
+            if (in_array($attr, $attrs_to_not_check)) {
+                continue;
+            }
             $this->assertEquals($value, $savedElement->$attr, "{$attr} should be set to {$value}");
         }
     }
