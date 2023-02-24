@@ -177,14 +177,14 @@ class WorklistPatient extends BaseActiveRecordVersioned
 
     protected function getWorklistPatientAttributeFromRelation($attribute_name): ?WorklistPatientAttribute
     {
-        $attributes = array_filter(
+        $matched_attributes = array_filter(
             $this->worklist_attributes,
             function ($attr) use ($attribute_name) {
                 return $attr->worklistattribute->name == $attribute_name;
             }
         );
 
-        return $attributes[0] ?? null;
+        return array_shift($matched_attributes);
     }
 
     protected function getWorklistPatientAttributeFromQuery($attribute_name): ?WorklistPatientAttribute
