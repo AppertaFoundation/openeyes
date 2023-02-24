@@ -1,5 +1,5 @@
 <?php
-$status_class = (int)$step->status === PathwayStep::STEP_COMPLETED ? "done {$step->type->short_name}-back" : $step->type->short_name;
+$status_class = (int)$step->status === PathwayStep::STEP_COMPLETED ? "done {$step->type->short_name}-back" : ($step instanceof PathwayStep ? $step->type->short_name : $step->step_type->short_name);
 $icon = $step instanceof PathwayStep ? $step->type->large_icon : $step->step_type->large_icon;
 $type = $step instanceof PathwayStep ? $step->type->type : $step->step_type->type
 ?>

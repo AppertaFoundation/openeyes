@@ -94,7 +94,7 @@
 <!-- Dialog with pathway step options template -->
 <script type="text/html" id="new-path-step-template">
     <h4>Name</h4>
-    <input name="taskname" type="text" maxlength="64" size="66" placeholder="Task name (maximum 64 characters)"/>
+    <input name="taskname" type="text" maxlength="64" size="66" placeholder="Task name (maximum 64 characters)" data-test="path-step-task-name"/>
     <h4>Step pathway display name (restricted to 16 characters)</h4>
     <input name="shortname" type="text" maxlength="16" size="18" placeholder="Display name"/>
     {{#custom_options}}
@@ -106,7 +106,7 @@
     </select>
     {{/custom_options}}
     <div class="popup-actions flex-right">
-        <button class="green hint js-add-pathway" disabled="disabled">Add to selected patients</button>
+        <button class="green hint js-add-pathway" disabled="disabled" data-test="path-step-add-pathway">Add to selected patients</button>
         <button class="red hint js-cancel-popup-steps">Cancel</button>
     </div>
 </script>

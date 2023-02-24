@@ -575,7 +575,7 @@ class Pathway extends BaseActiveRecordVersioned
                             </svg>';
             }
             // Show duration of the pathway
-            $duration_graphic .= '<div class="mins">';
+            $duration_graphic .= '<div class="mins" data-test="wait-duration-mins">';
             if ($show_duration) {
                 if ((int)$this->status === self::STATUS_DONE) {
                     $duration_graphic .= $wait_length->format('%h:%I');

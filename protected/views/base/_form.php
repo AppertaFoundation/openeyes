@@ -101,7 +101,7 @@ if (!Yii::app()->user->isGuest) {
                         </svg>
                     </a>
                     <?php else : ?>
-                    <a class="nav-js-btn icon-btn" id="js-nav-worklist-btn" onclick="return false;">
+                    <a class="nav-js-btn icon-btn" id="js-nav-worklist-btn" onclick="return false;" data-test="nav-worklist-btn">
                         <svg viewBox="0 0 80 40" class="icon clinic ">
                             <use xlink:href="<?= $navIconUrl . '#clinic-change-icon' ?>"></use>
                         </svg>

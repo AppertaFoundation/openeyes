@@ -57,7 +57,8 @@ if ($is_step_instance) {
                 data-pathstep-id="<?= $step instanceof PathwayStep ? $step->id : null ?>"
                 data-pathway-id="<?= $step instanceof PathwayStep ? $step->pathway->id : null ?>"
                 data-action="checkout"
-                <?= $is_completed ? 'style="display: none;"' : ''?>>
+                <?= $is_completed ? 'style="display: none;"' : ''?>
+                data-test="step-checkout">
                 Check out
             </button>
             <button 
