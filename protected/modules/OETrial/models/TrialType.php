@@ -1,5 +1,7 @@
 <?php
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "trial_type".
  *
@@ -18,6 +20,8 @@
  */
 class TrialType extends BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     /**
      * The trial type for non-Intervention trial (meaning there are no restrictions on assigning patients to this the trial)
      */
