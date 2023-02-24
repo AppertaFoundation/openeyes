@@ -1,4 +1,5 @@
 <?php
+use OE\concerns\CanBeFaked;
 
 /**
  * OpenEyes.
@@ -35,6 +36,8 @@
  */
 class SettingMetadata extends BaseActiveRecordVersioned
 {
+    use CanBeFaked;
+
     public static array $CONTEXT_CLASSES = [
         'SettingUser' => 'user_id',
         'SettingFirm' => 'firm_id',
@@ -54,16 +57,6 @@ class SettingMetadata extends BaseActiveRecordVersioned
     protected static ?bool $sessionFirmValidated = null;
     protected static ?Firm $sessionFirm = null;
     protected static array $metadataCacheStore = [];
-
-    /**
-     * Returns the static model of the specified AR class.
-     *
-     * @return SettingMetadata the static model class
-     */
-    public static function model($className = __CLASS__)
-    {
-        return parent::model($className);
-    }
 
     public static function resetCache()
     {
@@ -249,7 +242,7 @@ class SettingMetadata extends BaseActiveRecordVersioned
         // Gets the last combined updated time of the settings_tables and uses as a cache dependency. The cache will be invalidated if the tables have been updated
         $debounce_val = Yii::app()->settingCache->get('SettingMetaDebounce');
         if ($debounce_val === false) {
-            $dependency_sql = " SELECT sha1(GROUP_CONCAT(UPDATE_TIME)) 
+            $dependency_sql = " SELECT sha1(GROUP_CONCAT(UPDATE_TIME))
                                 FROM   information_schema.tables
                                 WHERE  TABLE_SCHEMA = DATABASE()
                                 AND TABLE_NAME IN (

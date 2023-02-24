@@ -21,9 +21,12 @@ class ContactFactory extends ModelFactory
     public function configure()
     {
         return $this->afterCreating(function ($instance) {
-            ModelFactory::factoryFor(Address::class)->create([
-                'contact_id' => $instance->id
-            ]);
+            ModelFactory::factoryFor(Address::class)
+                // useExisting to avoid creating a second address if one has been defined
+                // through other factory calls
+                ->useExisting([
+                    'contact_id' => $instance->id
+                ])->create();
         });
     }
 
@@ -56,12 +59,16 @@ class ContactFactory extends ModelFactory
         });
     }
 
-    public function withCorrespondAddress() {
+    public function withCorrespondAddress()
+    {
         return $this->afterCreating(function ($instance) {
-            ModelFactory::factoryFor(Address::class)->create([
-                'contact_id' => $instance->id,
-                'address_type_id' => 3 // Correspondence address type
-            ]);
+            ModelFactory::factoryFor(Address::class)
+                // useExisting so we don't double on other factory behaviours
+                ->useExisting([
+                    'contact_id' => $instance->id,
+                    'address_type_id' => \AddressType::CORRESPOND
+                ])
+                ->create();
         });
     }
 }

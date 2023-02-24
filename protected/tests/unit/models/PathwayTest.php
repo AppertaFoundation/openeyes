@@ -147,16 +147,22 @@ class PathwayTest extends ActiveRecordTestCase
         $json = array();
         $pathway = $this->pathways($fixture_id);
         foreach ($pathway->requested_steps as $step) {
-            $json['requested_steps'][] = $step->toJSON();
+            $json['requested_steps'][] = $this->makeStepJsonComparable($step->toJSON());
         }
         foreach ($pathway->started_steps as $step) {
-            $json['started_steps'][] = $step->toJSON();
+            $json['started_steps'][] = $this->makeStepJsonComparable($step->toJSON());
         }
         foreach ($pathway->completed_steps as $step) {
-            $json['completed_steps'][] = $step->toJSON();
+            $json['completed_steps'][] = $this->makeStepJsonComparable($step->toJSON());
         }
 
-        self::assertEquals($json, $pathway->stepsAsJSON());
+        $result = $pathway->stepsAsJSON();
+        foreach ($result as $k => $result_json) {
+            $this->assertEquals(
+                $json[$k],
+                array_map(function ($json) { return $this->makeStepJsonComparable($json); }, $result_json)
+            );
+        }
     }
 
     /**
@@ -183,5 +189,17 @@ class PathwayTest extends ActiveRecordTestCase
         $step->long_name = 'Prescription';
         $step->status = PathwayStep::STEP_REQUESTED;
         self::assertTrue($pathway->enqueue($step));
+    }
+
+    /**
+     * Strips out variable attributes
+     */
+    public function makeStepJsonComparable($json)
+    {
+        foreach (['now_timestamp'] as $incomparable) {
+            unset($json[$incomparable]);
+        }
+
+        return $json;
     }
 }

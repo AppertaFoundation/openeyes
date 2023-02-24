@@ -2144,7 +2144,7 @@ class WorklistController extends BaseController
         $pathway->end_time = date('Y-m-d H:i:s');
         $pathway->save();
 
-        PathwayCheckoutSystemEvent::dispatch($this);
+        PathwayCheckoutSystemEvent::dispatch($pathway);
 
         $this->renderJSON(
             [

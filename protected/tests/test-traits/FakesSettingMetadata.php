@@ -1,7 +1,6 @@
 <?php
-
 /**
- * (C) Apperta Foundation, 2020
+ * (C) Apperta Foundation, 2023
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -10,36 +9,39 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (C) 2020, Apperta Foundation
+ * @copyright Copyright (C) 2023, Apperta Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-namespace OEModule\OphCiExamination\tests\traits;
-
-use OEModule\OphCiExamination\models\Retinoscopy;
-
-trait InteractsWithRetinoscopy
+trait FakesSettingMetadata
 {
-    use \WithFaker;
-    use \InteractsWithEventTypeElements;
+    use FakesModels;
 
-    protected function generateRetinoscopyData($attrs = [])
+    protected $settingsmetadata_cache = [];
+
+    protected function fakeSettingMetadata($key, $value)
     {
-        return Retinoscopy::factory()->bothSided()->make(array_merge($attrs, ['event_id' => null]))->getAttributes();
+        $this->settingsmetadata_cache[$key] = $value;
+
+        $this->ensureModelFaked(SettingMetadata::class, ['getSetting']);
+
+        SettingMetadata::model()
+            ->method('getSetting')
+            ->willReturnCallback(function ($key) {
+                return $this->settingsmetadata_cache[$key] ?? null;
+            });
     }
 
-    /**
-     * Should only be used in conjunction with WithTransactions trait
-     *
-     * @param array $data
-     * @return mixed
-     * @throws \Exception
-     */
-    protected function generateSavedRetinoscopyElementWithReadings($data = [])
+    protected function ensureModelFaked($model_class, $methods = [])
     {
-        return Retinoscopy::factory()->bothSided()->create([
-            'right_comments' => $this->faker->words(12, true),
-            'left_comments' => $this->faker->words(12, true)
-        ]);
+        if (ModelFakeTracker::getFakeForModel(SettingMetadata::class)) {
+            return;
+        }
+
+        $mock = $this->getMockBuilder(SettingMetadata::class)
+            ->onlyMethods($methods)
+            ->getMock();
+
+        SettingMetadata::fakeWith($mock);
     }
 }

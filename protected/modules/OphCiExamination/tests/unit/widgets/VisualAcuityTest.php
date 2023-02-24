@@ -151,9 +151,9 @@ class VisualAcuityTest extends \OEDbTestCase
     public function cvi_alert_provider()
     {
         return [
-            // [true, Element_OphCiExamination_VisualAcuity::class, true],
+            [true, Element_OphCiExamination_VisualAcuity::class, true],
             [false, Element_OphCiExamination_VisualAcuity::class, false],
-            // [tr  ue, Element_OphCiExamination_NearVisualAcuity::class, false]
+            [true, Element_OphCiExamination_NearVisualAcuity::class, false]
         ];
     }
 

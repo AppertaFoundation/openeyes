@@ -13,36 +13,14 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-namespace OE\factories\models;
-
-use OE\factories\ModelFactory;
-use Contact;
-use Country;
-
-class AddressFactory extends ModelFactory
+trait FakesModels
 {
-
-    /**
-     *
-     * @return array
-     */
-    public function definition(): array
+    public function setUpFakesModels()
     {
-        return [
-            'address1' => $this->faker->streetAddress(),
-            'city' => $this->faker->city(),
-            'postcode' => $this->faker->postcode(),
-            'country_id' => ModelFactory::factoryFor(Country::class)->useExisting(['code' => 'GB']),
-            'contact_id' => Contact::factory()
-        ];
-    }
+        ModelFakeTracker::reset();
 
-    public function full(): self
-    {
-        return $this->state([
-            'address1' => $this->faker->secondaryAddress(),
-            'address2' => $this->faker->streetAddress(),
-            'county' => $this->faker->county()
-        ]);
+        $this->tearDownCallbacks(function () {
+            ModelFakeTracker::reset();
+        });
     }
 }
