@@ -49,7 +49,7 @@ class OphCoCvi_SignatureFactory extends ModelFactory
                 'element_id' => $element_id,
                 'type' => OphCoCvi_Signature::TYPE_PATIENT,
                 'signatory_role' => 'Patient',
-                'signed_user_id' => NULL,
+                'signed_user_id' => null,
                 'signature_file_id' => $user->signature_file_id
             ];
         });
