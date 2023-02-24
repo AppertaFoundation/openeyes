@@ -1,20 +1,11 @@
-/**
- * Selects options from the adder dialog menu based on text
- */
 Cypress.Commands.add('selectAdderDialogOptionText', (string) => {
     cy.get('div.oe-add-select-search :visible').contains(string).click()
 })
 
-/**
- * Selects an adder dialog based on data-adder-id and then text
- */
-Cypress.Commands.add('selectAdderDialogOptionAdderID', (heading, string) => {
-    cy.get('[data-adder-id="' + heading + '"]').contains(string).click()
+Cypress.Commands.add('selectAdderDialogOptionAdderID', (headingId, string) => {
+    cy.get('[data-adder-id="' + headingId + '"]').contains(string).click()
 })
 
-/**
- * Selects an adder dialog based on id then data-adder-id and then string
- */
 Cypress.Commands.add('selectAdderDialogOptionIDHeading', (idheading, subheading, string) => {
     cy.get('#' + idheading)
         .find('[data-adder-id="' + subheading + '"]')
@@ -22,26 +13,17 @@ Cypress.Commands.add('selectAdderDialogOptionIDHeading', (idheading, subheading,
         .click()
 })
 
-/**
- * Selects an adder dialog based on class then id and then string
- */
-Cypress.Commands.add('selectAdderDialogOptionClassID', (classField, id, string) => {
+Cypress.Commands.add('selectAdderDialogOptionClassID', (classField, id, text) => {
     cy.get('[class="' + classField + '"')
         .find('#' + id)
-        .contains(string)
+        .contains(text)
         .click()
 })
 
-/**
- * Selects an adder dialog based on a specific variable and then text
- */
-Cypress.Commands.add('selectAdderDialogOptionVariable', (variable, string) => {
-    cy.get(variable).contains(string).click()
+Cypress.Commands.add('selectAdderDialogOptionVariable', (variable, text) => {
+    cy.get(variable).contains(text).click()
 })
 
-/**
- * Clicks confirm adder dialog button
- */
 Cypress.Commands.add('confirmAdderDialog', () => {
     cy.get('div.oe-add-select-search > div.add-icon-btn:visible').contains('Click to add').click()
 })

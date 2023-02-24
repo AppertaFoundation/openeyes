@@ -42,12 +42,9 @@ Cypress.Commands.add('saveEvent', () => {
     return cy.get('#et_save').click();
 });
 
-/**
- * Checks for flash message to verify success through the UI
- */
-Cypress.Commands.add('assertEventSaved', (newEvent) => {
-    if (newEvent === undefined) {
-        newEvent = true;
+Cypress.Commands.add('assertEventSaved', (isNewEvent) => {
+    if (isNewEvent === undefined) {
+        isNewEvent = true;
     }
-    return cy.get('#flash-success').contains(newEvent ? 'created' : 'updated');
+    return cy.get('#flash-success').contains(isNewEvent ? 'created' : 'updated');
 });

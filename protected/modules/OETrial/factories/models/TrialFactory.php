@@ -13,36 +13,27 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-namespace OE\factories\models;
-
 use OE\factories\ModelFactory;
-use Contact;
-use Country;
 
-class AddressFactory extends ModelFactory
+class TrialFactory extends ModelFactory
 {
-
-    /**
-     *
-     * @return array
-     */
     public function definition(): array
     {
         return [
-            'address1' => $this->faker->streetAddress(),
-            'city' => $this->faker->city(),
-            'postcode' => $this->faker->postcode(),
-            'country_id' => ModelFactory::factoryFor(Country::class)->useExisting(['code' => 'GB']),
-            'contact_id' => Contact::factory()
+            'trial_type_id' => TrialType::factory()->useExisting([
+                'code' => $this->faker->randomElement([TrialType::INTERVENTION_CODE, TrialType::NON_INTERVENTION_CODE])
+            ]),
+            'name' => $this->faker->words(3, true),
+            'owner_user_id' => User::factory()->useExisting()
         ];
     }
 
-    public function full(): self
+    protected function persistInstance($instance): bool
     {
-        return $this->state([
-            'address1' => $this->faker->secondaryAddress(),
-            'address2' => $this->faker->streetAddress(),
-            'county' => $this->faker->county()
-        ]);
+        // as a simple workaround for the unusual save behaviour for the Trial model
+        // we set up the owner_user_id into the session
+        // @see Trial::afterSave
+        $_SESSION['principal_investigator'] = $instance->owner_user_id ?? User::factory()->useExisting()->create()->id;
+        return $instance->save(false);
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "trial".
  *
@@ -31,6 +33,8 @@
  */
 class Trial extends BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     /**
      * The success return code for addUserPermission()
      */

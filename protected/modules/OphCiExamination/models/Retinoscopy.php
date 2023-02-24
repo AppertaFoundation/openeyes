@@ -15,6 +15,7 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use OE\factories\models\traits\HasFactory;
 use OEModule\OphCiExamination\models\interfaces\SidedData;
 use OEModule\OphCiExamination\models\traits\HasRelationOptions;
 use OEModule\OphCiExamination\models\traits\HasSidedData;
@@ -23,6 +24,7 @@ use OEModule\OphCiExamination\widgets\Retinoscopy as RetinoscopyWidget;
 class Retinoscopy extends \BaseEventTypeElement implements SidedData
 {
     use traits\CustomOrdering;
+    use HasFactory;
     use HasSidedData;
     use HasRelationOptions;
 

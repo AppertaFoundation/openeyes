@@ -276,6 +276,9 @@ class PatientMerge
             // Update Work-lists
             $is_merged = $is_merged && $this->updateWorkLists($this->primary_patient, $this->secondary_patient);
 
+            // Update Trials
+            $is_merged = $is_merged && $this->updateTrials($this->primary_patient, $this->secondary_patient);
+
             if ($is_merged) {
                 $secondary_patient_identifiers = PatientIdentifier::model()->disableDefaultScope()->findAllByAttributes(['patient_id' => $this->secondary_patient->id]);
                 foreach ($secondary_patient_identifiers as $row_id => $secondary_patient_identifier_row) {
@@ -861,7 +864,7 @@ class PatientMerge
 
         return array($start_date, $end_date);
     }
-    
+
     /**
     * Updating Lists including Hot list and worklist
     * @param Patient $primary_patient
@@ -877,13 +880,13 @@ class PatientMerge
         $hotlist_items = \UserHotlistItem::model()->findAllByAttributes(['patient_id'=>$secondary_patient->id]);
 
         // for each row where $secondary_patient is included
-        foreach($hotlist_items as $h_item){
+        foreach ($hotlist_items as $h_item) {
             // TODO: Potentiality add check for duplicates here
             // set $secondary_patient to $primary_patient
             $h_item->patient_id = $primary_patient->id;
             $h_item->user_comment = $h_item->user_comment . " Hotlist item Merged from ".$secondary_patient->id." to ".$primary_patient->id.".";
             // try to save row
-            if($h_item->save()){
+            if ($h_item->save()) {
                 $msg = 'Hotlist item for user '.$h_item->createdUser->first_name." " .$h_item->createdUser->last_name." updated. Changed patient id from ".$secondary_patient->id." to ".$primary_patient->id.".";
                 $this->addLog($msg);
                 Audit::add('Patient Merge', 'Hotlist item Patient updated', $msg);
@@ -891,7 +894,7 @@ class PatientMerge
             else{
                 // throw exception if fail
                 throw new Exception('Failed to update hotlist item: '.$h_item->id.' '.print_r($h_item->errors, true));
-            }            
+            }
         }
         return true;
     }
@@ -906,16 +909,16 @@ class PatientMerge
     * @throws Exception
     */
     public function updateWorkLists(Patient $primary_patient, Patient $secondary_patient)
-    {       
-        // Get Worklist items        
+    {
+        // Get Worklist items
         $worklist_items = \WorklistPatient::model()->findAllByAttributes(['patient_id'=>$secondary_patient->id]);
         // for each row where $secondary_patient is included
-        foreach($worklist_items as $w_item){
+        foreach ($worklist_items as $w_item) {
             // TODO: Potentiality add check for duplicates here
-            // set $secondary_patient to $primary_patient                
+            // set $secondary_patient to $primary_patient
             $w_item->patient_id = $primary_patient->id;
             // try to save row
-            if($w_item->save()){
+            if ($w_item->save()) {
                 $msg = 'Worklist item for worklist '.$w_item->worklist->name." at time ".$w_item->getScheduledTime() ." updated. Changed patient id from ".$secondary_patient->id." to ".$primary_patient->id.".";
                 $this->addLog($msg);
                 Audit::add('Patient Merge', 'Worklist item Patient updated', $msg);
@@ -923,6 +926,45 @@ class PatientMerge
             else{
                 // throw exception if fail
                 throw new Exception('Failed to update worklist item: '.$w_item->id.' '.print_r($w_item->errors, true));
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Updating Trials
+     * @param Patient $primary_patient
+     * @param Patient $secondary_patient
+     *
+     * @return bool
+     *
+     * @throws Exception
+     */
+    public function updateTrials(Patient $primary_patient, Patient $secondary_patient)
+    {
+        // Get trial patient items
+        $trial_patients = \TrialPatient::model()->findAllByAttributes(['patient_id' => $secondary_patient->id]);
+        // for each row where $secondary_patient is included
+        foreach ($trial_patients as $trial_patient) {
+            // check if the $primary_patient is already a part of the trial
+            $primary_patient_trial_count = \TrialPatient::model()
+                ->countByAttributes(['patient_id' => $primary_patient->id, 'trial_id' => $trial_patient->trial_id]);
+
+            if ($primary_patient_trial_count > 0) {
+                \TrialPatient::model()->deleteAll('patient_id = :patient_id AND trial_id = :trial_id', array(':patient_id' => $secondary_patient->id, ':trial_id' => $trial_patient->trial_id));
+                continue;
+            }
+            // set $secondary_patient to $primary_patient
+            $trial_patient->patient_id = $primary_patient->id;
+            // try to save row
+            if ($trial_patient->save()) {
+                $msg = 'Trial patient item for trial ' . $trial_patient->trial->name . " updated. Changed patient id from " . $secondary_patient->id . " to " . $primary_patient->id.".";
+                $this->addLog($msg);
+                Audit::add('Patient Merge', 'Trial Patient item Patient updated', $msg);
+            }
+            else {
+                // throw exception if fail
+                throw new Exception('Failed to update trial patient item: ' . $trial_patient->id . ' ' . print_r($trial_patient->errors, true));
             }
         }
         return true;

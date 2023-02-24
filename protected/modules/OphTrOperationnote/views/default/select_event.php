@@ -204,18 +204,8 @@ $warnings = $this->patient->getWarnings($clinical);
         let booking = $(this).data('booking');
 
         let template_id = $(this).data('template') ? $(this).data('template') : null;
-        if (eyeId === 3) {
-            // if the procedure is for BOTH eyes, show an alert:
-            new OpenEyes.UI.Dialog.Alert({
-                content: "Bilateral cataract operation notes are not currently supported. Please complete details for the first eye in this event, then create a second operation note event for the second eye.",
-                closeCallback: function () {
-                    selectBooking(booking, template_id);
-                }
-            }).open();
-        }
-        else {
-            selectBooking(booking, template_id);
-        }
+        
+        selectBooking(booking, template_id);
     });
   });
 </script>

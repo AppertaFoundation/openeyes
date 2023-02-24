@@ -33,7 +33,9 @@ use OEModule\OphCiExamination\tests\traits\InteractsWithRetinoscopy;
  * @covers \OEModule\OphCiExamination\components\traits\Refraction_API
  * @group sample-data
  * @group strabismus
- *
+ * @group retinoscopy
+ * @group refraction
+ * @group correction-given
  */
 class OphCiExamination_API_RefractionTest extends \OEDbTestCase
 {

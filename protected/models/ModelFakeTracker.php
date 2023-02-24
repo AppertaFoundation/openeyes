@@ -13,36 +13,35 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-namespace OE\factories\models;
-
-use OE\factories\ModelFactory;
-use Contact;
-use Country;
-
-class AddressFactory extends ModelFactory
+/**
+ * This static class is used during testing to support the resolution of CModel classes to fakes.
+ *
+ * It should not be invoked directly, instead the trait CanBeFaked should be applied to the Model you wish
+ * to fake, and the methods made available through that trait should be used.
+ *
+ * The intent here is to make the cleaning up of any fakes very simple during between tests.
+ */
+class ModelFakeTracker
 {
+    public static array $faked_models = [];
 
-    /**
-     *
-     * @return array
-     */
-    public function definition(): array
+    public static function setFakeForModel(string $model_class, $fake = null): void
     {
-        return [
-            'address1' => $this->faker->streetAddress(),
-            'city' => $this->faker->city(),
-            'postcode' => $this->faker->postcode(),
-            'country_id' => ModelFactory::factoryFor(Country::class)->useExisting(['code' => 'GB']),
-            'contact_id' => Contact::factory()
-        ];
+        if (!$fake && array_key_exists($model_class, self::$faked_models)) {
+            unset(static::$faked_models[$model_class]);
+            return;
+        }
+
+        static::$faked_models[$model_class] = $fake;
     }
 
-    public function full(): self
+    public static function getFakeForModel(string $model_class)
     {
-        return $this->state([
-            'address1' => $this->faker->secondaryAddress(),
-            'address2' => $this->faker->streetAddress(),
-            'county' => $this->faker->county()
-        ]);
+        return static::$faked_models[$model_class] ?? null;
+    }
+
+    public static function reset(): void
+    {
+        static::$faked_models = [];
     }
 }
