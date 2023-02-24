@@ -25,7 +25,7 @@ trait InteractsWithRetinoscopy
 
     protected function generateRetinoscopyData($attrs = [])
     {
-        return Retinoscopy::factory()->bothSided()->make(['event_id' => null])->getAttributes();
+        return Retinoscopy::factory()->bothSided()->make(array_merge($attrs, ['event_id' => null]))->getAttributes();
     }
 
     /**
