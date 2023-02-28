@@ -66,7 +66,7 @@ if (!isset($uniqueid)) {
                     <th><input type="checkbox" name="selectall" id="selectall"/></th>
                     <?php
                     foreach ($admin->getListFields() as $listItem) :
-                        if ($listItem !== 'attribute_elements_id.id') :?>
+                        if ($listItem !== 'attribute_elements.id') :?>
                             <th>
                                 <?php if ($admin->isSortableColumn($listItem)) : ?>
                                 <a href="/<?php echo $uniqueid ?>/list?<?php echo $admin->sortQuery(
@@ -100,7 +100,7 @@ if (!isset($uniqueid)) {
                             <input type="checkbox" name="<?php echo $admin->getModelName(); ?>[id][]" value="<?php echo $row->id ?>"/>
                         </td>
                         <?php foreach ($admin->getListFields() as $listItem) :
-                            if ($listItem !== 'attribute_elements_id.id') :
+                            if ($listItem !== 'attribute_elements.id') :
                                 ?>
                                 <td>
                                     <?php
@@ -124,11 +124,11 @@ if (!isset($uniqueid)) {
                                 </td>
                             <?php endif;
 
-                            if ($listItem === 'attribute_elements_id.id') :
+                            if ($listItem === 'attribute_elements.id') :
                                 $mappingId = $admin->attributeValue($row, $listItem);
                             endif;
 
-                            if ($listItem === 'attribute_elements.name') :?>
+                            if ($listItem === 'attribute_element_types.name') :?>
                                 <td>
                                     <?php if (($mappingId > 0)) : ?>
                                         <a onMouseOver="this.style.color='#AFEEEE'" onMouseOut="this.style.color=''"

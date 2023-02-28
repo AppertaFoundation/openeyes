@@ -12,7 +12,7 @@ trait OwnedByReferenceData
      *
      * @var array
      */
-    protected function levelColumns()
+    public function levelColumns()
     {
         return array(
             ReferenceData::LEVEL_INSTALLATION => 'installation',
@@ -35,15 +35,7 @@ trait OwnedByReferenceData
      */
     public function findAllAtLevels(int $level_mask, $criteria = null, ?Institution $institution = null): array
     {
-        if ($institution === null) {
-            $institution = Institution::model()->getCurrent();
-        }
-
-        $levelCriteria = $this->buildCriteriaForFindAllAtLevels($level_mask, $institution);
-
-        if (isset($criteria)) {
-            $levelCriteria->mergeWith($criteria);
-        }
+        $levelCriteria = $this->getCriteriaForLevels($level_mask, $criteria, $institution);
 
         return static::model()->findAll($levelCriteria);
     }

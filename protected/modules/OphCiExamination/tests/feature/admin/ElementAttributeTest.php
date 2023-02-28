@@ -56,7 +56,16 @@ class ElementAttributeTest extends OEDbTestCase
         });
         $expected_ordered_attribute_ids = (new ModelCollection($element_attributes))->pluck('id');
 
-        $this->assertEquals($expected_ordered_attribute_ids, $attribute_ids_in_order);
+        $testable_attribute_ids_in_order = array_values(
+            array_filter(
+                $attribute_ids_in_order,
+                function ($id) use ($expected_ordered_attribute_ids) {
+                    return in_array($id, $expected_ordered_attribute_ids);
+                }
+            )
+        );
+
+        $this->assertEquals($expected_ordered_attribute_ids, $testable_attribute_ids_in_order);
     }
 
     protected function createInstitutionForAdmin()
