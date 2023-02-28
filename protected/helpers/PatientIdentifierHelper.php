@@ -204,7 +204,7 @@ class PatientIdentifierHelper
         $criteria = new CDbCriteria();
         $criteria->condition = "patient_identifier_type_id=:patient_identifier_type_id";
         $criteria->params = [':patient_identifier_type_id' => $type_id];
-        $criteria->order = 'value desc';
+        $criteria->order = 'ABS(value) desc';
         $criteria->limit = 1; // We only want the first result.
         $identifier = PatientIdentifier::model()->find($criteria);
         if ($identifier) {
