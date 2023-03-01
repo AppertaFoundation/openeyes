@@ -353,7 +353,7 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
                 }
 
                 $attr_list = array(
-                    'Author' => $user->getNameAndInstitutionUsername($institution->id, true, '313:', ', '),
+                    'Author' => $user->getNameAndInstitutionUsername($institution->id, true, '', ', '),
                     'DocumentType' => $document_type, // New field.
                     'DocumentSubType' => $document_subtype,
                     'DocumentTypeCode' => $document_type_code,
