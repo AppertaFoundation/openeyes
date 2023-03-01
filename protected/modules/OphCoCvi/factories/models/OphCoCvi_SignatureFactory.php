@@ -14,7 +14,7 @@
  */
 
 use OE\factories\ModelFactory;
-use \OphCoCvi_Signature;
+use OEModule\OphCoCvi\models\Element_OphCoCvi_Esign;
 
 class OphCoCvi_SignatureFactory extends ModelFactory
 {
@@ -22,6 +22,7 @@ class OphCoCvi_SignatureFactory extends ModelFactory
     public function definition(): array
     {
         return [
+            'element_id' => ModelFactory::factoryFor(Element_OphCoCvi_Esign::class),
             'signatory_name' => $this->faker->name(),
             'timestamp' => time(),
             'signed_user_id' => null,
@@ -29,11 +30,10 @@ class OphCoCvi_SignatureFactory extends ModelFactory
         ];
     }
 
-    public function asConsultant($element_id, $signatory_user): self
+    public function asConsultant($signatory_user): self
     {
-        return $this->state(function () use ($element_id, $signatory_user) {
+        return $this->state(function () use ($signatory_user) {
             return [
-                'element_id' => $element_id,
                 'type' => OphCoCvi_Signature::TYPE_LOGGEDIN_USER,
                 'signatory_role' => 'Consultant',
                 'signed_user_id' => $signatory_user->id,
@@ -42,11 +42,10 @@ class OphCoCvi_SignatureFactory extends ModelFactory
         });
     }
 
-    public function asPatient($element_id, $user): self
+    public function asPatient($user): self
     {
-        return $this->state(function () use ($element_id, $user) {
+        return $this->state(function () use ($user) {
             return [
-                'element_id' => $element_id,
                 'type' => OphCoCvi_Signature::TYPE_PATIENT,
                 'signatory_role' => 'Patient',
                 'signed_user_id' => null,

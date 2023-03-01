@@ -31,6 +31,7 @@ use OEDbTestCase;
 class OphCoCvi_ManagerTest extends OEDbTestCase
 {
     use \InteractsWithEventTypeElements;
+    use \WithTransactions;
 
     private $manager;
     private $patient;
@@ -41,7 +42,10 @@ class OphCoCvi_ManagerTest extends OEDbTestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->signatory_user = \User::model()->findByAttributes(['first_name' => 'admin']);
+        /*
+         * It is necessary to have a signature file, but it doesn't matter who the signer is.
+         */
+        $this->signatory_user = \User::model()->findByAttributes([], 'signature_file_id IS NOT NULL');
         $this->manager = new OphCoCvi_Manager(\Yii::app());
     }
 
@@ -118,8 +122,8 @@ class OphCoCvi_ManagerTest extends OEDbTestCase
     public function signature_validation_fails_when_no_patient_signatures_recorded()
     {
         $element = Element_OphCoCvi_Esign::factory()->create();
-        OphCoCvi_Signature::factory()->asConsultant($element->id, $this->signatory_user)->create();
-        OphCoCvi_Signature::factory()->asPatient($element->id, $this->signatory_user)->create();
+        OphCoCvi_Signature::factory()->asConsultant($this->signatory_user)->create(['element_id' => $element->id]);
+        OphCoCvi_Signature::factory()->asPatient($this->signatory_user)->create(['element_id' => $element->id]);
 
         $this->assertTrue($this->manager->signatureValidation($element->event));
     }
@@ -128,7 +132,7 @@ class OphCoCvi_ManagerTest extends OEDbTestCase
     public function signature_validation_fails_when_only_consultant_signature_recorded()
     {
         $element = Element_OphCoCvi_Esign::factory()->create();
-        OphCoCvi_Signature::factory()->asConsultant($element->id, $this->signatory_user)->create();
+        OphCoCvi_Signature::factory()->asConsultant($this->signatory_user)->create(['element_id' => $element->id]);
 
         $this->assertFalse($this->manager->signatureValidation($element->event));
     }
@@ -137,8 +141,8 @@ class OphCoCvi_ManagerTest extends OEDbTestCase
     public function signature_validation_success_when_consultant_and_patient_signature_are_recorded()
     {
         $element = Element_OphCoCvi_Esign::factory()->create();
-        OphCoCvi_Signature::factory()->asConsultant($element->id, $this->signatory_user)->create();
-        OphCoCvi_Signature::factory()->asPatient($element->id, $this->signatory_user)->create();
+        OphCoCvi_Signature::factory()->asConsultant($this->signatory_user)->create(['element_id' => $element->id]);
+        OphCoCvi_Signature::factory()->asPatient($this->signatory_user)->create(['element_id' => $element->id]);
 
         $this->assertTrue($this->manager->signatureValidation($element->event));
     }

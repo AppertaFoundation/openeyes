@@ -424,9 +424,9 @@ class OphCoCvi_Manager extends \CComponent
     {
         if ($clinical = $this->getClinicalElementForEvent($event)) {
             $clinical->setScenario('finalise');
-
-            if (!$clinical->validate()) {
-                return false;
+            $result = $clinical->validate();
+            if (!$result) {
+                return $result;
             }
         } else {
             return false;
@@ -460,8 +460,9 @@ class OphCoCvi_Manager extends \CComponent
     {
         if ($clerical = $this->getClericalElementForEvent($event)) {
             $clerical->setScenario('finalise');
-            if (!$clerical->validate()) {
-                return false;
+            $result = $clerical->validate();
+            if (!$result) {
+                return $result;
             }
         } else {
             return false;
@@ -477,8 +478,9 @@ class OphCoCvi_Manager extends \CComponent
     {
         if ($demographics = $this->getDemographicsElementForEvent($event)) {
             $demographics->setScenario('finalise');
-            if (!$demographics->validate()) {
-                return false;
+            $result = $demographics->validate();
+            if (!$result) {
+                return $result;
             }
         } else {
             return false;
