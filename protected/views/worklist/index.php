@@ -59,9 +59,9 @@ $initial_filter = $session_filter_info['filter'];
                     <div class="name">All</div>
                     <div class="count"></div>
                 </li>
-                <li class="filter-btn js-clinic-btn-filter" data-filter="clinic">
+                <li class="filter-btn js-clinic-btn-filter" data-filter="clinic" data-test="clinic-filter">
                     <div class="name">Arrived</div>
-                    <div class="count"></div>
+                    <div class="count" data-test="clinic-filter-count"></div>
                 </li>
                 <li class="filter-btn js-clinic-btn-filter" data-filter="issues">
                     <div class="name">Issues</div>

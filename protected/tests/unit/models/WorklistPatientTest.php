@@ -15,8 +15,15 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+/**
+ * @group sample-data
+ * @group worklist
+ */
 class WorklistPatientTest extends ActiveRecordTestCase
 {
+    use WithTransactions;
+
     public function getModel()
     {
         return WorklistPatient::model();
@@ -142,5 +149,30 @@ class WorklistPatientTest extends ActiveRecordTestCase
         $worklist_patient->worklist_attributes = $worklist_patient_attrs;
 
         $this->assertEquals($expected, $worklist_patient->getCurrentAttributesById());
+    }
+
+    /** @test */
+    public function eager_loaded_worklist_patient_retrieves_attribute_correctly()
+    {
+        $worklist = Worklist::factory()->withPatientAttributes(3)->create();
+
+        $worklist_patient = WorklistPatient::factory()
+            ->create(['worklist_id' => $worklist]);
+
+        $attribute_values = [];
+        foreach ($worklist->mapping_attributes as $worklist_attribute) {
+            $attribute_values[$worklist_attribute->name] = WorklistPatientAttribute::factory()->create([
+                'worklist_patient_id' => $worklist_patient,
+                'worklist_attribute_id' => $worklist_attribute
+            ]);
+        }
+
+        $eager_loaded = WorklistPatient::model()
+            ->with('worklist_attributes')
+            ->findByPk($worklist_patient->id);
+
+        foreach ($attribute_values as $attribute_name => $expected_value) {
+            $this->assertEquals($expected_value->id, $eager_loaded->getWorklistPatientAttribute($attribute_name)->id);
+        }
     }
 }

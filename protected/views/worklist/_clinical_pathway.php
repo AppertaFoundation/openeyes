@@ -29,7 +29,8 @@ $pathway = $visit->pathway;
                       data-pathstep-type-id=""
                       data-visit-id="<?= $pathway->worklist_patient_id ?>"
                       data-pathway-id="<?= $pathway->id ?>"
-                      data-long-name="<?= $step->long_name ?>">
+                      data-long-name="<?= $step->long_name ?>"
+                      data-test="<?= $step->type->large_icon ? explode("-", $step->type->large_icon)[1] . "-step-{$visit->worklist->id}" : '' ?>">
                     <span class="step<?= $step->type->large_icon ? " {$step->type->large_icon}" : '' ?>">
                         <?= !$step->type->large_icon ? $step->short_name : '' ?>
                     </span>
@@ -97,7 +98,8 @@ $pathway = $visit->pathway;
               data-pathstep-type-id=""
               data-patient-id="<?= $pathway->worklist_patient->patient_id ?>"
               data-visit-id="<?= $pathway->worklist_patient_id ?>"
-              data-pathway-id="<?= $pathway->id ?>">
+              data-pathway-id="<?= $pathway->id ?>"
+              data-test="wait-pathstep">
             <span class="step <?= $icon_class ?? null ?>"></span>
             <span class="info"><?= $wait_time ?? null ?></span>
         </span>
@@ -117,7 +119,8 @@ $pathway = $visit->pathway;
                   data-pathstep-type-id=""
                   data-visit-id="<?= $pathway->worklist_patient_id ?>"
                   data-pathway-id="<?= $pathway->id ?>"
-                  data-long-name="<?= $step->long_name ?>">
+                  data-long-name="<?= $step->long_name ?>"
+                  data-test="<?= $step->type->large_icon ? explode("-", $step->type->large_icon)[1] . "-step-{$visit->worklist->id}" : str_replace(' ', '-', strtolower($step->long_name)) ?>">
                 <span class="step<?= $step->type->large_icon ? " {$step->type->large_icon}" : '' ?>">
                     <?= !$step->type->large_icon ? $step->short_name : '' ?>
                 </span>
@@ -144,7 +147,8 @@ $pathway = $visit->pathway;
                       data-patient-id="<?= $visit->patient_id ?>"
                       data-visit-id="<?= $visit->id ?>"
                       data-pathway-id=""
-                      data-long-name="<?= $step->long_name ?>">
+                      data-long-name="<?= $step->long_name ?>"
+                      data-test="<?= $step->step_type->large_icon ? explode("-", $step->step_type->large_icon)[1] . "-step-{$visit->worklist->id }" : str_replace(' ', '-', strtolower($step->long_name)) ?>">
                 <span class="step<?= $step->step_type->large_icon ? " {$step->step_type->large_icon}" : '' ?>">
                     <?= !$step->step_type->large_icon ? $step->short_name : '' ?>
                 </span>

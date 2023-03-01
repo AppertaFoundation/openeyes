@@ -386,7 +386,7 @@ function mapExaminationToPcr() {
         ":input[name^='glaucoma_diagnoses']": {
             "pcr": '.pcrrisk_glaucoma',
             "func": setGlaucomaDisorder,
-            "init": true
+            "init": false
         },
         "#OEModule_OphCiExamination_models_Element_OphCiExamination_OpticDisc_right_cd_ratio_id,#OEModule_OphCiExamination_models_Element_OphCiExamination_OpticDisc_left_cd_ratio_id": {
             "pcr": '.pcrrisk_no_fundal_view',
