@@ -66,6 +66,13 @@ Cypress.Commands.add('getEventCreationUrl', (patientId, moduleName) => {
     .its('body.url');
 });
 
+Cypress.Commands.add('visitEventCreationUrl', (patientId, moduleName) => {
+    return cy.getEventCreationUrl(patientId, moduleName)
+        .then((url) => {
+            return cy.visit(url);
+        });
+});
+
 Cypress.Commands.add('getModelByAttributes', (className, attributes) => {
     return cy.request({
         method: 'POST',
