@@ -575,6 +575,10 @@ $(function () {
                 step_id: ps.pathstepId
             },
             success: function(response) {
+                // Removing comment icon
+                let $step = $('.oe-pathstep-btn[data-pathstep-id="' + ps.pathstepId + '"]');
+                $step.removeClass('has-comments');
+
                 // reset the popup ui and refresh the popup data
                 ps.resetPopup();
                 ps.requestDetails({
@@ -646,8 +650,11 @@ $(function () {
 
                     const $thisStep = $pathway_row.find(`.oe-pathstep-btn[data-pathstep-id="${response.step_id}"]`);
 
+                    // add comment icon to pathstep
+                    $thisStep.addClass('has-comments');
+
                     // update the associated pathstepIcon of the current pathstep object
-                    ps.pathstepIcon = $thisStep.get(0);
+                    ps.pathstepIcon = $thisStep.get(0); 
 
                     const oldSteps = collectActiveTodoStepsFrom($pathway);
                     let $commentButton = ps.pathwayId ? $('.comments[data-pathway-id="' + ps.pathwayId + '"]') : $('.comments[data-visit-id="' + ps.visitID + '"]');

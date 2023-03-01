@@ -182,7 +182,7 @@ class PathwayStep extends BaseActiveRecordVersioned
                 $this->setState($key, $value);
             }
         }
-        if((int)$this->status === self::STEP_COMPLETED){
+        if ((int)$this->status === self::STEP_COMPLETED) {
             return;
         }
         if ((int)$this->status === self::STEP_CONFIG) {
@@ -198,9 +198,9 @@ class PathwayStep extends BaseActiveRecordVersioned
                 $this->pathway->save();
             }
         } elseif ((int)$this->status === self::STEP_STARTED) {
-            if($this->getState('duration')){
+            if ($this->getState('duration')) {
                 $diff = strtotime(date('Y-m-d H:i:s')) - strtotime($this->start_time);
-                if($diff < (int)$this->getState('duration') * 60){
+                if ($diff < (int)$this->getState('duration') * 60) {
                     return;
                 }
             }
@@ -343,19 +343,21 @@ class PathwayStep extends BaseActiveRecordVersioned
         $this->state_data = json_encode($state_temp, JSON_THROW_ON_ERROR);
     }
 
-    protected function afterFind(){
+    protected function afterFind()
+    {
         parent::afterFind();
         $this->syncPSDStatus();
     }
 
-    protected function syncPSDStatus(){
-        if(!$this->type || $this->type->short_name !== 'drug admin' || !$assignment_id = $this->getState('assignment_id')){
+    protected function syncPSDStatus()
+    {
+        if (!$this->type || $this->type->short_name !== 'drug admin' || !$assignment_id = $this->getState('assignment_id')) {
             return;
         }
         $assignment = OphDrPGDPSD_Assignment::model()->findByPk($assignment_id);
         // sync with step status
         $assignment_status = (int)$assignment->status;
-        switch($assignment_status){
+        switch($assignment_status) {
             case OphDrPGDPSD_Assignment::STATUS_TODO:
                 $this->status = PathwayStep::STEP_REQUESTED;
                 $this->start_time = null;
@@ -365,11 +367,11 @@ class PathwayStep extends BaseActiveRecordVersioned
                 break;
             case OphDrPGDPSD_Assignment::STATUS_PART_DONE:
                 $this->status = PathwayStep::STEP_STARTED;
-                if(!$this->start_time){
+                if (!$this->start_time) {
                     $this->start_time = $assignment->last_modified_date;
                 }
                 $this->end_time = null;
-                if(!$this->started_user_id){
+                if (!$this->started_user_id) {
                     $this->started_user_id = $assignment->last_modified_user_id;
                 }
                 $this->completed_user_id = null;
@@ -383,7 +385,8 @@ class PathwayStep extends BaseActiveRecordVersioned
         $this->saveOnlyIfDirty(true)->save();
     }
 
-    public function isFirstRequestedStep() {
+    public function isFirstRequestedStep()
+    {
         $pathway = $this->pathway;
         $requested_steps = $pathway->requested_steps;
         $requested_step_count = count($requested_steps);
@@ -395,7 +398,8 @@ class PathwayStep extends BaseActiveRecordVersioned
         return false;
     }
 
-    public function isLastRequestedStep() {
+    public function isLastRequestedStep()
+    {
         $pathway = $this->pathway;
         $requested_steps = $pathway->requested_steps;
         $requested_step_count = count($requested_steps);
@@ -413,7 +417,8 @@ class PathwayStep extends BaseActiveRecordVersioned
      *
      * @return string return start time string or null
      */
-    public function getStepStartTime() {
+    public function getStepStartTime()
+    {
         /**
          * if the step is a checkin step and the pathway is marked as did not attend
          * return "DNA" string instead of start time
