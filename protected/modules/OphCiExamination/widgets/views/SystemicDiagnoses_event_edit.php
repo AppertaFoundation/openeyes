@@ -218,7 +218,10 @@ $required_diagnoses_ids = array_map(function ($r) {
                 <?php
                 $criteria = new CDbCriteria();
                 $criteria->addCondition('id IN (SELECT DISTINCT group_id FROM `common_systemic_disorder` WHERE group_id IS NOT NULL)');
-                $valid_common_systemic_disorder_groups = CommonSystemicDisorderGroup::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION, $criteria);
+                $valid_common_systemic_disorder_groups = CommonSystemicDisorderGroup::model()->findAllAtLevels(
+                    ReferenceData::LEVEL_ALL,
+                    $criteria
+                );
                 if (!empty($valid_common_systemic_disorder_groups)) { ?>
                 new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
                     array_map(function ($disorder_group) {

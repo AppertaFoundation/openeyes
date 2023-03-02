@@ -14,14 +14,18 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-?>
 
-<?php
 $this->renderPartial('//base/_messages');
 if (isset($errors)) {
     $this->renderPartial('/admin/_form_errors', $errors);
 }
 Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/OpenEyes.GenericFormJSONConverter.js'), CClientScript::POS_HEAD);
+
+if ($this->checkAccess('admin')) {
+    $options = array('empty' => 'All Institutions');
+} else {
+    $options = array();
+}
 ?>
 <form method="get">
     <table class="cols-7">
@@ -34,14 +38,15 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl
             <td>&nbsp;<br/><?=\CHtml::dropDownList(
                     'institution_id',
                     $current_institution_id,
-                    Institution::model()->getTenantedList(!Yii::app()->user->checkAccess('admin'))
+                    Institution::model()->getTenantedList(!Yii::app()->user->checkAccess('admin')),
+                    $options
                 ) ?></td>
         </tr>
         </tbody>
     </table>
 </form>
 
-<form method="POST" action="/oeadmin/CommonSystemicDisorder/save?institution_id=<?= $current_institution_id; ?>">
+<form method="POST" action="/oeadmin/CommonSystemicDisorder/save<?= $current_institution_id ? ('?institution_id=' . $current_institution_id) : '' ?>">
     <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
     <?php
     $columns = [
@@ -82,15 +87,19 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl
             'type' => 'raw',
             'value' => function ($data, $row) use ($current_institution) {
                 $row++;
-                $options = CHtml::listData(CommonSystemicDisorderGroup::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION, null, $current_institution), 'id', 'name');
+                $options = CHtml::listData(CommonSystemicDisorderGroup::model()->findAllAtLevels(
+                    $current_institution ? ReferenceData::LEVEL_INSTITUTION : ReferenceData::LEVEL_ALL,
+                    null,
+                    $current_institution
+                ), 'id', 'name');
                 return CHtml::activeDropDownList($data, "[$row]group_id", $options, array('empty' => '-- select --'));
             }
         ],
         [
             'header' => 'Actions',
             'type' => 'raw',
-            'value' => function ($data) {
-                return "<button type='button'><a href='javascript:void(0)' class='delete'>delete</a></button>";
+            'value' => function ($data) use ($current_institution) {
+                return "<button type='button'><a href='javascript:void(0)' class='delete'>" . ($current_institution ? 'delete mapping' : 'delete') . "</a></button>";
             }
         ],
     ];

@@ -46,7 +46,7 @@ trait MocksSession
                     return Firm::model()->findByPk($this->session_values['selected_firm_id']);
                 });
 
-            $session->method('getSelectedFirm')
+            $session->method('getSelectedSite')
                 ->willReturnCallback(function () {
                     return Site::model()->findByPk($this->session_values['selected_site_id']);
                 });

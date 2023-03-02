@@ -12,6 +12,7 @@
  * @copyright Copyright (C) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <h2>Common Systemic Disorder Groups</h2>
 <?php
@@ -31,6 +32,11 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl
 foreach (Yii::app()->user->getFlashes() as $key => $message) {
     echo '<div class="flash- alert-box with-icon warning' . $key . '">' . $message . "</div>\n";
 }
+if ($this->checkAccess('admin')) {
+    $options = array('empty' => 'All institutions');
+} else {
+    $options = array();
+}
 ?>
 
 <form method="get">
@@ -41,18 +47,21 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
         </colgroup>
         <tbody>
         <tr class="col-gap">            
-            <td>&nbsp;<br/><?=\CHtml::dropDownList(
+            <td>&nbsp;<br/>
+                <?=\CHtml::dropDownList(
                     'institution_id',
                     $current_institution_id,
-                    Institution::model()->getTenantedList(!Yii::app()->user->checkAccess('admin'))
-                ) ?></td>
+                    Institution::model()->getTenantedList(!Yii::app()->user->checkAccess('admin')),
+                    $options
+                ) ?>
+            </td>
         </tr>
         </tbody>
     </table>
 </form>
 
 <div class="cols-8">
-    <form method="POST" action="/oeadmin/CommonSystemicDisorderGroup/save?institution_id=<?= $current_institution_id; ?>">
+    <form method="POST" action="/oeadmin/CommonSystemicDisorderGroup/save<?= $current_institution_id ? ('?institution_id=' . $current_institution_id) : '' ?>">
         <input type="hidden" class="no-clear" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
         <?php
         $columns = array(
@@ -78,11 +87,17 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
             array(
                 'header' => 'Actions',
                 'type' => 'raw',
-                'value' => function ($data) use ($active_group_ids) {
-                    if (!in_array($data->id, $active_group_ids)) {
-                        return '<button type="button"><a href="javascript:void(0)" class="delete">delete</a></button>';
+                'value' => function ($data) use ($active_group_ids, $current_institution_id) {
+                    $is_owner = (Yii::app()->controller->checkAccess('admin'))
+                    || (!Yii::app()->controller->checkAccess('admin') && $current_institution_id);
+                    if ($is_owner) {
+                        if (!in_array($data->id, $active_group_ids)) {
+                            return '<button type="button"><a href="javascript:void(0)" class="delete">' . ($current_institution_id ? 'delete mapping' : 'delete' ) . '</a></button>';
+                        } else {
+                            return '<span data-tooltip-content="This group has disorders assigned to it so can\'t be deleted." class="oe-i info small js-has-tooltip"></span>';
+                        }
                     } else {
-                        return '<span data-tooltip-content="This group has disorders assigned to it so can\'t be deleted." class="oe-i info small js-has-tooltip"></span>';
+                        return '<span data-tooltip-content="The user does not have delete privileges on this group." class="oe-i info small js-has-tooltip"></span>';
                     }
                 }
             ),
@@ -115,7 +130,8 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
         'structure': {
             'CommonSystemicDisorderGroup[ROW_IDENTIFIER][id]' : '',
             'display_order[ROW_IDENTIFIER]' : '',
-            'CommonSystemicDisorderGroup[ROW_IDENTIFIER][name]' : '#CommonSystemicDisorderGroup_ROW_IDENTIFIER_name'
+            'CommonSystemicDisorderGroup[ROW_IDENTIFIER][name]' : '#CommonSystemicDisorderGroup_ROW_IDENTIFIER_name',
+            'CommonSystemicDisorderGroup[ROW_IDENTIFIER][active]' : '#CommonSystemicDisorderGroup_ROW_IDENTIFIER_active'
         }
     };
     let GenericFormJSONConverter = new OpenEyes.GenericFormJSONConverter(formStructure);
@@ -193,6 +209,8 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
                    id="CommonSystemicDisorderGroup_{{row_count}}_id">
             <input type="hidden" value="{{order_value}}" name="display_order[{{row_count}}]"
                    id="display_order_{{row_count}}">
+            <input type="hidden" name="CommonSystemicDisorderGroup[{{row_count}}][active]"
+                   id="CommonSystemicDisorderGroup_{{row_count}}_active" value="1">
         </td>
         <td width="400px">
             <input type="text" name="CommonSystemicDisorderGroup[{{row_count}}][name]"

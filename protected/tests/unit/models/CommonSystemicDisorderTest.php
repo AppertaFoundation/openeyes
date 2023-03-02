@@ -18,11 +18,14 @@
  */
 class CommonSystemicDisorderTest extends ActiveRecordTestCase
 {
+    use MocksSession;
     public $fixtures = array(
         'Disorder',
         'specialties' => 'Specialty',
         'commonsystemicdisorder' => 'CommonSystemicDisorder',
     );
+
+    private $model;
 
     public function getModel()
     {
@@ -95,6 +98,7 @@ class CommonSystemicDisorderTest extends ActiveRecordTestCase
     public function testGetList()
     {
         $expected = array();
+        $this->mockCurrentContext();
         foreach ($this->commonsystemicdisorder as $data) {
             $disorder = Disorder::model()->findByPk($data['disorder_id']);
             $expected[$disorder->id] = $disorder->term;

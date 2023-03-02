@@ -107,7 +107,7 @@ class CommonSystemicDisorder_Institution extends BaseActiveRecordVersioned
     {
         // @todo Please modify the following code to remove attributes that should not be searched.
 
-        $criteria=new CDbCriteria;
+        $criteria = new CDbCriteria();
 
         $criteria->compare('id', $this->id);
         $criteria->compare('common_systemic_disorder_id', $this->common_systemic_disorder_id, true);
@@ -118,7 +118,7 @@ class CommonSystemicDisorder_Institution extends BaseActiveRecordVersioned
         $criteria->compare('created_date', $this->created_date, true);
 
         return new CActiveDataProvider($this, array(
-            'criteria'=>$criteria,
+            'criteria' => $criteria,
         ));
     }
 

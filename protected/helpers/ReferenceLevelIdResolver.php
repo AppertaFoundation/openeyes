@@ -31,65 +31,73 @@ class ReferenceLevelIdResolver
     ) {
         $this->institution = $institution ?? Institution::model()->getCurrent();
         $this->site = $site ?? Yii::app()->session->getSelectedSite();
-        $this->specialty = $specialty;
-        $this->subspecialty = $subspecialty;
         $this->firm = $firm ?? Yii::app()->session->getSelectedFirm();
+        $this->subspecialty = $subspecialty ?? $this->firm->getSubspecialty();
+        $this->specialty = $specialty ?? $this->subspecialty->specialty ?? null;
         $this->user = $user ?? User::model()->findByPk(Yii::app()->user->id);
     }
 
-    public function resolveId(string $level_id)
+    public function resolveId(string $level_id): ?int
     {
         $resolver = $this->getResolver($level_id);
         if ($resolver) {
             return $this->$resolver();
         }
+        return null;
     }
 
-    public function getResolver($level_id)
+    public function getResolver($level_id): ?string
     {
         return self::RESOLVERS[$level_id] ?? null;
     }
 
-    public function resolveInstitutionId()
+    public function resolveInstitutionId(): ?int
     {
-        return $this->institution->id;
+        // Cannot use null coalesce if performing a type cast, so need to use a simple condition statement here.
+        // This applies to all resolver functions.
+        if ($this->institution) {
+            return (int)$this->institution->id;
+        }
+        return null;
     }
 
-    public function resolveSiteId()
+    public function resolveSiteId(): ?int
     {
-        return $this->site->id;
+        if ($this->site) {
+            return (int)$this->site->id;
+        }
+        return null;
     }
 
-    public function resolveSubspecialtyId()
+    public function resolveSubspecialtyId(): ?int
     {
         if ($this->subspecialty) {
-            return $this->subspecialty->id;
+            return (int)$this->subspecialty->id;
         }
-        return $this->firm
-            ? $this->firm->getSubspecialtyId()
-            : Yii::app()->session->getSelectedFirm()->getSubspecialtyId();
+        return null;
     }
 
-    public function resolveSpecialtyId()
+    public function resolveSpecialtyId(): ?int
     {
         if ($this->specialty) {
-            return $this->specialty->id;
+            return (int)$this->specialty->id;
         }
-        if ($this->subspecialty) {
-            return $this->subspecialty->specialty->id;
-        }
-        return $this->firm
-            ? $this->firm->getSubspecialty()->specialty->id
-            : Yii::app()->session->getSelectedFirm()->getSubspecialty()->specialty->id;
+        return null;
     }
 
-    public function resolveFirmId()
+    public function resolveFirmId(): ?int
     {
-        return $this->firm->id;
+        if ($this->firm) {
+            return (int)$this->firm->id;
+        }
+        return null;
     }
 
-    public function resolveUserId()
+    public function resolveUserId(): ?int
     {
-        return $this->user->id;
+        if ($this->user) {
+            return (int)$this->user->id;
+        }
+        return null;
     }
 }
