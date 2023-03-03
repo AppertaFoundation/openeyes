@@ -17,6 +17,9 @@ jobs:
           githubToken: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: php-actions/composer@v6
+        with:
+          php_version: "8.0"
+          php_extensions: gd, mbstring, ext-soap, imagick, intl, ldap, mbstring, mysql, soap, xsl, zip  # comma separated list of extensions
 
       - name: Run PHPStan
         uses: php-actions/phpstan@v3
