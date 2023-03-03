@@ -16,6 +16,8 @@ jobs:
           output: 'plaintext'
           githubToken: ${{ secrets.GITHUB_TOKEN }}
 
+      - uses: php-actions/composer@v6
+
       - name: Run PHPStan
         uses: php-actions/phpstan@v3
         with:
