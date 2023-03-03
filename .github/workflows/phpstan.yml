@@ -1,0 +1,25 @@
+name: PHPStan
+
+on: [pull_request]
+
+jobs:
+  phpstan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Get changed files
+        id: files
+        uses: trilom/file-changes-action@v1.2.4
+        with:
+          output: 'plaintext'
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run PHPStan
+        uses: php-actions/phpstan@v3
+        with:
+          configuration: phpstan.neon
+          paths: ${{ steps.files.outputs.files }}
+          level: 0
+          php_version: 8.0
