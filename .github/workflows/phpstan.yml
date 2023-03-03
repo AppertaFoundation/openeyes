@@ -11,20 +11,30 @@ jobs:
 
       - name: Get changed files
         id: files
-        uses: trilom/file-changes-action@v1.2.4
+        uses: futuratrepadeira/changed-files@v3.3.0
         with:
-          output: 'plaintext'
-          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          pattern: '^.*\.(php)$'
+
+      - name: List changed files
+        run: |
+          echo "Changed files are:"
+          echo "${{ steps.files.outputs.files_updated }}"
+          echo "New files are:"
+          echo "${{ steps.files.outputs.files_created }}"
 
       - uses: php-actions/composer@v6
+        if: ${{ steps.files.outputs.files_updated != '' || steps.files.outputs.files_created != '' }}
         with:
+          dev: yes
           php_version: "8.0"
-          php_extensions: gd, mbstring, ext-soap, imagick, intl, ldap, mbstring, mysql, soap, xsl, zip  # comma separated list of extensions
+          php_extensions: gd soap sockets zip
 
       - name: Run PHPStan
+        if: ${{ steps.files.outputs.files_updated != '' || steps.files.outputs.files_created != '' }}
         uses: php-actions/phpstan@v3
         with:
           configuration: phpstan.neon
-          path: ${{ steps.files.outputs.files }}
+          path: ${{ steps.files.outputs.files_updated }} ${{ steps.files.outputs.files_created }}
           level: 0
           php_version: 8.0
