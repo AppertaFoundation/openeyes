@@ -20,6 +20,6 @@ jobs:
         uses: php-actions/phpstan@v3
         with:
           configuration: phpstan.neon
-          paths: ${{ steps.files.outputs.files }}
+          path: ${{ steps.files.outputs.files }}
           level: 0
           php_version: 8.0
