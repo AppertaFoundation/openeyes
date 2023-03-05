@@ -21,10 +21,18 @@ declare namespace Cypress {
         createPatient(states: ?array, attributes: ?object): Chainable<any>
         /**
          * Retrieve the URL to create an event for the patient identified by patientId in the given module
+         *
          * @param patientId
          * @param moduleName
          */
         getEventCreationUrl(patientId: Number, moduleName: string): Chainable<any>
+        /**
+         * Convenience wrapper to go straight to the event creation page for the given patient and module
+         *
+         * @param patientId
+         * @param moduleName
+         */
+        visitEventCreationUrl(patientId: Number, moduleName: string): Chainable<any>
         /**
          * Use backend model factory to find or create an instance of the given class that matches
          * all the provided attributes

@@ -26,7 +26,7 @@
             'description',
             array('rows' => '1', 'class' => 'autosize', 'nowrapper' => true),
             false,
-            array('placeholder' => 'Enter comments here')
+            array('placeholder' => 'Enter comments here', 'data-test' => 'history-description')
         ) ?>
     </div>
     <div class="cols-half">
@@ -139,4 +139,3 @@ foreach ($macros as $macro) {
   });
 
 </script>
-
