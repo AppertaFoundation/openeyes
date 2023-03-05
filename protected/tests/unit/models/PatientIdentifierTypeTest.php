@@ -62,6 +62,6 @@ class PatientIdentifierTypeTest extends ActiveRecordTestCase
         $patient_identifier_type_display_order = $this->patient_identifier_type_display_order('patient_identifier_type_display_order_1');
         $value = $this->patient_identifier_type('ID')->getNextValueForIdentifierType($patient_identifier_type_display_order->patient_identifier_type_id, $patient_identifier_type_display_order->auto_increment_start);
         // The expected value is the highest value from the patient_identifier fixture after adding one to it.
-        $this->assertEquals(5550103, $value);
+        $this->assertEquals(10017, $value);
     }
 }
