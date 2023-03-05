@@ -28,7 +28,7 @@
 </script>
 <!-- Dialog confirm split-view template -->
 <script type="text/html" id="dialog-confirm-splitview-template">
-    <div class="flex-t">
+    <div class="flex-t" data-test="{{testDataAttribute}}{{^testDataAttribute}}dialog-confirm{{/testDataAttribute}}">
         <div class="cols-5">{{{leftPanelContent}}}</div>
         <div class="cols-6">
             <p>{{{rightPanelContent}}}</p>

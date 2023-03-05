@@ -28,7 +28,7 @@ $(document).ready(() => {
 
     function handleClick(e) {
         e.preventDefault();
-        
+
         let status;
         let $handler_functions = document.querySelectorAll('.js-save-handler-function');
 
@@ -82,12 +82,12 @@ $(document).ready(() => {
             // Need to stop propagation to ensure the OK button is enabled in the confirmation dialog (this handler fires before the base handler that disables all buttons on the screen).
             e.stopPropagation();
 
-            let list = '<ul class="row-list">';
+            let list = '<ul class="row-list" data-test="element-discard-list">';
             $.each(empty_element_names, function (index, item) {
                 list += '<li>' + item + '</li>';
             });
             list += '</ul>';
-            
+
             // Display confirmation dialog. When confirmed, wipe out the optional elements.
             let dialog = new OpenEyes.UI.Dialog.Confirm({
                 title: 'Discard empty elements?',
