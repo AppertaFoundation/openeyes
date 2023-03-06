@@ -21,6 +21,7 @@ $model_name = \CHtml::modelName($element);
 
 <script type="text/javascript" src="<?= $this->getJsPublishedPath("CorrectionGiven.js") ?>"></script>
 <div class="element-fields element-eyes">
+    <?php echo $form->hiddenField($element, 'eye_id', array('class' => 'sideField')) ?>
     <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) { ?>
         <div class="js-element-eye <?= $eye_side ?>-eye js-correction-given-form <?= $page_side ?>" data-side="<?= $eye_side ?>" id="<?= "{$model_name}_{$eye_side}_form" ?>">
         <!-- active-form should not have any other classes -->
