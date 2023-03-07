@@ -898,14 +898,14 @@ class DefaultController extends \BaseEventTypeController
      * Because form elements won't be submitted when editing without this access, we need to return the current
      * event element if it exists
      *
-     * @return models\Element_OphCoCvi_ClinicalInfo[]|bool|null
+     * @return models\Element_OphCoCvi_ClinicalInfo[]|bool|array
      */
     private function getElementsForClinical()
     {
         if (!$this->checkClinicalEditAccess()) {
             $el = $this->event->isNewRecord ? null : $this->getManager()->getClinicalElementForEvent($this->event);
 
-            return (!is_null($el)) ? array($el) : null;
+            return (!is_null($el)) ? array($el) : [];
         }
 
         return false;
@@ -915,14 +915,14 @@ class DefaultController extends \BaseEventTypeController
      * Because form elements won't be submitted when editing without this access, we need to return the current
      * event element if it exists
      *
-     * @return models\Element_OphCoCvi_ClericalInfo|bool|null
+     * @return models\Element_OphCoCvi_ClericalInfo|bool|array
      */
     private function getElementsForClerical()
     {
         if (!$this->checkClericalEditAccess()) {
             $el = $this->event->isNewRecord ? null : $this->getManager()->getClericalElementForEvent($this->event);
 
-            return (!is_null($el)) ? array($el) : null;
+            return (!is_null($el)) ? array($el) : [];
         }
 
         return false;
@@ -948,7 +948,7 @@ class DefaultController extends \BaseEventTypeController
         if (array_key_exists($cls, $map)) {
             $id = $map[$cls];
             $override = $this->{"getElementsFor{$id}"}();
-            if ($override !== false) {
+            if (is_array($override)) {
                 return $override;
             }
         }

@@ -559,14 +559,15 @@ class DefaultController extends BaseEventTypeController
     }
 
     /**
-     * The normal print action had been replaced by the PDFPrint in Correspondence...
+     * The normal print method has been replaced by PDFPrint in Correspondence. So if the default actionPrint is triggered, forward it to the correct action
+     * The setPDFprintData method in protected/controllers/BaseEventTypeController.php file calls this method
      *
      * @param int $id
      * @return bool
      */
     public function actionPrint($id)
     {
-        return true;
+        $this->actionPrintForRecipient($id);
     }
 
     /**

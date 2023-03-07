@@ -1,5 +1,7 @@
 <?php
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "trial".
  *
@@ -31,6 +33,8 @@
  */
 class Trial extends BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     /**
      * The success return code for addUserPermission()
      */
@@ -204,6 +208,22 @@ class Trial extends BaseActiveRecordVersioned
         }
 
         return true;
+    }
+
+    /**
+     * Overrides CActiveModel::beforeSave()
+     *
+     * @return bool
+     */
+    public function beforeSave()
+    {
+        if ($this->closed_date !== null && $this->closed_date !== '') {
+            $this->is_open = 0;
+        } else {
+            $this->is_open = 1;
+        }
+
+        return parent::beforeSave();
     }
 
     /**
@@ -624,6 +644,11 @@ class Trial extends BaseActiveRecordVersioned
             $closed_date = new DateTime($this->$attribute);
             if ($closed_date < $started_date) {
                 $this->addError($attribute, 'Invalid date. Closed date cannot be earlier than started date.');
+            }
+
+            $now = new DateTime();
+            if ($closed_date > $now) {
+                $this->addError($attribute, 'Invalid date. Closed date cannot be in the future.');
             }
         }
     }

@@ -1,5 +1,7 @@
 <?php
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "trial_patient".
  *
@@ -27,6 +29,8 @@
  */
 class TrialPatient extends BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     /**
      * Gets whether a patient is currently in an open Intervention trial (other than the given trial)
      *

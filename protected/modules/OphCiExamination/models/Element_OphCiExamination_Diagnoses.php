@@ -557,11 +557,52 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
     }
 
     /**
+     * Check if the model dirty.
+     * Override the parent implementation
+     *
+     * @return bool true if the model dirty
+     */
+    public function isModelDirty()
+    {
+        // execute the isModelDirty from parent to perform basic model attributes check
+        if (parent::isModelDirty()) {
+            return true;
+        }
+
+        // compare the diagnoses count between the original record and the current record
+        if ($this->getOriginalDiagnosesCount() !== count($this->diagnoses)) {
+            return true;
+        }
+
+        // if the element itself is NOT dirty, check if any associated diagnose is dirty
+        foreach ($this->diagnoses as $diagnosis) {
+            if ($diagnosis->isModelDirty()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Get the original diagnoses count
+     *
+     * @return int
+     */
+    protected function getOriginalDiagnosesCount(): int {
+        return OphCiExamination_Diagnosis::model()->count('element_diagnoses_id = :id', [':id' => $this->id]);
+    }
+
+    /**
      * Ensure a principal diagnosis is set for the episode.
      */
     public function afterValidate()
     {
         if (count($this->diagnoses)) {
+            if ($this->isModelDirty() && !$this->isAtTip()) {
+                $this->addError('diagnoses', 'Diagnoses cannot be changed because a newer record supersedes this record.');
+                return;
+            }
             $principal = false;
 
             $validator = new \OEFuzzyDateValidator();

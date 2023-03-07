@@ -288,7 +288,7 @@ abstract class ModelFactory
 
                 $value = $value->make()->getPrimaryKey();
                 if (!$value) {
-                    throw new CannotMakeModelException("Need to create {$modelName}.");
+                    throw new CannotMakeModelException("Need to create {$modelName} in " . $this->modelName() . " factory");
                 }
             } elseif ($value instanceof CActiveRecord) {
                 $value = $value->getPrimaryKey();

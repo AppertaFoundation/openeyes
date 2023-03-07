@@ -1,5 +1,7 @@
 <?php
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "treatment_type".
  *
@@ -19,6 +21,8 @@
  */
 class TreatmentType extends BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     /**
      * The treatment type when users don't know whether the patient had intervention treatment or not (also the default value)
      */

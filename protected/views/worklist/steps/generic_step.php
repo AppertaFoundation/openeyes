@@ -186,6 +186,7 @@ if ($is_step_instance) {
                 <button
                     class="green hint js-ps-popup-btn"
                     data-action="next"
+                    data-test="next-generic-step"
                     <?= (int)$step->status === PathwayStep::STEP_COMPLETED ? ' style="display: none;"' : ''?>
                     <?= $has_permission_to_start ? '' : 'disabled'?>
                 >

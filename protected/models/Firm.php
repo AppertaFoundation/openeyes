@@ -508,6 +508,12 @@ class Firm extends BaseActiveRecordVersioned
         $criteria->params[':name'] = $this->name;
         $criteria->params[':institution_id'] = $this->institution_id;
         $criteria->params[':service_subspecialty_assignment_id'] = $serviceSubspecialityAssignmentId->id;
+
+        if (!$this->isNewRecord) {
+            $criteria->addCondition("id != :id");
+            $criteria->params[":id"] = $this->id;
+        }
+
         $firm = $this->findAll($criteria);
         if (count($firm) >= 1) {
             $this->addError('name', 'A firm set with the name '.$this->name.' already exists with the following settings: '.($this->institution_id ? $this->institution->name.', ' : '').($serviceSubspecialityAssignmentId ? $serviceSubspecialityAssignmentId->service->name.', '.$serviceSubspecialityAssignmentId->subspecialty->name : ''));

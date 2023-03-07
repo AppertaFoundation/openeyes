@@ -1,5 +1,4 @@
 <?php
-
 /**
  * OpenEyes.
  *
@@ -16,6 +15,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * Class WorklistPatient.
  *
@@ -29,6 +30,8 @@
  */
 class WorklistPatient extends BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     /**
      * @return string the associated database table name
      */
@@ -177,14 +180,14 @@ class WorklistPatient extends BaseActiveRecordVersioned
 
     protected function getWorklistPatientAttributeFromRelation($attribute_name): ?WorklistPatientAttribute
     {
-        $attributes = array_filter(
+        $matched_attributes = array_filter(
             $this->worklist_attributes,
             function ($attr) use ($attribute_name) {
                 return $attr->worklistattribute->name == $attribute_name;
             }
         );
 
-        return $attributes[0] ?? null;
+        return array_shift($matched_attributes);
     }
 
     protected function getWorklistPatientAttributeFromQuery($attribute_name): ?WorklistPatientAttribute
