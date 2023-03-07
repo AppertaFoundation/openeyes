@@ -120,6 +120,8 @@ if (in_array($this->controller->id, ['caseSearch','trial','worklist'])) {
         </tr>
     </script>
 
+    <script type="text/javascript" src="<?= Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.widgets.js') . '/AutoCompleteSearch.js', true, -1); ?>"></script>
+
     <script>
         $(document).ready(function() {
             let params = {
@@ -146,6 +148,20 @@ if (in_array($this->controller->id, ['caseSearch','trial','worklist'])) {
             });
 
             $('.js-shortlist-patient-btn').click(function() {
+
+                <?php if ($this->patient->isDeceased()) { ?>
+                    new OpenEyes.UI.Dialog.Confirm({
+                        content: "This patient has been deceased. Please confirm if you would like to shortlist this patient to a trial.",
+                    }).on('ok', function () {
+                        shortlistPatient();
+                    }).open();
+                <?php } else { ?>
+                    shortlistPatient();
+                <?php } ?>
+
+            });
+
+            function shortlistPatient() {
                 const trial_id = $('.js-trial-shortlist-candidates li').attr('data-trial-id');
 
                 $.get(
@@ -179,7 +195,7 @@ if (in_array($this->controller->id, ['caseSearch','trial','worklist'])) {
                     let dlg = new OpenEyes.UI.Dialog.Alert({content});
                     dlg.open();
                 });
-            });
+            }
         });
     </script>
 <?php } ?>
