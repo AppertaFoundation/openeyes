@@ -67,40 +67,44 @@ $model_name = \CHtml::modelName($element);
                             <td><?= $element->getAttributeLabel("{$eye_side}_dilated") ?></td>
                             <td><input id="<?= "{$model_name}_{$eye_side}_hidden" ?>" type="hidden" value="0" name="<?= "{$model_name}[{$eye_side}_dilated]" ?>" />
                                 <?= \CHtml::checkBox(
-                                    "{$model_name}[{$eye_side}_dilated]",
-                                    (string)$element->{"{$eye_side}_dilated"} === '1',
-                                    ['value' => '1', 'data-adder-ignore' => 'true']
+                                "{$model_name}[{$eye_side}_dilated]",
+                                (string)$element->{"{$eye_side}_dilated"} === '1',
+                                ['value' => '1', 'data-adder-ignore' => 'true']
                                 ); ?></td>
                         </tr>
                         <tr>
                             <td><?= $element->getAttributeLabel("{$eye_side}_working_distance") ?></td>
                             <td><input type="hidden" id="<?= "{$model_name}_{$eye_side}_working_distance_value" ?>"
                                        value="<?= $element->{"{$eye_side}_working_distance"}
-                                           ? $element->{"{$eye_side}_working_distance"}->value
-                                           : $element->{"{$eye_side}_working_distance_options"}[0]->value ?>"
+                                                                                           ? $element->{"{$eye_side}_working_distance"}->value
+                                                                                           : $element->{"{$eye_side}_working_distance_options"}[0]->value ?>"
                                        data-adder-wd-value-field="true"
                                 />
                                 <?= \CHtml::dropDownList(
-                                    "{$model_name}[{$eye_side}_working_distance_id]",
-                                    $element->{"{$eye_side}_working_distance_id"},
-                                    CHtml::listData($element->{"{$eye_side}_working_distance_options"}, 'id', 'name'),
-                                    [
+                                                                                               "{$model_name}[{$eye_side}_working_distance_id]",
+                                                                                               $element->{"{$eye_side}_working_distance_id"},
+                                                                                               CHtml::listData($element->{"{$eye_side}_working_distance_options"}, 'id', 'name'),
+                                                                                               [
                                         'class' => 'cols-4',
                                         'data-adder-input-id' => "working_distance",
                                         'data-adder-header' => $element->getAttributeLabel("{$eye_side}_working_distance"),
                                         'data-adder-wd-select-field' => "true",
                                         'options' => array_combine(
                                             array_map(
-                                                function ($distance) { return $distance->id; },
+                                                function ($distance) {
+                                                    return $distance->id;
+                                                },
                                                 $element->{"{$eye_side}_working_distance_options"}
                                             ),
                                             array_map(
-                                                function ($distance) { return ['data-value' => $distance->value]; },
+                                                function ($distance) {
+                                                    return ['data-value' => $distance->value];
+                                                },
                                                 $element->{"{$eye_side}_working_distance_options"}
                                             )
                                         )
-                                    ]
-                                );
+                                                                                               ]
+                                                                                           );
                                 ?></td>
                         </tr>
                         <tr>
@@ -174,9 +178,12 @@ $model_name = \CHtml::modelName($element);
                              style="<?= $element->{"{$eye_side}_comments"} ? "" : "display: none;" ?>">
                             <!-- comment-group, textarea + icon -->
                             <div class="comment-group flex-layout flex-left">
-                                    <textarea placeholder="Comments"
-                                              rows="1"
-                                              class="js-comment-field cols-full"><?= CHtml::encode($element->{"{$eye_side}_comments"}) ?></textarea>
+                                    <?= CHtml::textArea("{$model_name}[{$eye_side}_comments]", $element->{"{$eye_side}_comments"}, [
+                                        'class' => 'js-comment-field autosize cols-full',
+                                        'rows' => '1',
+                                        'placeholder' => 'Comments',
+                                        'autocomplete' => 'off',
+                                    ]) ?>
                                 <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"
                                    data-hide-method="display"></i>
                             </div>
