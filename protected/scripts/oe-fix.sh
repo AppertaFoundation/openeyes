@@ -152,7 +152,7 @@ fi
 if [ "$composer" == "1" ]; then
 
     [[ "${OE_MODE^^}" == "LIVE" ]] && {
-        composerexta="--no-dev --optimize-autoloader"
+        composerexta="--no-dev"
         npmextra="--only=production"
         echo "************************** LIVE MODE ******************************"
     }
@@ -165,7 +165,7 @@ if [ "$composer" == "1" ]; then
     # delete the lock file first as we want to be sure it gets regenerated (note the lock file is no longer comitted to version control)
     rm "$WROOT/composer.lock" 2>/dev/null || :
     echo "Installing/updating composer dependencies"
-    sudo -E composer install --working-dir=$WROOT --no-plugins --no-scripts --prefer-dist --no-interaction $composerexta
+    sudo -E composer install --working-dir=$WROOT --no-plugins --no-scripts --prefer-dist --no-interaction --optimize-autoloader $composerexta
 
     echo "Installing/updating npm dependencies"
 
