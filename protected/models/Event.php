@@ -563,7 +563,7 @@ class Event extends BaseActiveRecordVersioned
 
             // Temporarily install an error handler to deal with missing files.
             // Plese make sure the restore_error_handler below the loop is present while this exists.
-            $yii_err_handler = set_error_handler(function ($errno, $errstr, $errfile, $errline, $errcontext) use (&$yii_err_handler, &$element_class) {
+            $yii_err_handler = set_error_handler(function ($errno, $errstr, $errfile, $errline, $errcontext = []) use (&$yii_err_handler, &$element_class) {
                 /*
                  * More kludging - we just want to look for errors where include failed to open the class file,
                  * for missing element classes.
