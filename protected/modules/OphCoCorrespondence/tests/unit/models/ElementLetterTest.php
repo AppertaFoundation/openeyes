@@ -134,8 +134,14 @@ class ElementLetterTest extends ActiveRecordTestCase
 
 class ExportResult
 {
-    public function __construct(public $Success, public $DocumentId, public $DocumentSupersessionSetId)
+    public $Success;
+    public $DocumentId;
+    public $DocumentSupersessionSetId;
+    public function __construct($Success, $DocumentId, $DocumentSupersessionSetId)
     {
+        $this->Success = $Success;
+        $this->DocumentId = $DocumentId;
+        $this->DocumentSupersessionSetId = $DocumentSupersessionSetId;
     }
 }
 
