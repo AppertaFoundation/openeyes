@@ -667,25 +667,7 @@ class WorklistManager extends CComponent
 
         $days = $this->getDashboardRenderDates($start_date ? $start_date : new DateTime(), $end_date);
 
-        //FIXME: remove this debug logging before merge
-        $sql="show variables like 'version'";
-        $dataReader=Yii::app()->db->createCommand($sql)->query();
-        // bind the 1st column (username) with the $username variable
-        $dataReader->bindColumn(1,$var);
-        // bind the 2nd column (email) with the $email variable
-        $dataReader->bindColumn(2,$val);
-        while($dataReader->read()!==false)
-        {
-            Yii::Log('DATABASE VERSION: ' . $val);
-        }
-
-        Yii::Log("Future days: " . $this->getAppParam('worklist_dashboard_future_days'));
-        Yii::Log("Skip days: " . implode(',', $this->getAppParam('worklist_dashboard_skip_days')));
-        
-
-        // End FIXME
         foreach ($days as $when) {
-            Yii::Log("LIST GENERATING FOR: " . $when->format('Y-m-d H:i:s')); // FIXME: Remove this debug line before merging
             foreach ($this->getCurrentAutomaticWorklistsForUserContext($institution, $site, $firm, $when) as $worklist) {
                 $worklist_patients = $this->getPatientsForWorklist($worklist);
                 if ($this->shouldRenderEmptyWorklist() || $worklist_patients->getTotalItemCount() > 0) {

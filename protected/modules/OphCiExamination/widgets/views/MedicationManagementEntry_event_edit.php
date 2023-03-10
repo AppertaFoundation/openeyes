@@ -50,7 +50,7 @@ $entry_allergy_ids = isset($entry->medication_id) ?
     }, $entry->medication->allergies)) : $allergy_ids ?? '';
 ?>
 
-<tr data-key="<?= $row_count ?>" data-event-medication-use-id="<?php echo $entry->id; ?>" data-allergy-ids="<?php echo $entry_allergy_ids ?>" class="divider col-gap js-first-row <?= $field_prefix ?>_row <?= $is_new ? ' new' : '' ?><?= $entry->hidden === '1' ? ' hidden' : '' ?>">
+<tr data-test="event-medication-management-row" data-key="<?= $row_count ?>" data-event-medication-use-id="<?php echo $entry->id; ?>" data-allergy-ids="<?php echo $entry_allergy_ids ?>" class="divider col-gap js-first-row <?= $field_prefix ?>_row <?= $is_new ? ' new' : '' ?><?= $entry->hidden === '1' ? ' hidden' : '' ?>">
 
     <td id="<?= $model_name . "_entries_" . $row_count . '_duplicate_error' ?>" class="drug-details" rowspan="2">
         <?php if ($entry->originallyStopped) { ?>
@@ -148,10 +148,10 @@ $entry_allergy_ids = isset($entry->medication_id) ?
                 $lateralityClass = ($entry->hasErrors('laterality') ? 'error' : '')
                 ?>
                 <label class="inline highlight <?= $lateralityClass ?>">
-                    <input value="2" name="eyelat-select-R" type="checkbox" <?= $entry->laterality === "2" || $entry->laterality === "3" ? "checked" : "" ?>>R
+                    <input data-test="eye-lat-input" value="2" name="eyelat-select-R" type="checkbox" <?= $entry->laterality === "2" || $entry->laterality === "3" ? "checked" : "" ?>>R
                 </label>
                 <label class="inline highlight <?= $lateralityClass ?>">
-                    <input value="1" name="eyelat-select-L" type="checkbox" <?= $entry->laterality === "1" || $entry->laterality === "3" ? "checked" : "" ?>> L
+                    <input data-test="eye-lat-input" value="1" name="eyelat-select-L" type="checkbox" <?= $entry->laterality === "1" || $entry->laterality === "3" ? "checked" : "" ?>> L
                 </label>
             </span>
             <?php echo CHtml::hiddenField(
@@ -184,7 +184,7 @@ $entry_allergy_ids = isset($entry->medication_id) ?
                     'id',
                     'name'
                 ),
-                array('class' => 'js-dispense-condition cols-5', 'style' => $prescribe_hide_style, 'empty' => 'Select', 'options' => $dispense_condition_options)
+                array('class' => 'js-dispense-condition cols-5', 'style' => $prescribe_hide_style, 'data-test' => 'dispense-condition', 'empty' => 'Select', 'options' => $dispense_condition_options)
             ); ?>
 
             <?php

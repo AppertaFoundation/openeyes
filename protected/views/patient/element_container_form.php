@@ -45,6 +45,7 @@ $set_id = isset($this->set) ? $this->set->id : null;
             data-element-type-name="<?php echo $element->elementType->name ?>"
             data-element-display-order="<?= $element->getDisplayOrder($set_id); ?>"
             data-mandatory="<?= $this->isRequiredInUI($element) ? "true" : "false"?>"
+            data-test="<?php echo str_replace(' ', '-', $element->elementType->name) . '-element-section' ?>"
   >
         <?php
         if (isset($_POST['element_dirty'][$model_name])) {
