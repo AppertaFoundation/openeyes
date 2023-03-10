@@ -22,7 +22,7 @@ class OEPhoneNumberValidator extends CValidator
 
     public function validateAttribute($object, $attribute)
     {
-        if (isset($object->source) && $object->source == 'PASAPI' && !SettingMetadata::model()->getSetting('validate_PASAPI_phone_number')) {
+        if (isset($object->source) && $object->source == 'PASAPI' && SettingMetadata::model()->getSetting('validate_PASAPI_phone_number') == 'off') {
             return;
         }
 
