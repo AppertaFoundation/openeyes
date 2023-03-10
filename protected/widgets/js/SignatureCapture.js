@@ -64,9 +64,11 @@ this.OpenEyes.UI = this.OpenEyes.UI || {};
     SignatureCapture.prototype.getNewCanvasByCoords = function(canvas, x, y, width, height) {
         // create a temp canvas
         const newCanvas = document.createElement('canvas');
+
         let dx, dy, dWidth, dHeight;
-        newCanvas.width = canvas.width;
-        newCanvas.height = canvas.height;
+        newCanvas.width = (typeof this.$canvas.data("save_width") === "undefined") ? canvas.width : this.$canvas.data("save_width");
+        newCanvas.height = (typeof this.$canvas.data("save_height") === "undefined") ? canvas.height : this.$canvas.data("save_height");
+
         // Crop image
         if(width < height * 3) {
             // Too narrow
@@ -92,7 +94,9 @@ this.OpenEyes.UI = this.OpenEyes.UI || {};
         const ctx = newCanvas.getContext('2d');
         ctx.fillStyle = BACKGROUND;
         ctx.fillRect(0, 0, newCanvas.width, newCanvas.height);
+
         ctx.drawImage(canvas, x, y, width, height, dx, dy, dWidth, dHeight);
+
         return newCanvas;
     };
 
@@ -109,8 +113,7 @@ this.OpenEyes.UI = this.OpenEyes.UI || {};
                         return true;
                     }
                 }
-
-                return false;
+                return (data[(imgWidth*y + x) * 4 + 3] !== 0);
             },
             scanY = function (fromTop) {
                 let offset = fromTop ? 1 : -1;
@@ -280,9 +283,22 @@ this.OpenEyes.UI = this.OpenEyes.UI || {};
         this.isFullScreen = true;
     };
 
+    /*
+    This method helps to debug the content of the canvas in the future.
+     */
+    SignatureCapture.prototype.debugCanvas = function(canvas)
+    {
+        var image = canvas.toDataURL("image/png")
+            .replace("image/png", "image/octet-stream");  // here is the most important part because if you dont replace you will get a DOM 18 exception.
+
+        window.document.write('<img src="' + image + '"/>');
+        return false;
+    };
+
     SignatureCapture.prototype.exitFullScreen = function()
     {
         // Save image to tmp canvas
+
         let tmpCanvas = this.cropSignature(this.$canvas[0]);
 
         // Change button text
