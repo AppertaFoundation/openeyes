@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -18,6 +19,8 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "ophciexamination_comorbidities_item".
  *
@@ -27,15 +30,7 @@ namespace OEModule\OphCiExamination\models;
  */
 class OphCiExamination_PostOpComplications extends \BaseActiveRecordVersioned
 {
-    /**
-     * Returns the static model of the specified AR class.
-     *
-     * @return OphCiExamination_Comorbidities_Item the static model class
-     */
-    public static function model($className = __CLASS__)
-    {
-        return parent::model($className);
-    }
+    use HasFactory;
 
     protected $auto_update_relations = true;
 
@@ -49,7 +44,7 @@ class OphCiExamination_PostOpComplications extends \BaseActiveRecordVersioned
 
     public function defaultScope()
     {
-        return array('order' => $this->getTableAlias(true, false).'.display_order');
+        return array('order' => $this->getTableAlias(true, false) . '.display_order');
     }
 
     /**
@@ -104,8 +99,8 @@ class OphCiExamination_PostOpComplications extends \BaseActiveRecordVersioned
         $criteria->addCondition('active = 1');
 
         $criteria->addCondition('t.id NOT IN (SELECT DISTINCT complication_id '
-                                                .'FROM ophciexamination_postop_et_complications '
-                                                .'WHERE element_id = :element_id AND operation_note_id = :operation_note_id AND eye_id = :eye_id) ');
+                                                . 'FROM ophciexamination_postop_et_complications '
+                                                . 'WHERE element_id = :element_id AND operation_note_id = :operation_note_id AND eye_id = :eye_id) ');
 
         $criteria->params['element_id'] = $element_id;
         $criteria->params['operation_note_id'] = $operation_note_id;
@@ -128,6 +123,7 @@ class OphCiExamination_PostOpComplications extends \BaseActiveRecordVersioned
     /**
      * Named scope to fetch enabled items for the given subspecialty.
      *
+     * @param int $institution_id
      * @param int|null $subspecialty_id Null for default episode summary
      *
      * @return EpisodeSummaryItem
@@ -191,8 +187,6 @@ class OphCiExamination_PostOpComplications extends \BaseActiveRecordVersioned
         );
 
         if ($item_ids) {
-            $item_ids = explode(',', $item_ids);
-
             $rows = array();
             foreach ($item_ids as $display_order => $complication_id) {
                 $rows[] = array(
