@@ -420,6 +420,78 @@ class OphCoCvi_Manager extends \CComponent
      * @param \Event $event
      * @return bool
      */
+    public function clinicalValidation(\Event $event)
+    {
+        if ($clinical = $this->getClinicalElementForEvent($event)) {
+            $clinical->setScenario('finalise');
+            $result = $clinical->validate();
+            if (!$result) {
+                return $result;
+            }
+        } else {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * @param \Event $event
+     * @return bool
+     */
+    public function signatureValidation(\Event $event)
+    {
+        $signature = $this->getElementForEvent($event, "Element_OphCoCvi_Esign");
+        if ($signature) {
+            /** @var Element_OphCoCvi_Esign $signature */
+            if (!$signature->isSignedByConsultant() || !$signature->isSignedByPatient()) {
+                return false;
+            }
+        } else {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * @param \Event $event
+     * @return bool
+     */
+    public function clericalValidation(\Event $event)
+    {
+        if ($clerical = $this->getClericalElementForEvent($event)) {
+            $clerical->setScenario('finalise');
+            $result = $clerical->validate();
+            if (!$result) {
+                return $result;
+            }
+        } else {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * @param \Event $event
+     * @return bool
+     */
+    public function demographicsValidation(\Event $event)
+    {
+        if ($demographics = $this->getDemographicsElementForEvent($event)) {
+            $demographics->setScenario('finalise');
+            $result = $demographics->validate();
+            if (!$result) {
+                return $result;
+            }
+        } else {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * @param \Event $event
+     * @return bool
+     */
     public function canIssueCvi(\Event $event)
     {
         /*
@@ -433,42 +505,19 @@ class OphCoCvi_Manager extends \CComponent
         }
         */
 
-        if ($clinical = $this->getClinicalElementForEvent($event)) {
-            $clinical->setScenario('finalise');
-
-            if (!$clinical->validate()) {
-                return false;
-            }
-        } else {
+        if ($this->clinicalValidation($event) === false) {
             return false;
         }
 
-        $signature = $this->getElementForEvent($event, "Element_OphCoCvi_Esign");
-
-        if ($signature) {
-            /** @var Element_OphCoCvi_Esign $signature */
-            if (!$signature->isSignedByConsultant()) {
-                return false;
-            }
-        } else {
+        if ($this->signatureValidation($event) === false) {
             return false;
         }
 
-        if ($clerical = $this->getClericalElementForEvent($event)) {
-            $clerical->setScenario('finalise');
-            if (!$clerical->validate()) {
-                return false;
-            }
-        } else {
+        if ($this->clericalValidation($event) === false) {
             return false;
         }
 
-        if ($demographics = $this->getDemographicsElementForEvent($event)) {
-            $demographics->setScenario('finalise');
-            if (!$demographics->validate()) {
-                return false;
-            }
-        } else {
+        if ($this->demographicsValidation($event) === false) {
             return false;
         }
 

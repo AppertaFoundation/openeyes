@@ -494,25 +494,21 @@ class WorklistController extends BaseController
         $pathway->save();
 
         // Create and save a Did Not Attend event.
-        $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+        $context_firm = Yii::app()->session->getSelectedFirm();
 
-        if (!$firm) {
-            throw new CHttpException(404, 'Unable to locate selectede firm.');
+        if (!$context_firm) {
+            throw new CHttpException(404, 'Unable to locate selected firm.');
         }
         $event_type_id = EventType::model()->find(
             'class_name = :class_name',
             [':class_name' => 'OphCiDidNotAttend']
         )->id;
-        $service = Firm::model()->find(
-            'service_subspecialty_assignment_id = :id AND can_own_an_episode = 1',
-            [':id' => $firm->service_subspecialty_assignment_id]
-        );
-        $service_id = $service->id;
+        $service = $context_firm->getDefaultServiceFirm();
 
         $params = [
             'patient_id' => $pathway->worklist_patient->patient_id,
-            'context_id' => $firm->id,
-            'service_id' => $service_id,
+            'context_id' => $context_firm->id,
+            'service_id' => $service ? $service->id : null,
             'event_type_id' => $event_type_id
         ];
 
@@ -1828,11 +1824,7 @@ class WorklistController extends BaseController
                     $step_data['service_id'] = $episode->firm_id;
                 } else {
                     // Choose a default service firm
-                    $service_firm = Firm::model()->with('serviceSubspecialtyAssignment')
-                                                 ->find(
-                                                     'can_own_an_episode = 1 AND subspecialty_id = :subspecialty',
-                                                     [':subspecialty' => $service_subspecialty]
-                                                 );
+                    $service_firm = Firm::getDefaultServiceFirmForSubspecialty($service_subspecialty);
 
                     $step_data['service_id'] = $service_firm ? $service_firm->id : null;
                 }

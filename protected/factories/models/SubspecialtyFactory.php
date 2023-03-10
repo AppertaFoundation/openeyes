@@ -16,6 +16,8 @@
 namespace OE\factories\models;
 
 use OE\factories\ModelFactory;
+use ServiceSubspecialtyAssignment;
+use Subspecialty;
 
 class SubspecialtyFactory extends ModelFactory
 {
@@ -24,8 +26,17 @@ class SubspecialtyFactory extends ModelFactory
         return [
             'name' => $this->faker->words(2, true),
             'short_name' => $this->faker->word(),
-            'ref_spec' => $this->lexify('##'),
+            'ref_spec' => $this->faker->lexify('##'),
             'specialty_id' => 109 // this is just hardcoded because so much is locked into the ophthamology specialty code
         ];
+    }
+
+    public function withServiceSubspecialtyAssignment()
+    {
+        return $this->afterCreating(function (Subspecialty $subspecialty) {
+            ServiceSubspecialtyAssignment::factory()->create([
+                'subspecialty_id' => $subspecialty->id
+            ]);
+        });
     }
 }

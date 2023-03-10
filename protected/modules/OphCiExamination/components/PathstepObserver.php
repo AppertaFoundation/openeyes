@@ -45,10 +45,7 @@ class PathstepObserver
                 if ($episode) {
                     $service_id = $episode->firm_id;
                 } else {
-                    $service = Firm::model()->find(
-                        'service_subspecialty_assignment_id = :id AND can_own_an_episode = 1',
-                        [':id' => $firm->service_subspecialty_assignment_id]
-                    );
+                    $service = $firm->getDefaultServiceFirm();
 
                     $service_id = $service->id;
                 }

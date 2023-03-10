@@ -34,7 +34,7 @@ if ($step instanceof PathwayStep) {
     <div class="step-actions">
         <?php if (isset($worklist_patient)) {
             if ((int)$step->status === PathwayStep::STEP_REQUESTED) { ?>
-                <button class="green hint js-ps-popup-btn" data-action="done">
+                <button class="green hint js-ps-popup-btn" data-action="done" data-test="step-done">
                     Check-in
                 </button>
                 <button class="blue hint js-ps-popup-btn" data-action="DNA">

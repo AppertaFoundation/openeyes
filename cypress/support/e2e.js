@@ -17,6 +17,7 @@
 // import './commands'
 import './yii-commands'
 import './ui/index'
+import './ui/worklist'
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')

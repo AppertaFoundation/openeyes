@@ -73,7 +73,7 @@ $is_ae_worklist = isset($worklist->id) && Yii::app()->db->cache(1000)->createCom
         <h3><?= 'Combined worklists : ' . date('d M Y') ?></h3>
     </header>
 <?php else : ?>
-<section class="<?= $section_classes ?>" id="js-worklist-<?= $worklist->id ?>" data-id="<?= $worklist->id ?>" data-title="<?= $worklist->name ?>">
+<section class="<?= $section_classes ?>" id="js-worklist-<?= $worklist->id ?>" data-id="<?= $worklist->id ?>" data-title="<?= $worklist->name ?>" data-test="js-worklist-<?= $worklist->id ?>">
     <header>
         <h3><?= $worklist->name . ' : ' . $worklist->getDisplayDate() ?></h3>
     </header>
@@ -95,7 +95,7 @@ $is_ae_worklist = isset($worklist->id) && Yii::app()->db->cache(1000)->createCom
                 <!-- Select all patients in worklist -->
                 <label class="patient-checkbox">
                     <input class="js-check-patient" value="all" type="checkbox"/>
-                    <div class="checkbox-btn"></div>
+                    <div class="checkbox-btn" data-test="add-step"></div>
                 </label>
             </th>
             <th>
@@ -198,13 +198,13 @@ $is_ae_worklist = isset($worklist->id) && Yii::app()->db->cache(1000)->createCom
                     </span>
                 </td>
                 <td>
-                    <div class="wait-duration<?= $wl_patient->pathway && (int)$wl_patient->pathway->status === Pathway::STATUS_DONE ? ' stopped' : '' ?>">
+                    <div class="wait-duration<?= $wl_patient->pathway && (int)$wl_patient->pathway->status === Pathway::STATUS_DONE ? ' stopped' : '' ?>" data-test="wait-duration">
                         <?php if ($wl_patient->pathway) {
                             echo $wl_patient->pathway->getTotalDurationHTML(true);
                         } ?>
                     </div>
                 </td>
-                <td class="js-pathway-status">
+                <td class="js-pathway-status" data-test="pathway-status">
                     <!-- Completion icon/actions -->
                     <?php
                     $class = 'oe-i pad js-has-tooltip ';

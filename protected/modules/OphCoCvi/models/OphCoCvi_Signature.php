@@ -13,6 +13,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "ophcocvi_signature".
  *
@@ -38,6 +40,8 @@
  */
 class OphCoCvi_Signature extends BaseSignature
 {
+    use HasFactory;
+
     const SIGNATORY_PERSON_REPRESENTATIVE = "Patient's representative";
     const SIGNATORY_PERSON_PARENT_OR_GUARDIAN = "Parent/Guardian";
     const SIGNATORY_PERSON_PATIENT = "Patient";

@@ -17,6 +17,10 @@ Cypress.Commands.add('getBySel', (selector, ...args) => {
     return cy.get(`[data-test=${selector}]`, ...args);
 });
 
+Cypress.Commands.add('getBySelLike', (selector, ...args) => {
+    return cy.get(`[data-test*=${selector}]`, ...args);
+});
+
 Cypress.Commands.add('removeElementSide', (elementName, side) => {
     return cy.getElementSideByName(elementName, side).find('.remove-side').click();
 });
@@ -35,7 +39,16 @@ Cypress.Commands.add('removeElements', (exceptElementNames) => {
         })
         .join('');
 
-    cy.get(`section.element${filterSelector} .js-remove-element`).click({ multiple: true });
+    cy.get(`section.element${filterSelector}`).each(($section) => {
+        if ($section.find('input[name^="\\[element_dirty\\]"]').val() == '1') {
+            cy.wrap($section).within(() => {
+                cy.get('.js-remove-element').click();
+            });
+            cy.get('button.confirm.ok').click();
+        } else {
+            cy.wrap($section).within(() => { cy.get('.js-remove-element').click(); });
+        }
+    });
 });
 
 Cypress.Commands.add('saveEvent', () => {
