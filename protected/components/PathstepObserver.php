@@ -114,17 +114,13 @@ class PathstepObserver
                 if (!$firm) {
                     throw new Exception('Unable to retrieve context.');
                 }
-                $service = Firm::model()->find(
-                    'service_subspecialty_assignment_id = :id AND can_own_an_episode = 1',
-                    [':id' => $firm->service_subspecialty_assignment_id]
-                );
+                $service = $firm->getDefaultServiceFirm();
 
                 if ($service) {
-                    $service_id = $service->id;
                     $url_params = [
                         'patient_id' => $step->pathway->worklist_patient->patient_id,
                         'context_id' => $firm->id,
-                        'service_id' => $service_id,
+                        'service_id' => $service ? $service->id : null,
                         'event_type_id' => $event_type_id,
                         'worklist_patient_id' => $step->pathway->worklist_patient_id,
                         'step_id' => $step->id,
