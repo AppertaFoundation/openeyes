@@ -17,6 +17,10 @@ Cypress.Commands.add('getBySel', (selector, ...args) => {
     return cy.get(`[data-test=${selector}]`, ...args);
 });
 
+Cypress.Commands.add('getBySelLike', (selector, ...args) => {
+    return cy.get(`[data-test*=${selector}]`, ...args);
+});
+
 Cypress.Commands.add('removeElementSide', (elementName, side) => {
     return cy.getElementSideByName(elementName, side).find('.remove-side').click();
 });

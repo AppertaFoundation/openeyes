@@ -90,6 +90,7 @@ Cypress.Commands.add('createModels', (className, states, attributes, count) => {
     if (count === undefined) {
         count = 1;
     }
+
     return cy.request({
         method: 'POST',
         url: '/CypressHelper/Default/createModels',

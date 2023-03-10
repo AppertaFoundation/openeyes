@@ -99,6 +99,7 @@ protected/modules/*
 
 # Tests
 /jm_behat_report.html
+/protected/tests/.phpunit.result.cache
 
 # Temporary, until we've sorted out vagrant for installing test dependencies
 /bin

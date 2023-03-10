@@ -68,4 +68,18 @@ class EpisodeFactory extends ModelFactory
             ];
         });
     }
+
+    public function changeTracker()
+    {
+        return $this->state([
+            'change_tracker' => true
+        ]);
+    }
+
+    public function legacy()
+    {
+        return $this->state([
+            'legacy' => true
+        ]);
+    }
 }
