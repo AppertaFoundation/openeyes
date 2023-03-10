@@ -11,6 +11,7 @@ $(document).ready(function() {
     let node = document.createElement("div");
     node.classList.add("button", "green", "manage-elements");
     node.setAttribute("id", "js-manage-elements-btn");
+    node.setAttribute("data-test", "manage-elements-btn");
     let ele = document.createTextNode("Manage Elements");
     node.appendChild(ele);
     sidebar_header.append(node);

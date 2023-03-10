@@ -18,6 +18,8 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "ophciexamination_element_set".
  *
@@ -29,6 +31,7 @@ namespace OEModule\OphCiExamination\models;
  */
 class OphCiExamination_ElementSet extends \BaseActiveRecordVersioned
 {
+    use HasFactory;
     /**
      * Returns the static model of the specified AR class.
      *

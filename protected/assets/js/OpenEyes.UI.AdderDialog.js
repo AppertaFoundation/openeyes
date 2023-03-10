@@ -85,7 +85,8 @@
         content.append($closeButton);
 
         let $addButton = $('<div />', {
-            class: 'add-icon-btn'
+            class: 'add-icon-btn',
+            'data-test': 'add-icon-btn'
         }).append($('<i />', { class: 'oe-i plus pad pro-theme selected' }));
         $addButton.append('Click to add');
 
@@ -394,6 +395,7 @@
             'data-id': itemSet.options.id,
             'data-deselectOnReturn': itemSet.options.deselectOnReturn,
             'data-resetSelectionToDefaultOnReturn': itemSet.options.resetSelectionToDefaultOnReturn,
+            'data-test': 'add-options',
         });
 
         itemSet.items.forEach(function(item) {
