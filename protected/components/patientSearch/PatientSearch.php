@@ -438,16 +438,11 @@ class PatientSearch
             $term = str_replace([' ', '-'], '', $term);
 
             foreach ($types as $type) {
-                if ($type->validate_regex) {
-                    $padded = sprintf($type->pad ?: '%s', $term);
-                    preg_match($type->validate_regex, $padded, $matches);
-
-                    $match = $matches[0] ?? null;
+                    $match = PatientIdentifierHelper::getPaddedTermRegexResult($term, $type->validate_regex, $type->pad);
 
                     if ($match) {
                         $valid_types[] = $match;
                     }
-                }
             }
         }
 
