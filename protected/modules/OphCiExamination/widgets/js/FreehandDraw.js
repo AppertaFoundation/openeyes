@@ -127,6 +127,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             tr.querySelector('.user-comment').style.display = 'none';
             tr.querySelector('.comments-who').style.display = 'none';
             tr.querySelector('.js-input-comments-wrapper').style.display = 'block';
+            autosize($('.autosize'));
         });
 
         OpenEyes.UI.DOM.addEventListener($section, 'click', '.js-remove-add-comments', function(e) {

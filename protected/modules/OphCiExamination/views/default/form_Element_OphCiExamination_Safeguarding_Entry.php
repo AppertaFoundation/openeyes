@@ -36,7 +36,7 @@ if ($has_comment) {
                             'id' => $comment_field_id,
                             'autocomplete' => 'off',
                             'rows' => '1',
-                            'class' => 'js-comment-field cols-full'
+                            'class' => 'js-comment-field cols-full autosize'
                         )
                     )
                     ?>
@@ -49,7 +49,7 @@ if ($has_comment) {
            data-tt-type="basic"
            data-tooltip-content="<small>User comment by </small><br/><?=User::model()->findByPk($entry['created_user_id'])->getFullName();?>">
         </i>
-        <span class="user-comment"><?=$entry['comment']?></span>
+        <span class="user-comment"><?=\OELinebreakReplacer::replace($entry['comment'])?></span>
         <?php } ?>
     </td>
     <td>

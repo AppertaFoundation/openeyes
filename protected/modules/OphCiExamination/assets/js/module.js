@@ -1916,6 +1916,7 @@ var eyedraw_added_diagnoses = [];
 
 $(document).ready(function() {
     autosize($('textarea'));
+    autosize($('.autosize'));
 });
 
 /*

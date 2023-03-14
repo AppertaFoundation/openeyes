@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -14,6 +15,7 @@
  * @copyright Copyright (c) 2021, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <div class="element-data full-width">
     <!-- Group in Annotation mode, when adding a template this the default state -->
@@ -34,11 +36,11 @@
                         </tr>
                         <tr>
                             <td>
-                                <?php if ($entry->comments): ?>
+                                <?php if ($entry->comments) : ?>
                                 <i class="oe-i comments-who small pad-right js-has-tooltip"
                                    data-tooltip-content="User comment"
                                 ></i><span
-                                        class="user-comment"><?= \CHtml::encode($entry->comments); ?></span>
+                                        class="user-comment"><?= \OELinebreakReplacer::replace(\CHtml::encode($entry->comments)); ?></span>
 
                                 <?php endif; ?>
                             </td>
@@ -51,7 +53,7 @@
                 </div>
             </div>
         </div>
-        <?php if(count($element->entries) > ($k+1)):?>
+        <?php if (count($element->entries) > ($k + 1)) :?>
             <hr class="divider">
         <?php endif;?>
     <?php endforeach; ?>

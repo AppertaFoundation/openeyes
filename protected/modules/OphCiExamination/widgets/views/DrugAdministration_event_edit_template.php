@@ -57,7 +57,7 @@
             <div class="cols-full comment-row" style="display: none;">
                 <!-- textarea & remove icon -->
                 <div class="flex-layout flex-left ">
-                    <textarea name="<?=$model_name . "[assignment][{{key}}][comment]"?>" placeholder="Comments" autocomplete="off" rows="1" class="js-input-comments cols-full"></textarea>
+                    <textarea name="<?=$model_name . "[assignment][{{key}}][comment]"?>" placeholder="Comments" autocomplete="off" rows="1" class="js-input-comments cols-full autosize"></textarea>
                     <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
                 </div>
             </div>

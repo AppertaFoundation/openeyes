@@ -111,7 +111,7 @@ $patient_is_minor = $patient->isChild();
                 $entries = array();
 
                 if (isset($_POST[$model_name])) {
-                    if(isset($_POST[$model_name]['entries'])) {
+                    if (isset($_POST[$model_name]['entries'])) {
                         foreach ($_POST[$model_name]['entries'] as $post_entry) {
                             if (!empty($post_entry['id'])) {
                                 $post_concern = OphCiExamination_Safeguarding_Entry::model()->findByPk($post_entry['id']);
@@ -171,7 +171,7 @@ $patient_is_minor = $patient->isChild();
                                         'id' => $template_comment_field_id,
                                         'autocomplete' => 'off',
                                         'rows' => '1',
-                                        'class' => 'js-comment-field cols-full'
+                                        'class' => 'js-comment-field cols-full autosize'
                                     )
                                 )
                             ?>
@@ -288,6 +288,10 @@ $patient_is_minor = $patient->isChild();
                     return true;
                 }
             })
+            
+            $(this).on('click', '.js-add-comments', function () {
+                autosize($('.js-comment-field'));
+            });
         });
     </script>
 <?php } ?>
