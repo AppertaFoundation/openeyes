@@ -526,4 +526,31 @@ class Firm extends BaseActiveRecordVersioned
         $contextEmail = $this->context_email;
         return $contextEmail ?? null;
     }
+
+    public function getDefaultServiceFirm(?Institution $institution = null): ?Firm
+    {
+        $subspecialty = $this->getSubspecialty();
+        if (!$subspecialty) {
+            return null;
+        }
+        return static::getDefaultServiceFirmForSubspecialty($subspecialty, $institution);
+    }
+
+    /**
+     * @param Subspecialty|int $subspecialty
+     * @param ?Institution $institution = null
+     * @return Firm
+     */
+    public static function getDefaultServiceFirmForSubspecialty($subspecialty, ?Institution $institution = null): ?Firm
+    {
+        $subspecialty_id = $subspecialty instanceof Subspecialty ? $subspecialty->id : $subspecialty;
+        if ($institution === null) {
+            $institution = Institution::model()->getCurrent();
+        }
+
+        return self::model()->with('serviceSubspecialtyAssignment')->find(
+            'can_own_an_episode = 1 AND subspecialty_id = :subspecialty_id AND institution_id = :institution_id',
+            [':subspecialty_id' => $subspecialty_id, ':institution_id' => $institution->id]
+        );
+    }
 }

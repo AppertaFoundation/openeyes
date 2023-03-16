@@ -191,9 +191,9 @@ echo '<script type="text/javascript" src="' . $asset_folder . '/EsignElementWidg
             <?php if (!\Yii::app()->user->checkAccess('Prescribe')) { ?>
                 <button id="mm-add-pgd-btn" class="button hint green <?=$read_only ? 'disabled' : ''?>" type="button">Add PGD Set</button>
             <?php } ?>
-            <button id="mm-add-standard-set-btn" class="button hint green <?php if ($read_only) {
+            <button id="mm-add-standard-set-btn" data-test="mm-add-standard-set-btn" class="button hint green <?php if ($read_only) {
                 ?>disabled<?php
-                                                                          } ?>" type="button">Add standard set</button>
+                                                                                                              } ?>" type="button">Add standard set</button>
             <button class="button hint green js-add-select-search <?php if ($read_only) {
                 ?>disabled<?php
                                                                   } ?>" id="mm-add-medication-btn" type="button">

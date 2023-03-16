@@ -18,11 +18,7 @@ $episode = null;
 if (!$service_firm && $subspecialty && isset($patient)) {
     $episode = $patient->getOpenEpisodeOfSubspecialty($subspecialty->id);
 
-    $service_firm = $episode
-                  ? $episode->firm
-                  : Firm::model()->with('serviceSubspecialtyAssignment')
-                                 ->find('can_own_an_episode = 1 AND subspecialty_id = :subspecialty',
-                                        [':subspecialty' => $subspecialty->id]);
+    $service_firm = $episode ? $episode->firm : Firm::getDefaultServiceFirmForSubspecialty($subspecialty);
 }
 
 if ($is_step_instance) {
@@ -61,8 +57,8 @@ if ($is_step_instance) {
 
                                     if (!$episode) {
                                         $service_firms = Firm::model()->with('serviceSubspecialtyAssignment')
-                                                                      ->findAll('can_own_an_episode = 1 AND subspecialty_id = :subspecialty',
-                                                                                [':subspecialty' => $subspecialty->id]);
+                                                                      ->findAll('can_own_an_episode = 1 AND subspecialty_id = :subspecialty AND institution_id = :institution',
+                                                                                [':subspecialty' => $subspecialty->id, ':institution' => Yii::app()->session->getSelectedInstitution()->id]);
 
                                         echo CHtml::dropDownList('service_id', $service_firm->id ?? null, CHtml::listData($service_firms, 'id', 'name'),
                                                                  ['class' => 'cols-12 js-examination-change-service']);

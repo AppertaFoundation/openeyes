@@ -77,11 +77,11 @@
 
 <tr>
   <td>
-        <?= $form->labelEx($address, Yii::app()->params['county_label']) ?>
+        <?= $form->labelEx($address, \SettingMetadata::model()->getSetting('county_label')) ?>
   </td>
   <td>
         <?= $form->textField($address, 'county', array('size' => 15, 'placeholder' => $address->getAttributeLabel('county'), 'class' => 'cols-10')) ?>
-        <?= $form->error($address, Yii::app()->params['county_label']) ?>
+        <?= $form->error($address, 'county') ?>
   </td>
 </tr>
 

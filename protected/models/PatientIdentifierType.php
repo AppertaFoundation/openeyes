@@ -180,10 +180,7 @@ class PatientIdentifierType extends BaseActiveRecordVersioned
     public function validateTerm(string $term, bool $allow_blank = false) : bool
     {
         if ($this->validate_regex) {
-            $padded = sprintf($this->pad ?:  '%s', $term);
-            preg_match($this->validate_regex, $padded, $matches);
-
-            $match = $matches[0] ?? null;
+            $match = PatientIdentifierHelper::getPaddedTermRegexResult($term, $this->validate_regex, $this->pad);
 
             if ($match) {
                 return true;
@@ -274,5 +271,4 @@ class PatientIdentifierType extends BaseActiveRecordVersioned
         }
         return 0;
     }
-
 }

@@ -21,10 +21,7 @@ class EventStepObserver
                 [':class_name' => $step->getState('event_type')]
             )->id;
             $firm = Firm::model()->findByPk($step->getState('firm_id'));
-            $service = Firm::model()->find(
-                'service_subspecialty_assignment_id = :id AND can_own_an_episode = 1',
-                [':id' => $firm->service_subspecialty_assignment_id]
-            );
+            $service = $firm->getDefaultServiceFirm();
             $service_id = $service->id;
             $params = [
                 'patient_id' => $step->pathway->worklist_patient->patient_id,

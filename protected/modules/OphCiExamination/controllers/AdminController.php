@@ -1090,22 +1090,31 @@ class AdminController extends \ModuleAdminController
         if ($institution_id === null) {
             $institution_id = Yii::app()->session['selected_institution_id'];
         }
+
+        $complications = models\OphCiExamination_PostOpComplications::model()->available($subspecialty_id)->findAll();
+        $selected_complications = models\OphCiExamination_PostOpComplications::model()->enabled($institution_id, $subspecialty_id)->findAll();
+
         $this->render('list_OphCiExamination_PostOpComplications', array(
                 'institution_id' => $institution_id,
                 'subspecialty_id' => $subspecialty_id,
-                'enabled_items' => models\OphCiExamination_PostOpComplications::model()->enabled($institution_id, $subspecialty_id)->findAll(),
-                'available_items' => models\OphCiExamination_PostOpComplications::model()->available($subspecialty_id)->findAll(),
+                'selected_complications' => $selected_complications,
+                'complications' => \CHtml::listData([...$complications, ...$selected_complications], 'id', 'name', ''),
         ));
     }
 
     public function actionUpdatePostOpComplications()
     {
-        $item_ids = Yii::app()->request->getParam('item_ids', array());
+        $complication_ids = Yii::app()->request->getParam('complication_ids', array());
         $institution_id = Yii::app()->request->getParam('institution_id', array());
         $subspecialty_id = Yii::app()->request->getParam('subspecialty_id', null);
 
         $tx = Yii::app()->db->beginTransaction();
-        models\OphCiExamination_PostOpComplications::model()->assign($item_ids, $institution_id, $subspecialty_id);
+        try {
+            models\OphCiExamination_PostOpComplications::model()->assign($complication_ids, $institution_id, $subspecialty_id);
+        } catch (\Exception $e) {
+            $tx->rollback();
+            throw new \Exception('Could not save PostOpComplications.');
+        }
         $tx->commit();
 
         $this->redirect(array('/OphCiExamination/admin/postOpComplications?institution_id=' . $institution_id . '&subspecialty_id=' . $subspecialty_id));

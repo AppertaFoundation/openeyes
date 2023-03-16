@@ -384,4 +384,29 @@ class PatientIdentifierHelper
             "patient_identifier_type_id" => $patient_identifier_type->id
         ]);
     }
+
+    /**
+     * Retrieve a padded search term that matches patient identifier regex
+     *
+     * @param string $term
+     * @param string $validate_regex
+     * @return string $pad
+     */
+    public static function getPaddedTermRegexResult(string $term, string $validate_regex, string $pad = null)
+    {
+        if($validate_regex) {
+            preg_match($validate_regex, $term, $matches);
+
+            if (isset($matches[0])) {
+                return $matches[0];
+            } else {
+                $padded = sprintf($pad ?: '%s', $term);
+                preg_match($validate_regex, $padded, $matches);
+
+                return $matches[0] ?? null;
+            }
+        }
+
+        return null;
+    }
 }
