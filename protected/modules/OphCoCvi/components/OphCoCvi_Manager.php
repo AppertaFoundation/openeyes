@@ -870,7 +870,9 @@ class OphCoCvi_Manager extends \CComponent
     private function handleConsultantListFilter(\CDbCriteria $criteria, $filter = array())
     {
         if (isset($filter['consultant_ids']) && strlen(trim($filter['consultant_ids']))) {
-            $criteria->addInCondition('consultant_element.signed_by_user_id', explode(',', $filter['consultant_ids']));
+            $criteria->addCondition('signatures.type = :type');
+            $criteria->addInCondition('signatures.signed_user_id', explode(',', $filter['consultant_ids']));
+            $criteria->params[':type']=\BaseSignature::TYPE_LOGGEDIN_USER;
         }
     }
 
@@ -966,7 +968,8 @@ class OphCoCvi_Manager extends \CComponent
             'event',
             'event.episode.patient.contact',
             'event.episode.firm.serviceSubspecialtyAssignment.subspecialty',
-            'consultantInChargeOfThisCvi'
+            'consultantInChargeOfThisCvi',
+            'esign_element.signatures'
         );
 
         $sort = new \CSort();
@@ -1009,6 +1012,7 @@ class OphCoCvi_Manager extends \CComponent
             ),
         );
         $criteria = $this->buildFilterCriteria($filter);
+        $criteria->together = true;
 
         $paginationArr = array();
         if ($pagination === false) {
