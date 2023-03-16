@@ -39,8 +39,13 @@
  * @property User $createdUser
  * @property User $lastModifiedUser
  */
+
+use OE\factories\models\traits\HasFactory;
+
 class OphCoCorrespondence_Signature extends BaseSignature
 {
+    use HasFactory;
+
     const LBL_ELECTRONIC_VERIFIED = "VERIFIED ELECTRONICALLY, NOT SIGNED TO AVOID DELAYS";
 
     /**
@@ -198,7 +203,8 @@ class OphCoCorrespondence_Signature extends BaseSignature
     {
         /** @var OphCoCorrespondence_API $api */
         $api = Yii::app()->moduleAPI->get("OphCoCorrespondence");
-        return $api->getFooterText($this->signedUser);
+
+        return $api->getFooterText($this->signedUser, $this->element->event->firm ?? null);
     }
 
     /**
