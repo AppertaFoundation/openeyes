@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <?php
@@ -36,7 +38,7 @@ $active_pathway = $this->patient->getClinicPathwayInProgress();
 <?php } ?>
 
 <nav class="sidebar subgrid">
-    <div class="sidebar-fixed-top">
+    <div class="fixed-actions">
     <?php
     $this->renderPartial('//patient/_single_oescape_sidebar', array(
         'legacyepisodes' => $legacyepisodes,
@@ -50,14 +52,16 @@ $active_pathway = $this->patient->getClinicPathwayInProgress();
             'pathway' => $active_pathway,
         ]);
     }
-
+    ?>
+    </div>
+    <div class="sidebar-eventlist">
+    <?php
     $this->renderPartial('//patient/_single_episode_sidebar', array(
         'legacyepisodes' => $legacyepisodes,
         'ordered_episodes' => $ordered_episodes,
         'supportserviceepisodes' => $supportserviceepisodes,
         'current_episode' => $current_episode,
     ));
-
     ?>
     </div>
 </nav>
