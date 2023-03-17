@@ -23,29 +23,63 @@ $institution_id = Institution::model()->getCurrent()->id;
 $site_id = Yii::app()->session['selected_site_id'];
 ?>
 <style>
-    @page {
-        size: landscape;
-    }
-    table {
-        width: 100%;        
-    }
-    tr th, tr td {
-        text-align: left;
-        padding: 0 10px;
-    }
-    tr th:first-of-type,
-    tr td:first-of-type {
-        padding-left: 0;
-    }
-    tr th:last-of-type,
-    tr td:last-of-type {
-        padding-right: 0;
+    @media print {
+        @page {
+            size: landscape;
+            width: 100%;
+        }
+        #d_title {
+            text-align: center;
+            font-weight: bold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+        .d_overview {
+            width: 100%;
+            /* border: 1px solid black; */
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        .d_overview th, .d_overview td {
+            text-align: left;
+            padding: 0 10px;
+        }
+        .d_overview tr:not(:last-child) {
+            border-bottom: 1px solid black;
+        }
+        .d_overview th:first-child,
+        .d_overview td:first-child {
+            padding-left: 0;
+        }
+        .d_overview th:last-child,
+        .d_overview td:last-child {
+            padding-right: 0;
+        }
+
+        .d_data th {
+            text-align: left;
+        }
+
+        .d_data td, .d_data th {
+            border: 1px double black;
+            padding: 3px;
+        }
+
+        .d_data td:last-child, .d_data th:last-child {
+        text-align: right;
+        }
+
+        .label {
+            font-weight: 600;
+        }
     }
 </style>
 <div id="diaryTemplate">
     <div id="d_title">TCIs in date range <?= \CHtml::encode($_POST['date-start']) ?>
         to <?= \CHtml::encode($_POST['date-end']) ?></div>
-    <table width="100%">
+    <table class='d_data' width="100%">
         <tr>
             <th><?= PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $institution_id, $site_id) ?></th>
             <th>Patient name</th>

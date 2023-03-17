@@ -754,9 +754,9 @@ class OphCoCorrespondence_API extends BaseAPI
      * @param User|null $user
      * @param Firm|null $firm
      * @param User|null $consultant
-     * @return string
+     * @return string|null
      */
-    public function getFooterText(\User $user = null, \Firm $firm = null, \User $consultant = null)
+    public function getFooterText(\User $user = null, \Firm $firm = null, \User $consultant = null) : ?string
     {
         $user = $user ? $user : \User::model()->findByPk(\Yii::app()->session['user']['id']);
         $firm = $firm ? $firm : \Firm::model()->with('serviceSubspecialtyAssignment')->findByPk(\Yii::app()->session['selected_firm_id']);

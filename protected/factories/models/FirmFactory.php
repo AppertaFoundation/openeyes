@@ -18,6 +18,18 @@ class FirmFactory extends ModelFactory
         ];
     }
 
+    /**
+     * @param User|UserFactory|int|string|null $user
+     * @return self
+     */
+    public function withConsultant($user = null): self
+    {
+        $user ??= \User::factory()->withContact()->create();
+        return $this->state([
+            'consultant_id' => $user
+        ]);
+    }
+
     public function withNewSubspecialty()
     {
         return $this->state([

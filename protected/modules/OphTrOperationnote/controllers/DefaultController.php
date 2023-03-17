@@ -1657,7 +1657,7 @@ class DefaultController extends BaseEventTypeController
         }
 
         // assign
-        $this->open_elements = $this->buildEventElements($data, $elements);
+        $this->open_elements = $elements;
 
         // validate
         foreach ($this->open_elements as $element) {

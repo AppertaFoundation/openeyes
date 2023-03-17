@@ -55,11 +55,7 @@ class AnyTypePatientSearchHelper implements PatientSearchHelperInterface
         $valid_types = [];
 
         foreach ($this->getTypes() as $type) {
-            $matches = [];
-            $padded_term = sprintf($type->pad ?: '%s', $search_terms['term']);
-            preg_match($type->validate_regex, $padded_term, $matches);
-
-            $match = $matches[0] ?? null;
+            $match = PatientIdentifierHelper::getPaddedTermRegexResult($search_terms['term'], $type->validate_regex, $type->pad);
 
             if ($match) {
                 $valid_types[] = [
