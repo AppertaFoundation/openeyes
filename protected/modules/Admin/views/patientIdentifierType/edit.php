@@ -115,7 +115,7 @@
                         $pas_api_json =  $pas_api ? (is_array($pas_api) ? json_encode($pas_api) : $pas_api ) : '';
                         echo \CHtml::textArea('PatientIdentifierType[pas_api]', $pas_api_json, [
                             'class' => 'cols-full autosize',
-                            'rows' => 18
+                            'rows' => 10
                         ]);
                         ?>
                 <button id="json-beautify" type="button" class="btn">Beautify JSON</button>
@@ -172,14 +172,13 @@
     }
 
     function beautifyJSON() {
-        const value = document.getElementById('PatientIdentifierType_pas_api').value;
+        const ta = document.getElementById("PatientIdentifierType_pas_api");
+        const value = ta.value;
 
         if (value) {
             // using JSON.stringify pretty print capability:
             var str = JSON.stringify(JSON.parse(value), null, 4);
-
-            // display pretty printed object in text area:
-            document.getElementById('PatientIdentifierType_pas_api').value = str;
+            ta.value = str;
         }
     }
 
@@ -210,11 +209,10 @@
             const json_string = '{"enabled":false,"class":"DefaultPas","search_params":["hos_num","nhs_num","first_name","last_name","maiden_name"],"allowed_params":[],"url":"http://localhost","curl_timeout":10,"proxy":false,"cache_time":300}';
             new OpenEyes.UI.Dialog({
                 title: 'PAS Config template',
-                content: $('<textarea>', {value: JSON.stringify(JSON.parse(json_string), null, 4), "class":"cols-full", rows:18}),
+                content: $('<textarea>', {value: JSON.stringify(JSON.parse(json_string), null, 4), "class":"cols-full autosize"}),
                 dialogClass: 'js-pas-config-template',
             }).open();
-        });
-
-
+            autosize();
+        });        
     });
 </script>

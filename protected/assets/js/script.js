@@ -368,6 +368,8 @@ $(document).ready(function () {
 			$('#notification-full').toggle();
 		}
 	}());
+
+	autosize();
 });
 
 function showLoginOverlay() {
@@ -931,4 +933,57 @@ function eSignDevicePopup() {
 		url: "/site/esignDevicePopup",
 	});
 	dlg.open();
+}
+
+/**
+ * Resize an element based on the height of its content.
+ */
+function setHeightToContent(element) {
+	if (element.clientHeight > 0) {
+		element.style.height = '5px';
+		element.style.height = `${element.scrollHeight}px`;
+
+		// handle minimum height -specified by rows
+		if (element.hasAttribute('rows')) {
+			const rows = parseInt(element.getAttribute('rows'), 10);
+			const lineHeight = parseFloat(getComputedStyle(element).lineHeight);
+
+			const minHeight = rows * lineHeight;
+			element.style.height = `${Math.max(minHeight, element.scrollHeight)}px`;
+		}
+	}
+};
+
+/**
+ * Automatically resize any textareas with the autosize class. Including dynamic resizing during typing.
+ */
+function autosize() {
+	// select all textarea elements with the class 'autosize'
+	const textareas = document.querySelectorAll('textarea.autosize');
+
+	// sets the height of any textareas that are not currently visible but become visible later
+	const observer = new IntersectionObserver(entries => {
+		entries.forEach(entry => {
+			if (entry.isIntersecting) {
+				setHeightToContent(entry.target);
+			}
+		});
+	});
+
+	textareas.forEach(textarea => {
+		setHeightToContent(textarea);
+	});
+
+	// add an event listener for all the textareas
+	document.addEventListener('input', event => {
+		const target = event.target;
+		if (target.matches('.autosize')) {
+			setHeightToContent(target);
+		}
+	});
+
+	// observe for the text area becoming visible
+	textareas.forEach(textarea => {
+		observer.observe(textarea);
+	});
 }

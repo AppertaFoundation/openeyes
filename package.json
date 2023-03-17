@@ -9,7 +9,6 @@
   },
   "dependencies": {
     "@nesk/puphpeteer": "^2.0.0",
-    "autosize": "^4.0.0",
     "cropper": "^2.3.4",
     "fabric": "^3.6.6",
     "jspdf": "2.5.1",

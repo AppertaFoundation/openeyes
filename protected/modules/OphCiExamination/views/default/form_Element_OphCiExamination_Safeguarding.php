@@ -289,9 +289,6 @@ $patient_is_minor = $patient->isChild();
                 }
             })
             
-            $(this).on('click', '.js-add-comments', function () {
-                autosize($('.js-comment-field'));
-            });
         });
     </script>
 <?php } ?>
