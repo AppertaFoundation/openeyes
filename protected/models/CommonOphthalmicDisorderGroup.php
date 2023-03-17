@@ -27,6 +27,7 @@ use OE\factories\models\traits\HasFactory;
  * @property string $name
  * @property int $display_order
  * @property int $institution
+ * @property int $subspecialty_id
  */
 class CommonOphthalmicDisorderGroup extends BaseActiveRecordVersioned
 {
@@ -35,7 +36,7 @@ class CommonOphthalmicDisorderGroup extends BaseActiveRecordVersioned
 
     protected function getSupportedLevels(): int
     {
-        return ReferenceData::LEVEL_INSTITUTION;
+        return ReferenceData::LEVEL_INSTALLATION | ReferenceData::LEVEL_INSTITUTION;
     }
 
     protected function mappingColumn(int $level): string
@@ -65,6 +66,7 @@ class CommonOphthalmicDisorderGroup extends BaseActiveRecordVersioned
         // class name for the relations automatically generated below.
         return array(
             'institutions' => array(self::MANY_MANY, 'Institution', $this->tableName().'_institution('.$this->tableName().'_id, institution_id)'),
+            'subspecialty' => array(self::BELONGS_TO, 'Subspecialty', 'subspecialty_id'),
         );
     }
 

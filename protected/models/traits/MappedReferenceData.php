@@ -159,7 +159,7 @@ trait MappedReferenceData
      */
     public function getCriteriaForLevels(
         int $level_mask,
-        $criteria = null,
+            $criteria = null,
         ?Institution $institution = null,
         bool $anyLevel = true
     ): CDbCriteria {

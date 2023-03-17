@@ -44,7 +44,7 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 
     protected function getSupportedLevels(): int
     {
-        return ReferenceData::LEVEL_INSTITUTION;
+        return ReferenceData::LEVEL_INSTITUTION | ReferenceData::LEVEL_INSTALLATION;
     }
 
     protected function mappingColumn(int $level): string

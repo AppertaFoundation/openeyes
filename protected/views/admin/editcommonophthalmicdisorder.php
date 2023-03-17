@@ -28,12 +28,14 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
             <col class="cols-4">
         </colgroup>
         <tbody>
-        <tr class="col-gap">            
+        <tr class="col-gap">
             <td>&nbsp;<br/><?=\CHtml::dropDownList(
                     'institution_id',
                     $current_institution_id,
-                    Institution::model()->getTenantedList(!Yii::app()->user->checkAccess('admin'))
-                ) ?></td>
+                    Institution::model()->getTenantedList(!Yii::app()->user->checkAccess('admin')),
+                    ['empty' => 'All Institutions']
+                ) ?>
+            </td>
             <td>
                 <small>Subspeciality</small><br/>
                 <?=\CHtml::dropDownList(
@@ -85,8 +87,11 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
             'header' => 'Group',
             'name' => 'group.name',
             'type' => 'raw',
-            'value' => function ($data, $row) use ($current_institution) {
-                $options = CHtml::listData(CommonOphthalmicDisorderGroup::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION, null, $current_institution), 'id', 'name');
+            'value' => function ($data, $row) use ($current_institution, $subspecialty_id) {
+                $criteria = new CDbCriteria();
+                $criteria->addCondition('subspecialty_id IS NULL OR subspecialty_id = :subspecialty_id');
+                $criteria->params[':subspecialty_id'] = $subspecialty_id;
+                $options = CHtml::listData(CommonOphthalmicDisorderGroup::model()->findAllAtLevels($current_institution ? ReferenceData::LEVEL_INSTITUTION : ReferenceData::LEVEL_ALL, $criteria, $current_institution), 'id', 'name');
                 return CHtml::activeDropDownList($data, "[$row]group_id", $options, array('empty' => '-- select --'));
             }
         ),
@@ -104,7 +109,7 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
                 $remove_a = CHtml::tag(
                     'a',
                     array('href' => 'javascript:void(0)', 'class' => 'finding-rename'),
-                    Chtml::tag('i', array('class' => 'oe-i remove-circle small', 'aria-hidden' => "true", 'title' => "Change finding"), null)
+                    CHtml::tag('i', array('class' => 'oe-i remove-circle small', 'aria-hidden' => "true", 'title' => "Change finding"), null)
                 );
 
                 $name_span = CHtml::tag('span', array('class' => 'finding-name name'), $finding_data['name']);
@@ -140,7 +145,7 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
                 $remove_a = CHtml::tag(
                     'a',
                     array('href' => 'javascript:void(0)', 'class' => 'alternate-disorder-rename'),
-                    Chtml::tag('i', array('class' => 'oe-i remove-circle small', 'aria-hidden' => "true", 'title' => "Change disorder"), null)
+                    CHtml::tag('i', array('class' => 'oe-i remove-circle small', 'aria-hidden' => "true", 'title' => "Change disorder"), null)
                 );
 
                 $name_span = CHtml::tag('span', array('class' => 'alternate-disorder-name name'), $alternate_disorder_data['name']);
@@ -170,6 +175,22 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
             'type' => 'raw',
             'value' => function ($data, $row) {
                 return CHtml::activeTextField($data, "[$row]alternate_disorder_label");
+            }
+        ),
+        array(
+            'header' => 'Institution',
+            'type' => 'raw',
+            'htmlOptions' => array('width' => '150px'),
+            'value' => function ($data, $row) use ($current_institution) {
+                $common_ophthalmic_disorder_group_institution = CommonOphthalmicDisorder_Institution::model()->find('common_ophthalmic_disorder_id = :id',
+                    [':id' => $data->id]);
+
+                if ($common_ophthalmic_disorder_group_institution) {
+                    $institution = Institution::model()->findByPk($common_ophthalmic_disorder_group_institution->institution_id);
+                    return $institution->name;
+                } else {
+                    return '-';
+                }
             }
         ),
         array(
@@ -435,6 +456,8 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
         <td>
             <input name="CommonOphthalmicDisorder[{{row_count}}][alternate_disorder_label]"
                    id="CommonOphthalmicDisorder_{{row_count}}_alternate_disorder_label" type="text" value="">
+        </td>
+        <td width="150px">
         </td>
         <td>
             <button type="button"><a href="javascript:void(0)" class="delete">delete</a></button>
