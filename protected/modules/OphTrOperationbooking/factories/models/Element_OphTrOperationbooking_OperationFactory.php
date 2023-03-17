@@ -52,15 +52,17 @@ class Element_OphTrOperationbooking_OperationFactory extends ModelFactory
         });
     }
 
-    public function withSingleEye(): self {
+    public function withSingleEye(): self
+    {
         return $this->state([
             'eye_id' => $this->faker->randomElement([\Eye::LEFT, \Eye::RIGHT])
         ]);
     }
 
-    public function withRequiresScheduling(): self {
+    public function withRequiresScheduling(): self
+    {
         return $this->state([
-            'status_id' => \OphTrOperationbooking_Operation_Status::model()->findByAttributes(['name' => 'Requires scheduling'])->id
+            'status_id' => \OphTrOperationbooking_Operation_Status::factory()->useExisting(['name' => 'Requires scheduling'])
         ]);
     }
 }

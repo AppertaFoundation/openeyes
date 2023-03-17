@@ -16,6 +16,7 @@
 
 namespace OEModule\OphCiExamination\tests\unit\widgets;
 
+use OE\factories\models\EventFactory;
 use OEModule\OphCiExamination\components\OphCiExamination_API;
 use OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity;
 use OEModule\OphCiExamination\tests\traits\InteractsWithVisualAcuity;
@@ -86,10 +87,11 @@ class OphCiExamination_Episode_VisualAcuityHistoryTest extends \OEDbTestCase
     /** @test */
     public function plotly_data_returns_best_values_for_elements()
     {
-        $patient = $this->generateSavedPatientWithEpisode();
-        $event = $this->getEventToSaveWith($patient, [
-            'event_date' => $this->faker->dateTimeBetween('-3 years')->format('Y-m-d')
-        ]);
+        $event = EventFactory::forModule('OphCiExamination')
+            ->create([
+                'event_date' => $this->faker->dateTimeBetween('-3 years')->format('Y-m-d')
+            ]);
+        $patient = $event->episode->patient;
 
         $va = $this->generateVisualAcuityElementWithReadings(2, 2, 2, true);
         $va->event_id = $event->id;

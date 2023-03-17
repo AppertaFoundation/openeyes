@@ -17,6 +17,7 @@ namespace OE\factories\models;
 
 use InstitutionAuthentication;
 use OE\factories\ModelFactory;
+use OEModule\OphCiExamination\models\OphCiExaminationAllergyReaction;
 use UserAuthentication;
 
 class UserFactory extends ModelFactory
@@ -74,4 +75,14 @@ class UserFactory extends ModelFactory
             ]);
         });
     }
+
+
+    public function withContact($attributes = []):self {
+        return $this->state(function () use ($attributes){
+            return [
+                'contact_id' => \Contact::factory()->create($attributes)
+            ];
+        });
+    }
+
 }

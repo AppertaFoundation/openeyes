@@ -24,9 +24,13 @@
  * @property Event $event
  * @property OphCoCorrespondence_Signature[] $signatures
  */
+use \OE\factories\models\traits\HasFactory;
+
 class Element_OphCoCorrespondence_Esign extends BaseEsignElement
 {
     use AutoSignTrait;
+    use HasFactory;
+
     private $signature_class = \OphCoCorrespondence_Signature::class;
     private $pin_required_setting_name = 'require_pin_for_correspondence';
     private $auto_sign_role = self::PRIMARY_ROLE;

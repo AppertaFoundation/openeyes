@@ -102,6 +102,7 @@ var docman = (function() {
         addRemoveHandler: function(){
             $('#docman_block').on("click", '.remove_recipient', function(event)
             {
+                $('body').find(".oe-tooltip").remove();
                 event.target.closest('tr').remove();
             });
         },
