@@ -1,5 +1,4 @@
 <?php
-
 /**
  * OpenEyes.
  *
@@ -16,6 +15,8 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+use OE\factories\models\traits\HasFactory;
 
 /**
  * This is the model class for table "et_ophtroperationnote_anaesthetic".
@@ -42,6 +43,8 @@
  */
 class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
 {
+    use HasFactory;
+
     public $service;
     public $surgeonlist;
     public $anaesthetic_types = array();
