@@ -48,4 +48,16 @@ trait HasEventTypeElementStates
             ];
         });
     }
+
+    public function forFirm($firm)
+    {
+        return $this->state(function (array $attributes) use ($firm) {
+            if ($attributes['event_id'] instanceof ModelFactory) {
+                $attributes['event_id'] = $attributes['event_id']->forFirm($firm);
+            } else {
+                $attributes['event_id']->episode->firm_id = $firm->id;
+            }
+            return $attributes;
+        });
+    }
 }

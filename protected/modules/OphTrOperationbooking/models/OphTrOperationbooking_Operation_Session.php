@@ -1,5 +1,4 @@
 <?php
-
 /**
  * OpenEyes.
  *
@@ -15,6 +14,8 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+use OE\factories\models\traits\HasFactory;
 
 /**
  * This is the model class for table "ophtroperationbooking_operation_session".
@@ -44,6 +45,8 @@
  */
 class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     public static $DEFAULT_UNAVAILABLE_REASON = 'This session is unavailable at this time';
     public static $TOO_MANY_PROCEDURES_REASON = 'This operation has too many procedures for this session';
 
@@ -162,7 +165,7 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
             ),
         );
 
-        if ((int)$ward_id != 'All') {
+        if ($ward_id && $ward_id != 'All') {
             $criteria['condition'] = 'ward.id = :ward_id';
             $criteria['params'][':ward_id'] = (int)$ward_id;
         }

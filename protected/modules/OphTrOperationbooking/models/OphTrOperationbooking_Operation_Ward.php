@@ -16,6 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "ophtroperationbooking_operation_ward".
  *
@@ -36,6 +38,8 @@
  */
 class OphTrOperationbooking_Operation_Ward extends BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     const RESTRICTION_MALE = 1;
     const RESTRICTION_FEMALE = 2;
     const RESTRICTION_CHILD = 4;

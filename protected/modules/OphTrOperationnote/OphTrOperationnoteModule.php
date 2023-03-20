@@ -28,6 +28,7 @@ class OphTrOperationnoteModule extends BaseEventTypeModule
             'OphTrOperationnote.views.*',
             'OphTrOperationnote.components.*',
             'OphTrOperationnote.controllers.*',
+            'OphTrOperationnote.factories.*'
         ));
         parent::init();
     }
