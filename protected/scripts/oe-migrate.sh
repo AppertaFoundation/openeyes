@@ -82,11 +82,7 @@ fi
 
 founderrors=0
 
-if ! eval "php $WROOT/protected/yiic migrate --interactive=0 $outputredirectnew"; then
-	founderrors=1
-fi
-
-if [ $founderrors -ne 1 ] && ! eval "php $WROOT/protected/yiic migratemodules --interactive=0 $outputredirectappend"; then
+if ! eval "php $WROOT/protected/yiic migrate --all --interactive=0 $outputredirectnew"; then
 	founderrors=1
 fi
 

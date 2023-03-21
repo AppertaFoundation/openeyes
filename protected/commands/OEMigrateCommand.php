@@ -19,6 +19,8 @@ class OEMigrateCommand extends MigrateCommand
 {
     public $testdata = false;
 
+    public $all = false;
+
     protected function instantiateMigration($class)
     {
         $migration = parent::instantiateMigration($class);
@@ -28,5 +30,95 @@ class OEMigrateCommand extends MigrateCommand
         }
 
         return $migration;
+    }
+
+    protected function getNewMigrations()
+	{
+        if (!$this->all) {
+            return parent::getNewMigrations();
+        }
+
+        $new_migrations = [];
+        foreach ($this->getMigrationPaths() as $path) {
+            $new_migrations = array_merge($new_migrations, $this->getNewMigrationsForPath($path));
+        }
+
+        usort($new_migrations, function ($a, $b) {
+            return ($a->migration < $b->migration) ? -1 : 1;
+        });
+
+		return $new_migrations;
+	}
+
+    protected function migrateUp($migration)
+    {
+        if (property_exists($migration, 'path')) {
+            $this->migrationPath = $migration->path;
+            return parent::migrateUp($migration->migration);
+        }
+
+        return parent::migrateUp($migration);
+    }
+
+    /**
+     * Uses the application module configuration to provide a list of all migration paths
+     * that are relevant for searching through for new migrations.
+     *
+     * @return array
+     */
+    protected function getMigrationPaths(): array
+    {
+        $modules = array_keys(\Yii::app()->modules);
+        return array_merge(
+            [\Yii::getPathOfAlias('application.migrations')],
+            array_filter(
+                array_map(
+                    function ($module) {
+                        return \Yii::getPathOfAlias('application.modules.' . $module . '.migrations');
+                    },
+                    $modules
+                ),
+                function ($path) {
+                    return (is_dir($path));
+                }
+            )
+        );
+    }
+
+    protected function getNewMigrationsForPath(string $path): array
+    {
+        // we leverage parent behaviour which relies on the migrationPath property
+        $this->migrationPath = $path;
+
+        return array_map(
+            function ($migration) use ($path) {
+                return new class ($path, $migration) {
+                    public string $path;
+                    public string $migration;
+
+                    public function __construct($path, $migration)
+                    {
+                        $this->path = $path;
+                        $this->migration = $migration;
+                    }
+
+                    public function __toString()
+                    {
+                        return $this->path . "/" . $this->migration;
+                    }
+                };
+            },
+            parent::getNewMigrations()
+        );
+    }
+
+    public function getHelp()
+    {
+        return parent::getHelp() . <<<EOD
+
+ * yiic migrate --all
+   The all option will override the migrationPath option and search for migrations from core and across all modules
+   These will be sorted to run in date order (as defined by the timestamp prefix of the migration filenames)
+EOD;
     }
 }
