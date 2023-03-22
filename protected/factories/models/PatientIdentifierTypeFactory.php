@@ -34,8 +34,18 @@ class PatientIdentifierTypeFactory extends ModelFactory
             'short_title' => $this->faker->words(3, true),
             'long_title' => $this->faker->words(5, true),
             'institution_id' => Institution::factory()->useExisting(),
-            'site_id' => Site::factory()->useExisting(),
+            'site_id' => function ($attributes) {
+                return Site::factory()->useExisting(['institution_id' => $attributes['institution_id']]);
+            },
             'unique_row_string' => $this->faker->words(5, true),
+            'validate_regex' => '/^\d*$/'
         ];
+    }
+
+    public function local(): self
+    {
+        return $this->state([
+            'usage_type' => PatientIdentifierType::LOCAL_USAGE_TYPE
+        ]);
     }
 }
