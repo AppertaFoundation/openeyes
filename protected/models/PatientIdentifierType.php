@@ -262,10 +262,11 @@ class PatientIdentifierType extends BaseActiveRecordVersioned
         $primary_identifier = PatientIdentifierHelper::getMaxIdentifier($type_id);
         if (!is_null($primary_identifier)) {
             $primary_identifier_value = PatientIdentifierHelper::getIdentifierValue($primary_identifier);
-            if ((int) $primary_identifier_value < $auto_increment_start) {
+            $primary_identifier_value = preg_replace('/[^0-9]+/', '', $primary_identifier_value);
+            if ($primary_identifier_value < $auto_increment_start) {
                 return $auto_increment_start;
             } else {
-                return ((int) $primary_identifier_value + 1);
+                return ($primary_identifier_value + 1);
             }
         }
         return 0;

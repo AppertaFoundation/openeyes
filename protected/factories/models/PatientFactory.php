@@ -4,6 +4,8 @@ namespace OE\factories\models;
 
 use Contact;
 use OE\factories\ModelFactory;
+use Patient;
+use PatientIdentifier;
 
 class PatientFactory extends ModelFactory
 {
@@ -28,21 +30,29 @@ class PatientFactory extends ModelFactory
         ];
     }
 
-    public function configure()
+    public function create($attributes = [])
     {
-        return $this->afterCreating(function ($instance) {
-            $instance->identifiers = [
-                ModelFactory::factoryFor(\PatientIdentifier::class)
-                    ->nhsNumber()
+        // ensure this is the last after creating call so behaviour only invoked if
+        // no state has been applied to make it unnecessary
+        $this->afterCreating(function (Patient $instance) {
+            if (!$instance->identifiers) {
+                $this->generateDefaultIdentifiersFor($instance);
+            }
+        });
+
+        return parent::create($attributes);
+    }
+
+    public function withIdentifierType($patient_identifier_type, $value = null): self
+    {
+        return $this->afterCreating(function (Patient $patient) use ($patient_identifier_type, $value) {
+            $patient->identifiers = [
+                PatientIdentifier::factory()
                     ->create([
-                        'patient_id' => $instance->id
-                    ]),
-                ModelFactory::factoryFor(\PatientIdentifier::class)
-                    ->localId()
-                    ->create([
-                        'patient_id' => $instance->id
+                        'patient_identifier_type_id' => $patient_identifier_type,
+                        'value' => $value ?? $this->faker->numerify('#######')
                     ])
-            ];
+                ];
         });
     }
 
@@ -76,19 +86,19 @@ class PatientFactory extends ModelFactory
         });
     }
 
-    public function usable()
+    protected function generateDefaultIdentifiersFor(Patient $patient): void
     {
-        return $this->afterCreating(function (\Patient $patient) {
-            ModelFactory::factoryFor(\PatientIdentifier::class)
+        $patient->identifiers = [
+            PatientIdentifier::factory()
                 ->nhsNumber()
                 ->create([
-                    'patient_id' => $patient->getPrimaryKey()
-                ]);
-            ModelFactory::factoryFor(\PatientIdentifier::class)
+                    'patient_id' => $patient
+                ]),
+                PatientIdentifier::factory()
                 ->localId()
                 ->create([
-                    'patient_id' => $patient->getPrimaryKey()
-                ]);
-        });
+                    'patient_id' => $patient
+                ])
+        ];
     }
 }
