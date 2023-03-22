@@ -43,7 +43,7 @@ return array(
     'patient4ID' => array(
         'patient_id' => $this->getRecord('patient', 'patient4')->id,
         'patient_identifier_type_id' => $this->getRecord('patient_identifier_type', 'ID')->id,
-        'value' => '34321',
+        'value' => 34321,
         'unique_row_string' => "34321-1-ACTIVE",
     ),
     'patient4NHS' => array(
