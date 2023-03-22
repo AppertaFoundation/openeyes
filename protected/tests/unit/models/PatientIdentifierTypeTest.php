@@ -15,53 +15,38 @@
  */
 
 /**
- * Class PatientIdentifierTypeTest
- *
- * @method patient_identifier_type($fixtureId)
- * @method patient_identifier_type_display_order($fixtureId)
+ * @group sample-data
+ * @group patient-identifier-type
  */
-class PatientIdentifierTypeTest extends ActiveRecordTestCase
+class PatientIdentifierTypeTest extends ModelTestCase
 {
-    public PatientIdentifierType $model;
-    public $fixtures = array(
-        'patient_identifier_type' => PatientIdentifierType::class,
-        'patient' => Patient::class,
-        'patient_identifier' => PatientIdentifier::class,
-        'patient_identifier_type_display_order' => PatientIdentifierTypeDisplayOrder::class,
-    );
-
-    public function getModel()
-    {
-        return $this->model;
-    }
-
-    /**
-     * Sets up the fixture, for example, opens a network connection.
-     * This method is called before a test is executed.
-     */
-    public function setUp(): void
-    {
-        parent::setUp();
-        $this->model = new PatientIdentifierType();
-    }
-
-    /**
-     * @covers PatientIdentifierType
-     *
-     */
-    public function testModel()
-    {
-        $this->assertEquals('PatientIdentifierType', get_class(PatientIdentifierType::model()), 'Class name should match model.');
-    }
+    protected $element_cls = PatientIdentifierType::class;
 
     /**
      * @covers PatientIdentifierType
      */
     public function testGetNextValueForIdentifierType_IncrementsCurrentHighestValueForIdentifierType()
     {
-        $patient_identifier_type_display_order = $this->patient_identifier_type_display_order('patient_identifier_type_display_order_1');
-        $value = $this->patient_identifier_type('ID')->getNextValueForIdentifierType($patient_identifier_type_display_order->patient_identifier_type_id, $patient_identifier_type_display_order->auto_increment_start);
-        // The expected value is the highest value from the patient_identifier fixture after adding one to it.
-        $this->assertEquals(5550103, $value);
+        $patients = Patient::factory()
+            ->count(5)
+            ->create();
+
+        $patient_identifier_type_id = PatientIdentifierType::model()->findByAttributes(['short_title' => 'ID']);
+
+        $primary_identifier = PatientIdentifierHelper::getMaxIdentifier($patient_identifier_type_id->id);
+
+        // subtracting some value from the max value and setting that as the auto increment start value
+        $auto_increment_start_value = (int)$primary_identifier->value - 4 ;
+
+        $patient_identifier_type_display_order = PatientIdentifierTypeDisplayOrder::factory()
+            ->create([
+                'patient_identifier_type_id' => $patient_identifier_type_id->id,
+                'auto_increment_start' => $auto_increment_start_value
+                ]);
+
+        $patient_identifier_type_next_value = PatientIdentifierType::getNextValueForIdentifierType($patient_identifier_type_id->id, $patient_identifier_type_display_order->auto_increment_start);
+
+        // The expected value is the highest value from  after adding one to it.
+        $this->assertEquals($patient_identifier_type_next_value,  (int)$primary_identifier->value + 1);
     }
 }
