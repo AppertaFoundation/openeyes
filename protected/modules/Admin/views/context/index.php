@@ -73,7 +73,7 @@
                     <td><input type="checkbox" name="firms[]" value="<?=$firm->id ?>"/></td>
                     <td><?=$firm->id ?></td>
                     <td><?=$firm->pas_code ?></td>
-                    <td><?=$firm->name ?></td>
+                    <td data-test="firm-name"><?=$firm->name ?></td>
                     <td><?=$firm->institution->name ?></td>
                     <td><?=($firm->serviceSubspecialtyAssignment) ?
                             $firm->serviceSubspecialtyAssignment->subspecialty->name : 'None' ?></td>

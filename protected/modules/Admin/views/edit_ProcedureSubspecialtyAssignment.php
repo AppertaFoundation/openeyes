@@ -72,7 +72,8 @@ $cols_size = (int)$subspecialty_id === 4 && $enable_eur === 'on' ? 'cols-9' : 'c
                         return CHtml::dropDownList(
                             (get_class($data) . "[$row][procedure_id]"),
                             $data->procedure->id,
-                            CHtml::listData($procedure_list, 'id', 'term')
+                            CHtml::listData($procedure_list, 'id', 'term'),
+                            ['data-test' => 'procedure-name']
                         );
                     }
                     ],

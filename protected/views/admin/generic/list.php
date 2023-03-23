@@ -98,7 +98,7 @@ if (!isset($uniqueid)) {
                         <?php foreach ($admin->getListFields() as $listItem) :
                             if ($listItem !== 'attribute_elements.id') :
                                 ?>
-                                <td>
+                                <td data-test="<?= $listItem ?>">
                                     <?php
                                     $attr_val = $admin->attributeValue($row, $listItem);
                                     if (gettype($attr_val) === 'boolean') :

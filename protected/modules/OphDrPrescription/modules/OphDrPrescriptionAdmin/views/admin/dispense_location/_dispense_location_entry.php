@@ -11,7 +11,7 @@
         <?= CHtml::hiddenField(CHtml::modelName($model) . "[display_order][]", $data_id) ?>
         <?= CHtml::hiddenField(CHtml::modelName($model) . "[id][]", $data_id) ?>
     </td>
-    <td><?= $name ?></td>
+    <td data-test="dispense-location-name"><?= $name ?></td>
     <td><?= $display_order ?></td>
     <td><i class="oe-i <?= ($is_active ? 'tick' : 'remove') ?> small"></i></td>
 </tr>

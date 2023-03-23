@@ -65,7 +65,7 @@ if ($this->checkAccess('admin')) {
             'header' => 'Disorder',
             'name' => 'disorder.term',
             'type' => 'raw',
-            'htmlOptions' => array('width' => '180px'),
+            'htmlOptions' => array('width' => '180px', 'data-test' => 'disorder-term'),
             'value' => function ($data, $row) {
                 $term = null;
                 $row++;

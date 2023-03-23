@@ -1,7 +1,7 @@
 <?php
 
 /**
- * (C) Copyright Apperta Foundation 2021
+ * (C) Copyright Apperta Foundation 2023
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -16,35 +16,25 @@
 
 namespace OE\factories\models;
 
+use CommonOphthalmicDisorder;
+use Disorder;
+use Finding;
 use OE\factories\ModelFactory;
-use OE\factories\models\traits\LooksUpExistingModels;
-use CommonSystemicDisorderGroup;
-use ReferenceData;
 
-class CommonSystemicDisorderGroupFactory extends ModelFactory
+class SecondaryToCommonOphthalmicDisorderFactory extends ModelFactory
 {
-    use LooksUpExistingModels;
-
     public function definition(): array
     {
         return [
-            'name' => $this->faker->words(4, true)
+            'disorder_id' => Disorder::factory(),
+            'parent_id' => CommonOphthalmicDisorder::factory()->useExisting(),
+            'letter_macro_text' => $this->faker->words(10, true),
         ];
     }
 
-    public function withInstitution($institution_id)
-    {
-        return $this->afterCreating(function (CommonSystemicDisorderGroup $disorderGroup) use ($institution_id) {
-            $disorderGroup->createMapping(ReferenceData::LEVEL_INSTITUTION, $institution_id);
-        });
-    }
-
-    public function forDisplayOrder($display_order)
-    {
-        return $this->state(function () use ($display_order) {
-            return [
-                'display_order' => $display_order
-            ];
-        });
+    public function withFinding(): self {
+        return $this->state([
+            'finding_id' => Finding::factory()->useExisting()
+        ]);
     }
 }

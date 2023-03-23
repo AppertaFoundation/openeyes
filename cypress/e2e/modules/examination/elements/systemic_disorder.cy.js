@@ -9,12 +9,12 @@ describe('systemic disorder widget behaviour', () => {
         cy.login()
             .then((context) => {
                 cy.createModels('CommonSystemicDisorder', [
-                        ['forInstitution', context.body.institution_id], 
+                        ['withInstitution', context.body.institution_id], 
                         ['forDisplayOrder', 2], 
                         ['forKnownDisorderTerm', expectedDisorderTerm1]
                     ]);
                 cy.createModels('CommonSystemicDisorder', [
-                        ['forInstitution', context.body.institution_id], 
+                        ['withInstitution', context.body.institution_id], 
                         ['forDisplayOrder', 1],
                         ['forKnownDisorderTerm', expectedDisorderTerm2]
                     ]);                

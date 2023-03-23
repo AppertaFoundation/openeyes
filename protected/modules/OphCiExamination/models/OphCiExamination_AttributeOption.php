@@ -19,6 +19,8 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "ophciexamination_attribute_option".
  *
@@ -30,6 +32,8 @@ namespace OEModule\OphCiExamination\models;
  */
 class OphCiExamination_AttributeOption extends \BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     const SELECTION_LABEL_FIELD = 'value';
     protected $auto_update_relations = true;
 

@@ -81,7 +81,7 @@ if ($this->checkAccess('admin')) {
                 'type' => 'raw',
                 'htmlOptions' => array('width' => '420px'),
                 'value' => function ($data, $row) {
-                    return CHtml::textField("CommonSystemicDisorderGroup[$row][name]", $data->name, array('style' => 'width:400px'));
+                    return CHtml::textField("CommonSystemicDisorderGroup[$row][name]", $data->name, array('style' => 'width:400px', 'data-test' => 'group-name'));
                 }
             ),
             array(

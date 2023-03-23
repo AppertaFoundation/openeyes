@@ -51,7 +51,7 @@
                     <td><?php echo $model->subspecialty ? $model->subspecialty->name : 'All' ?></td>
                     <td><?php echo $model->firm ? $model->firm->name : 'All' ?></td>
                     <td><?php echo $model->episode_status ? $model->episode_status->name : 'All' ?></td>
-                    <td><?php echo $model->workflow->name ?></td>
+                    <td data-test="workflow-name"><?php echo $model->workflow->name ?></td>
                 </tr>
             <?php } ?>
             </tbody>

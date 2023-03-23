@@ -19,6 +19,8 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "ophciexamination_attribute_element".
  *
@@ -31,6 +33,8 @@ namespace OEModule\OphCiExamination\models;
  */
 class OphCiExamination_AttributeElement extends \BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     public const SELECTION_ORDER = 'element_type_id,attribute_id';
 
     /**

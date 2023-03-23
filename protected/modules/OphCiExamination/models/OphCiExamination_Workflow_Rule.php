@@ -19,6 +19,7 @@
 namespace OEModule\OphCiExamination\models;
 
 use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "ophciexamination_workflow_rule".
  *
@@ -31,6 +32,7 @@ use OE\factories\models\traits\HasFactory;
 class OphCiExamination_Workflow_Rule extends \BaseActiveRecordVersioned
 {
     use HasFactory;
+
     /**
      * Returns the static model of the specified AR class.
      *

@@ -65,7 +65,8 @@ $cols_size = 'cols-5';
                     'value' => function ($data, $row) use ($procedure_list) {
                         return CHtml::dropDownList((get_class($data) . "[$row][extra_proc_id]"),
                             $data->extra_proc_id,
-                            CHtml::listData($procedure_list, 'id', 'term')
+                            CHtml::listData($procedure_list, 'id', 'term'),
+                            ['data-test' => 'extra-procedure']
                         );
                     }
                 ],

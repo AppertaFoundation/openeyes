@@ -32,6 +32,7 @@ use OE\factories\models\traits\HasFactory;
 class OphCiExamination_ElementSet extends \BaseActiveRecordVersioned
 {
     use HasFactory;
+
     /**
      * Returns the static model of the specified AR class.
      *

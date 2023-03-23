@@ -1,7 +1,6 @@
 <?php
-
 /**
- * (C) Copyright Apperta Foundation 2021
+ * (C) Apperta Foundation, 2023
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -10,41 +9,23 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (C) 2021, Apperta Foundation
+ * @copyright Copyright (C) 2022, Apperta Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-namespace OE\factories\models;
+namespace OEModule\OphCiExamination\factories\models;
 
+use Institution;
 use OE\factories\ModelFactory;
-use OE\factories\models\traits\LooksUpExistingModels;
-use CommonSystemicDisorderGroup;
-use ReferenceData;
 
-class CommonSystemicDisorderGroupFactory extends ModelFactory
+class AdviceLeafletFactory extends ModelFactory
 {
-    use LooksUpExistingModels;
-
     public function definition(): array
     {
         return [
-            'name' => $this->faker->words(4, true)
+            'name' => $this->faker->words(10, true),
+            'institution_id' => Institution::factory()->useExisting(),
+            'active' => 1
         ];
-    }
-
-    public function withInstitution($institution_id)
-    {
-        return $this->afterCreating(function (CommonSystemicDisorderGroup $disorderGroup) use ($institution_id) {
-            $disorderGroup->createMapping(ReferenceData::LEVEL_INSTITUTION, $institution_id);
-        });
-    }
-
-    public function forDisplayOrder($display_order)
-    {
-        return $this->state(function () use ($display_order) {
-            return [
-                'display_order' => $display_order
-            ];
-        });
     }
 }

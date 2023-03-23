@@ -13,14 +13,14 @@ describe('ophthalmic disorder group behaviour', () => {
         cy.login()
             .then((context) => {
                 cy.createModels('CommonSystemicDisorderGroup', [
-                        ['forInstitution', context.body.institution_id],
+                        ['withInstitution', context.body.institution_id],
                         ['forDisplayOrder', 2]
                     ], 
                     {
                         name: groupName1
                     });
                 cy.createModels('CommonSystemicDisorderGroup', [
-                        ['forInstitution', context.body.institution_id],
+                        ['withInstitution', context.body.institution_id],
                         ['forDisplayOrder', 1]
                     ], 
                     {
@@ -33,17 +33,17 @@ describe('ophthalmic disorder group behaviour', () => {
                 
                 
                 cy.createModels('CommonSystemicDisorder', [
-                        ['forInstitution', context.body.institution_id],
+                        ['withInstitution', context.body.institution_id],
                         ['forKnownDisorderTerm', group1DisorderTerm],
                         ['forKnownGroupName', groupName1]
                     ]);
                 cy.createModels('CommonSystemicDisorder', [
-                        ['forInstitution', context.body.institution_id],
+                        ['withInstitution', context.body.institution_id],
                         ['forKnownDisorderTerm', group2DisorderTerm],
                         ['forKnownGroupName', groupName2]
                     ]);                
                 cy.createModels('CommonSystemicDisorder', [
-                        ['forInstitution', context.body.institution_id],
+                        ['withInstitution', context.body.institution_id],
                         ['forKnownDisorderTerm', noGroupDisorderTerm]
                     ]);
 

@@ -18,6 +18,7 @@
  */
 
 namespace OEModule\OphCiExamination\models;
+use OE\factories\models\traits\HasFactory;
 
 use ReferenceData;
 use OwnedByReferenceData;
@@ -35,6 +36,7 @@ use ElementType;
 class OphCiExamination_Attribute extends \BaseActiveRecordVersioned
 {
     use OwnedByReferenceData;
+    use HasFactory;
 
     protected $attribute_options = array();
 

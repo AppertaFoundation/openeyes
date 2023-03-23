@@ -1,6 +1,7 @@
 <?php
 /**
- * (C) Apperta Foundation, 2022
+
+ * (C) Apperta Foundation, 2023
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -22,23 +23,21 @@ use OEModule\OphCiExamination\models\OphCiExamination_Workflow;
 
 class OphCiExamination_ElementSetFactory extends ModelFactory
 {
-
     /**
-     *
      * @return array
      */
     public function definition(): array
     {
         return [
-            'name' => $this->faker->word(),
-            'workflow_id' => OphCiExamination_Workflow::factory()->useExisting()
+            'name' => $this->faker->words(3, true),
+            'workflow_id' => OphCiExamination_Workflow::factory(),
         ];
     }
 
-    /**
-     * @param OphCiExamination_Workflow|OphCiExamination_WorkflowFactory|int|string $workflow
-     * @return self
-     */
+        /**
+         * @param OphCiExamination_Workflow|OphCiExamination_WorkflowFactory|int|string $workflow
+         * @return self
+         */
     public function forWorkflow($workflow)
     {
         return $this->state([ 'workflow_id' => $workflow ]);

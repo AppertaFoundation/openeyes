@@ -54,7 +54,7 @@
     <button class="button hint green js-add-standard-set" type="button">
         Add template
     </button>
-    <button class="button hint green js-add-select-search" type="button" id="show-add-to-history">
+    <button class="button hint green js-add-select-search" type="button" id="show-add-to-history" data-test="add-to-history">
       <i class="oe-i plus pro-theme"></i>
     </button>
   </div>

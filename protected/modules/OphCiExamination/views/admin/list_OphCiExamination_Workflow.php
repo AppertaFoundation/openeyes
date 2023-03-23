@@ -46,7 +46,7 @@
                 <tr class="clickable" data-id="<?php echo $model->id ?>"
                     data-uri="OphCiExamination/admin/editWorkflow/<?php echo $model->id ?>">
                     <td><input type="checkbox" name="workflows[]" value="<?php echo $model->id ?>"/></td>
-                    <td>
+                    <td data-test="workflow-name">
                         <?php echo $model->name ?>
                     </td>
                 </tr>

@@ -159,7 +159,7 @@ trait MappedReferenceData
      */
     public function getCriteriaForLevels(
         int $level_mask,
-            $criteria = null,
+        $criteria = null,
         ?Institution $institution = null,
         bool $anyLevel = true
     ): CDbCriteria {
@@ -194,7 +194,7 @@ trait MappedReferenceData
                     }
                     list($bind, $mapping_level_column_name, $mapping_data_column_name, $mapping_model_table) = $this->getMappingData($sublevel);
                     $prefix = $index !== 0 ? ' AND ' : '';
-                    $subcondition .= $prefix . "t.id NOT IN (SELECT $mapping_data_column_name FROM $mapping_model_table WHERE $mapping_level_column_name = $bind)";
+                    $subcondition .= $prefix . "t.id NOT IN (SELECT $mapping_data_column_name FROM $mapping_model_table)";
                     $index++;
                     $criteria->params[$bind] = $sublevel_ids[$sublevel];
                 }
@@ -202,7 +202,7 @@ trait MappedReferenceData
             } else {
                 list($bind, $mapping_level_column_name, $mapping_data_column_name, $mapping_model_table) = $this->getMappingData($level);
                 $criteria->addCondition(
-                    "t.id in (SELECT $mapping_data_column_name FROM $mapping_model_table WHERE $mapping_level_column_name = $bind)",
+                    "t.id IN (SELECT $mapping_data_column_name FROM $mapping_model_table WHERE $mapping_level_column_name = $bind)",
                     $anyLevel ? 'OR' : 'AND'
                 );
                 $criteria->params[$bind] = $level_id;

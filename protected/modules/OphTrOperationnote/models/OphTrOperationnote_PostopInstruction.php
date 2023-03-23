@@ -16,6 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "ophtroperationnote_site_subspecialty_postop_instructions".
  *
@@ -32,6 +34,8 @@
  */
 class OphTrOperationnote_PostopInstruction extends BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     /**
      * Label field for display in generic admin.
      */

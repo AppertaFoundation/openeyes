@@ -35,11 +35,22 @@ class DefaultController extends \CController
         // be nice if we could alter this so that a user id / username is passed in
         // and we automatically log them in so we don't need passwords etc.
         $model = new \LoginForm();
-        $model->attributes = [
+        $attributes = [
             'username' => $_POST['username'] ?? 'admin',
             'password' => $_POST['password'] ?? 'admin',
-            'site_id' => 1
+            'site_id' => $_POST['site_id'] ?? null,
+            'institution_id' => $_POST['institution_id'] ?? null,
         ];
+
+        if (empty($attributes['site_id'])) {
+            unset($attributes['site_id']);
+        }
+
+        if (empty($attributes['institution_id'])) {
+            unset($attributes['institution_id']);
+        }
+
+        $model->attributes = $attributes;
 
         if (!$model->validate()) {
             $this->sendJsonResponse($model->getErrors(), 400);

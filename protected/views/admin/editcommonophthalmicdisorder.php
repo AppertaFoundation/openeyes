@@ -67,7 +67,7 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
             'header' => 'Disorder',
             'name' => 'disorder.term',
             'type' => 'raw',
-            'htmlOptions' => array('width' => '200px'),
+            'htmlOptions' => array('width' => '200px', 'data-test' => 'disorder-term'),
             'value' => function ($data, $row) {
                 $term = null;
                 if ($data->disorder) {

@@ -32,7 +32,7 @@ class CommonOphthalmicDisorderGroupFactory extends ModelFactory
         ];
     }
 
-    public function forInstitution($institution_id)
+    public function withInstitution($institution_id)
     {
         return $this->afterCreating(function (CommonOphthalmicDisorderGroup $disorderGroup) use ($institution_id) {
             $disorderGroup->createMapping(ReferenceData::LEVEL_INSTITUTION, $institution_id);

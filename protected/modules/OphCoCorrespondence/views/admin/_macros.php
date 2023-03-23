@@ -40,7 +40,7 @@ if (!empty($macros)) {
                     echo 'No owner was specified for this macro.';
                 }?>
             </td>
-            <td><?php echo $macro->name?></td>
+            <td data-test="macro-name"><?php echo $macro->name?></td>
             <td><?php echo $macro->recipient ? $macro->recipient->name : '-'?></td>
             <td><?php echo $macro->cc_patient ? 'Yes' : 'No'?></td>
             <td><?php echo $macro->cc_doctor ? 'Yes' : 'No'?></td>

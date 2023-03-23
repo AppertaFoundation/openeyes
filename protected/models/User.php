@@ -37,7 +37,7 @@ class User extends BaseActiveRecordVersioned
 {
     use HasFactory;
 
-    const PIN_REGEN_LIMIT = 5;
+    private const PIN_REGEN_LIMIT = 5;
     /**
      * Returns the static model of the specified AR class.
      *

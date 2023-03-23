@@ -19,7 +19,8 @@ class SeededEventResource extends SeededResource
     {
         return [
             'patient_id' => $this->instance->episode->patient->id,
-            'view_url' => \Yii::app()->createUrl('/' . $this->instance->eventType->name . '/Default/view/' . $this->instance->id),
+            'view_url' => \Yii::app()->createUrl('/' . $this->instance->eventType->class_name . '/Default/view/' . $this->instance->id),
+            'edit_url' => \Yii::app()->createUrl('/' . $this->instance->eventType->class_name . '/Default/update/' . $this->instance->id),
         ];
     }
 }

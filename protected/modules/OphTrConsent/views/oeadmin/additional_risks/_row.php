@@ -33,6 +33,7 @@
             "[" . $data['key'] . "]name",
             [
                 'class' => 'cols-full',
+                'data-test' => 'risk-name',
                 'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete')
             ]
         ); ?>

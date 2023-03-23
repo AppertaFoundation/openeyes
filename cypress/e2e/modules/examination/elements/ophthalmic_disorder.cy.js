@@ -9,7 +9,7 @@ describe('ophthalmic disorder widget behaviour', () => {
         cy.login()
             .then((context) => {
                 cy.createModels('CommonOphthalmicDisorder', [
-                        ['forInstitution', context.body.institution_id], 
+                        ['withInstitution', context.body.institution_id], 
                         ['forDisplayOrder', 2], 
                         ['forKnownDisorderTerm', expectedDisorderTerm1]
                     ], 
@@ -17,7 +17,7 @@ describe('ophthalmic disorder widget behaviour', () => {
                         subspecialty_id: context.body.subspecialty_id
                     });
                 cy.createModels('CommonOphthalmicDisorder', [
-                        ['forInstitution', context.body.institution_id], 
+                        ['withInstitution', context.body.institution_id], 
                         ['forDisplayOrder', 1],
                         ['forKnownDisorderTerm', expectedDisorderTerm2]
                     ], 

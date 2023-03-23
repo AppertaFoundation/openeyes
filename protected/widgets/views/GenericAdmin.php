@@ -93,6 +93,7 @@
     $this->render('_generic_admin_row', array('i' => $i, 'row' => $row, 'label_field' => $label_field, 'extra_fields' => $extra_fields, 'model' => $model, 'display_order' => $display_order, 'label_extra_field' => $label_extra_field, 'input_class' => $input_class));
 }
 
+
 if (!$get_row && $filters_ready) {
     if (!$this->new_row_url) {
         $this->render('_generic_admin_row', array('row_class' => 'newRow', 'row_style' => 'display: none;', 'disabled' => true,

@@ -13,14 +13,14 @@ describe('ophthalmic disorder group behaviour', () => {
         cy.login()
             .then((context) => {
                 cy.createModels('CommonOphthalmicDisorderGroup', [
-                        ['forInstitution', context.body.institution_id],
+                        ['withInstitution', context.body.institution_id],
                         ['forDisplayOrder', 2]
                     ], 
                     {
                         name: groupName1
                     });
                 cy.createModels('CommonOphthalmicDisorderGroup', [
-                        ['forInstitution', context.body.institution_id],
+                        ['withInstitution', context.body.institution_id],
                         ['forDisplayOrder', 1]
                     ], 
                     {
@@ -33,7 +33,7 @@ describe('ophthalmic disorder group behaviour', () => {
                 
                 
                 cy.createModels('CommonOphthalmicDisorder', [
-                        ['forInstitution', context.body.institution_id],
+                        ['withInstitution', context.body.institution_id],
                         ['forKnownDisorderTerm', group1DisorderTerm],
                         ['forKnownGroupName', groupName1]
                     ], 
@@ -41,7 +41,7 @@ describe('ophthalmic disorder group behaviour', () => {
                         subspecialty_id: context.body.subspecialty_id
                     });
                 cy.createModels('CommonOphthalmicDisorder', [
-                        ['forInstitution', context.body.institution_id],
+                        ['withInstitution', context.body.institution_id],
                         ['forKnownDisorderTerm', group2DisorderTerm],
                         ['forKnownGroupName', groupName2]
                     ], 
@@ -49,7 +49,7 @@ describe('ophthalmic disorder group behaviour', () => {
                         subspecialty_id: context.body.subspecialty_id
                     });                
                 cy.createModels('CommonOphthalmicDisorder', [
-                        ['forInstitution', context.body.institution_id],
+                        ['withInstitution', context.body.institution_id],
                         ['forKnownDisorderTerm', noGroupDisorderTerm]
                     ], 
                     {

@@ -95,7 +95,7 @@
                     foreach ($admin->getSearch()->retrieveResults() as $i => $row) { ?>
                         <tr>
                             <?php foreach ($admin->getListFields() as $listItem) : ?>
-                                <td>
+                                <td data-test="<?= str_replace(".", "-", $listItem) ?>">
                                     <?php
                                     if ($listItem == 'default') {
                                         if ($admin->attributeValue($row, $listItem)) :

@@ -1,6 +1,6 @@
 <?php
 /**
- * (C) Apperta Foundation, 2022
+ * (C) Apperta Foundation, 2023
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -15,22 +15,22 @@
 
 namespace OEModule\OphCiExamination\factories\models;
 
-use ElementType;
+
+use Institution;
 use OE\factories\ModelFactory;
-use OEModule\OphCiExamination\models\OphCiExamination_Attribute;
+use OEModule\OphCiExamination\models\OphCiExamination_Workflow;
+use ReferenceData;
 
 class OphCiExamination_WorkflowFactory extends ModelFactory
 {
-
     /**
-     *
      * @return array
      */
     public function definition(): array
     {
         return [
-            'name' => $this->faker->word(),
-            'institution_id' => \Institution::factory()->useExisting()
+            'name' => $this->faker->words(3, true),
+            'institution_id' => Institution::factory()->useExisting(),
         ];
     }
 

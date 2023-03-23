@@ -32,6 +32,16 @@ class OphCiExamination_PostOpComplications extends \BaseActiveRecordVersioned
 {
     use HasFactory;
 
+    /**
+     * Returns the static model of the specified AR class.
+     *
+     * @return OphCiExamination_Comorbidities_Item the static model class
+     */
+    public static function model($className = __CLASS__)
+    {
+        return parent::model($className);
+    }
+
     protected $auto_update_relations = true;
 
     /**
