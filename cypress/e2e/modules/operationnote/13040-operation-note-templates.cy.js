@@ -46,6 +46,12 @@ describe('test operation note template functionality', () => {
 
             cy.fixture('13040-operation-note-templates')
                 .then((fixture) => {
+                    cy.createModels(
+                        'OphTrOperationnote_Template',
+                        fixture.templateData.definition.states,
+                        fixture.templateData.definition.attributes
+                    ).as('opNoteTemplate');
+
                     let procedureNames = Object.entries(fixture.templateData.elementData.procedures).map(proc => proc[0]);
                     cy.get('@patientId').then((patientId) => {
                         cy.runSeeder('OphTrOperationbooking', 'OpBookingWithProceduresSeeder', {procedure_names: procedureNames, patient_id: patientId})
@@ -54,12 +60,11 @@ describe('test operation note template functionality', () => {
                             })
                             .then((url) => {
                                 cy.visit(url);
-
-                                cy.getBySel('template-entry').contains(fixture.templateData.name).click();
-                                cy.verifyOperationNoteData(fixture.templateData);
+                                cy.get('@opNoteTemplate').then((opNoteTemplate) => {
+                                    cy.getBySel('template-entry').contains(opNoteTemplate.event_template.name).click();
+                                    cy.verifyOperationNoteData(fixture.templateData);
+                                });
                             });
-
-
                     });
                 });
         });

@@ -21,31 +21,19 @@ use PatientIdentifierType;
 use Site;
 
 /**
- * class PatientIdentifierTypeFactory
+ * class PatientIdentifierTypeDisplayOrderFactory
  *
  * This factory provides interface for retrieving existing instances via the useExisting pattern
  */
-class PatientIdentifierTypeFactory extends ModelFactory
+class PatientIdentifierTypeDisplayOrderFactory extends ModelFactory
 {
     public function definition(): array
     {
         return [
-            'usage_type' => $this->faker->randomElement([PatientIdentifierType::LOCAL_USAGE_TYPE, PatientIdentifierType::GLOBAL_USAGE_TYPE]),
-            'short_title' => $this->faker->words(3, true),
-            'long_title' => $this->faker->words(5, true),
             'institution_id' => Institution::factory()->useExisting(),
-            'site_id' => function ($attributes) {
-                return Site::factory()->useExisting(['institution_id' => $attributes['institution_id']]);
-            },
+            'site_id' => Site::factory()->useExisting(),
+            'display_order' => $this->faker->randomDigit,
             'unique_row_string' => $this->faker->words(5, true),
-            'validate_regex' => '/^\d*$/'
         ];
-    }
-
-    public function local(): self
-    {
-        return $this->state([
-            'usage_type' => PatientIdentifierType::LOCAL_USAGE_TYPE
-        ]);
     }
 }

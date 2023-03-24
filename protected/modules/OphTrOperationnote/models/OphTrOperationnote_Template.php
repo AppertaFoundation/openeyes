@@ -1,5 +1,7 @@
 <?php
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "ophtroperationnote_template".
  *
@@ -20,6 +22,8 @@
  */
 class OphTrOperationnote_Template extends BaseEventTemplate
 {
+    use HasFactory;
+
     /**
      * @return string the associated database table name
      */
@@ -166,18 +170,30 @@ class OphTrOperationnote_Template extends BaseEventTemplate
     }
 
     /**
-     * Scope to limit to procedure set
+     * Scope to limit to relevant procedure sets
      *
-     * @param ProcedureSet $procedure_set
+     * @param ProcedureSet|ProcedureSet[] $procedure_sets
      * @return OphTrOperationnote_Template
      */
-    public function forProcedureSet(ProcedureSet $procedure_set): self
+    public function forProcedureSet($procedure_sets): self
     {
+        if (!is_array($procedure_sets)) {
+            $procedure_sets = [$procedure_sets];
+        }
+
+        $criteria = new \CDbCriteria();
+        $criteria->addInCondition(
+            't.proc_set_id',
+            array_map(
+                function ($procedure_set) {
+                    return $procedure_set->id;
+                },
+                $procedure_sets
+            )
+        );
+
         $this->getDbCriteria()
-        ->mergeWith([
-            'condition' => 't.proc_set_id = :forProcedureSetId',
-            'params' => [':forProcedureSetId' => $procedure_set->id]
-        ]);
+            ->mergeWith($criteria);
 
         return $this;
     }

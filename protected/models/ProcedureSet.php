@@ -1,4 +1,5 @@
 <?php
+use OE\factories\models\traits\HasFactory;
 
 /**
  * This is the model class for table "proc_set".
@@ -15,9 +16,12 @@
  * @property User $createdUser
  * @property User $lastModifiedUser
  * @property Procedure[] $procedures
+ * @property ProcedureSetAssignment[] $procedure_assignments
  */
 class ProcedureSet extends BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     /**
      * @return string the associated database table name
      */
@@ -54,6 +58,7 @@ class ProcedureSet extends BaseActiveRecordVersioned
             'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'procedures' => array(self::MANY_MANY, 'Procedure', 'proc_set_assignment(proc_set_id, proc_id)'),
+            'procedure_assignments' => array(self::HAS_MANY, ProcedureSetAssignment::class, 'proc_set_id')
         );
     }
 
@@ -111,7 +116,7 @@ class ProcedureSet extends BaseActiveRecordVersioned
         return parent::model($className);
     }
 
-    public static function findForProcedures($procedure_ids)
+    public static function findForProcedures($procedure_ids, bool $all = false)
     {
         $procedure_ids = $procedure_ids ?? [];
 
@@ -124,7 +129,7 @@ class ProcedureSet extends BaseActiveRecordVersioned
         $criteria->addInCondition('psa.proc_id', $procedure_ids);
         $criteria->params[':procedure_count'] = count($procedure_ids);
 
-        return self::model()->find($criteria);
+        return $all ? self::model()->findAll($criteria) : self::model()->find($criteria);
     }
 
     public static function findForProcedureList($procedure_list_id)
@@ -150,6 +155,6 @@ class ProcedureSet extends BaseActiveRecordVersioned
                         'GROUP BY proc_set_id HAVING COUNT(psa.proc_id) = COUNT(pla.proc_id) AND COUNT(psa.proc_id) = total) AS matching ON t.id = matching.proc_set_id';
         $criteria->params = [':element_id' => $booking_id];
 
-        return self::model()->find($criteria);
+        return self::model()->findAll($criteria);
     }
 }

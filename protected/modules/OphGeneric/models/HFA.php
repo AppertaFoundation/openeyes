@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Copyright Apperta Foundation, 2020
  * This file is part of OpenEyes.
@@ -239,8 +240,19 @@ class HFA extends BaseEventTypeElement
         $criteria = new \CDbCriteria();
         $criteria->compare('element_id', $this->id);
         $hfaEntry = HFAEntry::model()->find($criteria);
-        $data['vfi'] = $hfaEntry->mean_deviation;
-        $data['side'] = ((integer)$this->eye_id === 1) ? 'left' : 'right';
+        $data['md'] = $hfaEntry->mean_deviation;
+        $data['side'] = ((int)$this->eye_id === 1) ? 'left' : 'right';
+        return $data;
+    }
+
+    public function getVFI()
+    {
+        $data = [];
+        $criteria = new \CDbCriteria();
+        $criteria->compare('element_id', $this->id);
+        $hfaEntry = HFAEntry::model()->find($criteria);
+        $data['vfi'] = $hfaEntry->visual_field_index;
+        $data['side'] = ((int)$this->eye_id === 1) ? 'left' : 'right';
         return $data;
     }
 }

@@ -1,4 +1,5 @@
 <?php
+use OE\factories\models\traits\HasFactory;
 
 /**
  * This is the model class for table "event_template".
@@ -23,6 +24,7 @@
 
 class EventTemplate extends BaseActiveRecordVersioned
 {
+    use HasFactory;
     use MappedReferenceData;
 
     public const UPDATE_UNNEEDED = 'UNNEEDED';
@@ -155,7 +157,7 @@ class EventTemplate extends BaseActiveRecordVersioned
     public function getDetailRecord()
     {
         $class_name = $this->eventType->class_name . '_Template';
-        return $class_name::model()->findByPk($this->id);
+        return $class_name::model()->find('event_template_id = :eid', [':eid' => $this->id]);
     }
 
     /**
