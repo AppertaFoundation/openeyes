@@ -90,7 +90,7 @@ class ExaminationElementAttributesController extends BaseAdminController
         $admin->setModelDisplayName('Element Attributes');
 
         $admin->setEditFields(array(
-            'id' => 'label',
+
             'name' => 'text',
             'label' => 'text',
             'attribute_elements' => array(
