@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -108,9 +109,8 @@ class PatientTicketing_API extends \BaseAPI
         $user = Yii::app()->user;
         foreach ($qsc_svc->getCategoriesForUser($user->id) as $qsc) {
             $result[] = array(
-                    'uri' => '/PatientTicketing/default/?cat_id='.$qsc->id,
+                    'uri' => '/PatientTicketing/default/?cat_id=' . $qsc->id,
                     'title' => $qsc->name,
-                    'position' => $position++,
             );
         };
 
@@ -157,7 +157,7 @@ class PatientTicketing_API extends \BaseAPI
         foreach ($queue->getFormFields() as $field) {
             $field_name = $field['form_name'];
             if (@$field['type'] == 'widget') {
-                $class_name = 'OEModule\\PatientTicketing\\widgets\\'.$field['widget_name'];
+                $class_name = 'OEModule\\PatientTicketing\\widgets\\' . $field['widget_name'];
                 $widget = new $class_name();
                 $widget->form_name = $field_name;
                 $widget->label = $field['assignment_fields']['label'] ?? '';
@@ -173,7 +173,7 @@ class PatientTicketing_API extends \BaseAPI
                 $result[$field_name] = $p->purify(@$data[$field_name]);
                 if ($validate) {
                     if ($field['required'] && !@$data[$field_name]) {
-                        $errors[$field_name] = $field['label'].' is required';
+                        $errors[$field_name] = $field['label'] . ' is required';
                     } elseif (@$field['choices'] && @$data[$field_name]) {
                         $match = false;
                         foreach ($field['choices'] as $k => $v) {
@@ -183,7 +183,7 @@ class PatientTicketing_API extends \BaseAPI
                             }
                         }
                         if (!$match) {
-                            $errors[$field_name] = $field['label'].': invalid choice';
+                            $errors[$field_name] = $field['label'] . ': invalid choice';
                         }
                     }
                 }

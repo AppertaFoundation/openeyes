@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Copyright Apperta Foundation 2021
  * This file is part of OpenEyes.
@@ -32,14 +33,12 @@ $config = [
         'menu_bar_items' => array(
             'cvi' => array(
                 'title' => 'CVI',
-                'position' => 7,
                 'restricted' => array(array('OprnCreateCvi', 'user_id')),
                 'uri' => '/OphCoCvi/Default/list',
             ),
             'la' => array(
                 'title' => 'LA Admin',
                 'uri' => '/OphCoCvi/admin/LocalAuthorities/list',
-                'position' => 8,
                 'restricted' => array(array('OprnCreateCvi', 'user_id')),
             ),
         ),

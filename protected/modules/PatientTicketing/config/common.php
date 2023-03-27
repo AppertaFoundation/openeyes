@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -23,7 +24,6 @@ return array(
         'menu_bar_items' => array(
             'virtual_clinic' => array(
                 'api' => 'PatientTicketing',
-                'position' => 5,
             ),
         ),
         'admin_menu' => array(

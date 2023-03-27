@@ -1,8 +1,5 @@
 <?php
 
-use OE\factories\DataGenerator;
-use OEModule\CypressHelper\CypressHelperModule;
-
 /**
 * OpenEyes.
 *
@@ -19,6 +16,8 @@ use OEModule\CypressHelper\CypressHelperModule;
 * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
 */
 
+use OE\factories\DataGenerator;
+use OEModule\CypressHelper\CypressHelperModule;
 use OEModule\OphCiExamination\components\PathstepObserver;
 
 // If the old db.conf file (pre docker) exists, use it. Else read environment variable, else read docker secrets
@@ -200,14 +199,6 @@ $config = array(
             'charset' => 'utf8',
             'schemaCachingDuration' => 300,
         ),
-        'mailer' => array(
-            // Setting the mailer mode to null will suppress email
-            'mode' => getenv('MAILER_MODE') ?? null, // ('sendmail', 'smtp', 'mail')
-            'host' => getenv('MAILER_SMTP_HOST') ?? null,
-            'security' => getenv('MAILER_SMTP_SECURITY') ?? null, // ('TLS')
-            'username' => getenv('MAILER_SMTP_USERNAME') ?? null,
-            'password' => trim(@file_get_contents("/run/secrets/MAILER_SMTP_PASSWORD")) ?: (trim(getenv('MAILER_SMTP_PASSWORD')) ?: ''),
-        ),
         'errorHandler' => array(
             // use 'site/error' action to display errors
             'errorAction' => YII_DEBUG ? null : 'site/error',
@@ -275,7 +266,12 @@ $config = array(
         ),
         'mailer' => array(
             'class' => 'Mailer',
-            'mode' => 'smtp',
+            // Setting the mailer mode to null will suppress email
+            'mode' => getenv('MAILER_MODE') ?? 'smtp', // ('sendmail', 'smtp', 'mail')
+            'host' => getenv('MAILER_SMTP_HOST') ?? null,
+            'security' => getenv('MAILER_SMTP_SECURITY') ?? null, // ('TLS')
+            'username' => getenv('MAILER_SMTP_USERNAME') ?? null,
+            'password' => trim(@file_get_contents("/run/secrets/MAILER_SMTP_PASSWORD")) ?: (trim(getenv('MAILER_SMTP_PASSWORD')) ?: ''),
         ),
         'moduleAPI' => array(
             'class' => 'ModuleAPI',
@@ -459,54 +455,45 @@ $config = array(
             'admin' => array(
                 'title' => 'Admin',
                 'uri' => 'admin',
-                'position' => 1,
                 'restricted' => array('OprnInstitutionAdmin'),
             ),
             'audit' => array(
                 'title' => 'Audit',
                 'uri' => 'audit',
-                'position' => 2,
                 'restricted' => array('TaskViewAudit'),
             ),
             'reports' => array(
                 'title' => 'Reports',
                 'uri' => 'report',
-                'position' => 3,
                 'restricted' => array('Report'),
             ),
             'analytics' => array(
                 'title' => 'Analytics',
                 'uri' => '/Analytics/analyticsReports',
-                'position' => 4,
             ),
             'nodexport' => array(
                 'title' => 'NOD Export',
                 'uri' => 'NodExport',
-                'position' => 5,
                 'restricted' => array('NOD Export'),
             ),
             'cxldataset' => array(
                 'title' => 'CXL Dataset',
                 'uri' => 'CxlDataset',
-                'position' => 6,
                 'restricted' => array('CXL Dataset'),
             ),
             'patientmergerequest' => array(
                 'title' => 'Patient Merge',
                 'uri' => 'patientMergeRequest/index',
-                'position' => 17,
                 'restricted' => array('OprnPatientMerge', 'OprnPatientMergeRequest'),
             ),
             'patient' => array(
                 'title' => 'Add Patient',
                 'uri' => 'patient/create',
-                'position' => 46,
                 'restricted' => array('TaskAddPatient'),
             ),
             'practices' => array(
                 'title' => 'Practices',
                 'uri' => 'practice/index',
-                'position' => 11,
                 'restricted' => array('TaskViewPractice', 'TaskCreatePractice'),
             ),
             'forum' => array(
@@ -514,48 +501,36 @@ $config = array(
                 'alt_title' => 'Stop tracking in FORUM',
                 'uri' => "forum/toggleForumTracking",
                 'requires_setting' => ['setting_key' => 'enable_forum_integration', 'required_value' => 'on'],
-                'position' => 89,
             ),
             'imagenet' => [
                 'title' => 'Track patients in IMAGEnet',
                 'alt_title' => 'Stop tracking in IMAGEnet',
                 'uri' => "imagenet/toggleImagenetTracking",
                 'requires_setting' => ['setting_key' => 'enable_imagenet_integration', 'required_value' => 'on'],
-                'position' => 90,
             ],
             'disorder' => array(
                 'title' => 'Manage Disorders',
                 'uri' => "/disorder/index",
                 'requires_setting' => array('setting_key' => 'user_add_disorder', 'required_value' => 'on'),
-                'position' => 91,
             ),
             'gps' => array(
                 'title' => 'Practitioners',
                 'uri' => 'gp/index',
-                'position' => 10,
                 'restricted' => array('TaskViewGp', 'TaskCreateGp'),
-            ),
-            'analytics' => array(
-                'title' => 'Analytics',
-                'uri' => '/Analytics/analyticsReports',
-                'position' => 11,
             ),
             'patient_import' => array(
                 'title' => 'Import Patients',
                 'uri' => 'csv/upload?context=patients',
-                'position' => 47,
                 'requires_setting' => array('setting_key' => 'enable_patient_import', 'required_value' => 'on'),
                 'restricted' => array('admin'),
             ),
             'virus_scan' => array(
                 'title' => 'Scan Uploaded Files',
                 'uri' => '/VirusScan/index',
-                'position' => 90,
                 'requires_setting' => array('setting_key' => 'enable_virus_scanning', 'required_value' => 'on'),
             ),
             'safeguarding' => array(
                 'title' => 'Safeguarding',
-                'position' => 40,
                 'uri' => '/Safeguarding/index/',
                 'restricted' => array('Safeguarding'),
             ),
@@ -563,21 +538,18 @@ $config = array(
                 'title' => 'Open in CITO',
                 'uri' => '',
                 'requires_setting' => array('setting_key' => 'cito_access_token_url', 'required_value' => 'not-empty'),
-                'position' => 46,
                 'options' => ['id' => 'js-get-cito-url', 'class' => 'hidden', 'requires_patient' => true],
             ),
             'hie_integration' => array(
                 'title' => 'View HIE Record',
                 'uri' => '',
                 'requires_setting' => array('setting_key' => 'hie_remote_url', 'required_value' => 'not-empty'),
-                'position' => 92,
                 'restricted' => array('HIE - Admin', 'HIE - Extended', 'HIE - View', 'HIE - Summary'),
                 'options' => ['requires_patient' => true],
             ),
             'esign_device_popup' => array(
                 'title' => 'e-Sign device link',
                 'uri' => 'javascript:eSignDevicePopup();',
-                'position' => 93,
             ),
         ),
         'admin_menu' => array(),
@@ -889,11 +861,11 @@ $config = array(
         'sso_certificate_path' => '/run/secrets/SSO_CERTIFICATE',
         'ammonite_url' => getenv('AMMONITE_URL') ?: 'ammonite.toukan.co',
         'cito_base_url ' => trim(getenv('CITO_BASE_URL')) ?: null,
-        'cito_access_token_url' => trim(getenv('CITO_ACCESS_TOKEN_URL')) ?: null,
-        'cito_otp_url' => trim(getenv('CITO_OTP_URL')) ?: null,
-        'cito_sign_url' => trim(getenv('CITO_SIGN_URL')) ?: null,
+        'cito_access_token_url' => trim(getenv('CITO_ACCESS_TOKEN_URL')) ?: '/citosignon/connect/token',
+        'cito_otp_url' => trim(getenv('CITO_OTP_URL')) ?: '/citoExternalApi/api/IssueOneTimePassCodes',
+        'cito_sign_url' => trim(getenv('CITO_SIGN_URL')) ?: '/cito/api/otpsignin',
         'cito_client_id' => trim(getenv('CITO_CLIENT_ID')) ?: null,
-        'cito_grant_type' => trim(getenv('CITO_GRANT_TYPE')) ?: null,
+        'cito_grant_type' => trim(getenv('CITO_GRANT_TYPE')) ?: 'client_credentials',
         'cito_application_id' => trim(@file_get_contents("/run/secrets/CITO_APPLICATION_ID")) ?: (trim(getenv('CITO_APPLICATION_ID')) ?: ''),
         'cito_client_secret' => trim(@file_get_contents("/run/secrets/CITO_CLIENT_SECRET")) ?: (trim(getenv('CITO_CLIENT_SECRET')) ?: ''),
         'secretary_pin' => trim(getenv('SECRETARY_PIN')) ?: "123456",
