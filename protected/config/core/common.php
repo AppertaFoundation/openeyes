@@ -669,12 +669,6 @@ $config = array(
         /* ID of the Tag that indicates "preservative free" */
         'preservative_free_tag_id' => 1,
 
-        /**
-         * If 'disable_auto_feature_tours' is true than no tour will be start on page load
-         * (this overrides the setting in admin > system > settings)
-         */
-        //'disable_auto_feature_tours' => true,
-
         'whiteboard' => array(
             // whiteboard will be refresh-able after operation booking is completed
             // overrides admin > Opbooking > whiteboard settings
