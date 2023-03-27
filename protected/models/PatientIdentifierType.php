@@ -30,6 +30,7 @@ use OE\factories\models\traits\HasFactory;
  * @property string $value_display_suffix
  * @property string $unique_row_string
  * @property string $pad
+ * @property string $validation_example
  * @property string $last_modified_user_id
  * @property string $last_modified_date
  * @property string $created_user_id
@@ -63,7 +64,7 @@ class PatientIdentifierType extends BaseActiveRecordVersioned
     {
         return array(
             array('id, usage_type, short_title, long_title, institution_id, site_id, validate_regex,
-             value_display_prefix, value_display_suffix, unique_row_string,pad, spacing_rule,pas_api',
+             value_display_prefix, value_display_suffix, unique_row_string,pad, spacing_rule,pas_api, validation_example',
                 'safe'),
             array('short_title, institution_id, validate_regex', 'required'),
             array('usage_type', 'validateUsageType'),
@@ -117,6 +118,7 @@ class PatientIdentifierType extends BaseActiveRecordVersioned
             'created_user_id' => 'Created User',
             'created_date' => 'Created Date',
             'pad' => 'Padding',
+            'validation_example' => 'Validation Example',
             'spacing_rule' => 'Spacing Rule',
             'pas_api' => 'PAS'
         );
