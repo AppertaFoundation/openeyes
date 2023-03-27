@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Apperta Foundation, 2022
  * This file is part of OpenEyes.
@@ -120,7 +121,8 @@ class PatientIdentifierType extends BaseActiveRecordVersioned
             'pad' => 'Padding',
             'validation_example' => 'Validation Example',
             'spacing_rule' => 'Spacing Rule',
-            'pas_api' => 'PAS'
+            'pas_api' => 'PAS',
+            'unique_row_string' => 'Unique Identifier'
         );
     }
 
@@ -179,7 +181,7 @@ class PatientIdentifierType extends BaseActiveRecordVersioned
      * @param string $term
      * @return bool
      */
-    public function validateTerm(string $term, bool $allow_blank = false) : bool
+    public function validateTerm(string $term, bool $allow_blank = false): bool
     {
         if ($this->validate_regex) {
             $match = PatientIdentifierHelper::getPaddedTermRegexResult($term, $this->validate_regex, $this->pad);
@@ -201,7 +203,7 @@ class PatientIdentifierType extends BaseActiveRecordVersioned
      *
      * @return string
      */
-    public function getTitleWithInstitution() : string
+    public function getTitleWithInstitution(): string
     {
         return $this->long_title . ' (' . $this->institution->name . ')';
     }
@@ -222,7 +224,7 @@ class PatientIdentifierType extends BaseActiveRecordVersioned
     {
         $unique_row_string_site_id = $this->site_id;
 
-        if(!isset($this->site_id) || $this->site_id === '') {
+        if (!isset($this->site_id) || $this->site_id === '') {
             $unique_row_string_site_id = 0;
         }
 
@@ -247,7 +249,7 @@ class PatientIdentifierType extends BaseActiveRecordVersioned
      * @param $string
      * @return bool
      */
-    public function isValidJson($string) : bool
+    public function isValidJson($string): bool
     {
         json_decode($string);
         return (json_last_error() == JSON_ERROR_NONE);
