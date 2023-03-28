@@ -190,14 +190,16 @@ class HFA extends BaseEventTypeElement
             $md_datapoint->delete();
         }
 
-        $md_stat->refresh();
+        if ($md_stat) {
+            $md_stat->refresh();
 
-        // If the statistic has no more datapoints, delete it. Otherwise, flag it for remodelling.
-        if (count($md_stat->datapoints) === 0) {
-            $md_stat->delete();
-        } else {
-            $md_stat->process_datapoints = true;
-            $md_stat->save();
+            // If the statistic has no more datapoints, delete it. Otherwise, flag it for remodelling.
+            if (count($md_stat->datapoints) === 0) {
+                $md_stat->delete();
+            } else {
+                $md_stat->process_datapoints = true;
+                $md_stat->save();
+            }
         }
 
         $vfi_datapoint = PatientStatisticDatapoint::model()->findByAttributes(
@@ -222,14 +224,16 @@ class HFA extends BaseEventTypeElement
             $vfi_datapoint->delete();
         }
 
-        $vfi_stat->refresh();
+        if ($vfi_stat) {
+            $vfi_stat->refresh();
 
-        // If the statistic has no more datapoints, delete it. Otherwise, flag it for remodelling.
-        if (count($vfi_stat->datapoints) === 0) {
-            $vfi_stat->delete();
-        } else {
-            $vfi_stat->process_datapoints = true;
-            $vfi_stat->save();
+            // If the statistic has no more datapoints, delete it. Otherwise, flag it for remodelling.
+            if (count($vfi_stat->datapoints) === 0) {
+                $vfi_stat->delete();
+            } else {
+                $vfi_stat->process_datapoints = true;
+                $vfi_stat->save();
+            }
         }
     }
 
