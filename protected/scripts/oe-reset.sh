@@ -317,19 +317,30 @@ fi
     exit 1
 } || :
 
-echo "Clearing current database..."
-
-dbresetsql="DROP DATABASE IF EXISTS openeyes; 
+# First attempt to revoke access for the OE user and kill any open connections (this will stop the payload processor interfeering)
+echo "Dropping user and killing all connections..."
+revokesql="FLUSH TABLES;
+FLUSH PRIVILEGES;
 DROP USER IF EXISTS '$dbuser';
+FLUSH PRIVILEGES;
+FLUSH HOSTS;"
+eval "$dbconnectionstring -e \"$revokesql\""
+killsql="SELECT CONCAT('KILL ', id, ';') FROM information_schema.processlist WHERE user = '$dbuser';"
+killsql=$(eval "$dbconnectionstring" -NBe "\"$killsql\"")
+eval "$dbconnectionstring" -e "\"$killsql\""
+
+echo "Clearing current database..."
+dbresetsql="
+FLUSH PRIVILEGES;
+FLUSH HOSTS;
+FLUSH LOGS;
+FLUSH TABLES;
+DROP DATABASE IF EXISTS openeyes; 
 CREATE USER '$dbuser' IDENTIFIED BY '$pass'; 
 CREATE DATABASE ${DATABASE_NAME:-openeyes}; 
-GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, REFERENCES, INDEX, ALTER, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE, CREATE VIEW, SHOW VIEW, CREATE ROUTINE, ALTER ROUTINE, EVENT, TRIGGER on ${DATABASE_NAME:-openeyes}.* to '$dbuser'@'%';
 FLUSH PRIVILEGES;"
 
-echo ""
-## write-out command to console (helps with debugging)
-# echo "$dbconnectionstring -e \"$dbresetsql\""
-## run the same command
+## run the command
 eval "$dbconnectionstring -e \"$dbresetsql\""
 echo ""
 
@@ -391,6 +402,12 @@ if [ $cleanbase = "0" ]; then
 
     # remove temp file
     rm 0-a-restore.sql 2>/dev/null
+
+    # grant user rights to openeyes user - this is left untl the end to prevent other systems from connecting in and modifying data before the restore has completed
+    echo "Granting user rights to $dbuser"
+    grantsql="GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, REFERENCES, INDEX, ALTER, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE, CREATE VIEW, SHOW VIEW, CREATE ROUTINE, ALTER ROUTINE, EVENT, TRIGGER on ${DATABASE_NAME:-openeyes}.* to '$dbuser'@'%';
+    FLUSH PRIVILEGES;"
+    eval "$dbconnectionstring -e \"$grantsql\""
 
     ## belt and braces reset to the correct user password, in case the PW was altered by the imported sql
     pwresetsql="ALTER USER '$dbuser'@'%' IDENTIFIED BY '$pass';"
