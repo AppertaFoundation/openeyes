@@ -13,11 +13,19 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OE\factories\models\traits\HasFactory;
+
  /**
+  * @property string $event_subtype - string identifier (Note, different from usual model pattern)
   * @property string $display_name
+  * @property ElementType[] $element_types
   */
 class EventSubtype extends BaseActiveRecordVersioned
 {
+    use HasFactory;
+
+    protected $auto_update_relations = true;
+
     public static function model($className = __CLASS__)
     {
         return parent::model($className);
@@ -37,9 +45,20 @@ class EventSubtype extends BaseActiveRecordVersioned
     {
         // Only define rules for those attributes with user inputs.
         return [
-            ['event_subtype, dicom_modality_code, icon_name, display_name', 'safe'],
+            ['event_subtype, dicom_modality_code, icon_name, display_name, element_type_entries', 'safe'],
             // Remove attributes that should not be searched.
             ['event_subtype, dicom_modality_code, icon_name, display_name', 'safe', 'on' => 'search'],
+        ];
+    }
+
+    /**
+     * @return array relational rules.
+     */
+    public function relations()
+    {
+        return [
+            'element_type_entries' => [self::HAS_MANY, 'EventSubtypeElementEntry', 'event_subtype', 'order' => 'display_order ASC'],
+            'element_types' => [self::MANY_MANY, 'ElementType', 'event_subtype_element_entries(event_subtype, element_type_id)', 'order' => 'element_types_element_types.display_order ASC'],
         ];
     }
 
@@ -72,5 +91,20 @@ class EventSubtype extends BaseActiveRecordVersioned
         return new CActiveDataProvider(get_class($this), [
             'criteria' => $criteria,
         ]);
+    }
+
+    public function getEventIcon($type = 'small')
+    {
+        // 'medium' PNGs are the equivalent size as 'large' SVG backgrounds
+        if ($type === 'medium') {
+            $type = 'large';
+        }
+
+        return "<i class=\"oe-i-e {$type} {$this->icon_name} \" ></i > ";
+    }
+
+    public function getElementTypes()
+    {
+        return $this->element_types;
     }
 }

@@ -16,6 +16,7 @@
 namespace OEModule\OphGeneric\widgets;
 
 use OEModule\OphGeneric\models\Attachment;
+use OEModule\OphGeneric\components\EventManager;
 
 class AttachmentElement extends \BaseEventElementWidget
 {
@@ -25,5 +26,14 @@ class AttachmentElement extends \BaseEventElementWidget
     protected function getNewElement()
     {
         return new Attachment();
+    }
+
+    protected function getView()
+    {
+        if ($this->element->isNewRecord || EventManager::forEvent($this->element->event)->isManualEvent())  {
+            return 'NoManualData_event_view';
+        }
+
+        return parent::getView();
     }
 }

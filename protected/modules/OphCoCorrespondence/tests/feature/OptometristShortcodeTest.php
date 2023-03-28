@@ -31,6 +31,9 @@ use Address;
  *
  * @group sample-data
  * @group shortcode
+ *
+ * @runTestsInSeparateProcesses
+ * @preserveGlobalState disabled
  */
 class OptometristShortcodeTest extends \OEDbTestCase
 {

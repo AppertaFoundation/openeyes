@@ -124,6 +124,8 @@ class BaseEventTypeController extends BaseModuleController
     public $attachment_print_title = null;
     public $print_args = null;
 
+    protected ?EventSubType $event_subtype = null;
+
     /**
      * Values to change per event
      *
@@ -913,7 +915,7 @@ class BaseEventTypeController extends BaseModuleController
 
                         $this->event->audit('event', 'create');
 
-                        Yii::app()->user->setFlash('success', "{$this->event_type->name} created.");
+                        Yii::app()->user->setFlash('success', "{$this->getTitle()} created.");
 
                         Yii::app()->event->dispatch('event_created', ['event' => $this->event, 'action' => 'create']);
 
@@ -1627,7 +1629,7 @@ class BaseEventTypeController extends BaseModuleController
         if (
             !$this->event->isNewRecord
             && ($has_last_modified_date_value
-            && $data['Event']['last_modified_date'] !== $this->event->last_modified_date)
+                && $data['Event']['last_modified_date'] !== $this->event->last_modified_date)
         ) {
             $user = $this->event->usermodified->getFullName();
             $this->has_conflict = true;
@@ -2366,7 +2368,7 @@ class BaseEventTypeController extends BaseModuleController
      * Saves a print to PDF as a ProtectedFile object and file
      *
      * @param $id
-     * @return array
+     * @return ?array
      */
     public function actionSavePDFprint($id)
     {

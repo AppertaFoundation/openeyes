@@ -20,8 +20,8 @@ $config = [
     'components' => [
         'urlManager' => [
             'rules' => [
-                'OphGenericModule/admin/<controller:\w+>/<action:\w+>' => '/OphGenericModule/OphGenericAdmin/<controller>/<action>',
-                'OphGenericModule/admin/<controller:\w+>/<action:\w+>/<id:\d+>' => '/OphGenericModule/OphGenericAdmin/<controller>/<action>',
+                'OphGeneric/admin/<controller:\w+>/<action:\w+>' => '/OphGeneric/OphGenericAdmin/<controller>/<action>',
+                'OphGeneric/admin/<controller:\w+>/<action:\w+>/<id:[\w\s]+>' => '/OphGeneric/OphGenericAdmin/<controller>/<action>',
             ]
         ]
     ]

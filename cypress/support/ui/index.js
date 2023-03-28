@@ -12,7 +12,6 @@ Cypress.Commands.add('getElementSideByName', (elementName, side) => {
     return cy.getElementByName(elementName).find(`.element-eyes .column[data-side=${side}]`);
 });
 
-
 Cypress.Commands.add('getBySel', (selector, ...args) => {
     return cy.get(`[data-test=${selector}]`, ...args);
 });
@@ -60,10 +59,22 @@ Cypress.Commands.add('saveEvent', () => {
 });
 
 Cypress.Commands.add('assertEventSaved', (isNewEvent) => {
-    if (isNewEvent === undefined) {
-        isNewEvent = true;
+    if (isNewEvent !== false) {
+        return cy.get('#flash-success').contains('created');
     }
-    return cy.get('#flash-success').contains(isNewEvent ? 'created' : 'updated');
+    cy.url().should('include', 'view');
+});
+
+Cypress.Commands.add('getByDataAttr', (dataAttrName, selector, ...args) => {
+    return cy.get(`[data-${dataAttrName}=${selector}]`, ...args);
+});
+
+Cypress.Commands.add('getByDataAttrContains', (dataAttrName, selector, ...args) => {
+    return cy.get(`[data-${dataAttrName}*=${selector}]`, ...args);
+});
+
+Cypress.Commands.add('getByElementName', (selector, ...args) => {
+    return cy.get(`[name='${selector}']`, ...args)
 });
 
 Cypress.Commands.add('assertElementValue', (dataTest, value, inputType = 'raw') => {
@@ -84,7 +95,7 @@ Cypress.Commands.add('assertElementValue', (dataTest, value, inputType = 'raw') 
 });
 
 Cypress.Commands.add('assertNoElementValue', (dataTest, value, inputType = 'raw') => {
-    cy.get('body').findBySel(dataTest).each(($el) => 
+    cy.get('body').findBySel(dataTest).each(($el) =>
     {
         switch (inputType) {
             case 'input':

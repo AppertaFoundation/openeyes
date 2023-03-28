@@ -13,8 +13,24 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-$config = array(
-    'modules' => array('OphGenericAdmin'),
-);
+$config = [
+    'params' => [
+        'admin_structure' => [
+            'Generic' => [
+                'Generic event sub types' => [
+                    'module' => 'OphGeneric',
+                    'uri' => '/OphGeneric/admin/Default/listEventSubTypes',
+                    'restricted' => ['admin']
+                ]
+            ]
+        ]
+    ],
+
+    'aliases' => [
+        'OphGenericAdmin' => 'OEModule.OphGeneric.modules.OphGenericAdmin',
+    ],
+
+    'modules' => ['OphGenericAdmin'],
+];
 
 return $config;

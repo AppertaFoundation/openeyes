@@ -6,8 +6,8 @@
 ?>
 <main class="main-event <?php echo $this->moduleStateCssClass; ?>" id="event-content" data-has-errors="<?=($has_errors ?? 'false') ?>">
 
-    <h2 class="event-title">
-        <?php echo $this->title ?>
+    <h2 class="event-title" data-tom="hi">
+        <?php echo $this->getTitle() ?>
         <?php if ($this->event->is_automated) {
             $this->renderPartial('//patient/event_automated');
         } ?>

@@ -21,9 +21,13 @@
 
 <?php $this->beginWidget('CondenseHtmlWidget') ?>
 
-<?php if ($this->event) : ?>
-    <?php echo $this->event->getEventIcon('medium'); ?>
-<?php endif; ?>
+<?php
+if ($this->event_subtype) {
+    echo $this->event_subtype->getEventIcon('medium');
+} elseif ($this->event) {
+    echo $this->event->getEventIcon('medium');
+}
+?>
 <?php foreach ($this->event_tabs as $tab) {
     $class = $tab['class'] ?? null;
     $label = $tab['label'] ?? null;

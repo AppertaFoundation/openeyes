@@ -31,8 +31,11 @@
 
 namespace OEModule\OphGeneric\models;
 
+use OE\factories\models\traits\HasFactory;
+
 class Comments extends \BaseEventTypeElement
 {
+    use HasFactory;
 
     public $widgetClass = 'OEModule\OphGeneric\widgets\Comments';
 
@@ -82,11 +85,11 @@ class Comments extends \BaseEventTypeElement
      */
     public function search()
     {
-        $criteria = new CDbCriteria;
+        $criteria = new \CDbCriteria;
 
         $criteria->compare('comment', $this->comment, true);
 
-        return new CActiveDataProvider(get_class($this), array(
+        return new \CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,
         ));
     }

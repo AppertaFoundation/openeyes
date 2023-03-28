@@ -15,8 +15,12 @@
 
 namespace OEModule\OphGeneric\models;
 
+use OE\factories\models\traits\HasFactory;
+
 class Attachment extends \BaseEventTypeElement
 {
+    use HasFactory;
+
     protected $auto_update_relations = true;
     protected $auto_validate_relations = true;
 
@@ -81,7 +85,7 @@ class Attachment extends \BaseEventTypeElement
     {
         // @todo Please modify the following code to remove attributes that should not be searched.
 
-        $criteria = new CDbCriteria;
+        $criteria = new \CDbCriteria;
 
         $criteria->compare('id', $this->id);
         $criteria->compare('event_id', $this->event_id, true);
@@ -90,7 +94,7 @@ class Attachment extends \BaseEventTypeElement
         $criteria->compare('created_user_id', $this->created_user_id, true);
         $criteria->compare('created_date', $this->created_date, true);
 
-        return new CActiveDataProvider($this, array(
+        return new \CActiveDataProvider($this, array(
             'criteria' => $criteria,
         ));
     }

@@ -191,8 +191,17 @@ class PatientEventController extends BaseController
         }
         $this->setContext($context);
 
+        $params = [
+            'patient_id' => $patient->id
+        ];
+
+        if ($request->getQuery('event_subtype')) {
+            $params['event_subtype'] = $request->getQuery('event_subtype');
+        }
+
+        $query = "?" . http_build_query($params);
         $this->redirect(
-            $app->createUrl($event_type->class_name . '/Default/create') . '?patient_id=' . $patient->id
+            $app->createUrl($event_type->class_name . '/Default/create') . $query
         );
     }
 

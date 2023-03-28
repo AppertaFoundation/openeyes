@@ -18,6 +18,7 @@
 namespace OEModule\OphGeneric\widgets;
 
 use OEModule\OphGeneric\models\DeviceInformation as DeviceInformationElement;
+use OEModule\OphGeneric\components\EventManager;
 
 class DeviceInformation extends \BaseEventElementWidget
 {
@@ -28,5 +29,12 @@ class DeviceInformation extends \BaseEventElementWidget
         return new DeviceInformationElement();
     }
 
+    protected function getView()
+    {
+        if ($this->element->isNewRecord || EventManager::forEvent($this->element->event)->isManualEvent())  {
+            return 'NoManualData_event_view';
+        }
 
+        return parent::getView();
+    }
 }

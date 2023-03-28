@@ -13,11 +13,18 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OE\factories\models\traits\HasFactory;
+
 /**
+ * @property string $event_subtype - identifier for EventSubtype
+ * @property string $event_id
  * @property EventSubType $eventSubtype
+ * @property Event $event
  */
 class EventSubTypeItem extends BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     public static function model($className = __CLASS__)
     {
         return parent::model($className);

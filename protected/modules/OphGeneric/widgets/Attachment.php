@@ -15,7 +15,6 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-
 class Attachment extends BaseModuleWidget
 {
     public $field_name = 'oe-attachment';
@@ -55,7 +54,6 @@ class Attachment extends BaseModuleWidget
      * @param $event_id
      * @param $short_code
      * @param string $condition
-     * @return array
      */
     public function getAttachments($event_id)
     {

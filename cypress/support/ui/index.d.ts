@@ -44,5 +44,22 @@ declare namespace Cypress {
          * @param isNewEvent defaults to true
          */
         assertEventSaved(isNewEvent: ?boolean): Chainable<any>
+        /**
+         * Cypress selector short cut for any data attribute equals selector
+         * @param getByDataAttr
+         * @param selector
+         */
+        getByDataAttr(getByDataAttr: string, selector: string): Chainable<any>
+        /**
+         * Cypress selector short cut for any data attribute contains selector
+         * @param getByDataAttr
+         * @param selector
+         */
+        getByDataAttrContains(getByDataAttr: string, selector: string): Chainable<any>
+        /**
+         * Cypress selector short cut for any element with name attribute
+         * @param selector
+         */
+        getByElementName(selector: string): Chainable<any>
     }
   }

@@ -34,8 +34,17 @@
 
 namespace OEModule\OphGeneric\models;
 
+use OE\factories\models\traits\HasFactory;
+
 class HFAEntry extends \BaseActiveRecordVersioned
 {
+    use HasFactory;
+
+    public const MEAN_DEVIATION_MIN = -30;
+    public const MEAN_DEVIATION_MAX = 5;
+    public const VISUAL_FIELD_INDEX_MIN = 0;
+    public const VISUAL_FIELD_INDEX_MAX = 100;
+
     /**
      * @return string the associated database table name
      */
@@ -51,15 +60,17 @@ class HFAEntry extends \BaseActiveRecordVersioned
     {
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
-        return array(
-            array('element_id', 'required'),
-            array('element_id', 'numerical', 'integerOnly'=>true),
-            array('last_modified_user_id, created_user_id', 'length', 'max'=>10),
-            array('mean_deviation, visual_field_index, last_modified_date, created_date', 'safe'),
+        return [
+            ['element_id, mean_deviation, visual_field_index', 'required'],
+            ['mean_deviation', 'numerical', 'min' => self::MEAN_DEVIATION_MIN, 'max' => self::MEAN_DEVIATION_MAX],
+            ['visual_field_index', 'numerical', 'min' => self::VISUAL_FIELD_INDEX_MIN, 'max' => self::VISUAL_FIELD_INDEX_MAX, 'integerOnly' => true],
+            ['element_id', 'numerical', 'integerOnly' => true],
+            ['last_modified_user_id, created_user_id', 'length', 'max'=>10],
+            ['eye_id, mean_deviation, visual_field_index, last_modified_date, created_date', 'safe'],
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
-            array('id, element_id, mean_deviation, visual_field_index, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
-        );
+            ['id, element_id, mean_deviation, visual_field_index, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'],
+        ];
     }
 
     /**
@@ -84,8 +95,8 @@ class HFAEntry extends \BaseActiveRecordVersioned
         return array(
             'id' => 'ID',
             'element_id' => 'Element',
-            'mean_deviation' => 'Mean Deviation',
-            'visual_field_index' => 'Visual Field Index',
+            'mean_deviation' => 'Mean Deviation (dB)',
+            'visual_field_index' => 'Visual Field Index (%)',
             'last_modified_user_id' => 'Last Modified User',
             'last_modified_date' => 'Last Modified Date',
             'created_user_id' => 'Created User',
@@ -120,7 +131,7 @@ class HFAEntry extends \BaseActiveRecordVersioned
         $criteria->compare('created_user_id', $this->created_user_id, true);
         $criteria->compare('created_date', $this->created_date, true);
 
-        return new CActiveDataProvider($this, array(
+        return new \CActiveDataProvider($this, array(
             'criteria'=>$criteria,
         ));
     }

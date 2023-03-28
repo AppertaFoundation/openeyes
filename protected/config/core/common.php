@@ -989,7 +989,7 @@ $modules = array(
         'OphInGeneticresults',
         'OphCoDocument',
         'OphCiDidNotAttend',
-        'OphGeneric',
+        'OphGeneric' => ['class' => OEModule\OphGeneric\OphGenericModule::class],
         'OECaseSearch',
         'OETrial',
         'SSO',
