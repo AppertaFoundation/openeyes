@@ -228,7 +228,7 @@ Yii::app()->clientScript->registerScriptFile($widgetPath . '/Attachment.js');
                     <tbody>
                     <tr>
                         <td><?= $routineExecution->id; ?></td>
-                        <td><?= $routineExecution->log_text; ?></td>
+                        <td><textarea style="width: 400px; height: 100px"><?= $routineExecution->log_text; ?></textarea></td>
                         <td style="word-break: break-all;"><?= $routineExecution->request_routine_id; ?></td>
                         <td><?= $routineExecution->try_number; ?></td>
                         <td><?= $routineExecution->execution_date_time; ?></td>
