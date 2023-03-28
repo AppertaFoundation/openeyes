@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Apperta Foundation, 2023
  * This file is part of OpenEyes.
@@ -16,7 +17,7 @@
 class m230323_122010_manual_visual_fields_event_config extends OEMigration
 {
     protected const EVENT_SUBTYPE = 'Visual Fields';
-    protected const ELEMENT_TYPES = ['OEModule\OphGeneric\models\DeviceInformation', 'OEModule\OphGeneric\models\HFA', 'OEModule\OphGeneric\models\Comments'];
+    protected const ELEMENT_TYPES = ['OEModule\OphGeneric\models\HFA', 'OEModule\OphGeneric\models\Comments', 'OEModule\OphGeneric\models\DeviceInformation'];
     public function safeUp()
     {
         // reset default elements
