@@ -75,7 +75,11 @@ class PatientIdentifier extends BaseActiveRecordVersioned
     public function valueValidator($attribute, $params)
     {
         if (!$this->patientIdentifierType->validateTerm($this->value)) {
-            $this->addError($attribute, "Invalid value format. Acceptable: {$this->patientIdentifierType->validate_regex}");
+            $error = "Invalid value format. Acceptable:" . $this->patientIdentifierType->validate_regex;
+            if ($this->patientIdentifierType->validation_example != '') {
+                $error .= " e.g. ". $this->patientIdentifierType->validation_example;
+            }
+            $this->addError($attribute, $error);
         }
 
         $patient_id = isset($this->patient) ? $this->patient->id : null;

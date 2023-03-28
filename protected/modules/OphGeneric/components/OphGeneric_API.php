@@ -13,6 +13,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OEModule\OphGeneric\models\HFA;
+
 class OphGeneric_API extends BaseAPI
 {
     public $show_if_both_eyes_are_null = false;
@@ -65,9 +67,28 @@ class OphGeneric_API extends BaseAPI
         return Eye::model()->findByAttributes(['name' => $eye_name]);
     }
 
+    public function getVfiFor(Patient $patient, $use_context = false)
+    {
+        $hfas = $this->getElements(HFA::class, $patient, $use_context);
+
+        return array_map([$this, 'formatHfaForVfiResults'], $hfas);
+    }
+
     public function getElements($element, Patient $patient, $use_context = false, $before = null, $criteria = null): array
     {
         return parent::getElements($this->namespaceElementName($element), $patient, $use_context, $before, $criteria);
+    }
+
+    protected function formatHfaForVfiResults(HFA $element)
+    {
+        $result = [];
+        foreach ($element->hfaEntry as $entry) {
+            $side = ((int) $entry->eye_id) === \Eye::RIGHT ? 'right' : 'left';
+            $result[$side . '_vfi'] = $entry->visual_field_index;
+        }
+        $result['eventdate'] = $element->event->event_date;
+
+        return $result;
     }
 
     private function namespaceElementName($element)

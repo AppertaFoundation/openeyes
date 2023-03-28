@@ -69,7 +69,7 @@
                     ); ?>
                 </td>
             </tr>
-        <?php foreach (['validate_regex','value_display_prefix', 'value_display_suffix', 'pad', 'spacing_rule'] as $field) { ?>
+        <?php foreach (['validate_regex','value_display_prefix', 'value_display_suffix', 'pad', 'spacing_rule', 'validation_example'] as $field) { ?>
             <tr>
                 <td><?php echo $patient_identifier_type->getAttributeLabel($field); ?></td>
                 <td>
