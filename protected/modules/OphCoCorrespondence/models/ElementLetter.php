@@ -99,6 +99,7 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
             ),
             array('to_location_id', 'internalReferralToLocationIdValidator'),
             array('to_subspecialty_id', 'internalReferralServiceValidator'),
+            array('to_firm_id', 'internalReferralFirmValidator'),
             array('is_same_condition', 'internalReferralConditionValidator'),
             array('letter_type_id', 'letterTypeValidator'),
             array('date, introduction, body', 'requiredIfNotDraft'),
@@ -172,6 +173,21 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
             }
         }
     }
+
+    public function internalReferralFirmValidator($attribute, $params)
+    {
+        if (strtolower(\SettingMetadata::model()->getSetting('correspondence_make_context_mandatory_for_internal_referrals')) === 'off') {
+            return;
+        }
+        $letter_type = LetterType::model()->findByAttributes(array('name' => 'Internal Referral', 'is_active' => 1));
+        if ($letter_type->id !== $this->letter_type_id) {
+            return;
+        }
+        if (!$this->to_firm_id && $this->draft === '0') {
+            $this->addError($attribute, $this->getAttributeLabel($attribute) . ": Please select a context.");
+        }
+    }
+
     public function internalReferralConditionValidator($attribute, $params)
     {
         $letter_type = LetterType::model()->findByAttributes(array('name' => 'Internal Referral', 'is_active' => 1));
