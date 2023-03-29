@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Apperta Foundation, 2022
  * This file is part of OpenEyes.
@@ -30,6 +31,7 @@ use OE\factories\models\traits\HasFactory;
  * @property string $value_display_suffix
  * @property string $unique_row_string
  * @property string $pad
+ * @property string $validation_example
  * @property string $last_modified_user_id
  * @property string $last_modified_date
  * @property string $created_user_id
@@ -63,7 +65,7 @@ class PatientIdentifierType extends BaseActiveRecordVersioned
     {
         return array(
             array('id, usage_type, short_title, long_title, institution_id, site_id, validate_regex,
-             value_display_prefix, value_display_suffix, unique_row_string,pad, spacing_rule,pas_api',
+             value_display_prefix, value_display_suffix, unique_row_string,pad, spacing_rule,pas_api, validation_example',
                 'safe'),
             array('short_title, institution_id, validate_regex', 'required'),
             array('usage_type', 'validateUsageType'),
@@ -117,8 +119,10 @@ class PatientIdentifierType extends BaseActiveRecordVersioned
             'created_user_id' => 'Created User',
             'created_date' => 'Created Date',
             'pad' => 'Padding',
+            'validation_example' => 'Validation Example',
             'spacing_rule' => 'Spacing Rule',
-            'pas_api' => 'PAS'
+            'pas_api' => 'PAS',
+            'unique_row_string' => 'Unique Identifier'
         );
     }
 
@@ -177,7 +181,7 @@ class PatientIdentifierType extends BaseActiveRecordVersioned
      * @param string $term
      * @return bool
      */
-    public function validateTerm(string $term, bool $allow_blank = false) : bool
+    public function validateTerm(string $term, bool $allow_blank = false): bool
     {
         if ($this->validate_regex) {
             $match = PatientIdentifierHelper::getPaddedTermRegexResult($term, $this->validate_regex, $this->pad);
@@ -199,7 +203,7 @@ class PatientIdentifierType extends BaseActiveRecordVersioned
      *
      * @return string
      */
-    public function getTitleWithInstitution() : string
+    public function getTitleWithInstitution(): string
     {
         return $this->long_title . ' (' . $this->institution->name . ')';
     }
@@ -220,7 +224,7 @@ class PatientIdentifierType extends BaseActiveRecordVersioned
     {
         $unique_row_string_site_id = $this->site_id;
 
-        if(!isset($this->site_id) || $this->site_id === '') {
+        if (!isset($this->site_id) || $this->site_id === '') {
             $unique_row_string_site_id = 0;
         }
 
@@ -245,7 +249,7 @@ class PatientIdentifierType extends BaseActiveRecordVersioned
      * @param $string
      * @return bool
      */
-    public function isValidJson($string) : bool
+    public function isValidJson($string): bool
     {
         json_decode($string);
         return (json_last_error() == JSON_ERROR_NONE);

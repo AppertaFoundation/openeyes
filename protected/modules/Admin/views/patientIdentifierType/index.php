@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2020
  * This file is part of OpenEyes.
@@ -12,6 +13,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <div class="cols-11">
@@ -59,7 +61,7 @@
             <tr>
             <th><input type="checkbox" id="checkall" class="patient_identifier_types" /></th>
             <?php $patient_identifier_type_fields = ['id', 'institution_id', 'site_id', 'usage_type', 'short_title', 'long_title',
-                'validate_regex', 'value_display_prefix', 'value_display_suffix', 'pad', 'spacing_rule', 'pas_api']?>
+                'validate_regex', 'value_display_prefix', 'value_display_suffix', 'pad', 'spacing_rule', 'pas_api', 'unique_row_string']?>
             <?php foreach ($patient_identifier_type_fields as $field) { ?>
                 <th><?= $element->getAttributeLabel($field) ?></th>
             <?php } ?>
@@ -89,6 +91,7 @@
                                 <?=\OEHtml::icon('cross-red', ['class' => 'small']);?>
                             <?php endif; ?>
                         </td>
+                        <td><?= $patient_identifier_type->unique_row_string ?></td>
                     </tr>
                 <?php } ?>
             </tbody>

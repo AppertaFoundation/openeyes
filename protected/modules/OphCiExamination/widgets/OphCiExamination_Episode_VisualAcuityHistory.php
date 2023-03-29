@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2014
  * This file is part of OpenEyes.
@@ -12,6 +13,7 @@
  * @copyright Copyright (C) 2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 use OEModule\OphCiExamination\models;
 use OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity;
 
@@ -60,7 +62,7 @@ class OphCiExamination_Episode_VisualAcuityHistory extends \EpisodeSummaryWidget
      */
     public function getAdjustedVA($val)
     {
-        return $val > 4 ? $val : ($val-4) * 10;
+        return $val > 4 ? $val : ($val - 4) * 10;
     }
 
 
@@ -68,15 +70,16 @@ class OphCiExamination_Episode_VisualAcuityHistory extends \EpisodeSummaryWidget
     /**
      * @return FlotChart
      */
-    public function configureChart() {
+    public function configureChart()
+    {
         $this->vfi_ticks = $this->getVfiChartTicks();
         $va_ticks = $this->getVAChartTicks();
         $va_len = sizeof($va_ticks);
-        $step = $va_len/20;
+        $step = $va_len / 20;
         $no_numeric_val_count = 4;   //keep the 4 no number labels: CF, HM, PL, NPL
         $this->va_ticks = array_slice($va_ticks, 0, $no_numeric_val_count);
 
-        for ($i = $no_numeric_val_count; $i<=$va_len-$step; $i+=$step) {
+        for ($i = $no_numeric_val_count; $i <= $va_len - $step; $i += $step) {
             array_push($this->va_ticks, $va_ticks[$i]);
         }
 
@@ -99,10 +102,12 @@ class OphCiExamination_Episode_VisualAcuityHistory extends \EpisodeSummaryWidget
     public function addData(\FlotChart $chart)
     {
         foreach ($this->event_type->api->getElements('OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity', $this->episode->patient, false) as $va) {
-            if (($reading = $va->getBestReading('right'))) {
+            $reading = $va->getBestReading('right');
+            if ($reading) {
                 $this->addVaReading($va->event, $chart, $reading, 'right');
             }
-            if (($reading = $va->getBestReading('left'))) {
+            $reading = $va->getBestReading('left');
+            if ($reading) {
                 $this->addVaReading($va->event, $chart, $reading, 'left');
             }
         }
@@ -121,18 +126,21 @@ class OphCiExamination_Episode_VisualAcuityHistory extends \EpisodeSummaryWidget
         $chart->addPoint($series_name, Helper::mysqlDate2JsTimestamp($event->event_date), $reading->value, $label);
     }
 
-    public function getVaData(){
-        $va_data_list = array('right'=>array(), 'left'=>array());
-        foreach ($this->event_type->api->getElements(
-            'OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity',
-            $this->patient,
-            false
-        ) as $va) {
+    public function getVaData()
+    {
+        $va_data_list = array('right' => array(), 'left' => array());
+        foreach (
+            $this->event_type->api->getElements(
+                'OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity',
+                $this->patient,
+                false
+            ) as $va
+        ) {
             foreach (['left', 'right'] as $side) {
                 $reading = $va->getBestReading($side);
                 if ($reading) {
                     $va_value = $this->getAdjustedVA((float)$reading->value);
-                    $va_data_list[$side][] = array( 'y'=>$va_value,'x'=>Helper::mysqlDate2JsTimestamp($va->event->event_date));
+                    $va_data_list[$side][] = array( 'y' => $va_value,'x' => Helper::mysqlDate2JsTimestamp($va->event->event_date));
                 }
             }
         }
@@ -142,7 +150,8 @@ class OphCiExamination_Episode_VisualAcuityHistory extends \EpisodeSummaryWidget
         return $va_data_list;
     }
 
-    public function getPlotlyVaData() {
+    public function getPlotlyVaData()
+    {
         $va_data_list = [
             'right' => [],
             'left' => [],
@@ -194,21 +203,24 @@ class OphCiExamination_Episode_VisualAcuityHistory extends \EpisodeSummaryWidget
             'left' => ['x' => [], 'y' => []]
         ];
         $generic_api = Yii::app()->moduleAPI->get('OphGeneric');
-        $hfa = $generic_api->getElements(\OEModule\OphGeneric\models\HFA::class, $this->patient, false);
-        foreach ($hfa as $h) {
-            $reading = $h->getMeanDeviation();
-            if ($reading['side'] === 'right') {
+        foreach ($generic_api->getVfiFor($this->patient) as $vfi_results) {
+            $event_date = date('Y-m-d', Helper::mysqlDate2JsTimestamp($vfi_results['eventdate']) / 1000);
+
+            if (isset($vfi_results['right_vfi'])) {
                 $vfi_data_list['right'][] = [
-                    'y' => $reading['vfi'],
-                    'x' => date('Y-m-d', Helper::mysqlDate2JsTimestamp($h->event->event_date) / 1000)
+                    'y' => $vfi_results['right_vfi'],
+                    'x' => $event_date
                 ];
-            } else {
+            }
+
+            if (isset($vfi_results['left_vfi'])) {
                 $vfi_data_list['left'][] = [
-                    'y' => $reading['vfi'],
-                    'x' => date('Y-m-d', Helper::mysqlDate2JsTimestamp($h->event->event_date) / 1000)
+                    'y' => $vfi_results['left_vfi'],
+                    'x' => $event_date
                 ];
             }
         }
+
         foreach (['left', 'right'] as $side) {
             usort($vfi_data_list[$side], array("EpisodeSummaryWidget","sortData"));
             foreach ($vfi_data_list[$side] as $item) {
@@ -220,12 +232,14 @@ class OphCiExamination_Episode_VisualAcuityHistory extends \EpisodeSummaryWidget
         return $vfi_plotly_list;
     }
 
-    public function getVaAxis() {
+    public function getVaAxis()
+    {
         return $this->va_axis;
     }
 
-    public function getVaTicks() {
-        $tick_data = array('tick_position'=> array(), 'tick_labels'=> array());
+    public function getVaTicks()
+    {
+        $tick_data = array('tick_position' => array(), 'tick_labels' => array());
         foreach ($this->va_ticks as $tick) {
             array_push($tick_data['tick_position'], (float)$tick[0]);
             array_push($tick_data['tick_labels'], $tick[1]);
@@ -233,8 +247,9 @@ class OphCiExamination_Episode_VisualAcuityHistory extends \EpisodeSummaryWidget
         return $tick_data;
     }
 
-    public function getVfiTicks() {
-        $tick_data = array('tick_position'=> array(), 'tick_labels'=> array());
+    public function getVfiTicks()
+    {
+        $tick_data = array('tick_position' => array(), 'tick_labels' => array());
         foreach ($this->vfi_ticks as $tick) {
             array_push($tick_data['tick_position'], $tick[0]);
             array_push($tick_data['tick_labels'], $tick[1]);
@@ -272,7 +287,7 @@ class OphCiExamination_Episode_VisualAcuityHistory extends \EpisodeSummaryWidget
 
     protected function getVFIChartTicks()
     {
-        for ($value = -30; $value < 10;$value += 5) {
+        for ($value = 0; $value <= 100; $value += 10) {
             $vfi_ticks[] = array($value, $value);
         }
         return $vfi_ticks;
