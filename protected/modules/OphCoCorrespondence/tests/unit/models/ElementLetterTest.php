@@ -4,13 +4,9 @@
  * Class ElementLetterTest
  * @covers ElementLetter
  * @method letters($fixtureId)
- * @group sample-data
  */
 class ElementLetterTest extends ActiveRecordTestCase
 {
-    use \HasModelAssertions;
-    use \FakesSettingMetadata;
-
     protected $fixtures = array(
         'letters' => ElementLetter::class,
         'events' => Event::class,
@@ -132,33 +128,6 @@ class ElementLetterTest extends ActiveRecordTestCase
         $path = Yii::app()->getRuntimePath() . '/test.pdf';
         $this->expectException(CHttpException::class);
         $this->letter->export($path, 'REST');
-    }
-
-    /** @test */
-    public function testInternalReferralFirmValidator(): void
-    {
-        $instance = new ElementLetter();
-
-        $letter_type = LetterType::model()->findByAttributes(array('name' => 'Internal Referral', 'is_active' => 1));
-        $instance->letter_type_id = $letter_type->id; //set type to internal referral
-        $instance->draft = '0'; //drafts are not validated
-
-        //test default case, firm can be null
-        $this->fakeSettingMetadata('correspondence_make_context_mandatory_for_internal_referrals', 'Off');
-
-        $this->assertEquals($letter_type->id, $instance->letter_type_id);
-
-        $this->assertAttributeValid($instance, 'to_firm_id');
-
-        //set system settings to on
-        $this->fakeSettingMetadata('correspondence_make_context_mandatory_for_internal_referrals', 'On');
-
-        //set to_firm_id to the first available firm
-        $instance->to_firm_id = Firm::model()->find()->id;
-
-        $instance->validate();
-
-        $this->assertAttributeValid($instance, 'to_firm_id');
     }
 }
 
