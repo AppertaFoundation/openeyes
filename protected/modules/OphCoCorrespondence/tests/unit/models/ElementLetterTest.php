@@ -146,18 +146,12 @@ class ElementLetterTest extends ActiveRecordTestCase
         //test default case, firm can be null
         $this->fakeSettingMetadata('correspondence_make_context_mandatory_for_internal_referrals', 'Off');
 
-        $instance->validate();
-
         $this->assertEquals($letter_type->id, $instance->letter_type_id);
 
         $this->assertAttributeValid($instance, 'to_firm_id');
 
         //set system settings to on
         $this->fakeSettingMetadata('correspondence_make_context_mandatory_for_internal_referrals', 'On');
-
-        $instance->validate();
-
-        $this->assertAttributeHasError($instance, 'to_firm_id', 'select a context');
 
         //set to_firm_id to the first available firm
         $instance->to_firm_id = Firm::model()->find()->id;

@@ -176,15 +176,15 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
 
     public function internalReferralFirmValidator($attribute, $params)
     {
+        if (strtolower(\SettingMetadata::model()->getSetting('correspondence_make_context_mandatory_for_internal_referrals')) === 'off') {
+            return;
+        }
         $letter_type = LetterType::model()->findByAttributes(array('name' => 'Internal Referral', 'is_active' => 1));
-        $is_context_required =
-            strtolower(\SettingMetadata::model()->getSetting('correspondence_make_context_mandatory_for_internal_referrals')) === 'on';
-
-        if ($is_context_required && $letter_type->id === $this->letter_type_id) {
-            // internal referral posted
-            if (!$this->to_firm_id && $this->draft === '0') {
-                $this->addError($attribute, $this->getAttributeLabel($attribute) . ": Please select a context.");
-            }
+        if ($letter_type->id !== $this->letter_type_id) {
+            return;
+        }
+        if (!$this->to_firm_id && $this->draft === '0') {
+            $this->addError($attribute, $this->getAttributeLabel($attribute) . ": Please select a context.");
         }
     }
 
