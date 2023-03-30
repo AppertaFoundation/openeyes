@@ -614,11 +614,13 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemandEye
 
                 $patient_json = $new_json;
                 $new_json = $temp;
+
+                $processor = new \EDProcessor();
+
+                return $processor->applyNewElementEyedrawData($this->elementType->id, $patient_json, $new_json);
+            } else {
+                return $new_json;
             }
-
-            $processor = new \EDProcessor();
-
-            return $processor->applyNewElementEyedrawData($this->elementType->id, $patient_json, $new_json);
         };
 
         return $priorities;

@@ -31,7 +31,35 @@
     ?>
 </div>
 
-<div class="cols-4">
+<div class="row divider">
+     <table class="standard cols-full">
+        <colgroup>
+            <col class="cols-3">
+            <col class="cols-5">
+        </colgroup>
+        <tbody>
+            <tr>
+                <td>Institution</td>
+                <td class="cols-full">
+                    <?php
+                    if ($this->checkAccess('admin')) {
+                        echo CHtml::dropDownList(
+                            'institution_id',
+                            $institution_id,
+                            CHtml::listData(Institution::model()->getTenanted(), 'id', 'name'),
+                            ['empty' => 'All institutions', 'id' => 'js-institution-setting-filter', 'class' => 'cols-full']
+                        );
+                    } else {
+                        echo Institution::model()->getCurrent()->name;
+                    }
+                    ?>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="cols-full">
     <form id="admin_workflows">
         <table class="standard">
             <thead>
@@ -79,3 +107,14 @@
         </table>
     </form>
 </div>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#js-institution-setting-filter').change(function(e) {
+            let url = new URL(window.location.href);
+
+            url.searchParams.set('institution_id', $(this).val());
+
+            window.location = url;
+        });
+    });
+</script>

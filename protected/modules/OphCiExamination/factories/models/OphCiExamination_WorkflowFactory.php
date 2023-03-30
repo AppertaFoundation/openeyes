@@ -9,16 +9,16 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (C) 2022, Apperta Foundation
+ * @copyright Copyright (C) 2023, Apperta Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
 namespace OEModule\OphCiExamination\factories\models;
 
-
 use Institution;
 use OE\factories\ModelFactory;
 use OEModule\OphCiExamination\models\OphCiExamination_Workflow;
+use OEModule\OphCiExamination\models\OphCiExamination_ElementSet;
 use ReferenceData;
 
 class OphCiExamination_WorkflowFactory extends ModelFactory
@@ -35,10 +35,42 @@ class OphCiExamination_WorkflowFactory extends ModelFactory
     }
 
     /**
-     * @param Institution|int $institution
+     * Generated workflow will be at the installation level
+     *
      * @return self
      */
-    public function forInstitution($institution) {
-        return $this->state([ 'institution_id' => $institution ]);
+    public function forInstallation(): self
+    {
+        return $this->state([
+            'institution_id' => null
+        ]);
+    }
+
+    /**
+     * Default behaviour for factory is to create an institution level workflow for an existing institution.
+     *
+     * This state provides more fine grained control of what institution that is.
+     *
+     * @param Institution|InstitutionFactory|int|string|null $institution
+     * @return OphCiExamination_WorkflowFactory
+     */
+    public function forInstitution($institution = null): self
+    {
+        $institution ??= ModelFactory::factoryFor(Institution::class);
+
+        return $this->state([
+            'institution_id' => $institution,
+        ]);
+    }
+
+    public function forElementSet(?OphCiExamination_ElementSet $element_set = null): self
+    {
+        return $this->afterCreating(function (OphCiExamination_Workflow $workflow) use ($element_set) {
+            if ($element_set) {
+                $element_set->workflow_id = $workflow->id;
+            } else {
+                OphCiExamination_ElementSet::factory()->create(['workflow_id' => $workflow]);
+            }
+        });
     }
 }

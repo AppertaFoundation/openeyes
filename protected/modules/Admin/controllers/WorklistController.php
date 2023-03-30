@@ -366,35 +366,28 @@ class WorklistController extends BaseAdminController
             }
         }
 
-        $examination_workflows = CHtml::listData(
-            \OEModule\OphCiExamination\models\OphCiExamination_Workflow::model()->findAll(
-                [
-                    'condition' => 'institution_id = :institution_id',
-                    'order' => 'name asc',
-                    'params' => [':institution_id' => Yii::app()->session['selected_institution_id']]
-                ]
-            ),
-            'name',
-            'id'
-        );
+        $current_institution = \Institution::model()->getCurrent();
+
         $examination_workflow_steps = OEModule\OphCiExamination\models\OphCiExamination_Workflow_Rule::model()->findWorkflowSteps(
-            Yii::app()->session['selected_institution_id'],
+            $current_institution->id,
             null
         );
+
         $letter_macros = CHtml::listData(
             LetterMacro::model()->findAll([
                 'with' => 'institutions',
                 'condition' => 'institutions_institutions.institution_id = :institution_id',
                 'order' => 't.name asc',
-                'params' => [':institution_id' => Yii::app()->session['selected_institution_id']]
+                'params' => [':institution_id' => $current_institution->id]
             ]),
             'name',
             'id'
         );
+
         $pgd_sets = CHtml::listData(
             OphDrPGDPSD_PGDPSD::model()->findAll([
                 'condition' => 'institution_id = :institution_id AND LOWER(type) = "pgd" AND active = 1',
-                'params' => [':institution_id' => Yii::app()->session['selected_institution_id']],
+                'params' => [':institution_id' => $current_institution->id],
                 'order' => 'name asc',
             ]),
             'name',

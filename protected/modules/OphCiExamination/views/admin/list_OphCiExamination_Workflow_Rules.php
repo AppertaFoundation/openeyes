@@ -32,6 +32,20 @@
 </div>
 
 <div class="cols-5">
+    <div>
+    <?php
+    if ($this->checkAccess('admin')) {
+        echo 'Institution: ' . CHtml::dropDownList(
+            'institution_id',
+            $institution_id,
+            CHtml::listData(Institution::model()->getTenanted(), 'id', 'name'),
+            array('empty' => 'All institutions', 'id' => 'js-institution-setting-filter')
+        );
+    } elseif ($institution_id !== null) {
+        echo 'Institution: ' . Institution::model()->findByPk($institution_id)->name;
+    }
+    ?>
+    </div>
     <form id="admin_workflowrules">
         <table class="standard">
             <thead>
@@ -83,3 +97,14 @@
         </table>
     </form>
 </div>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#js-institution-setting-filter').change(function(e) {
+            let url = new URL(window.location.href);
+
+            url.searchParams.set('institution_id', $(this).val());
+
+            window.location = url;
+        });
+    });
+</script>
