@@ -1,4 +1,5 @@
 <?php
+use OE\factories\models\traits\HasFactory;
 /**
  * OpenEyes.
  *
@@ -28,6 +29,9 @@
  */
 class LetterType extends BaseActiveRecordVersioned
 {
+    use HasFactory;
+
+    public const NAME_FOR_INTERNAL_REFERRAL = 'Internal Referral';
 
     /**
      * Returns the static model of the specified AR class.
@@ -106,7 +110,7 @@ class LetterType extends BaseActiveRecordVersioned
         $is_internal_referral_enabled = OphcocorrespondenceInternalReferralSettings::model()->getSetting('is_enabled');
 
         if ($is_internal_referral_enabled == 'off') {
-            $criteria->addCondition('name != "Internal Referral"');
+            $criteria->addCondition("name != '" . self::NAME_FOR_INTERNAL_REFERRAL . '"');
         }
 
         return LetterType::model()->findAll($criteria);
