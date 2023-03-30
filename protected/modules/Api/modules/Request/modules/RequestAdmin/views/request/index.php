@@ -207,13 +207,13 @@ Yii::app()->clientScript->registerScriptFile($widgetPath . '/Attachment.js');
             style="display:none">
             <td colspan="10">
                 <table class="standard" style="background-color: white">
-                    <colgroup>
-                        <col class="cols-2">
-                        <col class="cols-2">
-                        <col class="cols-2">
-                        <col class="cols-2">
-                        <col class="cols-2">
-                        <col class="cols-2">
+                <colgroup>
+                        <col class="cols-1">
+                        <col class="cols-5">
+                        <col class="cols-1">
+                        <col class="cols-1">
+                        <col class="cols-1">
+                        <col class="cols-1">
                     </colgroup>
                     <thead>
                     <tr>
@@ -228,7 +228,7 @@ Yii::app()->clientScript->registerScriptFile($widgetPath . '/Attachment.js');
                     <tbody>
                     <tr>
                         <td><?= $routineExecution->id; ?></td>
-                        <td><textarea style="width: 400px; height: 100px"><?= $routineExecution->log_text; ?></textarea></td>
+                        <td><textarea style="width: 750px; height: 100px"><?= $routineExecution->log_text; ?></textarea></td>
                         <td style="word-break: break-all;"><?= $routineExecution->request_routine_id; ?></td>
                         <td><?= $routineExecution->try_number; ?></td>
                         <td><?= $routineExecution->execution_date_time; ?></td>
