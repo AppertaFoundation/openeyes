@@ -385,6 +385,28 @@ class PatientIdentifierHelper
         ]);
     }
 
+    public static function getSearchExamplePatternBasedOnIdentifierType(string $displayPrompt): array
+    {
+        $pattern = [];
+
+        switch (strtoupper($displayPrompt)) {
+            case "NHS":
+            case "NHS ID":
+                $pattern[$displayPrompt] = '123-123-1234';
+                break;
+            case "CERA":
+            case "CERA ID":
+                $pattern[$displayPrompt] = 'LL01-0028, 101002, 30-001, LON-01';
+                break;
+            case "MEDICARE":
+            case "MEDICARE ID":
+                $pattern[$displayPrompt] = '123-123';
+                break;
+        }
+
+        return $pattern;
+    }
+
     /**
      * Retrieve a padded search term that matches patient identifier regex
      *
@@ -394,7 +416,7 @@ class PatientIdentifierHelper
      */
     public static function getPaddedTermRegexResult(string $term, string $validate_regex, string $pad = null)
     {
-        if($validate_regex) {
+        if ($validate_regex) {
             preg_match($validate_regex, $term, $matches);
 
             if (isset($matches[0])) {
