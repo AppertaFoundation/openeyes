@@ -84,11 +84,16 @@ trait MakesApplicationRequests
         \Yii::app()->setComponent('request', $requestMock);
 
         ob_start();
-        \Yii::app()->run();
-        $output = ob_get_contents();
-        ob_end_clean();
+        try {
+            \Yii::app()->run();
+            $output = ob_get_contents();
+            ob_end_clean();
+        } catch (Exception $e) {
+            ob_end_clean();
+            return ApplicationResponseWrapper::fromException($e);
+        }
 
-        return new ApplicationResponseWrapper($output, $redirected);
+        return $redirected === null ? ApplicationResponseWrapper::fromOutputString($output) : ApplicationResponseWrapper::fromRedirect($redirected);
     }
 
     protected function crawl(string $contents)

@@ -4,7 +4,10 @@
 
 class CsvController extends BaseController
 {
-    public static	$file_path = "tempfiles/";
+    const IMPORT_DATE_FORMAT = "d/m/Y";
+    const HUMAN_IMPORT_DATE_FORMAT = 'DD/MM/YYYY';
+
+    public static string $file_path = "/files/tempfiles/";
 
     static $contexts = array(
         'trials' => array(
@@ -61,6 +64,14 @@ class CsvController extends BaseController
         );
     }
 
+    /**
+     * @return string
+     */
+    public function getBasePath()
+    {
+        return Yii::app()->basePath . self::$file_path;
+    }
+
     public function actionFileCheck()
     {
         $file_type = $_POST['file_type'];
@@ -87,12 +98,12 @@ class CsvController extends BaseController
 
     public function actionPreview($context)
     {
-        if(file_exists(self::$file_path)) {
-            $file_list = glob(self::$file_path . "*");
+        if(file_exists($this->getBasePath())) {
+            $file_list = glob($this->getBasePath() . "*");
             foreach ($file_list as $file) {
                 unlink($file);
             }
-            rmdir(self::$file_path);
+            rmdir($this->getBasePath());
         }
 
         $csv_id = null;
@@ -133,10 +144,10 @@ class CsvController extends BaseController
                 //We use an md5 hash of the csv file to obscure any sensitive data
                 $csv_id = md5_file($_FILES['Csv']['tmp_name']['csvFile']);
 
-                if(!file_exists(self::$file_path)) {
-                    mkdir(self::$file_path);
+                if(!file_exists($this->getBasePath())) {
+                    mkdir($this->getBasePath(),0774, true);
                 }
-                copy($_FILES['Csv']['tmp_name']['csvFile'], self::$file_path . $csv_id . ".csv");
+                copy($_FILES['Csv']['tmp_name']['csvFile'], $this->getBasePath() . $csv_id . ".csv");
             }
         }
         $this->render('preview', array('table' => $table, 'csv_id' => $csv_id, 'context' => $context));
@@ -154,7 +165,7 @@ class CsvController extends BaseController
             \OELog::log("Failed to save import log: " . var_export($import_log->getErrors(), true));
         }
 
-    	$csv_file_path = self::$file_path . $csv . ".csv";
+    	$csv_file_path = $this->getBasePath() . $csv . ".csv";
 
         if(file_exists($csv_file_path)) {
             //check to see if the file is a csv file
@@ -276,12 +287,12 @@ class CsvController extends BaseController
         }
 
         //Remove uploaded files
-        if(file_exists(self::$file_path)) {
-            $file_list = glob(self::$file_path . "*");
+        if(file_exists($this->getBasePath())) {
+            $file_list = glob($this->getBasePath() . "*");
             foreach ($file_list as $file) {
                 unlink($file);
             }
-            rmdir(self::$file_path);
+            rmdir($this->getBasePath());
         }
 
         switch ($context) {
@@ -346,12 +357,29 @@ class CsvController extends BaseController
         if (empty($trial_raw_data['trial_type'])) {
             $trial_raw_data['trial_type'] = TrialType::INTERVENTION_CODE;
         }
+
+        if (!empty($trial_raw_data['started_date'])) {
+            // Parse the incoming date string from DD/MM/YYYY
+            $started_date = date_create_from_format(self::IMPORT_DATE_FORMAT, $trial_raw_data['started_date']);
+            if ($started_date === false) {
+                return ['Invalid start date form. Please try ' . self::HUMAN_IMPORT_DATE_FORMAT];
+            }
+        }
+
+        if (!empty($trial_raw_data['closed_date'])) {
+            // Parse the incoming date string from DD/MM/YYYY
+            $closed_date = date_create_from_format(self::IMPORT_DATE_FORMAT, $trial_raw_data['closed_date']);
+            if ($closed_date === false) {
+                return ['Invalid closed date form. Please try ' . self::HUMAN_IMPORT_DATE_FORMAT];
+            }
+        }
+
         $new_trial->trial_type_id = TrialType::model()->find('code = ?', array($trial_raw_data['trial_type']))->id;
         $new_trial->description = !empty($trial_raw_data['description']) ? $trial_raw_data['description'] : null;
         $new_trial->owner_user_id =  Yii::app()->user->id;
         $new_trial->is_open = isset($trial_raw_data['is_open']) && $trial_raw_data['is_open'] !== '' ? $trial_raw_data['is_open'] : false;
-        $new_trial->started_date = !empty($trial_raw_data['started_date']) ? $trial_raw_data['started_date'] : null;
-        $new_trial->closed_date = !empty($trial_raw_data['closed_date']) ? $trial_raw_data['closed_date'] : null;
+        $new_trial->started_date = isset($started_date) ? $started_date->format('Y-m-d 00:00:00') : null;
+        $new_trial->closed_date = isset($closed_date) ? $closed_date->format('Y-m-d 00:00:00') : null;
         $new_trial->external_data_link = !empty($trial_raw_data['external_data_link']) ? $trial_raw_data['external_data_link'] : null;
         $new_trial->ethics_number = !empty($trial_raw_data['ethics_number']) ? $trial_raw_data['ethics_number'] : null;
 

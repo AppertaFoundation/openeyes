@@ -89,7 +89,7 @@
                                         'type':'GET',
                                         'data':{'term': request.term},
                                         'success':function(data) {
-                                            data = $.parseJSON(data);
+                                            data = $.parseJSON(data) || [];
 
                                             var result = [];
 
@@ -114,6 +114,7 @@
                                 ),
                                 'htmlOptions' => array(
                                     'placeholder' => 'type to search for users',
+                                    'data-test' => 'createdby_auto_complete'
                                 ),
                             ));
                             ?>
@@ -154,7 +155,7 @@
                                         'type':'GET',
                                         'data':{'term': request.term},
                                         'success':function(data) {
-                                            data = $.parseJSON(data);
+                                            data = $.parseJSON(data) || [];
 
                                             var result = [];
 
@@ -179,6 +180,7 @@
                                 ),
                                 'htmlOptions' => array(
                                     'placeholder' => 'type to search for users',
+                                    'data-test' => 'consultant_auto_complete'
                                 ),
                             ));
                             ?>
@@ -219,8 +221,6 @@
                                         'type':'GET',
                                         'data':{'term': request.term, 'subspecialty_id': subspecialty_id},
                                         'success':function(data) {
-                                            data = $.parseJSON(data);
-
                                             var result = [];
 
                                             for (var i = 0; i < data.length; i++) {
@@ -244,6 +244,7 @@
                                     ),
                                     'htmlOptions' => array(
                                         'placeholder' => 'type to search for consultants',
+                                        'data-test' => 'firm_auto_complete'
                                     ),
                                 ));
                                 ?>
@@ -295,9 +296,9 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="column large-3">
-                        
+
                         <div class="row">
                             <div class="column large-6 text-right"><label for="missing_consultant_signature">Missing Consultant Signature:</label></div>
                             <div class="column large-6">
@@ -315,7 +316,7 @@
                                 ?>                            </div>
                         </div>
                     </div>
-                    
+
                     <div class="row">
                         <div class="column large-12 text-right end">
                             <button id="export_csv" class="primary small" type="button">Export</button>
@@ -337,7 +338,7 @@
             currentIds.push(consultant.id);
             $('#consultant_ids').val(currentIds.join());
 
-            $('#consultant_list').append('<li data-id="' + consultant.id + '">' + consultant.value + '<a href="#" class="remove">X</a></li>');
+            $('#consultant_list').append('<li ' + 'data-id="' + consultant.id + '">' + consultant.label + '<i class="remove oe-i remove-circle small pro-theme pad"></i></li>' );
             $('#consultant_list').scrollTop($('#consultant_list')[0].scrollHeight);
             $('#consultant_ids').trigger('change');
         }
@@ -362,7 +363,7 @@
             currentIds.push(firm.id);
             $('#firm_ids').val(currentIds.join());
 
-            $('#firm_list').append('<li data-id="' + firm.id + '">' + firm.value + '<a href="#" class="remove">X</a></li>');
+            $('#firm_list').append('<li data-id="' + firm.id + '">' + firm.value + '<i class="remove oe-i remove-circle small pro-theme pad"></i></li>' );
             $('#firm_list').scrollTop($('#firm_list')[0].scrollHeight);
             $('#firm_ids').trigger('change');
         }
@@ -388,7 +389,7 @@
             currentIds.push(user.id);
             $('#createdby_ids').val(currentIds.join());
 
-            $('#createdby_list').append('<li data-id="' + user.id + '">' + user.value + '<a href="#" class="remove">X</a></li>');
+            $('#createdby_list').append('<li data-id="' + user.id + '">' + user.label + '<i class="remove oe-i remove-circle small pro-theme pad"></i></li>' );
             $('#createdby_list').scrollTop($('#createdby_list')[0].scrollHeight);
             $('#createdby_ids').trigger('change');
             $('#search_button').removeAttr('disabled');
@@ -431,13 +432,13 @@
         $('#cvi-filter').on('change', '.filter-field', function () {
             $('#search_button').removeAttr('disabled');
         });
-         
+
         $(document).on('click','#export_csv', function () {
             originalAction = $('#cvi-filter').attr('action');
             action = '/OphCoCvi/Default/export',
             $('#cvi-filter').attr('action', action);
             $('#cvi-filter').submit();
-            
+
             $('#cvi-filter').attr('action', originalAction);
         });
 

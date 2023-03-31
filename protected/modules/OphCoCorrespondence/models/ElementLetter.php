@@ -569,11 +569,11 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
             }
         }
 
-        $pcassocitates = PatientContactAssociate::model()->findAllByAttributes(array('patient_id' => $patient->id));
-        if (isset($pcassocitates) && (Yii::app()->params['institution_code'] === 'CERA' || Yii::app()->params['use_contact_practice_associate_model'] == true)) {
-            foreach ($pcassocitates as $pcassocitate) {
-                $gp = $pcassocitate->gp;
-                $cpa = ContactPracticeAssociate::model()->findByAttributes(array('gp_id' => $gp->id));
+        if (Yii::app()->params['institution_code'] === 'CERA' || Yii::app()->params['use_contact_practice_associate_model'] == true) {
+            $patient_contact_associates = PatientContactAssociate::model()->findAllByAttributes(array('patient_id' => $patient->id));
+            foreach ($patient_contact_associates as $associate) {
+                $gp = $associate->gp;
+                $cpa = ContactPracticeAssociate::model()->findByAttributes(array('gp_id' => $gp->id, 'practice_id' => $associate->practice_id));
                 if (isset($cpa->practice) && !empty($cpa->practice->getAddressLines())) {
                     $options['ContactPracticeAssociate' . $cpa->id] = $gp->contact->fullname . ' (' . ((isset($gp->contact->label)) ? $gp->contact->label->name : \SettingMetadata::model()->getSetting('gp_label')) . ')';
                 }

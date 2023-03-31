@@ -19,11 +19,30 @@ $secondary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultProm
 <?php
 $search_by_message = $primary_identifier_prompt . ', ' . $secondary_identifier_prompt;
 
-if (\SettingMetadata::model()->checkSetting('dob_mandatory_in_search', 'on')) {
+// Sample strings are shown as "Pattern" => "Example"
+$example_patterns = [];
+$dob_mandatory = \SettingMetadata::model()->checkSetting('dob_mandatory_in_search', 'on');
+if ($dob_mandatory) {
     $search_by_message .= ', Firstname Surname dd/MM/yyyy or Surname, Firstname dd/MM/yyyy.';
+    $example_patterns = [
+        'Given Family + DOB' => 'David Smith 31/12/1975',
+        'Family, Given + DOB' => 'Smith, David 31/12/1975',
+        'Initial Family + DOB' => 'D Smith 1975',
+        'Family + DOB' => 'Smith 1975',
+    ];
 } else {
     $search_by_message .= ', Firstname Surname or Firstname Surname DOB or Surname, Firstname or Surname, Firstname DOB.';
+    $example_patterns = [
+        'Given Family' => 'David Smith',
+        'Family, Given' => 'Smith, David',
+        'Family only' => 'Smith',
+        'Initial Family only' => 'D Smith',
+        'Family + DOB' => 'Smith 1975',
+    ];
 }
+
+$example_patterns = array_merge($example_patterns, PatientIdentifierHelper::getSearchExamplePatternBasedOnIdentifierType($primary_identifier_prompt));
+$example_patterns = array_merge($example_patterns, PatientIdentifierHelper::getSearchExamplePatternBasedOnIdentifierType($secondary_identifier_prompt));
 
 if ($context == "sidebar") { ?>
     <div id="oe-search-patient">
@@ -48,10 +67,52 @@ if ($context == "sidebar") { ?>
                 'placeholder' => 'Search',
           ]); ?>
         <button type="submit" id="js-find-patient" class="blue hint">Find Patient</button>
-        <div class="find-by">Search by <?= $search_by_message ?></div>
+        <div class="find-by">
+            <a href="#search-help" onclick="displaySearchPatterns()">Search by ID, or Name<?= $dob_mandatory ? ' and Date of Birth' : '' ?> (click for options)</a>
+        </div>
       <i class="spinner" style="display: none;" title="Loading..."></i>
     </div>
 </div>
     <?php
 }
 $this->endWidget(); ?>
+
+<div class="oe-popup-wrap js-search-popup" style="display: none;">
+    <div class="oe-popup">
+        <div class="remove-i-btn"></div>
+        <div class="title">Available search patterns</div>
+        <div class="oe-popup-content false">
+            <p>Search is not case sensitive, there is no need to use uppercase</p>
+            <table class="large-text">
+                <colgroup>
+                    <col class="cols-4">
+                </colgroup>
+                <tbody>
+                </tbody><thead>
+                <tr>
+                    <th>Search Pattern</th>
+                    <th>Example</th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php foreach ($example_patterns as $pattern => $example) { ?>
+                    <tr>
+                        <th><?= $pattern ?></th>
+                        <td><?= $example ?></td>
+                    </tr>
+                <?php } ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    function displaySearchPatterns() {
+        $(".js-search-popup").show();
+    }
+
+    $(".remove-i-btn").on('click', function () {
+        $(this).closest('.js-search-popup').hide();
+    });
+</script>

@@ -2060,12 +2060,13 @@ class WorklistController extends BaseController
 
     public function actionDeleteFilter()
     {
-        $filter_name = Yii::app()->request->getParam('name');
-        $filter = WorklistFilter::model()->findByNameForCurrentUser($filter_name);
+        $filter = WorklistFilter::model()->findByPk(Yii::app()->request->getParam('id'));
 
-        if ($filter !== null) {
-            $filter->delete();
+        if (!$filter) {
+            throw new CHttpException(404, 'Worklist filter not found');
         }
+
+        $filter->delete();
     }
 
     /**
