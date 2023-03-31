@@ -101,4 +101,19 @@ class FirmWithSampleDataTest extends OEDbTestCase
 
         return [$not_owning_firm, $owning_firm];
     }
+
+    /** @test */
+    public function update_duplicated_firm_should_not_pass_the_validation()
+    {
+        $original_firm = Firm::factory()->create();
+
+        $firm_form_update = Firm::factory()->create([
+            "institution_id" => $original_firm->institution_id,
+            "subspecialty_id" => $original_firm->subspecialty_id
+        ]);
+
+        $firm_form_update->name = $original_firm->name;
+
+        $this->assertAttributeInvalid($firm_form_update, 'name', 'already exists');
+    }
 }

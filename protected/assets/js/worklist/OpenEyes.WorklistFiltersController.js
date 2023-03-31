@@ -293,7 +293,10 @@ var OpenEyes = OpenEyes || {};
     };
 
     WorklistFiltersController.prototype.storeFilter = function (isRecent, onSuccess) {
+        const controller = this;
         $('.spinner').show();
+
+        this.panelView.disableFilterSavingButtons();
 
         $.ajax({
             url: '/worklist/storeFilter',
@@ -305,14 +308,16 @@ var OpenEyes = OpenEyes || {};
                 name: this.filter.name ? this.filter.name : '',
                 filter: this.filter.asJSON()
             },
-            success: function() {
+            success: function(response) {
+                controller.panelView.enableFilterSavingButtons();
                 $('.spinner').hide();
 
                 if (onSuccess) {
-                    onSuccess();
+                    onSuccess(response.id);
                 }
             },
             error: function() {
+                controller.panelView.enableFilterSavingButtons();
                 $('.spinner').hide();
 
                 new OpenEyes.UI.Dialog.Alert({
@@ -338,31 +343,73 @@ var OpenEyes = OpenEyes || {};
 
     // Handling of saved (starred) and recent filters
     WorklistFiltersController.prototype.saveFilter = function (name) {
+        const controller = this;
+
         this.filter.name = name;
-        this.filterIsAltered = false;
 
-        this.savedFilters.push(this.filter.clone());
-        this.storeFilter(false);
+        this.storeFilter(false, function(savedId) {
+            controller.filterIsAltered = false;
 
-        this.panelView.setSavedTabList(this.mappings, this.savedFilters);
+            controller.filter.id = savedId;
+            controller.savedFilters.push(controller.filter.clone());
+
+            controller.panelView.setSavedTabList(controller.mappings, controller.savedFilters);
+        });
+    };
+
+    WorklistFiltersController.prototype.deleteSavedFilter = function (index) {
+        const controller = this;
+        const savedFilter = this.savedFilters[index];
+
+        $('.spinner').show();
+
+        $.ajax({
+            url: '/worklist/deleteFilter',
+            type: 'POST',
+            data: {
+                YII_CSRF_TOKEN: YII_CSRF_TOKEN,
+                id: savedFilter.id
+            },
+            success: function() {
+                $('.spinner').hide();
+
+                controller.savedFilters.splice(index, 1);
+
+                if (controller.panelView) {
+                    controller.panelView.setSavedTabList(controller.mappings, controller.savedFilters);
+                }
+            },
+            error: function() {
+                $('.spinner').hide();
+
+                new OpenEyes.UI.Dialog.Alert({
+                    content: "Unable to remove the favourited filter.\n\nPlease try again or contact support."
+                }).open();
+            }
+        })
     };
 
     WorklistFiltersController.prototype.pushRecentFilter = function (onSuccess) {
+        const controller = this;
         const existing = this.recentFilters.findIndex(this.filter.compare.bind(this.filter));
 
         if (existing !== -1) {
             this.loadRecentFilter(existing, false);
         } else {
-            if (this.recentFilters.length >= this.maxRecentFilters) {
-                this.recentFilters.shift();
-            }
+            this.storeFilter(true, function(savedId) {
+                if (controller.recentFilters.length >= controller.maxRecentFilters) {
+                    controller.recentFilters.shift();
+                }
 
-            this.filterIsAltered = false;
+                controller.filterIsAltered = false;
 
-            this.recentFilters.push(this.filter.clone());
-            this.storeFilter(true, onSuccess);
+                controller.filter.id = savedId;
+                controller.recentFilters.push(controller.filter.clone());
 
-            this.panelView.setRecentTabList(this.mappings, this.recentFilters);
+                onSuccess();
+
+                controller.panelView.setRecentTabList(controller.mappings, controller.recentFilters);
+            });
         }
     };
 
