@@ -649,7 +649,9 @@ OpenEyes.UI = OpenEyes.UI || {};
         });
 
         parent.find('div.fav .remove-fav').click(function () {
-            controller.deleteNamed($(this).data('index'));
+            const index = $(this).parent().children('.details').data('index');
+
+            controller.deleteSavedFilter(index);
         });
     }
 
@@ -659,7 +661,7 @@ OpenEyes.UI = OpenEyes.UI || {};
         const putAfter = parent.find('h3');
         const template = $('#js-worklist-filter-panel-template-recent-filter').text();
 
-        parent.find('div.fav').empty();
+        parent.find('div.fav').remove();
 
         for (index in recentFilters) {
             const data = this.makeFilterEntryData(idMappings, recentFilters[index], index);
@@ -670,6 +672,16 @@ OpenEyes.UI = OpenEyes.UI || {};
         parent.find('div.fav').click(function () {
             controller.loadRecentFilter($(this).data('index'));
         });
+    }
+
+    WorklistFilterPanel.prototype.disableFilterSavingButtons = function () {
+        this.panel.find('.js-apply-filter-btn').addClass('disabled');
+        this.saveFilterPopup.find('.js-save-filter-btn').addClass('disabled');
+    }
+
+    WorklistFilterPanel.prototype.enableFilterSavingButtons = function () {
+        this.panel.find('.js-apply-filter-btn').removeClass('disabled');
+        this.saveFilterPopup.find('.js-save-filter-btn').removeClass('disabled');
     }
 
     WorklistFilterPanel.prototype.constructor = WorklistFilterPanel;

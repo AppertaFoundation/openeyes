@@ -15,6 +15,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "patient_identifier".
  *
@@ -35,6 +37,8 @@
  */
 class PatientIdentifier extends BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     public $status_is_mandatory = false;
 
     /**
@@ -71,7 +75,11 @@ class PatientIdentifier extends BaseActiveRecordVersioned
     public function valueValidator($attribute, $params)
     {
         if (!$this->patientIdentifierType->validateTerm($this->value)) {
-            $this->addError($attribute, "Invalid value format. Acceptable: {$this->patientIdentifierType->validate_regex}");
+            $error = "Invalid value format. Acceptable:" . $this->patientIdentifierType->validate_regex;
+            if ($this->patientIdentifierType->validation_example != '') {
+                $error .= " e.g. ". $this->patientIdentifierType->validation_example;
+            }
+            $this->addError($attribute, $error);
         }
 
         $patient_id = isset($this->patient) ? $this->patient->id : null;

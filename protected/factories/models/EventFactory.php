@@ -41,7 +41,11 @@ class EventFactory extends ModelFactory
 
     public function withElement(string $element_cls, array $states = []): self
     {
-        $this->elementsWithStates[$element_cls] = $states;
+        if (array_key_exists($element_cls, $this->elementsWithStates)) {
+            array_push($this->elementsWithStates[$element_cls], ...$states);
+        } else {
+            $this->elementsWithStates[$element_cls] = $states;
+        }
 
         return $this;
     }

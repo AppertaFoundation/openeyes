@@ -162,7 +162,7 @@ trait HasModelAssertions
 
     public function assertModelIs($expected, $model)
     {
-        $this->assertNotNull($model);
+        $this->assertNotNull($model, "Model is null for comparison");
         $this->assertEquals(get_class($expected), get_class($model));
         $this->assertNotNull($expected->getPrimaryKey(), 'expected model must be saved instance');
         $this->assertEquals($expected->getPrimaryKey(), $model->getPrimaryKey());

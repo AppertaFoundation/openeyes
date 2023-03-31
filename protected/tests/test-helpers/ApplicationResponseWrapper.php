@@ -20,10 +20,28 @@ class ApplicationResponseWrapper
     public ?string $response;
     public ?ApplicationRedirectWrapper $redirect;
 
-    public function __construct(?string $response, ?ApplicationRedirectWrapper $redirect)
+    public ?Exception $exception;
+
+    public function __construct(?string $response = null, ?ApplicationRedirectWrapper $redirect = null, ?Exception $exception = null)
     {
         $this->response = $response;
         $this->redirect = $redirect;
+        $this->exception = $exception;
+    }
+
+    public static function fromOutputString(string $string): ApplicationResponseWrapper
+    {
+        return new self($string);
+    }
+
+    public static function fromRedirect(ApplicationRedirectWrapper $redirect): ApplicationResponseWrapper
+    {
+        return new self(null, $redirect);
+    }
+
+    public static function fromException(Exception $exception): ApplicationResponseWrapper
+    {
+        return new self(null, null, $exception);
     }
 
     public function assertRedirect($url = null, bool $showResponseOnFail = false)
@@ -44,6 +62,19 @@ class ApplicationResponseWrapper
         $this->assertRedirect();
 
         PHPUnit::assertStringContainsString($partial, $this->redirect->url, $message);
+    }
+
+    public function assertException(?string $expected_class = null, ?array $expected_properties = null)
+    {
+        PHPUnit::assertNotNull($this->exception);
+        if ($expected_class) {
+            PHPUnit::assertInstanceOf($expected_class, $this->exception);
+        }
+        if ($expected_properties) {
+            foreach ($expected_properties as $property => $expected_value) {
+                PHPUnit::assertEquals($expected_value, $this->exception->$property, print_r($this->exception, true));
+            }
+        }
     }
 
     protected function isRedirect()

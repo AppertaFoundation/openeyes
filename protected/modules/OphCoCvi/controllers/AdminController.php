@@ -488,7 +488,7 @@ class AdminController extends \ModuleAdminController
                 ->from('firm f')
                 ->join('service_subspecialty_assignment ssa', 'f.service_subspecialty_assignment_id = ssa.id')
                 ->join('subspecialty s', 'ssa.subspecialty_id = s.id')
-                ->where('f.active = 1 AND f.name LIKE "%'.$term.'%"');
+                ->where('f.active = 1 AND LOWER(f.name) LIKE "%' . strtolower($term) . '%"');
 
             if ($subspecialty_id) {
                 $command->andWhere('s.id = :id', array(':id' => $subspecialty_id));
@@ -500,7 +500,7 @@ class AdminController extends \ModuleAdminController
             foreach ($firms as $firm) {
                 $display = $firm['name'];
                 if ($firm['subspecialty']) {
-                    $display .= ' ('.$firm['subspecialty'].')';
+                    $display .= ' (' . $firm['subspecialty'] . ')';
                 }
                 $data[$firm['id']] = $display;
             }

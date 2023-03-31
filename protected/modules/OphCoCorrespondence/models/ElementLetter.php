@@ -99,6 +99,7 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
             ),
             array('to_location_id', 'internalReferralToLocationIdValidator'),
             array('to_subspecialty_id', 'internalReferralServiceValidator'),
+            array('to_firm_id', 'internalReferralFirmValidator'),
             array('is_same_condition', 'internalReferralConditionValidator'),
             array('letter_type_id', 'letterTypeValidator'),
             array('date, introduction, body', 'requiredIfNotDraft'),
@@ -172,6 +173,21 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
             }
         }
     }
+
+    public function internalReferralFirmValidator($attribute, $params)
+    {
+        if (strtolower(\SettingMetadata::model()->getSetting('correspondence_make_context_mandatory_for_internal_referrals')) === 'off') {
+            return;
+        }
+        $letter_type = LetterType::model()->findByAttributes(array('name' => 'Internal Referral', 'is_active' => 1));
+        if ($letter_type->id !== $this->letter_type_id) {
+            return;
+        }
+        if (!$this->to_firm_id && $this->draft === '0') {
+            $this->addError($attribute, $this->getAttributeLabel($attribute) . ": Please select a context.");
+        }
+    }
+
     public function internalReferralConditionValidator($attribute, $params)
     {
         $letter_type = LetterType::model()->findByAttributes(array('name' => 'Internal Referral', 'is_active' => 1));
@@ -553,11 +569,11 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
             }
         }
 
-        $pcassocitates = PatientContactAssociate::model()->findAllByAttributes(array('patient_id' => $patient->id));
-        if (isset($pcassocitates) && (Yii::app()->params['institution_code'] === 'CERA' || Yii::app()->params['use_contact_practice_associate_model'] == true)) {
-            foreach ($pcassocitates as $pcassocitate) {
-                $gp = $pcassocitate->gp;
-                $cpa = ContactPracticeAssociate::model()->findByAttributes(array('gp_id' => $gp->id));
+        if (Yii::app()->params['institution_code'] === 'CERA' || Yii::app()->params['use_contact_practice_associate_model'] == true) {
+            $patient_contact_associates = PatientContactAssociate::model()->findAllByAttributes(array('patient_id' => $patient->id));
+            foreach ($patient_contact_associates as $associate) {
+                $gp = $associate->gp;
+                $cpa = ContactPracticeAssociate::model()->findByAttributes(array('gp_id' => $gp->id, 'practice_id' => $associate->practice_id));
                 if (isset($cpa->practice) && !empty($cpa->practice->getAddressLines())) {
                     $options['ContactPracticeAssociate' . $cpa->id] = $gp->contact->fullname . ' (' . ((isset($gp->contact->label)) ? $gp->contact->label->name : \SettingMetadata::model()->getSetting('gp_label')) . ')';
                 }

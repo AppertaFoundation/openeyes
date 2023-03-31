@@ -202,9 +202,10 @@ class PatientIdentifierHelper
     public static function getMaxIdentifier($type_id): ?PatientIdentifier
     {
         $criteria = new CDbCriteria();
+        $criteria->select = "*, REGEXP_REPLACE(value, '[^0-9]+', '') as numeric_value";
         $criteria->condition = "patient_identifier_type_id=:patient_identifier_type_id";
         $criteria->params = [':patient_identifier_type_id' => $type_id];
-        $criteria->order = 'value desc';
+        $criteria->order = 'ABS(numeric_value) desc';
         $criteria->limit = 1; // We only want the first result.
         $identifier = PatientIdentifier::model()->find($criteria);
         if ($identifier) {
@@ -384,6 +385,28 @@ class PatientIdentifierHelper
         ]);
     }
 
+    public static function getSearchExamplePatternBasedOnIdentifierType(string $displayPrompt): array
+    {
+        $pattern = [];
+
+        switch (strtoupper($displayPrompt)) {
+            case "NHS":
+            case "NHS ID":
+                $pattern[$displayPrompt] = '123-123-1234';
+                break;
+            case "CERA":
+            case "CERA ID":
+                $pattern[$displayPrompt] = 'LL01-0028, 101002, 30-001, LON-01';
+                break;
+            case "MEDICARE":
+            case "MEDICARE ID":
+                $pattern[$displayPrompt] = '123-123';
+                break;
+        }
+
+        return $pattern;
+    }
+
     /**
      * Retrieve a padded search term that matches patient identifier regex
      *
@@ -393,7 +416,7 @@ class PatientIdentifierHelper
      */
     public static function getPaddedTermRegexResult(string $term, string $validate_regex, string $pad = null)
     {
-        if($validate_regex) {
+        if ($validate_regex) {
             preg_match($validate_regex, $term, $matches);
 
             if (isset($matches[0])) {

@@ -15,7 +15,10 @@
 
 namespace OE\factories\models;
 
+use Institution;
 use OE\factories\ModelFactory;
+use PatientIdentifierType;
+use Site;
 
 /**
  * class PatientIdentifierTypeFactory
@@ -26,6 +29,23 @@ class PatientIdentifierTypeFactory extends ModelFactory
 {
     public function definition(): array
     {
-        return [];
-	}
+        return [
+            'usage_type' => $this->faker->randomElement([PatientIdentifierType::LOCAL_USAGE_TYPE, PatientIdentifierType::GLOBAL_USAGE_TYPE]),
+            'short_title' => $this->faker->words(3, true),
+            'long_title' => $this->faker->words(5, true),
+            'institution_id' => Institution::factory()->useExisting(),
+            'site_id' => function ($attributes) {
+                return Site::factory()->useExisting(['institution_id' => $attributes['institution_id']]);
+            },
+            'unique_row_string' => $this->faker->words(5, true),
+            'validate_regex' => '/^\d*$/'
+        ];
+    }
+
+    public function local(): self
+    {
+        return $this->state([
+            'usage_type' => PatientIdentifierType::LOCAL_USAGE_TYPE
+        ]);
+    }
 }
