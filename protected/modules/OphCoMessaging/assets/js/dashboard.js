@@ -3,10 +3,12 @@
 $(document).ready(function() {
 	$('.js-expanded-message').hide();
 
-	$('.filter-messages').on('click', 'a', function (e) {
-		e.preventDefault();
-		window.location.href = jQuery.query.set('messages', $(this).data('filter'));
-	});
+    $('.filter-messages').on('click', 'a', function (e) {
+        e.preventDefault();
+        const mailbox = $(this).parents('.js-mailbox').data('mailbox-id');
+        const messages = $(this).data('filter')
+        window.location.href = jQuery.query.set('mailbox', mailbox).set('messages', messages);
+    });
 
 	$('#OphCoMessaging_to').add('#OphCoMessaging_from').each(function () {
 		pickmeup('#' + $(this).attr('id'), {
@@ -15,10 +17,10 @@ $(document).ready(function() {
 			default_date: false
 		});
 	}).on('pickmeup-change change', function () {
-        $('#OpCoMessaging_All').prop("checked", false);
+        $('#OphCoMessaging_All').prop("checked", false);
 	});
 
-	$('#OpCoMessaging_All').on('click', function () {
+	$('#OphCoMessaging_All').on('click', function () {
         if ($(this).prop("checked")) {
             $('#OphCoMessaging_from').val('');
             $('#OphCoMessaging_to').val('');
@@ -35,24 +37,20 @@ $(document).ready(function() {
             .set('OphCoMessaging_Search', $('#OphCoMessaging_Search').val());
     });
 
-	$('.js-expand-message').each(function(){
-		let $expandIcon = $(this);
-		let $messagePreview = $expandIcon.closest('tr').find('.js-preview-message');
-		let $messageExpanded = $messagePreview.siblings('.js-expanded-message');
-		new Expander( $expandIcon, $messagePreview, $messageExpanded );
-		toggleExpandIconVisibility($expandIcon, $messagePreview, $messageExpanded);
+	$('.js-expand-message').click(function(){
+        let $expandIcon = $(this);
+        let $message = $expandIcon.closest('.message');
+        if ($message.hasClass('expand')) {
+            $message.removeClass('expand');
+        } else {
+            $message.addClass('expand');
+        }
 	});
 
-    $('.range').on('click', function () {
-        $('#OpCoMessaging_All').prop("checked", false);
+    $('.js-range').on('click', function () {
+        $('#OphCoMessaging_All').prop("checked", false);
         setPastDates($(this).attr('data-range'));
     });
-
-	$(window).resize(function(){
-		$('.js-expand-message').each(function(){
-			toggleExpandIconVisibility($(this), $(this).closest('tr').find('.js-preview-message'), $(this).closest('tr').find('.js-expanded-message'));
-		});
-	});
 });
 
 function toggleExpandIconVisibility($expandIcon, $messagePreview, $messageExpanded) {
@@ -109,6 +107,20 @@ function setPastDates($dateRange) {
                     to = new Date();
                 }
             }
+            break;
+        case 'last-month':
+            from = new Date();
+            from.setDate(1);
+            from.setMonth(from.getMonth() - 1);
+            to = new Date();
+            to.setDate(0); // Wraps around to the last day of the last month
+            break;
+        case 'this-month':
+            from = new Date();
+            from.setDate(1);
+            to = new Date();
+            to.setMonth(to.getMonth() + 1); // To wrap the day around to this month
+            to.setDate(0); // Wraps around to the last day of the this month
             break;
     }
     $('#OphCoMessaging_from').datepicker({

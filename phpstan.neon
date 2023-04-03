@@ -2,7 +2,7 @@ parameters:
   level: 0
   phpVersion: 80000
   scanDirectories:
-    - vendor/yiisoft
+    - vendor/yiisoft/yii/framework
     - protected/behaviors
     - protected/components
     - protected/controllers
@@ -12,6 +12,7 @@ parameters:
     - protected/widgets
     - protected/config
   excludePaths:
+    - vendor/yiisoft/yii/demos/
     - protected/tests/*
     - modules/*/tests/*
   ignoreErrors:

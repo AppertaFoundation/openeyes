@@ -231,7 +231,7 @@ class DefaultController extends \CController
     {
         $seeder_class_name = $_POST['seeder_class_name'];
         $seeder_module_name = $_POST['seeder_module_name'];
-        $additional_data = $_POST['additional_data'];
+        $additional_data = $_POST['additional_data'] ?? null;
 
         $dataContext = new \DataContext(
             \Yii::app(),

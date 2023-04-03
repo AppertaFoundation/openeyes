@@ -18,28 +18,18 @@
 return array(
     'user1' => array(
         'id' => 1,
-        'user_id' => 1,
-        'enabled' => 0,
+        'element_id' => 5,
+        'mailbox_id' => 1,
     ),
     'user2' => array(
         'id' => 2,
-        'user_id' => 1,
-        'enabled' => 1,
+        'element_id' => 5,
+        'mailbox_id' => 2,
+        'marked_as_read' => 1,
     ),
     'user3' => array(
         'id' => 3,
-        'user_id' => 1,
-        'from_date' => '2020-08-31',
-        'to_date' => '2020-09-01',
-        'alternate_user_id' => 6,
-        'enabled' => 1,
-    ),
-    'user4' => array(
-        'id' => 4,
-        'user_id' => 6,
-        'from_date' => '2020-08-31',
-        'to_date' => '2020-07-31',
-        'alternate_user_id' => 1,
-        'enabled' => 1,
+        'element_id' => 7,
+        'mailbox_id' => 3,
     ),
 );

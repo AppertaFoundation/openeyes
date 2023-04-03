@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Class MappedReferenceDataTest
  * @covers MappedReferenceData
@@ -8,7 +9,7 @@ class MappedReferenceDataTest extends OEDbTestCase
 {
     use HasModelAssertions;
     use MocksSession;
-    use WithFaker;
+    use \WithFaker;
 
     private MappedReferenceDataMock $instance;
     private MappedReferenceDataSoftDeleteMock $softdelete_instance;

@@ -16,6 +16,7 @@
 
 namespace OEModule\OphCiExamination\tests\unit\models;
 
+
 use OEModule\OphCiExamination\models\OphCiExamination_Refraction_Type;
 use OEModule\OphCiExamination\tests\unit\models\testingtraits\HasLookupBehavioursToTest;
 

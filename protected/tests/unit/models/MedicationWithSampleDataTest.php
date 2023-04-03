@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Class MedicationWithSampleDataTest
  *
@@ -14,7 +15,7 @@ class MedicationWithSampleDataTest extends OEDbTestCase
     use InteractsWithMedication;
     use MocksSession;
     use WithTransactions;
-    use WithFaker;
+    use \WithFaker;
 
     /**
      * @test

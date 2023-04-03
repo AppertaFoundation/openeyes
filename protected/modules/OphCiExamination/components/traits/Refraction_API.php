@@ -24,7 +24,7 @@ use OEModule\OphCiExamination\models\Retinoscopy;
 
 trait Refraction_API
 {
-    use APICache;
+    use \APICache;
 
     protected static $refraction_property_by_class = [
         CorrectionGiven::class => 'refraction',

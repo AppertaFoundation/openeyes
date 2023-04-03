@@ -8,7 +8,7 @@ class OwnedByReferenceDataTest extends OEDbTestCase
 {
     use HasModelAssertions;
     use MocksSession;
-    use WithFaker;
+    use \WithFaker;
 
     /**
      */

@@ -22,6 +22,10 @@ $core_api = new CoreAPI();
 $institution_id = Institution::model()->getCurrent()->id;
 $site_id = Yii::app()->session['selected_site_id'];
 $display_primary_number_usage_code = SettingMetadata::model()->getSetting('display_primary_number_usage_code');
+$user = User::model()->findByPk(Yii::app()->user->id);
+
+$messaging_api = new OEModule\OphCoMessaging\components\OphCoMessaging_API();
+list($message_counts, $total_unread_messages) = $messaging_api->getMessageCounts($user);
 
 $is_editing_event = false;
 if ($this instanceof BaseEventTypeController) {
@@ -46,6 +50,20 @@ if ($this instanceof BaseEventTypeController) {
         </div>
     <?php $this->endWidget(); ?>
     <div class="patient-activity">
+    <?php
+    if ($total_unread_messages > 0) {
+        $total_urgent_messages = 0;
+
+        foreach ($message_counts as $mailbox_id => $counts) {
+            $total_urgent_messages = $total_urgent_messages + ($counts['count_unread_urgent'] ?? 0);
+        }
+        ?>
+        <div class="flag-urgent-messages">
+            <a href="/" class="button<?= $total_urgent_messages > 0 ? ' urgent' : ''?>">
+                Messages: <?= $total_unread_messages ?> unread <?= $total_urgent_messages > 0 ? ('(' . $total_urgent_messages . ' urgent)') : '' ?>
+            </a>
+        </div>
+    <?php } ?>
         <div class="patients-open">
             <div class="overview">
                 <h3>Open

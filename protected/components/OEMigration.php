@@ -941,19 +941,19 @@ class OEMigration extends CDbMigration
         $this->update('event_type', array('rbac_operation_suffix' => $rbac_operation_suffix), "id = $event_type_id");
     }
 
-    public function addRole($role_name)
+    public function addRole($role_name, $description = null, $bizrule = null, $data = null)
     {
-        $this->insert('authitem', array('name' => $role_name, 'type' => 2));
+        $this->insert('authitem', array('name' => $role_name, 'type' => 2, 'description' => $description, 'bizrule' => $bizrule, 'data' => $data));
     }
 
-    public function addTask($task_name)
+    public function addTask($task_name, $description = null, $bizrule = null, $data = null)
     {
-        $this->insert('authitem', array('name' => $task_name, 'type' => 1));
+        $this->insert('authitem', array('name' => $task_name, 'type' => 1, 'description' => $description, 'bizrule' => $bizrule, 'data' => $data));
     }
 
-    public function addOperation($oprn_name)
+    public function addOperation($oprn_name, $description = null, $bizrule = null, $data = null)
     {
-        $this->insert('authitem', array('name' => $oprn_name, 'type' => 0));
+        $this->insert('authitem', array('name' => $oprn_name, 'type' => 0, 'description' => $description, 'bizrule' => $bizrule, 'data' => $data));
     }
 
     public function addTaskToRole($task_name, $role_name)

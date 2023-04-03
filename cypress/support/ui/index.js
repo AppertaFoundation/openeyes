@@ -77,6 +77,10 @@ Cypress.Commands.add('getByElementName', (selector, ...args) => {
     return cy.get(`[name='${selector}']`, ...args)
 });
 
+Cypress.Commands.add('fillAndSelectAutocomplete', (searchValue) => {
+    cy.getBySel('oe-autocompletesearch').clear().type(searchValue);
+});
+
 Cypress.Commands.add('assertElementValue', (dataTest, value, inputType = 'raw') => {
     switch (inputType) {
         case 'input':

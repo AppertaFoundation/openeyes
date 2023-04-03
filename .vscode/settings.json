@@ -1,0 +1,27 @@
+{
+    "workbench.colorCustomizations": {
+        "activityBar.background": "#2D3011",
+        "titleBar.activeBackground": "#3F4317",
+        "titleBar.activeForeground": "#FAFBF4"
+    },
+    "phpstan.binPath": "bin/phpstan",
+    "phpstan.analysedDelay": 250,
+    "phpstan.configuration": "phpstan.neon",
+    "phpstan.level": "0",
+    "phpstan.path": "bin/phpstan",
+    "sqltools.connections": [
+        {
+            "mysqlOptions": {
+                "authProtocol": "default"
+            },
+            "previewLimit": 150,
+            "server": "db",
+            "port": 3306,
+            "driver": "MariaDB",
+            "name": "db",
+            "database": "openeyes",
+            "username": "openeyes",
+            "password": "openeyes"
+        }
+    ]
+}

@@ -16,6 +16,7 @@
 
 use PHPUnit\Framework\MockObject\Builder\Stub;
 
+
 /**
  * @covers DatePickerNative
  * @group sample-data
@@ -25,7 +26,7 @@ use PHPUnit\Framework\MockObject\Builder\Stub;
 class DatePickerNativeWidgetTest extends OEDbTestCase
 {
     use CreatesWidgets;
-    use WithFaker;
+    use \WithFaker;
 
     protected $controller_cls = BaseController::class;
     protected $expected_date_input_format = 'Y-m-d';

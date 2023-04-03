@@ -45,6 +45,13 @@ declare namespace Cypress {
          */
         assertEventSaved(isNewEvent: ?boolean): Chainable<any>
         /**
+         * Type the given value into the autocomplete search box and select the first value that matches that from
+         * the rendered dropdown list
+         *
+         * @param searchValue
+         */
+        fillAndSelectAutocomplete(searchValue: string): void
+        /**
          * Cypress selector short cut for any data attribute equals selector
          * @param getByDataAttr
          * @param selector

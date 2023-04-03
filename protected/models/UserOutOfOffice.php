@@ -15,6 +15,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "user_out_of_office".
  *
@@ -30,6 +32,8 @@
  */
 class UserOutOfOffice extends BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     /**
      * Returns the static model of the specified AR class.
      *
@@ -140,6 +144,41 @@ class UserOutOfOffice extends BaseActiveRecordVersioned
 
             if ($user->enabled === '1' && $now_timestamp >= $from_timestamp && $now_timestamp <= $to_timestamp) {
                 $message = $user->user->getFullnameAndTitle()." is currently out of office. You can instead send message to ".$user->alternate_user->getFullnameAndTitle();
+            }
+        }
+
+        return $message;
+    }
+
+    /**
+     * Check if the user is out of office and check for alternate user, via their mailbox
+     *
+     * @param $mailbox_id
+     * @return string|null
+     */
+    public function checkUserOutOfOfficeViaMailbox($mailbox_id)
+    {
+        $message = null;
+
+        $criteria = new CDbCriteria();
+
+        $criteria->join = 'JOIN mailbox_user mbu ON mbu.user_id = t.user_id JOIN mailbox mb ON mb.id = mbu.mailbox_id';
+        $criteria->addCondition('mb.is_personal <> 0 AND mb.id = :mailbox_id');
+        $criteria->params = [':mailbox_id' => $mailbox_id];
+
+        if ($out_of_office = self::model()->find($criteria)) {
+            $now_datetime = new DateTime(date('Y-m-d'));
+            $now_timestamp = $now_datetime->getTimestamp();
+
+            $from_datetime = new DateTime($out_of_office->from_date);
+            $from_timestamp = $from_datetime->getTimestamp();
+
+            //Add an offset to ensure the date range is inclusive
+            $to_datetime = (new DateTime($out_of_office->to_date))->add(new DateInterval("P1D"));
+            $to_timestamp = $to_datetime->getTimestamp();
+
+            if ($out_of_office->enabled === '1' && $now_timestamp >= $from_timestamp && $now_timestamp <= $to_timestamp) {
+                $message = $out_of_office->user->getFullnameAndTitle()." is currently out of office. You can instead send message to ".$out_of_office->alternate_user->getFullnameAndTitle();
             }
         }
 

@@ -41,17 +41,12 @@ class UserController extends BaseController
             $criteria->compare("LOWER(first_name)", $term, true, 'OR');
             $criteria->compare("LOWER(last_name)", $term, true, 'OR');
             $words = explode(" ", $term);
+
             if (count($words) > 1) {
-                // possibly slightly verbose approach to checking first and last name combinations
-                // for searches
-                $first_criteria = new \CDbCriteria();
-                $first_criteria->compare("LOWER(first_name)", $words[0], true);
-                $first_criteria->compare("LOWER(last_name)", implode(" ", array_slice($words, 1, count($words) - 1)), true);
-                $last_criteria = new \CDbCriteria();
-                $last_criteria->compare("LOWER(first_name)", $words[count($words) - 1], true);
-                $last_criteria->compare("LOWER(last_name)", implode(" ", array_slice($words, 0, count($words) - 2)), true);
-                $first_criteria->mergeWith($last_criteria, 'OR');
-                $criteria->mergeWith($first_criteria, 'OR');
+                $criteria->compare("LOWER(CONCAT(first_name, ' ', last_name))", $term, true, 'OR');
+                $criteria->compare("LOWER(CONCAT(last_name, ' ', first_name))", $term, true, 'OR');
+                $criteria->compare("LOWER(CONCAT(title, ' ', first_name, ' ', last_name))", $term, true, 'OR');
+
                 $criteria->order = 'first_name, last_name';
             }
 

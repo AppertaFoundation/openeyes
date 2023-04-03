@@ -17,6 +17,7 @@
  */
 
 use OE\factories\models\traits\HasFactory;
+use OEModule\OESysEvent\events\UserSavedSystemEvent;
 
 /**
  * This is the model class for table "User".
@@ -32,6 +33,8 @@ use OE\factories\models\traits\HasFactory;
  * @property string $correspondence_sign_off_text
  *
  * @property User $signOffUser
+ * @property Mailbox[] $mailboxes
+ * @property Team[] $teams
  */
 class User extends BaseActiveRecordVersioned
 {
@@ -146,6 +149,7 @@ class User extends BaseActiveRecordVersioned
             'signOffUser' => array(self::BELONGS_TO, 'User', 'correspondence_sign_off_user_id'),
             'authentications' => array(self::HAS_MANY, 'UserAuthentication', 'user_id'),
             'pincode' => array(self::HAS_ONE, 'UserPincode', 'user_id'),
+            'teams' => array(self::MANY_MANY, 'Team', 'team_user_assign(user_id, team_id)')
         );
 
         if ($this->getScenario() !== 'portal_command') {
@@ -465,6 +469,13 @@ class User extends BaseActiveRecordVersioned
         }
 
         return parent::beforeSave();
+    }
+
+    public function afterSave()
+    {
+        UserSavedSystemEvent::dispatch($this);
+
+        return parent::afterSave();
     }
 
     public function getActiveSiteSelections()

@@ -3,7 +3,7 @@
 class ReferenceLevelIdResolverTest extends OEDbTestCase
 {
     use MocksSession;
-    use WithFaker;
+    use \WithFaker;
 
     public function setUp(): void
     {

@@ -15,46 +15,84 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-class UserOutOfOfficeTest extends ActiveRecordTestCase
-{
-    public $model;
-    public $fixtures = array(
-        'user_out_of_office' => 'UserOutOfOffice',
-    );
+use OE\factories\ModelFactory;
 
-    public function getModel()
-    {
-        return UserOutOfOffice::model();
-    }
+use \OEModule\OphCoMessaging\models\Mailbox;
+
+/**
+ * class UserOutOfOfficeTest
+ * @covers UserOutOfOffice
+ * @group shared-mailboxes
+ * @group sample-data
+ */
+class UserOutOfOfficeTest extends ModelTestCase
+{
+    use WithTransactions;
+    use \WithFaker;
+
+    protected $element_cls = UserOutOfOffice::class;
 
     public function testRules()
     {
         parent::testRules();
-        $this->assertTrue($this->user_out_of_office('user1')->validate());
-        $this->assertTrue($this->user_out_of_office('user3')->validate());
+
+        $case1 = ModelFactory::factoryFor($this->element_cls)->create();
+
+        $case3 = ModelFactory::factoryFor($this->element_cls)
+               ->enabled()
+               ->withDates('2020-08-31', '2020-09-01')
+               ->create();
+
+        $this->assertTrue($case1->validate());
+        $this->assertTrue($case3->validate());
     }
 
-    public function testRequiredIfEnabledError()
+    /** @test */
+    public function required_if_enabled_error()
     {
-        $user_out_of_office = new UserOutOfOffice();
-        $user_out_of_office->setAttributes($this->user_out_of_office('user2')->getAttributes());
-        $user_out_of_office->save();
-        $errors = $user_out_of_office->getErrors();
-        $this->assertArrayHasKey('From', $errors);
-        $this->assertEquals($errors['From'][0], 'From cannot be blank');
-        $this->assertArrayHasKey('To', $errors);
-        $this->assertEquals($errors['To'][0], 'To cannot be blank');
-        $this->assertArrayHasKey('Alternate User', $errors);
-        $this->assertEquals($errors['Alternate User'][0], 'Alternate User cannot be blank');
+        $case2 = ModelFactory::factoryFor($this->element_cls)
+               ->enabled()
+               ->create();
+
+        $this->assertAttributeInvalid($case2, 'From', 'From cannot be blank');
+        $this->assertAttributeHasError($case2, 'To', 'To cannot be blank');
+        $this->assertAttributeHasError($case2, 'Alternate User', 'Alternate User cannot be blank');
     }
 
-    public function testOutOfOfficeDurationValidator()
+    /** @test */
+    public function end_date_must_be_after_start_date()
     {
-        $user_out_of_office = new UserOutOfOffice();
-        $user_out_of_office->setAttributes($this->user_out_of_office('user4')->getAttributes());
-        $user_out_of_office->save();
-        $errors = $user_out_of_office->getErrors();
-        $this->assertArrayHasKey('Out of office duration', $errors);
-        $this->assertEquals($errors['Out of office duration'][0], 'To date cannot be before 31 Aug 2020');
+        $case4 = ModelFactory::factoryFor($this->element_cls)
+               ->enabled()
+               ->withDates('2020-08-31', '2020-07-31')
+               ->create();
+
+        $this->assertAttributeInvalid($case4, 'Out of office duration', 'To date cannot be before');
+    }
+
+    /** @test */
+    public function mailbox_out_of_office()
+    {
+        $out_user = \User::factory()->create();
+        $out_mailbox = Mailbox::factory()->personalFor($out_user)->create();
+        $alternate_user = \User::factory()->create();
+        Mailbox::factory()->personalFor($alternate_user)->create();
+
+        $from = $this->faker->dateTimeBetween('-1 week', '-1 day')->format('Y-m-d');
+        $to = $this->faker->dateTimeBetween('+1 day', '+1 week')->format('Y-m-d');
+
+        $out_of_office = ModelFactory::factoryFor($this->element_cls)
+                       ->withUser($out_user)
+                       ->enabled()
+                       ->withDates($from, $to, $alternate_user)
+                       ->create();
+
+        $out_mailbox = Mailbox::model()->forPersonalMailbox($out_user->id)->find();
+
+        $response = $out_of_office->checkUserOutOfOfficeViaMailbox($out_mailbox->id);
+
+        $this->assertNotNull($response, 'There should be a message for the out of office user');
+        $this->assertStringContainsString($out_user->getFullnameAndTitle(), $response, 'Out of office user not mentioned in OoO message');
+        $this->assertStringContainsString($alternate_user->getFullnameAndTitle(), $response, 'Alternative user not mentioned in OoO message');
     }
 }

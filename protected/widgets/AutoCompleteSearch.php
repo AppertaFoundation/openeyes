@@ -30,7 +30,8 @@ class AutoCompleteSearch extends BaseCWidget
         public $hide_no_result_msg = false;
 
     public $htmlOptions = array(
-        'placeholder' => 'Type to search'
+        'placeholder' => 'Type to search',
+        'data-test' => 'oe-autocompletesearch'
     );
     public $layoutColumns = array(
         'outer' => '',

@@ -85,7 +85,7 @@ trait HasModelAssertions
         $this->assertEmpty(
             $instance->getErrors($attribute),
             "Not expecting errors for {$attribute}: with "
-            . (empty($instance->$attribute) ? "no value" : "value " . $instance->$attribute)
+            . (empty($instance->$attribute) ? "no value" : "value " . print_r($instance->$attribute, true))
             . print_r($instance->getErrors($attribute), true)
         );
     }

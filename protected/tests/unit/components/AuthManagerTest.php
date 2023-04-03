@@ -30,7 +30,7 @@ class AuthManagerTest extends PHPUnit_Framework_TestCase
     {
         $this->expectException('Exception');
         $this->expectExceptionMessage('Unknown ruleset \'foo\' for business rule \'foo.bar\'');
-        $this->authManager->executeBizRule('foo.bar', array(), null);
+        $this->authManager->executeBizRule('foo.bar', [], null);
     }
 
     /**
@@ -40,7 +40,7 @@ class AuthManagerTest extends PHPUnit_Framework_TestCase
     {
         $this->expectException('Exception');
         $this->expectExceptionMessage('Undefined business rule: \'foo\'');
-        $this->authManager->executeBizRule('foo', array(), null);
+        $this->authManager->executeBizRule('foo', [], null);
     }
 
     /**
@@ -51,7 +51,7 @@ class AuthManagerTest extends PHPUnit_Framework_TestCase
         $this->expectException('Exception');
         $this->expectExceptionMessage('Undefined business rule: \'foo.bar\'');
         $this->authManager->registerRuleset('foo', $this);
-        $this->authManager->executeBizRule('foo.bar', array(), null);
+        $this->authManager->executeBizRule('foo.bar', [], null);
     }
 
     /**
@@ -60,7 +60,7 @@ class AuthManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testCoreRule()
     {
-        $this->assertTrue($this->authManager->executeBizRule('rule0', array(), null));
+        $this->assertTrue($this->authManager->executeBizRule('rule0', [], null));
     }
 
     /**
@@ -70,7 +70,7 @@ class AuthManagerTest extends PHPUnit_Framework_TestCase
     public function testModuleRule()
     {
         $this->authManager->registerRuleset('foo', $this);
-        $this->assertTrue($this->authManager->executeBizRule('foo.rule0', array(), null));
+        $this->assertTrue($this->authManager->executeBizRule('foo.rule0', [], null));
     }
 
     /**
@@ -90,7 +90,7 @@ class AuthManagerTest extends PHPUnit_Framework_TestCase
     {
         $this->expectException('ArgumentCountError');
         if (phpversion() > '7.1') {
-            $this->authManager->executeBizRule('rule1', array(), null);
+            $this->authManager->executeBizRule('rule2', [], null);
         } else {
             $this->markTestSkipped("Test requires PHP7.1 or higher");
         }
@@ -102,7 +102,7 @@ class AuthManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testDataScalar()
     {
-        $this->assertTrue($this->authManager->executeBizRule('rule1', array(), 'foo'));
+        $this->assertTrue($this->authManager->executeBizRule('rule1', [], 'foo'));
     }
 
     /**
@@ -111,7 +111,7 @@ class AuthManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testDataArray()
     {
-        $this->assertTrue($this->authManager->executeBizRule('rule2', array(), array('foo', 'bar')));
+        $this->assertTrue($this->authManager->executeBizRule('rule3', [], ['foo', 'bar']));
     }
 
     /**
@@ -120,30 +120,63 @@ class AuthManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testDataAndParam()
     {
-        $this->assertTrue($this->authManager->executeBizRule('rule2', array('bar'), 'foo'));
-    }
-
-    public function rule0()
-    {
-        return func_num_args() == 0;
+        $this->assertTrue($this->authManager->executeBizRule('rule2', ['bar'], 'foo'));
     }
 
     /**
-     * @param $foo
-     * @return bool
+     * @covers AuthManager
+     * @throws Exception
      */
-    public function rule1($foo)
+    public function testParam()
     {
-        return $foo === 'foo';
+        $this->assertTrue($this->authManager->executeBizRule('rule4', ['foo', 'bar'], null));
     }
 
     /**
-     * @param $foo
-     * @param $bar
+     * @param $data
      * @return bool
      */
-    public function rule2($foo, $bar)
+    public function rule0($data)
     {
-        return $foo === 'foo' && $bar === 'bar';
+        return func_num_args() === 1;
+    }
+
+    /**
+     * @param $data
+     * @return bool
+     */
+    public function rule1($data)
+    {
+        return $data === 'foo';
+    }
+
+    /**
+     * @param $data
+     * @param $param
+     * @return bool
+     */
+    public function rule2($data, $param)
+    {
+        return $data === 'foo' && $param === 'bar';
+    }
+
+    /**
+     * @param $data_array array
+     * @return bool
+     */
+    public function rule3($data_array)
+    {
+        return count($data_array) === 2 && $data_array[0] === 'foo' && $data_array[1] === 'bar';
+    }
+
+    /**
+     * @param $data
+     * @param $foo_param
+     * @param $bar_param
+     * @return bool
+     */
+    public function rule4($data, $foo_param, $bar_param)
+    {
+        return func_num_args() === 3 && $foo_param === 'foo' && $bar_param === 'bar';
     }
 }

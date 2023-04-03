@@ -14,6 +14,7 @@
  */
 
 use OE\factories\models\traits\HasFactory;
+use OEModule\OphCoMessaging\models\Mailbox;
 
 /**
  * This is the model class for table "team".
@@ -34,11 +35,25 @@ use OE\factories\models\traits\HasFactory;
  * @property TeamTeamAssign[] $teamTeamAssigns_child
  * @property TeamTeamAssign[] $teamTeamAssigns_parent
  * @property TeamUserAssign[] $teamUserAssigns
- * @property Contact[] $contact
+ * @property Contact $contact
+ * @property Team[] $childTeams
+ * @property Team[] $parentTeams
+ * @property Mailbox[] $mailboxes
  */
 class Team extends BaseActiveRecordVersioned
 {
     use HasFactory;
+    use \APICache;
+
+    public const TASK_OWNER = 'TaskOwnTeam';
+    public const TASK_MANAGER = 'TaskManageTeam';
+    public const TASK_MEMBER = 'TaskMemberOfTeam';
+
+    public const DEFAULT_TASK = self::TASK_MEMBER;
+    public const ALL_TASKS = [self::TASK_MEMBER, self::TASK_MANAGER, self::TASK_OWNER];
+    public const ADMIN_VISIBLE_TASKS = [self::TASK_OWNER, self::TASK_MANAGER];
+
+    public const TEAM_ASSIGNMENT_BIZ_RULE = 'hasTeamAssignment';
 
     public $email = '';
     public $temp_user_ids = array();
@@ -58,6 +73,84 @@ class Team extends BaseActiveRecordVersioned
     }
 
     /**
+     * getTasksList
+     *
+     * This function is used for retrieving the display names for the Team tasks.
+     * These display names can then be used for views inside tables, select boxes etc
+     * to show the user facing name of the task.
+     *
+     * These names are stored in the description field of the AuthItem associated
+     * with the task.
+     *
+     * An associative array of the structure ['task name' => 'display name', ...] will
+     * be returned where the task names are the constants defined above starting with TASK_...
+     * e.g. [Team::TASK_MANAGER => 'Manager']
+     *
+     * @param $tasks array The set of Team AuthItem tasks to retrieve the descriptions from
+     * @return array An associative array of Tasks => Task descriptions
+     */
+    public static function getTasksList($tasks)
+    {
+        $auth_items = self::filterAuthItemsByTasks(
+            self::filterTasks($tasks),
+            Yii::app()->authManager->getTasks(),
+        );
+
+        // Per the PHP documentation for array_map, the keys (which are task names) are preserved
+        // when only one array is supplied, so the mappings are not destroyed.
+        return array_map(
+            static function ($auth_item) {
+                return $auth_item->description;
+            },
+            $auth_items
+        );
+    }
+
+    /**
+     * getTeamIdsForUserGroupedByTask
+     *
+     * Retrieves the team ids for the provided user and team tasks, grouping the ids
+     * by the task they belong to.
+     *
+     * e.g. [TASK_OWNER => [team id, ...], TASK_MANAGER => [team id, ...], ...]
+     *
+     * @param $user_id mixed The id of the user to get associated teams for
+     * @param $tasks array The set of tasks to retrieve and group the team ids for
+     * @return array
+     */
+    public static function getTeamIdsForUserGroupedByTask($user_id, $tasks): array
+    {
+        $auth_assignments = self::filterAuthItemsByTasks(
+            self::filterTasks($tasks),
+            Yii::app()->authManager->getAuthAssignments($user_id)
+        );
+
+        return array_map(
+            static function ($auth_item) {
+                return $auth_item->getData();
+            },
+            $auth_assignments
+        );
+    }
+
+    /**
+     * getTeamIdsForUser
+     *
+     * Retrieves the team ids for the provided user and team tasks without grouping by task.
+     *
+     * @param $user_id mixed The id of the user to get associated teams for
+     * @param $tasks array The set of tasks to retrieve the team ids for
+     * @return array
+     */
+    public static function getTeamIdsForUser($user_id, $tasks): array
+    {
+        return call_user_func_array(
+            'array_merge',
+            array_values(self::getTeamIdsForUserGroupedByTask($user_id, $tasks))
+        );
+    }
+
+    /**
      * @return string the associated database table name
      */
     public function tableName()
@@ -73,7 +166,7 @@ class Team extends BaseActiveRecordVersioned
         }
         $table_alias = $this->getTableAlias(false, false);
         return array(
-            'condition' =>"$table_alias.institution_id = :institution_id",
+            'condition' => "$table_alias.institution_id = :institution_id",
             'params' => array(
                 ':institution_id' => $selected_institution_id,
             )
@@ -89,13 +182,13 @@ class Team extends BaseActiveRecordVersioned
         return array(
             array('name, active', 'required'),
             array('email', 'email'),
-            array('active', 'numerical', 'integerOnly'=>true),
-            array('name', 'length', 'max'=>255),
+            array('active', 'numerical', 'integerOnly' => true),
+            array('name', 'length', 'max' => 255),
             array('institution_id', 'default', 'value' => Yii::app()->session->get('selected_institution_id'), 'on' => 'insert'),
-            array('last_modified_user_id, created_user_id', 'length', 'max'=>10),
+            array('last_modified_user_id, created_user_id', 'length', 'max' => 10),
             array('last_modified_date, created_date, users, childTeams, active, name', 'safe'),
             // The following rule is used by search().
-            array('id, name, contact_id, active', 'safe', 'on'=>'search'),
+            array('id, name, contact_id, active', 'safe', 'on' => 'search'),
         );
     }
 
@@ -117,6 +210,7 @@ class Team extends BaseActiveRecordVersioned
             'is_parentTeam' => array(self::HAS_MANY, 'TeamTeamAssign', 'parent_team_id'),
             'childTeams' => array(self::MANY_MANY, 'Team', 'team_team_assign(parent_team_id, child_team_id)'),
             'parentTeams' => array(self::MANY_MANY, 'Team', 'team_team_assign(child_team_id, parent_team_id)'),
+            'mailboxes' => array(self::MANY_MANY, Mailbox::class, 'mailbox_team(team_id, mailbox_id)')
         );
     }
 
@@ -151,15 +245,148 @@ class Team extends BaseActiveRecordVersioned
      */
     public function search()
     {
-        $criteria=new CDbCriteria;
+        $criteria = new CDbCriteria();
         $criteria->compare('id', $this->id);
         $criteria->compare('name', $this->name, true);
         $criteria->compare('contact_id', $this->contact_id, true);
         $criteria->compare('active', $this->active);
 
         return new CActiveDataProvider($this, array(
-            'criteria'=>$criteria,
+            'criteria' => $criteria,
         ));
+    }
+
+
+    /**
+     * getUserTaskMappings
+     *
+     * Returns an associative array of user ids mapped to the task the user is assigned
+     * in this team.
+     *
+     * @return The list of users mapped to their assigned tasks in this team
+     */
+    public function getUserTaskMappings(): array
+    {
+        return array_reduce(
+            $this->getAuthAssignmentRows(self::ALL_TASKS, null),
+            function ($assignments, $auth_item) {
+                $team_ids = unserialize($auth_item['data']);
+
+                if (in_array($this->id, $team_ids)) {
+                    $assignments[$auth_item['userid']] = $auth_item['itemname'];
+                }
+
+                return $assignments;
+            },
+            []
+        );
+    }
+
+    /**
+     * getUsersWithAssignedTasks
+     *
+     * getUsersWithAssignedTasks presents the cached results of a call to the
+     * getUserTaskMappings function, which itself returns an associative array
+     * of user ids mapped to the task the user is assigned in this team.
+     *
+     * @return array The cached list of users mapped to their assigned tasks in this team
+     */
+    public function getUsersWithAssignedTasks(): array
+    {
+        return $this->getCachedData($this->id, [$this, 'getUserTaskMappings']);
+    }
+
+    /**
+     * setUserTasks
+     *
+     * Takes an associative array of user id => task mappings and uses the application
+     * AuthManager to set the data for the AuthItems entries for each user and for each task, by
+     * adding and removing team ids from the arrays which constitute said data.
+     *
+     * @param $new_mappings array An array of ['user_id' => 'task'] mappings to set
+     */
+    public function setUserTasks($new_mappings)
+    {
+        $existing_mappings = $this->getUsersWithAssignedTasks();
+
+        $to_preserve = array_intersect_assoc($existing_mappings, $new_mappings);
+        $to_add = array_diff_assoc($new_mappings, $to_preserve);
+        $to_remove = array_diff_assoc($existing_mappings, $to_preserve);
+
+        $user_ids = array_merge(array_keys($to_add), array_keys($to_remove));
+
+        $assignment_data = $this->getUserTaskTeamEntries(self::ALL_TASKS, $user_ids);
+        $new_assignments = [];
+
+        foreach ($to_add as $user_id => $task) {
+            if (!in_array($task, self::ALL_TASKS)) {
+                throw new Exception('The task ' . $task . ' provided to setUserTasks is not a Team task');
+            }
+
+            $new_assignments[$user_id][$task] = array_merge($assignment_data[$user_id][$task] ?? [], [$this->id]);
+        }
+
+        foreach ($to_remove as $user_id => $task) {
+            $new_assignments[$user_id][$task] = array_diff($assignment_data[$user_id][$task], [$this->id]);
+        }
+
+        foreach ($new_assignments as $user_id => $tasks) {
+            foreach ($tasks as $task => $team_ids) {
+                if (count($team_ids) > 0) {
+                    Yii::app()->authManager->setOrUpdateAssignment($task, $user_id, self::TEAM_ASSIGNMENT_BIZ_RULE, $team_ids);
+                } else {
+                    Yii::app()->authManager->revoke($task, $user_id);
+                }
+            }
+        }
+
+        $this->resetCacheData($this->id);
+    }
+
+    public function setAndCacheAssignedUsers($user_ids)
+    {
+        $this->temp_user_ids = $user_ids;
+
+        $this->cacheAssignedUsers();
+    }
+
+    public function setAndCacheAssignedTeams($team_ids) {
+        $this->temp_child_team_ids = $team_ids;
+
+        $this->cacheAssignedTeams();
+    }
+
+    public function beforeValidate()
+    {
+        $this->cacheAssignedUsers();
+        $this->cacheAssignedTeams();
+        return parent::beforeValidate();
+    }
+
+    public function getParentTeamLinks()
+    {
+        $names = array_map(function ($parent_team) {
+            $color_class = $parent_team->active ? 'good' : 'warning';
+            return "<span class='highlighter $color_class'>"
+            . "<a target='_blank' href='/oeadmin/team/edit/$parent_team->id'>$parent_team->name</a></span>";
+        }, $this->parentTeams);
+        return implode(', ', $names);
+    }
+
+    public function getAllUsers()
+    {
+        $authed_users = array();
+        foreach ($this->users as $user) {
+            $authed_users[$user->id] = $user;
+        }
+        if ($this->childTeams) {
+            foreach ($this->childTeams as $child_team) {
+                foreach ($child_team->getAllUsers() as $user) {
+                    $authed_users[$user->id] = $user;
+                }
+            }
+        }
+        return $authed_users;
     }
 
     protected function cacheAssignedUsers()
@@ -188,23 +415,18 @@ class Team extends BaseActiveRecordVersioned
             });
             if (!$temp_assign) {
                 $temp_assign = self::model()->findByPk($child_team_id);
-                if ($temp_assign->is_parentTeam) {
-                    $this->addError('Nested Team', "{$temp_assign->name} is a parent team");
-                }
             } else {
                 $temp_assign = array_values($temp_assign)[0];
             }
+
+            if ($temp_assign->is_parentTeam) {
+                $this->addError('Nested Team', "{$temp_assign->name} is a parent team");
+            }
+
             $this->temp_child_teams[] = $temp_assign;
         }
 
         $this->childTeams = $this->temp_child_teams;
-    }
-
-    public function beforeValidate()
-    {
-        $this->cacheAssignedUsers();
-        $this->cacheAssignedTeams();
-        return parent::beforeValidate();
     }
 
     protected function beforeSave()
@@ -225,7 +447,6 @@ class Team extends BaseActiveRecordVersioned
                 $contact->save();
                 $this->contact_id = $contact->id;
             }
-            $errors = $contact->getErrors();
             foreach ($contact->getErrors() as $attr => $error) {
                 $this->addError($contact->getAttributeLabel($attr), $error);
             }
@@ -239,28 +460,91 @@ class Team extends BaseActiveRecordVersioned
         parent::afterFind();
     }
 
-    public function getParentTeamLinks()
+    /**
+     * filterTasks
+     *
+     * Filter AuthManager tasks to those specific to the Team model
+     *
+     * @param $tasks array The list of AuthManager tasks
+     * @return array
+     */
+    private static function filterTasks($tasks): array
     {
-        $names = array_map(function ($parent_team) {
-            $color_class = $parent_team->active ? 'good' : 'warning';
-            return "<span class='highlighter $color_class'><a target='_blank' href='/oeadmin/team/edit/$parent_team->id'>$parent_team->name</a></span>";
-        }, $this->parentTeams);
-        return implode(', ', $names);
+        return array_intersect($tasks, self::ALL_TASKS);
     }
 
-    public function getAllUsers()
+    /**
+     * filterAuthItemsByTasks
+     *
+     * Takes a set of tasks and an associated array of tasks => AuthItems
+     * and returns only the AuthItems associated with a task in the set.
+     *
+     * @param $tasks array The tasks to filter the auth items by
+     * @param $auth_items array An array of AuthItems indexed by tasks
+     * @return array Filtered AuthItems
+     */
+    private static function filterAuthItemsByTasks($tasks, $auth_items): array
     {
-        $authed_users = array();
-        foreach ($this->users as $user) {
-            $authed_users[$user->id] = $user;
+        // $tasks is an array with tasks as the values and
+        // $auth_items is an associated array with tasks as the keys,
+        // so flip the values of $tasks into keys to allow array_intersect_key
+        // to filter $auth_items.
+        return array_intersect_key($auth_items, array_flip($tasks));
+    }
+
+    /**
+     * getAuthAssignmentRows
+     *
+     * @param $tasks array The set of tasks to constrain the results to
+     * @param $user_ids array|null Optional set of user ids to constrain the results to
+     * @return array
+     */
+    private function getAuthAssignmentRows($tasks, $user_ids = null)
+    {
+        $command = Yii::app()->db->createCommand()
+                                 ->select('itemname, userid, data')
+                                 ->from('authassignment');
+
+        $tasks = self::filterTasks($tasks);
+
+        if (empty($user_ids)) {
+            $command->join('team_user_assign', 'user_id = userid')
+                    ->where(
+                        ['and', ['in', 'itemname', $tasks], 'team_id = :team_id'],
+                        [':team_id' => $this->id]
+                    );
+        } else {
+            $command->where(
+                ['and',
+                 ['in', 'itemname', self::filterTasks($tasks)],
+                 ['in', 'userid', $user_ids]
+                ]
+            );
         }
-        if ($this->childTeams) {
-            foreach ($this->childTeams as $child_team) {
-                foreach ($child_team->getAllUsers() as $user) {
-                    $authed_users[$user->id] = $user;
-                }
-            }
-        }
-        return $authed_users;
+
+        return $command->queryAll();
+    }
+
+    /**
+     * getUserTaskTeamEntries
+     *
+     * Assembles the data from the user AuthItems into a two level deep associative array.
+     * It has the following structure: [user_id => [task => team_ids, ...], ...]
+     *
+     * @param $tasks array The set of tasks to constrain the results to
+     * @param $user_ids array|null Optional set of user ids to constrain the results to
+     * @return array The [user => [task => team ids]] mappings
+     */
+    private function getUserTaskTeamEntries($tasks, $user_ids = null): array
+    {
+        return array_reduce(
+            $this->getAuthAssignmentRows($tasks, $user_ids),
+            static function ($mappings, $row) {
+                $mappings[$row['userid']][$row['itemname']] = unserialize($row['data']);
+
+                return $mappings;
+            },
+            []
+        );
     }
 }

@@ -14,6 +14,7 @@
  */
 
 use OEModule\OESysEvent\events\ClinicalEventSoftDeletedSystemEvent;
+use OEModule\OESysEvent\tests\test_traits\MocksSystemEventManager;
 
 /**
  * @group sample-data
@@ -22,76 +23,18 @@ use OEModule\OESysEvent\events\ClinicalEventSoftDeletedSystemEvent;
 class EventTest extends OEDbTestCase
 {
     use WithTransactions;
-
-    protected $configured_event_manager = null;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-        $this->configured_event_manager = Yii::app()->getComponent('event');
-    }
-
-    public function tearDown(): void
-    {
-        Yii::app()->setComponent('event', $this->configured_event_manager);
-        parent::tearDown();
-    }
+    use MocksSystemEventManager;
 
     /** @test */
     public function soft_delete_triggers_the_appropriate_event()
     {
         $event = Event::factory()->create();
-        $manager_mock = $this->mockEventManager();
+        $manager_mock = $this->mockSystemEventManager();
 
         $event->softDelete();
 
         $dispatched = $manager_mock->getDispatched(ClinicalEventSoftDeletedSystemEvent::class);
         $this->assertCount(1, $dispatched);
         $this->assertEquals($event, $dispatched[0]->clinical_event);
-    }
-
-    protected function mockEventManager()
-    {
-        $mockManager = new class implements IApplicationComponent {
-            public array $dispatched = [];
-
-            public function init()
-            {
-            }
-
-            public function getIsInitialized()
-            {
-                return true;
-            }
-
-            public function dispatch(...$arguments)
-            {
-                $this->dispatched[] = $arguments;
-            }
-
-            /**
-             * Gets the event instances that have been dispatched that are of the given class
-             *
-             * @param string $event_class
-             * @return array
-             */
-            public function getDispatched(string $event_class): array
-            {
-                return array_map(
-                    function ($dispatch_args) {
-                        return $dispatch_args[0];
-                    },
-                    array_values(
-                        array_filter($this->dispatched, function ($dispatch_args) use ($event_class) {
-                            return is_object($dispatch_args[0]) && $dispatch_args[0] instanceof $event_class;
-                        })
-                    )
-                );
-            }
-        };
-
-        Yii::app()->setComponent('event', $mockManager);
-
-        return $mockManager;
     }
 }

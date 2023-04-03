@@ -16,6 +16,7 @@
 
 namespace OEModule\OphCiExamination\tests\traits;
 
+
 use OEModule\OphCiExamination\models\Element_OphCiExamination_Refraction;
 use OEModule\OphCiExamination\models\interfaces\SidedData;
 use OEModule\OphCiExamination\models\OphCiExamination_Refraction_Reading;

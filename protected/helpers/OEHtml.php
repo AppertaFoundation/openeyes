@@ -49,7 +49,8 @@ class OEHtml extends CHtml
             array_merge([
                 "class" => "button large",
                 "name" => "save",
-                "id" => "et_save"
+                "id" => "et_save",
+                "data-test" => "save-button"
             ], $htmlOption)
         );
     }
@@ -73,7 +74,8 @@ class OEHtml extends CHtml
             array_merge([
                 'class' => 'warning button large',
                 'name' => 'cancel',
-                'id' => 'et_cancel'
+                'id' => 'et_cancel',
+                "data-test" => "cancel-button"
             ], $options)
         );
     }

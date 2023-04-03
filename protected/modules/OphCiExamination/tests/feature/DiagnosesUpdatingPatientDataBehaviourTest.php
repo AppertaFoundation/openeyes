@@ -17,6 +17,7 @@ namespace OEModule\OphCiExamination\tests\feature;
 
 use CHtml;
 use OE\factories\models\EventFactory;
+
 use OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses;
 use OEModule\OphCiExamination\models\OphCiExamination_Diagnosis;
 use OEModule\OphCiExamination\models\SystemicDiagnoses;
@@ -35,6 +36,20 @@ class DiagnosesUpdatingPatientDataBehaviourTest extends \OEDbTestCase
     use \MakesApplicationRequests;
     use \WithFaker;
     use \WithTransactions;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        // will rerun the configuration application on the event manager
+        // so events are restored for these tests
+        \Yii::app()->event->init();
+    }
+
+    public function tearDown(): void
+    {
+        \Yii::app()->event->forgetAll();
+        parent::tearDown();
+    }
 
     /** @test */
     public function ophthalmic_entries_are_saved_and_reflected_in_patient_record()

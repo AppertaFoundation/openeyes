@@ -17,17 +17,11 @@
 
 namespace OEModule\OphCoMessaging\models;
 
+use OE\factories\models\traits\HasFactory;
+
 class OphCoMessaging_Message_Comment extends \BaseActiveRecordVersioned
 {
-    /**
-     * Returns the static model of the specified AR class.
-     *
-     * @return the static model class
-     */
-    public static function model($className = __CLASS__)
-    {
-        return parent::model($className);
-    }
+    use HasFactory;
 
     /**
      * @return string the associated database table name

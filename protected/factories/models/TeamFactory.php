@@ -36,4 +36,35 @@ class TeamFactory extends ModelFactory
             'institution_id' => 1
         ];
     }
+
+    public function withUsers($users): self
+    {
+        return $this->afterMaking(function (\Team $team) use ($users) {
+            $ids = array_map(
+                static function ($user) { return $user->id; },
+                $users
+            );
+
+            $team->setAndCacheAssignedUsers($ids);
+        });
+    }
+
+    public function withTasks($tasks): self
+    {
+        return $this->afterCreating(function (\Team $team) use ($tasks) {
+            $team->setUserTasks($tasks);
+        });
+    }
+
+    public function withTeams($teams): self
+    {
+        return $this->afterMaking(function (\Team $team) use ($teams) {
+            $ids = array_map(
+                static function ($team) { return $team->id; },
+                $teams
+            );
+
+            $team->setAndCacheAssignedTeams($ids);
+        });
+    }
 }

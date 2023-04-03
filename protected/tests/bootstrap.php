@@ -55,7 +55,7 @@ require_once(__DIR__ . DIRECTORY_SEPARATOR . 'bootstrap_process_isolation.php');
 
 Yii::createWebApplication($config);
 
-Yii::app()->event->observers = array();
+Yii::app()->event->forgetAll();
 
 // PHPUnit dies silently with FATAL ERRORS which makes it hard to debug the tests.
 register_shutdown_function('PHPUnit_shutdownFunction');

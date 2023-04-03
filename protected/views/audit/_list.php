@@ -37,7 +37,7 @@ if (empty($data['items'])) {?>
         <th>Patient</th>
     </tr>
     </thead>
-    <tbody id="auditListData">
+    <tbody id="auditListData" data-test="audit-list">
     <?php foreach ($data['items'] as $i => $log) {
         $this->renderPartial('_list_row', array('i' => $i, 'log' => $log));
     }?>

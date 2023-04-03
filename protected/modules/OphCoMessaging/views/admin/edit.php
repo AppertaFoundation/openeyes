@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -14,6 +15,7 @@
  * @copyright Copyright (c) 2020, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <h2> <?= $model->id ? 'Edit' : 'Create' ?> sub type</h2>
@@ -27,7 +29,8 @@
                     <li>
                         <?= $err ?>
                     </li>
-            <?php } } ?>
+                <?php }
+            } ?>
         </ul>
     </div>
 <?php } ?>

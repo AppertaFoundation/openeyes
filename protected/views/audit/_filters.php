@@ -58,11 +58,11 @@
         </table>
     </div>
     <h4>Action</h4>
-    <?=\CHtml::dropDownList('action', @$_POST['action'], CHtml::listData(AuditAction::model()->findAll(array('order' => 'name')), 'id', 'name'), array('empty' => 'All actions', 'class' => 'cols-full'))?>
+    <?=\CHtml::dropDownList('action', @$_POST['action'], CHtml::listData(AuditAction::model()->findAll(array('order' => 'name')), 'id', 'name'), array('empty' => 'All actions', 'class' => 'cols-full', 'data-test' => 'audit-action'))?>
     <h4>Target</h4>
     <?=\CHtml::dropDownList('target_type', @$_POST['target_type'], CHtml::listData(AuditType::model()->findAll(array('order' => 'name')), 'id', 'name'), array('empty' => 'All targets', 'class' => 'cols-full'))?>
     <h4>Event Types</h4>
-    <?=\CHtml::dropDownList('event_type_id', @$_POST['event_type_id'], EventType::model()->getEventTypeInUseList(), array('empty' => 'All event types', 'class' => 'cols-full'))?>
+    <?=\CHtml::dropDownList('event_type_id', @$_POST['event_type_id'], EventType::model()->getEventTypeInUseList(), array('empty' => 'All event types', 'class' => 'cols-full', 'data-test' => 'audit-event-type'))?>
     <h4>User</h4>
     <?php $this->widget('application.widgets.AutoCompleteSearch'); ?>
     <h4>Patient Identifier</h4>
@@ -111,6 +111,6 @@
     </table>
     <div class="row">
         <img class="loader hidden" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif');?>" alt="loading..." style="margin-right:10px" />
-        <button type="submit" class="green hint cols-full">Create Audit</button>
+        <button type="submit" class="green hint cols-full" data-test="create-audit-button">Create Audit</button>
     </div>
 </nav>

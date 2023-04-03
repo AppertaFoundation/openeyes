@@ -1,6 +1,9 @@
 /**
  * A Series of commands for working with adder dialogs.
  */
+Cypress.Commands.add('selectAdderDialogOptionText', (string) => {
+    cy.get('div.oe-add-select-search').contains(string).scrollIntoView().click()
+})
 
 Cypress.Commands.add('assertAdderDialogIncludes', (text) => {
     cy.get('[data-test="adder-dialog"]:visible').should('contain', text)
@@ -11,7 +14,11 @@ Cypress.Commands.add('assertAdderDialogDoesNotInclude', (text) => {
 })
 
 Cypress.Commands.add('selectAdderDialogOptionText', (text) => {
-    cy.get('[data-test="adder-dialog"] :visible').contains(text).click()
+    cy.get('[data-test="adder-dialog"]').contains(text).scrollIntoView().click()
+})
+
+Cypress.Commands.add('selectAdderDialogOptionVariable', (variable, text) => {
+    cy.get(variable).contains(text).scrollIntoView().click()
 })
 
 Cypress.Commands.add('selectAdderDialogOptionAdderID', (headingId, text) => {

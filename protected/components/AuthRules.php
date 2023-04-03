@@ -24,7 +24,7 @@ class AuthRules
      *
      * @return bool
      */
-    public function canEditEpisode(Episode $episode)
+    public function canEditEpisode($data, Episode $episode)
     {
         if ($episode->change_tracker) {
             // firm/subspecialty  is irrelevant for change tracking episodes.
@@ -44,7 +44,7 @@ class AuthRules
      * @param bool $has_pgdpsd_assignments
      * @return bool
      */
-    public function canCreateEvent(Firm $firm = null, Episode $episode = null, EventType $event_type = null, bool $has_pgdpsd_assignments = false)
+    public function canCreateEvent($data, Firm $firm = null, Episode $episode = null, EventType $event_type = null, bool $has_pgdpsd_assignments = false)
     {
         if ($event_type) {
             if ($event_type->disabled) {
@@ -67,7 +67,7 @@ class AuthRules
         }
 
         if ($episode) {
-            return $this->canEditEpisode($episode);
+            return $this->canEditEpisode(null, $episode);
         }
 
         return true;
@@ -79,7 +79,7 @@ class AuthRules
      *
      * @return bool
      */
-    public function canEditEvent(Event $event)
+    public function canEditEvent($data, Event $event)
     {
         if ($event->delete_pending) {
             return false;
@@ -105,7 +105,7 @@ class AuthRules
      *
      * @return bool
      */
-    public function canDeleteEvent(User $user, Event $event)
+    public function canDeleteEvent($data, User $user, Event $event)
     {
         if (!(Yii::app()->user->checkAccess('admin'))) {
             return false;
@@ -126,7 +126,7 @@ class AuthRules
      *
      * @return bool
      */
-    public function canRequestEventDeletion(Event $event)
+    public function canRequestEventDeletion($data, Event $event)
     {
         if ($event->delete_pending) {
             return false;
@@ -142,6 +142,16 @@ class AuthRules
         return true;
     }
 
+    public function hasTeamAssignment($assigned_team_ids, $requested_team_id)
+    {
+        return in_array($requested_team_id, $assigned_team_ids);
+    }
+
+    public function canShowAllUsersInTeamUserAdder($data)
+    {
+        return Yii::app()->user->checkAccess('admin');
+    }
+
     /**
      * Common check for all rules that involve editing/deleting events.
      *
@@ -151,7 +161,7 @@ class AuthRules
      */
     private function canModifyEvent(Event $event)
     {
-        return $this->canEditEpisode($event->episode);
+        return $this->canEditEpisode(null, $event->episode);
     }
 
     /**

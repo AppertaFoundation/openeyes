@@ -954,118 +954,117 @@ class AdminController extends BaseAdminController
             } else {
                 $transaction = Yii::app()->db->beginTransaction();
 
-                $contact->title = $user_attributes['title'];
-                $contact->first_name = $user_attributes['first_name'];
-                $contact->last_name = $user_attributes['last_name'];
-                $contact->qualifications = $request->getPost('Contact')['qualifications'];
-                $contact->created_institution_id = Yii::app()->session['selected_institution_id'];
+                try {
+                    $contact->title = $user_attributes['title'];
+                    $contact->first_name = $user_attributes['first_name'];
+                    $contact->last_name = $user_attributes['last_name'];
+                    $contact->qualifications = $request->getPost('Contact')['qualifications'];
+                    $contact->created_institution_id = Yii::app()->session['selected_institution_id'];
 
-                if (!$contact->save()) {
-                    $transaction->rollback();
+                    if (!$contact->save()) {
+                        throw new CHttpException(500, 'Unable to save user contact: ' . print_r($contact->getErrors(), true));
+                    }
 
-                    throw new CHttpException(500, 'Unable to save user contact: ' . print_r($contact->getErrors(), true));
-                }
+                    if (!$user->contact) {
+                        $user->contact_id = $contact->id;
+                    }
 
-                if (!$user->contact) {
-                    $user->contact_id = $contact->id;
-                }
+                    $is_new = $user->getIsNewRecord();
 
-                $is_new = $user->getIsNewRecord();
+                    if (!$user->save(false)) {
+                        throw new CHttpException(500, 'Unable to save user: ' . print_r($user->getErrors(), true));
+                    }
 
-                if (!$user->save(false)) {
-                    $transaction->rollback();
+                    if ($is_new) {
+                        $user->correspondence_sign_off_user_id = $user->id;
+                        $user->update(['correspondence_sign_off_user_id']);
+                    }
 
-                    throw new CHttpException(500, 'Unable to save user: ' . print_r($user->getErrors(), true));
-                }
+                    if (!array_key_exists('firms', $user_attributes) || !is_array($user_attributes['firms'])) {
+                        $user_attributes['firms'] = [];
+                    }
 
-                if ($is_new) {
-                    $user->correspondence_sign_off_user_id = $user->id;
-                    $user->update(['correspondence_sign_off_user_id']);
-                }
-
-                if (!array_key_exists('firms', $user_attributes) || !is_array($user_attributes['firms'])) {
-                    $user_attributes['firms'] = [];
-                }
-
-                $user->saveRoles(
-                    (!isset($user_attributes['roles']) || (empty($user_attributes['roles'])))
+                    $user->saveRoles(
+                        (!isset($user_attributes['roles']) || (empty($user_attributes['roles'])))
                         ? []
                         : $user_attributes['roles']);
 
-                try {
-                    $user->saveFirms($user_attributes['firms']);
-                } catch (FirmSaveException $e) {
-                    $user->addError('global_firm_rights', 'When no global firm rights is set, a firm must be selected');
-                    $errors = array_merge($errors, $user->getErrors());
-                }
-
-                // Delete auths removed by the admin user first
-                $ids = array_filter(
-                    array_column($user_auths_attributes, 'id'),
-                    function ($id) {
-                        return !empty($id);
+                    try {
+                        $user->saveFirms($user_attributes['firms']);
+                    } catch (FirmSaveException $e) {
+                        $user->addError('global_firm_rights', 'When no global firm rights is set, a firm must be selected');
+                        $errors = array_merge($errors, $user->getErrors());
                     }
-                );
 
-                $criteria = new CDbCriteria();
-                $criteria->addCondition('user_id = :user_id');
-
-                $criteria->addNotInCondition('id', array_map(function ($id) {
-                    return $id;
-                }, $ids));
-
-                $criteria->params[':user_id'] = $user->id;
-
-                UserAuthentication::model()->deleteAll($criteria);
-
-                if (count($user_auths_attributes) === 0) {
-                    $user->addError('authentications', 'A user account must have 1 or more valid institution authentications');
-                    $errors = array_merge($errors, $user->getErrors());
-                    ;
-                } else {
-                    foreach ($user_auths_attributes as $user_auth_attributes) {
-                        $user_auth = UserAuthentication::fromAttributes($user_auth_attributes);
-
-                        $user_authentication_entries[] = $user_auth;
-
-                        if (!$user_auth->user_id) {
-                            $user_auth->user_id = $user->id;
+                    // Delete auths removed by the admin user first
+                    $ids = array_filter(
+                        array_column($user_auths_attributes, 'id'),
+                        function ($id) {
+                            return !empty($id);
                         }
+                    );
 
-                        $special_usernames = Yii::app()->params['special_usernames'] ?? [];
+                    $criteria = new CDbCriteria();
+                    $criteria->addCondition('user_id = :user_id');
 
-                        if (!in_array($user_auth->username, $special_usernames) && !$user_auth->validate()) {
-                            $user_auth_errors = array_merge($user_auth_errors, $user_auth->getErrors());
-                        } else {
-                            $user_auth->handlePassword();
-                            $user_auth->setPasswordHash();
+                    $criteria->addNotInCondition('id', array_map(function ($id) {
+                        return $id;
+                    }, $ids));
 
-                            if (!$user_auth->save(false)) {
-                                $transaction->rollback();
+                    $criteria->params[':user_id'] = $user->id;
 
-                                throw new CHttpException(500, 'Unable to save user authentication: ' . print_r($user_auth->getErrors(), true));
+                    UserAuthentication::model()->deleteAll($criteria);
+
+                    if (count($user_auths_attributes) === 0) {
+                        $user->addError('authentications', 'A user account must have 1 or more valid institution authentications');
+                        $errors = array_merge($errors, $user->getErrors());
+                    } else {
+                        foreach ($user_auths_attributes as $user_auth_attributes) {
+                            $user_auth = UserAuthentication::fromAttributes($user_auth_attributes);
+
+                            $user_authentication_entries[] = $user_auth;
+
+                            if (!$user_auth->user_id) {
+                                $user_auth->user_id = $user->id;
+                            }
+
+                            $special_usernames = Yii::app()->params['special_usernames'] ?? [];
+
+                            if (!in_array($user_auth->username, $special_usernames) && !$user_auth->validate()) {
+                                $user_auth_errors = array_merge($user_auth_errors, $user_auth->getErrors());
                             } else {
-                                Audit::add('admin-User-Authentication', 'save', $user_auth->id);
+                                $user_auth->handlePassword();
+                                $user_auth->setPasswordHash();
+
+                                if (!$user_auth->save(false)) {
+                                    throw new CHttpException(500, 'Unable to save user authentication: ' . print_r($user_auth->getErrors(), true));
+                                } else {
+                                    Audit::add('admin-User-Authentication', 'save', $user_auth->id);
+                                }
                             }
                         }
                     }
-                }
 
-                Audit::add('admin-User', 'edit', $user->id);
+                    Audit::add('admin-User', 'edit', $user->id);
 
-                $errors = array_merge($errors, $user_auth_errors);
+                    $errors = array_merge($errors, $user_auth_errors);
 
-                if (empty($errors)) {
-                    $transaction->commit();
-                } else {
+                    if (empty($errors)) {
+                        $transaction->commit();
+                    } else {
+                        $transaction->rollback();
+
+                        // The admin/useredit view displays firms in a multiselect list which only tolerates model objects,
+                        // not ids alone, thus they need to loaded in here to prevent an exception and to preserve the list
+                        // for the user when there are errors with the rest of the form data.
+                        $criteria = new CDbCriteria();
+                        $criteria->addInCondition('id', $user_attributes['firms']);
+                        $user->firms = Firm::model()->findAll($criteria);
+                    }
+                } catch (Exception $e) {
                     $transaction->rollback();
 
-                    // The admin/useredit view displays firms in a multiselect list which only tolerates model objects,
-                    // not ids alone, thus they need to loaded in here to prevent an exception and to preserve the list
-                    // for the user when there are errors with the rest of the form data.
-                    $criteria = new CDbCriteria();
-                    $criteria->addInCondition('id', $user_attributes['firms']);
-                    $user->firms = Firm::model()->findAll($criteria);
+                    throw $e;
                 }
             }
 

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -17,8 +18,9 @@
 
 namespace OEModule\OphCoMessaging\models;
 
-use EventSubtype;
+use OE\factories\models\traits\HasFactory;
 use EventSubTypeItem;
+use OEModule\OphCoMessaging\models\Mailbox;
 
 /**
  * This is the model class for table "et_ophcomessaging_message".
@@ -41,9 +43,13 @@ use EventSubTypeItem;
  * @property \User $user
  * @property \User $usermodified
  * @property OphCoMessaging_Message_MessageType $message_type
+ * @property OphCoMessaging_Message_Recipient $for_the_attention_of
+ * @property OphCoMessaging_Message_Recipient[] $recipients
  */
 class Element_OphCoMessaging_Message extends \BaseEventTypeElement
 {
+    use HasFactory;
+
     /**
      * Returns the static model of the specified AR class.
      *
@@ -71,11 +77,12 @@ class Element_OphCoMessaging_Message extends \BaseEventTypeElement
      */
     public function rules()
     {
-        return array(
-            array('event_id, for_the_attention_of_user_id, message_type_id, urgent, message_text, marked_as_read, cc_enabled', 'safe'),
-            array('for_the_attention_of_user_id, message_type_id, message_text, ', 'required'),
-            array('id, event_id, for_the_attention_of_user_id, message_type_id, urgent, message_text, marked_as_read, cc_enabled', 'safe', 'on' => 'search'),
-        );
+        return [
+            ['event_id, message_type_id, urgent, message_text, cc_enabled, sender_mailbox_id', 'safe'],
+            ['message_type_id, message_text, sender_mailbox_id', 'required'],
+            ['recipients', 'validateHasPrimaryRecipient'],
+            ['id, event_id, message_type_id, urgent, message_text, cc_enabled, sender_mailbox_id', 'safe', 'on' => 'search'],
+        ];
     }
 
     /**
@@ -83,18 +90,48 @@ class Element_OphCoMessaging_Message extends \BaseEventTypeElement
      */
     public function relations()
     {
-        return array(
-            'element_type' => array(self::HAS_ONE, 'ElementType', 'id', 'on' => "element_type.class_name='".get_class($this)."'"),
-            'comments' => array(self::HAS_MANY, 'OEModule\\OphCoMessaging\\models\\OphCoMessaging_Message_Comment', 'element_id'),
-            'last_comment' => array(self::HAS_ONE,'OEModule\\OphCoMessaging\\models\\OphCoMessaging_Message_Comment', 'element_id',  'order' => 'created_date DESC'),
-            'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
-            'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
-            'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-            'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-            'for_the_attention_of_user' => array(self::BELONGS_TO, 'User', 'for_the_attention_of_user_id'),
-            'message_type' => array(self::BELONGS_TO, 'OEModule\\OphCoMessaging\\models\\OphCoMessaging_Message_MessageType', 'message_type_id'),
-            'copyto_users' => array(self::HAS_MANY, 'OEModule\\OphCoMessaging\\models\\OphCoMessaging_Message_CopyTo_Users', 'element_id'),
-        );
+        return [
+            'element_type' => [self::HAS_ONE, \ElementType::class, 'id', 'on' => "element_type.class_name='" . get_class($this) . "'"],
+            'comments' => [self::HAS_MANY, OphCoMessaging_Message_Comment::class, 'element_id'],
+            'last_comment' => [
+                self::HAS_ONE,
+                OphCoMessaging_Message_Comment::class,
+                'element_id',
+                'order' => 'created_date DESC'
+            ],
+            'eventType' => [self::BELONGS_TO, \EventType::class, 'event_type_id'],
+            'event' => [self::BELONGS_TO, \Event::class, 'event_id'],
+            'user' => [self::BELONGS_TO, \User::class, 'created_user_id'],
+            'sender' => [self::BELONGS_TO, Mailbox::class, 'sender_mailbox_id'],
+            'usermodified' => [self::BELONGS_TO, \User::class, 'last_modified_user_id'],
+            'message_type' => [self::BELONGS_TO, OphCoMessaging_Message_MessageType::class, 'message_type_id'],
+            'recipients' => [
+                self::HAS_MANY,
+                OphCoMessaging_Message_Recipient::class,
+                'element_id'
+            ],
+            'cc_recipients' => [
+                self::HAS_MANY,
+                OphCoMessaging_Message_Recipient::class,
+                'element_id',
+                'condition' => 'primary_recipient != 1',
+            ],
+            // instead of restricting to primary_recipient true, we order by the flag so that
+            // it will fall back to a cc value. we also sort by id so that it will be consistent
+            // if the fallback is applied.
+            'for_the_attention_of' => [
+                self::HAS_ONE,
+                OphCoMessaging_Message_Recipient::class,
+                'element_id',
+                'order' => 'primary_recipient desc, id asc'
+            ],
+            'read_by_recipients' => [
+                self::HAS_MANY,
+                OphCoMessaging_Message_Recipient::class,
+                'element_id',
+                'condition' => 'marked_as_read = 1'
+            ],
+        ];
     }
 
     /**
@@ -102,17 +139,15 @@ class Element_OphCoMessaging_Message extends \BaseEventTypeElement
      */
     public function attributeLabels()
     {
-        return array(
+        return [
             'id' => 'ID',
             'event_id' => 'Event',
-            'for_the_attention_of_user_id' => 'Send to',
             'message_type_id' => 'Type',
             'urgent' => 'Urgent',
-            'marked_as_read' => 'Mark as read',
             'message_text' => 'Text',
             'comment_text' => 'Comment',
-            'copyto_users' => 'Copy To',
-        );
+            'recipients' => 'Recipients',
+        ];
     }
 
     /**
@@ -126,10 +161,8 @@ class Element_OphCoMessaging_Message extends \BaseEventTypeElement
 
         $criteria->compare('id', $this->id, true);
         $criteria->compare('event_id', $this->event_id, true);
-        $criteria->compare('for_the_attention_of_user_id', $this->for_the_attention_of_user_id);
         $criteria->compare('message_type_id', $this->message_type_id);
         $criteria->compare('urgent', $this->urgent);
-        $criteria->compare('marked_as_read', $this->marked_as_read);
         $criteria->compare('message_text', $this->message_text);
         $criteria->compare('cc_enabled', $this->cc_enabled);
         $criteria->order = 'created_date desc';
@@ -137,6 +170,18 @@ class Element_OphCoMessaging_Message extends \BaseEventTypeElement
         return new \CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,
         ));
+    }
+
+    public function validateHasPrimaryRecipient($attribute, $params)
+    {
+        $primary_recipients =  array_filter($this->$attribute ?? [], function ($recipient) {
+            return $recipient->primary_recipient;
+        });
+        if (!empty($primary_recipients)) {
+            return;
+        }
+
+        $this->addError('recipients', 'message must be sent to a recipient');
     }
 
     public function getMessageDate()
@@ -149,55 +194,73 @@ class Element_OphCoMessaging_Message extends \BaseEventTypeElement
      */
     public function getInfotext()
     {
-        return $this->marked_as_read ? 'read' : 'unread';
+        foreach ($this->recipients as $recipient) {
+            if ($recipient->marked_as_read) {
+                return 'read';
+            }
+        }
+        return 'unread';
     }
 
     public function getPrint_view()
     {
-        return 'print_'.$this->getDefaultView();
+        return 'print_' . $this->getDefaultView();
     }
 
     /**
-     * Get the full name and title of the users that sent the message
+     * Get the name and id of the mailboxes that sent messages to the current user
      *
      * @return array
      */
     public function getSenders()
     {
-        $criteria = new \CDbCriteria();
-        $criteria->compare('for_the_attention_of_user_id', $this->id);
+        $senders = \Yii::app()->db->createCommand()
+            ->selectDistinct('sender_mailbox.id, sender_mailbox.name')
+            ->from('et_ophcomessaging_message msg')
+            ->join('mailbox sender_mailbox', 'sender_mailbox.id = msg.sender_mailbox_id')
+            ->join('ophcomessaging_message_recipient msgr', 'msgr.element_id = msg.id')
+            ->leftJoin('mailbox_user mu', 'mu.mailbox_id = msgr.mailbox_id')
+            ->leftJoin('mailbox_team mt', 'mt.mailbox_id = msgr.mailbox_id')
+            ->leftJoin('team_user_assign tua', 'tua.team_id = mt.team_id')
+            ->where('mu.user_id = :id OR tua.user_id = :id')
+            ->bindValues([':id' => \Yii::app()->user->id])
+            ->queryAll();
 
-        $senders = array_unique(\CHtml::listData(self::model()->findAll($criteria), 'id', 'created_user_id'));
-
-        $sender_names = array();
+        $sender_names = [];
 
         foreach ($senders as $sender) {
-            $sender_names[$sender] = \User::model()->findByPk($sender)->getFullNameAndTitle();
+            $sender_names[$sender['id']] = $sender['name'];
         }
 
         return $sender_names;
     }
 
-    public function getReadStyleClass()
+    /**
+     *
+     * @param Mailbox $mailbox
+     * @param User|OEWebUser $user
+     * @return bool
+     */
+    public function getMarkedRead(Mailbox $mailbox, $user): bool
     {
         if (isset($this->last_comment)) {
-            if ($this->last_comment->marked_as_read === '0' && $this->last_comment->created_user_id !== \Yii::app()->user->id) {
-                return "unread";
-            }
-            return "read";
-        } elseif ($this->for_the_attention_of_user_id === \Yii::app()->user->id || $this->created_user_id === \Yii::app()->user->id) {
-            if ($this->marked_as_read) {
-                return "read";
-            }
-            return "unread";
-        } else {
-            foreach ($this->copyto_users as $copied_user) {
-                if ($copied_user->user_id === \Yii::app()->user->id && $copied_user->marked_as_read === '0') {
-                    return "unread";
-                }
-            }
-            return "read";
+            return $this->last_comment->marked_as_read !== '0' || $this->last_comment->created_user_id === $user->id;
         }
+
+        foreach ($this->recipients as $recipient) {
+            if ($recipient->mailbox_id === $mailbox->id && $recipient->marked_as_read === '0') {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public function getReadByLine()
+    {
+        return implode(', ', array_map(static function ($recipient) {
+            return $recipient->formattedName(true);
+        }, $this->read_by_recipients));
     }
 
     protected function beforeSave()

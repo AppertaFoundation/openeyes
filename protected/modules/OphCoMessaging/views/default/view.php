@@ -18,14 +18,6 @@
 
 $this->beginContent('//patient/event_container', array('no_face' => true));
 // Event actions
-if ($this->canMarkRead()) {
-    $this->event_actions[] = EventAction::link(
-        'Mark message as read',
-        Yii::app()->createUrl($this->getModule()->name . '/Default/markRead/' . $this->event->id),
-        array('level' => 'read'),
-        array('class' => 'small')
-    );
-}
 
 if ($this->checkPrintAccess()) {
     $this->event_actions[] = EventAction::printButton();
