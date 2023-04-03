@@ -47,11 +47,13 @@ $picker_setup = $pick_behavior->setupPicker();
                 <?= $exam_api->getLatestTriagePriority($pathway->worklist_patient->patient, $pathway->worklist_patient->worklist) ?>
             </td>
             <td>
-                <span class="oe-pathstep-btn buff comments <?= $pathway->checkForComments() ? 'comments-added' : '' ?>"
+            <span class="oe-pathstep-btn buff comments <?= $pathway->checkForComments() ? 'comments-added' : '' ?>"
                       data-worklist-patient-id="<?= $pathway->worklist_patient_id?>"
                       data-pathway-id="<?= $pathway->id ?>"
                       data-patient-id="<?= $pathway->worklist_patient->patient_id ?>"
-                      data-pathstep-id="comment">
+                      data-visit-id="<?= $pathway->worklist_patient->id ?>"
+                      data-pathstep-id="comment"
+                      data-pathstep-type-id="">
                     <span class="step i-comments"></span>
                     <span class="info" style="display: none;"></span>
                 </span>

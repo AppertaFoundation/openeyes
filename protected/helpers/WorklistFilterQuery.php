@@ -421,14 +421,14 @@ class WorklistFilterQuery
                 $command->join('contact', 'contact.id = patient.contact_id');
                 $command->leftJoin($this->wait_time_query, 'pswt.pathway_id = pathway.id');
 
-                return self::PATHWAY_STEP_WAIT_TIME_VALUE . ', LOWER(contact.last_name), LOWER(contact.first_name)';
+                return self::PATHWAY_STEP_WAIT_TIME_VALUE . ' DESC, LOWER(contact.last_name), LOWER(contact.first_name)';
 
             case self::SORT_BY_WAIT_SHORTEST:
                 $command->join('patient', 'patient.id = wp.patient_id');
                 $command->join('contact', 'contact.id = patient.contact_id');
                 $command->leftJoin($this->wait_time_query, 'pswt.pathway_id = pathway.id');
 
-                return self::PATHWAY_STEP_WAIT_TIME_VALUE . ' DESC, LOWER(contact.last_name), LOWER(contact.first_name)';
+                return self::PATHWAY_STEP_WAIT_TIME_VALUE . ' ASC, LOWER(contact.last_name), LOWER(contact.first_name)';
 
             case self::SORT_BY_PRIORITY:
                 $command->join('patient', 'patient.id = wp.patient_id');
