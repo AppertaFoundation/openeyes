@@ -182,18 +182,18 @@ $(document).ready(function() {
 	});
 
 	$('#bookingForm button#confirm_slot').on('click',function(e) {
-		if($(this).data('there-is-place-for-complex-booking') === true) {
-			$('#bookingForm').submit();
-		} else {
-			e.preventDefault();
+		$(this).prop('disabled', true);
+		e.preventDefault();
 			let dialog = new OpenEyes.UI.Dialog.Confirm({
 				content: "The allowed number of complex bookings has been already been reached for this session. Are you sure you want to add another complex booking?"
 			});
 			dialog.on('ok', function () {
 				$('#bookingForm').submit();
 			});
+			dialog.on('cancel', function () {
+				$('#bookingForm button#confirm_slot').prop('disabled', false);
+			});
 			dialog.open();
-		}
 	});
 
 	$(this).undelegate('#Element_OphTrOperationbooking_Operation_referral_id', 'change').delegate('#Element_OphTrOperationbooking_Operation_referral_id', 'change', function() {
