@@ -69,7 +69,7 @@ class m230307_164100_add_more_columns_to_v_patient_laser_procedures extends OEMi
             LEFT JOIN `proc` ON `proc`.`id` = `lpa`.`procedure_id`
             LEFT JOIN proc_opcs_assignment poa ON poa.proc_id = proc.id
             LEFT JOIN opcs_code oc ON oc.id = poa.opcs_code_id
-            WHERE `lpa`.`eye_id` <> 0
+            WHERE `lpa`.`eye_id` <> 2
                 AND ev.deleted = 0
             GROUP BY
                 `ep`.`patient_id`,
@@ -122,7 +122,7 @@ class m230307_164100_add_more_columns_to_v_patient_laser_procedures extends OEMi
                     JOIN `et_ophtrlaser_treatment` `lt` ON `lt`.`event_id` = `ev`.`id`
                     JOIN `ophtrlaser_laserprocedure_assignment` `lpa` ON `lpa`.`treatment_id` = `lt`.`id`
                     JOIN `proc` ON `proc`.`id` = `lpa`.`procedure_id`
-                    WHERE `lpa`.`eye_id` <> 0;
+                    WHERE `lpa`.`eye_id` <> 2;
     ");
         return true;
     }
