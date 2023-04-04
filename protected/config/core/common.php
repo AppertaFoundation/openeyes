@@ -145,10 +145,6 @@ $config = array(
                     'basePath' => 'application.assets.components',
                     'depends' => array('jquery'),
                 ),
-                'mustache' => array(
-                    'js' => array('mustache/mustache.js'),
-                    'basePath' => 'application.assets.components',
-                ),
                 'eventemitter2' => array(
                     'js' => array('eventemitter2/lib/eventemitter2.js'),
                     'basePath' => 'application.assets.components',

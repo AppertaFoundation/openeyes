@@ -1,6 +1,6 @@
 {
-    "name": "OpenEyes",
-    "short_name": "OpenEyes",
+    "name": "",
+    "short_name": "",
     "icons": [
         {
             "src": "/android-chrome-192x192.png",
@@ -14,6 +14,6 @@
         }
     ],
     "theme_color": "#ffffff",
-    "background_color": "#111924",
+    "background_color": "#ffffff",
     "display": "standalone"
 }
