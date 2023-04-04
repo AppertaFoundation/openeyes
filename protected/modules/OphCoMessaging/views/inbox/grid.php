@@ -61,8 +61,8 @@ if ($sort_field === 'user') {
 // if $messages is empty, show a "no sessages" message
 if (!$messages->totalItemCount) {
     ?>
-    <div class="alert-box info">
-        No messages found.
+    <div class="alert-box info strong">
+        <b>No messages found matchng the search criteria.</b>
     </div>
     <?php
     return;
