@@ -17,9 +17,9 @@ namespace OEModule\OESysEvent\contracts;
 
 interface Dispatcher
 {
-    public function listen($events, array $listener): void;
+    public function listen($events, ...$listener): void;
 
-    public function dispatch(array $arguments): void;
+    public function dispatch(...$arguments): void;
 
     public function forget($events): void;
 
