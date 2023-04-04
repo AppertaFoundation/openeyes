@@ -76,7 +76,7 @@ $to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
                             <p><?php echo CHtml::link(
                                 'Update ' . \SettingMetadata::model()->getSetting('general_practitioner_label') . ' Details',
                                 $this->createUrl('/gp/update', array('id' => $model->id))
-                            ); ?></p>
+                               ); ?></p>
                         </div>
                     </div>
                 </div>
