@@ -49,6 +49,8 @@ class MailboxSearch
             'event.episode.patient.contact'
         ];
 
+        $this->criteria->addCondition('event.deleted = 0');
+
         switch ($folder) {
             case self::FOLDER_ALL:
                 $this->retrieve_from = self::RETRIEVE_RECEIVED_AND_REPLIES;

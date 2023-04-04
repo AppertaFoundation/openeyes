@@ -193,11 +193,12 @@ class OphCoMessaging_API extends \BaseAPI
                  ->from('mailbox m')
                  ->join('ophcomessaging_message_recipient msgr', 'msgr.mailbox_id = m.id')
                  ->join('et_ophcomessaging_message msg', 'msgr.element_id = msg.id')
+                 ->join('event e', 'msg.event_id = e.id')
                  ->leftJoin('ophcomessaging_message_message_type msgt', 'msg.message_type_id = msgt.id')
                  ->leftJoin('mailbox_user mu', 'mu.mailbox_id = m.id')
                  ->leftJoin('mailbox_team mt', 'mt.mailbox_id = m.id')
                  ->leftJoin('team_user_assign tua', 'tua.team_id = mt.team_id')
-                 ->where('(mu.user_id = :user_id OR tua.user_id = :user_id) AND m.active <> 0', [':user_id' => $user->id])
+                 ->where('(mu.user_id = :user_id OR tua.user_id = :user_id) AND m.active <> 0 AND e.deleted = 0', [':user_id' => $user->id])
                  ->group('m.id')
                  ->queryAll();
 
@@ -214,10 +215,11 @@ class OphCoMessaging_API extends \BaseAPI
                           'SUM((ISNULL(msgc.id) OR msgc.created_user_id = :user_id) AND msgt.name = "Query") AS wfqreps, ' .
                           'SUM(msgr.marked_as_read = 0) AS urecs')
                  ->from('et_ophcomessaging_message msg')
+                 ->join('event e', 'msg.event_id = e.id')
                  ->join('ophcomessaging_message_message_type msgt', 'msg.message_type_id = msgt.id')
                  ->leftJoin('ophcomessaging_message_recipient msgr', 'msgr.element_id = msg.id')
                  ->leftJoin('ophcomessaging_message_comment msgc', 'msgc.element_id = msg.id')
-                 ->where('msg.created_user_id = :user_id', [':user_id' => $user->id])
+                 ->where('msg.created_user_id = :user_id AND e.deleted = 0', [':user_id' => $user->id])
                  ->group('msg.id');
 
         $mailbox_sent_counts = \Yii::app()->db->createCommand()

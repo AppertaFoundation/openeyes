@@ -57,7 +57,18 @@ if ($sort_field === 'user') {
 } else {
     $user_sort_uri .= $default_sort_arg;
 }
+
+// if $messages is empty, show a "no sessages" message
+if (!$messages->totalItemCount) {
+    ?>
+    <div class="alert-box info">
+        No messages found.
+    </div>
+    <?php
+    return;
+}
 ?>
+
 
 <table class="standard messages highlight-rows">
     <colgroup>
