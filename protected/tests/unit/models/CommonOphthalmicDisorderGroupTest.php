@@ -13,22 +13,30 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-namespace OEModule\OphInBiometry\seeders;
-
-use OE\factories\models\EventFactory;
-use OE\seeders\BaseSeeder;
-use OEModule\CypressHelper\resources\SeededEventResource;
-
-class PopulatedBiometrySeeder extends BaseSeeder
+/**
+ * @group sample-data
+ * @group diagnoses
+ * @group disorders
+ */
+class CommonOphthalmicDisorderGroupTest extends OEDbTestCase
 {
-    public function __invoke(): array
-    {
-        $event = EventFactory::forModule('OphInBiometry')
-            ->withElement(\Element_OphInBiometry_Measurement::class)
-            ->create();
+    use WithTransactions;
+    use WithFaker;
 
-        return [
-            'event' => SeededEventResource::from($event)->toArray(),
-        ];
+    /** @test */
+    public function fully_qualified_name_defaults_to_all()
+    {
+        $group = CommonOphthalmicDisorderGroup::factory()->create();
+        $this->assertStringContainsString('All', $group->fully_qualified_name);
+    }
+
+    /** @test */
+    public function fully_qualified_name_contains_institution_short_name()
+    {
+        $short_name = $this->faker->unique()->words(2, true) . ' foo';
+        $institution = Institution::factory()->create(['short_name' => $short_name]);
+        $group = CommonOphthalmicDisorderGroup::factory()->withInstitution($institution)->create();
+        $this->assertStringNotContainsString('All', $group->fully_qualified_name);
+        $this->assertStringContainsString($short_name, $group->fully_qualified_name);
     }
 }

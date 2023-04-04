@@ -1,12 +1,15 @@
 describe('create a message via patient record', () => {
-    
+
     before(() => {
         // Seed a single user - return user (with atttributes username, password, fullName and messageText)
-        cy.runSeeder('OphCoMessaging', 'CreateMessageSeeder', {}).as('seederData')
+        cy.login()
+            .then(() => {
+                return cy.runSeeder('OphCoMessaging', 'CreateMessageSeeder');
+            }).as('seederData')
     })
 
     it('ensures that the message is sent successfully', () => {
-       
+
         cy.get('@seederData').then((data) => {
 
             // login as admin user and navigate to home page
@@ -26,7 +29,7 @@ describe('create a message via patient record', () => {
                 });
 
             // send the message to our seeded user
-            cy.intercept('/OphCoMessaging/Default/autocompleteMailbox*').as('mailboxAutoComplete')           
+            cy.intercept('/OphCoMessaging/Default/autocompleteMailbox*').as('mailboxAutoComplete')
             cy.getBySel('fao-search').type(data.user.fullName)
             cy.wait('@mailboxAutoComplete')
             cy.getBySel('autocomplete-match').contains(data.user.fullName).click()

@@ -2,19 +2,12 @@
 
 namespace OEModule\OphCiExamination\seeders;
 
+use OE\seeders\BaseSeeder;
 use OEModule\OphCiExamination\models\OphCiExamination_PostOpComplications;
-use Subspecialty;
 
-class PostOpComplicationsAdminSeeder
+class PostOpComplicationsAdminSeeder extends BaseSeeder
 {
-    protected \DataContext $data_context;
-
-    public function __construct(\DataContext $data_context)
-    {
-        $this->data_context = $data_context;
-    }
-
-    public function __invoke()
+    public function __invoke(): array
     {
         // Create complications and assign to default subspecialty
         $post_op_complications = OphCiExamination_PostOpComplications::factory()
@@ -25,22 +18,34 @@ class PostOpComplicationsAdminSeeder
             array_map(function ($complication) {
                 return $complication->id;
             }, $post_op_complications),
-            \Yii::app()->session->getSelectedInstitution()->id,
-            \Yii::app()->session->getSelectedFirm()->getSubspecialtyID()
+            $this->app_context->getSelectedInstitution()->id,
+            $this->app_context->getSelectedFirm()->getSubspecialtyID()
         );
+
+        $unassigned_complications = OphCiExamination_PostOpComplications::factory()->count(2)->create();
+        $subspecialty = \Subspecialty::factory()->create([
+            'name' => 'subspecialty ' . time()
+        ]);
 
         return [
             'post_op_complications' => [
-                'defaultSubspecialty' => array_map(
-                    function ($complication) {
-                        return [
-                            'id' => $complication->id,
-                            'name' => $complication->name
-                        ];
-                    },
-                    $post_op_complications
-                )
-            ]
+                'for_default_subspecialty' => $this->mapModels($post_op_complications),
+                'unassigned' => $this->mapModels($unassigned_complications)
+            ],
+            'unused_subspecialty' => $this->mapModels([$subspecialty])[0]
         ];
+    }
+
+    protected function mapModels(array $models): array
+    {
+        return array_map(
+            function ($model) {
+                return [
+                    'id' => $model->getPrimaryKey(),
+                    'name' => $model->name
+                ];
+            },
+            $models
+        );
     }
 }

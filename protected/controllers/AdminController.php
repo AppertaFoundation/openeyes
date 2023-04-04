@@ -73,7 +73,7 @@ class AdminController extends BaseAdminController
     protected function renderCommonOphthalmicDisorderGroupsView($current_institution, $subspecialty_id, $subspecialties)
     {
         // Get groups to list
-        $disorder_groups_for_institution = $this->getCommonOphthalimicDisorderGroupsForInstitution($current_institution, $subspecialty_id);
+        $disorder_groups_for_institution = $this->getCommonOphthalmicDisorderGroupsForInstitution($current_institution, $subspecialty_id);
 
         // Get which groups are in use to ensure they can't be deleted
         $active_group_ids = CommonOphthalmicDisorder::getDisordersInGroup();
@@ -88,13 +88,17 @@ class AdminController extends BaseAdminController
         ]);
     }
 
-    private function getCommonOphthalimicDisorderGroupsForInstitution($current_institution, $subspecialty_id)
+    private function getCommonOphthalmicDisorderGroupsForInstitution($current_institution, $subspecialty_id)
     {
         $criteria = new CDbCriteria();
         $criteria->compare('subspecialty_id', $subspecialty_id);
 
         return new CActiveDataProvider('CommonOphthalmicDisorderGroup', array(
-            'criteria' => CommonOphthalmicDisorderGroup::model()->getCriteriaForLevels($current_institution ? ReferenceData::LEVEL_INSTITUTION : ReferenceData::LEVEL_ALL, $criteria, $current_institution),
+            'criteria' => CommonOphthalmicDisorderGroup::model()->getCriteriaForLevels(
+                $current_institution ? ReferenceData::LEVEL_INSTITUTION : ReferenceData::LEVEL_INSTALLATION,
+                $criteria,
+                $current_institution
+            ),
             'pagination' => false,
         ));
     }
@@ -142,7 +146,7 @@ class AdminController extends BaseAdminController
             $transaction->rollback();
 
             if (empty($errors)) {
-                $errors = ['form' => ['There has been an error in saving, please contact support.']];
+                $errors = [['form' => ['There has been an error in saving, please contact support.']]];
             }
 
             foreach ($errors as $error) {
@@ -171,7 +175,7 @@ class AdminController extends BaseAdminController
         $criteria->compare('subspecialty_id', $subspecialty_id);
 
         $to_delete = CommonOphthalmicDisorderGroup::model()->findAllAtLevels(
-            $current_institution ? ReferenceData::LEVEL_INSTITUTION : ReferenceData::LEVEL_ALL,
+            $current_institution ? ReferenceData::LEVEL_INSTITUTION : ReferenceData::LEVEL_INSTALLATION,
             $criteria,
             $current_institution
         );
@@ -183,9 +187,10 @@ class AdminController extends BaseAdminController
             } else {
                 $item->deleteMappings(ReferenceData::LEVEL_INSTALLATION);
                 $item->deleteMappings(ReferenceData::LEVEL_INSTITUTION);
-                if (!$item->delete()) {
-                    $errors[] = $item->getErrors();
-                }
+            }
+
+            if (!$item->delete()) {
+                $errors[] = $item->getErrors();
             }
 
             Audit::add('admin', 'delete', $item->primaryKey, null, array(
@@ -372,13 +377,20 @@ class AdminController extends BaseAdminController
         }
 
         $criteria = new CDbCriteria();
-        $criteria->compare('subspecialty_id', $subspecialty_id);
-        $groupModels = CommonOphthalmicDisorderGroup::model()->findAllAtLevels($current_institution ? ReferenceData::LEVEL_INSTITUTION : ReferenceData::LEVEL_ALL, $criteria, $current_institution);
+        $criteria->addCondition('subspecialty_id IS NULL OR subspecialty_id = :subspecialty_id');
+        $criteria->params[':subspecialty_id'] = $subspecialty_id;
 
-        $groupData = array_map(function ($model) {
+        $group_models = CommonOphthalmicDisorderGroup::model()
+            ->findAllAtLevels(
+                $current_institution ? ReferenceData::LEVEL_INSTITUTION : ReferenceData::LEVEL_INSTALLATION,
+                $criteria,
+                $current_institution
+            );
+
+        $group_options = array_map(function ($model) {
             return $model->getAttributes(array("id", "name"));
-        }, $groupModels);
-        $this->jsVars['common_ophthalmic_disorder_group_options'] = $groupData;
+        }, $group_models);
+        $this->jsVars['common_ophthalmic_disorder_group_options'] = $group_options;
 
         $errors = array();
 
@@ -450,7 +462,7 @@ class AdminController extends BaseAdminController
                 $criteria->compare('subspecialty_id', $subspecialty_id);
 
                 $to_delete = CommonOphthalmicDisorder::model()->findAllAtLevels(
-                    $current_institution ? ReferenceData::LEVEL_INSTITUTION : ReferenceData::LEVEL_ALL,
+                    $current_institution ? ReferenceData::LEVEL_INSTITUTION : ReferenceData::LEVEL_INSTALLATION,
                     $criteria,
                     $current_institution
                 );
@@ -503,8 +515,8 @@ class AdminController extends BaseAdminController
         $criteria->compare('subspecialty_id', $subspecialty_id);
 
         $data = new CActiveDataProvider('CommonOphthalmicDisorder', array(
-            'criteria' => CommonOphthalmicDisorder::model()->getCriteriaForLevels(
-                $current_institution ? ReferenceData::LEVEL_INSTITUTION : ReferenceData::LEVEL_ALL,
+            'criteria' => CommonOphthalmicDisorder::model()->with('institutions')->getCriteriaForLevels(
+                $current_institution ? ReferenceData::LEVEL_INSTITUTION : ReferenceData::LEVEL_INSTALLATION,
                 $criteria,
                 $current_institution
             ),
@@ -517,6 +529,7 @@ class AdminController extends BaseAdminController
             'subspecialty' => $subspecialties,
             'current_institution_id' => $current_institution->id ?? null,
             'current_institution' => $current_institution ?? null,
+            'group_models' => $group_models
         ));
     }
 

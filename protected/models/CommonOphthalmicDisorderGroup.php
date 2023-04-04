@@ -26,7 +26,7 @@ use OE\factories\models\traits\HasFactory;
  * @property int $id
  * @property string $name
  * @property int $display_order
- * @property int $institution
+ * @property int $institutions
  * @property int $subspecialty_id
  */
 class CommonOphthalmicDisorderGroup extends BaseActiveRecordVersioned
@@ -41,7 +41,7 @@ class CommonOphthalmicDisorderGroup extends BaseActiveRecordVersioned
 
     protected function mappingColumn(int $level): string
     {
-        return $this->tableName().'_id';
+        return $this->tableName() . '_id';
     }
 
 
@@ -73,5 +73,18 @@ class CommonOphthalmicDisorderGroup extends BaseActiveRecordVersioned
     public function defaultScope()
     {
         return array('order' => $this->getTableAlias(true, false).'.display_order');
+    }
+
+    /** Expands the reference level assignment for this group to be part of the name */
+    public function getFully_qualified_name()
+    {
+        $name = $this->name . ' - ';
+        if ($this->institutions) {
+            return $name . implode(", ", array_map(function ($institution) {
+                return $institution->short_name;
+            }, $this->institutions));
+        }
+
+        return $name . 'All';
     }
 }

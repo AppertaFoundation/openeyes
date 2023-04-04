@@ -117,11 +117,24 @@ trait MappedReferenceData
      * @param int $level
      * @param mixed $criteria
      * @param Institution|null $institution
+     * @param Site|null $site
+     * @param Specialty|null $specialty
+     * @param Subspecialty|null $subspecialty
+     * @param Firm|null $firm
+     * @param User|null $user
      * @return array
      */
-    public function findAllAtLevel(int $level, $criteria = null, ?Institution $institution = null): array
-    {
-        $levelCriteria = $this->buildCriteriaForFindAllAtLevel($level, $institution, false);
+    public function findAllAtLevel(
+        int $level,
+        $criteria = null,
+        ?Institution $institution = null,
+        ?Site $site = null,
+        ?Specialty $specialty = null,
+        ?Subspecialty $subspecialty = null,
+        ?Firm $firm = null,
+        ?User $user = null
+    ): array {
+        $levelCriteria = $this->buildCriteriaForFindAllAtLevel($level, $institution, $site, $specialty, $subspecialty, $firm, $user, false);
 
         if (isset($criteria)) {
             $levelCriteria->mergeWith($criteria);
@@ -135,12 +148,35 @@ trait MappedReferenceData
      * @param int $level_mask
      * @param mixed $criteria
      * @param Institution|null $institution
+     * @param Site|null $site
+     * @param Specialty|null $specialty
+     * @param Subspecialty|null $subspecialty
+     * @param Firm|null $firm
+     * @param User|null $user
      * @param bool $anyLevel
      * @return array
      */
-    public function findAllAtLevels(int $level_mask, $criteria = null, ?Institution $institution = null, bool $anyLevel = true): array
-    {
-        $levelCriteria = $this->buildCriteriaForFindAllAtLevel($level_mask, $institution, $anyLevel);
+    public function findAllAtLevels(
+        int $level_mask,
+        $criteria = null,
+        ?Institution $institution = null,
+        ?Site $site = null,
+        ?Specialty $specialty = null,
+        ?Subspecialty $subspecialty = null,
+        ?Firm $firm = null,
+        ?User $user = null,
+        bool $anyLevel = true,
+    ): array {
+        $levelCriteria = $this->buildCriteriaForFindAllAtLevel(
+            $level_mask,
+            $institution,
+            $site,
+            $specialty,
+            $subspecialty,
+            $firm,
+            $user,
+            $anyLevel
+        );
 
         if (isset($criteria)) {
             $levelCriteria->mergeWith($criteria);
@@ -154,6 +190,11 @@ trait MappedReferenceData
      * @param integer $level_mask
      * @param mixed $criteria
      * @param Institution|null $institution
+     * @param Site|null $site
+     * @param Specialty|null $specialty
+     * @param Subspecialty|null $subspecialty
+     * @param Firm|null $firm
+     * @param User|null $user
      * @param boolean $anyLevel
      * @return CDbCriteria
      */
@@ -161,9 +202,23 @@ trait MappedReferenceData
         int $level_mask,
         $criteria = null,
         ?Institution $institution = null,
+        ?Site $site = null,
+        ?Specialty $specialty = null,
+        ?Subspecialty $subspecialty = null,
+        ?Firm $firm = null,
+        ?User $user = null,
         bool $anyLevel = true
     ): CDbCriteria {
-        $levelCriteria = $this->buildCriteriaForFindAllAtLevel($level_mask, $institution, $anyLevel);
+        $levelCriteria = $this->buildCriteriaForFindAllAtLevel(
+            $level_mask,
+            $institution,
+            $site,
+            $specialty,
+            $subspecialty,
+            $firm,
+            $user,
+            $anyLevel
+        );
 
         if (isset($criteria)) {
             $levelCriteria->mergeWith($criteria);
@@ -177,14 +232,29 @@ trait MappedReferenceData
      * that have additional functionality (cf Medication which only applies the mappings
      * on local instances)
      */
-    protected function buildCriteriaForFindAllAtLevel(int $level_mask, ?Institution $institution = null, bool $anyLevel = true)
-    {
+    protected function buildCriteriaForFindAllAtLevel(
+        int $level_mask,
+        ?Institution $institution,
+        ?Site $site,
+        ?Specialty $specialty,
+        ?Subspecialty $subspecialty,
+        ?Firm $firm,
+        ?User $user,
+        bool $anyLevel = true
+    ): CDbCriteria {
         $criteria = new CDbCriteria();
 
-        $level_ids = $this->getIdForLevels($level_mask, $institution);
+        $level_ids = $this->getIdForLevels(
+            $level_mask,
+            $institution,
+            $site,
+            $specialty,
+            $subspecialty,
+            $firm,
+            $user
+        );
         foreach ($level_ids as $level => $level_id) {
             if ($level === ReferenceData::LEVEL_INSTALLATION) {
-                $sublevel_ids = $this->getIdForLevels($this->getSupportedLevels(), $institution);
                 $subcondition = '';
                 $index = 0;
                 foreach ($this->enumerateSupportedLevels() as $sublevel) {
@@ -196,7 +266,6 @@ trait MappedReferenceData
                     $prefix = $index !== 0 ? ' AND ' : '';
                     $subcondition .= $prefix . "t.id NOT IN (SELECT $mapping_data_column_name FROM $mapping_model_table)";
                     $index++;
-                    $criteria->params[$bind] = $sublevel_ids[$sublevel];
                 }
                 $criteria->addCondition($subcondition, $anyLevel ? 'OR' : 'AND');
             } else {

@@ -9,7 +9,10 @@ describe('verifies the desired behaviour of shared mailboxes for messaging', () 
         // - a user shared mailbox - return userMailbox (with attributes name and messageText) (assign user1 and user2 to it via seeder)
         // - a team shared mailbox - return teamMailbox (with attributes name and messageText) (assign test team to it via seeder)
         // - 2 message events - 1 with sender admin and recipient userMailbox; 1 with recipient teamMailbox (return messageEvent1 and messageEvent2)
-        cy.runSeeder('OphCoMessaging', 'TestMailboxSeeder')
+        cy.login()
+            .then(() => {
+                return cy.runSeeder('OphCoMessaging', 'TestMailboxSeeder');
+            })
             .then(function(data) {
                 seederData = data;
             });

@@ -56,7 +56,7 @@ if ($this->checkAccess('admin')) {
 </form>
 
 <div class="cols-8">
-    <form method="POST" action="/admin/editcommonophthalmicdisordergroups<?= $current_institution_id ? ('?institution_id=' . $current_institution_id) : ''; ?>&subspecialty_id=<?= $subspecialty_id; ?>">
+    <form method="POST" action="/admin/editcommonophthalmicdisordergroups?institution_id=<?= $current_institution_id ?>&subspecialty_id=<?= $subspecialty_id; ?>">
         <input type="hidden" class="no-clear" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
         <?php
         $columns = array(

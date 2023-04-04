@@ -19,7 +19,10 @@ $this->renderPartial('//base/_messages');
 if (isset($errors)) {
     $this->renderPartial('/admin/_form_errors', $errors);
 }
-Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/OpenEyes.GenericFormJSONConverter.js'), CClientScript::POS_HEAD);
+Yii::app()->clientScript->registerScriptFile(
+    Yii::app()->assetManager->createUrl('js/OpenEyes.GenericFormJSONConverter.js'),
+    CClientScript::POS_HEAD
+);
 
 if ($this->checkAccess('admin')) {
     $options = array('empty' => 'All Institutions');
@@ -36,17 +39,17 @@ if ($this->checkAccess('admin')) {
         <tbody>
         <tr class="col-gap">            
             <td>&nbsp;<br/><?=\CHtml::dropDownList(
-                    'institution_id',
-                    $current_institution_id,
-                    Institution::model()->getTenantedList(!Yii::app()->user->checkAccess('admin')),
-                    $options
-                ) ?></td>
+                'institution_id',
+                $current_institution_id,
+                Institution::model()->getTenantedList(!Yii::app()->user->checkAccess('admin')),
+                $options
+            ) ?></td>
         </tr>
         </tbody>
     </table>
 </form>
 
-<form method="POST" action="/oeadmin/CommonSystemicDisorder/save<?= $current_institution_id ? ('?institution_id=' . $current_institution_id) : '' ?>">
+<form method="POST" action="/oeadmin/CommonSystemicDisorder/save?institution_id=<?= $current_institution_id ?>">
     <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
     <?php
     $columns = [
@@ -85,13 +88,8 @@ if ($this->checkAccess('admin')) {
             'header' => 'Group',
             'name' => 'group.name',
             'type' => 'raw',
-            'value' => function ($data, $row) use ($current_institution) {
-                $row++;
-                $options = CHtml::listData(CommonSystemicDisorderGroup::model()->findAllAtLevels(
-                    $current_institution ? ReferenceData::LEVEL_INSTITUTION : ReferenceData::LEVEL_ALL,
-                    null,
-                    $current_institution
-                ), 'id', 'name');
+            'value' => function ($data, $row) use ($group_models) {
+                $options = CHtml::listData($group_models, 'id', 'name');
                 return CHtml::activeDropDownList($data, "[$row]group_id", $options, array('empty' => '-- select --'));
             }
         ],

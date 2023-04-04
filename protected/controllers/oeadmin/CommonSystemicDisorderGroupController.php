@@ -62,7 +62,7 @@ class CommonSystemicDisorderGroupController extends BaseAdminController
         $criteria->order = 'display_order';
         return new CActiveDataProvider('CommonSystemicDisorderGroup', array(
             'criteria' => CommonSystemicDisorderGroup::model()->getCriteriaForLevels(
-                $institution ? ReferenceData::LEVEL_INSTITUTION : ReferenceData::LEVEL_ALL,
+                $institution ? ReferenceData::LEVEL_INSTITUTION : ReferenceData::LEVEL_INSTALLATION,
                 $criteria,
                 $institution
             ),

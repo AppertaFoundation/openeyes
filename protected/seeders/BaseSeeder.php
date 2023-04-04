@@ -13,22 +13,27 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-namespace OEModule\OphInBiometry\seeders;
+namespace OE\seeders;
 
-use OE\factories\models\EventFactory;
-use OE\seeders\BaseSeeder;
-use OEModule\CypressHelper\resources\SeededEventResource;
+use OE\concerns\InteractsWithApp;
+use OE\contracts\ProvidesApplicationContext;
+use OE\seeders\contracts\Seedable;
+use OE\seeders\traits\HasSeederAttributes;
 
-class PopulatedBiometrySeeder extends BaseSeeder
+/**
+ * An abstraction to base seeders on to avoid boiler plate repetition for initialisation and attribute
+ * handling
+ */
+abstract class BaseSeeder implements Seedable
 {
-    public function __invoke(): array
-    {
-        $event = EventFactory::forModule('OphInBiometry')
-            ->withElement(\Element_OphInBiometry_Measurement::class)
-            ->create();
+    use HasSeederAttributes;
+    use InteractsWithApp;
 
-        return [
-            'event' => SeededEventResource::from($event)->toArray(),
-        ];
+    protected ProvidesApplicationContext $app_context;
+
+
+    public function __construct(ProvidesApplicationContext $app_context)
+    {
+        $this->app_context = $app_context;
     }
 }

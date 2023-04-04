@@ -1,9 +1,8 @@
 <?php
 namespace OEModule\Admin\seeders;
 
-use OEModule\CypressHelper\components\BaseSeeder;
+use OE\seeders\BaseSeeder;
 use OEModule\OphCoMessaging\factories\models\MailboxFactory;
-use \OEModule\OphCoMessaging\models\Mailbox;
 
 /**
 * AddMailboxSeeder is a seeder for generating data used solely in the Add Shared Mailbox test (admin\shared-mailboxes.cy.js)
@@ -18,11 +17,11 @@ class AddMailboxSeeder extends BaseSeeder
     * - teamNames - 2 x team names (to be subsequently assigned to said shared mailbox)
     * @return array
     */
-    public function __invoke()
+    public function __invoke(): array
     {
         $user_names = [];
         $team_names = [];
-        $institution = \Institution::model()->findByPk(1);
+        $institution = $this->app_context->getSelectedInstitution();
 
         for ($i = 0; $i < 2; $i++) {
             $user_names[] = ltrim(\User::factory()->withLocalAuthForInstitution($institution)->create()->getFullNameAndTitle());
@@ -35,7 +34,7 @@ class AddMailboxSeeder extends BaseSeeder
         }
 
         return [
-            'mailboxNameToCreate' => MailboxFactory::getUniqueMailboxName($this->faker, 'Test Mailbox '),
+            'mailboxNameToCreate' => MailboxFactory::getUniqueMailboxName($this->getApp()->dataGenerator->faker(), 'Test Mailbox '),
             'userNames' => $user_names,
             'teamNames' => $team_names
         ];

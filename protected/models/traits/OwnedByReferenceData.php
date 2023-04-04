@@ -31,11 +31,24 @@ trait OwnedByReferenceData
      * @param int $level_mask A bitmask of the levels to find results for
      * @param mixed $criteria Any extra criteria to add to the query.
      * @param Institution|null $institution The institution to use in the criteria. Leave blank to use the current institution.
+     * @param Site|null $site
+     * @param Specialty|null $specialty
+     * @param Subspecialty|null $subspecialty
+     * @param Firm|null $firm
+     * @param User|null $user
      * @return BaseActiveRecord[] A list of records matching the bitmask and extra criteria (if any).
      */
-    public function findAllAtLevels(int $level_mask, $criteria = null, ?Institution $institution = null): array
-    {
-        $levelCriteria = $this->getCriteriaForLevels($level_mask, $criteria, $institution);
+    public function findAllAtLevels(
+        int $level_mask,
+        $criteria = null,
+        ?Institution $institution = null,
+        ?Site $site = null,
+        ?Specialty $specialty = null,
+        ?Subspecialty $subspecialty = null,
+        ?Firm $firm = null,
+        ?User $user = null
+    ): array {
+        $levelCriteria = $this->getCriteriaForLevels($level_mask, $criteria, $institution, $site, $specialty, $subspecialty, $firm, $user);
 
         return static::model()->findAll($levelCriteria);
     }
@@ -45,16 +58,29 @@ trait OwnedByReferenceData
      *
      * @param integer $level_mask A bitmask of the levels to find results for.
      * @param mixed $criteria Any extra criteria to add to the query.
-     * @param Institution $institution The institution to attach to the criteria. Leave blank for the current institution.
+     * @param Institution|null $institution The institution to attach to the criteria. Leave blank for the current institution.
+     * @param Site|null $site
+     * @param Specialty|null $specialty
+     * @param Subspecialty|null $subspecialty
+     * @param Firm|null $firm
+     * @param User|null $user
      * @return CDbCriteria
      */
-    public function getCriteriaForLevels(int $level_mask, $criteria = null, ?Institution $institution = null): CDbCriteria
-    {
+    public function getCriteriaForLevels(
+        int $level_mask,
+        $criteria = null,
+        ?Institution $institution = null,
+        ?Site $site = null,
+        ?Specialty $specialty = null,
+        ?Subspecialty $subspecialty = null,
+        ?Firm $firm = null,
+        ?User $user = null
+    ): CDbCriteria {
         if ($institution === null) {
             $institution = Institution::model()->getCurrent();
         }
 
-        $levelCriteria = $this->buildCriteriaForFindAllAtLevels($level_mask, $institution);
+        $levelCriteria = $this->buildCriteriaForFindAllAtLevels($level_mask, $institution, $site, $specialty, $subspecialty, $firm, $user);
 
         if (isset($criteria)) {
             $levelCriteria->mergeWith($criteria);
@@ -80,12 +106,19 @@ trait OwnedByReferenceData
      * @param Institution $institution The institution to compare against.
      * @return CDbCriteria A CDbCriteria object that can be used to find all records matching the bitmask and extra criteria (if any).
      */
-    protected function buildCriteriaForFindAllAtLevels(int $level_mask, ?Institution $institution = null)
-    {
+    protected function buildCriteriaForFindAllAtLevels(
+        int $level_mask,
+        ?Institution $institution,
+        ?Site $site,
+        ?Specialty $specialty,
+        ?Subspecialty $subspecialty,
+        ?Firm $firm,
+        ?User $user
+    ): CDbCriteria {
         $criteria = new CDbCriteria();
         $conditions = array();
 
-        $level_ids = $this->getIdForLevels($level_mask, $institution);
+        $level_ids = $this->getIdForLevels($level_mask, $institution, $site, $specialty, $subspecialty, $firm, $user);
 
         if (count($level_ids) === 0) {
             // No IDs specified

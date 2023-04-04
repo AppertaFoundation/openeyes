@@ -59,7 +59,9 @@
   "autoload": {
     "psr-4": {
       "OE\\concerns\\": "protected/concerns",
-      "OE\\factories\\": "protected/factories"
+      "OE\\contracts\\": "protected/contracts",
+      "OE\\factories\\": "protected/factories",
+      "OE\\seeders\\": "protected/seeders"
     }
   },
   "autoload-dev": {

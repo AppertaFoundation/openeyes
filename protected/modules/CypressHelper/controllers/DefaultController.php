@@ -10,6 +10,7 @@ use Institution;
 use OE\concerns\InteractsWithApp;
 use OE\factories\models\EventFactory;
 use OE\factories\ModelFactory;
+use OE\seeders\SeederBuilder;
 use Patient;
 use User;
 use CActiveRecord;
@@ -231,23 +232,21 @@ class DefaultController extends \CController
     {
         $seeder_class_name = $_POST['seeder_class_name'];
         $seeder_module_name = $_POST['seeder_module_name'];
-        $additional_data = $_POST['additional_data'] ?? null;
+        $additional_data = $_POST['additional_data'] ?? [];
+        if (!is_array($additional_data)) {
+            throw new \CHttpException(400, 'additional_data must be an arrayable structure');
+        }
 
-        $dataContext = new \DataContext(
-            \Yii::app(),
-            [
-                'subspecialties' => \Subspecialty::model()->findByPk(1),
-                'additional_data' => $additional_data
-            ]
+        $seeder = SeederBuilder::getInstance()->build(
+            $seeder_class_name,
+            $seeder_module_name,
+            array_merge(
+                ['subspecialties' => \Subspecialty::model()->findByPk(1)],
+                $additional_data
+            )
         );
 
-        $fully_qualified_seeder_class_name = '\\OEModule\\' . $seeder_module_name . '\\seeders\\' . $seeder_class_name;
-
-        $seeder = new $fully_qualified_seeder_class_name($dataContext);
-
-        $seeder_result = $seeder();
-
-        $this->sendJsonResponse($seeder_result);
+        $this->sendJsonResponse($seeder());
     }
 
     protected function applyStatesTo(ModelFactory $factory, $states = []): ModelFactory

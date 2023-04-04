@@ -87,11 +87,8 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
             'header' => 'Group',
             'name' => 'group.name',
             'type' => 'raw',
-            'value' => function ($data, $row) use ($current_institution, $subspecialty_id) {
-                $criteria = new CDbCriteria();
-                $criteria->addCondition('subspecialty_id IS NULL OR subspecialty_id = :subspecialty_id');
-                $criteria->params[':subspecialty_id'] = $subspecialty_id;
-                $options = CHtml::listData(CommonOphthalmicDisorderGroup::model()->findAllAtLevels($current_institution ? ReferenceData::LEVEL_INSTITUTION : ReferenceData::LEVEL_ALL, $criteria, $current_institution), 'id', 'name');
+            'value' => function ($data, $row) use ($group_models) {
+                $options = CHtml::listData($group_models, 'id', 'name');
                 return CHtml::activeDropDownList($data, "[$row]group_id", $options, array('empty' => '-- select --'));
             }
         ),

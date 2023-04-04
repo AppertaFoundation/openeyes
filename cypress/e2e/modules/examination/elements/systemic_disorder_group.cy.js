@@ -57,8 +57,6 @@ describe('ophthalmic disorder group behaviour', () => {
             })
             .then(([url, patient]) => {
                 return cy.visit(url);
-                // this element is already on screen
-                //return cy.addExaminationElement('Ophthalmic Diagnoses');
             });
     });
 

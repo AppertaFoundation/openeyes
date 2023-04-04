@@ -3,12 +3,11 @@ namespace OEModule\OphCoMessaging\seeders;
 
 use OEModule\OphCoMessaging\models\Mailbox;
 use OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message;
-use OEModule\CypressHelper\components\BaseSeeder;
 use OEModule\CypressHelper\resources\SeededEventResource;
-
+use OE\seeders\BaseSeeder;
 
 /**
-* TestMailboxeeder is a seeder for generating data used solely in the test to verify desired behaviour of shared mailboxes (messaging\13041-test-shared-mailbox-functionality.cy.js)
+* Seeder for generating data used solely in the test to verify desired behaviour of shared mailboxes (messaging/shared-mailbox-functionality.cy.js)
 */
 class TestMailboxSeeder extends BaseSeeder
 {
@@ -24,13 +23,12 @@ class TestMailboxSeeder extends BaseSeeder
     * - messageEvent2 - a message event with the team shared mailbox as recipient
     * @return array
     */
-    public function __invoke()
+    public function __invoke(): array
     {
-        // TO DO: how to find current institution within seeder
-        $current_institution = \Institution::model()->findByPk(1);
+        $current_institution = $this->app_context->getSelectedInstitution();
 
         // seed user1
-        $user1_password = 'password'; // $this->faker->word() . '_password';
+        $user1_password = 'password';
         $user1 = \User::factory()
             ->withLocalAuthForInstitution($current_institution, $user1_password)
             ->withAuthItems(['Edit', 'User', 'View clinical'])
@@ -38,11 +36,11 @@ class TestMailboxSeeder extends BaseSeeder
         $user1_authentication = $user1->authentications[0];
 
         // seed user2
-        $user2_password = 'password'; // $this->faker->word() . '_password';
+        $user2_password = 'password';
         $user2 = \User::factory()
             ->withLocalAuthForInstitution($current_institution, $user2_password)
             ->withAuthItems(['Edit', 'User', 'View clinical'])
-            ->create(); 
+            ->create();
         $user2_authentication = $user2->authentications[0];
 
         // seed test team and assign admin and user1 to the team

@@ -1,10 +1,10 @@
 describe('ensure multi tenanted settings behave according to their assignments', () => {
     let seederData;
-    
+
     before(function () {
         /**
          * Call the seeder that provides the test data
-         * 
+         *
          * Data included is as follows:
          *  - user_logins:
          *      - restricted_to_institution_user
@@ -14,7 +14,7 @@ describe('ensure multi tenanted settings behave according to their assignments',
          *  - event_resource
          *      This is provided as a method of testing for visibility of data in an examination event
          *  - values:
-         *      This contains a structured array of premade MT assignments to test for 
+         *      This contains a structured array of premade MT assignments to test for
          *      Items in the array is structured as follows:
          *          - admin
          *              Contains data for testing functionality in the item's respecive admin screen:
@@ -37,7 +37,10 @@ describe('ensure multi tenanted settings behave according to their assignments',
          *                  - value
          *                      The value to test for
         */
-        cy.runSeeder('Admin', 'MultiTenantedDataSeeder')
+        cy.login()
+            .then(() => {
+                return cy.runSeeder('Admin', 'MultiTenantedDataSeeder')
+            })
             .then(function(data) {
                 seederData = data;
             });

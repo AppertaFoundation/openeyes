@@ -17,25 +17,18 @@ namespace OEModule\OphGeneric\seeders;
 
 use ElementType;
 use EventSubtypeElementEntry;
+use OE\seeders\BaseSeeder;
 use OEModule\OphGeneric\models\Attachment;
 use OEModule\OphGeneric\models\Comments;
 use OEModule\OphGeneric\models\DeviceInformation;
 use OEModule\OphGeneric\models\HFA;
-use EventSubTypeItem;
 use OE\factories\models\EventFactory;
-use OELog;
 
-class VisualFieldsSeeder
+class VisualFieldsSeeder extends BaseSeeder
 {
-    protected \DataContext $data_context;
     protected string $event_subtype_pk = 'Visual Field Images';
 
-    public function __construct(\DataContext $data_context)
-    {
-        $this->data_context = $data_context;
-    }
-
-    public function __invoke()
+    public function __invoke(): array
     {
         $this->resetManualEventSubtypes();
 

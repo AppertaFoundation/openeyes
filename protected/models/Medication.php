@@ -60,8 +60,6 @@ use OEModule\OphCiExamination\models\OphCiExaminationAllergy;
 class Medication extends BaseActiveRecordVersioned
 {
     use HasFactory;
-    use MappedReferenceData;
-
     use MappedReferenceData {
         buildCriteriaForFindAllAtLevel as baseBuildCriteriaForFindAllAtLevel;
     }
@@ -646,9 +644,26 @@ class Medication extends BaseActiveRecordVersioned
         return "{$unmapped_string}{$number}";
     }
 
-    protected function buildCriteriaForFindAllAtLevel(int $level, ?Institution $institution = null, bool $anyLevel = true)
-    {
-        $baseCriteria = $this->baseBuildCriteriaForFindAllAtLevel($level, $institution, $anyLevel);
+    protected function buildCriteriaForFindAllAtLevel(
+        int $level,
+        ?Institution $institution,
+        ?Site $site,
+        ?Specialty $specialty,
+        ?Subspecialty $subspecialty,
+        ?Firm $firm,
+        ?User $user,
+        bool $anyLevel = true
+    ): CDbCriteria {
+        $baseCriteria = $this->baseBuildCriteriaForFindAllAtLevel(
+            $level,
+            $institution,
+            $site,
+            $specialty,
+            $subspecialty,
+            $firm,
+            $user,
+            $anyLevel
+        );
         $baseCriteria->addCondition('source_type != :_localSourceType', 'OR');
         $baseCriteria->params[':_localSourceType'] = static::SOURCE_TYPE_LOCAL;
 

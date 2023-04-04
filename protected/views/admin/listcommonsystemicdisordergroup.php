@@ -61,7 +61,7 @@ if ($this->checkAccess('admin')) {
 </form>
 
 <div class="cols-8">
-    <form method="POST" action="/oeadmin/CommonSystemicDisorderGroup/save<?= $current_institution_id ? ('?institution_id=' . $current_institution_id) : '' ?>">
+    <form method="POST" action="/oeadmin/CommonSystemicDisorderGroup/save?institution_id=<?= $current_institution_id ?>">
         <input type="hidden" class="no-clear" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
         <?php
         $columns = array(

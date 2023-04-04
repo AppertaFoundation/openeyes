@@ -22,6 +22,8 @@ class Element_OphInBiometry_MeasurementFactory extends ModelFactory
     {
         return [
             'event_id' => EventFactory::forModule('OphInBiometry'),
+            'eye_status_left' => Eye_Status::factory()->useExisting(),
+            'eye_status_right' => Eye_Status::factory()->useExisting(),
         ];
     }
 }

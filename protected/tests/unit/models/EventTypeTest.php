@@ -29,22 +29,24 @@ class EventTypeTest extends OEDbTestCase
     {
         $element_types = ElementType::factory()->useExisting()->count(rand(2, 4))->create();
 
-        $elements = EventType::resolveElementClasses($element_types);
+        $resolved_elements = EventType::resolveElementClasses($element_types);
 
-        $this->assertEquals(
-            array_map(function ($element) {
-                return $element->class_name;
-            }, $element_types),
-            array_map(function ($element) {
-                return get_class($element);
-            }, $elements)
-        );
+        // some existing element_types may no longer be enabled, so we simply check those that have returned
+        $valid_classnames = array_map(function ($element_type) {
+            return $element_type->class_name;
+        }, $element_types);
+
+        foreach ($resolved_elements as $element) {
+            $this->assertTrue(in_array(get_class($element), $valid_classnames));
+        }
     }
 
     /** @test */
     public function resolve_element_classes_doesnt_return_element_type_with_missing_class()
     {
-        $element_types = ElementType::factory()->useExisting()->count(rand(2, 4))->create();
+        $element_types = ElementType::factory()->count(rand(2, 4))->create([
+            'class_name' => 'EventTypeTest_Enabled'
+        ]);
         $unexpected_element_type = ElementType::factory()->create([
             'class_name' => 'FooBar'
         ]);

@@ -86,4 +86,17 @@ class CommonSystemicDisorderGroup extends BaseActiveRecordVersioned
             'name' => 'Name',
         );
     }
+
+    /** Expands the reference level assignment for this group to be part of the name */
+    public function getFully_qualified_name()
+    {
+        $name = $this->name . ' - ';
+        if ($this->institutions) {
+            return $name . implode(", ", array_map(function ($institution) {
+                return $institution->short_name;
+            }, $this->institutions));
+        }
+
+        return $name . 'All';
+    }
 }

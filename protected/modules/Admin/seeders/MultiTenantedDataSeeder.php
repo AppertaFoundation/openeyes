@@ -22,6 +22,7 @@ use CommonSystemicDisorder;
 use CommonSystemicDisorderGroup;
 use ElementType;
 use OE\factories\models\EventFactory;
+use OE\seeders\BaseSeeder;
 use OEModule\CypressHelper\resources\SeededEventResource;
 use OEModule\OphCiExamination\models\Element_OphCiExamination_History;
 use OEModule\OphCiExamination\models\OphCiExamination_Attribute;
@@ -38,16 +39,9 @@ use SecondaryToCommonOphthalmicDisorder;
  * Creates the models for testing multitenanted assignments in a generic way.
  * Please see the aforementioned test if this functionality needs to be expanded.
  */
-class MultiTenantedDataSeeder
+class MultiTenantedDataSeeder extends BaseSeeder
 {
-    private $context;
-
-    public function __construct(\DataContext $context)
-    {
-        $this->context = $context;
-    }
-
-    public function __invoke()
+    public function __invoke(): array
     {
         $control_institution = \Institution::model()->findByPk(1);
         $control_site = \Site::model()->findByPk(1);

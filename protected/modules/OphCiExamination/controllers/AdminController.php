@@ -474,16 +474,16 @@ class AdminController extends \ModuleAdminController
         }
 
         if ($institution === null) {
-            $workflows = models\OphCiExamination_Workflow::model()
-                       ->findAllAtLevels(
-                           \ReferenceData::LEVEL_INSTALLATION,
-                           ['order' => 'name asc']);
+            $workflows = models\OphCiExamination_Workflow::model()->findAllAtLevels(
+                \ReferenceData::LEVEL_INSTALLATION,
+                ['order' => 'name asc']
+            );
         } else {
-            $workflows = models\OphCiExamination_Workflow::model()
-                       ->findAllAtLevels(
-                           \ReferenceData::LEVEL_INSTITUTION,
-                           ['order' => 'name asc'],
-                           $institution);
+            $workflows = models\OphCiExamination_Workflow::model()->findAllAtLevels(
+                \ReferenceData::LEVEL_INSTITUTION,
+                ['order' => 'name asc'],
+                $institution
+            );
         }
 
         $this->render('list_OphCiExamination_Workflow', array(
@@ -796,11 +796,11 @@ class AdminController extends \ModuleAdminController
             $institution = \Institution::model()->findByPk($institution_id);
         }
 
-        $workflows_criteria = models\OphCiExamination_Workflow::model()
-                   ->getCriteriaForLevels(
-                       $institution ? \ReferenceData::LEVEL_INSTITUTION : \ReferenceData::LEVEL_INSTALLATION,
-                       null,
-                       $institution);
+        $workflows_criteria = models\OphCiExamination_Workflow::model()->getCriteriaForLevels(
+            $institution ? \ReferenceData::LEVEL_INSTITUTION : \ReferenceData::LEVEL_INSTALLATION,
+            null,
+            $institution
+        );
 
         $this->render('list_OphCiExamination_Workflow_Rules', array(
                 'model_class' => 'OphCiExamination_Workflow_Rule',
@@ -830,11 +830,11 @@ class AdminController extends \ModuleAdminController
     {
         $institution = \Institution::model()->findByPk($id);
 
-        $workflows = models\OphCiExamination_Workflow::model()
-                   ->findAllAtLevels(
-                       $institution ? \ReferenceData::LEVEL_INSTITUTION : \ReferenceData::LEVEL_INSTALLATION,
-                       ['select' => 't.id, t.name', 'order' => 'name asc'],
-                       $institution);
+        $workflows = models\OphCiExamination_Workflow::model()->findAllAtLevels(
+            $institution ? \ReferenceData::LEVEL_INSTITUTION : \ReferenceData::LEVEL_INSTALLATION,
+            ['select' => 't.id, t.name', 'order' => 'name asc'],
+            $institution
+        );
 
         $workflows = array_map(
             static function ($workflow) { return ['id' => $workflow->id, 'name' => $workflow->name]; },

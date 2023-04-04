@@ -32,14 +32,21 @@ class CommonOphthalmicDisorderGroupFactory extends ModelFactory
         ];
     }
 
-    public function withInstitution($institution_id)
+    /**
+     *
+     * @param \Institution|string|int $institution
+     * @return void
+     */
+    public function withInstitution($institution): self
     {
+        $institution_id = $institution instanceof \Institution ? $institution->id : $institution;
+
         return $this->afterCreating(function (CommonOphthalmicDisorderGroup $disorderGroup) use ($institution_id) {
             $disorderGroup->createMapping(ReferenceData::LEVEL_INSTITUTION, $institution_id);
         });
     }
 
-    public function forDisplayOrder($display_order)
+    public function forDisplayOrder($display_order): self
     {
         return $this->state(function () use ($display_order) {
             return [

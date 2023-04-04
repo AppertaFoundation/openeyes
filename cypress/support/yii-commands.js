@@ -126,7 +126,7 @@ Cypress.Commands.add('runSeeder', (seederModuleName, seederClassName, additional
         body: {
             seeder_module_name: seederModuleName,
             seeder_class_name: seederClassName,
-            additional_data: additionalData,
+            additional_data: additionalData ?? [],
         }
     }).its('body');
 });

@@ -7,7 +7,11 @@ describe('add a team via the Admin:Teams page', () => {
         // - active (true)
         // - 2 user assignments - return userAssignments (with atttributes fullName and role)
         // - 2 team assignments - return teamAssignments
-        cy.runSeeder('Admin', 'AddTeamSeeder', {}).as('seederData')
+        cy.login()
+            .then(() => {
+                return cy.runSeeder('Admin', 'AddTeamSeeder', {});
+            }).as('seederData');
+
     })
 
     it('ensures that a team is successfully created', () => {

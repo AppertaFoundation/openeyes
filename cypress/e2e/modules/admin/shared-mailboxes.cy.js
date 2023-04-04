@@ -4,14 +4,13 @@ describe('add a shared mailbox via the Admin:Shared Mailbox page', () => {
 
         // login as admin user and navigate to home page
         cy.login()
-        cy.visit('/')
-
-        // Seed:
-        // - mailboxNameToCreate (unique/faked)
-        // - 2 x users - return userNames
-        // - 2 x teams - return teamNames
-        cy.runSeeder('Admin', 'AddMailboxSeeder', {}).as('seederData')
-
+            .then(() => {
+                // Seed:
+                // - mailboxNameToCreate (unique/faked)
+                // - 2 x users - return userNames
+                // - 2 x teams - return teamNames
+                return cy.runSeeder('Admin', 'AddMailboxSeeder');
+            }).as('seederData');
     })
 
     it('ensures that a shared mailbox is successfully created', () => {

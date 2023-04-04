@@ -48,9 +48,18 @@ class OwnedByReferenceDataTest extends OEDbTestCase
         $expectedFakes = array_merge($installationFakes, $institutionFakes);
         $this->mockCurrentInstitution($institution);
 
-        $this->assertModelArraysMatch($installationFakes, OwnedByReferenceDataTestFake::model()->findAllAtLevels(ReferenceData::LEVEL_INSTALLATION, null, $institution));
-        $this->assertModelArraysMatch($institutionFakes, OwnedByReferenceDataTestFake::model()->findAllAtLevels(ReferenceData::LEVEL_INSTITUTION, null, $institution));
-        $this->assertModelArraysMatch($expectedFakes, OwnedByReferenceDataTestFake::model()->findAllAtLevels(ReferenceData::LEVEL_ALL, null, $institution));
+        $this->assertModelArraysMatch(
+            $installationFakes,
+            OwnedByReferenceDataTestFake::model()->findAllAtLevels(ReferenceData::LEVEL_INSTALLATION, null, $institution)
+        );
+        $this->assertModelArraysMatch(
+            $institutionFakes,
+            OwnedByReferenceDataTestFake::model()->findAllAtLevels(ReferenceData::LEVEL_INSTITUTION, null, $institution)
+        );
+        $this->assertModelArraysMatch(
+            $expectedFakes,
+            OwnedByReferenceDataTestFake::model()->findAllAtLevels(ReferenceData::LEVEL_ALL, null, $institution)
+        );
     }
 
     public function testCriteriaAreMergedWithFindAllAtLevel()
@@ -64,7 +73,10 @@ class OwnedByReferenceDataTest extends OEDbTestCase
         $criteria->params[':expectedId'] = $expected[0]->id;
         $this->mockCurrentInstitution($institution);
 
-        $this->assertModelArraysMatch($expected, OwnedByReferenceDataTestFake::model()->findAllAtLevels(ReferenceData::LEVEL_ALL, $criteria, $institution));
+        $this->assertModelArraysMatch(
+            $expected,
+            OwnedByReferenceDataTestFake::model()->findAllAtLevels(ReferenceData::LEVEL_ALL, $criteria, $institution)
+        );
     }
 
     protected function createFakes($count = 1)
