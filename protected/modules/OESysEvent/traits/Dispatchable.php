@@ -19,8 +19,8 @@ use Yii;
 
 trait Dispatchable
 {
-    public static function dispatch(...$arguments): void
+    public static function dispatch(): void
     {
-        Yii::app()->event->dispatch(new static(...$arguments));
+        Yii::app()->event->dispatch(new static(...func_get_args()));
     }
 }
