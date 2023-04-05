@@ -62,7 +62,7 @@ if ($sort_field === 'user') {
 if (!$messages->totalItemCount) {
     ?>
     <div class="alert-box info strong">
-        <b>No messages found matchng the search criteria.</b>
+        <b>No messages in this folder.</b>
     </div>
     <?php
     return;
