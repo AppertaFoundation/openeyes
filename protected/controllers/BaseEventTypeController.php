@@ -83,6 +83,8 @@ class BaseEventTypeController extends BaseModuleController
         'removed' => self::ACTION_TYPE_VIEW,
         'saveTemplate' => self::ACTION_TYPE_FORM,
         'updateTemplate' => self::ACTION_TYPE_FORM,
+        'saveDraft' => self::ACTION_TYPE_FORM,
+        'deleteDrafts' => self::ACTION_TYPE_FORM,
     );
 
     /**
@@ -98,6 +100,8 @@ class BaseEventTypeController extends BaseModuleController
     public $site;
     public ?Event $event = null;
     public ?EventTemplate $template = null;
+    public ?EventDraft $draft = null;
+    public ?EventDraft $existing_draft = null;
     public $editable = true;
     public $editing;
     private $title;
@@ -719,9 +723,44 @@ class BaseEventTypeController extends BaseModuleController
         $this->event->event_type_id = $this->event_type->id;
         $this->event->last_modified_user_id = $this->event->created_user_id = Yii::app()->user->id;
 
+        $this->initEventDraftForCreate(Yii::app()->request);
+
         if (isset($_GET['template_id'])) {
             $this->template = EventTemplate::model()->findByPk($_GET['template_id']);
         }
+    }
+
+    protected function initEventDraftForCreate($request): void
+    {
+        $existing_drafts = $this->getExistingEventDraftsForCreate();
+        $requested_draft_id = $request->getParam('draft_id');
+        if (!$requested_draft_id) {
+            if (count($existing_drafts)) {
+                // more than one entry shouldn't arise, and we can handle multiple through the
+                // delete process later, so just grabbing the first should be fine here
+                $this->existing_draft = array_shift($existing_drafts);
+            }
+            return;
+        }
+
+        $this->draft = $existing_drafts[$requested_draft_id] ?? null;
+        if (!$this->draft) {
+            // possibly needs thought
+            throw new CHttpException(404, 'Draft not found.');
+        }
+    }
+
+    // returns drafts indexed by pk
+    protected function getExistingEventDraftsForCreate()
+    {
+        $criteria = new \CDbCriteria();
+        $criteria->index = 'id';
+        $criteria->with = ['episode'];
+        $criteria->condition = 't.event_type_id = :event_type AND episode.patient_id = :patient AND t.last_modified_user_id = :user AND t.event_id IS NULL';
+        $criteria->params = [':event_type' => $this->event_type->id, ':patient' => $this->patient->id, ':user' => Yii::app()->user->id];
+        $criteria->order = 't.last_modified_date DESC'; // Ensure the most recent draft is the first entry.
+
+        return EventDraft::model()->findAll($criteria);
     }
 
     /**
@@ -765,6 +804,12 @@ class BaseEventTypeController extends BaseModuleController
         $this->moduleStateCssClass = 'edit';
 
         $this->initWithEventId(@$_GET['id']);
+
+        $this->draft = $this->event->draft;
+
+        if ($this->draft) {
+            $this->setAndValidateElementsFromData(json_decode($this->draft->data, true));
+        }
 
         if (isset($_GET['template_id'])) {
             $this->template = EventTemplate::model()->findByPk($_GET['template_id']);
@@ -967,7 +1012,15 @@ class BaseEventTypeController extends BaseModuleController
                 }
             }
         } else {
-            $this->setOpenElementsFromCurrentEvent('create');
+            if ($this->draft) {
+                $this->setAndValidateElementsFromData(json_decode($this->draft->data, true));
+                foreach ($this->open_elements as $element) {
+                    $element->clearErrors();
+                }
+            } else {
+                $this->setOpenElementsFromCurrentEvent('create');
+            }
+
             $this->updateHotlistItem($this->patient);
 
             if (isset(Yii::app()->session['selected_institution_id'])) {
@@ -1050,7 +1103,8 @@ class BaseEventTypeController extends BaseModuleController
             EventAction::link(
                 'Cancel',
                 Yii::app()->createUrl($cancel_url),
-                array('level' => 'cancel')
+                ['level' => 'cancel'],
+                ['class' => 'js-event-action-cancel']
             ),
         );
 
@@ -1110,7 +1164,7 @@ class BaseEventTypeController extends BaseModuleController
             $this->event_tabs[] = array(
                 'label' => 'Edit',
                 'href' => Yii::app()->createUrl(
-                    $this->event->eventType->class_name . '/default/update/' . $this->event->id
+                    $this->event->eventType->class_name . '/default/update?id=' . $this->event->id
                 ),
             );
 
@@ -1162,6 +1216,7 @@ class BaseEventTypeController extends BaseModuleController
     public function actionUpdate($id)
     {
         $errors = [];
+
         if (!empty($_POST)) {
             // somethings been submitted
             if (isset($_POST['cancel'])) {
@@ -1284,7 +1339,9 @@ class BaseEventTypeController extends BaseModuleController
             }
         } else {
             // get the elements
-            $this->setOpenElementsFromCurrentEvent('update');
+            if (empty($this->open_elements)) {
+                $this->setOpenElementsFromCurrentEvent('update');
+            }
             $this->updateHotlistItem($this->patient);
 
             if (isset(Yii::app()->session['selected_institution_id'])) {
@@ -1364,6 +1421,7 @@ class BaseEventTypeController extends BaseModuleController
         }
 
         $params['customErrorHeaderMessage'] = $this->customErrorHeaderMessage ?? '';
+
         $this->render($this->action->id, $params);
     }
 
@@ -1472,6 +1530,105 @@ class BaseEventTypeController extends BaseModuleController
             false,
             true // Process output to deal with script requirements
         );
+    }
+
+    /**
+     * Save a draft of the current event
+     *
+     * @return void
+     */
+    public function actionSaveDraft(): void
+    {
+        $form_data = json_decode(Yii::app()->request->getParam('form_data'));
+        $episode = \Episode::model()->findByPk(Yii::app()->request->getParam('OE_episode_id'));
+        $patient = $episode->patient;
+        $event_id = Yii::app()->request->getParam('OE_event_id');
+        $draft_id = Yii::app()->request->getParam('draft_id');
+        $module_class = Yii::app()->request->getParam('OE_module_class');
+        $originating_url = preg_replace('/&draft_id=\d+/', '', Yii::app()->request->getParam('originating_url'));
+
+        $user_id = Yii::app()->user->id;
+
+        $structured_form_data = null;
+        parse_str(urldecode($form_data), $structured_form_data);
+
+        $transaction = Yii::app()->db->beginTransaction();
+
+        $draft = !empty($draft_id) ? \EventDraft::model()->findByPk($draft_id) : new \EventDraft();
+
+        if ($draft->isNewRecord) {
+            $draft->created_user_id = $user_id;
+            $draft->institution_id = Yii::app()->session->get('selected_institution_id');
+            $draft->site_id = Yii::app()->session->get('selected_site_id');
+            $draft->event_id = $event_id;
+            $draft->episode_id = $episode->id;
+            $draft->event_type_id = \EventType::model()->findByAttributes(['class_name' => $module_class])->id;
+        }
+
+        //Try and strip out as much non-element information as possible
+        unset($structured_form_data['YII_CSRF_TOKEN']);
+        unset($structured_form_data['Event']);
+        unset($structured_form_data['draft_id']);
+
+        $draft->last_modified_user_id = $user_id;
+        $draft->originating_url = $originating_url;
+        $draft->data = json_encode($structured_form_data);
+
+        $warnings = [];
+
+        $newer_patient_record_edits = Yii::app()->db->createCommand()
+            ->select('COUNT(*)')
+            ->from('event ev')
+            ->join('episode ep', 'ev.episode_id = ep.id')
+            ->where('ep.patient_id = :patient_id', [':patient_id' => $patient->id])
+            ->andWhere('ev.last_modified_date > :draft_created_date', [':draft_created_date' => $draft->created_date])
+            ->queryScalar();
+
+        if ($newer_patient_record_edits > 0) {
+            $warnings[] = "There are edits to the patient record more recent than this draft";
+        }
+
+        $warnings = count($warnings) > 0 ? ['warnings' => $warnings] : [];
+
+        if ($draft->save()) {
+            $transaction->commit();
+
+            $return_value = array_merge(['draft_id' => $draft->id], $warnings);
+
+            $this->renderJSON($return_value);
+        } else {
+            $transaction->rollback();
+
+            $return_value = ['errors' => $draft->getErrors()];
+
+            $this->renderJSON($return_value);
+        }
+    }
+
+    public function actionDeleteDrafts(): void
+    {
+        $request = Yii::app()->request;
+        $event_type = EventType::model()->find('class_name = :class_name', [':class_name' => $request->getPost('event_type')]);
+        $criteria = new CDbCriteria();
+        $criteria->index = 'id';
+        $criteria->condition = 't.event_type_id = :event_type AND episode.patient_id = :patient AND t.last_modified_user_id = :user AND t.event_id IS NULL';
+        $criteria->params = [
+            ':event_type' => $event_type->id,
+            ':patient' => $request->getPost('patient_id'),
+            ':user' => Yii::app()->user->id
+        ];
+        $drafts = EventDraft::model()->with('episode')->findAll($criteria);
+        $deleted_draft_ids = array();
+        $transaction = Yii::app()->db->beginTransaction();
+        foreach ($drafts as $draft) {
+            $deleted_draft_ids[] = $draft->id;
+            if (!$draft->delete()) {
+                $transaction->rollback();
+                throw new CHttpException(500, 'Unable to delete existing event creation drafts');
+            }
+        }
+        $transaction->commit();
+        $this->renderJSON($deleted_draft_ids);
     }
 
     /**
@@ -1628,6 +1785,7 @@ class BaseEventTypeController extends BaseModuleController
         $has_last_modified_date_value = isset($data['Event']) && isset($data['Event']['last_modified_date']);
         if (
             !$this->event->isNewRecord
+            && Yii::app()->user->id !== $this->event->last_modified_user_id
             && ($has_last_modified_date_value
                 && $data['Event']['last_modified_date'] !== $this->event->last_modified_date)
         ) {
@@ -2368,7 +2526,7 @@ class BaseEventTypeController extends BaseModuleController
      * Saves a print to PDF as a ProtectedFile object and file
      *
      * @param $id
-     * @return ?array
+     * @return array|void
      */
     public function actionSavePDFprint($id)
     {
@@ -2582,7 +2740,7 @@ class BaseEventTypeController extends BaseModuleController
             $this->event_tabs[] = array(
                 'label' => 'Edit',
                 'href' => Yii::app()->createUrl(
-                    $this->event->eventType->class_name . '/default/update/' . $this->event->id
+                    $this->event->eventType->class_name . '/default/update?id=' . $this->event->id
                 ),
             );
         }
@@ -2606,6 +2764,10 @@ class BaseEventTypeController extends BaseModuleController
      */
     protected function afterCreateEvent($event)
     {
+        if (isset($event->draft)) {
+            $event->draft->delete();
+        }
+
         $this->updateFollowUpAggregate();
     }
 
@@ -2617,6 +2779,10 @@ class BaseEventTypeController extends BaseModuleController
      */
     protected function afterUpdateEvent($event)
     {
+        if (isset($event->draft)) {
+            $event->draft->delete();
+        }
+
         $this->updateFollowUpAggregate();
     }
 

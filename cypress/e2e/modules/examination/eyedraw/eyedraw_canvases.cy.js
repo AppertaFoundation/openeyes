@@ -40,7 +40,7 @@ describe('create examination event', () => {
         });
 
         cy.wait(1000);
-        cy.getBySel('event-action-save').last().click();
+        cy.getBySel('event-action-confirm-and-save').last().click();
         /*
             If any uncaught exception is thrown at this stage, test will fail.
             There is no need to handle that scenario.

@@ -32,6 +32,9 @@ class Mailbox extends \BaseActiveRecordVersioned
 {
     use HasFactory;
 
+    public const MAX_NAME_PERSONAL = 200;
+    public const MAX_NAME_NOT_PERSONAL = 24;
+
     protected $auto_update_relations = true;
 
     /**
@@ -50,10 +53,10 @@ class Mailbox extends \BaseActiveRecordVersioned
         return [
             ['name', 'required'],
             ['name', 'uniqueIfNotPersonalValidator'],
-            ['name', 'lengthIfNotPersonalValidator', 'max' => 24],
+            ['name', 'lengthIfNotPersonalValidator', 'max' => self::MAX_NAME_NOT_PERSONAL],
             ['is_personal', 'boolean'],
             ['is_personal', 'exactlyOneUserAndNoTeamsIfPersonalValidator'],
-            ['name', 'length', 'max' => 200],
+            ['name', 'length', 'max' => self::MAX_NAME_PERSONAL],
             ['last_modified_user_id, created_user_id', 'length', 'max' => 10],
             ['last_modified_date, created_date, users, teams', 'safe'],
             // The following rule is used by search().

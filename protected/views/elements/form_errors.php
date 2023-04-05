@@ -42,7 +42,7 @@
     $(document).ready(function () {
         <?php if (isset($elements) && is_array($elements)) {
             foreach ($elements as $element) { ?>
-        var errorObject = <?php $element->getFrontEndErrors(); ?>;
+        var errorObject = <?= json_encode($element->getFrontEndErrors()) ?>;
         for (k = 0; k < errorObject.length; k++) {
             var $field = $('#' + errorObject[k]);
             $field.closest('.element').find('.element-title').addClass('error');

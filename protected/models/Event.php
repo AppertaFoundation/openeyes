@@ -52,6 +52,7 @@ use OEModule\OESysEvent\events\ClinicalEventSoftDeletedSystemEvent;
  * @property EventSubTypeItem[] $eventSubtypeItems
  * @property ?EventSubTypeItem $firstEventSubtypeItem
  * @property ?EventTemplate $template
+ * @property ?EventDraft $draft
  */
 class Event extends BaseActiveRecordVersioned
 {
@@ -160,7 +161,8 @@ class Event extends BaseActiveRecordVersioned
             'site' => [self::BELONGS_TO, 'Site', 'site_id'],
             'worklist_patient' => [self::BELONGS_TO, 'WorklistPatient', 'worklist_patient_id'],
             'step' => [self::BELONGS_TO, 'PathwayStep', 'step_id'],
-            'template' => [self::BELONGS_TO, 'EventTemplate', 'template_id']
+            'template' => [self::BELONGS_TO, 'EventTemplate', 'template_id'],
+            'draft' => [self::HAS_ONE, EventDraft::class, 'event_id']
         );
     }
 
@@ -745,6 +747,7 @@ class Event extends BaseActiveRecordVersioned
                 $result .= 'Optometrist Address: ' . $this->automated_source->address;
             }
         }
+
         return $result;
     }
 

@@ -24,6 +24,7 @@ class EventAction
     public $label;
     public $href;
     public $htmlOptions;
+    public $selectOptions;
     public $options = array(
         'level' => 'primary',
         'disabled' => false,
@@ -102,6 +103,9 @@ class EventAction
         if ($this->options['level'] === 'save') {
             $this->htmlOptions['class'] .= ' green';
         }
+        if ($this->options['level'] === 'draft') {
+            $this->htmlOptions['class'] .= ' blue';
+        }
         if ($this->options['level'] === 'delete') {
             $label = '';
             $this->htmlOptions['class'] = 'button trash header-icon-btn icon';
@@ -125,7 +129,14 @@ class EventAction
             $this->htmlOptions['disabled'] = 'disabled';
         }
 
-        $this->htmlOptions['data-test'] = 'event-action-' . str_replace(' ', '-', strtolower($label));
+        $data_test_suffix = str_replace('&amp;', 'and', str_replace(' ', '-', strtolower($label)));
+
+        $this->htmlOptions['data-test'] = 'event-action-' . $data_test_suffix;
+
+        if (!empty($this->htmlOptions['icon-class'])) {
+            $icon_class = $this->htmlOptions['icon-class'];
+            $label = "<i class='oe-i small pad-r $icon_class'></i>" . $label;
+        }
 
         if ($this->type === 'button') {
             return CHtml::htmlButton($label, $this->htmlOptions);

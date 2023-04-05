@@ -16,6 +16,12 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+$drafts_for_user = EventDraft::model()->findAll([
+    'condition' => 'last_modified_user_id = :user_id',
+    'order' => 'last_modified_date ASC',
+    'params' => [':user_id' => Yii::app()->user->id]
+]);
+
 $openHotlistItems = UserHotlistItem::model()->getHotlistItems(1);
 $closedHotlistItems = UserHotlistItem::model()->getHotlistItems(0, date('Y-m-d'));
 $core_api = new CoreAPI();
@@ -50,6 +56,43 @@ if ($this instanceof BaseEventTypeController) {
         </div>
     <?php $this->endWidget(); ?>
     <div class="patient-activity">
+        <div class="event-drafts js-hotlist-event-drafts">
+            <div class="overview nav-grp-hd-i expand" data-test="hotlist-toggle-drafts">
+                <h3>
+                    Drafts
+                    <small class="count issue"><?= count($drafts_for_user) ?></small>
+                </h3>
+            </div>
+            <div class="hidden">
+                <table class="activity-list">
+                    <tbody>
+                    <?php
+                    foreach ($drafts_for_user as $draft) {
+                        $draft_event = $draft->event;
+                        $draft_patient = $draft->episode->patient;
+                        $draft_patient_primary_identifier = PatientIdentifierHelper::getIdentifierForPatient($display_primary_number_usage_code, $draft_patient->id, $institution_id, $site_id);
+                        ?>
+                        <tr
+                            class="js-hotlist-draft-event"
+                            data-id="<?= $draft->id ?>"
+                            data-test="hotlist-draft-event"
+                            data-patient-href="<?= Yii::app()->createUrl($draft->originating_url . "&draft_id=" . $draft->id) ?>"
+                        >
+                            <td><?= CHtml::encode(PatientIdentifierHelper::getIdentifierValue($draft_patient_primary_identifier)) ?></td>
+                            <td>
+                                <span><?= CHtml::encode($draft_patient->getHSCICName()) ?></span>
+                            </td>
+                            <td>
+                                <span class="event-type draft"><?= $draft->getEventIcon() ?></span>
+                            </td>
+                            <td class="nowrap"><?= Helper::convertDate2NHS($draft->last_modified_date) ?></td>
+                            <td><i class="oe-i direction-right-circle small-icon pad"></i></td>
+                        </tr>
+                    <?php } ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     <?php
     if ($total_unread_messages > 0) {
         $total_urgent_messages = 0;

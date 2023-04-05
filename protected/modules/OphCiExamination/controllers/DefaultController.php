@@ -20,6 +20,7 @@
 namespace OEModule\OphCiExamination\controllers;
 
 use Eye;
+use OELog;
 use OEModule\OphCiExamination\components;
 use OEModule\OphCiExamination\models;
 use OEModule\OphCiExamination\models\AdviceLeafletEntry;
@@ -60,7 +61,8 @@ class DefaultController extends \BaseEventTypeController
         'getSignatureByUsernameAndPin' => self::ACTION_TYPE_FORM,
         'searchInstitutions' => self::ACTION_TYPE_FORM,
         'medicationManagementEditable' => self::ACTION_TYPE_FORM,
-        'checkPrescriptionAutoSignEnabled' => self::ACTION_TYPE_FORM
+        'checkPrescriptionAutoSignEnabled' => self::ACTION_TYPE_FORM,
+        'saveDraft' => self::ACTION_TYPE_FORM,
     );
 
     private const ACTION_TYPE_SAFEGUARDING = 'Safeguarding';
@@ -2687,7 +2689,7 @@ class DefaultController extends \BaseEventTypeController
         if (!empty($data['OEModule_OphCiExamination_models_Element_OphCiExamination_FurtherFindings']['further_findings_assignment'])) {
             foreach ($data['OEModule_OphCiExamination_models_Element_OphCiExamination_FurtherFindings']['further_findings_assignment'] as $i => $item) {
                 if (!$finding = \Finding::model()->findByPk($item['id'])) {
-                    throw new Exception("Finding not found: {$item['id']}");
+                    throw new \Exception("Finding not found: {$item['id']}");
                 }
                 $assignment = new models\OphCiExamination_FurtherFindings_Assignment();
                 $assignment->finding_id = $finding->id;
@@ -3060,5 +3062,7 @@ class DefaultController extends \BaseEventTypeController
                 return $context['contexts'];
             }
         }
+
+        return [];
     }
 }

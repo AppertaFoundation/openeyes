@@ -61,6 +61,7 @@
       "OE\\concerns\\": "protected/concerns",
       "OE\\contracts\\": "protected/contracts",
       "OE\\factories\\": "protected/factories",
+      "OE\\listeners\\": "protected/listeners",
       "OE\\seeders\\": "protected/seeders"
     }
   },

@@ -29,7 +29,7 @@ $active_pathway = $this->patient->getClinicPathwayInProgress();
 <?php if ((Yii::app()->controller->action->id != 'update' && Yii::app()->controller->action->id != 'create') || Yii::app()->controller->show_element_sidebar == false) { ?>
 <nav class="sidebar-header" id="add-event-sidebar">
     <?php if (((!empty($ordered_episodes) || !empty($legacyepisodes) || !empty($supportserviceepisodes)) && $this->checkAccess('OprnCreateEpisode')) && !$this->patient->is_deceased) { ?>
-        <button id="add-event" class="button green add-event" type="button">Add Event</button>
+        <button id="add-event" class="button green add-event" type="button" data-test="add-new-event-button">Add Event</button>
     <?php } else { ?>
         <button class="button add-event disabled">You have View Only rights</button>
     <?php } ?>

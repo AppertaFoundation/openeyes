@@ -23,11 +23,14 @@ use Faker\Generator;
 use OE\factories\exceptions\CannotSaveModelException;
 use OE\factories\exceptions\FactoryNotFoundException;
 use OE\factories\exceptions\CannotMakeModelException;
+use OE\factories\traits\MapsModelsToFormData;
 use OELog;
 use Yii;
 
 abstract class ModelFactory
 {
+    use MapsModelsToFormData;
+
     public static $defaultModelNamespace = 'OE\\factories\\models\\';
     protected CApplication $app;
     protected Generator $faker;
@@ -37,7 +40,7 @@ abstract class ModelFactory
     protected array $afterCreating = [];
     protected ?array $findOrCreateAttributes = null;
 
-    public function __construct($app = null)
+    final public function __construct($app = null)
     {
         if (is_null($app)) {
             $app = Yii::app();

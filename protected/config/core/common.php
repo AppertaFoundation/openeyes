@@ -19,6 +19,8 @@
 use OE\factories\DataGenerator;
 use OEModule\CypressHelper\CypressHelperModule;
 use OEModule\OphCiExamination\components\PathstepObserver;
+use OEModule\OESysEvent\events\ClinicalEventSoftDeletedSystemEvent;
+use OE\listeners\RemoveDraftEventAfterSoftDelete;
 
 // If the old db.conf file (pre docker) exists, use it. Else read environment variable, else read docker secrets
 // Note, docker secrets are the recommended approach for docker environments
@@ -135,6 +137,26 @@ $config = array(
         'clientScript' => array(
             'class' => 'ClientScript',
             'packages' => array(
+                'mustache' => [
+                    'js' => ['mustache.min.js'],
+                    'basePath' => 'webroot.node_modules.mustache'
+                ],
+                'sortable' => [
+                    'js' => ['Sortable.min.js'],
+                    'basePath' => 'webroot.node_modules.sortablejs'
+                ],
+                'pickmeup' => [
+                    'js' => ['pickmeup.js'],
+                    'basePath' => 'webroot.node_modules.pickmeup.js'
+                ],
+                'tinymce' => [
+                    'js' => ['tinymce.js'],
+                    'basePath' => 'webroot.node_modules.tinymce'
+                ],
+                'lodash' => [
+                    'js' => ['lodash.min.js'],
+                    'basePath' => 'webroot.node_modules.lodash'
+                ],
                 'jquery' => array(
                     'js' => array('jquery/jquery.min.js'),
                     'basePath' => 'application.assets.components',
@@ -207,11 +229,19 @@ $config = array(
                         'class' => 'PathstepObserver',
                         'method' => 'completeStep'
                     ],
+                    'remove_draft' => [
+                        'class' => 'EventDraftObserver',
+                        'method' => 'removeDraftForCreated'
+                    ]
                 ],
                 'event_updated' => [
                     'complete_step' => [
                         'class' => 'PathstepObserver',
                         'method' => 'completeStep'
+                    ],
+                    'remove_draft' => [
+                        'class' => 'EventDraftObserver',
+                        'method' => 'removeDraftForUpdated'
                     ]
                 ],
                 'psd_created' => [
@@ -226,6 +256,10 @@ $config = array(
                         'method' => 'createEvent'
                     ]
                 ],
+                [
+                    'system_event' => ClinicalEventSoftDeletedSystemEvent::class,
+                    'listener' => RemoveDraftEventAfterSoftDelete::class
+                ]
             ),
         ),
         'fhirClient' => array('class' => 'FhirClient'),

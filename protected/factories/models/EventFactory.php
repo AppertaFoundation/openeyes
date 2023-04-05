@@ -9,11 +9,13 @@ use Firm;
 use OE\factories\exceptions\CannotMakeModelException;
 use OE\factories\exceptions\FactoryNotFoundException;
 use OE\factories\ModelFactory;
+use OE\factories\models\traits\HasEventTypeRelation;
 use Patient;
 
 class EventFactory extends ModelFactory
 {
-    protected static ?array $availableEventTypes = null;
+    use HasEventTypeRelation;
+
     protected array $elementsWithStates = [];
 
     public static function forModule(string $moduleName)
@@ -179,33 +181,5 @@ class EventFactory extends ModelFactory
     {
         // override to allow child factories to always instantiate the correct base model
         return \Event::class;
-    }
-
-    protected function getEventTypeByName($eventTypeName)
-    {
-        if (static::$availableEventTypes === null) {
-            $this->cacheAvailableEventTypes();
-        }
-
-        return static::$availableEventTypes[$eventTypeName];
-    }
-
-    protected function availableEventTypes()
-    {
-        if (static::$availableEventTypes === null) {
-            $this->cacheAvailableEventTypes();
-        }
-
-        return array_values(static::$availableEventTypes);
-    }
-
-    protected function cacheAvailableEventTypes()
-    {
-        $cache = [];
-        foreach (\EventType::model()->findAll() as $eventType) {
-            $cache[$eventType->name] = $eventType;
-        }
-
-        static::$availableEventTypes = $cache;
     }
 }

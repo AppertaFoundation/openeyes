@@ -26,6 +26,7 @@ class TestMailboxSeeder extends BaseSeeder
     public function __invoke(): array
     {
         $current_institution = $this->app_context->getSelectedInstitution();
+        $runtime_prefix = (string) time();
 
         // seed user1
         $user1_password = 'password';
@@ -50,13 +51,13 @@ class TestMailboxSeeder extends BaseSeeder
         // seed user shared mailbox and assign user1 and user2 to it
         $user_mailbox = Mailbox::factory()
             ->withUsers([$user1, $user2])
-            ->withUniqueMailboxName()
+            ->withUniqueMailboxName($runtime_prefix)
             ->create();
 
         // seed team shared mailbox and assign test team to it
         $team_mailbox = Mailbox::factory()
             ->withTeams([$team])
-            ->withUniqueMailboxName()
+            ->withUniqueMailboxName($runtime_prefix)
             ->create();
 
         // seed a message event with sender - admin - and recipient user_mailbox

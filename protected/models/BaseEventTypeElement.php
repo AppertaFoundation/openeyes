@@ -313,7 +313,7 @@ class BaseEventTypeElement extends BaseElement
      */
     public function getFrontEndErrors()
     {
-        echo json_encode($this->frontEndErrors);
+        return $this->frontEndErrors;
     }
 
     public function setFrontEndError($attribute)
@@ -345,6 +345,19 @@ class BaseEventTypeElement extends BaseElement
             get_class($this)
         ) . '\'))">' . $message . '</a>';
         parent::addError($attribute, $message);
+    }
+
+    public function clearErrors($attribute = null)
+    {
+        parent::clearErrors($attribute);
+        if ($attribute === null) {
+            $this->frontEndErrors = [];
+        } else {
+            $to_remove = $this->errorAttributeException(str_replace('\\', '_', get_class($this)) . '_' . $attribute, '');
+            $this->frontEndErrors = array_filter($this->frontEndErrors, function ($key) use ($to_remove) {
+                return $key !== $to_remove;
+            });
+        }
     }
 
     /**

@@ -34,7 +34,7 @@ describe('cvi list filter behaviour', () => {
         });
 
         it('Consultant in charge filter test is case insensitive', function () {
-            let firm = cy.createModels('Firm', [], {name: "Test Firm"});
+            cy.createModels('Firm', [], {name: "Test Firm " + Date.now()});
             testFilterInput('firm_auto_complete', 'firm', 'Test Firm');
         });
 

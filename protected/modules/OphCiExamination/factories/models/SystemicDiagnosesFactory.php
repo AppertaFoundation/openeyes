@@ -79,4 +79,23 @@ class SystemicDiagnosesFactory extends ModelFactory
             );
         });
     }
+
+    protected function mapModelToFormData($model): array
+    {
+        $result = [
+            'entries' => [],
+            'present' => "1"
+        ];
+
+        foreach ($model->diagnoses as $i => $entry) {
+            $result['entries'][] = [
+                'disorder_id' => $entry->disorder_id,
+                'date' => $entry->date,
+                'has_disorder' => $entry->has_disorder,
+                'na_eye' => "-9"
+            ];
+        }
+
+        return $result;
+    }
 }

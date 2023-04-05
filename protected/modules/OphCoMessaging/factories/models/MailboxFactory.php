@@ -98,8 +98,9 @@ class MailboxFactory extends ModelFactory
      * @param string $prefix
      * @return string
      */
-    public static function getUniqueMailboxName($faker, $prefix = '')
+    public static function getUniqueMailboxName($faker, $prefix = '', $is_personal = false)
     {
+        $max_length = $is_personal ? Mailbox::MAX_NAME_PERSONAL : Mailbox::MAX_NAME_NOT_PERSONAL;
         $existing_names = array_map(
             function ($mailbox) {
                 return strtolower($mailbox->name);
@@ -107,10 +108,10 @@ class MailboxFactory extends ModelFactory
             Mailbox::model()->findAll(['select' => 'name'])
         );
 
-        $unique_name = $prefix . $faker->unique()->word();
+        $unique_name = substr($prefix . $faker->unique()->words(2, true), 0, $max_length);
 
         while (in_array(strtolower($unique_name), $existing_names)) {
-            $unique_name = $prefix . $faker->unique()->word();
+            $unique_name = substr($prefix . $faker->unique()->word(), 0, $max_length);
         }
 
         return $unique_name;

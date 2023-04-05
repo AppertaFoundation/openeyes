@@ -44,8 +44,8 @@ $is_new_record = isset($diagnosis) && $diagnosis->isNewRecord ? true : false;
 $mandatory = !$removable;
 ?>
 
-<tr data-key="<?= $row_count; ?>">
-    <td>
+<tr data-key="<?= $row_count; ?>" data-test="systemic-diagnoses-entry">
+    <td data-test="systemic-diagnoses-entry-disorder-term">
         <?= $values['disorder_display']; ?>
         <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?= $values['id'] ?>"/>
         <input type="hidden" name="<?= $field_prefix ?>[disorder_id]" value="<?= $values['disorder_id'] ?>"/>
@@ -53,7 +53,7 @@ $mandatory = !$removable;
                value="<?= isset($values['is_diabetes']) ? $values['is_diabetes'] : 'false' ?>"/>
     </td>
 
-    <td id="<?= "{$model_name}_{$row_count}_checked_status" ?>">
+    <td id="<?= "{$model_name}_{$row_count}_checked_status" ?>" data-test="systemic-diagnoses-entry-checked-status">
         <?php
         if ($removable) {
             if ($values['has_disorder'] === SystemicDiagnoses_Diagnosis::$NOT_PRESENT) { ?>
@@ -103,7 +103,7 @@ $mandatory = !$removable;
         'selectedEyeId' => $values['side_id'] ? $values['side_id'] : EyeSelector::$NOT_CHECKED
     ]); ?>
 
-    <td>
+    <td data-test="systemic-diagnoses-entry-date">
         <?php
         $date_parts = date_parse_from_format('Y-m-d', $values['date']);
         if (!$date_parts['year'] && !$date_parts['month'] && !$date_parts['day']) {

@@ -64,7 +64,7 @@
                                     'data-test' => 'team-name',
                                 ]
                             )
-                        ?>
+                            ?>
                     </td>
                 </tr>
                 <tr>
@@ -80,17 +80,16 @@
                                     'data-test' => 'team-email',
                                 ]
                             )
-                        ?>
+                            ?>
                     </td>
                 </tr>
                 <tr>
                     <td>Active*</td>
                     <td>
                         <?php
-                        if (!$can_change_activation) {
-                            echo CHtml::activeHiddenField($team, 'attributes[active]');
-                        }
-                        ?>
+                        if (!$can_change_activation) { ?>
+                            <input type="hidden" name="Team[attributes][active]" value="<?= $team->active ? '1' : '0' ?>" />
+                        <?php } ?>
                         <?=
                             \CHtml::activeCheckBox(
                                 $team,
@@ -101,7 +100,7 @@
                                     'disabled' => !$can_change_activation,
                                 ]
                             )
-                        ?>
+                            ?>
                     </td>
                 </tr>
             </tbody>

@@ -20,11 +20,51 @@
 <?php
 $form_id = 'examination-update';
 $this->beginContent('//patient/event_container', array('no_face'=>false , 'form_id' => $form_id)); ?>
-    <?php
-        $this->breadcrumbs = array($this->module->id);
-        $this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'save'), array('form' => $form_id));
-    ?>
-    <?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+<?php
+    $this->breadcrumbs = array($this->module->id);
+
+    $this->event_actions[] =
+        EventAction::button(
+            'Save Draft',
+            'draft',
+            ['level' => 'draft'],
+            [
+                'class' => 'js-event-action-save-draft',
+                'icon-class' => 'draft'
+            ]
+        );
+
+    $this->event_actions[] =
+        EventAction::button(
+            'Confirm & Save',
+            'save',
+            ['level' => 'save'],
+            [
+                'form' => $form_id,
+                'class' => 'js-event-action-save-confirm'
+            ]
+        );
+
+    $this->event_actions[] =
+        EventAction::button(
+            'Confirm',
+            'confirm',
+            ['level' => 'confirm'],
+            [
+                'class' => 'js-event-action-save-confirm-popup',
+                'type' => 'button',
+                'style' => 'display: none'
+            ]
+        );
+
+    $this->event_tabs[] = [
+        'label' => 'OE Connection Error',
+        'class' => 'js-connection-error-tab sync-error hidden',
+        'icon-class' => 'sync',
+        'href' => '#'
+    ];
+
+    $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         'id' => $form_id,
         'enableAjaxValidation' => false,
         'layoutColumns' => array(
@@ -32,21 +72,27 @@ $this->beginContent('//patient/event_container', array('no_face'=>false , 'form_
             'field' => 8,
         ),
     ));
-?>
-    <?php
-    if (!empty($errors)) {
-        ;
-    }  ?>
-        <script type='text/javascript'>
-            $(document).ready( function(){
-                window.formHasChanged = true;
-            });
-        </script>
-        <?php $this->displayErrors($errors)?>
-        <?php $this->renderPartial('//patient/event_elements', array('form' => $form));?>
-        <?php $this->displayErrors($errors, true)?>
+    ?>
 
-    <?php $this->endWidget()?>
+<input type="hidden" name="auto-save-enabled" class="js-auto-save-enabled" value="true">
+
+<?php $this->renderPartial('auto_save_connection_error');?>
+<?php $this->renderPartial('auto_save_warnings', ['form_id' => $form_id]);?>
+
+<script type='text/javascript'>
+    $(document).ready( function(){
+        window.formHasChanged = true;
+
+        let eventDraftController = new OpenEyes.EventDraftController({formId: '<?= $form_id ?>'});
+
+        $('.js-auto-save-enabled').data('controller', eventDraftController);
+    });
+</script>
+<?php $this->displayErrors($errors)?>
+<?php $this->renderPartial('//patient/event_elements', array('form' => $form));?>
+<?php $this->displayErrors($errors, true)?>
+
+<?php $this->endWidget()?>
 <?php $this->endContent();?>
 
 <?php Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/VisualAcuity.js", CClientScript::POS_HEAD); ?>

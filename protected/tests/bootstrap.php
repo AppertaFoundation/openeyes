@@ -4,7 +4,13 @@ if (PHP_MAJOR_VERSION >= 7 && PHP_MINOR_VERSION >= 1) {
     error_reporting(E_ALL & ~E_DEPRECATED);
 }
 
-ini_set("log_errors_max_len",0);
+// ensure the current working directory is the application root
+// yii makes certain assumptions about how paths should be resolved
+// based on the curent working directory
+$webroot = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..';
+chdir($webroot);
+
+ini_set("log_errors_max_len", 0);
 
 set_include_path(get_include_path() . PATH_SEPARATOR . __DIR__);
 set_include_path(get_include_path() . PATH_SEPARATOR . __DIR__ . '/test-traits');
@@ -55,6 +61,9 @@ require_once(__DIR__ . DIRECTORY_SEPARATOR . 'bootstrap_process_isolation.php');
 
 Yii::createWebApplication($config);
 
+// default will point to the phpunit path, so this sets it up correctly
+Yii::setPathOfAlias('webroot', __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..');
+// we don't want event listeners being triggered by default during tests
 Yii::app()->event->forgetAll();
 
 // PHPUnit dies silently with FATAL ERRORS which makes it hard to debug the tests.

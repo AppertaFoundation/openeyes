@@ -40,12 +40,12 @@ class AddTeamSeeder extends BaseSeeder
         $admin_user = \User::model()->findByPk(1);
         $users[] = ['fullName' => $admin_user->getFullNameAndTitle(), 'role' => 'Owner'];
 
-        $user = \User::factory()->useExisting()->create();
+        $user = $this->createActiveUser();
         $users[] = ['fullName' => $user->getFullNameAndTitle(), 'role' => 'Member'];
 
         for ($i = 0; $i < 2; $i++) {
             // team must have a user assigned or it will be set to 'inactive' automatically
-            $team_user = \User::factory()->useExisting()->create();
+            $team_user = $this->createActiveUser();
             $team_names[] = \Team::factory()->withUsers([$team_user])->create()->name;
         }
 
@@ -56,5 +56,11 @@ class AddTeamSeeder extends BaseSeeder
             'userAssignments' => $users,
             'teamAssignments' => $team_names,
         ];
+    }
+
+    private function createActiveUser()
+    {
+        // by assigning auth to the current institution, ensure that the user will be retrievable
+        return \User::factory()->withLocalAuthForInstitution($this->app_context->getSelectedInstitution())->create();
     }
 }

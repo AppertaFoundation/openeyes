@@ -24,12 +24,12 @@ class AddMailboxSeeder extends BaseSeeder
         $institution = $this->app_context->getSelectedInstitution();
 
         for ($i = 0; $i < 2; $i++) {
-            $user_names[] = ltrim(\User::factory()->withLocalAuthForInstitution($institution)->create()->getFullNameAndTitle());
+            $user_names[] = ltrim($this->createActiveUser()->getFullNameAndTitle());
         }
 
         for ($i = 0; $i < 2; $i++) {
             // team must have a user assigned or it will be set to 'inactive' automatically
-            $team_user = \User::factory()->useExisting()->create();
+            $team_user = $this->createActiveUser();
             $team_names[] = \Team::factory()->withUsers([$team_user])->create(['institution_id' => $institution])->name;
         }
 
@@ -38,5 +38,11 @@ class AddMailboxSeeder extends BaseSeeder
             'userNames' => $user_names,
             'teamNames' => $team_names
         ];
+    }
+
+    private function createActiveUser()
+    {
+        // by assigning auth to the current institution, ensure that the user will be retrievable
+        return \User::factory()->withLocalAuthForInstitution($this->app_context->getSelectedInstitution())->create();
     }
 }

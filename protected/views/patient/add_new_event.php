@@ -95,6 +95,25 @@ ksort($eventTypes);
         <ul class="context-list">
         </ul>
       </td>
+      <?php if (!empty($drafts)) { ?>
+      <td class="existing-drafts">
+        <h3>Existing drafts</h3>
+        <ul class="draft-list event-type-list">
+            <?php
+            foreach ($drafts as $draft) {
+                $draft_event = $draft->event;
+                ?>
+          <li class="oe-event-type" data-draft-id="<?= $draft->id ?>" data-test="add-new-event-draft">
+            <a href="<?= Yii::app()->createUrl($draft->originating_url . "&draft_id=" . $draft->id) ?>" data-id="<?= $draft->id ?>">
+              <span class="event-type draft"><?= $draft->getEventIcon() ?></span>
+                <?= $draft->getEventName() ?>
+              <small><?= (new services\DateTime($draft->last_modified_date))->relative() ?></small>
+            </a>
+          </li>
+            <?php } ?>
+        </ul>
+      </td>
+      <?php } ?>
       <td class="step-event-types" style="visibility: hidden;">
         <h3>Select New Event</h3>
         <ul id="event-type-list" class="event-type-list">

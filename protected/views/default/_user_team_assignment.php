@@ -40,14 +40,14 @@ $can_remove_member = $super_user || $this->checkAccess('OprnRemoveTeamMember', $
                         <?php if ($can_change_team_role) { ?>
                         <select name="<?= $prefix ?>[user][<?= $key ?>][task]" data-test="team-user-task">
                             <?php foreach ($tasks_list as $task => $name) { ?>
-                            <option value="<?= $task ?>"<?= $task === $assigned_tasks[$user['id']] ? ' selected' : '' ?>>
+                            <option value="<?= $task ?>"<?= $task === ($assigned_tasks[$user['id']] ?? null) ? ' selected' : '' ?>>
                                 <?= $name ?>
                             </option>
                             <?php } ?>
                         </select>
                         <?php } else { ?>
                         <input type="hidden" name="<?= $prefix ?>[user][<?= $key ?>][task]" value="<?= $assigned_tasks[$user['id']] ?>" data-test="team-user-task" />
-                        <?= $tasks_list[$assigned_tasks[$user['id']]] ?>
+                            <?= $tasks_list[$assigned_tasks[$user['id']]] ?>
                         <?php } ?>
                     </td>
                     <td>

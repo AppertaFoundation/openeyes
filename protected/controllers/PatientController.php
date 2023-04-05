@@ -15,6 +15,11 @@
  */
 
 use OEModule\BreakGlass\BreakGlass;
+use OEModule\OphCiExamination\models\FamilyHistory;
+use OEModule\OphCiExamination\models\FamilyHistoryCondition;
+use OEModule\OphCiExamination\models\FamilyHistoryRelative;
+use OEModule\OphCiExamination\models\FamilyHistorySide;
+use OEModule\OphCiExamination\models\SocialHistory;
 
 Yii::import('application.controllers.*');
 
@@ -291,7 +296,9 @@ class PatientController extends BaseController
             $criteria->addCondition('episode.change_tracker IS NULL OR episode.change_tracker = 0');
             $active_events = Event::model()->findAll($criteria);
 
-            $no_episodes = (count($episodes) < 1 || count($events) < 1) && count($support_service_episodes) < 1 && count($legacy_episodes) < 1;
+            $drafts_count = EventDraft::model()->with(['episode'])->count('patient_id = ?', [$this->patient->id]);
+
+            $no_episodes = (count($episodes) < 1 || ($drafts_count < 1 && count($events) < 1)) && count($support_service_episodes) < 1 && count($legacy_episodes) < 1;
 
         if ($no_episodes) {
             $this->layout = '//layouts/events_and_episodes_no_header';
@@ -417,7 +424,7 @@ class PatientController extends BaseController
         $term = \Yii::app()->request->getParam('term', '');
         $patient_identifier_type_id = \Yii::app()->request->getParam('patient_identifier_type_id');
 
-        $patient_search = new PatientSearch(true);
+        $patient_search = new PatientSearch();
 
         if ($patient_identifier_type_id) {
             // if set we import/save Patient from this PAS - no update -
@@ -3067,7 +3074,6 @@ class PatientController extends BaseController
 
     /**
      * Get CITO url
-     * @return string
      * @throws Exception
      */
     public function actionGetCitoUrl($hos_num)
