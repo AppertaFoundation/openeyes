@@ -1131,6 +1131,11 @@
       <TITLE>Peripheral Vascularisation</TITLE>
       <INIT_DOODLE_JSON/>
     </DOODLE>
+    <DOODLE>
+      <EYEDRAW_CLASS_MNEMONIC>Epiphora</EYEDRAW_CLASS_MNEMONIC>
+      <TITLE>Epiphora</TITLE>
+      <INIT_DOODLE_JSON/>
+    </DOODLE>
   </DOODLE_LIST>
   <DOODLE_USAGE_LIST>
     <DOODLE_USAGE>
@@ -4618,6 +4623,14 @@ The CARRY_FORWARD_FLAG=false is a fudge to prevent lens from copying forward int
           <PRIMARY_TERM>Examination Freehand Draw</PRIMARY_TERM>
           <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\FreehandDraw</OPEN_ELEMENT_CLASS_NAME>
         </INDEX>
+        <INDEX>
+              <PRIMARY_TERM>Epiphora</PRIMARY_TERM>
+              <SECONDARY_TERM_LIST>
+                <TERM>Epiphora</TERM>
+              </SECONDARY_TERM_LIST>
+              <OPEN_ELEMENT_CLASS_NAME>OEModule\OphCiExamination\models\Element_OphCiExamination_LidsSurgical</OPEN_ELEMENT_CLASS_NAME>
+              <GOTO_DOODLE_CLASS_NAME>Epiphora</GOTO_DOODLE_CLASS_NAME>
+            </INDEX>
       </INDEX_LIST>
     </EVENT>
   </EVENT_LIST>

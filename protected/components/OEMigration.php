@@ -1,4 +1,5 @@
 <?php
+
 class OEMigration extends CDbMigration
 {
     private $migrationPath;
@@ -504,9 +505,9 @@ class OEMigration extends CDbMigration
             'element_group',
             'name = :name AND event_type_id = :event_type_id',
             [
-            ':name' => $name,
-            ':event_type_id' => $event_type_id
-        ]
+                ':name' => $name,
+                ':event_type_id' => $event_type_id
+            ]
         );
     }
 
@@ -646,7 +647,7 @@ class OEMigration extends CDbMigration
 
             $this->migrationEcho(
                 'Added element type, element_type_class: ' . $element_type_class . ' element type properties: '
-                . var_export($element_type_data, true) . ' event_type_id: ' . $event_type_id . " \n"
+                    . var_export($element_type_data, true) . ' event_type_id: ' . $event_type_id . " \n"
             );
 
             // Insert element type id into element type array
@@ -691,7 +692,7 @@ class OEMigration extends CDbMigration
             $this->delete($tableName, $fieldsList, $fieldsValArrayMap);
             $this->migrationEcho(
                 "\nDeleted  in table : $tableName. Fields : "
-                . $fieldsList . ' value: ' . var_export($fieldsValArrayMap, true) . "\n"
+                    . $fieldsList . ' value: ' . var_export($fieldsValArrayMap, true) . "\n"
             );
         }
     }
@@ -1078,7 +1079,7 @@ class OEMigration extends CDbMigration
      */
     protected function verifyColumnExists($table_name, $column_name)
     {
-        $cols = $this->dbConnection->createCommand("SHOW COLUMNS FROM `" . $table_name . "` LIKE '" .$column_name ."'")->queryScalar();
+        $cols = $this->dbConnection->createCommand("SHOW COLUMNS FROM `" . $table_name . "` LIKE '" . $column_name . "'")->queryScalar();
         return !empty($cols);
     }
 
@@ -1095,7 +1096,7 @@ class OEMigration extends CDbMigration
                                                             WHERE table_schema = DATABASE()
                                                                 AND table_name = :table_name
                                                                 AND constraint_name = :key_name
-                                                                AND constraint_type = "FOREIGN KEY"')->queryScalar([ ':table_name' => $table_name, ':key_name' => $key_name ]);
+                                                                AND constraint_type = "FOREIGN KEY"')->queryScalar([':table_name' => $table_name, ':key_name' => $key_name]);
 
         return !empty($fk_exists);
     }
@@ -1117,12 +1118,13 @@ class OEMigration extends CDbMigration
      * @param [sting] $index_name The index name to test for
      * @return void
      */
-    protected function verifyIndexExists($table_name, $index_name){
+    protected function verifyIndexExists($table_name, $index_name)
+    {
         $index_exists = $this->dbConnection->createCommand('   SELECT count(*)
                                                             FROM information_schema.table_constraints
                                                             WHERE table_schema = DATABASE()
                                                                 AND table_name = :table_name
-                                                                AND constraint_name = :key_name')->queryScalar([ ':table_name' => $table_name, ':key_name' => $index_name ]);
+                                                                AND constraint_name = :key_name')->queryScalar([':table_name' => $table_name, ':key_name' => $index_name]);
 
         return !empty($index_exists);
     }
@@ -1246,16 +1248,17 @@ class OEMigration extends CDbMigration
      * @param [string] $name A human readable name for the setting (a brief descriptive title)
      * @param [string] $description A full text description of the setting purpose and usage
      * @param [string] $group_name Which group the setting should sit under in the settings page. E.g., Core, Examination, Operation Note, Correspondence, System, etc.
-     * @param [string] $field_type_name Which type of setting is this (Checkbox, Dropdown list, Radio buttons, Text field, Textarea, HTML)  
+     * @param [string] $field_type_name Which type of setting is this (Checkbox, Dropdown list, Radio buttons, Text field, Textarea, HTML)
      * @param [string] $data Depending on the fields type, this can be used to define the available options
      * @param [string] $default_value Default value for this setting, if no overrides are given in any of the other setting tables
      * @param [string] $lowest_level The minimum level at which this setting can be applied (INSTALLATION or INSTITUTION)
      * @return void
      */
-    public function addSetting( string $setting_key, string $name, string $description, string $group_name, string $field_type_name, string $data, $default_value, string $lowest_level = 'INSTALLATION'){
+    public function addSetting(string $setting_key, string $name, string $description, string $group_name, string $field_type_name, string $data, $default_value, string $lowest_level = 'INSTALLATION')
+    {
         $group_id = $this->dbConnection->createCommand("SELECT id FROM setting_group WHERE `name` = :group_name")->queryScalar([':group_name' => $group_name]);
 
-        if (empty($group_id)){
+        if (empty($group_id)) {
             throw new CException("Unknown group, please check your spelling");
         }
 
@@ -1268,8 +1271,8 @@ class OEMigration extends CDbMigration
         $field_type_name = strtolower($field_type_name) == 'text area' ? 'Textarea' : $field_type_name;
 
 
-        $field_type_id = $this->dbConnection->createCommand('SELECT id FROM setting_field_type WHERE name = :field_type_name')->queryScalar([ ':field_type_name' => $field_type_name ]);
-        if (empty($field_type_id)){
+        $field_type_id = $this->dbConnection->createCommand('SELECT id FROM setting_field_type WHERE name = :field_type_name')->queryScalar([':field_type_name' => $field_type_name]);
+        if (empty($field_type_id)) {
             throw new CException("Unknown field type, please check your spelling");
         }
 
@@ -1285,5 +1288,92 @@ class OEMigration extends CDbMigration
             'description' => $description,
             'lowest_setting_level' => strtoupper($lowest_level),
         ));
+    }
+
+    /**
+     * Add a new item to the search index
+     *
+     * @param string $event_name e.g, Examination
+     * @param string $parent_name If the item is not at a top level, add the name of the parent item it should appear below. Use the name from the search inex. E.g, Anterior Segment
+     * @param string $primary_term The main serach term the item should be known by
+     * @param string $secondary_term_list A comma separated list of alternative terms to search by
+     * @param string $open_element_class_name If selecting the result should open an element, specify the elemant's class here
+     * @param string $goto_id If selecting the result should jump the user to a place in the page, add the HTML id here
+     * @param string $goto_tag label | legend - more info required on exactly what this does!
+     * @param string $goto_text Highliht some specific text within the id/tag
+     * @param string $img_url An image to use as an icon for this result
+     * @param string $goto_subcontainer_class function unknown at this point!
+     * @param string $goto_doodle_class_name If clicking on the result should add a particular doodle to a canvas, then specify the doodle's class name here
+     * @param string $goto_property If clicking the result should highlight a specific doodle property, then add the property name here
+     * @param string $warning_note Any help text to show alongside the result
+     * @return void
+     */
+    public function addToSearchIndex(
+        string $event_class,
+        string $parent_name = null,
+        string $primary_term,
+        string $secondary_term_list = null,
+        string $open_element_class_name = null,
+        string $goto_id = null,
+        string $goto_tag = null,
+        string $goto_text = null,
+        string $img_url = null,
+        string $goto_subcontainer_class = null,
+        string $goto_doodle_class_name = null,
+        string $goto_property = null,
+        string $warning_note = null
+    ) {
+        // Search index
+        $event_type_id = $this->dbConnection->createCommand("SELECT id FROM event_type WHERE `class_name` = :event_class")->queryScalar([':event_class' => $event_class]);     
+        $parent_id = $this->dbConnection->createCommand("SELECT id FROM index_search WHERE primary_term = :parent_term")->queryScalar([ ':parent_term' => $parent_name ]);
+
+        $this->execute(
+            "INSERT INTO index_search (
+                event_type_id,
+                parent,
+                primary_term,
+                secondary_term_list,
+                open_element_class_name,
+                goto_id,
+                goto_tag,
+                goto_text,
+                img_url,
+                goto_subcontainer_class,
+                goto_doodle_class_name,
+                goto_property,
+                warning_note
+            )
+            VALUES(
+                :event_type_id,
+                :parent_id,
+                :primary_term,
+                :secondary_term_list,
+                :open_element_class_name,
+                :goto_id,
+                :goto_tag,
+                :goto_text,
+                :img_url,
+                :goto_subcontainer_class,
+                :goto_doodle_class_name,
+                :goto_property,
+                :warning_note
+            );
+            ",
+            [
+                ':event_type_id'            => $event_type_id,
+                ':parent_id'                => $parent_id,
+                ':primary_term'             => $primary_term,
+                ':secondary_term_list'      => $secondary_term_list,
+                ':open_element_class_name'  => $open_element_class_name,
+                ':goto_id'                  => $goto_id,
+                ':goto_tag'                 => $goto_tag,
+                ':goto_text'                => $goto_text,
+                ':img_url'                  => $img_url,
+                ':goto_subcontainer_class'  => $goto_subcontainer_class,
+                ':goto_doodle_class_name'   => $goto_doodle_class_name,
+                ':goto_property'            => $goto_property,
+                ':warning_note'             => $warning_note
+            ]
+        );
     }
 }
