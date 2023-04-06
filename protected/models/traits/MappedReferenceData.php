@@ -165,7 +165,7 @@ trait MappedReferenceData
         ?Subspecialty $subspecialty = null,
         ?Firm $firm = null,
         ?User $user = null,
-        bool $anyLevel = true,
+        bool $anyLevel = true
     ): array {
         $levelCriteria = $this->buildCriteriaForFindAllAtLevel(
             $level_mask,
