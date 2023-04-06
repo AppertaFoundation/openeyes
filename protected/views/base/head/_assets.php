@@ -66,7 +66,6 @@ Yii::app()->clientScript->registerCssFile($newblue_path . '/dist/css/style_eyedr
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.Search.js')?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.CopyToClipboard.js')?>
 <?php $assetManager->registerScriptFile('js/script.js')?>
-<?php $assetManager->registerScriptFile('components/jt.timepicker/jquery.timepicker.js');?>
 <?php $assetManager->registerScriptFile('js/oelauncher.js');?>
 <?php $assetManager->registerScriptFile('js/OpenEyes.UI.PathwayStepPicker.js'); ?>
 <?php $assetManager->registerScriptFile('js/worklist/OpenEyes.UI.Dialog.PathwayStepOptions.js'); ?>
