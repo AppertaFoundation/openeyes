@@ -77,6 +77,6 @@ class AdviceGiven extends \BaseEventElementWidget
             }
         }
         $element->leaflets = $entries;
-        $element->comments = $data['comments'];
+        $element->comments = $data['comments'] ?? null;
     }
 }

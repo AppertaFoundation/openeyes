@@ -1495,7 +1495,7 @@ class BaseEventTypeController extends BaseModuleController
         $template_data_exists = !empty($template_data) && array_key_exists($element_class, $template_data);
         $element_template_data = $template_data_exists ? $template_data[$element_class] : [];
 
-        $this->renderElement($element, 'create', $form, [], $element_template_data, array(
+        $this->renderElement($element, 'create', $form, null, $element_template_data, array(
             'previous_parent_id' => $previous_id,
         ), false, true);
     }
@@ -2130,7 +2130,7 @@ class BaseEventTypeController extends BaseModuleController
      * @param BaseEventTypeElement $element
      * @param string $action
      * @param BaseCActiveBaseEventTypeCActiveForm $form
-     * @param array $data
+     * @param ?array $data
      * @param array $template_data
      * @param array $view_data Data to be passed to the view.
      * @param bool $return Whether the rendering result should be returned instead of being displayed to end users.
@@ -2142,11 +2142,11 @@ class BaseEventTypeController extends BaseModuleController
         $element,
         $action,
         $form,
-        $data,
-        $template_data = array(),
-        $view_data = array(),
-        $return = false,
-        $processOutput = false
+        ?array $data = null,
+        array $template_data = array(),
+        array $view_data = array(),
+        bool $return = false,
+        bool $processOutput = false
     ) {
         if (is_string($action)) {
             if (strcasecmp($action, 'PDFPrint') == 0) {

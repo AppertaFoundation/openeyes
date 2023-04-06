@@ -128,7 +128,7 @@ class HistoryMedications extends BaseMedicationWidget
     }
 
     /**
-     * @return bool whether any entries were set
+     * Sets the entries array with items from any previous events
      */
 
     private function setEntriesWithPreviousManagement()
@@ -303,7 +303,7 @@ class HistoryMedications extends BaseMedicationWidget
             $this->setElementFromDefaults();
         }
 
-        if ($this->data) {
+        if ($this->data !== null) {
             // we set the element to the provided data
             $this->updateElementFromData($this->element, $this->data);
         }

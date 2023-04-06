@@ -93,7 +93,7 @@ trait MocksSession
     {
         $web_user = $this->getMockBuilder(OEWebUser::class)
             ->disableOriginalConstructor()
-            ->setMethods(['getId', 'getIsGuest', 'init'])
+            ->onlyMethods(['getId', 'getIsGuest', 'init'])
             ->getMock();
 
         $web_user->method('getId')

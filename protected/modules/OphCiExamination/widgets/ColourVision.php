@@ -88,8 +88,12 @@ class ColourVision extends \BaseEventElementWidget
 
     protected function ensureRequiredDataKeysSet(&$data)
     {
+        if (!array_key_exists('eye_id', $data)) {
+            return;
+        }
+
         foreach (['right', 'left'] as $side) {
-            if (!isset($data["{$side}_readings"]) && \SplitEventTypeElement::eyeHasSide('right', $data['eye_id'])) {
+            if (!isset($data["{$side}_readings"]) && \SplitEventTypeElement::eyeHasSide($side, $data['eye_id'])) {
                 $data["{$side}_readings"] = [];
             }
         }

@@ -832,7 +832,7 @@ class DefaultController extends \BaseEventTypeController
             $diagnoses = array();
             $exam_api = \Yii::app()->moduleAPI->get('OphCiExamination');
 
-            if ($this->episode->diagnosis) {
+            if ($this->episode && $this->episode->diagnosis) {
                 $principal_diagnosis = $exam_api->getPrincipalOphtalmicDiagnosis(
                     $this->episode,
                     $this->episode->diagnosis->id
@@ -982,9 +982,7 @@ class DefaultController extends \BaseEventTypeController
              *  then use saved step as the current step
              * otherwise use target step as the current step
              */
-            if ($saved_step
-            && $saved_step->workflow_id === $target_step->workflow_id
-            && $saved_step->position > $target_step->position) {
+            if ($saved_step && $saved_step->workflow_id === $target_step->workflow_id && $saved_step->position > $target_step->position) {
                 $this->step = $saved_step;
             } else {
                 $this->step = $target_step;
@@ -1005,6 +1003,7 @@ class DefaultController extends \BaseEventTypeController
      * @param string $action
      * @param \BaseEventTypeCActiveForm $form
      * @param array $data
+     * @param array $template_data
      * @param array $view_data
      * @param bool $return
      * @param bool $processOutput
@@ -1014,11 +1013,11 @@ class DefaultController extends \BaseEventTypeController
         $element,
         $action,
         $form,
-        $data,
-        $template_data = array(),
-        $view_data = array(),
-        $return = false,
-        $processOutput = false
+        ?array $data = null,
+        ?array $template_data = [],
+        ?array $view_data = [],
+        bool $return = false,
+        bool $processOutput = false
     ) {
         if ($action == 'step') {
             $action = 'update';
@@ -1054,10 +1053,12 @@ class DefaultController extends \BaseEventTypeController
         $this->persistPcrRisk();
         if ($this->step) {
             // Advance the workflow
-            if (!$assignment = models\OphCiExamination_Event_ElementSet_Assignment::model()->find(
-                'event_id = ?',
-                array($event->id)
-            )) {
+            if (
+                !$assignment = models\OphCiExamination_Event_ElementSet_Assignment::model()->find(
+                    'event_id = ?',
+                    array($event->id)
+                )
+            ) {
                 // Create initial workflow assignment if event hasn't already got one
                 $assignment = new models\OphCiExamination_Event_ElementSet_Assignment();
                 $assignment->event_id = $event->id;
@@ -1181,10 +1182,12 @@ class DefaultController extends \BaseEventTypeController
         $this->persistPcrRisk();
         if ($this->step) {
             // Advance the workflow
-            if (!$assignment = models\OphCiExamination_Event_ElementSet_Assignment::model()->find(
-                'event_id = ?',
-                array($event->id)
-            )) {
+            if (
+                !$assignment = models\OphCiExamination_Event_ElementSet_Assignment::model()->find(
+                    'event_id = ?',
+                    array($event->id)
+                )
+            ) {
                 // Create initial workflow assignment if event hasn't already got one
                 $assignment = new models\OphCiExamination_Event_ElementSet_Assignment();
                 $assignment->event_id = $event->id;
@@ -1398,9 +1401,11 @@ class DefaultController extends \BaseEventTypeController
                 }
                 if (isset($data[$model_name][$side . '_risks']) && is_array($data[$model_name][$side . '_risks'])) {
                     foreach ($data[$model_name][$side . '_risks'] as $risk_id) {
-                        if ($risk = models\OphCiExamination_InjectionManagementComplex_Risk::model()->findByPk(
-                            $risk_id
-                        )) {
+                        if (
+                            $risk = models\OphCiExamination_InjectionManagementComplex_Risk::model()->findByPk(
+                                $risk_id
+                            )
+                        ) {
                             $risks[] = $risk;
                         }
                     }
@@ -1416,7 +1421,7 @@ class DefaultController extends \BaseEventTypeController
      */
     protected function setComplexAttributes_Element_OphCiExamination_DRGrading($element, $data, $index)
     {
-        $this->_set_DiabeticDiagnosis($element, $data);
+        $this->set_DiabeticDiagnosis($element, $data);
     }
 
     protected function setComplexAttributes_Element_OphCiExamination_AE_RedFlags($element, $data, $index)
@@ -1492,9 +1497,9 @@ class DefaultController extends \BaseEventTypeController
             $date = new DateTime($entry['date']);
             $procedure_entry->date = $date->format('Y-m-d');
             $procedure_entry->comments = (array_key_exists(
-                    'comments',
-                    $entry
-                ) && !empty($entry['comments'])) ? $entry['comments'] : null;
+                'comments',
+                $entry
+            ) && !empty($entry['comments'])) ? $entry['comments'] : null;
             $eye_id = 0;
             if (array_key_exists('left_eye', $entry)) {
                 $eye_id += 1;
@@ -1521,9 +1526,9 @@ class DefaultController extends \BaseEventTypeController
             $date = new DateTime($entry['date']);
             $procedure_entry->date = $date->format('Y-m-d');
             $procedure_entry->comments = (array_key_exists(
-                    'comments',
-                    $entry
-                ) && !empty($entry['comments'])) ? $entry['comments'] : null;
+                'comments',
+                $entry
+            ) && !empty($entry['comments'])) ? $entry['comments'] : null;
             $procedure_entry->subspecialty_id = $element->event->firm->serviceSubspecialtyAssignment->subspecialty->id;
             $eye_id = 0;
             if (array_key_exists('left_eye', $entry)) {
@@ -1544,7 +1549,7 @@ class DefaultController extends \BaseEventTypeController
      * @param \BaseEventTypeElement $element
      * @param array $data
      */
-    private function _set_DiabeticDiagnosis($element, $data)
+    private function set_DiabeticDiagnosis($element, $data)
     {
         if (
             isset(Yii::app()->params['ophciexamination_drgrading_type_required'])
@@ -1574,10 +1579,12 @@ class DefaultController extends \BaseEventTypeController
             $diagnoses_data = $data[$model_name];
 
 
-            if (array_key_exists(
+            if (
+                array_key_exists(
                     'no_ophthalmic_diagnoses',
                     $diagnoses_data
-                ) && $diagnoses_data['no_ophthalmic_diagnoses'] === '1') {
+                ) && $diagnoses_data['no_ophthalmic_diagnoses'] === '1'
+            ) {
                 if (!$element->no_ophthalmic_diagnoses_date) {
                     $element->no_ophthalmic_diagnoses_date = date('Y-m-d H:i:s');
                 }
@@ -1987,10 +1994,12 @@ class DefaultController extends \BaseEventTypeController
             ))->find()
         ) {
             foreach ($previous_om->attributes as $key => $value) {
-                if (!in_array(
-                    $key,
-                    array('id', 'created_date', 'created_user_id', 'last_modified_date', 'last_modified_user_id')
-                )) {
+                if (
+                    !in_array(
+                        $key,
+                        array('id', 'created_date', 'created_user_id', 'last_modified_date', 'last_modified_user_id')
+                    )
+                ) {
                     $element->$key = $value;
                 }
             }
@@ -2514,7 +2523,7 @@ class DefaultController extends \BaseEventTypeController
                                         $entryErrorMessage
                                     );
                                     $errors[$et_name][] = ucfirst($side) . ' ' . $entry->getDisplayAbnormality(
-                                        ) . " - " . $entryErrorMessage;
+                                    ) . " - " . $entryErrorMessage;
                                 }
                             }
                         }
@@ -2588,8 +2597,9 @@ class DefaultController extends \BaseEventTypeController
                 if (!$queue) {
                     $err['patientticket_queue'] = 'Virtual Clinic not found';
                 } else {
-                    if (QueueOutcome::model()->exists('queue_id=:queue_id', [':queue_id' => $queue->id]
-                        ) && $api->canAddPatientToQueue($this->patient, $queue)) {
+                    if (
+                        QueueOutcome::model()->exists('queue_id=:queue_id', [':queue_id' => $queue->id]) && $api->canAddPatientToQueue($this->patient, $queue)
+                    ) {
                         list($ignore, $fld_errs) = $api->extractQueueData($queue, $data, true);
                         $err = array_merge($err, $fld_errs);
                     }
@@ -2799,26 +2809,33 @@ class DefaultController extends \BaseEventTypeController
             $datetime = new DateTime($assessment->event->event_date);
 
             if (intval($eye->id) === Eye::BOTH) {
-                foreach (array('left' => 'right', 'right' => 'left') as $page_side => $eye_side) {
-                    ${"html_" . $eye_side} = '<div class="js-element-eye ' . $eye_side . '-eye ' . $page_side . '" data-side="' . $eye_side . '">'
-                        . '<div class="assessment cols-full" data-assessment-id="' . $assessment->id . '"'
-                        . ' data-assessment-side="' . $eye->name . '"'
-                        . ' data-assessment-date="' . $datetime->format('Ymd') . '"'
-                        . ' data-assessment-time="' . $datetime->format('His') . '">'
-                        . $this->widget('application.modules.OphGeneric.widgets.Assessment', [
-                            // TODO TODO TODO during the development cycle this will be overridden in the widget init
-                            'assessment' => $assessment,
-                            'entry' => $assessment->{$eye_side . "_assessment"},
-                            'patient' => $this->patient,
-                            'event_type' => $event_type,
-                            'side' => $eye_side,
-                            'key' => $assessment->id
-                        ], true)
-                        . '</div>'
-                        . ($page_side === "right" ? '<div class="flex-layout flex-right"><i class="oe-i trash js-delete-assessment"></i></div>' : '')
-                        . '</div>';
-                }
+                $html_left = "";
+                $html_right = "";
 
+                foreach (array('left' => 'right', 'right' => 'left') as $page_side => $eye_side) {
+                    $html = '<div class="js-element-eye ' . $eye_side . '-eye ' . $page_side . '" data-side="' . $eye_side . '">'
+                                . '<div class="assessment cols-full" data-assessment-id="' . $assessment->id . '"'
+                                . ' data-assessment-side="' . $eye->name . '"'
+                                . ' data-assessment-date="' . $datetime->format('Ymd') . '"'
+                                . ' data-assessment-time="' . $datetime->format('His') . '">'
+                                . $this->widget('application.modules.OphGeneric.widgets.Assessment', [
+                                    // TODO during the development cycle this will be overridden in the widget init
+                                    'assessment' => $assessment,
+                                    'entry' => $assessment->{$eye_side . "_assessment"},
+                                    'patient' => $this->patient,
+                                    'event_type' => $event_type,
+                                    'side' => $eye_side,
+                                    'key' => $assessment->id
+                                ], true)
+                                . '</div>'
+                                . ($page_side === "right" ? '<div class="flex-layout flex-right"><i class="oe-i trash js-delete-assessment"></i></div>' : '')
+                                . '</div>';
+                    if ($eye_side === "left") {
+                        $html_left = $html;
+                    } else {
+                        $html_right = $html;
+                    }
+                }
                 $assessments[] = [
                     "html_left" => $html_left,
                     "html_right" => $html_right,

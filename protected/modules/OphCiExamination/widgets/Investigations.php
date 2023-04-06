@@ -82,7 +82,7 @@ class Investigations extends \BaseEventElementWidget
             $element->description = $investigation->description;
         } else {
             $element->entries = array();
-            $element->description = $data['description'];
+            $element->description = $data['description'] ?? null;
         }
     }
 }

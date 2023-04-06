@@ -11,6 +11,7 @@ parameters:
     - protected/modules
     - protected/widgets
     - protected/config
+    - protected/services
   excludePaths:
     - vendor/yiisoft/yii/demos/
     - protected/tests/*
