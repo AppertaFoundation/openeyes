@@ -130,7 +130,7 @@ $template_data = !empty($template_data[$element->templateIndex]) ? $template_dat
             liClass: 'restrict-width',
             onReturn: function (adderDialog, selectedItems) {
                 inputText.val(formatStringToEndWithCommaAndWhitespace(inputText.val()) + concatenateArrayItemLabels(selectedItems));
-                autosize.update(inputText);
+                autosize(inputText);
                 inputText.trigger('oninput');
                 return true;
             }

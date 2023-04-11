@@ -810,7 +810,7 @@ function updateReData(recipient, is_Cc) {
         element_letter_re.value = default_re;
     }
 
-    autosize.update(element_letter_re);
+    autosize(element_letter_re);
 }
 
 function correspondence_load_data(data) {

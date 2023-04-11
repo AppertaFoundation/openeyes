@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <?php use OEModule\OphCiExamination\models\HistoryMacro; ?>
@@ -108,7 +110,7 @@ foreach ($macros as $macro) {
       liClass: 'restrict-width',
       onReturn: function (adderDialog, selectedItems) {
                 inputText.val(formatStringToEndWithCommaAndWhitespace(inputText.val()) + concatenateArrayItemLabels(selectedItems));
-        autosize.update(inputText);
+        autosize(inputText);
         inputText.trigger('oninput');
         return true;
       }
@@ -130,7 +132,7 @@ foreach ($macros as $macro) {
                 }
                 <?php endforeach; ?>
             });
-            autosize.update(inputText);
+            autosize();
             inputText.trigger('oninput');
             return true;
         }

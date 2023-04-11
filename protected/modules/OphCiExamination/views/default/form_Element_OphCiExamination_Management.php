@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <div class="element-fields flex-layout full-width ">
   <div class="cols-7">
@@ -70,7 +72,7 @@ foreach ($this->getAttributes($element, $firm->serviceSubspecialtyAssignment->su
         }).join(' ');
 
         inputText.val(inputText.val() ? inputText.val() + text : text);
-        autosize.update(inputText);
+        autosize(inputText);
         inputText.trigger('oninput');
         return true;
       },
