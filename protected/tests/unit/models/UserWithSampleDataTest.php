@@ -40,4 +40,28 @@ class UserWithSampleDataTest extends OEDbTestCase
         $this->assertCount(1, $dispatched);
         $this->assertEquals($user, $dispatched[0]->user);
     }
+
+    public function initalsBehaviourProvider()
+    {
+        return [
+            ['foo', 'bar', 'FB'],
+            [null, 'foo', 'F'],
+            ['foo', null, 'F'],
+            [null, null, '']
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider initalsBehaviourProvider
+     */
+    public function get_initials_behaviour_handles_unexpected_states($first_name, $last_name, $expected)
+    {
+        $user = User::factory()->make([
+            'first_name' => $first_name,
+            'last_name' => $last_name
+        ]);
+
+        $this->assertEquals($expected, $user->getInitials());
+    }
 }
