@@ -16,8 +16,7 @@
 namespace OE\factories\models;
 
 use OE\factories\ModelFactory;
-use \User;
-use \UserOutOfOffice;
+use User;
 
 class UserOutOfOfficeFactory extends ModelFactory
 {
@@ -27,8 +26,8 @@ class UserOutOfOfficeFactory extends ModelFactory
     public function definition(): array
     {
         return [
-            'user_id' => ModelFactory::factoryFor(User::class),
-            'enabled' => '0'
+            'user_id' => User::factory(),
+            'enabled' => false
         ];
     }
 
@@ -55,7 +54,7 @@ class UserOutOfOfficeFactory extends ModelFactory
     public function enabled(): self
     {
         return $this->state([
-            'enabled' => '1',
+            'enabled' => true
         ]);
     }
 
@@ -67,7 +66,7 @@ class UserOutOfOfficeFactory extends ModelFactory
     public function notEnabled(): self
     {
         return $this->state([
-            'enabled' => '0',
+            'enabled' => false
         ]);
     }
 
@@ -82,7 +81,7 @@ class UserOutOfOfficeFactory extends ModelFactory
      * @param $alternate_user User|UserFactory|int|string|null
      * @return UserOutOfOfficeFactory
      */
-    public function withDates($from, $to, $alternate_user = null) : self
+    public function withDates($from, $to, $alternate_user = null): self
     {
         $alternate_user = $alternate_user ?? User::factory();
 

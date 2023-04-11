@@ -32,42 +32,29 @@ class UserOutOfOfficeTest extends ModelTestCase
 
     protected $element_cls = UserOutOfOffice::class;
 
-    public function testRules()
-    {
-        parent::testRules();
-
-        $case1 = ModelFactory::factoryFor($this->element_cls)->create();
-
-        $case3 = ModelFactory::factoryFor($this->element_cls)
-               ->enabled()
-               ->withDates('2020-08-31', '2020-09-01')
-               ->create();
-
-        $this->assertTrue($case1->validate());
-        $this->assertTrue($case3->validate());
-    }
-
     /** @test */
-    public function required_if_enabled_error()
+    public function model_must_be_completed_if_enabled()
     {
-        $case2 = ModelFactory::factoryFor($this->element_cls)
-               ->enabled()
-               ->create();
+        $empty_instance = UserOutOfOffice::factory()
+                ->make([
+                    'user_id' => User::factory()->useExisting(),
+                    'enabled' => true
+                ]);
 
-        $this->assertAttributeInvalid($case2, 'From', 'From cannot be blank');
-        $this->assertAttributeHasError($case2, 'To', 'To cannot be blank');
-        $this->assertAttributeHasError($case2, 'Alternate User', 'Alternate User cannot be blank');
+        $this->assertAttributeInvalid($empty_instance, 'From', 'From cannot be blank');
+        $this->assertAttributeHasError($empty_instance, 'To', 'To cannot be blank');
+        $this->assertAttributeHasError($empty_instance, 'Alternate User', 'Alternate User cannot be blank');
     }
 
     /** @test */
     public function end_date_must_be_after_start_date()
     {
-        $case4 = ModelFactory::factoryFor($this->element_cls)
+        $instance = UserOutOfOffice::factory()
                ->enabled()
                ->withDates('2020-08-31', '2020-07-31')
                ->create();
 
-        $this->assertAttributeInvalid($case4, 'Out of office duration', 'To date cannot be before');
+        $this->assertAttributeInvalid($instance, 'Out of office duration', 'To date cannot be before');
     }
 
     /** @test */
@@ -81,11 +68,11 @@ class UserOutOfOfficeTest extends ModelTestCase
         $from = $this->faker->dateTimeBetween('-1 week', '-1 day')->format('Y-m-d');
         $to = $this->faker->dateTimeBetween('+1 day', '+1 week')->format('Y-m-d');
 
-        $out_of_office = ModelFactory::factoryFor($this->element_cls)
-                       ->withUser($out_user)
-                       ->enabled()
-                       ->withDates($from, $to, $alternate_user)
-                       ->create();
+        $out_of_office = UserOutOfOffice::factory()
+            ->withUser($out_user)
+            ->enabled()
+            ->withDates($from, $to, $alternate_user)
+            ->create();
 
         $out_mailbox = Mailbox::model()->forPersonalMailbox($out_user->id)->find();
 

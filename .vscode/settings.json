@@ -23,5 +23,6 @@
             "username": "openeyes",
             "password": "openeyes"
         }
-    ]
+    ],
+    "php.version": "8.0.28"
 }

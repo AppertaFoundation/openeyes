@@ -27,6 +27,8 @@ class DefaultController extends \CController
             throw new \CHttpException(403, 'Request unavailable in current configuration');
         }
 
+        $this->getApp()->attachEventHandler('onException', [$this, 'handleException']);
+
         return parent::beforeAction($action);
     }
 
@@ -247,6 +249,17 @@ class DefaultController extends \CController
         );
 
         $this->sendJsonResponse($seeder());
+    }
+
+    /**
+     * Simple handler to ensure exception data is surfaced to cypress
+     *
+     * @param \CExceptionEvent $event
+     * @return void
+     */
+    protected function handleException(\CExceptionEvent $event)
+    {
+        $this->sendJsonResponse(['message' => $event->exception->getMessage(), 'trace' => $event->exception->getTrace()], 500);
     }
 
     protected function applyStatesTo(ModelFactory $factory, $states = []): ModelFactory
