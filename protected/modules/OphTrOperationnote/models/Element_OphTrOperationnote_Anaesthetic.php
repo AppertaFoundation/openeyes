@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -81,7 +82,7 @@ class Element_OphTrOperationnote_Anaesthetic extends Element_OpNote
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('event_id, anaesthetist_id, anaesthetic_comment', 'safe'),
+            array('event_id, anaesthetist_id, anaesthetic_comment, anaesthetic_type, anaesthetic_agents, anaesthetic_witness_id, anaesthetic_delivery', 'safe'),
             // to not to implement the validation logic 2 times the anaesthetist_id is validated in afterValidate method
 
             // The following rule is used by search().
