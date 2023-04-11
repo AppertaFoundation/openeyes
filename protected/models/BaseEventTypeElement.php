@@ -217,7 +217,12 @@ class BaseEventTypeElement extends BaseElement
      */
     public function getMostRecentForPatient(\Patient $patient, $use_context = false)
     {
-        return $this->getModuleApi()->getLatestElement(static::class, $patient, $use_context) ?: $this;
+        $api = $this->getModuleApi();
+        if (!$api) {
+            return $this;
+        }
+
+        return $api->getLatestElement(static::class, $patient, $use_context) ?: $this;
     }
 
     /**

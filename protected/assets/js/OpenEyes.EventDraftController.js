@@ -98,7 +98,6 @@ var OpenEyes = OpenEyes || {};
             $(this.options.loadExistingDraftSelector).on('click', () => {
                 this.loadExistingDraft();
             });
-
             $(this.options.deleteExistingDraftSelector).on('click', () => {
                 this.deleteExistingDrafts();
             });

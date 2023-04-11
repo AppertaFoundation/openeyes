@@ -16,6 +16,7 @@
 namespace OEModule\OESysEvent\tests\unit\components;
 
 use OEDbTestCase;
+use OEModule\OESysEvent\components\ListenerBuilder;
 use OEModule\OESysEvent\components\Manager;
 use OEModule\OESysEvent\events\SystemEvent;
 
@@ -25,6 +26,13 @@ use OEModule\OESysEvent\events\SystemEvent;
  */
 class ManagerTest extends OEDbTestCase
 {
+    public function setUp(): void
+    {
+        parent::setUp();
+        // reset between tests
+        InvokableEventHandler::$received_events = [];
+    }
+
     /** @test */
     public function supports_legacy_observer_configuration()
     {
@@ -63,6 +71,30 @@ class ManagerTest extends OEDbTestCase
 
         $this->assertCount(1, InvokableEventHandler::$received_events);
         $this->assertEquals($test_event, InvokableEventHandler::$received_events[0]);
+    }
+
+    /** @test */
+    public function listeners_can_be_faked()
+    {
+        $manager = new Manager();
+        $manager->observers = [
+            [
+                'system_event' => ExampleEvent::class,
+                'listener' => InvokableEventHandler::class
+            ]
+        ];
+        $manager->init();
+
+        $mock = $this->createMock(InvokableEventHandler::class);
+        $mock->expects($this->once())
+            ->method('__invoke');
+
+        ListenerBuilder::fakeWith(InvokableEventHandler::class, $mock);
+
+        $test_event = new ExampleEvent();
+        $manager->dispatch($test_event);
+
+        $this->assertCount(0, InvokableEventHandler::$received_events);
     }
 }
 

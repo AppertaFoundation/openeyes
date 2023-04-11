@@ -125,7 +125,7 @@ class Manager extends CApplicationComponent implements Dispatcher
     protected function makeClassListener($listener_class, $method = null): callable
     {
         return function (...$arguments) use ($listener_class, $method) {
-            $listener = $this->getApp()->$listener_class ?? new $listener_class();
+            $listener = ListenerBuilder::getInstance()->build($listener_class);
 
             return $method ? $listener->$method(...$arguments) : $listener(...$arguments);
         };

@@ -160,6 +160,16 @@ trait HasModelAssertions
         $this->assertEquals($attribute, $defined_relation[2]);
     }
 
+    protected function assertModelDoesNotExist($model)
+    {
+        $this->assertEmpty($model::model()->findByPk($model->getPrimaryKey()));
+    }
+
+    protected function assertModelStillExists($model)
+    {
+        $this->assertNotNull($model::model()->findByPK($model->getPrimaryKey()));
+    }
+
     public function assertModelIs($expected, $model)
     {
         $this->assertNotNull($model, "Model is null for comparison");

@@ -107,22 +107,23 @@ class EventManagerTest extends \OEDbTestCase
     /** @test */
     public function returns_expected_event_subtype_elements()
     {
-        $expected_element_types = ElementType::factory()->useExisting()->count(rand(1, 4))->create();
+        $element_types = ElementType::factory()->useExisting()->count(rand(1, 4))->create();
 
         $mock_event_subtype = $this->createMock(EventSubtype::class);
         $mock_event_subtype->method('getElementTypes')
-            ->willReturn($expected_element_types);
+            ->willReturn($element_types);
 
         $event_manager = EventManager::forEventSubtype($mock_event_subtype);
 
-        $this->assertEquals(
-            array_map(function ($element) {
-                return $element->class_name;
-            }, $expected_element_types),
-            array_map(function ($element) {
-                return get_class($element);
-            }, $event_manager->getElements())
-        );
+        // because some element_types in the sample db are filtered by whether they are enabled or not
+        // we simply test that all returned are in the expected list
+        $valid_classnames = array_map(function ($element_type) {
+            return $element_type->class_name;
+        }, $element_types);
+
+        foreach ($event_manager->getElements() as $element) {
+            $this->assertTrue(in_array(get_class($element), $valid_classnames));
+        }
     }
 
     /** @test  */

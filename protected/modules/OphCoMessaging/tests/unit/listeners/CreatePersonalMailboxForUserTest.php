@@ -15,14 +15,22 @@
 
 namespace OEModule\OphCoMessaging\tests\unit\listeners;
 
-
 use OEModule\OESysEvent\events\UserSavedSystemEvent;
 use OEModule\OphCoMessaging\components\OphCoMessaging_API;
 use OEModule\OphCoMessaging\listeners\CreatePersonalMailboxForUser;
 
+/**
+ * @group sample-data
+ */
 class CreatePersonalMailboxForUserTest extends \OEDbTestCase
 {
     use \WithTransactions;
+
+    public function tearDown(): void
+    {
+        \Yii::app()->setComponent('moduleAPI', null);
+    }
+
 
     /** @test */
     public function uses_api_to_create_personal_mailbox()

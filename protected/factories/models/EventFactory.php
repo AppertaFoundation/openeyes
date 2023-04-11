@@ -180,6 +180,19 @@ class EventFactory extends ModelFactory
     public function modelName()
     {
         // override to allow child factories to always instantiate the correct base model
-        return \Event::class;
+        return Event::class;
+    }
+
+    /**
+     * Override persistInstance to call save with its third parameter, $allow_overriding, set to true.
+     * Setting that parameter to true ensures that the value of last_modified_user_id and/or created_user_id
+     * that is provided is maintained.
+     *
+     * @param mixed $instance
+     * @return bool
+     */
+    protected function persistInstance($instance): bool
+    {
+        return $instance->save(false, null, true);
     }
 }

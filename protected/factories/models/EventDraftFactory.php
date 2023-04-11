@@ -17,11 +17,10 @@ namespace OE\factories\models;
 
 use OE\factories\models\traits\HasEventTypeRelation;
 use OE\factories\ModelFactory;
-
-use \EventDraft;
-use \Episode;
-use \Event;
-use \User;
+use EventDraft;
+use Episode;
+use Event;
+use User;
 
 class EventDraftFactory extends ModelFactory
 {
@@ -45,12 +44,12 @@ class EventDraftFactory extends ModelFactory
 
     public function configure()
     {
-        return $this->afterCreating(function(EventDraft $draft) {
+        return $this->afterCreating(function (EventDraft $draft) {
             $draft->originating_url = $draft->event_id
                                     ? '/' . $draft->eventType->class_name . '/Default/update?id=' . $draft->event->id
                                     : '/' . $draft->eventType->class_name . '/Default/create?patient_id=' . $draft->episode->patient->id;
 
-            $draft->save();
+            $this->persistInstance($draft);
         });
     }
 
@@ -93,15 +92,25 @@ class EventDraftFactory extends ModelFactory
     {
         $event = $event ?? Event::factory();
 
-        return $this->state([
-            'event_id' => $event,
-            'event_type_id' => function($attributes) {
-                return Event::model()->findByPk($attributes['event_id'])->eventType;
-            },
-            'episode_id' => function($attributes) {
-                return Event::model()->findByPk($attributes['event_id'])->episode;
+        return $this->state(function ($attributes) use ($event) {
+            if ($event) {
+                return [
+                    'event_id' => $event,
+                    'event_type_id' => function ($attributes) {
+                        return Event::model()->findByPk($attributes['event_id'])->eventType;
+                    },
+                    'episode_id' => function ($attributes) {
+                        return Event::model()->findByPk($attributes['event_id'])->episode;
+                    }
+                ];
             }
-        ]);
+            // we want an event based on draft properties
+            return [
+                'event_id' => function ($attributes) {
+                    return Event::factory()->forEpisode($attributes['episode_id'])->forEventType($attributes['event_type_id']);
+                }
+            ];
+        });
     }
 
     /**
@@ -111,9 +120,21 @@ class EventDraftFactory extends ModelFactory
     public function forUser($user = null): self
     {
         $user = $user ?? new UserFactory();
-
         return $this->state([
             'last_modified_user_id' => $user
         ]);
+    }
+
+    /**
+     * Override persistInstance to call save with its third parameter, $allow_overriding, set to true.
+     * Setting that parameter to true ensures that the value of last_modified_user_id and/or created_user_id
+     * that is provided is maintained.
+     *
+     * @param mixed $instance
+     * @return bool
+     */
+    protected function persistInstance($instance): bool
+    {
+        return $instance->save(false, null, true);
     }
 }

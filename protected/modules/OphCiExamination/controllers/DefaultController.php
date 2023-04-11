@@ -19,6 +19,7 @@
 
 namespace OEModule\OphCiExamination\controllers;
 
+use EventDraft;
 use Eye;
 use OELog;
 use OEModule\OphCiExamination\components;

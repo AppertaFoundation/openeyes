@@ -44,22 +44,22 @@ class ApplicationResponseWrapper
         return new self(null, null, $exception);
     }
 
-    public function assertRedirect($url = null, bool $showResponseOnFail = false)
+    public function assertRedirect($url = null, string $message = 'Response is not a redirect', bool $showResponseOnFail = false)
     {
 
         PHPUnit::assertTrue(
             $this->isRedirect(),
-            "Response is not a redirect" . $showResponseOnFail ? ":\n" . $this->response : ""
+            $message . ($showResponseOnFail ? ":\n" . $this->getResponseString() : "")
         );
 
         if (!is_null($url)) {
-            PHPUnit::assertEquals($url, $this->redirect->url, "Received redirect {$this->redirect->url} does not equal $url");
+            PHPUnit::assertEquals($url, $this->redirect->url, $message  . ":\nReceived redirect {$this->redirect->url} does not equal $url");
         }
     }
 
-    public function assertRedirectContains(string $partial, ?string $message)
+    public function assertRedirectContains(string $partial, ?string $message, bool $showResponseOnFail = false)
     {
-        $this->assertRedirect();
+        $this->assertRedirect(null, $message, $showResponseOnFail);
 
         PHPUnit::assertStringContainsString($partial, $this->redirect->url, $message);
     }
@@ -80,5 +80,23 @@ class ApplicationResponseWrapper
     protected function isRedirect()
     {
         return !is_null($this->redirect);
+    }
+
+    protected function isException()
+    {
+        return !is_null($this->exception);
+    }
+
+    protected function getResponseString()
+    {
+        if ($this->isException()) {
+            return $this->exception->getMessage();
+        }
+
+        if ($this->isRedirect()) {
+            return $this->redirect->url;
+        }
+
+        return $this->response;
     }
 }
