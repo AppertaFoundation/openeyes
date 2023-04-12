@@ -7,7 +7,7 @@ class m221014_141148_limit_common_systemic_disorder_by_institution extends CDbMi
         $disorder_table_name = 'common_systemic_disorder';
         $disorder_group_table_name = 'common_systemic_disorder_group';
 
-        $institutions = $this->dbConnection->createCommand('SELECT i.id FROM institution i JOIN institution_authentication ia ON ia.institution_id = i.id')->queryColumn();
+        $institutions = $this->dbConnection->createCommand('SELECT DISTINCT i.id FROM institution i JOIN institution_authentication ia ON ia.institution_id = i.id WHERE ia.active = 1')->queryColumn();
 
         if (count($institutions) === 0) {
             // No institutions at all, simply return here to prevent an error during the migration process
