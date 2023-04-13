@@ -45,7 +45,7 @@
     );
 
     $can_change_activation = $team->isNewRecord
-                           || $this->checkAccess('OprnSetTeamActivation', $team->id);
+                           || $this->checkAccess('OprnSetTeamActivation', $team->id) || $this->checkAccess('Super Team Manager');
     ?>
 <div class="row divider">
     <div class="cols-full">
