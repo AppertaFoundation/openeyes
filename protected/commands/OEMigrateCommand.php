@@ -21,6 +21,8 @@ class OEMigrateCommand extends MigrateCommand
 
     public $all = false;
 
+    protected ?string $initialMigrationPath = null;
+
     protected function instantiateMigration($class)
     {
         $migration = parent::instantiateMigration($class);
@@ -52,9 +54,14 @@ class OEMigrateCommand extends MigrateCommand
 
     protected function migrateUp($migration)
     {
-        if (property_exists($migration, 'path')) {
-            $this->migrationPath = $migration->path;
+        // if it's not an object, then the default behaviour of migration should continue
+        // where the $migration value is a string that will be resolved through the original
+        // migration path
+        if (is_object($migration) && property_exists($migration, 'path')) {
+            $this->swapMigrationPath($migration->path);
             return parent::migrateUp($migration->migration);
+        } else {
+            $this->restoreInitialMigrationPath();
         }
 
         return parent::migrateUp($migration);
@@ -85,6 +92,13 @@ class OEMigrateCommand extends MigrateCommand
         );
     }
 
+    /**
+     * Migrations are wrapped in an anonymous class to allow us to switch the migration path for each
+     * migration that we discover and run.
+     *
+     * @param string $path
+     * @return array
+     */
     protected function getNewMigrationsForPath(string $path): array
     {
         // we leverage parent behaviour which relies on the migrationPath property
@@ -110,6 +124,22 @@ class OEMigrateCommand extends MigrateCommand
             },
             parent::getNewMigrations()
         );
+    }
+
+    protected function swapMigrationPath(string $new_migration_path): void
+    {
+        if ($this->initialMigrationPath === null) {
+            $this->initialMigrationPath = $this->migrationPath;
+        }
+        $this->migrationPath = $new_migration_path;
+    }
+
+    protected function restoreInitialMigrationPath(): void
+    {
+        if ($this->initialMigrationPath === null) {
+            $this->initialMigrationPath = $this->migrationPath;
+        }
+        $this->migrationPath = $this->initialMigrationPath;
     }
 
     public function getHelp()
