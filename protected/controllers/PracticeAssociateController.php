@@ -159,10 +159,6 @@ class PracticeAssociateController extends BaseController
                     $gp->nat_id = 0;
                 }
 
-                if ($gp->obj_prof === null) {
-                    $gp->obj_prof = 0;
-                }
-
                 if ($gp->save()) {
                     $transaction->commit();
                     Audit::add('Gp', $action . '-gp', "Practitioner manually [id: $gp->id] {$action}ed.");

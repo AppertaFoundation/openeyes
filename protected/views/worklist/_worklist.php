@@ -165,7 +165,7 @@ $is_ae_worklist = isset($worklist->id) && Yii::app()->db->cache(1000)->createCom
                     ); ?>
                 </td>
                 <td>
-                    <label class="patient-checkbox">
+                    <label class="patient-checkbox" data-test="patient-checkbox">
                         <input class="js-check-patient" value="<?= $wl_patient->id ?>" type="checkbox"/>
                         <div class="checkbox-btn"></div>
                     </label>

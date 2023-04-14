@@ -109,7 +109,12 @@ class PrescriptionCommonController extends DefaultController
     public function actionItemForm($key, $patient_id, $drug_id, $label = null)
     {
         $this->initForPatient($patient_id);
-        $this->renderPrescriptionItem($key, $drug_id, $label);
+        $drug = MedicationSetItem::model()->findByAttributes(
+            ['medication_id' => $drug_id],
+            'default_dose is not null || default_frequency_id is not null || default_duration_id is not null');
+        $item = $drug ?? $drug_id;
+
+        $this->renderPrescriptionItem($key, $item, $label);
     }
 
     /**

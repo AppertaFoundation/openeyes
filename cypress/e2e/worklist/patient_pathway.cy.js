@@ -10,7 +10,7 @@ describe('Managing a patient pathway in the worklist screen', () => {
     beforeEach(() => {
         cy.login()
             .then(() => {
-                cy.visit('/worklist/view');
+                cy.visitWorklist();
 
                 // Close the navbar if it is open
                 cy.getBySel('nav-worklist-btn').then(($ele) => {
@@ -71,7 +71,7 @@ describe('Managing a patient pathway in the worklist screen', () => {
         cy.getWorklist(worklistPatient.worklist_id).within(() => {
             cy.getBySel('wait-duration').should('not.have.class', 'stopped')
         });
-        
+
         // Click on Checkout
         cy.getBySel(`discharge-step-${worklistPatient.worklist_id}`).click({force: true});
         cy.getBySel('step-checkout').click({force: true});
@@ -84,8 +84,8 @@ describe('Managing a patient pathway in the worklist screen', () => {
             // Add new General Task step after check out
             cy.getBySel('add-step').click();
         });
-        
-        cy.getBySel('general-task').click();
+
+        cy.getBySel('path-step-general-task').click();
         cy.getBySel('path-step-task-name').type('New Task');
         cy.getBySel('path-step-add-pathway').click();
 

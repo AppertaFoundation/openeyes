@@ -17,7 +17,7 @@
  */
 ?>
 <div class="element-data">
-  <div class="data-value">
+  <div class="data-value" data-test="view-history-comments">
     <span class="large-text">
         <?= Yii::app()->format->Ntext($element->description) ?>
     </span>

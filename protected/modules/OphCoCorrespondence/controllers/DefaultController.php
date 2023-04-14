@@ -957,8 +957,7 @@ class DefaultController extends BaseEventTypeController
         $site = $to_location->site;
 
         $only_service_firms = $check_service_firms_filter_setting && SettingMetadata::checkSetting('filter_service_firms_internal_referral', 'on');
-        $firms = InternalReferralSiteFirmMapping::findInternalReferralFirms($to_location_id, $subspecialty_id, $only_service_firms);
-
+        $firms = InternalReferralSiteFirmMapping::findInternalReferralFirms($site->id, $subspecialty_id, $only_service_firms);
         $attributes = $site->attributes;
         $attributes['correspondence_name'] = $site->getCorrespondenceName();
         $this->renderJSON(['site' => $attributes, 'firms' => $firms]);

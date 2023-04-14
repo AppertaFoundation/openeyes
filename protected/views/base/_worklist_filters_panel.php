@@ -17,7 +17,7 @@
  */
 
 ?>
-<div class="oe-worklists-panel" id="js-worklists-filter-panel">
+<div class="oe-worklists-panel" id="js-worklists-filter-panel" data-test="worklists-filter-panel">
     <table class="site-context">
         <tbody>
         <tr>
@@ -156,7 +156,7 @@
             </div>
 
             <div class="button-stack">
-                <button class="cols-full green hint js-apply-filter-btn">Show patient pathways</button>
+                <button class="cols-full green hint js-apply-filter-btn" data-test="show-patient-pathways">Show patient pathways</button>
             </div>
         </div>
     </div>

@@ -1,4 +1,5 @@
 <?php
+use OE\factories\models\traits\HasFactory;
 /**
  * OpenEyes.
  *
@@ -27,6 +28,7 @@
  */
 class InternalReferralSiteFirmMapping extends BaseActiveRecord
 {
+    use HasFactory;
     /**
      * Returns the static model of the specified AR class.
      *

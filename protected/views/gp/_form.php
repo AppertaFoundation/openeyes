@@ -7,12 +7,12 @@
     <?php
     \Yii::app()->assetManager->RegisterScriptFile('js/Gp.js');
     $form = $this->beginWidget('CActiveForm', array(
-        'id' => 'gp-form',
-        // Please note: When you enable ajax validation, make sure the corresponding
-        // controller action is handling ajax validation correctly.
-        // There is a call to performAjaxValidation() commented in generated controller code.
-        // See class documentation of CActiveForm for details on this.
-        'enableAjaxValidation' => true,
+    'id' => 'gp-form',
+    // Please note: When you enable ajax validation, make sure the corresponding
+    // controller action is handling ajax validation correctly.
+    // There is a call to performAjaxValidation() commented in generated controller code.
+    // See class documentation of CActiveForm for details on this.
+    'enableAjaxValidation' => true,
     )); ?>
     <?php if ($gp->hasErrors()) { ?>
     <div class="error alert-box"><?php echo $form->error($gp, 'contact'); ?></div>
@@ -57,6 +57,15 @@
         </tr>
         <tr>
             <td>
+                <?php echo $form->labelEx($gp, 'nat_id'); ?>
+            </td>
+            <td>
+            <?php echo $form->textField($gp, 'nat_id', array('size' => 30, 'maxlength' => 100, 'autocomplete' => 'off')); ?>
+                <?php echo $form->error($gp, 'nat_id'); ?>
+            </td>
+        </tr>
+        <tr>
+            <td>
                 <label><?php echo $model->getAttributeLabel('Role'); ?> <span class="required">*</span></label>
             </td>
             <td>
@@ -94,13 +103,13 @@
             <td>Active</td>
             <td>
                 <?=
-                    \CHtml::activeRadioButtonList(
-                        $gp,
-                        'is_active',
-                        [1 => 'Yes', 0 => 'No'],
-                        ['separator' => ' ']
-                    );
-?>
+                                                                                                                    \CHtml::activeRadioButtonList(
+                                                                                                                        $gp,
+                                                                                                                        'is_active',
+                                                                                                                        [1 => 'Yes', 0 => 'No'],
+                                                                                                                        ['separator' => ' ']
+                                                                                                                    );
+                                                                                                                    ?>
             </td>
         </tr>
         <tr>

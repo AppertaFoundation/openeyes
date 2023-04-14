@@ -53,6 +53,7 @@ $to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
             <tr>
                 <th>Name</th>
                 <th>Telephone</th>
+                <th>Code</th>
                 <th>Role</th>
                 <th>Active</th>
             </tr>
@@ -62,6 +63,7 @@ $to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
                 <tr id="r<?php echo $gp->id; ?>" class="clickable">
                     <td><?php echo CHtml::encode($gp->getCorrespondenceName()); ?></td>
                     <td><?php echo CHtml::encode($gp->contact->primary_phone); ?></td>
+                    <td><?php echo CHtml::encode($gp->nat_id ? $gp->nat_id : ''); ?></td>
                     <td><?php echo CHtml::encode(isset($gp->contact->label) ? $gp->contact->label->name : '') ?></td>
                     <td><i id = 'activeStatus' class="oe-i <?= ($gp->getActiveStatus($gp->id) ? 'tick' : 'remove');?> small"></i></td>
                 </tr>

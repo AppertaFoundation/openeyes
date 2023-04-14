@@ -23,12 +23,12 @@ $this->pageTitle = 'Update ' . \SettingMetadata::model()->getSetting('general_pr
                 <?php
                 \Yii::app()->assetManager->RegisterScriptFile('js/Gp.js');
                 $form = $this->beginWidget('CActiveForm', array(
-                    'id' => 'gp-form',
-                    // Please note: When you enable ajax validation, make sure the corresponding
-                    // controller action is handling ajax validation correctly.
-                    // There is a call to performAjaxValidation() commented in generated controller code.
-                    // See class documentation of CActiveForm for details on this.
-                    'enableAjaxValidation' => true,
+                'id' => 'gp-form',
+    // Please note: When you enable ajax validation, make sure the corresponding
+    // controller action is handling ajax validation correctly.
+    // There is a call to performAjaxValidation() commented in generated controller code.
+    // See class documentation of CActiveForm for details on this.
+                'enableAjaxValidation' => true,
                 )); ?>
                 <?php if ($gp->hasErrors()) { ?>
                 <div class="error alert-box"><?php echo $form->error($gp, 'contact'); ?></div>
@@ -69,6 +69,15 @@ $this->pageTitle = 'Update ' . \SettingMetadata::model()->getSetting('general_pr
                                 <td>
                                     <?php echo $form->telField($model, 'primary_phone', array('size' => 15, 'maxlength' => 20, 'autocomplete' => 'off')); ?>
                                     <?php echo $form->error($model, 'primary_phone'); ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <?php echo $form->labelEx($gp, 'nat_id'); ?>
+                                </td>
+                                <td>
+                                    <?php echo $form->textField($gp, 'nat_id', array('size' => 30, 'maxlength' => 100, 'autocomplete' => 'off')); ?>
+                                    <?php echo $form->error($gp, 'nat_id'); ?>
                                 </td>
                             </tr>
                             <tr>

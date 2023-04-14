@@ -65,7 +65,7 @@ class ProcessHscicDataCommand extends CConsoleCommand
     private $pcu;
     private $countryId;
     private $cbtId;
-    const SCENARIO = 'hscic_import';
+    public const SCENARIO = 'hscic_import';
 
     /**
      * Base URL for file retrieval (pre-pended to URLs in the file config below
@@ -190,7 +190,7 @@ class ProcessHscicDataCommand extends CConsoleCommand
         $curlproxy = Yii::app()->params['curl_proxy'];
         if (!empty($curlproxy)) {
             $urlParts = parse_url($curlproxy);
-            $proxyURL = $urlParts['scheme'] . "://" . $urlParts['host'] . (!empty($urlParts['path']) ? "/" . $urlParts['path'] : "" );
+            $proxyURL = $urlParts['scheme'] . "://" . $urlParts['host'] . (!empty($urlParts['path']) ? "/" . $urlParts['path'] : "");
             $proxyPort = $urlParts['port'] + 0;
             curl_setopt($curl, CURLOPT_PROXY, $proxyURL);
             curl_setopt($curl, CURLOPT_PROXYPORT, $proxyPort);
@@ -715,7 +715,6 @@ EOH;
         if (!($gp = Gp::model()->findbyAttributes(array('nat_id' => $data['code'])))) {
             $gp = new Gp();
             $gp->nat_id = $data['code'];
-            $gp->obj_prof = $data['code'];
         }
 
         $is_new_record = $gp->isNewRecord;
@@ -1156,7 +1155,6 @@ EOH;
 
             if ($dbTable == 'gp') {
                 $insertData = array(
-                    'obj_prof' => $data['code'],
                     'nat_id' => $data['code'],
                 );
             } else {

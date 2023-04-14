@@ -74,7 +74,8 @@ $pathway = $visit->pathway;
                   data-pathstep-type-id=""
                   data-visit-id="<?= $pathway->worklist_patient_id ?>"
                   data-pathway-id="<?= $pathway->id ?>"
-                  data-long-name="<?= $step->long_name ?>">
+                  data-long-name="<?= $step->long_name ?>"
+                  data-test="started-path-step-<?=str_replace(' ', '-', strtolower($step->long_name)) ?>">
                 <span class="step<?= $step->type->large_icon ? " {$step->type->large_icon}" : '' ?>">
                     <?= !$step->type->large_icon ? $step->short_name : '' ?>
                 </span>
