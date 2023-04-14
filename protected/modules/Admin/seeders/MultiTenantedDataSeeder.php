@@ -23,7 +23,7 @@ use CommonSystemicDisorderGroup;
 use ElementType;
 use OE\factories\models\EventFactory;
 use OE\seeders\BaseSeeder;
-use OEModule\CypressHelper\resources\SeededEventResource;
+use OE\seeders\resources\SeededEventResource;
 use OEModule\OphCiExamination\models\Element_OphCiExamination_History;
 use OEModule\OphCiExamination\models\OphCiExamination_Attribute;
 use OEModule\OphCiExamination\models\OphCiExamination_AttributeElement;

@@ -250,27 +250,6 @@ class DiagnosesUpdatingPatientDataBehaviourTest extends \OEDbTestCase
         );
     }
 
-    /** @test */
-    public function model_is_dirty_after_changes() {
-        list($oph) = $this->createExaminationWithElements(
-            [Element_OphCiExamination_Diagnoses::class],
-            null,
-            '-8 weeks',
-            '-6 weeks'
-        );
-        $oph->no_ophthalmic_diagnoses_date = date('Y-m-d H:i:s');
-        $this->assertTrue($oph->isModelDirty(), "Element_OphCiExamination_Diagnoses model is not dirty after setting no ophthalmic diagnoses date");
-
-        // assert the associated diagnosis if there is at least one record
-        if (count($oph->diagnoses) > 0) {
-            $oph->diagnoses[0]->principal = !$oph->diagnoses[0]->principal;
-
-            $this->assertTrue($oph->diagnoses[0]->isModelDirty(), "OphCiExamination_Diagnosis model is not dirty after changing the principal state");
-
-            $this->assertTrue($oph->isModelDirty(), "Element_OphCiExamination_Diagnoses model is not dirty after changing the first diagnosis principal state");
-        }
-    }
-
     protected function createExaminationWithElements(
         array $element_classes,
         ?\Episode $episode = null,

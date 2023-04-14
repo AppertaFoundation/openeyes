@@ -19,16 +19,18 @@ namespace OE\factories\models;
 use OE\factories\ModelFactory;
 use OE\factories\models\traits\LooksUpExistingModels;
 use CommonOphthalmicDisorderGroup;
+use OE\factories\models\traits\MapsDisplayOrderForFactory;
 use ReferenceData;
 
 class CommonOphthalmicDisorderGroupFactory extends ModelFactory
 {
     use LooksUpExistingModels;
+    use MapsDisplayOrderForFactory;
 
     public function definition(): array
     {
         return [
-            'name' => $this->faker->words(4, true)
+            'name' => $this->faker->unique()->words(4, true)
         ];
     }
 

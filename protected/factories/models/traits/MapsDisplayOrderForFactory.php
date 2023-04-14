@@ -25,7 +25,10 @@ trait MapsDisplayOrderForFactory
     {
         return array_map(
             function ($instance) {
-                if ($instance->{$this->getDisplayOrderAttribute()} === null) {
+                // Note: setting display order to default is prevented by this
+                // for edge cases where this is desirable, reset display order attributes
+                // with an afterCreating state
+                if (in_array($instance->{$this->getDisplayOrderAttribute()}, [0, null])) {
                     $instance->{$this->getDisplayOrderAttribute()} = $this->getNextDisplayOrderValue();
                 }
                 return $instance;

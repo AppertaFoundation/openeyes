@@ -29,6 +29,9 @@ use OEModule\OphCiExamination\models\OphCiExamination_Diagnosis;
  */
 class Element_OphCiExamination_DiagnosesWithSampleDataTest extends ModelTestCase
 {
+    use \WithTransactions;
+    use \WithFaker;
+
     protected $element_cls = Element_OphCiExamination_Diagnoses::class;
 
     /** @test */
@@ -51,6 +54,17 @@ class Element_OphCiExamination_DiagnosesWithSampleDataTest extends ModelTestCase
     {
         $initial = Element_OphCiExamination_Diagnoses::factory()->withLeftDiagnoses()->create();
         $initial->diagnoses = [];
+
+        $this->assertTrue($initial->isModelDirty());
+    }
+
+    /** @test */
+    public function model_is_dirty_when_no_diagnoses_date_is_changed()
+    {
+        $initial = Element_OphCiExamination_Diagnoses::factory()->noOphthalmicDiagnoses()->create();
+        $this->assertFalse($initial->isModelDirty());
+
+        $initial->no_ophthalmic_diagnoses_date = $this->faker->dateTimeBetween($initial->no_ophthalmic_diagnoses_date);
 
         $this->assertTrue($initial->isModelDirty());
     }

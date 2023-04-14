@@ -17,15 +17,13 @@ $newblue_path = $assetManager->getPublishedUrl(Yii::getPathOfAlias('application.
 // 0.5 is our current default value, which supports older devices of 600px width (e.g., cheap samsung galaxy tablets)
 // For other devices and widths, see: https://www.mydevice.io/#compare-devices.
 // To calculate scaling, divide the CSS width by 1200 (which is our minimum supported width for OpenEyes)
-$ua = $_SERVER['HTTP_USER_AGENT'];
+$ua = $_SERVER['HTTP_USER_AGENT'] ?? '';
 $initial_scale = '0.5';
 
 if (str_contains($ua, 'iPad')) {
     $initial_scale = '0.675';
 } elseif (str_contains($ua, 'iPhone')) {
     $initial_scale = '0.325';
-} else {
-    $initial_scale = "0.5";
 }
 
 ?>

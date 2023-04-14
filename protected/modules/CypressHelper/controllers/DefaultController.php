@@ -13,9 +13,10 @@ use OE\factories\ModelFactory;
 use OE\seeders\SeederBuilder;
 use Patient;
 use User;
-use CActiveRecord;
+use OE\seeders\resources\GenericModelResource;
+use OE\seeders\resources\SeededEventResource;
+use OE\seeders\resources\SeededPatientResource;
 use SettingInstallation;
-use SettingMetadata;
 
 class DefaultController extends \CController
 {
@@ -102,12 +103,12 @@ class DefaultController extends \CController
             ? [
                 array_map(
                     function ($event) {
-                        return $this->eventJson($event);
+                        return SeededEventResource::from($event)->inFull()->toArray();
                     },
                     $instances
                 )
             ]
-            : $this->eventJson($instances[0])
+            : SeededEventResource::from($instances[0])->inFull()->toArray()
         );
     }
 
@@ -123,8 +124,6 @@ class DefaultController extends \CController
 
         $patient = $patient->create($attributes);
 
-        // TODO: create an appropriate DTO pattern for returning structured
-        // data of a patient that can be used in testing.
         $this->sendJsonResponse($this->patientJson($patient));
     }
 
@@ -160,13 +159,8 @@ class DefaultController extends \CController
             ->create();
 
         $this->sendJsonResponse([
-            'model' => array_merge(
-                [
-                    'id' => $model_instance->id
-                ],
-                $model_instance->getAttributes()
-            )
-            ]);
+            'model' => GenericModelResource::from($model_instance)->toArray()
+        ]);
     }
 
     public function actionCreateModels()
@@ -184,7 +178,9 @@ class DefaultController extends \CController
 
         $instances = $model_factory->create($_POST['attributes'] ?? []);
 
-        $this->sendJsonResponse(['models' => $this->modelsToArrays($instances)]);
+        $this->sendJsonResponse([
+            'models' => $this->modelsToArrays($instances)
+        ]);
     }
 
     public function actionSetSystemSettingValue()
@@ -300,78 +296,17 @@ class DefaultController extends \CController
     protected function modelsToArrays(array $instances, $exclude = [])
     {
         return array_map(function ($instance) use ($exclude) {
-            return $this->modelToArray($instance, $exclude);
+            return GenericModelResource::from($instance)->exclude($exclude)->toArray();
         }, $instances);
-    }
-
-    protected function modelToArray($instance, $exclude = [])
-    {
-        return array_merge(
-            array_filter(
-                $instance->getAttributes(),
-                function ($key, $value) use ($exclude) {
-                    return !in_array($key, $exclude);
-                },
-                ARRAY_FILTER_USE_BOTH
-            ),
-            $this->getRelationsForModel($instance, $exclude)
-        );
-    }
-
-    protected function getRelationsForModel(CActiveRecord $instance, $exclude = [])
-    {
-        $relations = [];
-        foreach ($instance->relations() as $relation => $definition) {
-            if (in_array($relation, array_merge(['user', 'usermodified'], $exclude))) {
-                continue;
-            }
-            if ($relation === 'event') {
-                $relations[$relation] = $this->eventJson($instance->$relation, false);
-                continue;
-            }
-            if ($definition[0] === CActiveRecord::BELONGS_TO) {
-                $relations[$relation] = $instance->$relation ? $instance->$relation->getAttributes() : null;
-            }
-            if ($definition[0] === CActiveRecord::HAS_MANY) {
-                $relations[$relation] = $this->modelsToArrays($instance->$relation, $exclude);
-            }
-        }
-        return $relations;
     }
 
     protected function patientJson(Patient $patient): array
     {
-        return [
-            'id' => $patient->id,
-            'title' => $patient->title,
-            'surname' => $patient->last_name,
-            'first_name' => $patient->first_name,
-            'gender' => $patient->getGenderString()
-        ];
+        return SeededPatientResource::from($patient)->toArray();
     }
 
     protected function eventJson(Event $event, bool $with_elements = true): array
     {
-        $data = [
-            'id' => $event->id,
-            'urls' => [
-                'view' => $event->getEventViewPath()
-            ],
-            'patient' => $this->patientJson($event->episode->patient)
-        ];
-
-        if ($with_elements) {
-            $data['elements'] = array_map(
-                function ($element) {
-                    return [
-                        'element_type' => $element->getElementTypeName(),
-                        'attributes' => array_merge($element->getAttributes(), $this->getRelationsForModel($element, ['event', 'element']))
-                    ];
-                },
-                $event->getElements()
-            );
-        }
-
-        return $data;
+        return SeededEventResource::from($event)->inFull($with_elements)->toArray();
     }
 }

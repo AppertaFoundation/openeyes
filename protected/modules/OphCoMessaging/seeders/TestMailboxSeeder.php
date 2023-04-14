@@ -3,7 +3,7 @@ namespace OEModule\OphCoMessaging\seeders;
 
 use OEModule\OphCoMessaging\models\Mailbox;
 use OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message;
-use OEModule\CypressHelper\resources\SeededEventResource;
+use OE\seeders\resources\SeededEventResource;
 use OE\seeders\BaseSeeder;
 
 /**

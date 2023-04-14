@@ -21,6 +21,8 @@ use Subspecialty;
 
 class SubspecialtyFactory extends ModelFactory
 {
+    protected $disable_service_assignment = false;
+
     public function definition(): array
     {
         return [
@@ -31,12 +33,25 @@ class SubspecialtyFactory extends ModelFactory
         ];
     }
 
-    public function withServiceSubspecialtyAssignment()
+    public function configure()
     {
-        return $this->afterCreating(function (Subspecialty $subspecialty) {
+        $this->afterCreating(function (Subspecialty $subspecialty) {
+            if ($this->disable_service_assignment) {
+                return;
+            }
+
             ServiceSubspecialtyAssignment::factory()->create([
                 'subspecialty_id' => $subspecialty->id
             ]);
         });
+
+        return $this;
+    }
+
+    public function withoutServiceSubspecialtyAssignment(): self
+    {
+        $this->disable_service_assignment = true;
+
+        return $this;
     }
 }

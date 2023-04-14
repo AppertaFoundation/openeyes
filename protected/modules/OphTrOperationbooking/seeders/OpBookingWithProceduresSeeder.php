@@ -17,7 +17,7 @@ namespace OEModule\OphTrOperationbooking\seeders;
 
 use OE\factories\models\EventFactory;
 use OE\seeders\BaseSeeder;
-use OEModule\CypressHelper\resources\SeededEventResource;
+use OE\seeders\resources\SeededEventResource;
 
 class OpBookingWithProceduresSeeder extends BaseSeeder
 {

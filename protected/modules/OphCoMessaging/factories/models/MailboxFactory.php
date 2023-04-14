@@ -28,7 +28,7 @@ class MailboxFactory extends ModelFactory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->word(),
+            'name' => $this->faker->unique()->word(),
             'is_personal' => false,
         ];
     }
@@ -81,39 +81,42 @@ class MailboxFactory extends ModelFactory
      * This is necessary to avoid flakiness in tests that ensure that mailboxes are visible only to certain users,
      * as duplicate names result in a false negative.
      *
-     * @param string $prefix
+     * @param string $postfix
      * @return MailboxFactory
      */
     public function withUniqueMailboxName($prefix = '')
     {
-        return $this->state([
-            'name' => self::getUniqueMailboxName($this->faker, $prefix)
-        ]);
+        return $this->withDBUniqueAttribute('name', ['prefix' => $prefix]);
     }
 
     /**
      * Generates a mailbox name that doesn't already exist in the database.
      *
      * @param Generator $faker
-     * @param string $prefix
+     * @param string $postfix
      * @return string
      */
-    public static function getUniqueMailboxName($faker, $prefix = '', $is_personal = false)
+    public static function getUniqueMailboxName($prefix = '', $is_personal = false)
     {
-        $max_length = $is_personal ? Mailbox::MAX_NAME_PERSONAL : Mailbox::MAX_NAME_NOT_PERSONAL;
-        $existing_names = array_map(
-            function ($mailbox) {
-                return strtolower($mailbox->name);
-            },
-            Mailbox::model()->findAll(['select' => 'name'])
-        );
+        return self::generateDBUniqueAttribute('name', '', ['prefix' => $prefix, 'is_personal' => $is_personal]);
+    }
 
-        $unique_name = substr($prefix . $faker->unique()->words(2, true), 0, $max_length);
-
-        while (in_array(strtolower($unique_name), $existing_names)) {
-            $unique_name = substr($prefix . $faker->unique()->word(), 0, $max_length);
+    /**
+     * Provide specific generator for the mailbox name generator
+     *
+     * @param string $attribute
+     * @param array $params
+     */
+    public function uniqueAttributeGenerator(string $attribute, array $params = [])
+    {
+        if ($attribute !== 'name') {
+            return parent::uniqueAttributeGenerator($attribute, $params);
         }
 
-        return $unique_name;
+        return function () use ($params) {
+            $max_length = isset($params['is_personal']) && $params['is_personal'] ? Mailbox::MAX_NAME_PERSONAL : Mailbox::MAX_NAME_NOT_PERSONAL;
+
+            return substr(($params['prefix'] ?? '') . $this->faker->unique()->words(2, true) . ($params['postfix'] ?? ''), 0, $max_length);
+        };
     }
 }

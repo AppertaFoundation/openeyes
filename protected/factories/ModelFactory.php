@@ -24,12 +24,13 @@ use OE\factories\exceptions\CannotSaveModelException;
 use OE\factories\exceptions\FactoryNotFoundException;
 use OE\factories\exceptions\CannotMakeModelException;
 use OE\factories\traits\MapsModelsToFormData;
-use OELog;
+use OE\factories\traits\SupportsDBUniqueAttributes;
 use Yii;
 
 abstract class ModelFactory
 {
     use MapsModelsToFormData;
+    use SupportsDBUniqueAttributes;
 
     public static $defaultModelNamespace = 'OE\\factories\\models\\';
     protected CApplication $app;
@@ -94,6 +95,17 @@ abstract class ModelFactory
             return "OEModule\\{$matches[1]}\\factories\\models\\{$matches[2]}Factory";
         }
         return $modelName . "Factory";
+    }
+
+    public static function resolveModelName()
+    {
+        // strip Factory from the class name
+        $baseClass = substr(get_called_class(), 0, -7);
+        if (str_contains($baseClass, 'OEModule')) {
+            return str_replace('factories\\', '', $baseClass);
+        } else {
+            return str_replace(static::$defaultModelNamespace, '', $baseClass);
+        }
     }
 
     /**
@@ -172,13 +184,7 @@ abstract class ModelFactory
 
     public function modelName()
     {
-        // strip Factory from the class name
-        $baseClass = substr(get_class($this), 0, -7);
-        if (str_contains($baseClass, 'OEModule')) {
-            return str_replace('factories\\', '', $baseClass);
-        } else {
-            return str_replace(static::$defaultModelNamespace, '', $baseClass);
-        }
+        return self::resolveModelName();
     }
 
     /**
@@ -306,7 +312,11 @@ abstract class ModelFactory
         // definition values
         foreach ($definition as $attribute => $value) {
             if (is_callable($value)) {
-                $value = $value($definition);
+                try {
+                    $value = $value($definition);
+                } catch (\Exception $e) {
+                    throw new CannotMakeModelException("Could not resolve $attribute for " . $this->modelName() . " with callback: " . $e->getMessage());
+                }
             }
             // expand again in case any callback returns something
             // that needs to be expanded

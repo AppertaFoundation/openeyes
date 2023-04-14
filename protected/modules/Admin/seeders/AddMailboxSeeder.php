@@ -34,7 +34,7 @@ class AddMailboxSeeder extends BaseSeeder
         }
 
         return [
-            'mailboxNameToCreate' => MailboxFactory::getUniqueMailboxName($this->getApp()->dataGenerator->faker(), 'Test Mailbox '),
+            'mailboxNameToCreate' => MailboxFactory::getUniqueMailboxName('Test Mailbox'),
             'userNames' => $user_names,
             'teamNames' => $team_names
         ];
