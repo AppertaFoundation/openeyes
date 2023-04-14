@@ -1,5 +1,5 @@
 <?php
-
+use OE\factories\models\traits\HasFactory;
 /**
  * This is the model class for table "ophcocorrespondence_internal_referral_to_location".
  *
@@ -18,6 +18,7 @@
  */
 class OphCoCorrespondence_InternalReferral_ToLocation extends BaseActiveRecordVersioned
 {
+    use HasFactory;
     /**
      * @return string the associated database table name
      */
