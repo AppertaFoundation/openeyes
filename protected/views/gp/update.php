@@ -23,12 +23,12 @@ $this->pageTitle = 'Update Practitioner';
                 <?php
                 \Yii::app()->assetManager->RegisterScriptFile('js/Gp.js');
                 $form = $this->beginWidget('CActiveForm', array(
-                    'id' => 'gp-form',
-                    // Please note: When you enable ajax validation, make sure the corresponding
-                    // controller action is handling ajax validation correctly.
-                    // There is a call to performAjaxValidation() commented in generated controller code.
-                    // See class documentation of CActiveForm for details on this.
-                    'enableAjaxValidation' => true,
+                'id' => 'gp-form',
+    // Please note: When you enable ajax validation, make sure the corresponding
+    // controller action is handling ajax validation correctly.
+    // There is a call to performAjaxValidation() commented in generated controller code.
+    // See class documentation of CActiveForm for details on this.
+                'enableAjaxValidation' => true,
                 )); ?>
                 <?php if ($gp->hasErrors()) { ?>
                 <div class="error alert-box"><?php echo $form->error($gp, 'contact'); ?></div>
@@ -73,6 +73,15 @@ $this->pageTitle = 'Update Practitioner';
                             </tr>
                             <tr>
                                 <td>
+                                    <?php echo $form->labelEx($gp, 'nat_id'); ?>
+                                </td>
+                                <td>
+                                    <?php echo $form->textField($gp, 'nat_id', array('size' => 30, 'maxlength' => 100, 'autocomplete' => 'off')); ?>
+                                    <?php echo $form->error($gp, 'nat_id'); ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
                                     <label><?php echo $model->getAttributeLabel('Role'); ?> <span class="required">*</span></label>
                                 </td>
                                 <td>
@@ -87,8 +96,11 @@ $this->pageTitle = 'Update Practitioner';
                                         <span class="js-name">
                                             <?php echo isset($model->label) ? $model->label->name : ''; ?>
                                         </span>
-                                        <?php echo CHtml::hiddenField('Contact[contact_label_id]',
-                                             $model->contact_label_id, array('class' => 'hidden_id')); ?>
+                                        <?php echo CHtml::hiddenField(
+                                            'Contact[contact_label_id]',
+                                            $model->contact_label_id,
+                                            array('class' => 'hidden_id')
+                                        ); ?>
                                     </div>
                                 </td>
                                 <td>
@@ -107,13 +119,13 @@ $this->pageTitle = 'Update Practitioner';
                                 <td>Active</td>
                                 <td>
                                   <?=
-                                    \CHtml::activeRadioButtonList(
-                                      $gp,
-                                      'is_active',
-                                      [1 => 'Yes', 0 => 'No'],
-                                      ['separator' => ' ']
-                                    );
-                                    ?>
+                                                            \CHtml::activeRadioButtonList(
+                                                                $gp,
+                                                                'is_active',
+                                                                [1 => 'Yes', 0 => 'No'],
+                                                                ['separator' => ' ']
+                                                            );
+                                                            ?>
                                 </td>
                             </tr>
                             <tr>
@@ -148,11 +160,11 @@ $this->pageTitle = 'Update Practitioner';
                                                 <?php echo CHtml::hiddenField('ContactPracticeAssociate['.$i.'][id]', $cpa->id, array('class' => 'hidden_id')); ?>
                                                 <td>
                                                     <?php
-                                                        echo $form->textField($cpa, 'provider_no', array(
-                                                        'placeholder' => 'Enter provider number',
-                                                        'maxlength' => 255,
-                                                        'name' => 'ContactPracticeAssociate['.$i.'][provider_no]',
-                                                        ));
+                                                    echo $form->textField($cpa, 'provider_no', array(
+                                                    'placeholder' => 'Enter provider number',
+                                                    'maxlength' => 255,
+                                                    'name' => 'ContactPracticeAssociate['.$i.'][provider_no]',
+                                                    ));
                                                     ?>
                                                     <?php echo $form->error($cpa, 'provider_no'); ?>
                                                 </td>
