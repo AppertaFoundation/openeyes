@@ -60,7 +60,8 @@ if ($this instanceof BaseEventTypeController) {
             <div class="overview nav-grp-hd-i expand" data-test="hotlist-toggle-drafts">
                 <h3>
                     Drafts
-                    <small class="count issue"><?= count($drafts_for_user) ?></small>
+                    <?php $draft_count = count($drafts_for_user); ?>
+                    <small class="count <?= $draft_count > 0 ? 'issue' : '' ?>" ><?= $draft_count ?></small>
                 </h3>
             </div>
             <div class="hidden">
