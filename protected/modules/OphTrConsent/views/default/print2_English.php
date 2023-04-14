@@ -158,8 +158,7 @@ if (isset($elements['OEModule\OphTrConsent\models\Element_OphTrConsent_Additiona
     <hr class="divider">
     <h2>Form 1: Supplementary consent</h2>
     <?php
-    if (isset($elements["Element_OphTrConsent_SupplementaryConsent"]) && count($elements["Element_OphTrConsent_SupplementaryConsent"]->element_question) > 0)
-    {
+    if (isset($elements["Element_OphTrConsent_SupplementaryConsent"]) && count($elements["Element_OphTrConsent_SupplementaryConsent"]->element_question) > 0) {
         echo $this->renderPartial(
             '_print_supplementary_consent',
             array(
@@ -262,7 +261,6 @@ if (isset($elements['OEModule\OphTrConsent\models\Element_OphTrConsent_Additiona
     }
     ?>
 
-    <h5 class="text-r">Contact details: 01234 456789</h5>
     <div class="break"><!-- **** page break ***** --></div>
     <hr class="divider">
     <h2>Statement of patient</h2><h5>Please read this form carefully. If your treatment has been planned in advance, you

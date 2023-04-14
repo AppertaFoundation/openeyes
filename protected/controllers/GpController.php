@@ -127,8 +127,11 @@ class GpController extends BaseController
                     // This happens for the AJAX context, for the normal context below the existance is treated as an error
                     if (SettingMetadata::model()->getSetting('default_country') === 'Australia' &&
                         isset($contact->label) &&
-                        $existing_gp_contact = $this->findExistingGpWithNameAndLabel($contact->first_name, $contact->last_name,
-                                                                                     $contact->label->id)) {
+                        $existing_gp_contact = $this->findExistingGpWithNameAndLabel(
+                            $contact->first_name,
+                            $contact->last_name,
+                            $contact->label->id
+                        )) {
                         echo CJSON::encode(array(
                             'title' => $existing_gp_contact->title,
                             'firstName' => $existing_gp_contact->first_name,
@@ -146,8 +149,10 @@ class GpController extends BaseController
                             $query = Yii::app()->db->createCommand()
                                                    ->select('cpa.id')
                                                    ->from('contact_practice_associate cpa')
-                                                   ->where('LOWER(cpa.provider_no) = LOWER(:provider_no)',
-                                                           array(':provider_no' => $contactPracticeAssociate->provider_no))
+                                                   ->where(
+                                                       'LOWER(cpa.provider_no) = LOWER(:provider_no)',
+                                                       array(':provider_no' => $contactPracticeAssociate->provider_no)
+                                                   )
                                                    ->queryAll();
 
                             $isDuplicate = count($query);
@@ -288,7 +293,7 @@ class GpController extends BaseController
      */
     public function actionContactLabelList($term)
     {
-        $criteria = new CDbCriteria;
+        $criteria = new CDbCriteria();
         $criteria->addSearchCondition('LOWER(name)', strtolower($term), true, 'OR');
         $labels = ContactLabel::model()->findAll($criteria);
 
@@ -386,10 +391,6 @@ class GpController extends BaseController
 
                 if ($gp->nat_id === null) {
                     $gp->nat_id = 0;
-                }
-
-                if ($gp->obj_prof === null) {
-                    $gp->obj_prof = 0;
                 }
 
                 if ($gp->save()) {

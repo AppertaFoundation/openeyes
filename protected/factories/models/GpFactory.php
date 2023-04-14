@@ -27,7 +27,6 @@ class GpFactory extends ModelFactory
     public function definition(): array
     {
         return [
-            'obj_prof' => $this->faker->word(),
             'nat_id' => $this->faker->asciify('####-####'),
             'contact_id' => Contact::factory()
         ];

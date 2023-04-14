@@ -88,7 +88,7 @@ class PracticeController extends BaseController
                 $providerNoDuplicateCheck = ContactPracticeAssociate::model()->findAllByAttributes(array('provider_no'=>$providerNo), "provider_no IS NOT NULL AND provider_no != ''");
 
                 // If condition is executed when the provider no exists in the db
-                if (count($providerNoDuplicateCheck) >=1 ) {
+                if (count($providerNoDuplicateCheck) >=1) {
                     $isDuplicateProviderNo = true;
                     $count = count($providerNoDuplicateCheck);
                     $gpIdProviderNoList[] = array($gpId, $providerNo, $count);
@@ -96,7 +96,7 @@ class PracticeController extends BaseController
                 // else condition makes sure that there is no duplicate within the form itself. (it excludes empty values).
                 else {
                     for ($j=0; $j<count($gpIdProviderNoList); $j++) {
-                        if ($gpIdProviderNoList[$j][1] != $providerNo || $providerNo == '' ) {
+                        if ($gpIdProviderNoList[$j][1] != $providerNo || $providerNo == '') {
                             $count = 0;
                         } else {
                             $count = 1;
@@ -116,7 +116,7 @@ class PracticeController extends BaseController
             $address->attributes = $_POST['Address'];
             $practice->attributes = $_POST['Practice'];
 
-            if ( $contact->validate(array('first_name')) and $practice->validate(array('phone')) and $address->validate(array('address1', 'city', 'postcode', 'country')) ) {
+            if ($contact->validate(array('first_name')) and $practice->validate(array('phone')) and $address->validate(array('address1', 'city', 'postcode', 'country'))) {
                 // If there is no validation error, check for the duplicate practice based on practice name, phone, address1, city, postcode and country.
                 $duplicateCheckOutput = Yii::app()->db->createCommand()
                     ->select('c1.first_name, p.phone, a.address1, a.city, a.postcode, a.country_id')
@@ -166,7 +166,8 @@ class PracticeController extends BaseController
      * @throws CException
      * @throws Exception
      */
-    public function actionCreateAssociate(){
+    public function actionCreateAssociate()
+    {
         if (isset($_POST['Contact'], $_POST['gp_data_retrieved'])) {
             $contactPractice = new Contact('manage_practice');
             $address = new Address('manage_practice');
@@ -195,9 +196,11 @@ class PracticeController extends BaseController
                     ->from('practice p')
                     ->join('contact c1', 'c1.id = p.contact_id')
                     ->join('address a', 'a.contact_id = c1.id')
-                    ->where('LOWER(c1.first_name) = LOWER(:first_name) and LOWER(p.phone) = LOWER(:phone) and LOWER(a.address1) = LOWER(:address1) and LOWER(a.city) = LOWER(:city) and LOWER(a.postcode) = LOWER(:postcode) and LOWER(a.country_id) = LOWER(:country_id)',
+                    ->where(
+                        'LOWER(c1.first_name) = LOWER(:first_name) and LOWER(p.phone) = LOWER(:phone) and LOWER(a.address1) = LOWER(:address1) and LOWER(a.city) = LOWER(:city) and LOWER(a.postcode) = LOWER(:postcode) and LOWER(a.country_id) = LOWER(:country_id)',
                         array(':first_name'=> $contactPractice->first_name, ':phone'=> $practice->phone,':address1'=>$address->address1,
-                            ':city'=>$address->city, ':postcode'=>$address->postcode, ':country_id'=>$address->country_id))
+                            ':city'=>$address->city, ':postcode'=>$address->postcode, ':country_id'=>$address->country_id)
+                    )
                     ->queryAll();
 
                 $isDuplicate = count($dataProvider);
@@ -247,10 +250,6 @@ class PracticeController extends BaseController
 
                 if ($gp->nat_id === null) {
                     $gp->nat_id = 0;
-                }
-
-                if ($gp->obj_prof === null) {
-                    $gp->obj_prof = 0;
                 }
 
                 if ($gp->save()) {
@@ -425,7 +424,7 @@ class PracticeController extends BaseController
                     $providerNo = $_POST['ContactPracticeAssociate']['provider_no'][$i];
                     $providerNoDuplicateCheck = ContactPracticeAssociate::model()->findAllByAttributes(array('provider_no'=>$providerNo), "provider_no IS NOT NULL AND provider_no != '' AND practice_id !=".$id);
                     // If condition is executed when the provider no exists in the db
-                    if (count($providerNoDuplicateCheck) >=1 ) {
+                    if (count($providerNoDuplicateCheck) >=1) {
                         $isDuplicateProviderNo = true;
                         $count = count($providerNoDuplicateCheck);
                         $gpIdProviderNoList[] = array($gpId, $providerNo, $count);
@@ -433,7 +432,7 @@ class PracticeController extends BaseController
                     // else condition makes sure that there is no duplicate within the form itself. (it excludes empty values).
                     else {
                         for ($j=0; $j<count($gpIdProviderNoList); $j++) {
-                            if ($gpIdProviderNoList[$j][1] != $providerNo || $providerNo == '' ) {
+                            if ($gpIdProviderNoList[$j][1] != $providerNo || $providerNo == '') {
                                 $count = 0;
                             } else {
                                 $count = 1;
@@ -446,7 +445,7 @@ class PracticeController extends BaseController
                 }
             }
 
-            if ( $contact->validate(array('first_name')) and $model->validate(array('phone')) and $address->validate(array('address1', 'city', 'postcode', 'country'))) {
+            if ($contact->validate(array('first_name')) and $model->validate(array('phone')) and $address->validate(array('address1', 'city', 'postcode', 'country'))) {
                 // If there is no validation error, check for the duplicate practice based on practice name, phone, address1, city, postcode and country.
                 $duplicateCheckOutput = Yii::app()->db->createCommand()
                     ->select('c1.first_name, p.phone, a.address1, a.city, a.postcode, a.country_id')

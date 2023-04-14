@@ -13,21 +13,33 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-namespace OE\factories\models;
-
-use OE\factories\ModelFactory;
-use OE\factories\models\traits\MapsDisplayOrderForFactory;
-use Worklist;
-
-class WorklistAttributeFactory extends ModelFactory
+/**
+ * @group sample-data
+ * @group user
+ */
+class UserWithSampleDataTest extends OEDbTestCase
 {
-    use MapsDisplayOrderForFactory;
-
-    public function definition(): array
+    public function initalsBehaviourProvider()
     {
         return [
-            'worklist_id' => Worklist::factory(),
-            'name' => $this->faker->unique()->word()
+            ['foo', 'bar', 'FB'],
+            [null, 'foo', 'F'],
+            ['foo', null, 'F'],
+            [null, null, '']
         ];
+    }
+
+    /**
+     * @test
+     * @dataProvider initalsBehaviourProvider
+     */
+    public function get_initials_behaviour_handles_unexpected_states($first_name, $last_name, $expected)
+    {
+        $user = User::factory()->make([
+            'first_name' => $first_name,
+            'last_name' => $last_name
+        ]);
+
+        $this->assertEquals($expected, $user->getInitials());
     }
 }
