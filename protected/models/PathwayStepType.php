@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Apperta Foundation, 2022
  * This file is part of OpenEyes.
@@ -181,16 +182,23 @@ class PathwayStepType extends BaseActiveRecordVersioned
     }
 
     /**
+     * @param CdbCriteria $filter_criteria Optional additional filters to apply
      * @return array|CActiveRecord|mixed|PathwayStepType[]|null
      */
-    public static function getStandardTypes()
+    public static function getStandardTypes($filter_criteria = null)
     {
         $criteria = self::basePathTypeCriteria();
         $criteria->addCondition('`group` = \'standard\'');
 
+        if ($filter_criteria) {
+            $criteria->mergeWith($filter_criteria);
+        }
+
         if (!Yii::app()->controller->checkAccess('Prescribe')) {
             $criteria->addCondition('short_name != \'drug admin\'');
         }
+
+
         return self::model()->findAll($criteria);
     }
 
