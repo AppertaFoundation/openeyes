@@ -25,7 +25,7 @@
             <h4>Path</h4>
             <ul class="btn-list">
                 <?php foreach ($path_steps as $step) { ?>
-                    <li class="js-step" data-id="<?= $step->id ?>">
+                    <li class="js-step" data-id="<?= $step->id ?>" data-test="path-step-<?=str_replace(' ', '-', strtolower($step->long_name)) ?>">
                         <?= $step->small_icon ? '<i class="oe-i small pad-right ' . $step->small_icon . '"></i>' : null ?>
                         <?= $step->long_name ?>
                     </li>
@@ -44,13 +44,13 @@
             <h4>Standard</h4>
             <ul class="btn-list">
                 <?php foreach ($standard_steps as $step) { ?>
-                    <li class="js-step" data-id="<?= $step->id ?>" data-test="<?= str_replace(' ', '-', strtolower($step->long_name)); ?>">
+                    <li class="js-step" data-id="<?= $step->id ?>" data-test="path-step-<?= str_replace(' ', '-', strtolower($step->long_name)); ?>">
                         <?= $step->small_icon ? '<i class="oe-i small pad-right ' . $step->small_icon . '"></i>' : null ?>
                         <?= $step->long_name ?>
                     </li>
                 <?php } ?>
                 <?php foreach ($custom_steps as $step) { ?>
-                    <li class="js-step" data-id="<?= $step->id ?>">
+                    <li class="js-step" data-id="<?= $step->id ?>" data-test="path-step-<?=str_replace(' ', '-', strtolower($step->long_name)) ?>">
                         <?= $step->small_icon ? '<i class="oe-i small pad-right ' . $step->small_icon . '"></i>' : null ?>
                         <?= $step->long_name ?>
                     </li>

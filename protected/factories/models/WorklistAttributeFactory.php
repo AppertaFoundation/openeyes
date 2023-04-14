@@ -27,7 +27,7 @@ class WorklistAttributeFactory extends ModelFactory
     {
         return [
             'worklist_id' => Worklist::factory(),
-            'name' => $this->faker->word()
+            'name' => $this->faker->unique()->word()
         ];
     }
 }

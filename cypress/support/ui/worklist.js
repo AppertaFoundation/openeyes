@@ -1,3 +1,10 @@
+/**
+ * This command will visit the worklist screen
+ */
+Cypress.Commands.add('visitWorklist', () => {
+    cy.visit('/worklist/view');
+})
+
 Cypress.Commands.add('getWorklist', (worklistId) => {
     // To scroll to the newly added worklist item
     cy.getBySel(`js-worklist-${worklistId}`).scrollIntoView();
@@ -10,4 +17,13 @@ Cypress.Commands.add('getWorklistArrivedFilter', () => {
 
 Cypress.Commands.add('getWorklistArrivedFilterCount', () => {
     return cy.getBySel('clinic-filter-count');
+});
+
+Cypress.Commands.add('hideWorklistNavBar', () => {
+    // Close the navbar if it is open
+    cy.getBySel('nav-worklist-btn').then(($ele) => {
+        if ($ele.hasClass('open')) {
+            $ele.click();
+        }
+    });
 });
