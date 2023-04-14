@@ -1,6 +1,4 @@
 const { defineConfig } = require("cypress");
-// need to install the "del" module as a dependency
-// npm i del --save-dev
 const del = require('del');
 
 module.exports = defineConfig({
