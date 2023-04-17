@@ -56,6 +56,20 @@ if ($this instanceof BaseEventTypeController) {
         </div>
     <?php $this->endWidget(); ?>
     <div class="patient-activity">
+    <?php
+    if ($total_unread_messages > 0) {
+        $total_urgent_messages = 0;
+
+        foreach ($message_counts as $mailbox_id => $counts) {
+            $total_urgent_messages = $total_urgent_messages + ($counts['count_unread_urgent'] ?? 0);
+        }
+        ?>
+        <div class="flag-urgent-messages">
+            <a href="/" class="button<?= $total_urgent_messages > 0 ? ' urgent' : ''?>">
+                Messages: <?= $total_unread_messages ?> unread <?= $total_urgent_messages > 0 ? ('(' . $total_urgent_messages . ' urgent)') : '' ?>
+            </a>
+        </div>
+    <?php } ?>
         <div class="event-drafts js-hotlist-event-drafts">
             <div class="overview nav-grp-hd-i expand" data-test="hotlist-toggle-drafts">
                 <h3>
@@ -94,20 +108,7 @@ if ($this instanceof BaseEventTypeController) {
                 </table>
             </div>
         </div>
-    <?php
-    if ($total_unread_messages > 0) {
-        $total_urgent_messages = 0;
-
-        foreach ($message_counts as $mailbox_id => $counts) {
-            $total_urgent_messages = $total_urgent_messages + ($counts['count_unread_urgent'] ?? 0);
-        }
-        ?>
-        <div class="flag-urgent-messages">
-            <a href="/" class="button<?= $total_urgent_messages > 0 ? ' urgent' : ''?>">
-                Messages: <?= $total_unread_messages ?> unread <?= $total_urgent_messages > 0 ? ('(' . $total_urgent_messages . ' urgent)') : '' ?>
-            </a>
-        </div>
-    <?php } ?>
+   
         <div class="patients-open">
             <div class="overview">
                 <h3>Open
