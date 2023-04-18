@@ -95,20 +95,17 @@ class m221004_044749_rework_messaging_data_models extends OEMigration
         );
 
         // Existing messages should be re-pointed to the mailbox of the associated user.
-        $rows_to_update = $this->dbConnection->createCommand()
-            ->select('recipient.id, mu.mailbox_id')
-            ->from('ophcomessaging_message_recipient recipient')
-            ->join('mailbox_user mu', 'mu.mailbox_id = recipient.mailbox_id')
-            ->queryAll();
+        // the recipient mailbox_id column was renamed from user_id, so we join on that
+        // to derive what value it should be set to:
+        $update_sql = <<<EOSQL
+        UPDATE ophcomessaging_message_recipient recipient
+JOIN mailbox_user mu ON recipient.mailbox_id = mu.user_id
+SET recipient.mailbox_id = mu.mailbox_id;
+EOSQL;
 
-        foreach ($rows_to_update as $row) {
-            $this->update(
-                'ophcomessaging_message_recipient',
-                ['mailbox_id' => $row['mailbox_id']],
-                'id = :id',
-                [':id' => $row['id']]
-            );
-        }
+        $this->getDbConnection()
+                ->createCommand($update_sql)
+                ->execute();
 
         $this->addForeignKey(
             'ophcomessaging_message_recipient_m_fk',
