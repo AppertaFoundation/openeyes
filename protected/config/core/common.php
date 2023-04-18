@@ -161,6 +161,12 @@ $config = array(
                     'js' => array('jquery/jquery.min.js'),
                     'basePath' => 'application.assets.components',
                 ),
+                'jquery.ui' => array(
+                    'js' => array('jquery-ui/ui/minified/jquery-ui.min.js'),
+                    'css' => array('jquery-ui/themes/base/jquery-ui.css'),
+                    'basePath' => 'application.assets.components',
+                    'depends' => array('jquery'),
+                ),
                 'eventemitter2' => array(
                     'js' => array('eventemitter2/lib/eventemitter2.js'),
                     'basePath' => 'application.assets.components',
