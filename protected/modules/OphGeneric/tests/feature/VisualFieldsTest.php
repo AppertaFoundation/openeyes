@@ -17,6 +17,8 @@ namespace OEModule\OphGeneric\tests\feature;
 
 use Event;
 use EventSubtype;
+use OE\factories\models\EventFactory;
+use OEModule\OphGeneric\components\EventManager;
 use OEModule\OphGeneric\models\HFA;
 use OEModule\OphGeneric\models\HFAEntry;
 
@@ -50,6 +52,26 @@ class VisualFieldsTest extends \OEDbTestCase
     public function both_sided_manual_hfa_data_saved()
     {
         $this->performManualDataSave([$this->getHFAEntryFormData(\Eye::BOTH)], \Eye::BOTH);
+    }
+
+    /** @test */
+    public function print_title_is_displayed_correctly()
+    {
+        $event_subtype = $this->setEventSubtypeElements();
+
+        $event = EventFactory::forModule('OphGeneric')->withSubType($event_subtype)
+            ->withElements([HFA::class])
+            ->create();
+
+        list($user, $institution, $episode) = $this->createEpisodeContext();
+
+        $expected_title = EventManager::forEvent($event)->getDisplayName();
+
+        $response = $this->actingAs($user)
+            ->get('/OphGeneric/Default/print?id=' . $event->id);
+
+        $title = $response->filter('.print-title');
+        $this->assertEquals($expected_title, $title->first()->innerText());
     }
 
     protected function performManualDataSave($hfaEntryFormData, $eye_id)

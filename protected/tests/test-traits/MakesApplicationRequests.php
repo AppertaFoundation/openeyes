@@ -50,6 +50,7 @@ trait MakesApplicationRequests
         $url = $parsed_url['path'];
 
         $_SERVER['HTTP_USER_AGENT'] = 'phpunit'; // this is used in the main layout template
+        $_SERVER['SERVER_NAME'] = 'phpunit';
         $_SERVER['REQUEST_URI'] = $url;
         // note this is a simple approach that doesn't handle duplicate keys
         parse_str($parsed_url['query'] ?? '', $_GET);

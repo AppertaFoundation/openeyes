@@ -190,6 +190,20 @@ class DefaultController extends \BaseEventTypeController
         $this->event_manager = $this->event->isNewRecord
             ? EventManager::forEventSubtypePk(\Yii::app()->getRequest()->getParam('event_subtype'))
             : EventManager::forEvent($this->event);
+
+        $this->initFromEventManager();
+    }
+
+    protected function initFromEventManager()
+    {
+        if (!$this->event_manager) {
+            throw new \RuntimeException('cannot init without event manager');
+        }
+
+        // the print view derives title differently, so we use the event manager to set the appropriate property
+        if ($this->isPrintAction($this->action->id)) {
+            $this->attachment_print_title = $this->event_manager->getDisplayName();
+        }
     }
 
     protected function saveComplexAttributes_Assessment($element, $data, $index)

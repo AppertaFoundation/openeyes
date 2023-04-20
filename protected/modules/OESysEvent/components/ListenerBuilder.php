@@ -39,6 +39,7 @@ final class ListenerBuilder
 
         return self::$instance;
     }
+
     public static function fakeWith($class, $mock = null)
     {
         ModelFakeTracker::setFakeForModel($class, $mock);
