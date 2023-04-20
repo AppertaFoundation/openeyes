@@ -32,7 +32,9 @@ if ($element->elementType->name!="Clinic Outcome") :
   <tr>
         <?php
         // This is now deprecate and needs to be removed in the future, it is currently only used for editing legacy events see: OE-13648
-        $firms = Firm::model()->findAll('institution_id=? AND service_subspecialty_assignment_id IS NOT NULL', array(Yii::app()->session['selected_institution_id']));
+        $criteria = new CDbCriteria();
+        $criteria->addCondition('service_subspecialty_assignment_id IS NOT NULL');
+        $firms = Firm::model()->findAllAtLevels(ReferenceData::LEVEL_ALL, $criteria);
         $firm_name = array();
         $firm_sub_id = array();
         foreach ($firms as $firm) {

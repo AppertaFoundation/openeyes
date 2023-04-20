@@ -213,7 +213,9 @@ class DicomLogViewerController extends BaseController
         if (@$_REQUEST['firm_id']) {
             $firm = Firm::model()->findByPk($_REQUEST['firm_id']);
             $firm_ids = array();
-            foreach (Firm::model()->findAll('name=? AND institution_id = ?', array($firm->name, Yii::app()->session['selected_institution_id'])) as $firm) {
+            $name_criteria = new CDbCriteria();
+            $name_criteria->compare('name', $firm->name);
+            foreach (Firm::model()->findAllAtLevels(ReferenceData::LEVEL_ALL, $name_criteria) as $firm) {
                 $firm_ids[] = $firm->id;
             }
             if (!empty($firm_ids)) {

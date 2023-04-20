@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2018
  * This file is part of OpenEyes.
@@ -12,6 +13,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <div class="cols-12">
     <div class="row divider">
@@ -19,15 +21,29 @@
             <table class="standard">
                 <colgroup>
                     <col class="cols-4">
+                    <col class="cols-3">
                     <col class="cols-1">
-                    <col class="cols-7">
-
+                    <col class="cols-4">
                 </colgroup>
                 <tr>
                     <td><?=CHtml::textField('query', $search['query'], [
                             'placeholder' => 'Search Id, PAS Code, Cost Code, Name - (all are case sensitive)',
                             'class' => 'cols-full',
                         ]) ?>
+                    </td>
+                    <td>
+                        <?php if ($this->checkAccess('admin')) {
+                            echo \CHtml::dropDownList(
+                                'institution_id',
+                                $search['institution_id'],
+                                Institution::model()->getTenantedList(false),
+                                ['empty' => 'All']
+                            );
+                        } else {
+                            $institution = Institution::model()->findByPk($search['institution_id']);
+                            echo $institution->name;
+                            echo CHtml::hiddenField('institution_id', $search['institution_id']);
+                        } ?>
                     </td>
                     <td>
                         <?= \CHtml::dropDownList(
@@ -47,8 +63,6 @@
             </table>
         </form>
     </div>
-
-
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?=Yii::app()->request->csrfToken ?>"/>
         <table class="standard cols-full">
             <thead>
@@ -74,7 +88,7 @@
                     <td><?=$firm->id ?></td>
                     <td><?=$firm->pas_code ?></td>
                     <td data-test="firm-name"><?=$firm->name ?></td>
-                    <td><?=$firm->institution->name ?></td>
+                    <td><?=$firm->institution->name ?? 'All Institutions' ?></td>
                     <td><?=($firm->serviceSubspecialtyAssignment) ?
                             $firm->serviceSubspecialtyAssignment->subspecialty->name : 'None' ?></td>
                     <td><?= $firm->consultant->fullName ?? 'None' ?></td>

@@ -72,7 +72,7 @@ class BaseAdminController extends BaseController
      * @author bizmate
      *
      * @param BaseActiveRecord  $model
-     * @param string $criteria
+     * @param string|CDbCriteria $criteria
      *
      * @return CPagination
      */
