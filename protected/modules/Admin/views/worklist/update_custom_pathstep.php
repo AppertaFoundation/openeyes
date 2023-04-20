@@ -18,6 +18,14 @@
 
 ?>
 
+<?php
+$visual_field_test_preset_value = null;
+$eye_value = null;
+if (isset($preset_model->preset_id)) {
+    [$visual_field_test_preset_value, $eye_value] = PathwayStepTypePresetAssignment::getVisualFieldsPresetIdAndLaterality($preset_model->preset_id);
+}
+?>
+
 <div class="row divider">
     <h2><?= $model->id ? 'Edit' : 'Add' ?> Custom Path Step</h2>
 </div>
@@ -174,6 +182,32 @@
             ) ?>
         </td>
     </tr>
+    <tr style="display: none;">
+        <td>
+            <?= $preset_model->getAttributeLabel('visual_field_test_preset') ?>
+        </td>
+        <td>
+            <?= CHtml::dropDownList(
+                'PathwayStepTypePresetAssignment[visual_field_test_preset]',
+                $visual_field_test_preset_value,
+                $visual_field_test_preset,
+                ['class' => 'cols-2 js-visual-field-test-preset-value']
+            ) ?>
+        </td>
+    </tr>
+    <tr style="display: none;">
+        <td>
+            <?= $preset_model->getAttributeLabel('laterality') ?>
+        </td>
+        <td>
+            <?= CHtml::dropDownList(
+                'PathwayStepTypePresetAssignment[laterality]',
+                $eye_value,
+                $eye,
+                ['class' => 'cols-2 js-laterality-value']
+            ) ?>
+        </td>
+    </tr>
     </tbody>
     <tfoot>
     <tr>
@@ -256,6 +290,13 @@
         $('.js-preset-id').closest('tr').hide();
     }
 
+
+    function setVisualFieldsDropdownOptions() {
+        $('.js-visual-field-test-preset-value').closest('tr').show();
+        $('.js-laterality-value').closest('tr').show();
+        $('.js-preset-id').closest('tr').hide();
+    }
+
     function setPresetOptions()
     {
         let standardPathway = $('.js-standard-pathway-step :selected').text();
@@ -276,6 +317,9 @@
                 break;
             case 'Book Follow-up Appointment':
                 setBookingDropdownOptions();
+                break;
+            case 'Visual Fields':
+                setVisualFieldsDropdownOptions();
                 break;
             default:
                 setPresetDropdownOptions([], 'Default');

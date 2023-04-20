@@ -339,6 +339,19 @@ class WorklistController extends BaseAdminController
                 if (array_key_exists('duration_value', $pathwayStepTypePreset) && $pathwayStepTypePreset['duration_value'] !== '') {
                     $preset_model->preset_id += $pathwayStepTypePreset['duration_value'];
                 }
+            } elseif ($preset_model->preset_short_name === 'Fields') {
+                /**
+                 * The preset ID is saved as a two digit value, where
+                 * first digit is the visual field test preset value
+                 * and the last is the laterality value
+                 */
+                $preset_model->preset_id = '';
+                if (array_key_exists('visual_field_test_preset', $pathwayStepTypePreset) && $pathwayStepTypePreset['visual_field_test_preset'] !== '') {
+                    $preset_model->preset_id = $pathwayStepTypePreset['visual_field_test_preset'];
+                }
+                if (array_key_exists('laterality', $pathwayStepTypePreset) && $pathwayStepTypePreset['laterality'] !== '') {
+                    $preset_model->preset_id .=  $pathwayStepTypePreset['laterality'];
+                }
             } elseif (array_key_exists('preset_id', $pathwayStepTypePreset)) {
                 $preset_model->preset_id = $pathwayStepTypePreset['preset_id'];
             }
@@ -394,12 +407,33 @@ class WorklistController extends BaseAdminController
             'id'
         );
 
+        $visual_field_test_preset = CHtml::listData(
+            VisualFieldTestPreset_Institution::model()->findAll([
+                'with' => 'visualFieldTestPreset',
+                'condition' => 't.institution_id = :institution_id',
+                'order' => 'visualFieldTestPreset.name asc',
+                'params' => [':institution_id' => $current_institution->id]
+            ]),
+            'id',
+            'visualFieldTestPreset.name'
+        );
+
+        $eye = CHtml::listData(
+            Eye::model()->findAll([
+                'order' => 'name asc',
+            ]),
+            'id',
+            'name'
+        );
+
         $this->render('update_custom_pathstep', [
             'model' => $model,
             'preset_model' => $preset_model,
             'examination_workflow_steps' => CJSON::encode($examination_workflow_steps),
             'letter_macros' => json_encode($letter_macros, JSON_THROW_ON_ERROR),
             'pgd_sets' => json_encode($pgd_sets, JSON_THROW_ON_ERROR),
+            'visual_field_test_preset' => $visual_field_test_preset,
+            'eye' => $eye,
             'errors' => @$errors
         ]);
     }
