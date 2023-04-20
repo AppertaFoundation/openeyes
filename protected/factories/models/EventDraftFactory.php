@@ -33,6 +33,7 @@ class EventDraftFactory extends ModelFactory
     public function definition(): array
     {
         return [
+            'is_auto_save' => true,
             'institution_id' => \Institution::factory()->useExisting(),
             'site_id' => \Site::factory()->useExisting(),
             'episode_id' => Episode::factory()->useExisting(),

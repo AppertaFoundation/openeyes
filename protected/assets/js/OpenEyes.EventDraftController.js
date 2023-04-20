@@ -163,6 +163,7 @@ var OpenEyes = OpenEyes || {};
                     OE_episode_id: OE_episode_id,
                     OE_event_id: OE_event_id,
                     OE_module_class: OE_module_class,
+                    is_auto_save: 1,
                     originating_url: window.location.pathname + window.location.search,
                     draft_id: $(this.options.draftIdSelector).val(),
                     form_data: JSON.stringify(formData),

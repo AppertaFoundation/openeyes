@@ -1540,6 +1540,7 @@ class BaseEventTypeController extends BaseModuleController
     public function actionSaveDraft(): void
     {
         $form_data = json_decode(Yii::app()->request->getParam('form_data'));
+        $is_auto_save = Yii::app()->request->getParam('is_auto_save');
         $episode = \Episode::model()->findByPk(Yii::app()->request->getParam('OE_episode_id'));
         $patient = $episode->patient;
         $event_id = Yii::app()->request->getParam('OE_event_id');
@@ -1558,6 +1559,7 @@ class BaseEventTypeController extends BaseModuleController
 
         if ($draft->isNewRecord) {
             $draft->created_user_id = $user_id;
+            $draft->is_auto_save = $is_auto_save;
             $draft->institution_id = Yii::app()->session->get('selected_institution_id');
             $draft->site_id = Yii::app()->session->get('selected_site_id');
             $draft->event_id = $event_id;

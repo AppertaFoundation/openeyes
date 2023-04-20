@@ -7,6 +7,7 @@ use OE\factories\models\traits\HasFactory;
  *
  * The followings are the available columns in table 'event_draft':
  * @property integer $id
+ * @property bool $is_auto_save
  * @property string $institution_id
  * @property string $site_id
  * @property string $episode_id
@@ -42,7 +43,7 @@ class EventDraft extends BaseActiveRecord
     public function rules()
     {
         return [
-            ['institution_id, episode_id, event_type_id, data', 'required'],
+            ['is_auto_save, institution_id, episode_id, event_type_id, data', 'required'],
             //Using the maximum size of the JSON data type in mysql
             //Magic number is used to avoid querying the db for the actual size
             ['data', 'length', 'max'=>4294967295],
@@ -73,6 +74,7 @@ class EventDraft extends BaseActiveRecord
     {
         return [
             'id' => 'ID',
+            'is_auto_save' => 'Is Auto Save',
             'event_id' => 'Event',
             'data' => 'Data',
         ];
@@ -89,6 +91,7 @@ class EventDraft extends BaseActiveRecord
         $criteria=new CDbCriteria;
 
         $criteria->compare('id', $this->id);
+        $criteria->compare('is_auto_save', $this->is_auto_save, true);
         $criteria->compare('event_id', $this->event_id, true);
         $criteria->compare('data', $this->data, true);
 
