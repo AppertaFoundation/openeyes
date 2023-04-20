@@ -22,12 +22,25 @@
 
     $this->event_actions[] =
         EventAction::button(
+            'Cancel',
+            'draft-cancel',
+            ['level' => 'cancel'],
+            [
+                'class' => 'js-event-action-draft-cancel',
+                'type' => 'button',
+                'style' => 'display: none'
+            ]
+        );
+
+    $this->event_actions[] =
+        EventAction::button(
             'Save Draft',
             'draft',
             ['level' => 'draft'],
             [
                 'class' => 'js-event-action-save-draft',
-                'icon-class' => 'draft'
+                'icon-class' => 'draft',
+                'style' => 'display: none'//Button hidden until draft save functionality is fully implemented
             ]
         );
 
@@ -39,6 +52,17 @@
             [
                 'form' => $form_id,
                 'class' => 'js-event-action-save-confirm'
+            ]
+        );
+
+    $this->event_actions[] =
+        EventAction::button(
+            'Confirm & Save',
+            'connection-error-save',
+            ['level' => 'save'],
+            [
+                'class' => 'js-event-action-connection-error-save-confirm fade',
+                'style' => 'display: none'
             ]
         );
 
@@ -75,6 +99,7 @@
 <input type="hidden" name="auto-save-enabled" class="js-auto-save-enabled" value="true">
 
 <?php $this->renderPartial('auto_save_connection_error');?>
+<?php $this->renderPartial('auto_save_discard_draft');?>
 <?php $this->renderPartial('auto_save_warnings', ['form_id' => $form_id]);?>
 
 <script type='text/javascript'>

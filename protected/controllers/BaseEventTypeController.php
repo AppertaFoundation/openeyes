@@ -1106,6 +1106,15 @@ class BaseEventTypeController extends BaseModuleController
                 ['level' => 'cancel'],
                 ['class' => 'js-event-action-cancel']
             ),
+            EventAction::button(
+                'Cancel',
+                'connection-error-cancel',
+                ['level' => 'cancel'],
+                [
+                    'class' => 'js-event-action-connection-error-cancel fade',
+                    'style' => 'display: none'
+                ]
+            ),
         );
 
         $params = array(
@@ -1409,7 +1418,17 @@ class BaseEventTypeController extends BaseModuleController
             EventAction::link(
                 'Cancel',
                 Yii::app()->createUrl($this->event->eventType->class_name . '/default/view/' . $this->event->id),
-                array('level' => 'cancel')
+                ['level' => 'cancel'],
+                ['class' => 'js-event-action-cancel']
+            ),
+            EventAction::button(
+                'Cancel',
+                'connection-error-cancel',
+                ['level' => 'cancel'],
+                [
+                    'class' => 'js-event-action-connection-error-cancel fade',
+                    'style' => 'display: none'
+                ]
             ),
         );
         $params = array(
@@ -1557,6 +1576,10 @@ class BaseEventTypeController extends BaseModuleController
 
         $draft = !empty($draft_id) ? \EventDraft::model()->findByPk($draft_id) : new \EventDraft();
 
+        if (empty($draft)) {
+            throw new \CHttpException(404, "Cannot find draft with provided ID");
+        }
+
         if ($draft->isNewRecord) {
             $draft->created_user_id = $user_id;
             $draft->is_auto_save = $is_auto_save;
@@ -1578,22 +1601,24 @@ class BaseEventTypeController extends BaseModuleController
 
         $warnings = [];
 
-        $newer_patient_record_edits = Yii::app()->db->createCommand()
-            ->select('COUNT(*)')
-            ->from('event ev')
-            ->join('episode ep', 'ev.episode_id = ep.id')
-            ->where('ep.patient_id = :patient_id', [':patient_id' => $patient->id])
-            ->andWhere('ev.last_modified_date > :draft_created_date', [':draft_created_date' => $draft->created_date])
-            ->queryScalar();
-
-        if ($newer_patient_record_edits > 0) {
-            $warnings[] = "There are edits to the patient record more recent than this draft";
-        }
-
-        $warnings = count($warnings) > 0 ? ['warnings' => $warnings] : [];
-
         if ($draft->save()) {
             $transaction->commit();
+
+            $draft->refresh();
+
+            $newer_patient_record_edits = Yii::app()->db->createCommand()
+                ->select('COUNT(*)')
+                ->from('event ev')
+                ->join('episode ep', 'ev.episode_id = ep.id')
+                ->where('ep.patient_id = :patient_id', [':patient_id' => $patient->id])
+                ->andWhere('ev.last_modified_date > :draft_created_date', [':draft_created_date' => $draft->created_date])
+                ->queryScalar();
+
+            if ($newer_patient_record_edits > 0) {
+                $warnings[] = "There are edits to the patient record more recent than this draft";
+            }
+
+            $warnings = count($warnings) > 0 ? ['warnings' => $warnings] : [];
 
             $return_value = array_merge(['draft_id' => $draft->id], $warnings);
 
@@ -1613,7 +1638,7 @@ class BaseEventTypeController extends BaseModuleController
         $event_type = EventType::model()->find('class_name = :class_name', [':class_name' => $request->getPost('event_type')]);
         $criteria = new CDbCriteria();
         $criteria->index = 'id';
-        $criteria->condition = 't.event_type_id = :event_type AND episode.patient_id = :patient AND t.last_modified_user_id = :user AND t.event_id IS NULL';
+        $criteria->condition = 't.event_type_id = :event_type AND episode.patient_id = :patient AND t.last_modified_user_id = :user';
         $criteria->params = [
             ':event_type' => $event_type->id,
             ':patient' => $request->getPost('patient_id'),

@@ -13,12 +13,12 @@ Cypress.Commands.add('getElementSideByName', (elementName, side) => {
     return cy.getElementByName(elementName).find(`.element-eyes .column[data-side=${side}]`);
 });
 
-Cypress.Commands.add('getBySel', (selector, ...args) => {
-    return cy.get(`[data-test=${selector}]`, ...args);
+Cypress.Commands.add('getBySel', (dataTest, additionalSelectors = "", ...args) => {
+    return cy.get(`[data-test=${dataTest}]${additionalSelectors}`, ...args);
 });
 
-Cypress.Commands.add('getBySelLike', (selector, ...args) => {
-    return cy.get(`[data-test*=${selector}]`, ...args);
+Cypress.Commands.add('getBySelLike', (dataTest, additionalSelectors = "", ...args) => {
+    return cy.get(`[data-test*=${dataTest}]${additionalSelectors}`, ...args);
 });
 
 Cypress.Commands.add('findBySel', {prevSubject: true}, (subject, selector, ...args) => {

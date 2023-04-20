@@ -20,22 +20,43 @@ var OpenEyes = OpenEyes || {};
     const default_options = {
         formId: null,
 
+        //core DOM elements
         enabledSelector: '.js-auto-save-enabled',
+        draftIdSelector: 'input#draft_id',
+
+        //connection error popup
+        connectionErrorTabSelector: '.js-connection-error-tab',
         connectionErrorContentsSelector: '.js-lost-draft-connection-popup-content > div',
+        retestDraftConnectionButtonSelector: '.js-retest-draft-connection',
+
+        //discard draft popup
+        discardDraftContentsSelector: '.js-discard-draft-popup-content > div',
+        discardDraftConfirmButtonSelector: 'button.js-popup-discard-draft-button',
+        discardDraftDeclineButtonSelector: 'button.js-popup-retain-draft-button',
+        
+        //auto save warnings popup
         autoSaveWarningListSelector: 'ul.auto-save-warnings-list',
         draftSaveWarningContentsSelector: '.js-auto-save-warnings-popup-content',
-        connectionErrorTabSelector: '.js-connection-error-tab',
-        retestDraftConnectionButtonSelector: '.js-retest-draft-connection',
+        autoSaveAlertsSelector: 'div#js-auto-save-alerts',
+        autoSaveAlertsListSelector: '#js-auto-save-alerts-list',
+
+        //last successful save
+        lastSuccessfulSaveSpan: 'span.js-popup-last-draft-save-span',
+
+        //event tabs and actions
         saveDraftButtonSelector: '.js-event-action-save-draft',
         confirmSavePopupButtonSelector: 'button.js-event-action-save-confirm-popup',
         confirmSaveButtonSelector: 'button.js-event-action-save-confirm',
-        cancelButtonSelector: 'button.js-event-action-cancel',
-        autoSaveAlertsSelector: 'div#js-auto-save-alerts',
-        autoSaveAlertsListSelector: '#js-auto-save-alerts-list',
-        draftIdSelector: 'input#draft_id',
+        cancelButtonSelector: 'a.js-event-action-cancel',
+        draftCancelButtonSelector: 'button.js-event-action-draft-cancel',
+        connectionErrorConfirmSaveButtonSelector: 'button.js-event-action-connection-error-save-confirm',
+        connectionErrorCancelButtonSelector: 'button.js-event-action-connection-error-cancel',
+
+        //existing draft banner
+        existingDraftBannerSelector: '#js-existing-draft-banner',
         loadExistingDraftSelector: '#js-load-existing-draft',
         deleteExistingDraftSelector: '#js-delete-existing-draft',
-        existingDraftBannerSelector: '#js-existing-draft-banner',
+
         saveInterval: 30000
     };
 
@@ -45,14 +66,48 @@ var OpenEyes = OpenEyes || {};
         if ($(this.options.enabledSelector).length) {
             this.warnings = [];
             this.connectionDialogOpen = false;
+            this.lastSuccessfulSave = null;
+            this.disableAutosave = false;
+
+            if ($(this.options.draftIdSelector).val()) {
+                this.showDraftCancelButton();
+            }
+
+            $(this.options.discardDraftConfirmButtonSelector).on('click', () => {
+                this.disableAutosave = true;
+                this.deleteExistingDrafts(false);
+                $(window).on('beforeunload', function () {
+                    return null;
+                });
+                $(this.options.cancelButtonSelector)[0].click();
+            });
+
+            $(this.options.discardDraftDeclineButtonSelector).on('click', () => {
+                $(window).on('beforeunload', function () {
+                    return null;
+                });
+                $(this.options.cancelButtonSelector)[0].click();
+            });
+
+            this.draftDiscardDialog = new OpenEyes.UI.Dialog({
+                title: "Discard draft",
+                content: $(this.options.discardDraftContentsSelector),
+            });
+
+            $(this.options.draftCancelButtonSelector).on('click', () => {
+                this.draftDiscardDialog.open();
+            });
 
             this.draftSaveConnectionDialog = new OpenEyes.UI.Dialog({
                 title: "Auto-save connection error",
-                content: $(this.options.connectionErrorContentsSelector).clone(),
+                content: $(this.options.connectionErrorContentsSelector),
             });
 
             this.draftSaveConnectionDialog.on('open', () => {
                 this.connectionDialogOpen = true;
+                if (this.lastSuccessfulSave !== null) {
+                    $(this.options.lastSuccessfulSaveSpan).text(`A recent draft state has been saved to OE at ${this.lastSuccessfulSave} and you'll be able to restore this. `);
+                }
             });
 
             this.draftSaveConnectionDialog.on('close', () => {
@@ -75,8 +130,6 @@ var OpenEyes = OpenEyes || {};
                 draftSaveWarningDialog.open();
             });
 
-            this.hideConnectionErrorUI();
-
             if ($(this.options.existingDraftBannerSelector).length === 0) {
                 setInterval(() => {this.attemptDraftSave()}, this.options.saveInterval);
             } else {
@@ -84,11 +137,13 @@ var OpenEyes = OpenEyes || {};
             }
 
             $(this.options.connectionErrorTabSelector).on('click', () => {
-                this.draftSaveConnectionDialog.open();
+                if (!this.connectionDialogOpen) {
+                    this.draftSaveConnectionDialog.open();
+                }
+            });
 
-                $(this.options.retestDraftConnectionButtonSelector).on('click', () => {
-                    this.attemptDraftSave();
-                });
+            $(this.options.retestDraftConnectionButtonSelector).on('click', () => {
+                this.attemptDraftSave();
             });
 
             $(this.options.saveDraftButtonSelector).on('click', () => {
@@ -100,6 +155,18 @@ var OpenEyes = OpenEyes || {};
             });
             $(this.options.deleteExistingDraftSelector).on('click', () => {
                 this.deleteExistingDrafts();
+            });
+
+            $(this.options.connectionErrorConfirmSaveButtonSelector).on('click', () => {
+                if (!this.connectionDialogOpen) {
+                    this.draftSaveConnectionDialog.open();
+                }
+            });
+
+            $(this.options.connectionErrorCancelButtonSelector).on('click', () => {
+                if (!this.connectionDialogOpen) {
+                    this.draftSaveConnectionDialog.open();
+                }
             });
         } else {
             throw new Error("DraftSaveController should not be instantiated if its requisite elements are not present in the DOM");
@@ -119,13 +186,14 @@ var OpenEyes = OpenEyes || {};
         window.location = url;
     };
 
-    EventDraftController.prototype.deleteExistingDrafts = function() {
+    EventDraftController.prototype.deleteExistingDrafts = function(async = true) {
         // Delete the existing drafts for event creation (there should only be 1 but this handles edge cases),
         // then enable auto-save (but only if a connection can be established).
         $.ajax(
             {
                 url: `/${OE_module_class}/Default/deleteDrafts`,
                 type: 'POST',
+                async: async,
                 data: {
                     patient_id: OE_patient_id,
                     event_type: OE_module_class,
@@ -134,6 +202,7 @@ var OpenEyes = OpenEyes || {};
                 success: (response) => {
                     $(this.options.existingDraftBannerSelector).hide();
                     $(this.options.saveDraftButtonSelector).removeClass('disabled');
+                    $(this.options.confirmSaveButtonSelector).removeClass('disabled');
 
                     // Remove the draft entries from the sidebar that were deleted.
                     response.forEach((draft) => {
@@ -141,6 +210,8 @@ var OpenEyes = OpenEyes || {};
                     })
 
                     setInterval(() => {this.attemptDraftSave()}, this.options.saveInterval);
+
+
                     this.hideConnectionErrorUI();
                 },
                 error: (err) => {
@@ -151,6 +222,8 @@ var OpenEyes = OpenEyes || {};
     }
 
     EventDraftController.prototype.attemptDraftSave = function() {
+        if (this.disableAutosave) return;
+
         let formData = $(`form#${this.options.formId}`).serialize();
 
         $.ajax(
@@ -198,21 +271,39 @@ var OpenEyes = OpenEyes || {};
                             history.replaceState(null, '', url);
                         }
                         $(this.options.draftIdSelector).val(resp.draft_id);
+                        this.showDraftCancelButton();
                     }
+
+                    let dateFormatOptions = {
+                        hour: "numeric",
+                        minute: "numeric"
+                    };
+
+                    this.lastSuccessfulSave = (new Date()).toLocaleString("en-GB", dateFormatOptions);
 
                     this.hideConnectionErrorUI();
                 },
                 error: (err) => {
-                    this.showConnectionErrorUI();
+                    if (!this.disableAutosave) {
+                        this.showConnectionErrorUI();
+                    }
                 }
             }
         );
     };
 
+    EventDraftController.prototype.showDraftCancelButton = function() {
+        $(this.options.draftCancelButtonSelector).show();
+        $(this.options.cancelButtonSelector).hide();
+    };
+
     EventDraftController.prototype.showConnectionErrorUI = function() {
         $(this.options.connectionErrorTabSelector).show();
-        $(this.options.confirmSaveButtonSelector).addClass('disabled');
-        $(this.options.cancelButtonSelector).addClass('disabled');
+        $(this.options.confirmSaveButtonSelector).hide();
+        $(this.options.connectionErrorConfirmSaveButtonSelector).show();
+        $(this.options.draftCancelButtonSelector).hide();
+        $(this.options.cancelButtonSelector).hide();
+        $(this.options.connectionErrorCancelButtonSelector).show();
     };
 
     EventDraftController.prototype.hideConnectionErrorUI = function() {
@@ -220,8 +311,10 @@ var OpenEyes = OpenEyes || {};
             this.draftSaveConnectionDialog.close();
         }
         $(this.options.connectionErrorTabSelector).hide();
-        $(this.options.confirmSaveButtonSelector).removeClass('disabled');
-        $(this.options.cancelButtonSelector).removeClass('disabled');
+        $(this.options.confirmSaveButtonSelector).show();
+        $(this.options.connectionErrorConfirmSaveButtonSelector).hide();
+        this.showDraftCancelButton();
+        $(this.options.connectionErrorCancelButtonSelector).hide();
     };
 
     EventDraftController.prototype.requireConfirmBeforeSave = function() {

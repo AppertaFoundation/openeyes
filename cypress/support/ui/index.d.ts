@@ -17,13 +17,15 @@ declare namespace Cypress {
         /**
          * Cypress selector shortcut for finding a dom element based on the data-test attribute value as the selector
          * @param selector
+         * @param additionalSelectors
          */
-        getBySel(selector: string): Chainable<any>
+        getBySel(selector: string, additionalSelectors: string): Chainable<any>
         /**
          * Cypress selector shortcut for finding a dom element based on partial data-test attribute value as the selector
          * @param selector
+         * @param additionalSelectors
          */
-        getBySelLike(selector: string): Chainable<any>
+        getBySelLike(selector: string, additionalSelectors: string): Chainable<any>
         /**
          * UI shortcut to remove the side of the named OE Event element
          * @param elementName

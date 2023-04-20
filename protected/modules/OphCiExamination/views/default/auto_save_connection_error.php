@@ -11,7 +11,7 @@
 
         <div class="row">
             <h4>What to do next?</h4>
-            <p>As OE is unable to connect, you are not advised to add work further. A recent draft state has been saved to OE, approx. 60 seconds ago and you'll be able to restore this. We suggest you try and re-test the connection and contact your Support team. Then login again.</p>
+            <p>As OE is unable to connect, you are not advised to add work further. <span class="js-popup-last-draft-save-span">A draft has not yet been saved. </span>We suggest you try and re-test the connection and contact your Support team. Then login again.</p>
         </div>
 
         <div class="popup-actions">
