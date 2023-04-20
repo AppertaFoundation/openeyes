@@ -31,7 +31,7 @@
 <!-- Anaesthetic Details -->
 <?php
     $anaesthetic_element = Element_OphTrOperationnote_Anaesthetic::model()->find('event_id = ?', array($this->event->id));
-    $this->renderElement($anaesthetic_element, 'print', false, false);
+    $this->renderElement($anaesthetic_element, 'print', false);
 ?>
 
 <!-- Per-operative drugs -->
