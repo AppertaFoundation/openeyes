@@ -43,7 +43,7 @@ if (!isset($id) && isset($this->event_type)) {
             <?php if ($element->left_document_id) { ?>
                 <div id="left-eye">
                     <h2>Left eye</h2>
-                    <?php $this->renderPartial('/view_'.$this->getTemplateForMimeType($element->left_document->mimetype), array('element'=>$element, 'index'=>'left_document')); ?>
+                    <?php $this->renderPartial('view_'.$this->getTemplateForMimeType($element->left_document->mimetype), array('element'=>$element, 'index'=>'left_document')); ?>
                     <?php if ($element->left_comment) echo "<br/><b>Comments: </b><br>".nl2br($element->left_comment); ?>
                 </div>
             <?php } ?>
