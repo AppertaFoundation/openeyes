@@ -86,6 +86,7 @@ var OpenEyes = OpenEyes || {};
                 $(window).on('beforeunload', function () {
                     return null;
                 });
+                this.attemptDraftSave(false);
                 $(this.options.cancelButtonSelector)[0].click();
             });
 
@@ -221,7 +222,7 @@ var OpenEyes = OpenEyes || {};
         )
     }
 
-    EventDraftController.prototype.attemptDraftSave = function() {
+    EventDraftController.prototype.attemptDraftSave = function(async = true) {
         if (this.disableAutosave) return;
 
         let formData = $(`form#${this.options.formId}`).serialize();
@@ -230,6 +231,7 @@ var OpenEyes = OpenEyes || {};
             {
                 url: `/${OE_module_class}/Default/saveDraft`,
                 type: 'POST',
+                async: async,
                 dataType: "json",
                 data: {
                     YII_CSRF_TOKEN: YII_CSRF_TOKEN,
