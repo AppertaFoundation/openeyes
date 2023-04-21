@@ -34,7 +34,6 @@
         title: 'Add a new event',
         popupClass: 'oe-create-event-popup oe-popup',
         modal: true,
-        width: 1000,
         minHeight: 400,
         maxHeight: 400,
         dialogClass: 'dialog oe-create-event-popup oe-popup',
@@ -46,7 +45,8 @@
         userSubspecialtyId: undefined,
         userContext: undefined,
         showSteps: false,
-        mode: 'NewEvent'
+        mode: 'NewEvent',
+        popupContentClass: 'oe-popup-content max',
     };
 
     // selectors for finding and hooking into various of the key elements.
