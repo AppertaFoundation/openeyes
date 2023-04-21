@@ -2969,7 +2969,7 @@ class DefaultController extends \BaseEventTypeController
         if ($agrees_to_insecure_email_correspondence === '1') {
             // check if the email is empty
             $contactEmail = Yii::app()->request->getPost('Contact', null);
-            if ($contactEmail['email'] === '') {
+            if (empty($contactEmail['email'])) {
                 $errors[$et_name][] = 'Please enter an email address.';
             }
         }
