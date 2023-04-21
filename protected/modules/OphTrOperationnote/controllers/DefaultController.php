@@ -426,6 +426,8 @@ class DefaultController extends BaseEventTypeController
             if (!empty($template_data)) {
                 $processed_elements = $this->buildEventElements($template_data, [$element]);
             } else {
+                $element->setDefaultOptions($this->patient);
+
                 $processed_elements = [$element];
             }
         } elseif (!empty($template_data)) {

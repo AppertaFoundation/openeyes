@@ -19,9 +19,19 @@ trait MakesApplicationRequests
 {
     use MocksSession;
 
+    protected array $originalServerValues = [];
+
     public function setUpMakesApplicationRequests()
     {
+        $this->originalServerValues = $_SERVER;
+
         $this->removeRequestEventHandling();
+        $this->tearDownCallbacks(function () {
+            $_GET = [];
+            $_REQUEST = [];
+            $_POST = [];
+            $_SERVER = $this->originalServerValues;
+        });
     }
 
     protected function actingAs($user, $for_institution = null)
@@ -36,8 +46,14 @@ trait MakesApplicationRequests
 
     protected function get($url, $crawl_result = true)
     {
+        $parsed_url = parse_url($url);
+        $url = $parsed_url['path'];
+
         $_SERVER['HTTP_USER_AGENT'] = 'phpunit'; // this is used in the main layout template
         $_SERVER['REQUEST_URI'] = $url;
+        // note this is a simple approach that doesn't handle duplicate keys
+        parse_str($parsed_url['query'] ?? '', $_GET);
+
         $requestMock = $this->getMockBuilder(\CHttpRequest::class)
             ->disableOriginalConstructor()
             ->setMethods(['getCsrfToken', 'getPathInfo'])
