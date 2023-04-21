@@ -101,6 +101,7 @@
     <rule ref="PSR1">
         <!-- Too many (nearly all) classes in OE do not conform to this rule -->
         <exclude name="PSR1.Classes.ClassDeclaration.MissingNamespace" />
+        <exclude name="PSR1.Methods.CamelCapsMethodName.NotCamelCaps" />
     </rule>
 
     <rule ref="Generic.Files.LineLength">
