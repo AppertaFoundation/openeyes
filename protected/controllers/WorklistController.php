@@ -151,7 +151,7 @@ class WorklistController extends BaseController
                     'path_steps' => PathwayStepType::getPathTypes(),
                     'pathways' => PathwayType::model()->findAll('active = 1'),
                     'standard_steps' => PathwayStepType::getStandardTypes(),
-                    'custom_steps' => PathwayStepType::getCustomTypes(),
+                    'custom_steps' => PathwayStepType::getCustomTypes(false, true),
                     'sync_interval_options' => $sync_interval_options,
                     'sync_interval_value' => $sync_interval_value,
                     'sync_interval_setting_key' => $sync_interval_setting_key,

@@ -155,7 +155,7 @@ if ($editable) {
             'path_steps' => PathwayStepType::getPathTypes(),
             'pathways' => PathwayType::model()->findAll(),
             'standard_steps' => PathwayStepType::getStandardTypes(),
-            'custom_steps' => PathwayStepType::getCustomTypes(),
+            'custom_steps' => PathwayStepType::getCustomTypes(false, true),
             'show_pathway_selected' => false,
             'show_undo_step' => false,
         ],

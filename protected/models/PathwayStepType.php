@@ -108,6 +108,13 @@ class PathwayStepType extends BaseActiveRecordVersioned
         );
     }
 
+    public function behaviors()
+    {
+        return [
+            'LookupTable' => 'LookupTable',
+        ];
+    }
+
     /**
      * @return array customized attribute labels (name=>label)
      */
@@ -164,10 +171,15 @@ class PathwayStepType extends BaseActiveRecordVersioned
         return parent::model($className);
     }
 
-    private static function basePathTypeCriteria()
+    private static function basePathTypeCriteria($active_only = false)
     {
         $criteria = new CDbCriteria();
         $criteria->addCondition('user_can_create = 1');
+
+        if ($active_only) {
+            $criteria->scopes = ['active'];
+        }
+
         return $criteria;
     }
 
@@ -205,9 +217,9 @@ class PathwayStepType extends BaseActiveRecordVersioned
     /**
      * @return array|CActiveRecord|mixed|PathwayStepType[]|null
      */
-    public static function getCustomTypes($is_admin = false)
+    public static function getCustomTypes($is_admin = false, $active_only = false)
     {
-        $criteria = self::basePathTypeCriteria();
+        $criteria = self::basePathTypeCriteria($active_only);
         $criteria->addCondition('`group` IS NULL');
         if (!$is_admin) {
             $criteria->with = ['institutions'];
