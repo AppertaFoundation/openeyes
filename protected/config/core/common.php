@@ -425,6 +425,8 @@ $config = array(
         // In most instances the location URL is derived from the WSDL provided above,
         // but for local testing using SoapUI this will need to be manually specified.
         'correspondence_export_location_url' => !empty(trim(getenv("OE_CORRESPONDENCE_EXPORT_URL"))) ? trim(getenv("OE_CORRESPONDENCE_EXPORT_URL")) : null,
+        // which institutions the correspondence export is available for - if empty then all. Note that actual list is set towards the end of this file by OE_CORRESPONDENCE_EXPORT_INSTITUTIONS
+        'correspondence_export_institutions' => null,
         // specifies which specialties are available in patient summary for diagnoses etc (use specialty codes)
         'specialty_codes' => array(130),
         // specifies the order in which different specialties are laid out (use specialty codes)
@@ -1115,5 +1117,14 @@ $config["params"]["local_users"] = array_map('trim', explode(',', $local_users))
  */
 $special_usernames = !empty(trim(getenv('OE_SPECIAL_USERS'))) ? getenv('OE_SPECIAL_USERS') : 'api, docman_user';
 $config["params"]["special_usernames"] = array_map('trim', explode(',', $special_usernames));
+
+/**
+ * Setup the correspondence_export_institutions parameter. If the environment variable named OE_CORRESPONDENCE_EXPORT_INSTITUTIONS is set then
+ * use it to populate the array. Else, set to null
+ * The OE_CORRESPONDENCE_EXPORT_INSTITUTIONS environment variable should be a space separated string
+ */
+$correspondence_export_institutions = trim(getenv('OE_CORRESPONDENCE_EXPORT_INSTITUTIONS'));
+$correspondence_export_institutions = !empty($correspondence_export_institutions) ? explode(" ", $correspondence_export_institutions) : null;
+$config["params"]["correspondence_export_institutions"] = $correspondence_export_institutions;
 
 return $config;

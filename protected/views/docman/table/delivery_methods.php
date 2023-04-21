@@ -26,6 +26,11 @@
     $print_output = null;
     $email_output = null;
     $email_delayed_output = null;
+    $email_delayed_enabled = \SettingMetadata::model()->getSetting('send_email_delayed') == 'on';
+    $email_immediate_enabled = \SettingMetadata::model()->getSetting('send_email_immediately') == 'on';
+    $email_enabled = $email_delayed_enabled || $email_immediate_enabled;
+    $gp_label = \SettingMetadata::model()->getSetting('gp_label');
+    $electronic_sending_method_label = \SettingMetadata::model()->getSetting('electronic_sending_method_label');
     $is_new_record = !isset($target) || $target->isNewRecord ? true : false;
 if (isset($target->document_output)) {
     foreach ($target->document_output as $output_key => $doc_output) {
@@ -52,7 +57,7 @@ if (isset($target->document_output)) {
 }
 ?>
 
-<?php if ($contact_type == \SettingMetadata::model()->getSetting('gp_label')) : ?>
+<?php if ($contact_type == $gp_label) : ?>
     <?php if ($can_send_electronically) : ?>
         <div>
             <label class="inline highlight electronic-label docman">
@@ -64,7 +69,7 @@ if (isset($target->document_output)) {
                 $is_checked = 'checked disabled';
                 ?>
                 <input type="checkbox" value="Docman" name="DocumentTarget_<?php echo $row_index; ?>_DocumentOutput_<?php echo $pre_output_key; ?>_output_type"
-                    <?php echo $is_checked; ?>> <?php echo (( null !== SettingMetadata::model()->getSetting('electronic_sending_method_label')) ? SettingMetadata::model()->getSetting('electronic_sending_method_label') : 'Electronic'); ?>
+                    <?php echo $is_checked; ?>> <?php echo ($electronic_sending_method_label ?? 'Electronic'); ?>
                 <input type="hidden" value="Docman" name="DocumentTarget[<?php echo $row_index; ?>][DocumentOutput][<?php echo $pre_output_key; ?>][output_type]" >
             </label>
         </div>
@@ -133,9 +138,9 @@ if (isset($target->document_output)) {
 <div>
     <label class="inline highlight">
         <?php
-        $is_checked = ($print_output || $is_new_record) && !$email;
+        $is_checked = ($print_output || $is_new_record) && (empty($email) || !$email_enabled);
         $is_post_checked = isset($_POST['DocumentTarget'][$row_index]['DocumentOutput'][$pre_output_key]['output_type']);
-        if ($contact_type == \SettingMetadata::model()->getSetting('gp_label') || $contact_type == 'INTERNALREFERRAL') {
+        if ($contact_type == $gp_label || $contact_type == 'INTERNALREFERRAL') {
             $is_checked = $is_post_checked || $print_output;
         } else {
             $is_checked = !(Yii::app()->request->isPostRequest && !$is_post_checked) && $is_checked;
@@ -155,7 +160,7 @@ if (isset($target->document_output)) {
 
 <?php $pre_output_key++; ?>
 
-<?php if ($contact_type != 'INTERNALREFERRAL' && SettingMetadata::model()->getSetting('send_email_immediately') === "on") : ?>
+<?php if ($contact_type != 'INTERNALREFERRAL' && $email_immediate_enabled) : ?>
 <div>
     <label class="inline highlight">
         <?php
@@ -229,7 +234,7 @@ if (isset($target->document_output)) {
 
 <?php endif; ?>
 
-<?php if (SettingMetadata::model()->getSetting('send_email_delayed') === "on") : ?>
+<?php if ($email_delayed_enabled) : ?>
 <div>
     <label class="inline highlight">
         <?php
