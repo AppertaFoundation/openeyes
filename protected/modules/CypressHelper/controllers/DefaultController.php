@@ -129,13 +129,24 @@ class DefaultController extends \CController
 
     public function actionGetEventCreationUrl($patientId, $moduleName)
     {
+        $patient = Patient::model()->findByPk($patientId);
+        if (!$patient) {
+            throw new \CHttpException(404, 'Patient must exist to generate event creation url.');
+        }
+
         $eventTypeId = EventType::model()->findByAttributes([
             'class_name' => $moduleName
         ])->id;
 
-        $firmId = $this->getApp()->session['selected_firm_id'];
+        /** @var Firm $current_firm */
+        $current_firm = $this->getApp()->session->getSelectedFirm();
+        $url = "/patientEvent/create?patient_id={$patientId}&event_type_id={$eventTypeId}&context_id={$current_firm->id}";
+
+        $episode = $patient->getOpenEpisodeOfSubspecialty($current_firm->getSubspecialtyID());
+        $url .= $episode ? "&episode_id={$episode->id}" : "&service_id={$current_firm->id}";
+
         $this->sendJsonResponse([
-            'url' => "/patientEvent/create?patient_id={$patientId}&event_type_id={$eventTypeId}&context_id={$firmId}&service_id={$firmId}"
+            'url' => $url
         ]);
     }
 
