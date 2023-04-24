@@ -17,6 +17,7 @@
  */
 
 ?>
+
 <?php
 /**
  * @var $worklist Worklist|Array
@@ -89,6 +90,7 @@ $is_ae_worklist = isset($worklist->id) && Yii::app()->db->cache(1000)->createCom
             <th>Time</th>
             <th>Clinic</th>
             <th>Patient</th>
+            <?php if (!$is_printing) : ?>
             <th><!-- quicklook --></th>
             <th>Pathway</th>
             <th>
@@ -118,6 +120,9 @@ $is_ae_worklist = isset($worklist->id) && Yii::app()->db->cache(1000)->createCom
             <th>
                 <!-- Pathway completion action icon -->
             </th>
+            <?php else : ?>
+                <th>Assignee</th>
+            <?php endif; ?>
         </tr>
         </thead>
         <tbody>
@@ -144,7 +149,7 @@ $is_ae_worklist = isset($worklist->id) && Yii::app()->db->cache(1000)->createCom
                             <?= $num_ae_visits === 1 && $is_ae_worklist ? '<li>First Attendance</li>' : null ?>
                             <?php if (!empty($wl_patient->worklist->displayed_mapping_attributes)) : ?>
                                 <?php foreach ($wl_patient->worklist->displayed_mapping_attributes as $attr) : ?>
-                                    <?= $wl_patient->getWorklistAttributeValue($attr) ? '<li>'.$wl_patient->getWorklistAttributeValue($attr).'</li>' : null ?>
+                                    <?= $wl_patient->getWorklistAttributeValue($attr) ? '<li>' . $wl_patient->getWorklistAttributeValue($attr) . '</li>' : null ?>
                                 <?php endforeach; ?>
                             <?php endif; ?>
                         </ul>
@@ -154,10 +159,11 @@ $is_ae_worklist = isset($worklist->id) && Yii::app()->db->cache(1000)->createCom
                     <?php $this->renderPartial('application.widgets.views.PatientMeta', array('patient' => $wl_patient->patient, 'coreapi' => $coreapi, 'pathway' => $wl_patient->pathway)); ?>
 
                 </td>
+                <?php if (!$is_printing) : ?>
                 <td id="oe-patient-details" class="js-oe-patient" data-patient-id="<?= $wl_patient->patient_id ?>">
                     <i class="eye-circle medium pad oe-i js-worklist-btn" onmouseenter="onMouseEnterPatientQuickOverview(this)" onmouseleave="hidePatientQuickOverview()" onclick="onClickPatientQuickOverview(this)" id="js-worklist-btn"></i>
                 </td>
-                <td class="js-pathway-container">
+                    <td class="js-pathway-container">
                     <!--Render full pathway in a separate view. -->
                     <?php $this->renderPartial(
                         '//worklist/_clinical_pathway',
@@ -170,10 +176,12 @@ $is_ae_worklist = isset($worklist->id) && Yii::app()->db->cache(1000)->createCom
                         <div class="checkbox-btn"></div>
                     </label>
                 </td>
+                <?php endif; ?>
                 <td class="js-pathway-assignee" data-id="<?= $wl_patient->pathway->owner_id ?? null ?>">
                     <!-- Assignee -->
                     <?= $wl_patient->pathway && $wl_patient->pathway->owner ? $wl_patient->pathway->owner->getInitials() : null ?>
                 </td>
+                <?php if (!$is_printing) : ?>
                 <td>
                     <!-- Priority/Risk -->
                     <?php
@@ -183,7 +191,6 @@ $is_ae_worklist = isset($worklist->id) && Yii::app()->db->cache(1000)->createCom
                         echo $exam_api->getLatestOutcomeRiskStatus($wl_patient->patient, $wl_patient->worklist);
                     }
                     ?>
-
                 </td>
                 <td>
                     <span class="oe-pathstep-btn buff comments <?= $wl_patient->pathway && $wl_patient->pathway->checkForComments() ? 'comments-added' : '' ?>"
@@ -242,6 +249,7 @@ $is_ae_worklist = isset($worklist->id) && Yii::app()->db->cache(1000)->createCom
                     ?>
                     <i class="<?= $class ?>" data-tooltip-content="<?= $tooltip_text ?>" data-visit-id="<?= $wl_patient->pathway->id ?? null ?>"></i>
                 </td>
+                <?php endif; ?>
             </tr>
         <?php endforeach; ?>
         </tbody>
