@@ -28,18 +28,17 @@ $copy = $data['copy'];
 $header_text = null;
 $footer_text = null;
 
-$settings = new SettingMetadata();
-$print_mode = $settings->getSetting('prescription_form_format');
+$print_mode = \SettingMetadata::model()->getSetting('prescription_form_format');
 
 $allowed_tags = '<b><br><div><em><h1><h2><h3><h4><h5><h6><hr><i><ul><ol><li><p><small><span><strong><sub><sup>
 <u><wbr><table><thead><tbody><tfoot><tr><th><td><colgroup>';
 
-$header_param = Yii::app()->params['prescription_boilerplate_header'];
+$header_param = \SettingMetadata::model()->getSetting('prescription_boilerplate_header');
 if ($header_param !== null) {
     $header_text = strip_tags($header_param, $allowed_tags);
 }
 
-$footer_param = Yii::app()->params['prescription_boilerplate_footer'];
+$footer_param = \SettingMetadata::model()->getSetting('prescription_boilerplate_footer');
 if ($footer_param !== null) {
     $footer_text = strip_tags($footer_param, $allowed_tags);
 }
