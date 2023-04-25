@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -14,6 +15,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <?php
@@ -67,14 +69,11 @@ if (!isset($new_comment)) {
                         </td>
                     </tr>
                     <?php } ?>
-                    <?php if ($element->message_type->name === 'Query') { ?>
                     <tr>
-                        <th>Query</th>
-                        <td>
-                            <?= $element->last_comment && $element->last_comment->user->id !== $element->created_user_id ? 'Reply sent by recipient' : 'Reply requested by sender' ?>
-                        </td>
-                    </tr>
-                    <?php } ?>
+                <td><?=\CHtml::encode($element->getAttributeLabel('message_type_id')) ?></td>
+                <td><?= $element->message_type ? $element->message_type->name : 'None' ?></td>
+            </tr>
+                    
                     <?php if ($element->urgent) { ?>
                     <tr>
                         <th>Priority</th>

@@ -87,15 +87,27 @@ if ($element->isNewRecord) {
               </td>
             </tr>
             <tr>
-              <td>Reply</td>
-              <td>
-                <label class="highlight inline">
-                  <input class="js-message-is-reply" type="checkbox" value="1" <?= $element->message_type_id === $query_type_id ? 'checked' : '' ?> />
-                  Query <i class="oe-i status-query small pad"></i> - track reply from recipient
-                </label>
-                <?= $form->hiddenField($element, 'message_type_id', ['class' => 'js-message-type']) ?>
-              </td>
-            </tr>
+          <td>
+            Type
+          </td>
+          <td>
+              <?php echo $form->radioButtons(
+                  $element,
+                  'message_type_id',
+                  CHtml::listData(
+                      OEModule\OphCoMessaging\models\OphCoMessaging_Message_MessageType::model()->findAll(array('order' => 'display_order asc')),
+                      'id',
+                      'name'
+                  ),
+                  $element->message_type_id ? $element->message_type_id : 2,
+                  false,
+                  false,
+                  false,
+                  false,
+                  array('nowrapper' => true)
+              ) ?>
+          </td>
+        </tr>
             <tr>
               <td>Priority</td>
               <td>

@@ -75,6 +75,7 @@ if (!$messages->totalItemCount) {
         <col class="cols-4">
         <col class="cols-icon">
         <col class="cols-1">
+        <col class="cols-1">
         <col class="cols-2">
         <col class="cols-4">
         <col class="cols-1">
@@ -83,7 +84,7 @@ if (!$messages->totalItemCount) {
         <tr>
             <th>Patient</th>
             <th></th>
-            <th></th>
+            <th>Type</th>
             <th>
                 <a href="<?= $date_sort_uri ?>" class="<?= $date_class ?>">Date</a>
             </th>
@@ -142,24 +143,31 @@ if (!$messages->totalItemCount) {
                 <?php if ($message->urgent) { ?>
                     <i class="oe-i status-urgent small js-has-tooltip" data-tooltip-content="Urgent!"></i>
                 <?php } ?>
-            </td>
-            <td class="message-status nowrap">
-            <?php if (count($message->cc_recipients) > 1) {
-                $copied_users = $message->cc_recipients;
-                foreach ($copied_users as $copied_user) {
-                    if ($mailbox && $copied_user->mailbox_id != $message->for_the_attention_of && $copied_user->mailbox_id == $mailbox->id) {
-                        echo '<i class="oe-i duplicate small pad-right no-click"></i>';
+                <?php
+                if ($message->message_type->reply_required) {
+                    if (isset($message->last_comment)) {
+                        echo '<i class="oe-i status-query-reply small js-has-tooltip" data-tt-type="basic" data-tooltip-content="Query reply"></i>';
+                    } else {
+                        echo '<i class="oe-i status-query small js-has-tooltip" data-tt-type="basic" data-tooltip-content="Query"></i>';
                     }
                 }
-            }
-            if ($message->message_type->name === 'Query') {
-                if (isset($message->last_comment)) {
-                    echo '<i class="oe-i status-query-reply small js-has-tooltip" data-tt-type="basic" data-tooltip-content="Query reply"></i>';
-                } else {
-                    echo '<i class="oe-i status-query small js-has-tooltip" data-tt-type="basic" data-tooltip-content="Query"></i>';
+                ?>
+            </td>
+            <td class="message-status nowrap">
+                <?php if (count($message->cc_recipients) > 1) {
+                    $copied_users = $message->cc_recipients;
+                    foreach ($copied_users as $copied_user) {
+                        if ($mailbox && $copied_user->mailbox_id != $message->for_the_attention_of && $copied_user->mailbox_id == $mailbox->id) {
+                            echo '<i class="oe-i duplicate small pad-right no-click"></i>';
+                        }
+                    }
                 }
-            }
-            ?>
+                if ($message->message_type->name === 'Query') {
+                    echo 'Qry.';
+                } else {
+                    echo substr(\OEModule\OphCoMessaging\models\OphCoMessaging_Message_MessageType::model()->findByPk($message->message_type_id)->name, 0, 3) . ".";
+                }
+                ?>
             </td>
             <td><?= Helper::convertMySQL2NHS($message_date) ?></td>
             <td>
