@@ -1,4 +1,5 @@
 <?php
+
 use OE\concerns\CanBeFaked;
 
 /**
@@ -608,6 +609,8 @@ class SettingMetadata extends BaseActiveRecordVersioned
         $logo_helper = new LogoHelper();
         $logos = $logo_helper->getLogoURLs(isset($site) ? $site->id : null);
 
+        $user = $element_letter->event->user ?? Yii::app()->session['user'];
+
         return array_filter(array(
             'to_address' => array('label' => 'Recipient Address', 'value' => $recipient_address),
             'source_address' => array('label' => 'Source Address', 'value' => isset($element_letter) && !empty($element_letter->source_address) ? self::makeSpan($element_letter->source_address) : null),
@@ -624,6 +627,10 @@ class SettingMetadata extends BaseActiveRecordVersioned
             'site_postcode' => isset($site) ? array('label' => 'Site Postcode', 'value' => isset($site_address) ? self::makeSpan($site_address->postcode) : null) : null,
             'primary_logo' => array('label' => 'Primary Logo', 'value' => !empty($logos['primaryLogo']) ? self::makeImg($logos['primaryLogo']) : null),
             'secondary_logo' => array('label' => 'Secondary Logo', 'value' => !empty($logos['secondaryLogo']) ? self::makeImg($logos['secondaryLogo']) : null),
+            'user_title' => isset($user) ? array('label' => 'User Title', 'value' => self::makeSpan($user->title)) : null,
+            'user_first_name' => isset($user) ? array('label' => 'User First Name', 'value' => self::makeSpan($user->first_name)) : null,
+            'user_last_name' => isset($user) ? array('label' => 'User Last Name', 'value' => self::makeSpan($user->last_name)) : null,
+            'user_name' => isset($user) ? array('label' => 'User Name', 'value' => self::makeSpan($user->first_name . ' ' . $user->last_name)) : null,
         ));
     }
 
