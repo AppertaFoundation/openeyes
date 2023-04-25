@@ -417,7 +417,7 @@ class PatientIdentifierHelper
     public static function getPaddedTermRegexResult(string $term, string $validate_regex, string $pad = null)
     {
         if ($validate_regex) {
-            preg_match($validate_regex, $term, $matches);
+            preg_match(preg_quote($validate_regex), $term, $matches);
 
             if (isset($matches[0])) {
                 return $matches[0];
