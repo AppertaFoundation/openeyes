@@ -96,7 +96,8 @@ $template_data = !empty($template_data[$element->templateIndex]) ? $template_dat
                 'cols' => 30,
                 'class' => 'cols-full autosize',
                 'id' => get_class($element) . '_comments_' . $numHash,
-                'data-prefilled-value' => $template_data['comments'] ?? ''
+                'data-prefilled-value' => $template_data['comments'] ?? '',
+                'data-test' => 'generic-procedure-comments'
               )
           ) ?>
         </div>
