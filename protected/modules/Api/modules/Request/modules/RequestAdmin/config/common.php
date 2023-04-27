@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Copyright Apperta Foundation 2020
  * This file is part of OpenEyes.
@@ -30,11 +31,6 @@ $config = [
                 'Request Type' => [
                     'module' => 'Api',
                     'uri' => '/Api/Request/admin/requestType/index',
-                    'restricted' => array('admin'),
-                ],
-                'Routine Library' => [
-                    'module' => 'Api',
-                    'uri' => '/Api/Request/admin/routineLibrary/index',
                     'restricted' => array('admin'),
                 ],
                 'Request Queue' => [

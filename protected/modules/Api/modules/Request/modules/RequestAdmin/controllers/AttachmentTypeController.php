@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Copyright Apperta Foundation 2020
  * This file is part of OpenEyes.
@@ -47,7 +48,7 @@ class AttachmentTypeController extends \AdminController
      */
     public function actionAdd()
     {
-        $model = new AttachmentType;
+        $model = new AttachmentType();
         // Uncomment the following line if AJAX validation is needed
         // $this->performAjaxValidation($model);
 
@@ -60,7 +61,7 @@ class AttachmentTypeController extends \AdminController
 
         $this->render('/generic/edit', array(
             'model' => $model,
-            'title' => 'Add Routine library'
+            'title' => 'Add Attachment type'
         ));
     }
 
