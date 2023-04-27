@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -52,7 +53,7 @@ class DefaultController extends OphTrOperationbookingEventController
     protected function beforeAction($action)
     {
         if (!$this->isPrintAction($action->id)) {
-            Yii::app()->clientScript->registerScriptFile($this->assetPath.'/js/booking.js');
+            Yii::app()->clientScript->registerScriptFile($this->assetPath . '/js/booking.js');
             Yii::app()->assetManager->registerScriptFile('js/jquery.validate.min.js');
             Yii::app()->assetManager->registerScriptFile('js/additional-validators.js');
 
@@ -203,7 +204,7 @@ class DefaultController extends OphTrOperationbookingEventController
     public function actionCreate()
     {
         $cancel_url = \Yii::app()->createURL("/patient/summary/", array("id" => $this->patient->id));
-        $create_examination_url = Yii::app()->createAbsoluteUrl('site/index').'OphCiExamination/Default/create?patient_id=' . $this->patient->id;
+        $create_examination_url = Yii::app()->createAbsoluteUrl('site/index') . 'OphCiExamination/Default/create?patient_id=' . $this->patient->id;
 
         $this->jsVars['examination_events_count'] = $this->getExaminationEventCount();
         $this->jsVars['cancel_url'] = $cancel_url;
@@ -443,7 +444,7 @@ class DefaultController extends OphTrOperationbookingEventController
             }
 
             foreach ($data['AnaestheticType'] as $anaesthetic_type_id) {
-                if ( !array_key_exists($anaesthetic_type_id, $type_assessments_by_id) ) {
+                if (!array_key_exists($anaesthetic_type_id, $type_assessments_by_id)) {
                     $anaesthetic_type_assesment = new \OphTrOperationbooking_AnaestheticAnaestheticType();
                 } else {
                     $anaesthetic_type_assesment = $type_assessments_by_id[$anaesthetic_type_id];
@@ -635,8 +636,10 @@ class DefaultController extends OphTrOperationbookingEventController
                     $op = Element_OphTrOperationbooking_Operation::model()->findByAttributes(array('event_id' => $ev->id));
 
                     // check operation still valid, and that it is for a matching eye.
-                    if (!$op->operation_cancellation_date &&
-                            ($op->eye_id == Eye::BOTH || $eye->id == Eye::BOTH || $op->eye_id == $eye->id)) {
+                    if (
+                        !$op->operation_cancellation_date &&
+                            ($op->eye_id == Eye::BOTH || $eye->id == Eye::BOTH || $op->eye_id == $eye->id)
+                    ) {
                         foreach ($op->procedures as $existing_proc) {
                             if (in_array($existing_proc->id, array_keys($procs_by_id))) {
                                 if (!isset($matched_procedures[$existing_proc->id])) {
@@ -676,7 +679,7 @@ class DefaultController extends OphTrOperationbookingEventController
         $operation = $this->operation;
 
         if ($operation->status->name == 'Cancelled') {
-            return $this->redirect(array('default/view/'.$this->event->id));
+            return $this->redirect(array('default/view/' . $this->event->id));
         }
 
         $errors = array();
@@ -772,21 +775,24 @@ class DefaultController extends OphTrOperationbookingEventController
                 'delimiter' => "\n",
             )),
         ));
+
+        return true;
     }
 
-    public function actionAdmissionLetterPdf() {
+    public function actionAdmissionLetterPdf()
+    {
 
         $this->printInit(Yii::app()->request->getParam('id'));
         $wk = Yii::app()->puppeteer;
         $wk->setDocRef($this->event->docref);
         $wk->setPatient($this->event->episode->patient);
         $wk->setBarcode($this->event->barcodeSVG);
-        $wk->savePageToPDF($this->event->imageDirectory, $this->pdf_print_suffix, '', 'http://localhost/OphTrOperationbooking/default/admissionLetter/'.$this->event->id);
+        $wk->savePageToPDF($this->event->imageDirectory, $this->pdf_print_suffix, '', 'http://localhost/OphTrOperationbooking/default/admissionLetter/' . $this->event->id);
 
-        $pdf = $this->event->imageDirectory."/$this->pdf_print_suffix.pdf";
+        $pdf = $this->event->imageDirectory . "/$this->pdf_print_suffix.pdf";
 
         header('Content-Type: application/pdf');
-        header('Content-Length: '.filesize($pdf));
+        header('Content-Length: ' . filesize($pdf));
 
         readfile($pdf);
         @unlink($pdf);
@@ -819,18 +825,19 @@ class DefaultController extends OphTrOperationbookingEventController
         echo $this->pdf_print_html;
     }
 
-    public function actionPrintAdmissionFormPdf() {
+    public function actionPrintAdmissionFormPdf()
+    {
         $this->initWithEventId(@$_GET['id']);
         $wk = Yii::app()->puppeteer;
         $wk->setDocRef($this->event->docref);
         $wk->setPatient($this->event->episode->patient);
         $wk->setBarcode($this->event->barcodeSVG);
-        $wk->savePageToPDF($this->event->imageDirectory, $this->pdf_print_suffix, '', 'http://localhost/OphTrOperationbooking/default/admissionForm/'.$this->event->id);
+        $wk->savePageToPDF($this->event->imageDirectory, $this->pdf_print_suffix, '', 'http://localhost/OphTrOperationbooking/default/admissionForm/' . $this->event->id);
 
-        $pdf = $this->event->imageDirectory."/$this->pdf_print_suffix.pdf";
+        $pdf = $this->event->imageDirectory . "/$this->pdf_print_suffix.pdf";
 
         header('Content-Type: application/pdf');
-        header('Content-Length: '.filesize($pdf));
+        header('Content-Length: ' . filesize($pdf));
 
         readfile($pdf);
         @unlink($pdf);
@@ -844,7 +851,7 @@ class DefaultController extends OphTrOperationbookingEventController
                 parent::actionDelete($id);
             } else {
                 Yii::app()->user->setFlash('error.error', "Please cancel this operation before deleting it.");
-                return $this->redirect(array('default/view/'.$this->event->id));
+                return $this->redirect(array('default/view/' . $this->event->id));
             }
         } elseif ($this->eur_res) {
             parent::actionDelete($id);
@@ -941,11 +948,11 @@ class DefaultController extends OphTrOperationbookingEventController
     {
         $procedure_ids = array_map('intval', explode(',', Yii::app()->request->getParam('id')));
         $criteria = new \CDbCriteria();
-        $criteria->addCondition('low_complexity_criteria IS NOT NULL');
+        $criteria->addCondition('low_complexity_criteria IS NOT NULL AND low_complexity_criteria != ""');
         $criteria->addInCondition("id", $procedure_ids);
 
         $procedures = Procedure::model()->findAll($criteria);
-        if (count($procedures)===0) {
+        if (count($procedures) === 0) {
             $response = null;
         } else {
             $response = [
