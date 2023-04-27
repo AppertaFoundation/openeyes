@@ -1,7 +1,5 @@
 $(document).ready(function () {
 
-    autosize($('.autosize'));
-
     const $globalFirmRights = $("input[name='User[global_firm_rights]']");
     const $ssoGlobalFirmRights = $("input[name='SsoDefaultRights[global_firm_rights]']");
     const $ssoDefaultEnabled = $("input[name='SsoDefaultRights[default_enabled]']");

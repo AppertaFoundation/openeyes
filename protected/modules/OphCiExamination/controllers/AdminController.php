@@ -127,8 +127,8 @@ class AdminController extends \ModuleAdminController
 
                 Audit::add('admin', 'update', serialize($model->attributes), false, array('module' => 'OphCiExamination', 'model' => 'OphCiExamination_Instrument'));
                 Yii::app()->user->setFlash('success', 'IOP Instrument updated');
-            } catch (Exception $e) {
-                throw new CHttpException(500, $e->getMessage(), true);
+            } catch (\Exception $e) {
+                throw new \CHttpException(500, $e->getMessage(), true);
             }
 
             $this->redirect(array('ViewIOPInstruments'));
@@ -178,8 +178,8 @@ class AdminController extends \ModuleAdminController
                     Audit::add('admin', 'create', serialize($model->attributes), false, array('module' => 'OphCiExamination', 'model' => 'OphCiExamination_Instrument'));
                     Yii::app()->user->setFlash('success', 'IOP Instrument created');
                 }
-            } catch (Exception $e) {
-                throw new CHttpException(500, $e->getMessage(), true);
+            } catch (\Exception $e) {
+                throw new \CHttpException(500, $e->getMessage(), true);
             }
 
             $this->redirect(array('ViewIOPInstruments'));
@@ -462,10 +462,35 @@ class AdminController extends \ModuleAdminController
     {
         Audit::add('admin', 'list', null, false, array('module' => 'OphCiExamination', 'model' => 'OphCiExamination_Workflow'));
 
+        $institution_id = \Yii::app()->request->getParam('institution_id');
+
+        // Null $institution_id when unset -> selected institution at LEVEL_INSTITUTION,
+        // empty string in $institution_id when set to 'all institutions' in the view -> installation level data at LEVEL_INSTALLATION,
+        // otherwise find the institution and pass it in at LEVEL_INSTITUTION
+        if ($institution_id === null || !$this->checkAccess('admin')) {
+            $institution = Yii::app()->session->getSelectedInstitution();
+        } else {
+            $institution = \Institution::model()->findByPk($institution_id);
+        }
+
+        if ($institution === null) {
+            $workflows = models\OphCiExamination_Workflow::model()->findAllAtLevels(
+                \ReferenceData::LEVEL_INSTALLATION,
+                ['order' => 'name asc']
+            );
+        } else {
+            $workflows = models\OphCiExamination_Workflow::model()->findAllAtLevels(
+                \ReferenceData::LEVEL_INSTITUTION,
+                ['order' => 'name asc'],
+                $institution
+            );
+        }
+
         $this->render('list_OphCiExamination_Workflow', array(
                 'model_class' => 'OphCiExamination_Workflow',
-                'model_list' => models\OphCiExamination_Workflow::model()->findAll(['condition' => 'institution_id = :institution_id', 'order' => 'name asc', 'params' => [':institution_id' => Yii::app()->session['selected_institution_id']]]),
+                'model_list' => $workflows,
                 'title' => 'Workflows',
+                'institution_id' => $institution->id ?? '',
         ));
     }
 
@@ -475,14 +500,8 @@ class AdminController extends \ModuleAdminController
         $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $this->getModule()->name . '.assets'), true, -1);
 
         if (isset($_POST[\CHtml::modelName($model)])) {
-            $model->attributes = $_POST[\CHtml::modelName($model)];
-
-            if ($model->save()) {
-                Audit::add('admin', 'create', serialize($model->attributes), false, array('module' => 'OphCiExamination', 'model' => 'OphCiExamination_Workflow'));
-                Yii::app()->user->setFlash('success', 'Workflow added');
-
-                $this->redirect(array('editWorkflow', 'id' => $model->getPrimaryKey()));
-            }
+            // If there are validation errors, the returned model will contain them. It will redirect on success.
+            $model = $this->saveWorkflow($model, \Yii::app()->request->getParam(\CHtml::modelName($model)), 'create');
         }
 
         $this->render('update', array(
@@ -499,16 +518,8 @@ class AdminController extends \ModuleAdminController
         $model = models\OphCiExamination_Workflow::model()->findByPk((int) $id);
 
         if (isset($_POST[\CHtml::modelName($model)])) {
-            $updated_attributes = $_POST[\CHtml::modelName($model)];
-            $model->name = $updated_attributes['name'];
-            $model->institution_id = $updated_attributes['institution_id'];
-
-            if ($model->save()) {
-                Audit::add('admin', 'update', serialize($model->attributes), false, array('module' => 'OphCiExamination', 'model' => 'OphCiExamination_ElementSet'));
-                Yii::app()->user->setFlash('success', 'Workflow updated');
-
-                $this->redirect(array('viewWorkflows'));
-            }
+            // If there are validation errors, the returned model will contain them. It will redirect on success.
+            $model = $this->saveWorkflow($model, \Yii::app()->request->getParam(\CHtml::modelName($model)), 'update');
         }
 
         $this->render('update', array(
@@ -777,20 +788,34 @@ class AdminController extends \ModuleAdminController
     {
         Audit::add('admin', 'list', null, false, array('module' => 'OphCiExamination', 'model' => 'OphCiExamination_Workflow_Rule'));
 
+        $institution_id = \Yii::app()->request->getParam('institution_id', null);
+
+        if ($institution_id === null || !$this->checkAccess('admin')) {
+            $institution = Yii::app()->session->getSelectedInstitution();
+        } else {
+            $institution = \Institution::model()->findByPk($institution_id);
+        }
+
+        $workflows_criteria = models\OphCiExamination_Workflow::model()->getCriteriaForLevels(
+            $institution ? \ReferenceData::LEVEL_INSTITUTION : \ReferenceData::LEVEL_INSTALLATION,
+            null,
+            $institution
+        );
+
         $this->render('list_OphCiExamination_Workflow_Rules', array(
                 'model_class' => 'OphCiExamination_Workflow_Rule',
                 'model_list' => models\OphCiExamination_Workflow_Rule::model()->findAll(
-                    array(
-                        'condition' => 'workflow_id IN (SELECT id FROM ophciexamination_workflow WHERE institution_id=:institution_id)',
+                    [
+                        'with' => ['workflow' => $workflows_criteria->toArray()],
                         'order' => 't.id asc',
-                        'params' => [':institution_id' => Yii::app()->session['selected_institution_id']]
-                    )
+                    ]
                 ),
                 'title' => 'Workflow rules',
+                'institution_id' => $institution->id ?? '',
         ));
     }
 
-    public function actionGetInstitutionFirms($id)
+    public function actionGetInstitutionFirms($id = null)
     {
         $firms = Yii::app()->db->createCommand()
             ->select('id, name')
@@ -801,13 +826,20 @@ class AdminController extends \ModuleAdminController
         $this->renderJSON($firms);
     }
 
-    public function actionGetInstitutionWorkflows($id)
+    public function actionGetInstitutionWorkflows($id = null)
     {
-        $workflows = Yii::app()->db->createCommand()
-            ->select('id, name')
-            ->from('ophciexamination_workflow')
-            ->where('institution_id = :id', [':id' => $id])
-            ->queryAll();
+        $institution = \Institution::model()->findByPk($id);
+
+        $workflows = models\OphCiExamination_Workflow::model()->findAllAtLevels(
+            $institution ? \ReferenceData::LEVEL_INSTITUTION : \ReferenceData::LEVEL_INSTALLATION,
+            ['select' => 't.id, t.name', 'order' => 'name asc'],
+            $institution
+        );
+
+        $workflows = array_map(
+            static function ($workflow) { return ['id' => $workflow->id, 'name' => $workflow->name]; },
+            $workflows
+        );
 
         $this->renderJSON($workflows);
     }
@@ -1335,22 +1367,6 @@ class AdminController extends \ModuleAdminController
         );
     }
 
-    public function actionMedicationManagementSets()
-    {
-        $this->genericAdmin(
-            'Medication Management drug sets',
-            models\MedicationManagementRefSet::class,
-            array(
-                'description' => 'Medications in these sets will be automatically be pulled into the medication management element.',
-                'label_field' => 'ref_set_id',
-                'extra_fields' => array(
-                    array('field' => 'ref_set_id', 'type' => 'lookup',
-                        'model' => \MedicationSet::class, ),
-                ),
-            )
-        );
-    }
-
     public function actionChangeWorkflowStepActiveStatus()
     {
         $step = models\OphCiExamination_ElementSet::model()->find('workflow_id=? and id=?', array($_POST['workflow_id'], $_POST['element_set_id']));
@@ -1381,5 +1397,38 @@ class AdminController extends \ModuleAdminController
         Audit::add('admin', 'list', null, false, array('module' => 'OphCiExamination', 'model' => 'OphCiExamination_AE_RedFlags_Options'));
 
         $this->genericAdmin('Edit Red Flags Options', 'OEModule\OphCiExamination\models\OphCiExamination_AE_RedFlags_Options', ['div_wrapper_class' => 'cols-5', 'return_url' => '/OphCiExamination/admin/redFlags'], null, true);
+    }
+
+    private function saveWorkflow($model, $updated_attributes, $action_name)
+    {
+        $model->name = $updated_attributes['name'];
+        $model->institution_id = $updated_attributes['institution_id'];
+
+        // $model->institution_id could be the empty string which will cause save to fail in the SQL update
+        $model->institution_id = $model->institution_id ? $model->institution_id : null;
+
+        if ($this->checkAccess('admin')) {
+            $model->setScenario('installationAdminSave');
+        }
+
+        $transaction = \Yii::app()->db->beginTransaction();
+
+        try {
+            if ($model->save()) {
+                Audit::add('admin', $action_name, serialize($model->attributes), false, array('module' => 'OphCiExamination', 'model' => 'OphCiExamination_ElementSet'));
+                Yii::app()->user->setFlash('success', 'Workflow updated');
+
+                $transaction->commit();
+                $this->redirect(array('viewWorkflows'));
+            } else {
+                $transaction->rollback();
+
+                return $model; // Holds validation errors
+            }
+        } catch (\Exception $e) {
+            $transaction->rollback();
+
+            throw $e;
+        }
     }
 }

@@ -84,7 +84,7 @@ class OphDrPrescription_DefaultControllerTest extends OEDbTestCase
         $_GET = $params;
 
         $outputCapture = [];
-        $controller = $this->getControllerForJsonRenderCapture('DefaultController', ['checkFormAccess'], $outputCapture);
+        $controller = $this->getControllerForJsonRenderCapture('DefaultController', $outputCapture, ['checkFormAccess']);
 
         $controller->method('checkFormAccess')
             ->willReturn(true);
@@ -100,7 +100,7 @@ class OphDrPrescription_DefaultControllerTest extends OEDbTestCase
      * Generates a controller of the given class, and puts the json rendered content into
      * the provided $outputCapture reference.
      */
-    protected function getControllerForJsonRenderCapture($cls, $methods = [], &$outputCapture)
+    protected function getControllerForJsonRenderCapture($cls, &$outputCapture, $methods = [])
     {
         $methods = array_merge($methods, ['renderJson']);
         $controller =  $this->getController($cls, $methods);

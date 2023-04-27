@@ -39,7 +39,7 @@ services:
       - "protected-files:/protected/files"
 
   web:
-    image: toukanlabsdocker/oe-web-dev:php7.4
+    image: toukanlabsdocker/oe-web-dev:php8.0
     environment:
       OE_MODE: "TEST"
       TESTS_TO_RUN: "PHPUNIT-SAMPLE;CYPRESS_SHORT;PHPUNIT-FIXTURES"

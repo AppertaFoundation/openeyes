@@ -254,6 +254,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             e.preventDefault();
             $(this).closest(parent_selector).find(comment_ctn_selector).show();
             $(this).closest('div').hide();
+            autosize($('.autosize'));
         });
     }
     // bind click event on remove comment button

@@ -13,7 +13,7 @@ $to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
 <div class="oe-home oe-allow-for-fixing-hotlist">
     <div class="oe-full-header flex-layout">
         <div class="title wordcaps">
-            <b>Practitioner Summary</b>
+            <b><?= \SettingMetadata::model()->getSetting('general_practitioner_label'); ?> Summary</b>
         </div>
     </div>
     <div class="oe-full-content oe-new-patient flex-layout flex-top">
@@ -82,7 +82,7 @@ $to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
                     <div class="row">
                         <div class="large-12 column end">
                             <p><?php echo CHtml::link(
-                                'Update Practitioner Details',
+                                'Update ' . \SettingMetadata::model()->getSetting('general_practitioner_label') . ' Details',
                                 $this->createUrl('/gp/update', array('id' => $model->id))
                                ); ?></p>
                         </div>

@@ -44,7 +44,7 @@
                 <tr>
                     <td colspan="4">
                         <div class="flex-layout flex-right">
-                            <button id="js-add-team" class="button hint green" type="button">
+                            <button id="js-add-team" class="button hint green" type="button" data-test="add-team">
                                 <i class="oe-i plus pro-theme"></i>
                             </button>
                         </div>

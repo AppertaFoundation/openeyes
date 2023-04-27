@@ -218,32 +218,39 @@ $required_diagnoses_ids = array_map(function ($r) {
                 <?php
                 $criteria = new CDbCriteria();
                 $criteria->addCondition('id IN (SELECT DISTINCT group_id FROM `common_systemic_disorder` WHERE group_id IS NOT NULL)');
-                $valid_common_systemic_disorder_groups = CommonSystemicDisorderGroup::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION, $criteria);
+                $valid_common_systemic_disorder_groups = CommonSystemicDisorderGroup::model()->findAllAtLevels(
+                    ReferenceData::LEVEL_ALL,
+                    $criteria
+                );
                 if (!empty($valid_common_systemic_disorder_groups)) { ?>
-                new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-                    array_map(function ($disorder_group) {
-                        return [
-                            'label' => $disorder_group->name,
-                            'filter-value' => $disorder_group->id,
-                            'is_filter' => true,
-                        ];
-                    },
-                        $valid_common_systemic_disorder_groups)
-                                                    ) ?>, {
-                    'header': 'Disorder Group',
-                    'id': 'disorder-group-filter',
-                    'deselectOnReturn': false,
-                }),
+                    new OpenEyes.UI.AdderDialog.ItemSet(
+                        <?= CJSON::encode(
+                            array_map(function ($disorder_group) {
+                                return [
+                                    'label' => $disorder_group->name,
+                                    'filter-value' => $disorder_group->id,
+                                    'is_filter' => true,
+                                ];
+                            },
+                            $valid_common_systemic_disorder_groups)
+                        ) ?>, {
+                            'header': 'Disorder Group',
+                            'id': 'disorder-group-filter',
+                            'deselectOnReturn': false,
+                        }
+                    ),
                 <?php } ?>
-                new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-                    array_map(function ($disorder) {
-                        return ['label' => $disorder['term'], 'id' => $disorder['id'], 'is_diabetes' => $disorder['is_diabetes'], 'filter_value' => $disorder['group_id'],];
-                    }, CommonSystemicDisorder::getDisordersWithDiabetesInformation())
-                ) ?>, {
-                    'id': 'disorder-list',
-                    'header': 'Disorder',
-                    'multiSelect': true,
-                })
+                new OpenEyes.UI.AdderDialog.ItemSet(
+                    <?= CJSON::encode(
+                        array_map(function ($disorder) {
+                            return ['label' => $disorder['term'], 'id' => $disorder['id'], 'is_diabetes' => $disorder['is_diabetes'], 'filter_value' => $disorder['group_id'],];
+                        }, CommonSystemicDisorder::getDisordersWithDiabetesInformation())
+                    ) ?>, {
+                        'id': 'disorder-list',
+                        'header': 'Disorder',
+                        'multiSelect': true,
+                    }
+                )
             ],
             onReturn: function (adder_dialog, selected_items) {
                 for (let i in selected_items) {

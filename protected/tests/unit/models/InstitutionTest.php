@@ -50,4 +50,22 @@ class InstitutionTest extends ActiveRecordTestCase
         Yii::app()->session['selected_institution_id'] = 7;
         $this->getModel()->getCurrent();
     }
+
+    /**
+     * @covers Institution
+     * @test
+     */
+    public function is_tenanted_is_correctly_defined()
+    {
+        $untenanted_institution = Institution::factory()->create();
+
+        $this->assertFalse($untenanted_institution->isTenanted());
+
+        $tenanted_institution = Institution::factory()->create();
+
+        // An institution is tenanted when one or more institution authentications are associated with it
+        InstitutionAuthentication::factory()->create(['institution_id' => $tenanted_institution]);
+
+        $this->assertTrue($tenanted_institution->isTenanted());
+    }
 }

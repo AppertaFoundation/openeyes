@@ -26,7 +26,8 @@ use OE\factories\models\traits\HasFactory;
  * @property int $id
  * @property string $name
  * @property int $display_order
- * @property int $institution
+ * @property int $institutions
+ * @property int $subspecialty_id
  */
 class CommonOphthalmicDisorderGroup extends BaseActiveRecordVersioned
 {
@@ -35,12 +36,12 @@ class CommonOphthalmicDisorderGroup extends BaseActiveRecordVersioned
 
     protected function getSupportedLevels(): int
     {
-        return ReferenceData::LEVEL_INSTITUTION;
+        return ReferenceData::LEVEL_INSTALLATION | ReferenceData::LEVEL_INSTITUTION;
     }
 
     protected function mappingColumn(int $level): string
     {
-        return $this->tableName().'_id';
+        return $this->tableName() . '_id';
     }
 
 
@@ -65,11 +66,25 @@ class CommonOphthalmicDisorderGroup extends BaseActiveRecordVersioned
         // class name for the relations automatically generated below.
         return array(
             'institutions' => array(self::MANY_MANY, 'Institution', $this->tableName().'_institution('.$this->tableName().'_id, institution_id)'),
+            'subspecialty' => array(self::BELONGS_TO, 'Subspecialty', 'subspecialty_id'),
         );
     }
 
     public function defaultScope()
     {
         return array('order' => $this->getTableAlias(true, false).'.display_order');
+    }
+
+    /** Expands the reference level assignment for this group to be part of the name */
+    public function getFully_qualified_name()
+    {
+        $name = $this->name . ' - ';
+        if ($this->institutions) {
+            return $name . implode(", ", array_map(function ($institution) {
+                return $institution->short_name;
+            }, $this->institutions));
+        }
+
+        return $name . 'All';
     }
 }

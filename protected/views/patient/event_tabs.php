@@ -21,20 +21,31 @@
 
 <?php $this->beginWidget('CondenseHtmlWidget') ?>
 
-<?php if ($this->event) : ?>
-    <?php echo $this->event->getEventIcon('medium'); ?>
-<?php endif; ?>
+<?php
+if ($this->event_subtype) {
+    echo $this->event_subtype->getEventIcon('medium');
+} elseif ($this->event) {
+    echo $this->event->getEventIcon('medium');
+}
+?>
 <?php foreach ($this->event_tabs as $tab) {
     $class = $tab['class'] ?? null;
     $label = $tab['label'] ?? null;
     $active = isset($tab['active']) && $tab['active'] ? 'selected' : null;
     $href = $tab['href'] ?? '#';
+    $icon_class = $tab['icon-class'] ?? null;
+    $hidden = $tab['hidden'] ?? false;
+
+    if (isset($icon_class)) {
+        $label = "<i class='oe-i small pad-r $icon_class'></i>" . $label;
+    }
+
     if (isset($tab['type']) && $tab['type']) { ?>
-    <div class="button header-tab <?=$active?>">
+    <div class="button header-tab <?=$active?>" <?= $hidden ? "style='display: none'" : ""?>>
         <<?=$tab['type']?> class="<?=$class?>"><?=$label?></<?=$tab['type']?>>
     </div>
     <?php } else {?>
-    <a href="<?=$href?>" class="button header-tab <?=$class?> <?=$active?>">
+    <a href="<?=$href?>" class="button header-tab <?=$class?> <?=$active?>" <?= $hidden ? "style='display: none'" : ""?>>
         <?=$label?>
     </a>
     <?php } ?>

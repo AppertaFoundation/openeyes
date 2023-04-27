@@ -17,5 +17,5 @@ namespace OEModule\OESysEvent\contracts;
 
 interface Dispatchable
 {
-    public static function dispatch(...$arguments): void;
+    public static function dispatch(): void;
 }

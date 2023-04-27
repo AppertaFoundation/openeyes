@@ -1,0 +1,21 @@
+parameters:
+  level: 0
+  phpVersion: 80000
+  scanDirectories:
+    - vendor/yiisoft/yii/framework
+    - protected/behaviors
+    - protected/components
+    - protected/controllers
+    - protected/helpers
+    - protected/models
+    - protected/modules
+    - protected/widgets
+    - protected/config
+    - protected/services
+  excludePaths:
+    - vendor/yiisoft/yii/demos/
+    - protected/tests/*
+    - modules/*/tests/*
+  ignoreErrors:
+    - '#Access to an undefined property C[a-zA-Z]+::*#'
+    - '#Call to an undefined method CApplication::[a-zA-Z]+\(\)#'

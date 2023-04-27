@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Apperta Foundation, 2023
  * This file is part of OpenEyes.
@@ -105,6 +106,7 @@ class FirmWithSampleDataTest extends OEDbTestCase
     /** @test */
     public function update_duplicated_firm_should_not_pass_the_validation()
     {
+        $this->mockCurrentContext();
         $original_firm = Firm::factory()->create();
 
         $firm_form_update = Firm::factory()->create([
@@ -114,6 +116,24 @@ class FirmWithSampleDataTest extends OEDbTestCase
 
         $firm_form_update->name = $original_firm->name;
 
+        // firm name should be unique for the same institution and subspecialty
         $this->assertAttributeInvalid($firm_form_update, 'name', 'already exists');
+
+        // firm name should be unique for the "all institutions" level and any institution
+        $firm_form_update_all_institutions = Firm::factory()->create([
+            "institution_id" => null,
+            "subspecialty_id" => $original_firm->subspecialty_id
+        ]);
+        $firm_form_update_all_institutions->name = $original_firm->name;
+        $this->assertAttributeInvalid($firm_form_update_all_institutions, 'name', 'already exists');
+
+        // firm name should be unique for the same institution and subspecialty, but duplicates allowed for different instittutions
+        $original_firm = Firm::factory()->create(); // create a new firm to avoid clash with previous assertion
+        $firm_form_update_different_institution = Firm::factory()->create([
+            "institution_id" => Institution::factory()->create()->id,
+            "subspecialty_id" => $original_firm->subspecialty_id,
+        ]);
+        $firm_form_update_different_institution->name = $original_firm->name;
+        $this->assertAttributeValid($firm_form_update_different_institution, 'name');
     }
 }

@@ -1,29 +1,34 @@
+/**
+ * A Series of commands for working with adder dialogs.
+ */
 Cypress.Commands.add('selectAdderDialogOptionText', (string) => {
-    cy.get('div.oe-add-select-search :visible').contains(string).click()
+    cy.get('div.oe-add-select-search').contains(string).scrollIntoView().click()
 })
 
-Cypress.Commands.add('selectAdderDialogOptionAdderID', (headingId, string) => {
-    cy.get('[data-adder-id="' + headingId + '"]').contains(string).click()
+Cypress.Commands.add('assertAdderDialogIncludes', (text) => {
+    cy.get('[data-test="adder-dialog"]:visible').should('contain', text)
 })
 
-Cypress.Commands.add('selectAdderDialogOptionIDHeading', (idheading, subheading, string) => {
-    cy.get('#' + idheading)
-        .find('[data-adder-id="' + subheading + '"]')
-        .contains(string)
-        .click()
+Cypress.Commands.add('assertAdderDialogDoesNotInclude', (text) => {
+    cy.get('[data-test="adder-dialog"]:visible').should('not.contain', text)
 })
 
-Cypress.Commands.add('selectAdderDialogOptionClassID', (classField, id, text) => {
-    cy.get('[class="' + classField + '"')
-        .find('#' + id)
-        .contains(text)
-        .click()
+Cypress.Commands.add('selectAdderDialogOptionText', (text) => {
+    cy.get('[data-test="adder-dialog"]').contains(text).scrollIntoView().click()
 })
 
 Cypress.Commands.add('selectAdderDialogOptionVariable', (variable, text) => {
-    cy.get(variable).contains(text).click()
+    cy.get(variable).contains(text).scrollIntoView().click()
+})
+
+Cypress.Commands.add('selectAdderDialogOptionAdderID', (headingId, text) => {
+    cy.get('[data-adder-id="' + headingId + '"]').contains(text).click()
 })
 
 Cypress.Commands.add('confirmAdderDialog', () => {
-    cy.get('div.oe-add-select-search > div.add-icon-btn:visible').contains('Click to add').click()
+    cy.get('div[data-test="adder-dialog"]:visible > div.add-icon-btn').contains('Click to add').click({force: true})
+})
+
+Cypress.Commands.add('cancelAdderDialog', () => {
+    cy.get('div[data-test="adder-dialog"]:visible > div.close-icon-btn').click({force: true})
 })

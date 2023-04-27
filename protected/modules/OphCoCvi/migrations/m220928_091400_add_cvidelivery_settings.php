@@ -83,6 +83,8 @@ class m220928_091400_add_cvidelivery_settings extends OEMigration
                 'default_value' => '',
                 'field_type_id' => $this->getSettingFieldIdByName($setting['type']),
                 'data' => $setting['data'],
+                'description' => '',
+                'group_id' => 1
             ]);
             $this->insert('setting_installation', [
                 'key' => $setting['key'],

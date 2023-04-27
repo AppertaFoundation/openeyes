@@ -252,11 +252,55 @@ class BaseEventTypeElementTest extends OEDbTestCase
         $this->assertEquals(BaseEventElementWidget::class, $instance->getWidgetClass());
     }
 
-    protected function getMockInstance()
+    /** @test */
+    public function add_errors_will_add_front_end_error_for_element()
+    {
+        $instance = $this->getMockInstance();
+        $instance->addError('foo', 'bar');
+        $front_end_errors = $instance->getFrontEndErrors();
+        $this->assertCount(1, $front_end_errors);
+        // ignoring the whole class resolution inclusion here
+        $this->assertStringContainsString('foo', $front_end_errors[0]);
+    }
+
+    /** @test */
+    public function clear_errors_removes_all_front_end_errors()
+    {
+        $instance = $this->getMockInstance();
+
+        $instance->addError('foo', 'bar');
+        $instance->addError('baz', 'qux');
+        $this->assertNotEmpty($instance->getErrors());
+        $this->assertNotEmpty($instance->getFrontEndErrors());
+
+        $instance->clearErrors();
+        $this->assertEmpty($instance->getErrors());
+        $this->assertEmpty($instance->getFrontEndErrors());
+    }
+
+    /** @test */
+    public function clear_errors_can_target_a_specific_attribute()
+    {
+        $instance = $this->getMockInstance();
+
+        $instance->addError('foo', 'bar');
+        $instance->addError('baz', 'qux');
+        $this->assertNotEmpty($instance->getErrors());
+        $this->assertNotEmpty($instance->getFrontEndErrors());
+
+        $instance->clearErrors('baz');
+        $this->assertArrayNotHasKey('baz', $instance->getErrors());
+        $front_end_errors = $instance->getFrontEndErrors();
+        $this->assertCount(1, $front_end_errors);
+        // ignoring the whole class resolution inclusion here
+        $this->assertStringNotContainsString('baz', $front_end_errors[0]);
+    }
+
+    protected function getMockInstance(array $methods = [])
     {
         return $this->getMockBuilder('\BaseEventTypeElement')
             ->disableOriginalConstructor()
-            ->setMethods(null)
+            ->onlyMethods($methods)
             ->getMock();
     }
 }

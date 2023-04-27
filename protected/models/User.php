@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -17,6 +18,7 @@
  */
 
 use OE\factories\models\traits\HasFactory;
+use OEModule\OESysEvent\events\UserSavedSystemEvent;
 
 /**
  * This is the model class for table "User".
@@ -32,12 +34,14 @@ use OE\factories\models\traits\HasFactory;
  * @property string $correspondence_sign_off_text
  *
  * @property User $signOffUser
+ * @property Mailbox[] $mailboxes
+ * @property Team[] $teams
  */
 class User extends BaseActiveRecordVersioned
 {
     use HasFactory;
 
-    const PIN_REGEN_LIMIT = 5;
+    private const PIN_REGEN_LIMIT = 5;
     /**
      * Returns the static model of the specified AR class.
      *
@@ -146,6 +150,7 @@ class User extends BaseActiveRecordVersioned
             'signOffUser' => array(self::BELONGS_TO, 'User', 'correspondence_sign_off_user_id'),
             'authentications' => array(self::HAS_MANY, 'UserAuthentication', 'user_id'),
             'pincode' => array(self::HAS_ONE, 'UserPincode', 'user_id'),
+            'teams' => array(self::MANY_MANY, 'Team', 'team_user_assign(user_id, team_id)')
         );
 
         if ($this->getScenario() !== 'portal_command') {
@@ -355,7 +360,7 @@ class User extends BaseActiveRecordVersioned
     public function getFirmsForCurrentInstitution()
     {
         $criteria = new CDbCriteria();
-        $criteria->addCondition('institution_id = ' . Yii::app()->session['selected_institution_id']);
+        $criteria->addCondition('institution_id = ' . Yii::app()->session['selected_institution_id'] . ' OR institution_id IS NULL');
         return $this->getAvailableFirms($criteria);
     }
 
@@ -465,6 +470,13 @@ class User extends BaseActiveRecordVersioned
         }
 
         return parent::beforeSave();
+    }
+
+    public function afterSave()
+    {
+        UserSavedSystemEvent::dispatch($this);
+
+        return parent::afterSave();
     }
 
     public function getActiveSiteSelections()
@@ -611,15 +623,15 @@ class User extends BaseActiveRecordVersioned
         $crit->compare('t.active', 1);
         if (!$this->global_firm_rights) {
             $crit->join =
-                'join institution i on i.id = t.institution_id ' .
-                'join institution_authentication ia on ia.institution_id = i.id and ia.active = 1 ' .
-                'join user_authentication ua ON ua.institution_authentication_id = ia.id and ua.active = 1 ' .
-                'left join firm_user_assignment fua on fua.firm_id = t.id and fua.user_id = ua.user_id ' .
-                'left join user_firm_rights ufr on ufr.firm_id = t.id and ufr.user_id = ua.user_id ' .
+                'left join institution i on i.id = t.institution_id ' .
+                'left join institution_authentication ia on ia.institution_id = i.id and ia.active = 1 ' .
+                'left join user_authentication ua ON ua.institution_authentication_id = ia.id and ua.active = 1 ' .
+                'left join firm_user_assignment fua on fua.firm_id = t.id and fua.user_id = :user_id ' .
+                'left join user_firm_rights ufr on ufr.firm_id = t.id and ufr.user_id = :user_id ' .
                 'left join service_subspecialty_assignment ssa on ssa.id = t.service_subspecialty_assignment_id ' .
-                'left join user_service_rights usr on usr.service_id = ssa.service_id and usr.user_id = ua.user_id ';
+                'left join user_service_rights usr on usr.service_id = ssa.service_id and usr.user_id = :user_id ';
             $crit->addCondition("fua.id is not null or ufr.id is not null or usr.id is not null");
-            $crit->addCondition("ua.user_id = :user_id");
+            $crit->addCondition("t.institution_id IS NULL OR ua.user_id = :user_id");
             $crit->params[':user_id'] = $this->id;
         }
 
@@ -629,10 +641,11 @@ class User extends BaseActiveRecordVersioned
     public function getAllAvailableFirms()
     {
         $crit = new CDbCriteria();
-        $crit->join = "join institution i on i.id = t.institution_id
-            join institution_authentication ia on ia.institution_id = i.id and ia.active = 1
-            join user_authentication ua on ua.institution_authentication_id = ia.id  and ua.active = 1";
-        $crit->condition = 'ua.user_id = ' . Yii::app()->user->id . ' AND t.active = 1';
+        $crit->join = "left join institution i on i.id = t.institution_id
+            left join institution_authentication ia on ia.institution_id = i.id and ia.active = 1
+            left join user_authentication ua on ua.institution_authentication_id = ia.id and ua.active = 1";
+        $crit->condition = '(t.institution_id IS NULL OR ua.user_id = :user_id) AND t.active = 1';
+        $crit->params[':user_id'] = Yii::app()->user->id;
 
         return Firm::model()->findAll($crit);
     }
@@ -910,7 +923,7 @@ class User extends BaseActiveRecordVersioned
         if (!$this->id) {
             if (!$this->save()) {
                 $this->audit('login', 'login-failed', "Cannot create user: $this->email", true);
-                throw new Exception('Unable to save User: '.print_r($this->getErrors(), true));
+                throw new Exception('Unable to save User: ' . print_r($this->getErrors(), true));
             }
 
             $this->setdefaultSSOFirms();
@@ -919,7 +932,7 @@ class User extends BaseActiveRecordVersioned
             $this->setIsNewRecord(false);
             if (!$this->update()) {
                 $this->audit('login', 'login-failed', "Cannot update user: $this->username", true);
-                throw new Exception('Unable to save User: '.print_r($this->getErrors(), true));
+                throw new Exception('Unable to save User: ' . print_r($this->getErrors(), true));
             };
         }
         // Roles from the token need to be assigned to the user after every login
@@ -985,8 +998,10 @@ class User extends BaseActiveRecordVersioned
         }
 
         //Deny access if strict SSO roles check is enabled and user has a role that doesn't exist in OpenEyes SSO roles defined in admin settings
-        if (Yii::app()->params['strict_SSO_roles_check']
-            && count(array_intersect($roles, $ssoRoleNames)) !== count($roles)) {
+        if (
+            Yii::app()->params['strict_SSO_roles_check']
+            && count(array_intersect($roles, $ssoRoleNames)) !== count($roles)
+        ) {
             $this->audit('SsoRoles', 'login-failed', "User $name ($username) has a role assigned that does not exist in OpenEyes SSO roles", true);
             throw new Exception('User has a role assigned that does not exist in OpenEyes SSO roles');
         }

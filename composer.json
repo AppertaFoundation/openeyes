@@ -5,7 +5,7 @@
   "require": {
     "php": "^7.4 || ^8.0 || ^8.1",
     "ext-json": "^7.4 || ^8.0 || ^8.1",
-    "yiisoft/yii": "1.1.27",
+    "yiisoft/yii": "1.1.28",
     "rlanvin/php-rrule": "2.2.0",
     "endroid/qr-code": "^4.2",
     "setasign/fpdf": "1.8.*",
@@ -38,7 +38,8 @@
     "sbs/yii-debug-toolbar": "^1.5",
     "symfony/dom-crawler": "^5.4",
     "symfony/css-selector": "^5.4",
-    "guzzlehttp/guzzle": "^7.0"
+    "guzzlehttp/guzzle": "^7.0",
+    "phpstan/phpstan": "^1.9"
   },
   "config": {
     "bin-dir": "bin",
@@ -58,7 +59,10 @@
   "autoload": {
     "psr-4": {
       "OE\\concerns\\": "protected/concerns",
-      "OE\\factories\\": "protected/factories"
+      "OE\\contracts\\": "protected/contracts",
+      "OE\\factories\\": "protected/factories",
+      "OE\\listeners\\": "protected/listeners",
+      "OE\\seeders\\": "protected/seeders"
     }
   },
   "autoload-dev": {

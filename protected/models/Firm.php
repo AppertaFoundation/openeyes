@@ -44,6 +44,7 @@ use OE\factories\models\traits\HasFactory;
 class Firm extends BaseActiveRecordVersioned
 {
     use HasFactory;
+    use OwnedByReferenceData;
 
     const SELECTION_ORDER = 'name';
 
@@ -57,6 +58,11 @@ class Firm extends BaseActiveRecordVersioned
     public static function model($className = __CLASS__)
     {
         return parent::model($className);
+    }
+
+    protected function getSupportedLevelMask(): int
+    {
+        return ReferenceData::LEVEL_INSTALLATION | ReferenceData::LEVEL_INSTITUTION;
     }
 
     /**
@@ -75,7 +81,7 @@ class Firm extends BaseActiveRecordVersioned
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('name, subspecialty_id, institution_id', 'required'),
+            array('name, subspecialty_id', 'required'),
             array('service_subspecialty_assignment_id', 'length', 'max' => 10),
             array('pas_code', 'length', 'max' => 20),
             array('cost_code', 'length', 'max' => 5),
@@ -85,7 +91,7 @@ class Firm extends BaseActiveRecordVersioned
             array('name', 'filter', 'filter' => 'htmlspecialchars'),
             array('name, service_email, pas_code, cost_code, subspecialty_id, consultant_id, active, runtime_selectable, can_own_an_episode', 'safe'),
             array('name', 'filter', 'filter' => 'htmlspecialchars'),
-            array('name, pas_code, cost_code, subspecialty_id, consultant_id, active, runtime_selectable, can_own_an_episode', 'safe'),
+            array('name, pas_code, cost_code, subspecialty_id, consultant_id, active, runtime_selectable, can_own_an_episode, institution_id', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, service_subspecialty_assignment_id, pas_code, name, service_email, context_email', 'safe', 'on' => 'search'),
@@ -212,7 +218,7 @@ class Firm extends BaseActiveRecordVersioned
 
     public static function getFirmsForInstitution($institution_id)
     {
-        return self::model()->findAll('institution_id = :institution_id', [':institution_id' => $institution_id]);
+        return self::model()->findAll('institution_id = :institution_id OR institution_id IS NULL', [':institution_id' => $institution_id]);
     }
 
     /**
@@ -242,7 +248,7 @@ class Firm extends BaseActiveRecordVersioned
                 ($include_id ? ' or f.id = :include_id' : ''));
 
         if ($institution_id) {
-            $cmd = $cmd->andWhere('f.institution_id = :institution_id');
+            $cmd = $cmd->andWhere('f.institution_id = :institution_id OR f.institution_id IS NULL');
             $bindValues[':institution_id'] = $institution_id;
         }
 
@@ -296,7 +302,7 @@ class Firm extends BaseActiveRecordVersioned
         }
 
         if ($institution_id) {
-            $command->andWhere('f.institution_id = :institution_id', array(':institution_id' => $institution_id));
+            $command->andWhere('f.institution_id = :institution_id OR f.institution_id IS NULL', array(':institution_id' => $institution_id));
         }
 
         if ($only_service_firms) {
@@ -354,7 +360,7 @@ class Firm extends BaseActiveRecordVersioned
                 ->select('ua.id')
                 ->from('institution_authentication ia')
                 ->join('user_authentication ua', 'ua.institution_authentication_id = ia.id')
-                ->where('ia.institution_id = :institution_id AND ua.user_id = :user_id')
+                ->where('(ia.institution_id = :institution_id OR ia.institution_id IS NULL) AND ua.user_id = :user_id')
                 ->limit(1)
                 ->bindValues([':institution_id' => $institution_id, ':user_id' => $this->id])
                 ->queryScalar();
@@ -504,9 +510,8 @@ class Firm extends BaseActiveRecordVersioned
             }
         }
         $criteria = new CDbCriteria();
-        $criteria->addCondition('name = :name AND institution_id = :institution_id AND service_subspecialty_assignment_id = :service_subspecialty_assignment_id');
+        $criteria->addCondition('name = :name AND service_subspecialty_assignment_id = :service_subspecialty_assignment_id');
         $criteria->params[':name'] = $this->name;
-        $criteria->params[':institution_id'] = $this->institution_id;
         $criteria->params[':service_subspecialty_assignment_id'] = $serviceSubspecialityAssignmentId->id;
 
         if (!$this->isNewRecord) {
@@ -514,9 +519,14 @@ class Firm extends BaseActiveRecordVersioned
             $criteria->params[":id"] = $this->id;
         }
 
-        $firm = $this->findAll($criteria);
+        if (isset($this->institution)) {
+            $firm = $this->findAllAtLevels(ReferenceData::LEVEL_ALL, $criteria, $this->institution);
+        } else {
+            $firm = $this->findAll($criteria);
+        }
+
         if (count($firm) >= 1) {
-            $this->addError('name', 'A firm set with the name '.$this->name.' already exists with the following settings: '.($this->institution_id ? $this->institution->name.', ' : '').($serviceSubspecialityAssignmentId ? $serviceSubspecialityAssignmentId->service->name.', '.$serviceSubspecialityAssignmentId->subspecialty->name : ''));
+            $this->addError('name', 'A firm set with the name ' . $this->name . ' already exists with the following settings: ' . ($firm[0]->institution_id ? $firm[0]->institution->name . ', ' : 'All Institutions, ') . ($serviceSubspecialityAssignmentId ? $serviceSubspecialityAssignmentId->service->name . ', ' . $serviceSubspecialityAssignmentId->subspecialty->name : ''));
         }
         return parent::beforeValidate();
     }
@@ -549,7 +559,7 @@ class Firm extends BaseActiveRecordVersioned
         }
 
         return self::model()->with('serviceSubspecialtyAssignment')->find(
-            'can_own_an_episode = 1 AND subspecialty_id = :subspecialty_id AND institution_id = :institution_id',
+            'can_own_an_episode = 1 AND subspecialty_id = :subspecialty_id AND (institution_id = :institution_id OR institution_id IS NULL)',
             [':subspecialty_id' => $subspecialty_id, ':institution_id' => $institution->id]
         );
     }

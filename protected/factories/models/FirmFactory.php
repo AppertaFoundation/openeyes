@@ -12,7 +12,7 @@ class FirmFactory extends ModelFactory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->word(),
+            'name' => $this->faker->unique()->words(2, true),
             'subspecialty_id' => Subspecialty::factory()->useExisting(),
             'institution_id' => Institution::factory()->useExisting()
         ];

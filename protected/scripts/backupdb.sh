@@ -166,10 +166,13 @@ folder=$(dirname $outfile)
 SIZE_BYTES=$(MYSQL_PWD="${dbpassword}" mysql -h ${host} -u ${username} --port=${port} --skip-column-names <<<"SELECT ROUND(SUM(data_length) * 0.92) AS "size_bytes" FROM information_schema.TABLES WHERE TABLE_SCHEMA = '${DATABASE}' AND TABLE_NAME NOT IN ($DONT_CALCULATE_LIST);")
 echo "Data size = approx $(expr $SIZE_BYTES / 1024 / 1024) mb"
 echo "Dumping structure..."
-eval MYSQL_PWD="${dbpassword}" mysqldump -h ${host} -u ${username} --port=${port} --routines --events --triggers --single-transaction ${IGNORED_TABLES_STRING} --no-data${extraparams} ${DATABASE} | pv >${tmpfile}
+eval MYSQL_PWD="${dbpassword}" mysqldump -h ${host} -u ${username} --port=${port} --single-transaction ${IGNORED_TABLES_STRING} --skip-triggers --no-data${extraparams} ${DATABASE} | pv >${tmpfile}
 
 echo "Dumping content..."
-eval MYSQL_PWD="${dbpassword}" mysqldump -h ${host} -u ${username} --port=${port} --routines --events --triggers --single-transaction --no-create-info --skip-triggers "${EXCLUDED_TABLES_STRING}" "${IGNORED_TABLES_STRING}"$extraparams ${DATABASE} | pv --progress --size $SIZE_BYTES >>${tmpfile}
+eval MYSQL_PWD="${dbpassword}" mysqldump -h ${host} -u ${username} --port=${port} --single-transaction --no-create-info --skip-triggers "${EXCLUDED_TABLES_STRING}" "${IGNORED_TABLES_STRING}"$extraparams ${DATABASE} | pv --progress --size $SIZE_BYTES >>${tmpfile}
+
+echo "Dumping procedures and triggers..."
+eval MYSQL_PWD="${dbpassword}" mysqldump -h ${host} -u ${username} --port=${port} --routines --events --triggers --single-transaction --no-create-info --no-data "${EXCLUDED_TABLES_STRING}" "${IGNORED_TABLES_STRING}"$extraparams ${DATABASE} | pv >>${tmpfile}
 
 if [[ $nozip -eq 0 ]]; then
   echo "Zipping to ${outfile}..."

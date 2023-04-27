@@ -34,7 +34,6 @@
         title: 'Add a new event',
         popupClass: 'oe-create-event-popup oe-popup',
         modal: true,
-        width: 1000,
         minHeight: 400,
         maxHeight: 400,
         dialogClass: 'dialog oe-create-event-popup oe-popup',
@@ -46,7 +45,8 @@
         userSubspecialtyId: undefined,
         userContext: undefined,
         showSteps: false,
-        mode: 'NewEvent'
+        mode: 'NewEvent',
+        popupContentClass: 'oe-popup-content max',
     };
 
     // selectors for finding and hooking into various of the key elements.
@@ -211,7 +211,7 @@
             if (!$(this).hasClass('add_event_disabled')) {
                 // can proceed
                 $(this).addClass("selected");
-                self.createEvent($(this).data('eventtype-id'));
+                self.createEvent($(this).data('eventtype-id'), $(this).data('eventsubtype') ? $(this).data('eventsubtype') : null);
             }
         });
 
@@ -504,7 +504,7 @@
      *
      * @param eventTypeId
      */
-    NewEventDialog.prototype.createEvent = function (eventTypeId) {
+    NewEventDialog.prototype.createEvent = function (eventTypeId, eventSubTypePk = null) {
         // Stop ongoing background tasks such as lightning image loading. Otherwise user has to wait
         window.stop();
         var self = this;
@@ -519,6 +519,10 @@
             event_type_id: eventTypeId,
             context_id: self.content.find('.step-2.selected').data('context-id')
         };
+
+        if (eventSubTypePk) {
+            requestParams['event_subtype'] = eventSubTypePk;
+        }
 
         var subspecialty = self.content.find('.oe-specialty-service.selected');
         if (subspecialty.hasClass('new-added-subspecialty-service')) {

@@ -5,25 +5,6 @@ describe('post op complications admin screen behaviour', () => {
     ]
     const subspecialtyName = 'test subspecialty ' + Date.now();
 
-    before(() => {
-        complicationNames.forEach((complicationName) => {
-            cy.createModels(
-                "OEModule\\OphCiExamination\\models\\OphCiExamination_PostOpComplications",
-                [],
-                {
-                    'name': complicationName
-                }
-            );
-        });
-        cy.createModels(
-            "Subspecialty",
-            [],
-            {
-                'name': subspecialtyName
-            }
-        );
-    });
-
     beforeEach(() => {
         cy.login()
             .then((context) => {
@@ -33,11 +14,15 @@ describe('post op complications admin screen behaviour', () => {
                  return cy.runSeeder(
                     'OphCiExamination',
                     'PostOpComplicationsAdminSeeder',
-                    subspecialtyName                    
+                    {subspecialty_name: subspecialtyName}
                 ).then((seederResult) => {
                     return {
                         visit_url: context.visit_url,
-                        post_op_complications: seederResult.post_op_complications
+                        post_op_complications: {
+                            assigned: seederResult.post_op_complications.for_default_subspecialty,
+                            unassigned: seederResult.post_op_complications.unassigned,
+                            new_subspecialty_name: seederResult.unused_subspecialty.name
+                        }
                     }
                 });
             })
@@ -53,23 +38,23 @@ describe('post op complications admin screen behaviour', () => {
         const complicationsList = cy.getBySel('selected-complications')
             .find('li');
 
-        complicationsList.should('have.length', this.postOpComplications['defaultSubspecialty'].length);
+        complicationsList.should('have.length', this.postOpComplications.assigned.length);
     });
 
     it('select and removing complications works as expected', function () {
-        const expectedComplicationsCount = this.postOpComplications['defaultSubspecialty'].length + complicationNames.length;
+        const expectedComplicationsCount = this.postOpComplications.assigned.length + this.postOpComplications.unassigned.length;
 
         const complicationsSelect = cy.getBySel('complications-select');
-        
-        complicationNames.forEach((complicationName) => {
-            complicationsSelect.should('be.visible').select(complicationName, {force: true});
+
+        this.postOpComplications.unassigned.forEach((complication) => {
+            complicationsSelect.should('be.visible').select(complication.name, {force: true});
         });
 
         const complicationsList = cy.getBySel('selected-complications')
                             .find('li');
-        
+
         complicationsList.should('have.length', expectedComplicationsCount);
-        
+
         // remove the first item and make sure it has been removed from the list
         complicationsList.first()
             .find('i')
@@ -83,16 +68,12 @@ describe('post op complications admin screen behaviour', () => {
 
     it('switching to new subspeciality loads no selected complications', function() {
         const subspecialitySelect = cy.get('[data-test="subspeciality-wrapper"] select');
-        subspecialitySelect.should('be.visible').select(subspecialtyName, {force: true});
+        subspecialitySelect.should('be.visible').select(this.postOpComplications.new_subspecialty_name, {force: true});
 
         const complicationsList = cy.getBySel('selected-complications')
             .find('li');
 
         complicationsList.should('not.exist');
-        
+
     });
 });
-
-function getRandomInt(min, max){      
-    return Math.floor(Math.random() * (max - min + 1)) + min;    
-}       

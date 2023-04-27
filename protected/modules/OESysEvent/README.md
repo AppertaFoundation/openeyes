@@ -65,6 +65,26 @@ At the moment we leverage standard Yii configuration on the event component:
     ]
 ```
 
+### Testing
+
+The Manager uses the `ListenerBuilder` factory class to instantiate and invoke listeners that are triggered by events. In turn, this factory class supports faking of the classes that it is asked to build. This pattern is intended to provide support for ensuring that listeners have been configured for events correctly:
+
+```
+/** @test */
+public function listener_is_triggered_for_event()
+{
+    $mock_listener = $this->createMock(ListenerToTest::class);
+    $mock_listener->expects($this->once())
+        ->method('__invoke');
+
+    ListenerBuilder::fakeWith(ListenerToTest::class, $mock_listener);
+
+    SystemEventThatShouldTriggerListener::dispatch();
+}
+```
+
+To test the listener behaviour itself, the class should instantitiated and called with the SystemEvent it's expecting to be triggered by.
+
 ### Additional notes
 
 To ensure clarity, a distinction must be made between the standard OpenEyes `Event` class and system events. As such, any `Event` variables should be described as a clinical event. Any system events must also be labelled as such:

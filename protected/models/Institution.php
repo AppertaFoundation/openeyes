@@ -143,6 +143,11 @@ class Institution extends BaseActiveRecordVersioned
         ));
     }
 
+    public function isTenanted(): bool
+    {
+        return count($this->authenticationMethods) > 0;
+    }
+
     /**
      * @return Institution
      */

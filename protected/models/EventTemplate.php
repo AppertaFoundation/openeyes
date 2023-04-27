@@ -152,7 +152,7 @@ class EventTemplate extends BaseActiveRecordVersioned
     }
 
     /**
-     * @return BaseTemplate
+     * @return BaseEventTemplate
      */
     public function getDetailRecord()
     {

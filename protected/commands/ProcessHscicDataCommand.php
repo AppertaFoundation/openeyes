@@ -428,11 +428,11 @@ EOH;
      *
      * @param string $url      Url to the data file
      * @param string $type     gp|optom|Practice|Ccg|CcgAssignment
-     * @param string $interval full|monthly|quarterly
      * @param string $region   scotland|england|ni
+     * @param string $interval full|monthly|quarterly
      */
 
-    public function actionDownloadAndImportFromUrl($url, $type, $interval = 'full', $region)
+    public function actionDownloadAndImportFromUrl($url, $type, $region, $interval = 'full')
     {
         $pathParts = pathinfo($this->getFileFromUrl($url));
         $permanentFile = $this->path . '/' . $pathParts['filename'] . '/' . $pathParts['basename'];

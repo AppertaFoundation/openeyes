@@ -21,7 +21,6 @@
         <table>
             <tr>
                 <td class="data-label">
-
                     <?= $element->getAttributeLabel('manufacturer'); ?>
                 </td>
                 <td>

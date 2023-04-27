@@ -85,8 +85,8 @@ class PastSurgery extends \BaseEventElementWidget
             $element->no_pastsurgery_date = null;
         }
 
-        $element->found_previous_op_notes = $data['found_previous_op_notes'];
-        $element->comments = $data['comments'];
+        $element->found_previous_op_notes = $data['found_previous_op_notes'] ?? null;
+        $element->comments = $data['comments'] ?? null;
 
         // pre-cache current entries so any entries that remain in place will use the same db row
         $operations_by_id = array();

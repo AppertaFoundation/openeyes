@@ -362,10 +362,12 @@ class UserAuthentication extends BaseActiveRecordVersioned
                 return [[ InstitutionAuthentication::PERMISSIVE_MATCH => [ $user_authentication ] ], "success"];
             }
             $match_type = $user_authentication->institutionAuthentication->match($institution_id, $site_id);
+
             if ($match_type > InstitutionAuthentication::NO_MATCH) {
-                    $matches[$match_type][] = $user_authentication;
+                $matches[$match_type][] = $user_authentication;
             }
         }
+
         $error = empty($matches) ? "Invalid login" : "success";
 
         return [$matches, $error];

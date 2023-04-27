@@ -119,9 +119,10 @@
                     [],
                     false,
                     [
-                        'rows' => 6,
+                        'rows' => 5,
                         'readonly' => true,
-                        'data-prefilled-value' => $template_data['report'] ?? ''
+                        'data-prefilled-value' => $template_data['report'] ?? '',
+                        'class' => 'cols-full autosize'
                     ]
                 ) ?>
             </td>

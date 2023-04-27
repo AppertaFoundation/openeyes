@@ -75,7 +75,10 @@ class AuthManager extends CDbAuthManager
 
         unset($params['userId']);
 
-        return call_user_func_array(array($ruleSet, $rule), array_merge((array) $data, $params));
+        // Always pass the data as the first parameter for a uniform calling convention.
+        array_unshift($params, $data);
+
+        return call_user_func_array(array($ruleSet, $rule), $params);
     }
 
     /**
@@ -103,5 +106,38 @@ class AuthManager extends CDbAuthManager
         }
 
         return $this->user_assignments[$user_id];
+    }
+
+    /**
+     * setOrUpdateAssignment
+     *
+     * To get around the fact that the AuthManager assign function only inserts rows of auth items
+     * instead inserting or updating, we have this function.
+     *
+     * This is useful mainly for updating data in existing auth item entries.
+     *
+     * If there is an existing row, the bizRule value will need to match other an exception will be thrown.
+     *
+     *  @param $itemName string
+     *  @param $usedId mixed
+     *  @param $bizRule string|null
+     *  @param $data mixed
+     *  @return CAuthAssignment
+     */
+    public function setOrUpdateAssignment(string $itemName, $userId, ?string $bizRule = null, $data = null): CAuthAssignment
+    {
+        $auth = $this->getAuthAssignment($itemName, $userId);
+
+        if (!$auth) {
+            return $this->assign($itemName, $userId, $bizRule, $data);
+        }
+
+        if ($auth->bizRule !== $bizRule) {
+            throw new Exception('The supplied bizRule "' . $bizRule . '" does not match the existing bizRule "' . $auth->bizRule . '"');
+        }
+
+        $auth->setData($data);
+
+        return $auth;
     }
 }

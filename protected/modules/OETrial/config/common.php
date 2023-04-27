@@ -10,7 +10,6 @@ return array(
             'trials' => array(
                 'title' => 'Trials',
                 'uri' => 'OETrial',
-                'position' => 6,
                 'restricted' => array('TaskCreateTrial', 'TaskViewTrial'),
             ),
         ),

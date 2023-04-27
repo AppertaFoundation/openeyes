@@ -16,6 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "et_ophtroperationnote_postop_drug".
  *
@@ -28,6 +30,8 @@
  */
 class OphTrOperationnote_PostopSiteSubspecialtyDrug extends BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     const SELECTION_LABEL_FIELD = 'site_id';
 
     /**

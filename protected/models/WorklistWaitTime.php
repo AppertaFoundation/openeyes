@@ -1,5 +1,7 @@
 <?php
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "worklist_wait_time".
  *
@@ -19,6 +21,7 @@
  */
 class WorklistWaitTime extends BaseActiveRecordVersioned
 {
+    use HasFactory;
     use MappedReferenceData;
 
     public function getSupportedLevels(): int

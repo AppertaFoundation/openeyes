@@ -76,7 +76,7 @@
     AdderDialog.prototype.create = function() {
         let dialog = this;
 
-        let content = $('<div />', { class: this.options.popupClass, id: this.options.id });
+        let content = $('<div />', { class: this.options.popupClass, id: this.options.id, 'data-test': 'adder-dialog' });
         if (this.options.width) {
             content.css('width', this.options.width);
         }

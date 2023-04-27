@@ -21,6 +21,9 @@
  * @property bool $useContainerView When rendering the element, wrap the element
  * in a container view?
  * @property Event $event
+ * @property string|int $event_id
+ * @property EventType $eventType
+ * @property ElementType $elementType
  */
 class BaseEventTypeElement extends BaseElement
 {
@@ -214,7 +217,12 @@ class BaseEventTypeElement extends BaseElement
      */
     public function getMostRecentForPatient(\Patient $patient, $use_context = false)
     {
-        return $this->getModuleApi()->getLatestElement(static::class, $patient, $use_context) ?: $this;
+        $api = $this->getModuleApi();
+        if (!$api) {
+            return $this;
+        }
+
+        return $api->getLatestElement(static::class, $patient, $use_context) ?: $this;
     }
 
     /**
@@ -310,7 +318,7 @@ class BaseEventTypeElement extends BaseElement
      */
     public function getFrontEndErrors()
     {
-        echo json_encode($this->frontEndErrors);
+        return $this->frontEndErrors;
     }
 
     public function setFrontEndError($attribute)
@@ -342,6 +350,19 @@ class BaseEventTypeElement extends BaseElement
             get_class($this)
         ) . '\'))">' . $message . '</a>';
         parent::addError($attribute, $message);
+    }
+
+    public function clearErrors($attribute = null)
+    {
+        parent::clearErrors($attribute);
+        if ($attribute === null) {
+            $this->frontEndErrors = [];
+        } else {
+            $to_remove = $this->errorAttributeException(str_replace('\\', '_', get_class($this)) . '_' . $attribute, '');
+            $this->frontEndErrors = array_filter($this->frontEndErrors, function ($key) use ($to_remove) {
+                return $key !== $to_remove;
+            });
+        }
     }
 
     /**

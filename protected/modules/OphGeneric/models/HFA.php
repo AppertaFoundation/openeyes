@@ -16,6 +16,7 @@
 
 namespace OEModule\OphGeneric\models;
 
+
 use BaseActiveRecord;
 use BaseEventTypeElement;
 use CActiveDataProvider;
@@ -24,6 +25,8 @@ use CDbException;
 use Event;
 use Exception;
 use Eye;
+use OE\factories\models\traits\HasFactory;
+use OEModule\OphGeneric\widgets\HFA as HFAWidget;
 use PatientStatistic;
 use PatientStatisticDatapoint;
 use User;
@@ -39,6 +42,7 @@ use User;
  * @property string $last_modified_date
  * @property string $created_user_id
  * @property string $created_date
+ * @property string $class_name
  *
  * The followings are the available model relations:
  * @property User $createdUser
@@ -49,10 +53,15 @@ use User;
  */
 class HFA extends BaseEventTypeElement
 {
+    use HasFactory;
+
+    protected $auto_update_relations = true;
+    protected $auto_validate_relations = true;
+
     /**
      * @var string $widgetClass
      */
-    public $widgetClass = 'OEModule\OphGeneric\widgets\HFA';
+    public $widgetClass = HFAWidget::class;
 
     /**
      * @return string the associated database table name
@@ -71,7 +80,8 @@ class HFA extends BaseEventTypeElement
         // will receive user inputs.
         return array(
             array('event_id, eye_id, last_modified_user_id, created_user_id', 'length', 'max' => 10),
-            array('last_modified_date, created_date', 'safe'),
+            ['hfaEntry', 'required'],
+            array('last_modified_date, created_date, hfaEntry', 'safe'),
             // The following rule is used by search().
             array(
                 'id, event_id, eye_id, last_modified_user_id, last_modified_date, created_user_id, created_date',
@@ -89,11 +99,11 @@ class HFA extends BaseEventTypeElement
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-            'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
-            'eye' => array(self::BELONGS_TO, 'Eye', 'eye_id'),
-            'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-            'hfaEntry' => array(self::HAS_MANY, 'OEModule\OphGeneric\models\HFAEntry', 'element_id'),
+            'createdUser' => array(self::BELONGS_TO, User::class, 'created_user_id'),
+            'event' => array(self::BELONGS_TO, Event::class, 'event_id'),
+            'eye' => array(self::BELONGS_TO, Eye::class, 'eye_id'),
+            'lastModifiedUser' => array(self::BELONGS_TO, User::class, 'last_modified_user_id'),
+            'hfaEntry' => array(self::HAS_MANY, HFAEntry::class, 'element_id'),
         );
     }
 
@@ -140,18 +150,7 @@ class HFA extends BaseEventTypeElement
         return new CActiveDataProvider($this, array('criteria' => $criteria,));
     }
 
-    /**
-     * Returns the static model of the specified AR class.
-     * Please note that you should have this exact method in all your CActiveRecord descendants!
-     * @param string $className active record class name.
-     * @return HFA|BaseActiveRecord the static model class
-     */
-    public static function model($className = __CLASS__)
-    {
-        return parent::model($className);
-    }
-
-    public function isHiddenInUI()
+    public function isRequiredInUI()
     {
         return true;
     }
@@ -191,14 +190,16 @@ class HFA extends BaseEventTypeElement
             $md_datapoint->delete();
         }
 
-        $md_stat->refresh();
+        if ($md_stat) {
+            $md_stat->refresh();
 
-        // If the statistic has no more datapoints, delete it. Otherwise, flag it for remodelling.
-        if (count($md_stat->datapoints) === 0) {
-            $md_stat->delete();
-        } else {
-            $md_stat->process_datapoints = true;
-            $md_stat->save();
+            // If the statistic has no more datapoints, delete it. Otherwise, flag it for remodelling.
+            if (count($md_stat->datapoints) === 0) {
+                $md_stat->delete();
+            } else {
+                $md_stat->process_datapoints = true;
+                $md_stat->save();
+            }
         }
 
         $vfi_datapoint = PatientStatisticDatapoint::model()->findByAttributes(
@@ -223,36 +224,28 @@ class HFA extends BaseEventTypeElement
             $vfi_datapoint->delete();
         }
 
-        $vfi_stat->refresh();
+        if ($vfi_stat) {
+            $vfi_stat->refresh();
 
-        // If the statistic has no more datapoints, delete it. Otherwise, flag it for remodelling.
-        if (count($vfi_stat->datapoints) === 0) {
-            $vfi_stat->delete();
-        } else {
-            $vfi_stat->process_datapoints = true;
-            $vfi_stat->save();
+            // If the statistic has no more datapoints, delete it. Otherwise, flag it for remodelling.
+            if (count($vfi_stat->datapoints) === 0) {
+                $vfi_stat->delete();
+            } else {
+                $vfi_stat->process_datapoints = true;
+                $vfi_stat->save();
+            }
         }
     }
 
-    public function getMeanDeviation()
+    public function getSidedData()
     {
-        $data = [];
-        $criteria = new \CDbCriteria();
-        $criteria->compare('element_id', $this->id);
-        $hfaEntry = HFAEntry::model()->find($criteria);
-        $data['md'] = $hfaEntry->mean_deviation;
-        $data['side'] = ((int)$this->eye_id === 1) ? 'left' : 'right';
-        return $data;
-    }
-
-    public function getVFI()
-    {
-        $data = [];
-        $criteria = new \CDbCriteria();
-        $criteria->compare('element_id', $this->id);
-        $hfaEntry = HFAEntry::model()->find($criteria);
-        $data['vfi'] = $hfaEntry->visual_field_index;
-        $data['side'] = ((int)$this->eye_id === 1) ? 'left' : 'right';
-        return $data;
+        return [
+            'right' => array_values(array_filter($this->hfaEntry, function ($item) {
+                return $item->eye_id == Eye::RIGHT;
+            })),
+            'left' => array_values(array_filter($this->hfaEntry, function ($item) {
+                return $item->eye_id == Eye::LEFT;
+            }))
+        ];
     }
 }

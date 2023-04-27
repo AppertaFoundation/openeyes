@@ -30,7 +30,7 @@ class ElementTypeFactory extends ModelFactory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->word()
+            'name' => $this->faker->word(),
         ];
     }
 }

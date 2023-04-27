@@ -3,23 +3,24 @@ describe('systemic disorder widget behaviour', () => {
     // Date added to allow multiple runs in same environment without conflict
     let expectedDisorderTerm1 = 'Expected One ' + Date.now();
     let expectedDisorderTerm2 = 'Expected Two ' + Date.now();
-    let unexpectedDisorderTerm = 'UnExpected ' + Date.now();
+    let expectedDisorderTerm3 = 'Expected Three ' + Date.now();
 
     before(() => {
         cy.login()
             .then((context) => {
                 cy.createModels('CommonSystemicDisorder', [
-                        ['forInstitution', context.body.institution_id], 
+                        ['withInstitution', context.body.institution_id], 
                         ['forDisplayOrder', 2], 
                         ['forKnownDisorderTerm', expectedDisorderTerm1]
                     ]);
                 cy.createModels('CommonSystemicDisorder', [
-                        ['forInstitution', context.body.institution_id], 
+                        ['withInstitution', context.body.institution_id], 
                         ['forDisplayOrder', 1],
                         ['forKnownDisorderTerm', expectedDisorderTerm2]
                     ]);                
                 cy.createModels('CommonSystemicDisorder', [
-                        ['forKnownDisorderTerm', unexpectedDisorderTerm]
+                        ['forDisplayOrder', 0],
+                        ['forKnownDisorderTerm', expectedDisorderTerm3]
                     ]);
 
                 return cy.createPatient();
@@ -42,8 +43,8 @@ describe('systemic disorder widget behaviour', () => {
             .as('expectedDisorder1');
         cy.getModelByAttributes('Disorder', {term: expectedDisorderTerm2})
             .as('expectedDisorder2');
-        cy.getModelByAttributes('Disorder', {term: unexpectedDisorderTerm})
-            .as('unexpectedDisorder');
+        cy.getModelByAttributes('Disorder', {term: expectedDisorderTerm3})
+            .as('expectedDisorder3');
     });
 
     it('only loads common systemic disorders mapped to the current institution', function () {
@@ -62,8 +63,10 @@ describe('systemic disorder widget behaviour', () => {
                     .scrollIntoView()
                     .should('be.visible');
                                 
-                cy.get(`li[data-id="${this.unexpectedDisorder.id}"]`)
-                    .should('not.exist');
+                cy.get(`li[data-id="${this.expectedDisorder3.id}"]`)
+                    .should('exist')
+                    .scrollIntoView()
+                    .should('be.visible');
             });        
     });
 
@@ -74,7 +77,7 @@ describe('systemic disorder widget behaviour', () => {
                 cy.get('ul[data-id="disorder-list"]')
                     .should('be.visible')
                     .within(() => {
-                        let disorder1index, disorder2index;
+                        let disorder1index, disorder2index, disorder3index;
 
                         cy.get('li')
                             .should('be.visible')
@@ -85,9 +88,13 @@ describe('systemic disorder widget behaviour', () => {
                                 if (element.data('id') === parseInt(this.expectedDisorder2.id)) {
                                     disorder2index = index;
                                 }
+                                if (element.data('id') === parseInt(this.expectedDisorder3.id)) {
+                                    disorder3index = index;
+                                }
                             })
                             .then(() => {
                                 expect(disorder1index).to.be.greaterThan(disorder2index);
+                                expect(disorder2index).to.be.greaterThan(disorder3index);
                             });
                     });
             });        

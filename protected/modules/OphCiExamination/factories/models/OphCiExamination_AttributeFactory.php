@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Apperta Foundation, 2022
  * This file is part of OpenEyes.
@@ -20,12 +21,15 @@ use Institution;
 use OE\factories\ModelFactory;
 use OEModule\OphCiExamination\models\OphCiExamination_AttributeElement;
 use OE\factories\models\traits\MapsDisplayOrderForFactory;
+use OEModule\OphCiExamination\models\OphCiExamination_Attribute;
+use OEModule\OphCiExamination\models\OphCiExamination_AttributeOption;
 
 class OphCiExamination_AttributeFactory extends ModelFactory
 {
     use MapsDisplayOrderForFactory;
 
     protected ?ElementType $for_element_type = null;
+    protected int $prepopulated_option_count = 0;
     /**
      *
      * @return array
@@ -35,8 +39,24 @@ class OphCiExamination_AttributeFactory extends ModelFactory
         return [
             'name' => $this->faker->words(2, true),
             'label' => $this->faker->words(2, true),
-            'institution_id' => ModelFactory::factoryFor(Institution::class)
+            'institution_id' => Institution::factory()
         ];
+    }
+
+    public function withInstitution($institution = null): self
+    {
+        $institution ??= \Institution::factory();
+
+        return $this->state([
+            'institution_id' => $institution
+        ]);
+    }
+
+    public function withInstallation(): self
+    {
+        return $this->state([
+            'institution_id' => null
+        ]);
     }
 
     public function configure()
@@ -46,16 +66,33 @@ class OphCiExamination_AttributeFactory extends ModelFactory
                 $this->for_element_type = $this->getValidElementType();
             }
 
-            $instance->attribute_elements = [ModelFactory::factoryFor(OphCiExamination_AttributeElement::class)->create([
+            $attribute_element = OphCiExamination_AttributeElement::factory()->create([
                 'attribute_id' => $instance->id,
                 'element_type_id' => $this->for_element_type->id
-            ])];
+            ]);
+
+            $instance->attribute_elements = [$attribute_element];
+
+            for ($i = 0; $i < $this->prepopulated_option_count; $i++) {
+                OphCiExamination_AttributeOption::factory()
+                    ->create([
+                        'value' => $this->faker->words(2, true),
+                        'attribute_element_id' => $attribute_element->id
+                    ]);
+            }
         });
     }
 
     public function forElementType($element_type_class = null)
     {
         $this->for_element_type = $this->getValidElementType($element_type_class);
+        return $this;
+    }
+
+    public function withOptionCount($count = 3)
+    {
+        $this->prepopulated_option_count = $count;
+        return $this;
     }
 
     protected function getValidElementType(string $element_type_class = null)

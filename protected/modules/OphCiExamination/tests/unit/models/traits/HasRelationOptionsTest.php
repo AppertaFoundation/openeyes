@@ -15,6 +15,7 @@
 
 namespace OEModule\OphCiExamination\tests\unit\models\traits;
 
+
 use OEModule\OphCiExamination\models\traits\HasRelationOptions;
 
 /**

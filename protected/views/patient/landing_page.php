@@ -50,6 +50,7 @@ $allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical');
         'context_firm' => $this->firm,
         'patient_id' => $this->patient->id,
         'event_types' => EventType::model()->getEventTypeModules(),
+        'drafts' => EventDraft::model()->with('episode')->findAll('patient_id = ?', [$this->patient->id])
     ));?>
 <?php } elseif ($allow_clinical) { ?>
     <nav class="event-header no-face">

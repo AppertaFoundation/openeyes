@@ -61,7 +61,7 @@
         });
 
         // When a patient record is clicked
-        $('.activity-list').on('click', '.js-hotlist-open-patient, .js-hotlist-closed-patient', function () {
+        $('.activity-list').on('click', '.js-hotlist-open-patient, .js-hotlist-closed-patient, .js-hotlist-draft-event', function () {
             hotlist.leavePageAlert();
 
             if (hotlist.confirm_redirect) {
@@ -142,6 +142,21 @@
                 commentRow.find('textarea').focus();
             }
             return false;
+        });
+
+        $('.js-hotlist-event-drafts .overview').on('click', function() {
+            const toggler = $(this);
+            const list = $('.js-hotlist-event-drafts .hidden');
+
+            if (toggler.hasClass('expand')) {
+                toggler.removeClass('expand').addClass('collapse');
+
+                list.show();
+            } else {
+                toggler.removeClass('collapse').addClass('expand');
+
+                list.hide();
+            }
         });
 
         $(".js-hotlist-panel-wrapper").on({

@@ -10,11 +10,13 @@ use Institution;
 use OE\concerns\InteractsWithApp;
 use OE\factories\models\EventFactory;
 use OE\factories\ModelFactory;
+use OE\seeders\SeederBuilder;
 use Patient;
 use User;
-use CActiveRecord;
+use OE\seeders\resources\GenericModelResource;
+use OE\seeders\resources\SeededEventResource;
+use OE\seeders\resources\SeededPatientResource;
 use SettingInstallation;
-use SettingMetadata;
 
 class DefaultController extends \CController
 {
@@ -26,6 +28,8 @@ class DefaultController extends \CController
             throw new \CHttpException(403, 'Request unavailable in current configuration');
         }
 
+        $this->getApp()->attachEventHandler('onException', [$this, 'handleException']);
+
         return parent::beforeAction($action);
     }
 
@@ -35,11 +39,22 @@ class DefaultController extends \CController
         // be nice if we could alter this so that a user id / username is passed in
         // and we automatically log them in so we don't need passwords etc.
         $model = new \LoginForm();
-        $model->attributes = [
+        $attributes = [
             'username' => $_POST['username'] ?? 'admin',
             'password' => $_POST['password'] ?? 'admin',
-            'site_id' => 1
+            'site_id' => $_POST['site_id'] ?? null,
+            'institution_id' => $_POST['institution_id'] ?? null,
         ];
+
+        if (empty($attributes['site_id'])) {
+            unset($attributes['site_id']);
+        }
+
+        if (empty($attributes['institution_id'])) {
+            unset($attributes['institution_id']);
+        }
+
+        $model->attributes = $attributes;
 
         if (!$model->validate()) {
             $this->sendJsonResponse($model->getErrors(), 400);
@@ -88,12 +103,12 @@ class DefaultController extends \CController
             ? [
                 array_map(
                     function ($event) {
-                        return $this->eventJson($event);
+                        return SeededEventResource::from($event)->inFull()->toArray();
                     },
                     $instances
                 )
             ]
-            : $this->eventJson($instances[0])
+            : SeededEventResource::from($instances[0])->inFull()->toArray()
         );
     }
 
@@ -109,20 +124,29 @@ class DefaultController extends \CController
 
         $patient = $patient->create($attributes);
 
-        // TODO: create an appropriate DTO pattern for returning structured
-        // data of a patient that can be used in testing.
         $this->sendJsonResponse($this->patientJson($patient));
     }
 
     public function actionGetEventCreationUrl($patientId, $moduleName)
     {
+        $patient = Patient::model()->findByPk($patientId);
+        if (!$patient) {
+            throw new \CHttpException(404, 'Patient must exist to generate event creation url.');
+        }
+
         $eventTypeId = EventType::model()->findByAttributes([
             'class_name' => $moduleName
         ])->id;
 
-        $firmId = $this->getApp()->session['selected_firm_id'];
+        /** @var Firm $current_firm */
+        $current_firm = $this->getApp()->session->getSelectedFirm();
+        $url = "/patientEvent/create?patient_id={$patientId}&event_type_id={$eventTypeId}&context_id={$current_firm->id}";
+
+        $episode = $patient->getOpenEpisodeOfSubspecialty($current_firm->getSubspecialtyID());
+        $url .= $episode ? "&episode_id={$episode->id}" : "&service_id={$current_firm->id}";
+
         $this->sendJsonResponse([
-            'url' => "/patientEvent/create?patient_id={$patientId}&event_type_id={$eventTypeId}&context_id={$firmId}&service_id={$firmId}"
+            'url' => $url
         ]);
     }
 
@@ -146,13 +170,8 @@ class DefaultController extends \CController
             ->create();
 
         $this->sendJsonResponse([
-            'model' => array_merge(
-                [
-                    'id' => $model_instance->id
-                ],
-                $model_instance->getAttributes()
-            )
-            ]);
+            'model' => GenericModelResource::from($model_instance)->toArray()
+        ]);
     }
 
     public function actionCreateModels()
@@ -170,7 +189,9 @@ class DefaultController extends \CController
 
         $instances = $model_factory->create($_POST['attributes'] ?? []);
 
-        $this->sendJsonResponse(['models' => $this->modelsToArrays($instances)]);
+        $this->sendJsonResponse([
+            'models' => $this->modelsToArrays($instances)
+        ]);
     }
 
     public function actionSetSystemSettingValue()
@@ -220,23 +241,32 @@ class DefaultController extends \CController
     {
         $seeder_class_name = $_POST['seeder_class_name'];
         $seeder_module_name = $_POST['seeder_module_name'];
-        $additional_data = $_POST['additional_data'];
+        $additional_data = $_POST['additional_data'] ?? [];
+        if (!is_array($additional_data)) {
+            throw new \CHttpException(400, 'additional_data must be an arrayable structure');
+        }
 
-        $dataContext = new \DataContext(
-            \Yii::app(),
-            [
-                'subspecialties' => \Subspecialty::model()->findByPk(1),
-                'additional_data' => $additional_data
-            ]
+        $seeder = SeederBuilder::getInstance()->build(
+            $seeder_class_name,
+            $seeder_module_name,
+            array_merge(
+                ['subspecialties' => \Subspecialty::model()->findByPk(1)],
+                $additional_data
+            )
         );
 
-        $fully_qualified_seeder_class_name = '\\OEModule\\' . $seeder_module_name . '\\seeders\\' . $seeder_class_name;
+        $this->sendJsonResponse($seeder());
+    }
 
-        $seeder = new $fully_qualified_seeder_class_name($dataContext);
-
-        $seeder_result = $seeder();
-
-        $this->sendJsonResponse($seeder_result);
+    /**
+     * Simple handler to ensure exception data is surfaced to cypress
+     *
+     * @param \CExceptionEvent $event
+     * @return void
+     */
+    protected function handleException(\CExceptionEvent $event)
+    {
+        $this->sendJsonResponse(['message' => $event->exception->getMessage(), 'trace' => $event->exception->getTrace()], 500);
     }
 
     protected function applyStatesTo(ModelFactory $factory, $states = []): ModelFactory
@@ -277,78 +307,17 @@ class DefaultController extends \CController
     protected function modelsToArrays(array $instances, $exclude = [])
     {
         return array_map(function ($instance) use ($exclude) {
-            return $this->modelToArray($instance, $exclude);
+            return GenericModelResource::from($instance)->exclude($exclude)->toArray();
         }, $instances);
-    }
-
-    protected function modelToArray($instance, $exclude = [])
-    {
-        return array_merge(
-            array_filter(
-                $instance->getAttributes(),
-                function ($key, $value) use ($exclude) {
-                    return !in_array($key, $exclude);
-                },
-                ARRAY_FILTER_USE_BOTH
-            ),
-            $this->getRelationsForModel($instance, $exclude)
-        );
-    }
-
-    protected function getRelationsForModel(CActiveRecord $instance, $exclude = [])
-    {
-        $relations = [];
-        foreach ($instance->relations() as $relation => $definition) {
-            if (in_array($relation, array_merge(['user', 'usermodified'], $exclude))) {
-                continue;
-            }
-            if ($relation === 'event') {
-                $relations[$relation] = $this->eventJson($instance->$relation, false);
-                continue;
-            }
-            if ($definition[0] === CActiveRecord::BELONGS_TO) {
-                $relations[$relation] = $instance->$relation ? $instance->$relation->getAttributes() : null;
-            }
-            if ($definition[0] === CActiveRecord::HAS_MANY) {
-                $relations[$relation] = $this->modelsToArrays($instance->$relation, $exclude);
-            }
-        }
-        return $relations;
     }
 
     protected function patientJson(Patient $patient): array
     {
-        return [
-            'id' => $patient->id,
-            'title' => $patient->title,
-            'surname' => $patient->last_name,
-            'first_name' => $patient->first_name,
-            'gender' => $patient->getGenderString()
-        ];
+        return SeededPatientResource::from($patient)->toArray();
     }
 
     protected function eventJson(Event $event, bool $with_elements = true): array
     {
-        $data = [
-            'id' => $event->id,
-            'urls' => [
-                'view' => $event->getEventViewPath()
-            ],
-            'patient' => $this->patientJson($event->episode->patient)
-        ];
-
-        if ($with_elements) {
-            $data['elements'] = array_map(
-                function ($element) {
-                    return [
-                        'element_type' => $element->getElementTypeName(),
-                        'attributes' => array_merge($element->getAttributes(), $this->getRelationsForModel($element, ['event', 'element']))
-                    ];
-                },
-                $event->getElements()
-            );
-        }
-
-        return $data;
+        return SeededEventResource::from($event)->inFull($with_elements)->toArray();
     }
 }

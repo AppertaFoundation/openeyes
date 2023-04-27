@@ -36,18 +36,4 @@ class m220825_124636_add_event_subtype_to_message_type extends OEMigration
         // No down provided - additional column is benign, and repetition of the up step will not fail due to column verification
         return true;
     }
-
-    /**
-     * Checks if a named column exists on a named table
-     * @param $table_name Name of he table to check for the column on
-     * @param $column_name Name of the column to check for
-     * @return bool true if the column exists
-     *
-     * NOTE: This method should be removed when merged to 6.x, as it is provided by the base class
-     */
-    protected function verifyColumnExists($table_name, $column_name)
-    {
-        $cols = $this->dbConnection->createCommand("SHOW COLUMNS FROM `" . $table_name . "` LIKE '" . $column_name . "'")->queryScalar([ ':table_name' => $table_name ]);
-        return !empty($cols);
-    }
 }

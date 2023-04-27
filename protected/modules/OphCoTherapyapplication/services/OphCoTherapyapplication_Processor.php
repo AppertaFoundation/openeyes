@@ -87,10 +87,10 @@ class OphCoTherapyapplication_Processor
                 if (
                     !$api->getInjectionManagementComplexInEpisodeForDisorder(
                         $this->event->episode->patient,
-                        true,
                         $side,
                         $el_diag->{$side . '_diagnosis1_id'},
-                        $el_diag->{$side . '_diagnosis2_id'}
+                        $el_diag->{$side . '_diagnosis2_id'},
+                        true
                     )
                 ) {
                     $missing_sides[] = $side;

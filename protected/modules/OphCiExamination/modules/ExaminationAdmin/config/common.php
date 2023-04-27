@@ -92,7 +92,6 @@ $config = [
         'menu_bar_items' => [
             'ofm' => [
                 'title' => 'Optom Invoice Manager',
-                'position' => 9,
                 'uri' => '/OphCiExamination/OptomFeedback/list',
                 'restricted' => [ ['Optom co-ordinator', 'user_id'] ],
             ]

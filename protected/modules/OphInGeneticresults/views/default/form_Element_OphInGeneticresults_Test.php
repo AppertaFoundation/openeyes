@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 $patient_id = null;
 $withdrawals = array();
 
@@ -170,7 +172,7 @@ $pedigree = new Pedigree();
             </tr>
             <tr>
                 <td>
-                    <?php $form->textArea($element, 'comments', array(), false, array(), array('label' => 7, 'field' => 5)) ?>
+                    <?php $form->textArea($element, 'comments', array(), false, ['class' => 'cols-full autosize'], array('label' => 7, 'field' => 5)) ?>
                 </td>
             </tr>
 

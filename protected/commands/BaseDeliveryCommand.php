@@ -43,6 +43,8 @@ class BaseDeliveryCommand extends CConsoleCommand
         ]
     ];
 
+    protected static $now = null;
+
     /**
      * Whether Internal referral tags generated into the xml, also processes XML for only Internal referrals as well
      *
@@ -75,12 +77,27 @@ class BaseDeliveryCommand extends CConsoleCommand
         $this->checkPath($this->path);
 
         if ($this->generate_csv = Yii::app()->params['docman_generate_csv']) {
-            $this->csv_file_options['file_name'] = implode(DIRECTORY_SEPARATOR, array($this->path, sprintf($this->csv_file_options['format'], date('Ymd'))));
+            $this->csv_file_options['file_name'] = implode(DIRECTORY_SEPARATOR, array($this->path, sprintf($this->csv_file_options['format'], self::getNow()->format('Ymd'))));
             $this->createCSVFile();
         }
 
         parent::__construct(null, null);
     }
+
+    public static function setNow(DateTimeImmutable $now)
+    {
+        self::$now = $now;
+    }
+
+    public static function getNow()
+    {
+        if (self::$now === null) {
+            self::$now = new DateTimeImmutable();
+        }
+
+        return self::$now;
+    }
+
 
     private function createCSVFile()
     {
@@ -272,7 +289,7 @@ class BaseDeliveryCommand extends CConsoleCommand
             '{gp.nat_id}' => $e->episode->patient->gp ? $e->episode->patient->gp->nat_id : '',
             '{event.last_modified_date}' => date('Ymd_His', strtotime($e->last_modified_date)),
             '{document_output.id}' => $document_output_id,
-            '{date}' => date('YmdHis'),
+            '{date}' => self::getNow()->format('YmdHis'),
         ];
 
         $replacement_pairs = [];

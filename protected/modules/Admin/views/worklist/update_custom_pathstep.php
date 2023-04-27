@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -14,6 +15,15 @@
  * @copyright Copyright (c) 2021, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+?>
+
+<?php
+$visual_field_test_preset_value = null;
+$eye_value = null;
+if (isset($preset_model->preset_id)) {
+    [$visual_field_test_preset_value, $eye_value] = PathwayStepTypePresetAssignment::getVisualFieldsPresetIdAndLaterality($preset_model->preset_id);
+}
 ?>
 
 <div class="row divider">
@@ -64,7 +74,9 @@
             <?= $model->getAttributeLabel('default_state') ?>
         </td>
         <td>
-            <?= \CHtml::activeDropDownList($model, 'default_state',
+            <?= \CHtml::activeDropDownList(
+                $model,
+                'default_state',
                 [
                     PathwayStep::STEP_REQUESTED => 'To Do',
                     PathwayStep::STEP_STARTED => 'Active',
@@ -88,8 +100,13 @@
             <?= $preset_model->getAttributeLabel('standard_pathway_step_type_id') ?>
         </td>
         <td>
-            <?= \CHtml::activeDropDownList($preset_model, 'standard_pathway_step_type_id',
-                CHtml::listData(PathwayStepType::getStandardTypes(), 'id', 'long_name'),
+            <?php $criteria = new CDbCriteria();
+                $criteria->addCondition("`short_name` != 'drug admin'")
+            ?>
+            <?= \CHtml::activeDropDownList(
+                $preset_model,
+                'standard_pathway_step_type_id',
+                CHtml::listData(PathwayStepType::getStandardTypes($criteria), 'id', 'long_name'),
                 ['class' => 'cols-6 js-standard-pathway-step', 'empty' => 'Select']
             ) ?>
         </td>
@@ -99,7 +116,9 @@
             <?= $preset_model->getAttributeLabel('site_id') ?>
         </td>
         <td>
-            <?= CHtml::activeDropDownList($preset_model, 'site_id',
+            <?= CHtml::activeDropDownList(
+                $preset_model,
+                'site_id',
                 Site::model()->getListForCurrentInstitution('name'),
                 ['class' => 'cols-6 js-pathstep-site', 'empty' => 'None']
             ) ?>
@@ -110,7 +129,9 @@
             <?= $preset_model->getAttributeLabel('subspecialty_id') ?>
         </td>
         <td>
-            <?= \CHtml::activeDropDownList($preset_model, 'subspecialty_id',
+            <?= \CHtml::activeDropDownList(
+                $preset_model,
+                'subspecialty_id',
                 Subspecialty::model()->getList(),
                 ['class' => 'cols-6 js-pathstep-subspecialty', 'empty' => 'None']
             ) ?>
@@ -121,7 +142,9 @@
             <?= $preset_model->getAttributeLabel('firm_id') ?>
         </td>
         <td>
-            <?= \CHtml::activeDropDownList($preset_model, 'firm_id',
+            <?= \CHtml::activeDropDownList(
+                $preset_model,
+                'firm_id',
                 Firm::model()->getList(Yii::app()->session['selected_institution_id'], $preset_model->subspecialty_id),
                 ['class' => 'cols-6 js-pathstep-firm', 'empty' => 'None']
             ) ?>
@@ -147,15 +170,41 @@
         <td>
             <?= CHtml::dropDownList(
                 'PathwayStepTypePresetAssignment[duration_value]',
-                $preset_model->preset_id%100,
+                $preset_model->preset_id % 100,
                 array_combine(range(1, 18), range(1, 18)),
                 ['class' => 'cols-2 js-booking-value', 'empty' => 'Time']
             ) ?>
             <?= CHtml::dropDownList(
                 'PathwayStepTypePresetAssignment[duration_period]',
-                intdiv($preset_model->preset_id,100),
+                intdiv($preset_model->preset_id, 100),
                 [1 => 'days', 2 => 'weeks', 3 => 'months', 4 => 'years'],
                 ['class' => 'cols-4 js-booking-period', 'empty' => 'Period']
+            ) ?>
+        </td>
+    </tr>
+    <tr style="display: none;">
+        <td>
+            <?= $preset_model->getAttributeLabel('visual_field_test_preset') ?>
+        </td>
+        <td>
+            <?= CHtml::dropDownList(
+                'PathwayStepTypePresetAssignment[visual_field_test_preset]',
+                $visual_field_test_preset_value,
+                $visual_field_test_preset,
+                ['class' => 'cols-2 js-visual-field-test-preset-value']
+            ) ?>
+        </td>
+    </tr>
+    <tr style="display: none;">
+        <td>
+            <?= $preset_model->getAttributeLabel('laterality') ?>
+        </td>
+        <td>
+            <?= CHtml::dropDownList(
+                'PathwayStepTypePresetAssignment[laterality]',
+                $eye_value,
+                $eye,
+                ['class' => 'cols-2 js-laterality-value']
             ) ?>
         </td>
     </tr>
@@ -241,6 +290,13 @@
         $('.js-preset-id').closest('tr').hide();
     }
 
+
+    function setVisualFieldsDropdownOptions() {
+        $('.js-visual-field-test-preset-value').closest('tr').show();
+        $('.js-laterality-value').closest('tr').show();
+        $('.js-preset-id').closest('tr').hide();
+    }
+
     function setPresetOptions()
     {
         let standardPathway = $('.js-standard-pathway-step :selected').text();
@@ -261,6 +317,9 @@
                 break;
             case 'Book Follow-up Appointment':
                 setBookingDropdownOptions();
+                break;
+            case 'Visual Fields':
+                setVisualFieldsDropdownOptions();
                 break;
             default:
                 setPresetDropdownOptions([], 'Default');

@@ -15,6 +15,7 @@
 
 namespace OEModule\OphCiExamination\tests\unit\models;
 
+
 use OEModule\OphCiExamination\models\OphCiExamination_ColourVision_Method;
 use OEModule\OphCiExamination\tests\unit\models\testingtraits\HasLookupBehavioursToTest;
 

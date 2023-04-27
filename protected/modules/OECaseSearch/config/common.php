@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: andre
@@ -17,7 +18,6 @@ return array(
             'casesearch' => array(
                 'title' => 'Advanced Search',
                 'uri' => '/OECaseSearch/caseSearch/index',
-                'position' => 4,
                 'restricted' => array('TaskCaseSearch'),
             ),
         ),

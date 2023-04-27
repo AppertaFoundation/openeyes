@@ -17,6 +17,7 @@ namespace OEModule\OphCiExamination\tests\feature;
 
 use CHtml;
 use OE\factories\models\EventFactory;
+
 use OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses;
 use OEModule\OphCiExamination\models\OphCiExamination_Diagnosis;
 use OEModule\OphCiExamination\models\SystemicDiagnoses;
@@ -35,6 +36,20 @@ class DiagnosesUpdatingPatientDataBehaviourTest extends \OEDbTestCase
     use \MakesApplicationRequests;
     use \WithFaker;
     use \WithTransactions;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        // will rerun the configuration application on the event manager
+        // so events are restored for these tests
+        \Yii::app()->event->init();
+    }
+
+    public function tearDown(): void
+    {
+        \Yii::app()->event->forgetAll();
+        parent::tearDown();
+    }
 
     /** @test */
     public function ophthalmic_entries_are_saved_and_reflected_in_patient_record()
@@ -235,27 +250,6 @@ class DiagnosesUpdatingPatientDataBehaviourTest extends \OEDbTestCase
         );
     }
 
-    /** @test */
-    public function model_is_dirty_after_changes() {
-        list($oph) = $this->createExaminationWithElements(
-            [Element_OphCiExamination_Diagnoses::class],
-            null,
-            '-8 weeks',
-            '-6 weeks'
-        );
-        $oph->no_ophthalmic_diagnoses_date = date('Y-m-d H:i:s');
-        $this->assertTrue($oph->isModelDirty(), "Element_OphCiExamination_Diagnoses model is not dirty after setting no ophthalmic diagnoses date");
-
-        // assert the associated diagnosis if there is at least one record
-        if (count($oph->diagnoses) > 0) {
-            $oph->diagnoses[0]->principal = !$oph->diagnoses[0]->principal;
-
-            $this->assertTrue($oph->diagnoses[0]->isModelDirty(), "OphCiExamination_Diagnosis model is not dirty after changing the principal state");
-
-            $this->assertTrue($oph->isModelDirty(), "Element_OphCiExamination_Diagnoses model is not dirty after changing the first diagnosis principal state");
-        }
-    }
-
     protected function createExaminationWithElements(
         array $element_classes,
         ?\Episode $episode = null,
@@ -313,14 +307,16 @@ class DiagnosesUpdatingPatientDataBehaviourTest extends \OEDbTestCase
 
     protected function createSystemicDiagnosesElementThroughRequest(\Episode $episode): SystemicDiagnoses
     {
-        $diagnoses_data_element = SystemicDiagnoses::factory()
+        list($diagnoses_data_element, $element_form_data) = SystemicDiagnoses::factory()
             ->withDiagnoses(2)
-            ->make(['event_id' => null]);
+            ->makeWithFormData(['event_id' => null]);
 
-        $form_data = [
-            CHtml::modelName($diagnoses_data_element) => $this->mapSystemicDiagnosesElementToFormData($diagnoses_data_element),
-            'patient_id' => $episode->patient_id
-        ];
+        $form_data = array_merge(
+            [
+                'patient_id' => $episode->patient_id
+            ],
+            $element_form_data
+        );
 
         $this->createExaminationEventWithFormData($episode, $form_data);
 
@@ -332,20 +328,22 @@ class DiagnosesUpdatingPatientDataBehaviourTest extends \OEDbTestCase
         $ophthalmic = Element_OphCiExamination_Diagnoses::factory()
             ->withBilateralDiagnoses(2)
             ->make(['event_id' => null]);
-        $systemic = SystemicDiagnoses::factory()
+        list($systemic_element, $systemic_form_data) = SystemicDiagnoses::factory()
             ->withDiagnoses(2)
-            ->make(['event_id' => null]);
+            ->makeWithFormData(['event_id' => null]);
 
-        $form_data = [
-            CHtml::modelName($ophthalmic) => $this->mapOphthalmicDiagnosesElementToFormData($ophthalmic),
-            'principal_diagnosis_row_key' => $this->findPrincipalRowKey($ophthalmic->diagnoses),
-            CHtml::modelName($systemic) => $this->mapSystemicDiagnosesElementToFormData($systemic),
-            'patient_id' => $episode->patient_id
-        ];
+        $form_data = array_merge(
+            [
+                CHtml::modelName($ophthalmic) => $this->mapOphthalmicDiagnosesElementToFormData($ophthalmic),
+                'principal_diagnosis_row_key' => $this->findPrincipalRowKey($ophthalmic->diagnoses),
+                'patient_id' => $episode->patient_id
+            ],
+            $systemic_form_data
+        );
 
         $this->createExaminationEventWithFormData($episode, $form_data);
 
-        return [$ophthalmic, $systemic];
+        return [$ophthalmic, $systemic_element];
     }
 
     protected function mapOphthalmicDiagnosesElementToFormData(Element_OphCiExamination_Diagnoses $element): array
@@ -358,31 +356,6 @@ class DiagnosesUpdatingPatientDataBehaviourTest extends \OEDbTestCase
                 'left_eye' => ($entry->eye_id & \Eye::LEFT) === \Eye::LEFT,
                 'date' => $entry->date,
                 'row_key' => $i
-            ];
-        }
-        return $result;
-    }
-
-    /**
-     * Note that this currently does not map diagnoses laterality. When test coverage
-     * is expanded, this should be dealt with.
-     *
-     * @param SystemicDiagnoses $element
-     * @return array
-     */
-    protected function mapSystemicDiagnosesElementToFormData(SystemicDiagnoses $element): array
-    {
-        $result = [
-            'entries' => [],
-            'present' => "1"
-        ];
-        foreach ($element->diagnoses as $i => $entry) {
-            $result['entries'][] = [
-                'has_disorder' => "1",
-                'disorder_id' => $entry->disorder_id,
-                'date' => $entry->date,
-                'has_disorder' => $entry->has_disorder,
-                'na_eye' => "-9"
             ];
         }
         return $result;

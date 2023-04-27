@@ -254,7 +254,7 @@ class DefaultController extends BaseEventTypeController
         $procedures = $this->getBookingProcedures();
         $anaesthetic_types = $this->getBookingAnaestheticTypes();
         $disorder = $this->getBookingDiagnosis();
-        if ($action === 'create' && $procedures && $disorder && $anaesthetic_types) {
+        if ($action === 'create' && !empty($procedures) && $disorder && !empty($anaesthetic_types)) {
             $element->procedures = $procedures;
             $element->anaesthetic_type = $anaesthetic_types;
             $element->disorder_id = $disorder->id;
@@ -785,16 +785,15 @@ class DefaultController extends BaseEventTypeController
      *
      * @return Procedure[]
      */
-    protected function getBookingProcedures()
+    protected function getBookingProcedures(): array
     {
-        if ($this->booking_operation) {
-            if (!$this->booking_procedures) {
-                $api = Yii::app()->moduleAPI->get('OphTrOperationbooking');
-                $this->booking_procedures = $api->getProceduresForOperation($this->booking_operation->event_id);
-            }
-
-            return $this->booking_procedures;
+        $result = [];
+        if (isset($this->booking_operation) && !isset($this->booking_procedures)) {
+            $api = Yii::app()->moduleAPI->get('OphTrOperationbooking');
+            $this->booking_procedures = $api->getProceduresForOperation($this->booking_operation->event_id);
+            $result = $this->booking_procedures;
         }
+        return $result;
     }
 
     /**
@@ -802,16 +801,15 @@ class DefaultController extends BaseEventTypeController
      *
      * @return AnaestheticType[]
      */
-    protected function getBookingAnaestheticTypes()
+    protected function getBookingAnaestheticTypes(): array
     {
-        if ($this->booking_operation) {
-            if (!$this->booking_anaesthetic_types) {
-                $api = Yii::app()->moduleAPI->get('OphTrOperationbooking');
-                $this->booking_anaesthetic_types = $api->getAnaestheticTypesForOperation($this->booking_operation->event_id);
-            }
-
-            return $this->booking_anaesthetic_types;
+        $result = [];
+        if (isset($this->booking_operation) && !isset($this->booking_anaesthetic_types)) {
+            $api = Yii::app()->moduleAPI->get('OphTrOperationbooking');
+            $this->booking_anaesthetic_types = $api->getAnaestheticTypesForOperation($this->booking_operation->event_id);
+            $result = $this->booking_anaesthetic_types;
         }
+        return $result;
     }
 
     /**
@@ -1188,14 +1186,23 @@ class DefaultController extends BaseEventTypeController
      * @param BaseEventTypeElement $element
      * @param string $action
      * @param BaseEventTypeCActiveForm $form
-     * @param array $data
+     * @param ?array $data
+     * @param array $template_data
      * @param array $view_data
      * @param bool $return
      * @param bool $processOutput
      * @throws Exception
      */
-    protected function renderElement($element, $action, $form, $data, $template_data = array(), $view_data = array(), $return = false, $processOutput = false)
-    {
+    protected function renderElement(
+        $element,
+        $action,
+        $form,
+        ?array $data = null,
+        ?array $template_data = [],
+        ?array $view_data = [],
+        bool $return = false,
+        bool $processOutput = false
+    ) {
         if (($action === 'step') || ($action === 'update')) {
             $view_data = array_merge(array(
                 'isCollapsable' => true,

@@ -111,8 +111,21 @@ class PathwayStepTypePresetAssignment extends BaseActiveRecordVersioned
             $preset_state_template['duration_value'] = $this->preset_id ? ($this->preset_id)%100 : null;
             $preset_state_template['duration_period'] = $this->preset_id ? self::$duration_period[$this->preset_id/100] : null;
             return json_encode($preset_state_template, JSON_THROW_ON_ERROR);
+        } elseif ($this->preset_short_name === 'Fields') {
+            $preset_state_template = [];
+            [$preset_state_template['preset_id'], $preset_state_template['laterality']] = $this->getVisualFieldsPresetIdAndLaterality($this->preset_id);
+            return json_encode($preset_state_template, JSON_THROW_ON_ERROR);
         }
 
         return null;
+    }
+
+    public static function getVisualFieldsPresetIdAndLaterality(int $number) : array {
+        $last_digit = $number % 10;
+        $not_last_digit = ($number - $last_digit) / 10;
+        $preset_id = $number ? $not_last_digit : null;
+        $laterality = $number ? $last_digit : null;
+
+        return [$preset_id, $laterality];
     }
 }

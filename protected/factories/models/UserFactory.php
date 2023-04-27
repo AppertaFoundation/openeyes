@@ -17,7 +17,6 @@ namespace OE\factories\models;
 
 use InstitutionAuthentication;
 use OE\factories\ModelFactory;
-use OEModule\OphCiExamination\models\OphCiExaminationAllergyReaction;
 use UserAuthentication;
 
 class UserFactory extends ModelFactory
@@ -32,7 +31,9 @@ class UserFactory extends ModelFactory
             'first_name' => $this->faker->firstName(),
             'last_name' => $this->faker->lastName(),
             'email' => $this->faker->email(),
-            'title' => $this->faker->title(),
+            // Note, current regex doesn't support faker title due to trailing .
+            // this approach suffices for the current testing requirements
+            'title' => $this->faker->randomElement(['Mr', 'Mrs', 'Ms', 'Prof', 'Dr']),
             'role' => '', // not sure what this is for so blank string works as default
             'has_selected_firms' => 0
         ];
@@ -77,12 +78,12 @@ class UserFactory extends ModelFactory
     }
 
 
-    public function withContact($attributes = []):self {
-        return $this->state(function () use ($attributes){
+    public function withContact($attributes = []): self
+    {
+        return $this->state(function () use ($attributes) {
             return [
                 'contact_id' => \Contact::factory()->create($attributes)
             ];
         });
     }
-
 }

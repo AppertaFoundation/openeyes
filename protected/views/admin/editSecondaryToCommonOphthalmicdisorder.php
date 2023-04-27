@@ -29,18 +29,28 @@
         <table class="standard">
             <tbody>
             <tr class="col-gap">
-                <td>Parent</td>
+                <td>&nbsp;<br/><?=\CHtml::dropDownList(
+                        'institution_id',
+                        $current_institution_id,
+                        Institution::model()->getTenantedList(!Yii::app()->user->checkAccess('admin')),
+                        ['empty' => 'All Institutions']
+                    ) ?>
+                </td>
                 <td>
+                    <small>Subspeciality</small><br/>
+                    <?=\CHtml::dropDownList(
+                        'subspecialty_id',
+                        $subspecialty_id,
+                        CHtml::listData($subspecialty, 'id', 'name')
+                    ); ?>
+                </td>
+                <td>
+                    <small>Parent</small><br/>
                     <?=\CHtml::dropDownList(
                         'parent_id',
-                        (isset($_GET['parent_id']) ? $_GET['parent_id'] : null),
+                        $parent_id,
                         CHtml::listData(
-                            array_filter(
-                                CommonOphthalmicDisorder::model()->with('disorder')->findAll([ 'condition' => 'disorder_id IS NOT NULL OR finding_id IS NOT NULL', 'group' => 'disorder.term, subspecialty_id', 'distinct' => true,'order' => 'disorder.term ASC']),
-                                static function ($item) {
-                                    return $item->disorder !== null || $item->finding !== null;
-                                } // Exclude inactive entries
-                            ),
+                            $parents,
                             'id',
                             static function ($item) {
                                 if ($item->disorder !== null) {
@@ -57,7 +67,7 @@
         </table>
     </form>
 
-    <form method="POST" action="/admin/editSecondaryToCommonOphthalmicDisorder?parent_id=<?=$parent_id;?>">
+    <form method="POST" action="/admin/editSecondaryToCommonOphthalmicDisorder?institution_id=<?= $current_institution_id; ?>&subspecialty_id=<?= $subspecialty_id; ?>&parent_id=<?= $parent_id; ?>">
         <input type="hidden" class="no-clear"
                name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
         <?php
@@ -108,7 +118,7 @@
                     $remove_a = CHtml::tag(
                         'a',
                         array('href' => 'javascript:void(0)', 'class' => 'finding-rename'),
-                        Chtml::tag(
+                        CHtml::tag(
                             'i',
                             [
                                 'class' => 'oe-i remove-circle small',
@@ -152,18 +162,26 @@
                 }
             ),
             array(
+                'header' => 'Institution',
+                'type' => 'raw',
+                'htmlOptions' => array('width' => '300px'),
+                'value' => function ($data, $row) use ($current_institution) {
+                    $common_ophthalmic_disorder_group_institution = SecondaryToCommonOphthalmicDisorder_Institution::model()->find('secondaryto_common_oph_disorder_id = :id',
+                        [':id' => $data->id]);
+
+                    if ($common_ophthalmic_disorder_group_institution) {
+                        $institution = Institution::model()->findByPk($common_ophthalmic_disorder_group_institution->institution_id);
+                        return $institution->name;
+                    } else {
+                        return '-';
+                    }
+                }
+            ),
+            array(
                 'header' => 'Actions',
                 'type' => 'raw',
                 'value' => function ($data) {
                     return '<a href="javascript:void(0)" class="delete button large">delete</a>';
-                }
-            ),
-            array(
-                'header' => 'Assigned to current institution',
-                'type' => 'raw',
-                'name' => 'assigned_insitution',
-                'value' => function ($data, $row) {
-                    return CHtml::checkBox("assigned_institution[$row]", $data->hasMapping(ReferenceData::LEVEL_INSTITUTION, $data->getIdForLevel(ReferenceData::LEVEL_INSTITUTION)));
                 }
             ),
         );
@@ -198,7 +216,7 @@
             'code': '',
             'singleTemplate' :
             "<span class='medication-display' style='display:none'>" + "<a href='javascript:void(0)' class='diagnosis-rename'><i class='oe-i remove-circle small' aria-hidden='true' title='Change diagnosis'></i></a> " +
-            "<span class='diagnosis-name'></span></span>" +
+            "<span class='diagnosis-name' data-test='diagnosis-name'></span></span>" +
             "<select class='commonly-used-diagnosis cols-full' style='display:none'></select>" +
             "{{{input_field}}}" +
             "<input type='hidden' name='{{field_prefix}}[" + $row.data('row') + "][disorder_id]' class='savedDiagnosis' value=''>"
@@ -209,6 +227,14 @@
     }
 
     $(document).ready(function(){
+        $('#institution_id').on('change', function () {
+            $(this).closest('form').submit();
+        });
+
+        $('#subspecialty_id').on('change', function () {
+            $(this).closest('form').submit();
+        });
+
         $('#parent_id').on('change', function(){
             $(this).closest('form').submit();
         });
@@ -310,7 +336,7 @@
         <td width="200px">
             <span class="medication-display" style="display:none">
                 <a href="javascript:void(0)" class="diagnosis-rename"><i class="oe-i remove-circle small" aria-hidden="true" title="Change diagnosis"></i></a>
-                <span class="diagnosis-name"></span>
+                <span class="diagnosis-name" data-test="diagnosis-name"></span>
             </span>
             <input class="diagnoses-search-autocomplete diagnoses-search-inputfield ui-autocomplete-input"
                    data-saved-diagnoses="" type="text" autocomplete="off">
@@ -332,6 +358,8 @@
         </td>
         <td>
             <input name="SecondaryToCommonOphthalmicDisorder[{{row_count}}][letter_macro_text]" id="SecondaryToCommonOphthalmicDisorder_{{row_count}}_letter_macro_text" type="text" value="">
+        </td>
+        <td width="300px">
         </td>
         <td>
             <a href="javascript:void(0)" class="delete button large">delete</a>

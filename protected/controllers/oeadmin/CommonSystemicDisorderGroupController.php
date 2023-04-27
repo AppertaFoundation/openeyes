@@ -23,7 +23,7 @@ class CommonSystemicDisorderGroupController extends BaseAdminController
     {
         $current_institution = $this->request->getParam('institution_id')
             ? Institution::model()->find('id = ' . $this->request->getParam('institution_id'))
-            : Institution::model()->getCurrent();
+            : (!$this->checkAccess('admin') ? Institution::model()->getCurrent() : null);
 
         // Get groups to list
         $disorder_groups_for_institution = $this->getCommonSystemicDisorderGroupsForInstitution($current_institution);
@@ -34,8 +34,8 @@ class CommonSystemicDisorderGroupController extends BaseAdminController
         $this->render('/admin/listcommonsystemicdisordergroup', array(
             'dataProvider' => $disorder_groups_for_institution,
             'active_group_ids' => $active_group_ids,
-            'current_institution_id' => $current_institution->id,
-            'current_institution' => $current_institution
+            'current_institution_id' => $current_institution->id ?? null,
+            'current_institution' => $current_institution ?? null
         ));
     }
 
@@ -43,7 +43,7 @@ class CommonSystemicDisorderGroupController extends BaseAdminController
     {
         $current_institution = $this->request->getParam('institution_id')
             ? Institution::model()->find('id = ' . $this->request->getParam('institution_id'))
-            : Institution::model()->getCurrent();
+            : (!$this->checkAccess('admin') ? Institution::model()->getCurrent() : null);
 
         $json = $this->parseCommonSystemicDisorderGroupsJson();
 
@@ -59,10 +59,13 @@ class CommonSystemicDisorderGroupController extends BaseAdminController
     {
         // Get groups to list
         $criteria = new CDbCriteria();
-        $criteria->join = "JOIN common_systemic_disorder_group_institution codgi ON t.id = codgi.common_systemic_disorder_group_id";
-        $criteria->compare('codgi.institution_id', $institution->id);
+        $criteria->order = 'display_order';
         return new CActiveDataProvider('CommonSystemicDisorderGroup', array(
-            'criteria' => $criteria,
+            'criteria' => CommonSystemicDisorderGroup::model()->getCriteriaForLevels(
+                $institution ? ReferenceData::LEVEL_INSTITUTION : ReferenceData::LEVEL_INSTALLATION,
+                $criteria,
+                $institution
+            ),
             'pagination' => false,
         ));
     }
@@ -132,20 +135,30 @@ class CommonSystemicDisorderGroupController extends BaseAdminController
             $criteria->addNotInCondition('id', $saved_group_ids);
         }
 
-        $to_delete = CommonSystemicDisorderGroup::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION, $criteria, $institution);
+        $to_delete = CommonSystemicDisorderGroup::model()->findAllAtLevels(
+            $institution ? ReferenceData::LEVEL_INSTITUTION : ReferenceData::LEVEL_ALL,
+            $criteria,
+            $institution
+        );
 
         foreach ($to_delete as $item) {
             // unmap deleted
-            $item->deleteMapping(ReferenceData::LEVEL_INSTITUTION, $institution->id);
+            if ($institution) {
+                // If an institution was selected, only delete the mapping and not the record itself.
+                $item->deleteMapping(ReferenceData::LEVEL_INSTITUTION, $institution->id);
+            } else {
+                // If no institution selected, delete the entire record as well as the mappings at all applicable levels.
+                $item->deleteMappings(ReferenceData::LEVEL_INSTALLATION);
+                $item->deleteMappings(ReferenceData::LEVEL_INSTITUTION);
+                if (!$item->delete()) {
+                    throw new Exception("Unable to delete CommonSystemicDisorderGroup:{$item->primaryKey}");
+                }
 
-            if (!$item->delete()) {
-                throw new Exception("Unable to delete CommonSystemicDisorderGroup:{$item->primaryKey}");
+                Audit::add('admin', 'delete', $item->primaryKey, null, array(
+                    'module' => (is_object($this->module)) ? $this->module->id : 'core',
+                    'model' => CommonSystemicDisorderGroup::getShortModelName(),
+                ));
             }
-
-            Audit::add('admin', 'delete', $item->primaryKey, null, array(
-                'module' => (is_object($this->module)) ? $this->module->id : 'core',
-                'model' => CommonSystemicDisorderGroup::getShortModelName(),
-            ));
         }
     }
 
@@ -171,8 +184,10 @@ class CommonSystemicDisorderGroupController extends BaseAdminController
             $saved_group_ids[] = $common_systemic_disorder_group->id;
 
             // map to institution if not already mapped
-            if (!$common_systemic_disorder_group->hasMapping(ReferenceData::LEVEL_INSTITUTION, $institution->id)) {
-                $common_systemic_disorder_group->createMapping(ReferenceData::LEVEL_INSTITUTION, $institution->id);
+            if ($institution) {
+                if (!$common_systemic_disorder_group->hasMapping(ReferenceData::LEVEL_INSTITUTION, $institution->id)) {
+                    $common_systemic_disorder_group->createMapping(ReferenceData::LEVEL_INSTITUTION, $institution->id);
+                }
             }
         }
 

@@ -26,36 +26,46 @@ class CommonSystemicDisorderController extends BaseAdminController
 
         $current_institution = $this->request->getParam('institution_id')
                                     ? Institution::model()->find('id = ' . $this->request->getParam('institution_id'))
-                                    : Institution::model()->getCurrent();
+                                    : (!$this->checkAccess('admin') ? Institution::model()->getCurrent() : null);
 
-        $group_models = CommonSystemicDisorderGroup::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION, null, $current_institution);
-        $groupData = array_map(function ($model) {
+        $group_models = CommonSystemicDisorderGroup::model()->findAllAtLevels(
+            $current_institution ? ReferenceData::LEVEL_INSTITUTION : ReferenceData::LEVEL_INSTALLATION,
+            null,
+            $current_institution
+        );
+        $group_options = array_map(function ($model) {
             return $model->getAttributes(array("id", "name"));
         }, $group_models);
 
-        $this->jsVars['common_systemic_disorder_group_options'] = $groupData;
-        Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/OpenEyes.UI.DiagnosesSearch.js'), ClientScript::POS_END);
+        $this->jsVars['common_systemic_disorder_group_options'] = $group_options;
+        Yii::app()->clientScript->registerScriptFile(
+            Yii::app()->assetManager->createUrl('js/OpenEyes.UI.DiagnosesSearch.js'),
+            ClientScript::POS_END
+        );
 
         $criteria = new CDbCriteria();
-        $criteria->join = "JOIN common_systemic_disorder_institution csdi ON t.id = csdi.common_systemic_disorder_id";
-        $criteria->compare('csdi.institution_id', $current_institution->id);
         $criteria->order = 'display_order';
 
         $this->render('/admin/editcommonsystemicdisorder', [
             'dataProvider' => new CActiveDataProvider('CommonSystemicDisorder', [
                 'pagination' => false,
-                'criteria' => $criteria
+                'criteria' => CommonSystemicDisorder::model()->getCriteriaForLevels(
+                    $current_institution ? ReferenceData::LEVEL_INSTITUTION : ReferenceData::LEVEL_INSTALLATION,
+                    $criteria,
+                    $current_institution
+                ),
             ]),
-            'current_institution_id' => $current_institution->id,
-            'current_institution' => $current_institution
+            'group_models' => $group_models,
+            'current_institution_id' => $current_institution->id ?? null,
+            'current_institution' => $current_institution ?? null
         ]);
     }
 
     public function actionSave()
     {
         $current_institution = $this->request->getParam('institution_id')
-            ? Institution::model()->find('id = ' . $this->request->getParam('institution_id'))
-            : Institution::model()->getCurrent();
+                                    ? Institution::model()->find('id = ' . $this->request->getParam('institution_id'))
+                                    : (!$this->checkAccess('admin') ? Institution::model()->getCurrent() : null);
 
         $transaction = Yii::app()->db->beginTransaction();
         $JSON_string = Yii::app()->request->getPost('CommonSystemicDisorder');
@@ -92,8 +102,12 @@ class CommonSystemicDisorderController extends BaseAdminController
                 $ids[$common_systemic_disorder->id] = $common_systemic_disorder->id;
 
                 // map to institution if not already mapped
-                if (!$common_systemic_disorder->hasMapping(ReferenceData::LEVEL_INSTITUTION, $current_institution->id)) {
-                    $common_systemic_disorder->createMapping(ReferenceData::LEVEL_INSTITUTION, $current_institution->id);
+                if ($current_institution) {
+                    if (!$common_systemic_disorder->hasMapping(ReferenceData::LEVEL_INSTITUTION, $current_institution->id)) {
+                        $common_systemic_disorder->createMapping(ReferenceData::LEVEL_INSTITUTION, $current_institution->id);
+                    }
+                } else {
+                    $common_systemic_disorder->createMapping(ReferenceData::LEVEL_INSTALLATION, 1);
                 }
             }
 
@@ -106,18 +120,27 @@ class CommonSystemicDisorderController extends BaseAdminController
                     }, $ids));
                 }
 
-                $to_delete = CommonSystemicDisorder::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION, $criteria, $current_institution);
+                $to_delete = CommonSystemicDisorder::model()->findAllAtLevels(
+                    $current_institution ? ReferenceData::LEVEL_INSTITUTION : ReferenceData::LEVEL_ALL,
+                    $criteria,
+                    $current_institution
+                );
                 foreach ($to_delete as $item) {
                     // unmap deleted
-                    $item->deleteMapping(ReferenceData::LEVEL_INSTITUTION, $current_institution->id);
+                    if ($current_institution) {
+                        $item->deleteMapping(ReferenceData::LEVEL_INSTITUTION, $current_institution->id);
+                    } else {
+                        $item->deleteMappings(ReferenceData::LEVEL_INSTALLATION);
+                        $item->deleteMappings(ReferenceData::LEVEL_INSTITUTION);
+                        if (!$item->delete()) {
+                            $errors[] = $item->getErrors();
+                        }
 
-                    if (!$item->delete()) {
-                        $errors[] = $item->getErrors();
+                        Audit::add('admin', 'delete', $item->primaryKey, null, array(
+                            'module' => (is_object($this->module)) ? $this->module->id : 'core',
+                            'model' => CommonSystemicDisorder::getShortModelName(),
+                        ));
                     }
-                    Audit::add('admin', 'delete', $item->primaryKey, null, array(
-                        'module' => (is_object($this->module)) ? $this->module->id : 'core',
-                        'model' => CommonSystemicDisorder::getShortModelName(),
-                    ));
                 }
 
                 $transaction->commit();
@@ -128,7 +151,10 @@ class CommonSystemicDisorderController extends BaseAdminController
             if (!empty($errors)) {
                 foreach ($errors as $error) {
                     foreach ($error as $attribute => $error_array) {
-                        $display_errors = '<strong>' . (new CommonOphthalmicDisorder())->getAttributeLabel($attribute) . ':</strong> ' . implode(', ', $error_array);
+                        $display_errors = '<strong>'
+                            . (new CommonOphthalmicDisorder())->getAttributeLabel($attribute)
+                            . ':</strong> '
+                            . implode(', ', $error_array);
                         Yii::app()->user->setFlash('warning.failure-' . $attribute, $display_errors);
                     }
                 }

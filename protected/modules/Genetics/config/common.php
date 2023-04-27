@@ -10,7 +10,6 @@ return array(
             'pedigrees' => array(
                 'title' => 'Genetics',
                 'uri' => 'Genetics/default/index',
-                'position' => 40,
                 'restricted' => array('Genetics Admin', 'Genetics Clinical', 'Genetics Laboratory Technician', 'Genetics User'),
             ),
         ),
@@ -37,7 +36,7 @@ return array(
          *
          * Minimum expected structure: {valid: false, 'message':''}
          */
-        'external_gene_validation' => function($variant){
+        'external_gene_validation' => function ($variant) {
 
             $url = "https://mutalyzer.nl/json/checkSyntax?variant=" . $variant;
 

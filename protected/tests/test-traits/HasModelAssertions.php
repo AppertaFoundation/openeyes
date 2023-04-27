@@ -85,7 +85,7 @@ trait HasModelAssertions
         $this->assertEmpty(
             $instance->getErrors($attribute),
             "Not expecting errors for {$attribute}: with "
-            . (empty($instance->$attribute) ? "no value" : "value " . $instance->$attribute)
+            . (empty($instance->$attribute) ? "no value" : "value " . print_r($instance->$attribute, true))
             . print_r($instance->getErrors($attribute), true)
         );
     }
@@ -158,6 +158,16 @@ trait HasModelAssertions
         $this->assertEquals(CHasManyRelation::class, $defined_relation[0]);
         $this->assertEquals($cls, $defined_relation[1]);
         $this->assertEquals($attribute, $defined_relation[2]);
+    }
+
+    protected function assertModelDoesNotExist($model)
+    {
+        $this->assertEmpty($model::model()->findByPk($model->getPrimaryKey()));
+    }
+
+    protected function assertModelStillExists($model)
+    {
+        $this->assertNotNull($model::model()->findByPK($model->getPrimaryKey()));
     }
 
     public function assertModelIs($expected, $model)

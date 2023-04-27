@@ -1,38 +1,43 @@
 <?php
+/**
+ * (C) Apperta Foundation, 2023
+ * This file is part of OpenEyes.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @link http://www.openeyes.org.uk
+ *
+ * @author OpenEyes <info@openeyes.org.uk>
+ * @copyright Copyright (C) 2023, Apperta Foundation
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+ */
+
 namespace OEModule\OphTrOperationbooking\seeders;
 
-use OE\factories\models\EpisodeFactory;
 use OE\factories\models\EventFactory;
-use OEModule\CypressHelper\resources\SeededEventResource;
+use OE\seeders\BaseSeeder;
+use OE\seeders\resources\SeededEventResource;
 
-class OpBookingWithProceduresSeeder
+class OpBookingWithProceduresSeeder extends BaseSeeder
 {
-    public function __construct(\DataContext $context)
+    public function __invoke(): array
     {
-        $this->context = $context;
-    }
-
-    public function __invoke()
-    {
-        $episode = EpisodeFactory::new(
-                [
-                    'patient_id' => $this->context->additional_data['patient_id'],
-                    'firm_id' => \Yii::app()->session['selected_firm_id']
-                ]
-            )->create();
-
-        $procedure_names = $this->context->additional_data['procedure_names'];
+        $episode = \Episode::factory()
+            ->create([
+                'patient_id' => $this->getSeederAttribute('patient_id'),
+                'firm_id' => $this->app_context->getSelectedFirm()->id
+            ]);
 
         $procedures = array_map(function (string $procedure_name) {
             return \Procedure::factory()->useExisting(['term' => $procedure_name])->create();
-        }, $procedure_names);
+        }, $this->getSeederAttribute('procedure_names', []));
 
         $event = EventFactory::forModule('OphTrOperationbooking')
-            ->bookedWithStates(
-                [
-                    'withSingleEye',
-                    'withRequiresScheduling'
-                ]);
+            ->bookedWithStates([
+                'withSingleEye',
+                'withRequiresScheduling'
+            ]);
 
         $event = $event->create(['episode_id' => $episode->id]);
 

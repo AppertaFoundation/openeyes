@@ -79,7 +79,7 @@ class BirthHistoryTest extends \OEDbTestCase
 
         $this->getWidgetInstanceForElement($element, ['input_weight_kgs' => sprintf("%.3f", $weight / 1000)]);
 
-        $this->assertEquals($weight, $element->weight_grams);
+        $this->assertEqualsWithDelta($weight, $element->weight_grams, 0.0001);
         $this->assertEquals(BirthHistoryModel::$WEIGHT_GRAMS, $element->weight_recorded_units);
     }
 
@@ -180,7 +180,7 @@ class BirthHistoryTest extends \OEDbTestCase
         $element->weight_grams = rand(100, 10000);
         $widget = $this->getWidgetInstanceForElement($element);
 
-        $this->assertEquals($element->weight_grams/1000, $widget->getInputWeightKgs());
+        $this->assertEqualsWithDelta($element->weight_grams / 1000, $widget->getInputWeightKgs(), 0.00001);
         $this->assertNull($widget->getInputWeightLbsPortion());
         $this->assertNull($widget->getInputWeightOzsPortion());
     }
@@ -252,7 +252,7 @@ class BirthHistoryTest extends \OEDbTestCase
         $this->assertEquals(BirthHistory::$INPUT_LB_OZS_MODE, $widget->inputWeightMode());
         $this->assertEquals(7, $widget->getInputWeightLbsPortion());
         $this->assertEquals(4, $widget->getInputWeightOzsPortion());
-        $this->assertEquals((7*16) + 4, $element->weight_ozs);
+        $this->assertEquals((7 * 16) + 4, $element->weight_ozs);
         $this->assertNull($widget->getInputWeightKgs());
     }
 }

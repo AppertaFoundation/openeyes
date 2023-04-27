@@ -13,6 +13,10 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+namespace OEModule\OphGeneric;
+
+use OEModule\OphGeneric\modules\OphGenericAdmin\OphGenericAdminModule;
+
 /**
  * This is the module class for OphGeneric
  *
@@ -24,6 +28,8 @@ class OphGenericModule extends \BaseEventTypeModule
     // this property is really only relevant to gii auto-generation, specifically
     // for updates to the module through gii
     public $moduleShortSuffix;
+
+    public $controllerNamespace = '\OEModule\OphGeneric\controllers';
 
     public function init()
     {
@@ -40,7 +46,7 @@ class OphGenericModule extends \BaseEventTypeModule
 
         $this->moduleShortSuffix = "OphGeneric";
 
-        $this->setModules(array('OphGenericAdmin'));
+        $this->setModules(['OphGenericAdmin' => ['class' => OphGenericAdminModule::class]]);
 
         parent::init();
     }

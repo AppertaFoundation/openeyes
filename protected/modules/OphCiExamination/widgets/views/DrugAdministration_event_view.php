@@ -65,11 +65,11 @@
                         ?>
                         <tr class="<?=$grey_out_section;?>">
                             <td>
-                                <?php if(!$is_active && !$entry->administered) {?>
+                                <?php if (!$is_active && !$entry->administered) {?>
                                     <del>
                                 <?php } ?>
                                 <?=$entry->medication->getLabel(true)?>
-                                <?php if(!$is_active && !$entry->administered) {?>
+                                <?php if (!$is_active && !$entry->administered) {?>
                                     </del>
                                 <?php } ?>
                             </td>
@@ -104,12 +104,12 @@
                 <div class="row">
                     <?php if ($assigned_psd->comment) {?>
                     <i class="oe-i comments-who small pad-right js-has-tooltip" data-tooltip-content="<small>User comment by </small><br><?=$assigned_psd->comment->commented_user->getFullName()?>"></i>
-                    <span class="user-comment"><?=$assigned_psd->comment?></span>
+                    <span class="user-comment"><?=\OELinebreakReplacer::replace($assigned_psd->comment)?></span>
                     <?php } ?>
                 </div>
             </div>
         </div>
-        <?php if($last !== $assigned_psd) {?>
+        <?php if ($last !== $assigned_psd) {?>
             <hr class="divider">
         <?php }?>
     </div>

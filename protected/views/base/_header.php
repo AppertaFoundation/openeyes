@@ -15,7 +15,7 @@ if (!isset($as_clinic)) {
 <header class="oe-header">
     <?php if ($this->action->id === 'login') : ?>
       <div class="oe-logo-flag-help">
-        <i class="oe-i direction-left pro-theme no-click"></i> Click for Help, Theme change, Tours &amp; Feedback
+        <i class="oe-i direction-left pro-theme no-click"></i> Click for Help, Theme change &amp; Feedback
       </div>
     <?php endif; ?>
 

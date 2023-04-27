@@ -81,10 +81,24 @@ OpenEyes.UI = OpenEyes.UI || {};
     }
 
     function initAutocomplete(input, autocomplete_url, autocomplete_max_height, params, search_data_prefix) {
-        input.on('input', function () {
+        function _debounce(func, wait = 300) {
+            let timer;
+            return function (...args) {
+                const later = () => {
+                    clearTimeout(timer);
+                    console.log('doing');
+                    func(...args);
+                };
+                console.log('resetting');
+                clearTimeout(timer);
+                timer = setTimeout(later, wait);
+            };
+        }
+
+        const debouncedInputHandler = _debounce(function(input_value) {
+            search_term = input_value;
             inputbox = input;
             inputbox.parent().find('.alert-box').addClass('hidden');
-            search_term = this.value.trim();
 
             // if input is empty
             if (search_term.length < 2) {
@@ -139,6 +153,10 @@ OpenEyes.UI = OpenEyes.UI || {};
             }
         });
 
+        input.on('input', function () {
+            debouncedInputHandler(this.value.trim());
+        });
+
         input.parent().find(".oe-autocomplete").on('click', '.oe-menu-item', function () {
 			exports.item_clicked = response[$(this).index()];
             inputbox.val('');
@@ -176,7 +194,7 @@ OpenEyes.UI = OpenEyes.UI || {};
 	    var search_options = ``;
 
         $.each(response,function(index, value) {
-        	search_options += `<li class="oe-menu-item" role="presentation"><a id="ui-id-`+index+`" tabindex="-1" style="text-align: justify">`;
+        	search_options += `<li class="oe-menu-item" role="presentation" data-test="autocomplete-match"><a id="ui-id-`+index+`" tabindex="-1" style="text-align: justify">`;
             if (value.fullname !== undefined) {
                 search_options += matchSearchTerm(value.fullname);
             }

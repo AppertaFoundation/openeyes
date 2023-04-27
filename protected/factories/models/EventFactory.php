@@ -9,11 +9,13 @@ use Firm;
 use OE\factories\exceptions\CannotMakeModelException;
 use OE\factories\exceptions\FactoryNotFoundException;
 use OE\factories\ModelFactory;
+use OE\factories\models\traits\HasEventTypeRelation;
 use Patient;
 
 class EventFactory extends ModelFactory
 {
-    protected static ?array $availableEventTypes = null;
+    use HasEventTypeRelation;
+
     protected array $elementsWithStates = [];
 
     public static function forModule(string $moduleName)
@@ -178,34 +180,19 @@ class EventFactory extends ModelFactory
     public function modelName()
     {
         // override to allow child factories to always instantiate the correct base model
-        return \Event::class;
+        return Event::class;
     }
 
-    protected function getEventTypeByName($eventTypeName)
+    /**
+     * Override persistInstance to call save with its third parameter, $allow_overriding, set to true.
+     * Setting that parameter to true ensures that the value of last_modified_user_id and/or created_user_id
+     * that is provided is maintained.
+     *
+     * @param mixed $instance
+     * @return bool
+     */
+    protected function persistInstance($instance): bool
     {
-        if (static::$availableEventTypes === null) {
-            $this->cacheAvailableEventTypes();
-        }
-
-        return static::$availableEventTypes[$eventTypeName];
-    }
-
-    protected function availableEventTypes()
-    {
-        if (static::$availableEventTypes === null) {
-            $this->cacheAvailableEventTypes();
-        }
-
-        return array_values(static::$availableEventTypes);
-    }
-
-    protected function cacheAvailableEventTypes()
-    {
-        $cache = [];
-        foreach (\EventType::model()->findAll() as $eventType) {
-            $cache[$eventType->name] = $eventType;
-        }
-
-        static::$availableEventTypes = $cache;
+        return $instance->save(false, null, true);
     }
 }

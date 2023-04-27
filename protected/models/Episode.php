@@ -36,6 +36,7 @@ use OE\factories\models\traits\HasFactory;
  * @property Firm $firm
  * @property Event[] $events
  * @property EpisodeStatus $status
+ * @property Event[] $draft_events
  */
 class Episode extends BaseActiveRecordVersioned
 {
@@ -120,13 +121,24 @@ class Episode extends BaseActiveRecordVersioned
         return array(
             'patient' => array(self::BELONGS_TO, 'Patient', 'patient_id'),
             'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
-            'events' => array(self::HAS_MANY, 'Event', 'episode_id', 'order' => ' events.event_date asc, events.created_date asc'),
+            'events' => [
+                self::HAS_MANY,
+                Event::class,
+                'episode_id',
+                'order' => ' events.event_date asc, events.created_date asc'
+            ],
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'status' => array(self::BELONGS_TO, 'EpisodeStatus', 'episode_status_id'),
             'diagnosis' => array(self::BELONGS_TO, 'Disorder', 'disorder_id'),
             'eye' => array(self::BELONGS_TO, 'Eye', 'eye_id'),
             'referralAssignment' => array(self::HAS_ONE, 'ReferralEpisodeAssignment', 'episode_id'),
+            'draft_events' => [
+                self::HAS_MANY,
+                EventDraft::class,
+                'episode_id',
+                'order' => ' draft_events.last_modified_date asc'
+            ]
         );
     }
     /**

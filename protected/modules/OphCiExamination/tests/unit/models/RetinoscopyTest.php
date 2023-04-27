@@ -140,8 +140,9 @@ class RetinoscopyTest extends \ModelTestCase
     public function power1_range_validation($side)
     {
         $instance = $this->getElementInstanceWithSide($side);
-        $this->assertMaxValidation($instance, "{$side}_power1", 30);
-        $this->assertMinValidation($instance, "{$side}_power1", -30);
+
+        $this->assertMaxValidation($instance, "{$side}_power1", 35);
+        $this->assertMinValidation($instance, "{$side}_power1", -35);
     }
 
     /**
@@ -152,8 +153,9 @@ class RetinoscopyTest extends \ModelTestCase
     public function power2_range_validation($side)
     {
         $instance = $this->getElementInstanceWithSide($side);
-        $this->assertMaxValidation($instance, "{$side}_power2", 30);
-        $this->assertMinValidation($instance, "{$side}_power2", -30);
+
+        $this->assertMaxValidation($instance, "{$side}_power2", 35);
+        $this->assertMinValidation($instance, "{$side}_power2", -35);
     }
 
     /**

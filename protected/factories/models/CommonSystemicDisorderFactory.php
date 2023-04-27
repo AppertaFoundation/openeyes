@@ -34,7 +34,7 @@ class CommonSystemicDisorderFactory extends ModelFactory
         ];
     }
 
-    public function forInstitution($institution_id)
+    public function withInstitution($institution_id)
     {
         return $this->afterCreating(function (CommonSystemicDisorder $disorder) use ($institution_id) {
             $disorder->createMapping(ReferenceData::LEVEL_INSTITUTION, $institution_id);

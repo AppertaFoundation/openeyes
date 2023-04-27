@@ -13,9 +13,11 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+namespace OEModule\OphGeneric\components;
+
 use OEModule\OphGeneric\models\HFA;
 
-class OphGeneric_API extends BaseAPI
+class OphGeneric_API extends \BaseAPI
 {
     public $show_if_both_eyes_are_null = false;
     const BODY_SITE_SNOMED_LEFT_EYE = 8966001;
@@ -27,9 +29,9 @@ class OphGeneric_API extends BaseAPI
         $left_eye = false;
         $right_eye = false;
 
-        $event_attachment_groups = EventAttachmentGroup::model()->findAll('event_id = ?', [$event_id]);
+        $event_attachment_groups = \EventAttachmentGroup::model()->findAll('event_id = ?', [$event_id]);
         foreach ($event_attachment_groups as $event_attachment_group) {
-                $event_attachment_items = EventAttachmentItem::model()->findAll(
+                $event_attachment_items = \EventAttachmentItem::model()->findAll(
                     'event_attachment_group_id = :event_attachment_group_id',
                     [
                     ':event_attachment_group_id' => $event_attachment_group->id,
@@ -64,17 +66,17 @@ class OphGeneric_API extends BaseAPI
             $eye_name = 'Right';
         }
 
-        return Eye::model()->findByAttributes(['name' => $eye_name]);
+        return \Eye::model()->findByAttributes(['name' => $eye_name]);
     }
 
-    public function getVfiFor(Patient $patient, $use_context = false)
+    public function getVfiFor(\Patient $patient, $use_context = false)
     {
         $hfas = $this->getElements(HFA::class, $patient, $use_context);
 
         return array_map([$this, 'formatHfaForVfiResults'], $hfas);
     }
 
-    public function getElements($element, Patient $patient, $use_context = false, $before = null, $criteria = null): array
+    public function getElements($element, \Patient $patient, $use_context = false, $before = null, $criteria = null): array
     {
         return parent::getElements($this->namespaceElementName($element), $patient, $use_context, $before, $criteria);
     }

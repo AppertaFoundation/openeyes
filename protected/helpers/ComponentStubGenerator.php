@@ -75,7 +75,7 @@ class ComponentStubGenerator
         if (method_exists($stub, '__get')) {
             $stub->method('__get')
                 ->willReturnCallback(function (...$args) use ($stub) {
-                    return static::$properties_cache[spl_object_id($stub)][$args[0]];
+                    return static::$properties_cache[spl_object_id($stub)][$args[0]] ?? null;
                 });
         }
     }

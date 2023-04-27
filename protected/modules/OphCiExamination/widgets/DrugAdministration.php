@@ -102,7 +102,7 @@ class DrugAdministration extends BaseMedicationWidget
             $appointment_criteria->addCondition("UNIX_TIMESTAMP(DATE_FORMAT(worklist.start, '%Y-%m-%d')) >= UNIX_TIMESTAMP(DATE_FORMAT(NOW(), '%Y-%m-%d'))");
             $available_appointments = \WorklistPatient::model()->findAll($appointment_criteria);
             usort($available_appointments, function ($appt1, $appt2) {
-                return strtotime($appt1->when) > strtotime($appt2->when);
+                return strtotime($appt1->when) > strtotime($appt2->when) ? 1 : -1;
             });
         }
         /**

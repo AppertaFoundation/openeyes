@@ -48,7 +48,7 @@ class WorklistController extends BaseAdminController
      * @param $message - the message to display
      * @param string $id - the flash element id suffix. defaults to message
      */
-    protected function flashMessage($type = 'success', $message, $id = 'message')
+    protected function flashMessage($type, $message, $id = 'message')
     {
         Yii::app()->user->setFlash("{$type}.{$id}", $message);
     }
@@ -339,6 +339,19 @@ class WorklistController extends BaseAdminController
                 if (array_key_exists('duration_value', $pathwayStepTypePreset) && $pathwayStepTypePreset['duration_value'] !== '') {
                     $preset_model->preset_id += $pathwayStepTypePreset['duration_value'];
                 }
+            } elseif ($preset_model->preset_short_name === 'Fields') {
+                /**
+                 * The preset ID is saved as a two digit value, where
+                 * first digit is the visual field test preset value
+                 * and the last is the laterality value
+                 */
+                $preset_model->preset_id = '';
+                if (array_key_exists('visual_field_test_preset', $pathwayStepTypePreset) && $pathwayStepTypePreset['visual_field_test_preset'] !== '') {
+                    $preset_model->preset_id = $pathwayStepTypePreset['visual_field_test_preset'];
+                }
+                if (array_key_exists('laterality', $pathwayStepTypePreset) && $pathwayStepTypePreset['laterality'] !== '') {
+                    $preset_model->preset_id .=  $pathwayStepTypePreset['laterality'];
+                }
             } elseif (array_key_exists('preset_id', $pathwayStepTypePreset)) {
                 $preset_model->preset_id = $pathwayStepTypePreset['preset_id'];
             }
@@ -366,39 +379,51 @@ class WorklistController extends BaseAdminController
             }
         }
 
-        $examination_workflows = CHtml::listData(
-            \OEModule\OphCiExamination\models\OphCiExamination_Workflow::model()->findAll(
-                [
-                    'condition' => 'institution_id = :institution_id',
-                    'order' => 'name asc',
-                    'params' => [':institution_id' => Yii::app()->session['selected_institution_id']]
-                ]
-            ),
-            'name',
-            'id'
-        );
+        $current_institution = \Institution::model()->getCurrent();
+
         $examination_workflow_steps = OEModule\OphCiExamination\models\OphCiExamination_Workflow_Rule::model()->findWorkflowSteps(
-            Yii::app()->session['selected_institution_id'],
+            $current_institution->id,
             null
         );
+
         $letter_macros = CHtml::listData(
             LetterMacro::model()->findAll([
                 'with' => 'institutions',
                 'condition' => 'institutions_institutions.institution_id = :institution_id',
                 'order' => 't.name asc',
-                'params' => [':institution_id' => Yii::app()->session['selected_institution_id']]
+                'params' => [':institution_id' => $current_institution->id]
             ]),
             'name',
             'id'
         );
+
         $pgd_sets = CHtml::listData(
             OphDrPGDPSD_PGDPSD::model()->findAll([
                 'condition' => 'institution_id = :institution_id AND LOWER(type) = "pgd" AND active = 1',
-                'params' => [':institution_id' => Yii::app()->session['selected_institution_id']],
+                'params' => [':institution_id' => $current_institution->id],
                 'order' => 'name asc',
             ]),
             'name',
             'id'
+        );
+
+        $visual_field_test_preset = CHtml::listData(
+            VisualFieldTestPreset_Institution::model()->findAll([
+                'with' => 'visualFieldTestPreset',
+                'condition' => 't.institution_id = :institution_id',
+                'order' => 'visualFieldTestPreset.name asc',
+                'params' => [':institution_id' => $current_institution->id]
+            ]),
+            'id',
+            'visualFieldTestPreset.name'
+        );
+
+        $eye = CHtml::listData(
+            Eye::model()->findAll([
+                'order' => 'name asc',
+            ]),
+            'id',
+            'name'
         );
 
         $this->render('update_custom_pathstep', [
@@ -407,6 +432,8 @@ class WorklistController extends BaseAdminController
             'examination_workflow_steps' => CJSON::encode($examination_workflow_steps),
             'letter_macros' => json_encode($letter_macros, JSON_THROW_ON_ERROR),
             'pgd_sets' => json_encode($pgd_sets, JSON_THROW_ON_ERROR),
+            'visual_field_test_preset' => $visual_field_test_preset,
+            'eye' => $eye,
             'errors' => @$errors
         ]);
     }

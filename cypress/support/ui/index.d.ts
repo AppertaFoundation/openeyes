@@ -17,13 +17,15 @@ declare namespace Cypress {
         /**
          * Cypress selector shortcut for finding a dom element based on the data-test attribute value as the selector
          * @param selector
+         * @param additionalSelectors
          */
-        getBySel(selector: string): Chainable<any>
+        getBySel(selector: string, additionalSelectors: string): Chainable<any>
         /**
          * Cypress selector shortcut for finding a dom element based on partial data-test attribute value as the selector
          * @param selector
+         * @param additionalSelectors
          */
-        getBySelLike(selector: string): Chainable<any>
+        getBySelLike(selector: string, additionalSelectors: string): Chainable<any>
         /**
          * UI shortcut to remove the side of the named OE Event element
          * @param elementName
@@ -44,5 +46,29 @@ declare namespace Cypress {
          * @param isNewEvent defaults to true
          */
         assertEventSaved(isNewEvent: ?boolean): Chainable<any>
+        /**
+         * Type the given value into the autocomplete search box and select the first value that matches that from
+         * the rendered dropdown list
+         *
+         * @param searchValue
+         */
+        fillAndSelectAutocomplete(searchValue: string): void
+        /**
+         * Cypress selector short cut for any data attribute equals selector
+         * @param getByDataAttr
+         * @param selector
+         */
+        getByDataAttr(getByDataAttr: string, selector: string): Chainable<any>
+        /**
+         * Cypress selector short cut for any data attribute contains selector
+         * @param getByDataAttr
+         * @param selector
+         */
+        getByDataAttrContains(getByDataAttr: string, selector: string): Chainable<any>
+        /**
+         * Cypress selector short cut for any element with name attribute
+         * @param selector
+         */
+        getByElementName(selector: string): Chainable<any>
     }
   }

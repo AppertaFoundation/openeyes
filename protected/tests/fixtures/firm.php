@@ -23,33 +23,39 @@ return array(
         'pas_code' => 'AEAB',
         'name' => 'Aylward Firm',
         'consultant_id' => 1,
+        'institution_id' => 1,
     ),
     'firm2' => array(
         'id' => 2,
         'service_subspecialty_assignment_id' => '2',
         'pas_code' => 'ADCR',
         'name' => 'Collin Firm',
+        'institution_id' => 1,
     ),
     'firm3' => array(
         '3' => 3,
         'service_subspecialty_assignment_id' => '2',
         'pas_code' => 'CAAB',
         'name' => 'Allan Firm',
+        'institution_id' => 1,
     ),
     'firm4' => array(
         'id' => 4,
         'service_subspecialty_assignment_id' => null,
         'name' => 'Support Services Firm',
+        'institution_id' => 1,
     ),
     'firm5' => array(
         'id' => 5,
         'service_subspecialty_assignment_id' => 3,
         'name' => 'Blah',
+        'institution_id' => 1,
     ),
     'firm6' => array(
         'id' => 6,
         'service_subspecialty_assignment_id' => 4,
         'name' => 'Blah',
+        'institution_id' => 1,
     ),
 
 );

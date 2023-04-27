@@ -15,7 +15,7 @@ $pathway = $visit->pathway;
         foreach ($pathway->completed_steps as $step) {
             $check_in_completed = $check_in_completed || (int)$step->step_type_id === (int)$checkin_step_type->id;
 
-            $status_class = $step->getStatusString();
+            $status_class = $step->getStatusString() . (empty($step->comment) ? '' : ' has-comments');
             if (in_array($step->type->short_name, PathwayStep::NON_GENERIC_STEP)) {
                 $short_name = str_replace(' ', '_', $step->type->short_name);
                 $view_file = "_{$short_name}_step_icon";
@@ -60,13 +60,13 @@ $pathway = $visit->pathway;
             }
         }
         foreach ($pathway->started_steps as $step) {
-            $status_class = $step->getStatusString(); ?>
+            $status_class = $step->getStatusString() . (empty($step->comment) ? '' : ' has-comments'); ?>
             <?php if (in_array($step->type->short_name, PathwayStep::NON_GENERIC_STEP)) {
                 $short_name = str_replace(' ', '_', $step->type->short_name);
                 $view_file = "_{$short_name}_step_icon";
                 $this->renderPartial(
-                "//worklist/non_generic_icon/$view_file",
-                array('visit' => $visit, 'step' => $step, 'status_class' => $status_class)
+                    "//worklist/non_generic_icon/$view_file",
+                    array('visit' => $visit, 'step' => $step, 'status_class' => $status_class)
                 );
             } else { ?>
             <span class="oe-pathstep-btn <?= "$status_class {$step->type->type}" ?>" data-pathstep-id="<?= $step->id ?>"
@@ -106,7 +106,7 @@ $pathway = $visit->pathway;
         </span>
         <?php }
         foreach ($pathway->requested_steps as $step) {
-            $status_class = $step->getStatusString(); ?>
+            $status_class = $step->getStatusString() . (empty($step->comment) ? '' : ' has-comments'); ?>
             <?php if (in_array($step->type->short_name, PathwayStep::NON_GENERIC_STEP)) {
                 $short_name = str_replace(' ', '_', $step->type->short_name);
                 $view_file = "_{$short_name}_step_icon";
@@ -134,7 +134,7 @@ $pathway = $visit->pathway;
         }
     } else {
         foreach ($visit->worklist->worklist_definition->pathway_type->default_steps as $step) {
-            $status_class = $step->getStatusString(); ?>
+            $status_class = $step->getStatusString() . (empty($step->comment) ? '' : ' has-comments'); ?>
             <?php if (in_array($step->step_type->short_name, PathwayStep::NON_GENERIC_STEP)) {
                 $short_name = str_replace(' ', '_', $step->step_type->short_name);
                 $view_file = "_{$short_name}_step_icon";

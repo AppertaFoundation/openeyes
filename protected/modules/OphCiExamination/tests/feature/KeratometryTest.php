@@ -59,7 +59,7 @@ class KeratometryTest extends \OEDbTestCase
         $response = $this->actingAs($user, $institution)
             ->post('/OphCiExamination/Default/create', $form_data);
 
-        $response->assertRedirectContains('view', 'Expected to redirect to a view of the created event');
+        $response->assertRedirectContains('view', 'Expected to redirect to a view of the created event', true);
         $this->assertEventTypeElementCreatedFor($patient, Element_OphCiExamination_Keratometry::class, $this->getExpectedElementData($element_with_data->getAttributes()));
     }
 

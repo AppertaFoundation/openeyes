@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -17,6 +18,11 @@
  */
 
 namespace OEModule\OphCiExamination\models;
+use OE\factories\models\traits\HasFactory;
+
+use ReferenceData;
+use OwnedByReferenceData;
+use ElementType;
 
 /**
  * This is the model class for table "ophciexamination_attribute".
@@ -25,11 +31,19 @@ namespace OEModule\OphCiExamination\models;
  * @property string $name
  * @property string $label
  * @property int $institution_id
- * @property OphCiExamination_AttributeElement[] $attribute_elements
+ * @property OphCiExamination_AttributeElement[] $attribute_element_types
  */
 class OphCiExamination_Attribute extends \BaseActiveRecordVersioned
 {
+    use OwnedByReferenceData;
+    use HasFactory;
+
     protected $attribute_options = array();
+
+    protected function getSupportedLevelMask(): int
+    {
+        return ReferenceData::LEVEL_INSTALLATION | ReferenceData::LEVEL_INSTITUTION;
+    }
 
     /**
      * Returns the static model of the specified AR class.
@@ -55,8 +69,8 @@ class OphCiExamination_Attribute extends \BaseActiveRecordVersioned
     public function rules()
     {
         return array(
-                array('name', 'required'),
-                array('id, name, label, institution_id', 'safe', 'on' => 'search'),
+            array('name', 'required'),
+            array('id, name, label, institution_id', 'safe', 'on' => 'search'),
         );
     }
 
@@ -66,8 +80,16 @@ class OphCiExamination_Attribute extends \BaseActiveRecordVersioned
     public function relations()
     {
         return array(
-                'attribute_elements_id' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_AttributeElement', 'attribute_id'),
-                'attribute_elements' => array(self::MANY_MANY, 'ElementType', 'ophciexamination_attribute_element(attribute_id,element_type_id)'),
+                'attribute_elements' => array(
+                    self::HAS_MANY,
+                    OphCiExamination_AttributeElement::class,
+                    'attribute_id'
+                ),
+                'attribute_element_types' => array(
+                    self::MANY_MANY,
+                    ElementType::class,
+                    'ophciexamination_attribute_element(attribute_id,element_type_id)'
+                ),
                 'institution' => array(self::BELONGS_TO, 'Institution', 'institution_id'),
         );
     }
@@ -92,19 +114,33 @@ class OphCiExamination_Attribute extends \BaseActiveRecordVersioned
         $criteria->addInCondition('attribute_element.element_type_id', $element_type_ids);
         if ($subspecialty_id) {
             $criteria->addCondition('t.subspecialty_id = :subspecialty_id OR t.subspecialty_id IS NULL');
-            $criteria->addCondition('t.id NOT IN (SELECT exclude.option_id FROM ophciexamination_attribute_option_exclude exclude where subspecialty_id = :subspecialty_id)');
+            $criteria->addCondition(
+                't.id NOT IN (
+                    SELECT exclude.option_id FROM ophciexamination_attribute_option_exclude exclude where subspecialty_id = :subspecialty_id
+                )'
+            );
             $criteria->params[':subspecialty_id'] = $subspecialty_id;
         } else {
             $criteria->addCondition('subspecialty_id IS NULL');
         }
 
-        // avoid introducing the element attributes from other institutions
-        $criteria->addCondition('attribute.institution_id IS NULL OR attribute.institution_id = :institution_id');
-        $criteria->params[':institution_id'] = \Yii::app()->session['selected_institution_id'];
-
         $criteria->join = 'JOIN ophciexamination_attribute_element attribute_element ON attribute_element.id = t.attribute_element_id
 							JOIN ophciexamination_attribute attribute ON attribute_element.attribute_id = attribute.id';
         $criteria->order = 'attribute.display_order,attribute_element.attribute_id,t.display_order,t.id';
+        $all_attributes = OphCiExamination_Attribute::model()->findAllAtLevels(\ReferenceData::LEVEL_ALL);
+        $all_attribute_elements = array();
+        foreach ($all_attributes as $attribute) {
+            $all_attribute_elements = array_merge(
+                $all_attribute_elements,
+                array_map(
+                    static function ($element) {
+                        return $element->id;
+                    },
+                    $attribute->attribute_elements
+                )
+            );
+        }
+        $criteria->addInCondition('t.attribute_element_id', $all_attribute_elements);
         $all_attribute_options = OphCiExamination_AttributeOption::model()->findAll($criteria);
 
         $attributes = array();
@@ -157,7 +193,7 @@ class OphCiExamination_Attribute extends \BaseActiveRecordVersioned
             'name' => 'Attribute Name',
             'label' => 'Attribute Label',
             'element_type.name' => 'Element Mapping',
-            'attribute_elements.name' => 'Element Mapping',
+            'attribute_element_types.name' => 'Element Mapping',
             'institution.name' => 'Institution',
         );
     }

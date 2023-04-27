@@ -88,7 +88,7 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemandEye
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('event_id, incision_site_id, length, meridian, incision_type_id, iol_position_id, iol_type_id, iol_power, eyedraw, report, complication_notes, eyedraw2, report2, predicted_refraction, pcr_risk, phaco_cde , comments', 'safe'),
+            array('event_id, incision_site_id, length, meridian, incision_type_id, iol_position_id, iol_type_id, iol_power, eyedraw, report, complication_notes, eyedraw2, report2, predicted_refraction, pcr_risk, phaco_cde , comments, eye, operative_devices', 'safe'),
             array('incision_site_id, length, meridian, incision_type_id, iol_position_id, eyedraw, report, eyedraw2', 'required'),
             array(
                 'length',
@@ -175,10 +175,10 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemandEye
                 if (!preg_match('/^\-?[0-9]{1,2}(\.[0-9]{1,2})?$/', $value)) {
                     $message = $this->addError(
                         'iol_power',
-                        'IOL power must be a number with an optional two decimal places between -10.00 and 40.00'
+                        'IOL power must be a number with an optional two decimal places between -30.00 and +40.00'
                     );
-                } elseif ($value < -10 || $value > 40) {
-                    $message = $this->addError('iol_power', 'IOL Power must be between -10 to 40');
+                } elseif ($value < -30 || $value > 40) {
+                    $message = $this->addError('iol_power', 'IOL Power must be between -30 to +40');
                 }
             }
         }
@@ -614,11 +614,13 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemandEye
 
                 $patient_json = $new_json;
                 $new_json = $temp;
+
+                $processor = new \EDProcessor();
+
+                return $processor->applyNewElementEyedrawData($this->elementType->id, $patient_json, $new_json);
+            } else {
+                return $new_json;
             }
-
-            $processor = new \EDProcessor();
-
-            return $processor->applyNewElementEyedrawData($this->elementType->id, $patient_json, $new_json);
         };
 
         return $priorities;

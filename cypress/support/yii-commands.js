@@ -21,21 +21,29 @@ Cypress.Commands.add('createUser', (authitems, attributes, username, password) =
     .its('body');
 });
 
-Cypress.Commands.add('login', (username, password) => {
+Cypress.Commands.add('login', (username, password, site_id = null, institution_id = null) => {
     if (password == undefined) {
         password = 'admin';
     }
     if (username == undefined) {
         username = 'admin';
     }
+
+    let site = site_id ? {site_id: site_id} : {site_id: 1};
+    let institution = institution_id ? {institution_id: institution_id} : {institution_id: 1};
+
+    let body = {
+        username: username,
+        password: password,
+        ...site,
+        ...institution,
+    };
+
     return cy.request({
         method: 'POST',
         form: true,
         url: 'CypressHelper/Default/login',
-        body: {
-            username: username,
-            password: password
-        }
+        body: body,
     });
 });
 
@@ -118,7 +126,7 @@ Cypress.Commands.add('runSeeder', (seederModuleName, seederClassName, additional
         body: {
             seeder_module_name: seederModuleName,
             seeder_class_name: seederClassName,
-            additional_data: additionalData,
+            additional_data: additionalData ?? [],
         }
     }).its('body');
 });

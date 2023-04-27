@@ -16,198 +16,122 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OEModule\OphCoMessaging\models\Mailbox;
+
 $user = Yii::app()->session['user'];
 $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $module_class . '.assets'), true) . '/';
-$message_type = array_key_exists('messages', $_GET) && $_GET['messages'] ? $_GET['messages'] : $default_folder;
+
+$coreapi = new CoreAPI();
 ?>
 <div class="home-messages subgrid">
   <div class="message-actions">
-    <div class="user"><?= ($user->title ? $user->title . ' ' : '') . $user->first_name . ' ' . $user->last_name; ?></div>
       <nav class="sidebar-messages">
-          <h3>Unread</h3>
-          <ul class="filter-messages">
-              <li>
-                  <a id="display-unread-all" data-filter="unread_all" class="<?= ($message_type === 'unread_all' ? 'selected ' : '') . 'js-display-counter' ?>" href="#">
-                      <div class="flex">
-                          <div>All unread</div>
-                          <?php if ($number_unread_all > 0) {
-                                ?><span class="unread"><?= $number_unread_all ?></span><?php
-                          } ?>
-                      </div>
-                  </a>
-              </li>
-              <li>
-                  <a id="display-unread-received" data-filter="unread_received" class="<?= ($message_type === 'unread_received' ? 'selected ' : '') . 'js-display-counter' ?>" href="#">
-                      <div class="flex">
-                          <div>To me</div>
-                          <?php if ($number_unread_received > 0) {
-                                ?><span class="unread"><?= $number_unread_received ?></span><?php
-                          } ?>
-                      </div>
-                  </a>
-              </li>
-              <li>
-                <a id="display-unread-urgent" data-filter="unread_urgent" class="<?= ($message_type === 'unread_urgent' ? 'selected ' : '') . 'js-display-counter' ?>" href="#">
-                    <div class="flex">
-                        <div>Urgent</div>
-                        <?php if ($number_unread_urgent > 0) {
-                            ?><span class="unread"><?= $number_unread_urgent ?></span><?php
-                        } ?>
-                    </div>
-                </a>
-              </li>
-              <li>
-                <a id="display-unread-query" data-filter="unread_query" class="<?= ($message_type === 'unread_query' ? 'selected ' : '') . 'js-display-counter' ?>" href="#">
-                    <div class="flex">
-                        <div>Queries</div>
-                        <?php if ($number_unread_query > 0) {
-                            ?><span class="unread"><?= $number_unread_query ?></span><?php
-                        } ?>
-                    </div>
-                </a>
-              </li>
-              <li>
-                  <a id="display-unread-replies" data-filter="unread_replies" class="<?= ($message_type === 'unread_replies' ? 'selected ' : '') . 'js-display-counter' ?>" href="#">
-                      <div class="flex">
-                          <div>Replies</div>
-                          <?php if ($number_unread_replies > 0) {
-                                ?><span class="unread"><?= $number_unread_replies ?></span><?php
-                          } ?>
-                      </div>
-                  </a>
-              </li>
-              <li>
-                  <a id="display-unread-copied" data-filter="unread_copied" class="<?= ($message_type === 'unread_copied' ? 'selected ' : '') . 'js-display-counter' ?>" href="#">
-                      <div class="flex">
-                          <div><i class="oe-i duplicate small pad-right no-click"></i>CC on</div>
-                          <?php if ($number_unread_copied > 0) {
-                                ?><span class="unread"><?= $number_unread_copied ?></span><?php
-                          } ?>
-                      </div>
-                  </a>
-              </li>
-          </ul>
-          <h3>Read</h3>
-          <ul class="filter-messages">
-              <li>
-                  <?= \CHtml::link(
-                      "All read <span class='count'>($number_read_all)</span>",
-                      '#',
-                      array('id' => 'display-read-all', 'data-filter' => 'read_all', 'class' => ($message_type === 'read_all' ? 'selected ' : '') . 'js-display-counter')
+          <a class="button all-unread-messages js-all-unread-messages selected">All unread <span class="unread"><?= $count_unread_total ?></span></a>
+          <hr class="divider"></hr>
+          <?php foreach ($mailboxes_with_counts as $mailbox_with_counts) {
+                $this->renderPartial('OphCoMessaging.views.dashboard.mailbox', ['mailbox_with_counts' => $mailbox_with_counts]);
+          } ?>
+          <hr class="divider"></hr>
+          <h3>Search all messages</h3>
+          <table class="standard normal-text last-right">
+            <tbody>
+              <tr>
+                <td>Mailbox</td>
+                <td>
+                  <?= CHtml::dropDownList(
+                      'OphCoMessaging_Search_Mailbox',
+                      \Yii::app()->request->getQuery('OphCoMessaging_Search_Mailbox', '') ? \Yii::app()->request->getQuery('OphCoMessaging_Search_Mailbox', '') : '',
+                      CHtml::listData($mailboxes_with_counts, 'id', 'name'),
+                      array('class' => 'cols-full', 'empty' => 'All mailboxes')
                   ); ?>
-              </li>
-              <li>
-                  <?= \CHtml::link(
-                      "To me <span class='count'>($number_read_received)</span>",
-                      '#',
-                      array('id' => 'display-read-received', 'data-filter' => 'read_received', 'class' => ($message_type === 'read_received' ? 'selected ' : '') . 'js-display-counter')
+                </td>
+              </tr>
+              <tr>
+                <td>Sender</td>
+                <td>
+                  <?= CHtml::dropDownList(
+                      'OphCoMessaging_Search_Sender',
+                      \Yii::app()->request->getQuery('OphCoMessaging_Search_Sender', '') ? \Yii::app()->request->getQuery('OphCoMessaging_Search_Sender', '') : '',
+                      !(strpos($message_type, 'sent') !== false) ? \OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message::model()->getSenders() : array(),
+                      array('class' => 'cols-full', 'empty' => 'All senders')
                   ); ?>
-              </li>
-              <li>
-                  <?= \CHtml::link(
-                      "Urgent <span class='count'>($number_read_urgent)</span>",
-                      '#',
-                      array('id' => 'display-read-urgent', 'data-filter' => 'read_urgent', 'class' => ($message_type === 'read_urgent' ? 'selected ' : '') . 'js-display-counter')
+                </td>
+              </tr>
+              <tr>
+                <td>Type</td>
+                <td>
+                  <?= CHtml::dropDownList(
+                      'OphCoMessaging_Search_MessageType',
+                      \Yii::app()->request->getQuery('OphCoMessaging_Search_MessageType', '') ? \Yii::app()->request->getQuery('OphCoMessaging_Search_MessageType', '') : '',
+                      CHtml::listData(
+                          \OEModule\OphCoMessaging\models\OphCoMessaging_Message_MessageType::model()->findAll(array('order' => 'display_order asc')),
+                          'id',
+                          'name'
+                      ),
+                      array('class' => 'cols-full', 'empty' => 'All types')
                   ); ?>
-              </li>
-              <li>
-                  <?= \CHtml::link(
-                      "<i class=\"oe-i duplicate small pad-right no-click\"></i>CC on <span class='count'>($number_read_copied)</span>",
-                      '#',
-                      array('id' => 'display-read-copied', 'data-filter' => 'read_copied', 'class' => ($message_type === 'read_copied' ? 'selected ' : '') . 'js-display-counter')
+                </td>
+              </tr>
+              <tr>
+                <td colspan="2">
+                  <?=\CHtml::textField(
+                      'OphCoMessaging_Search',
+                      \Yii::app()->request->getQuery('OphCoMessaging_Search', '') ? \Yii::app()->request->getQuery('OphCoMessaging_Search', '') : '',
+                      array('class' => 'search cols-full', 'placeholder' => 'Message text keyword')
                   ); ?>
-              </li>
-          </ul>
-          <h3>Sent</h3>
-          <ul class="filter-messages">
-            <li>
-                <?= \CHtml::link(
-                    "All sent <span class='count'>($number_sent_all)</span>",
-                    '#',
-                    array('id' => 'display-sent-all', 'data-filter' => 'sent_all', 'class' => ($message_type === 'sent_all' ? 'selected ' : '') . 'js-display-counter')
-                ); ?>
-            </li>
-            <li>
-                <?=\CHtml::link(
-                    "Awaiting reply to query <span class='count'>($number_sent_unreplied)</span>",
-                    '#',
-                    array('id' => 'display-sent-unreplied', 'data-filter' => 'sent_unreplied', 'class' => ($message_type === 'sent_unreplied' ? 'selected ' : '') . 'js-display-counter')
-                ); ?>
-            </li>
-            <li>
-                <?=\CHtml::link(
-                    "Unread by recipient <span class='count'>($number_sent_unread)</span>",
-                    '#',
-                    array('id' => 'display-sent-unread', 'data-filter' => 'sent_unread', 'class' => ($message_type === 'sent_unread' ? 'selected ' : '') . 'js-display-counter')
-                ); ?>
-            </li>
-          </ul>
-    <div class="search-messages">
-      <form>
-          <h3>Sender</h3>
-          <?= CHtml::dropDownList(
-              'OphCoMessaging_Search_Sender',
-              \Yii::app()->request->getQuery('OphCoMessaging_Search_Sender', '') ? \Yii::app()->request->getQuery('OphCoMessaging_Search_Sender', '') : '',
-              !(strpos($message_type, 'sent') !== false) ? \OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message::model()->getSenders() : array(),
-              array('class' => 'cols-full', 'empty' => 'All senders')
-          ); ?>
-          <h3>Type</h3>
-          <?= CHtml::dropDownList(
-              'OphCoMessaging_Search_MessageType',
-              \Yii::app()->request->getQuery('OphCoMessaging_Search_MessageType', '') ? \Yii::app()->request->getQuery('OphCoMessaging_Search_MessageType', '') : '',
-              CHtml::listData(
-                  \OEModule\OphCoMessaging\models\OphCoMessaging_Message_MessageType::model()->findAll(array('order' => 'display_order asc')),
-                  'id',
-                  'name'
-              ),
-              array('class' => 'cols-full', 'empty' => 'All types')
-          ); ?>
-          <h3>Search Messages</h3>
-          <?=\CHtml::textField(
-              'OphCoMessaging_Search',
-              \Yii::app()->request->getQuery('OphCoMessaging_Search', '') ? \Yii::app()->request->getQuery('OphCoMessaging_Search', '') : '',
-              array('class' => 'search cols-full')
-          ); ?>
-        <h3>Filter by Date</h3>
-        <div class="flex">
-            <input type="text" id="OphCoMessaging_from" name="OphCoMessaging_from" placeholder="from" class="date datepicker-from" value="<?=\Yii::app()->request->getQuery('OphCoMessaging_from', '')?>" />
-            <input type="text" id="OphCoMessaging_to" name="OphCoMessaging_to" placeholder="to" class="date datepicker-to" value="<?=\Yii::app()->request->getQuery('OphCoMessaging_to', '')?>" />
-            <label class="inline highlight">
-                <?= CHtml::checkBox('OpCoMessaging_All', (Yii::app()->request->getQuery('OphCoMessaging_to', '') || Yii::app()->request->getQuery('OphCoMessaging_from', '')) ? false : true) . 'All' ?>
-            </label>
-        </div>
-        <div class="set-date-range">
-            <div class="selectors">
-                <div class="range" data-range="yesterday">Yesterday</div>
-                <div class="range" data-range="today">Today</div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <h3>Date range <small>(start → end)</small></h3>
+          <div class="set-date-range">
+            <div class="date-inputs">
+              <input type="text" id="OphCoMessaging_from" name="OphCoMessaging_from" placeholder="from" class="date datepicker-from" value="<?=\Yii::app()->request->getQuery('OphCoMessaging_from', '')?>" />
+              <input type="text" id="OphCoMessaging_to" name="OphCoMessaging_to" placeholder="to" class="date datepicker-to" value="<?=\Yii::app()->request->getQuery('OphCoMessaging_to', '')?>" />
             </div>
-            <div class="selectors">
-                <div class="range" data-range="last-week">Last week</div>
-                <div class="range" data-range="this-week">This week</div>
-            </div>
-        </div>
-        <div class="row">
-            <button type="submit" class="cols-full green hint" id="OphCoMessaging_Submit">Search</button>
-        </div>
-      </form>
-    </div>
+            <fieldset class="js-quick-date">
+              <div class="selectors">
+                <label>
+                  <?= CHtml::radioButton('OphCoMessaging_All', (Yii::app()->request->getQuery('OphCoMessaging_to', '') || Yii::app()->request->getQuery('OphCoMessaging_from', '')) ? false : true) ?>
+                  <span class="btn">No date range filter</span>
+                </label>
+              </div>
+              <div class="selectors">
+                <label>
+                  <?= CHtml::radioButton('OphCoMessaging_All', false) ?>
+                  <span class="btn js-range" data-range="last-week">Last week</span>
+                </label>
+                <label>
+                  <?= CHtml::radioButton('OphCoMessaging_All', false) ?>
+                  <span class="btn js-range" data-range="this-week">This week</span>
+                </label>
+              </div>
+              <div class="selectors">
+                <label>
+                  <?= CHtml::radioButton('OphCoMessaging_All', false) ?>
+                  <span class="btn js-range" data-range="last-month">Last month</span>
+                </label>
+                <label>
+                  <?= CHtml::radioButton('OphCoMessaging_All', false) ?>
+                  <span class="btn js-range" data-range="this-month">This month</span>
+                </label>
+              </div>
+            </fieldset>
+          </div>
+          <div class="row">
+              <button type="submit" class="cols-full green hint" id="OphCoMessaging_Submit">Search</button>
+          </div>
       </nav>
   </div>
-    <?php
-    $messages = ${$message_type}; // $message_type holds a string that matches the variable name to be passed to $messages
-
-    echo $this->renderPartial(
-        'OphCoMessaging.views.inbox.grid',
-        array(
-        'module_class' => 'OphCoMessaging',
-        'messages' => $messages->getData(),
-        'dp' => $messages,
-        'read_check' => true,
-        'message_type' => $message_type,
-        ),
-        true
-    );
-    ?>
+  <div class="messages-all">
+      <?php $this->renderPartial('application.modules.OphCoMessaging.views.inbox.grid', array(
+            'mailbox' => $selected_mailbox,
+            'message_type' => $message_type,
+            'messages' => $messages,
+            'defer_to_comments' => !$is_a_sent_folder, // Show original message in sent folder views, but replies in received folder views
+            'coreapi' => $coreapi
+        )); ?>
+  </div>
 </div>
 
 <script>
@@ -215,11 +139,17 @@ $message_type = array_key_exists('messages', $_GET) && $_GET['messages'] ? $_GET
      * Update side folder with correct number of messages unread
      */
     function updateSideFolders(newMessageCounts) {
-        $('.js-display-counter').each(function() {
+      $('.js-all-unread-messages .unread').text(newMessageCounts['count_unread_total']);
+
+      for ([id, counts] of Object.entries(newMessageCounts['mailboxes_with_counts'])) {
+        $(`.js-mailbox[data-mailbox-id="${id}"] .js-folder-counter`).each(function() {
             let folder = $(this).data('filter');
             // Get the text of the folder name before the message count
-            let folderUnreadCount = newMessageCounts['number_' + folder];
-            if ($(this).find('.count').length !== 0) {
+            let folderUnreadCount = counts['count_' + folder] || 0;
+
+            if ($(this).find('.unread').length !== 0) {
+              $(this).find('.unread').text(folderUnreadCount);
+            } else if ($(this).find('.count').length !== 0) {
                 $(this).find('.count').text(" (" + folderUnreadCount + ")");
             } else {
                 if (folderUnreadCount > 0){
@@ -230,6 +160,7 @@ $message_type = array_key_exists('messages', $_GET) && $_GET['messages'] ? $_GET
             }
 
         });
+      }
     }
 
     /**
@@ -239,7 +170,7 @@ $message_type = array_key_exists('messages', $_GET) && $_GET['messages'] ? $_GET
         let message_type = "<?= $message_type ?>";
         let $btn = $(this);
         let $closestTr = $btn.closest('tr');
-        let eventId = $btn.closest('tr').find('.nowrap a').attr('href').split('/').slice(-1)[0];
+        let eventId = $btn.closest('tr').attr('data-event-id');
         let url = "<?=Yii::app()->createURL("/OphCoMessaging/Default/markRead/")?>" + '/' + eventId;
 
         // change tick icon with a spinner
@@ -270,5 +201,43 @@ $message_type = array_key_exists('messages', $_GET) && $_GET['messages'] ? $_GET
                 $btn.data('tooltip-content', 'Could not mark as read. Try refreshing the page.');
             }
         });
+    });
+
+    $(document).ready(function() {
+        const $selectedMailbox = $('.js-mailbox[data-mailbox-id="' + <?= $selected_mailbox->id ?? '"all"' ?> + '"]');
+        const filter = '<?= $message_type ?>';
+
+        if ($selectedMailbox.length > 0) {
+            $selectedMailbox.find('.js-mailbox-hd').addClass('collapse');
+            $selectedMailbox.find('.js-mailbox-hd').removeClass('expand');
+            $selectedMailbox.find('.mailbox-filters').removeClass('hidden');
+            $selectedMailbox.find('.mailbox-filters').show();
+
+            if (filter) {
+                $selectedMailbox.find('.mailbox-filters a[data-filter="' + filter + '"]').addClass('selected');
+            }
+
+            const allUnreadButton = $('a.js-all-unread-messages');
+
+            allUnreadButton.removeClass('selected');
+
+            allUnreadButton.on('click', function() {
+              window.location.href = jQuery.query.remove('mailbox').set('messages', 'all').toString();
+            });
+        }
+      $('.js-mailbox-hd').click(function() {
+        const button = $(this);
+        if (button.hasClass('expand')) {
+          button.removeClass('expand');
+          button.addClass('collapse');
+
+          button.next().show();
+        } else {
+          button.removeClass('collapse');
+          button.addClass('expand');
+
+          button.next().hide();
+        }
+      });
     });
 </script>

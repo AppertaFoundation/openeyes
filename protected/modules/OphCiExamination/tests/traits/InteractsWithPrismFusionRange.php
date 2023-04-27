@@ -15,6 +15,7 @@
 
 namespace OEModule\OphCiExamination\tests\traits;
 
+
 use OEModule\OphCiExamination\models\CorrectionType;
 use OEModule\OphCiExamination\models\PrismFusionRange;
 use OEModule\OphCiExamination\models\PrismFusionRange_Entry;

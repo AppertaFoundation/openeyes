@@ -132,3 +132,4 @@ buildinfo.txt
 cypress/videos/**
 cypress/screenshots/**
 cypress/downloads/**
+**/.phpunit.result.cache

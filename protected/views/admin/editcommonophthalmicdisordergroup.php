@@ -19,6 +19,11 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl
 foreach (Yii::app()->user->getFlashes() as $key => $message) {
     echo '<div class="flash- alert-box with-icon warning' . $key . '">' . $message . "</div>\n";
 }
+if ($this->checkAccess('admin')) {
+    $options = array('empty' => 'All Institutions');
+} else {
+    $options = array();
+}
 ?>
 
 <form method="get">
@@ -28,19 +33,30 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
             <col class="cols-4">
         </colgroup>
         <tbody>
-        <tr class="col-gap">            
+        <tr class="col-gap">
             <td>&nbsp;<br/><?=\CHtml::dropDownList(
                     'institution_id',
                     $current_institution_id,
-                    Institution::model()->getTenantedList(!Yii::app()->user->checkAccess('admin'))
-                ) ?></td>
+                    Institution::model()->getTenantedList(!Yii::app()->user->checkAccess('admin')),
+                    $options
+                ) ?>
+            </td>
+            <td>
+                <small>Subspeciality</small><br/>
+                <?=\CHtml::dropDownList(
+                    'subspecialty_id',
+                    $subspecialty_id,
+                    CHtml::listData($subspecialty, 'id', 'name'),
+                    array('empty' => 'All subspecialties')
+                ); ?>
+            </td>
         </tr>
         </tbody>
     </table>
 </form>
 
 <div class="cols-8">
-    <form method="POST" action="/admin/editcommonophthalmicdisordergroups?institution_id=<?= $current_institution_id; ?>">
+    <form method="POST" action="/admin/editcommonophthalmicdisordergroups?institution_id=<?= $current_institution_id ?>&subspecialty_id=<?= $subspecialty_id; ?>">
         <input type="hidden" class="no-clear" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
         <?php
         $columns = array(
@@ -60,7 +76,36 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
                 'type' => 'raw',
                 'htmlOptions' => array('width' => '420px'),
                 'value' => function ($data, $row) {
-                    return CHtml::textField("CommonOphthalmicDisorderGroup[$row][name]", $data->name, array('style' => 'width:400px'));
+                    return CHtml::textField(
+                        "CommonOphthalmicDisorderGroup[$row][name]",
+                        $data->name,
+                        array('style' => 'width:400px', 'data-test' => 'group-name'
+                    ));
+                }
+            ),
+            array(
+                'header' => 'Institution',
+                'type' => 'raw',
+                'htmlOptions' => array('width' => '300px'),
+                'value' => function ($data, $row) use ($current_institution) {
+                    $common_ophthalmic_disorder_group_institution = CommonOphthalmicDisorderGroup_Institution::model()->find('common_ophthalmic_disorder_group_id = :id',
+                        [':id' => $data->id]);
+
+                    if ($common_ophthalmic_disorder_group_institution) {
+                        $institution = Institution::model()->findByPk($common_ophthalmic_disorder_group_institution->institution_id);
+                        return $institution->name;
+                    } else {
+                        return '-';
+                    }
+                }
+            ),
+            array(
+                'header' => 'Subspecialty',
+                'type' => 'raw',
+                'htmlOptions' => array('width' => '120px'),
+                'value' => function ($data, $row) {
+                    $subspecialty = Subspecialty::model()->findByPk($data->subspecialty_id);
+                    return $subspecialty->name ?? '-';
                 }
             ),
             array(
@@ -135,6 +180,10 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
             $(this).closest('form').submit();
         });
 
+        $('#subspecialty_id').on('change', function () {
+            $(this).closest('form').submit();
+        });
+
         $table.find('tbody tr').each(function () {
             initialiseRow($(this));
         });
@@ -185,6 +234,10 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
         <td width="400px">
             <input type="text" name="CommonOphthalmicDisorderGroup[{{row_count}}][name]"
                    id="CommonOphthalmicDisorderGroup_{{row_count}}_name" autocomplete="off" style="width:400px;">
+        </td>
+        <td width="300px">
+        </td>
+        <td width="120px">
         </td>
         <td>
             <button type="button"><a href="javascript:void(0)" class="delete">delete</a></button>

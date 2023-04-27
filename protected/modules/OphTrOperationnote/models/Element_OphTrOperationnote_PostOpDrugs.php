@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -60,7 +61,7 @@ class Element_OphTrOperationnote_PostOpDrugs extends Element_OpNote
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('event_id', 'safe'),
+            array('event_id, drugs', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
         );

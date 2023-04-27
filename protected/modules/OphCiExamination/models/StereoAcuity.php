@@ -48,6 +48,6 @@ class StereoAcuity extends \BaseEventTypeElement
 
     public function getLetter_string()
     {
-        return "Stereo Acuity: " . ( count($this->entries) > 0 ? implode($this->entries, ", "): "No entries" );
+        return "Stereo Acuity: " . ( count($this->entries) > 0 ? implode(", ", $this->entries): "No entries" );
     }
 }

@@ -47,18 +47,30 @@ function printIFrameUrl(url, data) {
     xhr.responseType = "blob";
     xhr.onload = function () {
         if (this.status === 200) {
-            var blob = new Blob([xhr.response], {type: "application/pdf"});
-            const bloburl = window.URL.createObjectURL(blob);
-            $('#print_content_iframe').attr('src', bloburl);
-            $("#print_content_iframe").load(function () {
-                window.frames.print_content_iframe.print();
-                // re-enable the buttons
-                enableButtons();
-                window.URL.revokeObjectURL(bloburl);
-            });
+            const responseContentType = filterResponseContentType(this.getResponseHeader('content-type'));
+
+            if (responseContentType !== ''){
+                const blob = new Blob([xhr.response], {type: responseContentType});
+                const bloburl = window.URL.createObjectURL(blob);
+
+                $('#print_content_iframe').attr('src', bloburl);
+                $("#print_content_iframe").load(function () {
+                    window.frames.print_content_iframe.print();
+                    // re-enable the buttons
+                    enableButtons();
+                    window.URL.revokeObjectURL(bloburl);
+                });
+            }
         }
     };
     xhr.send(formdata);
+}
+
+function filterResponseContentType(header) {
+    const parametersStartIndex = header.indexOf(';');
+    const type = parametersStartIndex === -1 ? header.trim() : header.slice(0, parametersStartIndex).trim();
+
+    return ['application/pdf', 'text/html'].indexOf(type.toLowerCase()) !== -1 ? header : '';
 }
 
 function printEvent(printOptions) {

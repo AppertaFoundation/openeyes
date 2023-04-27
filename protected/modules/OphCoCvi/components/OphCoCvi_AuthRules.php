@@ -91,7 +91,7 @@ class OphCoCvi_AuthRules
      * @param array $view_context
      * @return bool
      */
-    public function canCreateOphCoCvi($user_id, $view_context = array())
+    public function canCreateOphCoCvi($data, $user_id, $view_context = array())
     {
         if ($this->canEdit($user_id, true)) {
             if (isset($view_context['firm'])) {
@@ -117,9 +117,9 @@ class OphCoCvi_AuthRules
      * @param array $view_context array containing the currently selected firm and Event for editing
      * @return bool
      */
-    public function canEditOphCoCvi($user_id, $view_context = array())
+    public function canEditOphCoCvi($data, $user_id, $view_context = array())
     {
-        if ($this->canCreateOphCoCvi($user_id)) {
+        if ($this->canCreateOphCoCvi(null, $user_id)) {
             if (isset($view_context['firm'])) {
                 return $this->yii->getAuthManager()->executeBizRule(
                     'canEditEvent',
@@ -138,7 +138,7 @@ class OphCoCvi_AuthRules
      * @param $user_id
      * @return bool
      */
-    public function canEditClinicalOphCoCvi($user_id)
+    public function canEditClinicalOphCoCvi($data, $user_id)
     {
         return $this->canEdit($user_id, false);
     }

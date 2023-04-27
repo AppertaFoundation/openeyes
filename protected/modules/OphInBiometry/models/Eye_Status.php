@@ -1,5 +1,7 @@
 <?php
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * Created by PhpStorm.
  * User: PATELH3
@@ -8,6 +10,8 @@
  */
 class Eye_Status extends BaseActiveRecord
 {
+    use HasFactory;
+
     /**
      * Returns the static model of the specified AR class.
      *

@@ -193,7 +193,11 @@ $total_diagnoses_count = count($element->diagnoses) + count($read_only_diagnoses
             }
         }
 
-        $commonOphthalmicDisorderGroups = CommonOphthalmicDisorderGroup::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION, null, Institution::model()->getCurrent());
+        $criteria = new CDbCriteria();
+        $criteria->addCondition('subspecialty_id IS NULL OR subspecialty_id = :subspecialty_id');
+        $criteria->params[':subspecialty_id'] = $user_firm->subspecialty->id;
+        $commonOphthalmicDisorderGroups = CommonOphthalmicDisorderGroup::model()->findAllAtLevels(ReferenceData::LEVEL_ALL, $criteria);
+
         $filteredOphthalmicDisorderGroups = [];
 
         foreach ($commonOphthalmicDisorderGroups as $disorderGroup) {

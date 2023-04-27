@@ -81,7 +81,7 @@ class SystemicSurgery extends \BaseEventElementWidget
             $element->no_systemicsurgery_date = null;
         }
 
-        $element->comments = $data['comments'];
+        $element->comments = $data['comments'] ?? null;
 
         // pre-cache current entries so any entries that remain in place will use the same db row
         $operations_by_id = [];

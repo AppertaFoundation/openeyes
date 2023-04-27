@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Class MappedReferenceDataTest
  * @covers MappedReferenceData
@@ -8,7 +9,8 @@ class MappedReferenceDataTest extends OEDbTestCase
 {
     use HasModelAssertions;
     use MocksSession;
-    use WithFaker;
+    use \WithFaker;
+
     private MappedReferenceDataMock $instance;
     private MappedReferenceDataSoftDeleteMock $softdelete_instance;
 
@@ -182,7 +184,7 @@ class MappedReferenceDataTest extends OEDbTestCase
         $expectedCount = rand(1, 5);
         $this->createFakes($expectedCount);
 
-        $this->assertCount($expectedCount, MappedReferenceDataTestFake::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION));
+        $this->assertCount($expectedCount, MappedReferenceDataTestFake::model()->findAllAtLevels(ReferenceData::LEVEL_ALL));
     }
 
     public function testOnlyMappedReturnedByFindAllAtLevel()
@@ -239,6 +241,7 @@ class MappedReferenceDataTest extends OEDbTestCase
 class MappedReferenceDataMock extends BaseActiveRecordVersioned
 {
     use MappedReferenceData;
+
     public $institutions = array();
     public $id;
 
@@ -269,6 +272,7 @@ class MappedReferenceDataMock extends BaseActiveRecordVersioned
 class MappedReferenceDataSoftDeleteMock extends BaseActiveRecordVersionedSoftDelete
 {
     use MappedReferenceData;
+
     public $id;
     public $notDeletedField = 'active';
     public $institutions = array();
@@ -459,7 +463,7 @@ class MappedReferenceDataTestFake extends \BaseActiveRecord
      */
     public function getSupportedLevels(): int
     {
-        return ReferenceData::LEVEL_INSTITUTION;
+        return ReferenceData::LEVEL_INSTALLATION | ReferenceData::LEVEL_INSTITUTION;
     }
 
     /**

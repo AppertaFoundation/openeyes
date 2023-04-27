@@ -83,8 +83,8 @@ class Retinoscopy extends \BaseEventTypeElement implements SidedData
             [
                 'right_power1, right_power2, left_power1, left_power2',
                 'numerical',
-                'min' => '-30',
-                'max' => '30'
+                'min' => '-35',
+                'max' => '35'
             ],
         ];
     }

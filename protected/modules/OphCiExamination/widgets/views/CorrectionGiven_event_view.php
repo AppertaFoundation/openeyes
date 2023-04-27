@@ -35,7 +35,7 @@
                 </tbody>
             </table>
         <?php } else { ?>
-            <div class="data-value not-recorded">
+            <div class="data-value not-recorded" data-test="<?= "correction-given-{$side}-not-recorded" ?>">
                 Not recorded
             </div>
         <?php } ?>

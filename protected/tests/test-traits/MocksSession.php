@@ -46,7 +46,7 @@ trait MocksSession
                     return Firm::model()->findByPk($this->session_values['selected_firm_id']);
                 });
 
-            $session->method('getSelectedFirm')
+            $session->method('getSelectedSite')
                 ->willReturnCallback(function () {
                     return Site::model()->findByPk($this->session_values['selected_site_id']);
                 });
@@ -93,7 +93,7 @@ trait MocksSession
     {
         $web_user = $this->getMockBuilder(OEWebUser::class)
             ->disableOriginalConstructor()
-            ->setMethods(['getId', 'getIsGuest', 'init'])
+            ->onlyMethods(['getId', 'getIsGuest', 'init'])
             ->getMock();
 
         $web_user->method('getId')

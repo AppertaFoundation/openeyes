@@ -1,5 +1,7 @@
 <?php
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "medication_attribute_assignment".
  *
@@ -20,6 +22,8 @@
  */
 class MedicationAttributeAssignment extends BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     /**
      * @return string the associated database table name
      */

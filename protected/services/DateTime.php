@@ -26,4 +26,23 @@ class DateTime extends \DateTime implements FhirCompatible
     {
         return $this->format(DATE_RFC3339);
     }
+
+    public function relative()
+    {
+        $diff = $this->diff(new DateTime());
+
+        if ($diff->y > 0) {
+            return $diff->y . ($diff->y === 1 ? ' year ago' : ' years ago');
+        } else if ($diff->m > 0) {
+            return $diff->m . ($diff->m === 1 ? ' month ago' : ' months ago');
+        } else if ($diff->d > 0) {
+            return $diff->d . ($diff->d === 1 ? ' day ago' : ' days ago');
+        } else if ($diff->h > 0) {
+            return $diff->h . ($diff->h === 1 ? ' hour ago' : ' hours ago');
+        } else if ($diff->i > 0) {
+            return $diff->i . ($diff->i === 1 ? ' minute ago' : ' minutes ago');
+        } else {
+            return $diff->s . ($diff->s === 1 ? ' second ago' : ' seconds ago');
+        }
+    }
 }

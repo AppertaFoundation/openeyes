@@ -3,7 +3,7 @@
 /* @var $model Contact */
 /* @var $gp Practitioner */
 /* @var $context String */
-$this->pageTitle = 'Update Practitioner';
+$this->pageTitle = 'Update ' . \SettingMetadata::model()->getSetting('general_practitioner_label');
 //$dataProvided = $dataProvider->getData();
 //$items_per_page = $dataProvider->getPagination()->getPageSize();
 //$page_num = $dataProvider->getPagination()->getCurrentPage();
@@ -119,13 +119,13 @@ $this->pageTitle = 'Update Practitioner';
                                 <td>Active</td>
                                 <td>
                                   <?=
-                                                            \CHtml::activeRadioButtonList(
-                                                                $gp,
-                                                                'is_active',
-                                                                [1 => 'Yes', 0 => 'No'],
-                                                                ['separator' => ' ']
-                                                            );
-                                                            ?>
+                                    \CHtml::activeRadioButtonList(
+                                        $gp,
+                                        'is_active',
+                                        [1 => 'Yes', 0 => 'No'],
+                                        ['separator' => ' ']
+                                    );
+                                    ?>
                                 </td>
                             </tr>
                             <tr>
@@ -154,17 +154,17 @@ $this->pageTitle = 'Update Practitioner';
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php $i=0; ?>
+                                        <?php $i = 0; ?>
                                         <?php foreach ($cpas as $cpa) : ?>
                                             <tr id="r<?php echo $cpa->id; ?>">
-                                                <?php echo CHtml::hiddenField('ContactPracticeAssociate['.$i.'][id]', $cpa->id, array('class' => 'hidden_id')); ?>
+                                                <?php echo CHtml::hiddenField('ContactPracticeAssociate[' . $i . '][id]', $cpa->id, array('class' => 'hidden_id')); ?>
                                                 <td>
                                                     <?php
-                                                    echo $form->textField($cpa, 'provider_no', array(
-                                                    'placeholder' => 'Enter provider number',
-                                                    'maxlength' => 255,
-                                                    'name' => 'ContactPracticeAssociate['.$i.'][provider_no]',
-                                                    ));
+                                                        echo $form->textField($cpa, 'provider_no', array(
+                                                        'placeholder' => 'Enter provider number',
+                                                        'maxlength' => 255,
+                                                        'name' => 'ContactPracticeAssociate[' . $i . '][provider_no]',
+                                                        ));
                                                     ?>
                                                     <?php echo $form->error($cpa, 'provider_no'); ?>
                                                 </td>

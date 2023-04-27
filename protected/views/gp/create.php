@@ -2,12 +2,12 @@
 /* @var $this GpController */
 /* @var $model Gp */
 /* @var $context String */
-$this->pageTitle = 'Create Practitioner';
+$this->pageTitle = 'Create ' . \SettingMetadata::model()->getSetting('general_practitioner_label');
 ?>
 <div class="oe-home oe-allow-for-fixing-hotlist">
     <div class="oe-full-header flex-layout">
         <div class="title wordcaps">
-            Add&nbsp;<b>Practitioner</b>
+            Add&nbsp;<b><?=\SettingMetadata::model()->getSetting('general_practitioner_label')?></b>
         </div>
 
     </div>

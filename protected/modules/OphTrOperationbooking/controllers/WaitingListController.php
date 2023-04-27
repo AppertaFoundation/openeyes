@@ -117,7 +117,7 @@ class WaitingListController extends BaseModuleController
      * @return Element_OphTrOperationbooking_Operation[]
      * @throws Exception
      */
-    public function getWaitingList($firm_id, $subspecialty_id, $status, $patient_identifier_value = false, $site_id = false, $booking_status)
+    public function getWaitingList($firm_id, $subspecialty_id, $status, $patient_identifier_value = false, $site_id = false, $booking_status = null)
     {
         $criteria = new CDbCriteria();
         // common joins

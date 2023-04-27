@@ -1,4 +1,6 @@
 <?php
+use OEModule\OESysEvent\events\UserSavedSystemEvent;
+use OEModule\OESysEvent\tests\test_traits\MocksSystemEventManager;
 /**
  * (C) Apperta Foundation, 2023
  * This file is part of OpenEyes.
@@ -13,12 +15,32 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+
 /**
  * @group sample-data
  * @group user
+ * @group system-events
  */
 class UserWithSampleDataTest extends OEDbTestCase
 {
+    use WithTransactions;
+    use MocksSystemEventManager;
+
+    /** @test */
+    public function user_saved_event_is_dispatched()
+    {
+        $event_manager = $this->mockSystemEventManager();
+
+        $user = User::factory()->make();
+        if (!$user->save()) {
+            $this->fail(print_r($user->getErrors(), true));
+        }
+
+        $dispatched = $event_manager->getDispatched(UserSavedSystemEvent::class);
+        $this->assertCount(1, $dispatched);
+        $this->assertEquals($user, $dispatched[0]->user);
+    }
+
     public function initalsBehaviourProvider()
     {
         return [

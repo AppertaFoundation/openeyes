@@ -284,6 +284,8 @@ class DisorderController extends BaseController
         $firm = \Firm::model()->findByPk($firm_id);
         if ($firm) {
             return \CommonOphthalmicDisorder::getListByGroupWithSecondaryTo($firm);
+        } else {
+            return null;
         }
     }
 
@@ -331,7 +333,7 @@ class DisorderController extends BaseController
 
                 $criteria->compare('parent_id', $parent_id);
 
-                $to_delete = SecondaryToCommonOphthalmicDisorder::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION, $criteria);
+                $to_delete = SecondaryToCommonOphthalmicDisorder::model()->findAllAtLevels(ReferenceData::LEVEL_ALL, $criteria);
 
                 foreach ($to_delete as $item) {
                     if (!$item->delete()) {

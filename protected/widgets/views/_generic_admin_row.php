@@ -37,7 +37,7 @@ if (@$disabled) {
     </td>
 
     <?php if (!$label_extra_field) : ?>
-        <td>
+        <td data-test="label">
             <?php
             if ($label_field_type) {
                 $this->render('application.widgets.views._generic_admin_' . $label_field_type, array(
@@ -60,8 +60,9 @@ if (@$disabled) {
             <?php } ?>
         </td>
     <?php endif; ?>
-    <?php foreach ($extra_fields as $field) { ?>
-        <td>
+    <?php foreach ($extra_fields as $field) {
+        ?>
+        <td data-test="<?= $field['field'] ?>">
             <?php $this->render('_generic_admin_' . $field['type'], array('row' => $row, 'params' => $field, 'i' => $i)) ?>
         </td>
     <?php } ?>

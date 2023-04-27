@@ -11,7 +11,9 @@ class m220926_023206_add_auto_close_exam_element_setting extends OEMigration
             'name' => 'Offer to automatically close incomplete examination elements',
             'lowest_setting_level' => 'INSTALLATION',
             'data' => serialize(array('on' => 'On', 'off' => 'Off')),
-            'default_value' => 'off'
+            'default_value' => 'off',
+            'description' => '',
+            'group_id' => 1
         ));
     }
 

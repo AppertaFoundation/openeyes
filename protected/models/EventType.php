@@ -16,6 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "event_type".
  *
@@ -23,6 +25,7 @@
  *
  * @property int $id
  * @property string $name
+ * @property string $class_name
  * @property ElementGroup[] $elementGroups
  *
  * The followings are the available model relations:
@@ -30,6 +33,8 @@
  */
 class EventType extends BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     /**
      * Returns the static model of the specified AR class.
      *
@@ -304,14 +309,33 @@ class EventType extends BaseActiveRecordVersioned
         }
         $criteria->order = 'display_order';
 
-        $elements = array();
-        foreach (ElementType::model()->findAll($criteria) as $element_type) {
+        return self::resolveElementClasses(ElementType::model()->findAll($criteria));
+    }
+
+    /**
+     * Returns new up'd versions of each element type passed
+     *
+     * @param array $element_types
+     * @return array
+     */
+    public static function resolveElementClasses($element_types)
+    {
+        $elements = [];
+        foreach ($element_types as $element_type) {
             $element_class = $element_type->class_name;
 
-            if (!class_exists($element_class)) {
-                Yii::log('Class missing for getting default elements: ' . $element_class, 'Error');
-
-                continue;
+            // Wrapping in try block as if class php file doesn't exist need to catch error
+            try {
+                if (!class_exists($element_class)) {
+                    Yii::log('Class not defined for getting default elements: ' . $element_class, 'Error');
+                    continue;
+                }
+            } catch (\Exception $e) {
+                if (strpos($e->getMessage(), 'No such file') > -1) {
+                    Yii::log('Class file not found when getting default elements: ' . $element_class, 'Error');
+                    continue;
+                }
+                throw $e;
             }
 
             $element = new $element_class();

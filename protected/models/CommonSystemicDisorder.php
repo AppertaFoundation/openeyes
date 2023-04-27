@@ -38,12 +38,12 @@ class CommonSystemicDisorder extends BaseActiveRecordVersioned
 
     protected function getSupportedLevels(): int
     {
-        return ReferenceData::LEVEL_INSTITUTION;
+        return ReferenceData::LEVEL_INSTITUTION | ReferenceData::LEVEL_INSTALLATION;
     }
 
     protected function mappingColumn(int $level): string
     {
-        return $this->tableName().'_id';
+        return $this->tableName() . '_id';
     }
 
 
@@ -84,7 +84,11 @@ class CommonSystemicDisorder extends BaseActiveRecordVersioned
     {
         return array(
             'disorder' => [self::BELONGS_TO, 'Disorder', 'disorder_id', 'on' => 'disorder.active = 1'],
-            'institutions' => array(self::MANY_MANY, 'Institution', $this->tableName().'_institution('.$this->tableName().'_id, institution_id)'),
+            'institutions' => array(
+                self::MANY_MANY,
+                'Institution',
+                $this->tableName() . '_institution(' . $this->tableName() . '_id, institution_id)'
+            ),
         );
     }
 
@@ -95,7 +99,7 @@ class CommonSystemicDisorder extends BaseActiveRecordVersioned
     {
         return array(
             'id' => 'ID',
-            'disorder_id' => 'Disorder',
+            'disorder_id' => 'Disorder'
         );
     }
 
@@ -124,17 +128,19 @@ class CommonSystemicDisorder extends BaseActiveRecordVersioned
      */
     public static function getDisorders()
     {
-        return Disorder::model()->findAll(array(
-            'condition' => 'specialty_id is null',
-            'join' => 'JOIN common_systemic_disorder csd ON csd.disorder_id = t.id',
-            'order' => 'csd.display_order',
-        ));
+        $common_disorders = self::getCommonSystemicDisorders();
+
+        $disorders = array();
+        foreach ($common_disorders as $common_disorder) {
+            $disorders[] = $common_disorder->disorder_id;
+        }
+
+        return Disorder::model()->findAllByPk(array_unique($disorders));
     }
 
     public static function getCommonSystemicDisorders()
     {
-        return CommonSystemicDisorder::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION, array(
-            'join' => 'JOIN disorder ON t.disorder_id = disorder.id',
+        return CommonSystemicDisorder::model()->findAllAtLevels(ReferenceData::LEVEL_ALL, array(
             'order' => 't.display_order',
         ));
     }
@@ -179,9 +185,10 @@ class CommonSystemicDisorder extends BaseActiveRecordVersioned
         ));
         return array_values(
             array_unique(
-                array_map(function ($disorder) {
+                array_map(
+                    function ($disorder) {
                         return $disorder->group_id;
-                },
+                    },
                     $disorders_in_group->getData()
                 )
             )

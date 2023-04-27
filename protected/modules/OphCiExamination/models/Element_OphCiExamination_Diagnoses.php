@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -205,7 +206,8 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
      *
      * @return bool cached value has_other_subspecialties_diagnoses
      */
-    public function patientHasOtherSubspecialtiesDiagnoses() {
+    public function patientHasOtherSubspecialtiesDiagnoses()
+    {
         if ($this->has_other_subspecialties_diagnoses === null) {
             $this->has_other_subspecialties_diagnoses = $this->checkForOtherSubspecialtiesDiagnoses();
         }
@@ -219,7 +221,8 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
      * @return bool
      * @throws Exception if there is no event, episode or patient data present, throw exception
      */
-    public function checkForOtherSubspecialtiesDiagnoses() {
+    public function checkForOtherSubspecialtiesDiagnoses()
+    {
         if (!$this->event || !$this->event->episode || !$this->event->episode->patient) {
             throw new \RuntimeException("No event, episode or patient data found");
         }
@@ -589,7 +592,8 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
      *
      * @return int
      */
-    protected function getOriginalDiagnosesCount(): int {
+    protected function getOriginalDiagnosesCount(): int
+    {
         return OphCiExamination_Diagnosis::model()->count('element_diagnoses_id = :id', [':id' => $this->id]);
     }
 
@@ -614,7 +618,7 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
 
                 $term = isset($diagnosis->disorder)  ? $diagnosis->disorder->term : "($key)";
                 if (!$diagnosis->eye_id) {
-                    // without this OE tries to perform a save / or at least run the saveComplexAttributes_Element_OphCiExamination_Diagnoses()
+                    // without this OE tries to perform a save
                     // where we need to have an eye_id - probably this need further investigation and refactor
                     $this->addError('diagnoses', $term . ': Eye is required');
 

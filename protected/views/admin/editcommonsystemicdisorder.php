@@ -14,14 +14,21 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-?>
 
-<?php
 $this->renderPartial('//base/_messages');
 if (isset($errors)) {
     $this->renderPartial('/admin/_form_errors', $errors);
 }
-Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/OpenEyes.GenericFormJSONConverter.js'), CClientScript::POS_HEAD);
+Yii::app()->clientScript->registerScriptFile(
+    Yii::app()->assetManager->createUrl('js/OpenEyes.GenericFormJSONConverter.js'),
+    CClientScript::POS_HEAD
+);
+
+if ($this->checkAccess('admin')) {
+    $options = array('empty' => 'All Institutions');
+} else {
+    $options = array();
+}
 ?>
 <form method="get">
     <table class="cols-7">
@@ -32,16 +39,17 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl
         <tbody>
         <tr class="col-gap">            
             <td>&nbsp;<br/><?=\CHtml::dropDownList(
-                    'institution_id',
-                    $current_institution_id,
-                    Institution::model()->getTenantedList(!Yii::app()->user->checkAccess('admin'))
-                ) ?></td>
+                'institution_id',
+                $current_institution_id,
+                Institution::model()->getTenantedList(!Yii::app()->user->checkAccess('admin')),
+                $options
+            ) ?></td>
         </tr>
         </tbody>
     </table>
 </form>
 
-<form method="POST" action="/oeadmin/CommonSystemicDisorder/save?institution_id=<?= $current_institution_id; ?>">
+<form method="POST" action="/oeadmin/CommonSystemicDisorder/save?institution_id=<?= $current_institution_id ?>">
     <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
     <?php
     $columns = [
@@ -60,7 +68,7 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl
             'header' => 'Disorder',
             'name' => 'disorder.term',
             'type' => 'raw',
-            'htmlOptions' => array('width' => '180px'),
+            'htmlOptions' => array('width' => '180px', 'data-test' => 'disorder-term'),
             'value' => function ($data, $row) {
                 $term = null;
                 $row++;
@@ -80,17 +88,16 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl
             'header' => 'Group',
             'name' => 'group.name',
             'type' => 'raw',
-            'value' => function ($data, $row) use ($current_institution) {
-                $row++;
-                $options = CHtml::listData(CommonSystemicDisorderGroup::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION, null, $current_institution), 'id', 'name');
+            'value' => function ($data, $row) use ($group_models) {
+                $options = CHtml::listData($group_models, 'id', 'name');
                 return CHtml::activeDropDownList($data, "[$row]group_id", $options, array('empty' => '-- select --'));
             }
         ],
         [
             'header' => 'Actions',
             'type' => 'raw',
-            'value' => function ($data) {
-                return "<button type='button'><a href='javascript:void(0)' class='delete'>delete</a></button>";
+            'value' => function ($data) use ($current_institution) {
+                return "<button type='button'><a href='javascript:void(0)' class='delete'>" . ($current_institution ? 'delete mapping' : 'delete') . "</a></button>";
             }
         ],
     ];

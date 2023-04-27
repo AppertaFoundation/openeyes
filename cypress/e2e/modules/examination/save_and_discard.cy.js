@@ -2,7 +2,7 @@ describe('the save and discard functionality is controlled by a setting and allo
     
     const SAVE_AND_DISCARD_SETTING = 'close_incomplete_exam_elements';
 
-    // login as admin and create a patient
+    // login as admin and create a new patient
     beforeEach(() => {
         cy.login()
             .then(() => {
@@ -18,8 +18,10 @@ describe('the save and discard functionality is controlled by a setting and allo
             cy.setSystemSettingValue(SAVE_AND_DISCARD_SETTING, 'on');
         });
 
+        // - element(s) to touch: History
+        // - element(s) to discard: Ophthalmic Diagnoses, PCR Risk, Medication Management
         const elementsForTesting = [
-            [['History'], ['Ophthalmic Diagnoses', 'PCR Risk']]
+            [['History'], ['Ophthalmic Diagnoses', 'PCR Risk', 'Medication Management']]
         ];
 
         const elementFillers = {
@@ -51,6 +53,7 @@ describe('the save and discard functionality is controlled by a setting and allo
                         });
 
                         cy.saveEvent()
+                            // assert that the untouched elements (including Medication Management) are listed for save & discard
                             .then(() => assertElementsAreInDiscardList(elementsToDiscard));
                     });
                 })

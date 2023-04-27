@@ -19,27 +19,36 @@ namespace OE\factories\models;
 use OE\factories\ModelFactory;
 use OE\factories\models\traits\LooksUpExistingModels;
 use CommonOphthalmicDisorderGroup;
+use OE\factories\models\traits\MapsDisplayOrderForFactory;
 use ReferenceData;
 
 class CommonOphthalmicDisorderGroupFactory extends ModelFactory
 {
     use LooksUpExistingModels;
+    use MapsDisplayOrderForFactory;
 
     public function definition(): array
     {
         return [
-            'name' => $this->faker->words(4, true)
+            'name' => $this->faker->unique()->words(4, true)
         ];
     }
 
-    public function forInstitution($institution_id)
+    /**
+     *
+     * @param \Institution|string|int $institution
+     * @return void
+     */
+    public function withInstitution($institution): self
     {
+        $institution_id = $institution instanceof \Institution ? $institution->id : $institution;
+
         return $this->afterCreating(function (CommonOphthalmicDisorderGroup $disorderGroup) use ($institution_id) {
             $disorderGroup->createMapping(ReferenceData::LEVEL_INSTITUTION, $institution_id);
         });
     }
 
-    public function forDisplayOrder($display_order)
+    public function forDisplayOrder($display_order): self
     {
         return $this->state(function () use ($display_order) {
             return [

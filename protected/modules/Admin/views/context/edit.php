@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2018
  * This file is part of OpenEyes.
@@ -12,6 +13,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <div class="cols-9">
@@ -56,7 +58,7 @@
         <tr>
             <td>Institution</td>
             <?php if ($this->checkAccess('admin')) { ?>
-                <td><?=\CHtml::activeDropDownList($firm, 'institution_id', Institution::model()->getTenantedList(false), ['class' => 'cols-full']) ?></td>
+                <td><?=\CHtml::activeDropDownList($firm, 'institution_id', Institution::model()->getTenantedList(false), ['class' => 'cols-full', 'empty' => 'All Institutions']) ?></td>
             <?php } elseif ($firm->institution_id) { ?>
                 <td>
                     <?= $firm->institution->name ?>

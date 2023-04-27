@@ -44,7 +44,7 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
 
     protected function getSupportedLevels(): int
     {
-        return ReferenceData::LEVEL_INSTITUTION;
+        return ReferenceData::LEVEL_INSTITUTION | ReferenceData::LEVEL_INSTALLATION;
     }
 
     protected function mappingColumn(int $level): string
@@ -294,41 +294,42 @@ class CommonOphthalmicDisorder extends BaseActiveRecordVersioned
             throw new CException('Firm is required');
         }
 
-        $disorders = array();
+        $ss_id = $firm->getSubspecialtyID();
+        if (!$ss_id) {
+            return [];
+        }
 
-        if ($ss_id = $firm->getSubspecialtyID()) {
-            $criteria = new CDbCriteria();
-            $criteria->join = "JOIN common_ophthalmic_disorder_institution codi ON t.id = codi.common_ophthalmic_disorder_id";
-            $criteria->compare('t.subspecialty_id', $ss_id);
-            $criteria->compare('codi.institution_id', $firm->institution_id);
+        $disorders = [];
+        $criteria = new CDbCriteria();
+        $criteria->compare('t.subspecialty_id', $ss_id);
+        $criteria->with = [
+            'finding' => ['joinType' => 'LEFT JOIN'],
+            'disorder' => ['joinType' => 'LEFT JOIN'],
+            'alternate_disorder' => ['joinType' => 'LEFT JOIN'],
+            'group' => ['joinType' => 'LEFT JOIN']
+        ];
 
-            $cods = self::model()->with(array(
-                'finding' => array('joinType' => 'LEFT JOIN'),
-                'disorder' => array('joinType' => 'LEFT JOIN'),
-                'group',
-            ))->findAll($criteria);
+        $cods = self::model()->findAllAtLevels(ReferenceData::LEVEL_ALL, $criteria, $firm->institution, null, null, null, $firm);
 
-            foreach ($cods as $cod) {
-                if ($cod->type) {
-                    $disorder = array();
-                    $group = ($cod->group) ? $cod->group->name : '';
-                    $disorder['type'] = $cod->type;
-                    $disorder['id'] = ($cod->disorderOrFinding) ? $cod->disorderOrFinding->id : null;
-                    $disorder['label'] = ($cod->disorderOrFinding) ? $cod->disorderOrFinding->term : 'None';
-                    $disorder['is_glaucoma'] = isset($cod->disorder->term)? (strpos(strtolower($cod->disorder->term), 'glaucoma')) !== false : false;
-                    $disorder['group'] = $group;
-                    $disorder['group_id'] = isset($cod->group) ? $cod->group->id : null;
-                    $disorder['alternate'] = $cod->alternate_disorder_id ?
-                        array(
-                            'id' => $cod->alternate_disorder_id,
-                            'label' => $cod->alternate_disorder->term,
-                            'selection_label' => $cod->alternate_disorder_label,
-                            // only allow disorder alternates at this point so type is hard code
-                            'type' => 'disorder',
-                        ) : null;
-                    $disorder['secondary'] = $cod->getSecondaryToList();
-                    $disorders[] = $disorder;
-                }
+        foreach ($cods as $cod) {
+            if ($cod->type) {
+                $disorder = [];
+                $disorder['type'] = $cod->type;
+                $disorder['id'] = ($cod->disorderOrFinding) ? $cod->disorderOrFinding->id : null;
+                $disorder['label'] = ($cod->disorderOrFinding) ? $cod->disorderOrFinding->term : 'None';
+                $disorder['is_glaucoma'] = isset($cod->disorder->term) ? (strpos(strtolower($cod->disorder->term), 'glaucoma')) !== false : false;
+                $disorder['group'] = ($cod->group) ? $cod->group->name : '';
+                $disorder['group_id'] = $cod->group_id;
+                $disorder['alternate'] = $cod->alternate_disorder_id ?
+                    [
+                        'id' => $cod->alternate_disorder_id,
+                        'label' => $cod->alternate_disorder->term,
+                        'selection_label' => $cod->alternate_disorder_label,
+                        // only allow disorder alternates at this point so type is hard code
+                        'type' => 'disorder',
+                    ] : null;
+                $disorder['secondary'] = $cod->getSecondaryToList();
+                $disorders[] = $disorder;
             }
         }
 

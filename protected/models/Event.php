@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -25,9 +26,9 @@ use OEModule\OESysEvent\events\ClinicalEventSoftDeletedSystemEvent;
  * The followings are the available columns in table 'event':
  *
  * @property string $id
- * @property string $episode_id
- * @property string $user_id
- * @property string $event_type_id
+ * @property string|int $episode_id
+ * @property string|int $user_id
+ * @property string|int $event_type_id
  * @property string $info
  * @property boolean $deleted
  * @property string $delete_reason
@@ -36,15 +37,22 @@ use OEModule\OESysEvent\events\ClinicalEventSoftDeletedSystemEvent;
  * @property string $event_date
  * @property string $created_date
  * @property string $last_modified_date
- * @property string $worklist_patient_id
+ * @property string|int $worklist_patient_id
  * @property int $firm_id
  * @property int $step_id
+ * @property string|int $parent_id
  *
  * The followings are the available model relations:
  * @property Episode $episode
  * @property User $user
+ * @property User $usermodified
  * @property EventType $eventType
  * @property Institution $institution
+ * @property ?Event $parent
+ * @property EventSubTypeItem[] $eventSubtypeItems
+ * @property ?EventSubTypeItem $firstEventSubtypeItem
+ * @property ?EventTemplate $template
+ * @property ?EventDraft $draft
  */
 class Event extends BaseActiveRecordVersioned
 {
@@ -153,7 +161,8 @@ class Event extends BaseActiveRecordVersioned
             'site' => [self::BELONGS_TO, 'Site', 'site_id'],
             'worklist_patient' => [self::BELONGS_TO, 'WorklistPatient', 'worklist_patient_id'],
             'step' => [self::BELONGS_TO, 'PathwayStep', 'step_id'],
-            'template' => [self::BELONGS_TO, 'EventTemplate', 'template_id']
+            'template' => [self::BELONGS_TO, 'EventTemplate', 'template_id'],
+            'draft' => [self::HAS_ONE, EventDraft::class, 'event_id']
         );
     }
 
@@ -207,10 +216,12 @@ class Event extends BaseActiveRecordVersioned
 
     public function moduleAllowsEditing()
     {
-        if ($api = $this->getApi()) {
-            if (method_exists($api, 'canUpdate')) {
+        $api = $this->getApi();
+        if (!$api) {
+            return;
+        }
+        if ($api !== null && method_exists($api, 'canUpdate')) {
                 return $api->canUpdate($this->id);
-            }
         }
 
         return;
@@ -322,7 +333,8 @@ class Event extends BaseActiveRecordVersioned
      */
     public function addIssue($text)
     {
-        if (!$issue = Issue::model()->find('name=?', array($text))) {
+        $issue = Issue::model()->find('name=?', array($text));
+        if ($issue === null) {
             $issue = new Issue();
             $issue->name = $text;
             if (!$issue->save()) {
@@ -330,12 +342,13 @@ class Event extends BaseActiveRecordVersioned
             }
         }
 
-        if (!EventIssue::model()->find('event_id=? and issue_id=?', array($this->id, $issue->id))) {
-            $ei = new EventIssue();
-            $ei->event_id = $this->id;
-            $ei->issue_id = $issue->id;
+        $eventIssue = EventIssue::model()->find('event_id=? and issue_id=?', array($this->id, $issue->id));
+        if ($eventIssue === null) {
+            $eventIssue = new EventIssue();
+            $eventIssue->event_id = $this->id;
+            $eventIssue->issue_id = $issue->id;
 
-            if (!$ei->save()) {
+            if (!$eventIssue->save()) {
                 return false;
             }
         }
@@ -352,7 +365,8 @@ class Event extends BaseActiveRecordVersioned
      */
     public function deleteIssue($name)
     {
-        if (!$issue = Issue::model()->find('name=?', array($name))) {
+        $issue = Issue::model()->find('name=?', [$name]);
+        if ($issue === null) {
             return false;
         }
 
@@ -373,19 +387,20 @@ class Event extends BaseActiveRecordVersioned
      */
     public function deleteIssues()
     {
-        foreach (EventIssue::model()->findAll('event_id=?', array($this->id)) as $event_issue) {
+        foreach (EventIssue::model()->findAll('event_id=?', [$this->id]) as $event_issue) {
             $event_issue->delete();
         }
     }
 
     public function showDeleteIcon()
     {
-        if ($api = $this->getApi()) {
-            if (method_exists($api, 'showDeleteIcon')) {
-                return $api->showDeleteIcon($this->id);
-            }
+        $api = $this->getApi();
+        if (!$api) {
+            return;
         }
-
+        if ($api !== null && method_exists($api, 'showDeleteIcon')) {
+                return $api->showDeleteIcon($this->id);
+        }
         return;
     }
 
@@ -562,8 +577,9 @@ class Event extends BaseActiveRecordVersioned
             $element_class = null;
 
             // Temporarily install an error handler to deal with missing files.
-            // Plese make sure the restore_error_handler below the loop is present while this exists.
+            // Please make sure the restore_error_handler below the loop is present while this exists.
             $yii_err_handler = set_error_handler(function ($errno, $errstr, $errfile, $errline, $errcontext = []) use (&$yii_err_handler, &$element_class) {
+
                 /*
                  * More kludging - we just want to look for errors where include failed to open the class file,
                  * for missing element classes.
@@ -720,6 +736,7 @@ class Event extends BaseActiveRecordVersioned
      */
     public function automatedText()
     {
+
         $result = '';
         if ($this->is_automated && $this->automated_source) {
             // TODO: this really should be in the module API with some kind of default text here
@@ -729,9 +746,9 @@ class Event extends BaseActiveRecordVersioned
             if (property_exists($this->automated_source, 'address')) {
                 $result .= 'Optometrist Address: ' . $this->automated_source->address;
             }
-
-            return $result;
         }
+
+        return $result;
     }
 
     /**
@@ -757,10 +774,12 @@ class Event extends BaseActiveRecordVersioned
      */
     public function getEventIcon($type = 'small')
     {
-        if ($api = $this->getApi()) {
-            if (method_exists($api, 'getEventIcon')) {
+        $api = $this->getApi();
+        if (!$api) {
+            return;
+        }
+        if ($api !== null && method_exists($api, 'getEventIcon')) {
                 return $api->getEventIcon($type, $this);
-            }
         }
 
         if ($this->eventType) {
@@ -776,10 +795,12 @@ class Event extends BaseActiveRecordVersioned
      */
     public function getEventName()
     {
-        if ($api = $this->getApi()) {
-            if (method_exists($api, 'getEventName')) {
-                return $api->getEventName($this);
-            }
+        $api = $this->getApi();
+        if (!$api) {
+            return;
+        }
+        if ($api !== null && method_exists($api, 'getEventName')) {
+            return $api->getEventName($this);
         }
 
         if ($this->firstEventSubtypeItem) {
@@ -1001,7 +1022,7 @@ class Event extends BaseActiveRecordVersioned
             return null;
         }
 
-        $template = new $template_class;
+        $template = new $template_class();
 
         $transaction = Yii::app()->db->beginTransaction();
 

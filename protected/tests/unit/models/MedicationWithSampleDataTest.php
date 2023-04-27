@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Class MedicationWithSampleDataTest
  *
@@ -14,7 +15,7 @@ class MedicationWithSampleDataTest extends OEDbTestCase
     use InteractsWithMedication;
     use MocksSession;
     use WithTransactions;
-    use WithFaker;
+    use \WithFaker;
 
     /**
      * @test
@@ -38,5 +39,23 @@ class MedicationWithSampleDataTest extends OEDbTestCase
         $this->assertContains($expected[0]->id, $resultIds);
         $this->assertContains($expected[1]->id, $resultIds);
         $this->assertNotContains($unexpected->id, $resultIds);
+    }
+
+    /** @test */
+    public function label_displays_preservative_free_for_medication_with_attribute()
+    {
+        $medication = Medication::factory()->preservativeFree()->create();
+        $this->assertTrue($medication->isPreservativeFree(), 'factory did not generate a preservative free medication.');
+
+        $this->assertStringEndsWith('(No Preservative)', $medication->getLabel());
+    }
+
+    /** @test */
+    public function label_does_not_display_preservative_free_for_medication_without_attribute()
+    {
+        $medication = Medication::factory()->create();
+        $this->assertFalse($medication->isPreservativeFree(), 'factory erroneously generated a preservative free medication.');
+
+        $this->assertStringNotContainsString('(No Preservative)', $medication->getLabel());
     }
 }

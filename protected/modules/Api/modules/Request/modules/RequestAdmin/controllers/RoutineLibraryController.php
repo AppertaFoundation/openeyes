@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Copyright Apperta Foundation 2020
  * This file is part of OpenEyes.
@@ -39,84 +40,5 @@ class RoutineLibraryController extends \AdminController
         }
 
         return $model;
-    }
-
-    /**
-     * Creates a new model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     */
-    public function actionAdd()
-    {
-        $model = new RoutineLibrary;
-        // Uncomment the following line if AJAX validation is needed
-        // $this->performAjaxValidation($model);
-
-        if (isset($_POST['RoutineLibrary'])) {
-            $model->attributes = $_POST['RoutineLibrary'];
-            if ($model->save()) {
-                $this->redirect(['/Api/Request/admin/routineLibrary/index']);
-            }
-        }
-
-        $this->render('/routineLibrary/edit', array(
-            'model' => $model,
-            'title' => 'Add Routine library',
-        ));
-    }
-
-    /**
-     * Updates a particular model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id the ID of the model to be updated
-     */
-    public function actionEdit()
-    {
-        $id = \Yii::app()->request->getParam('id');
-        $model = $this->loadModel($id);
-
-        // Uncomment the following line if AJAX validation is needed
-        // $this->performAjaxValidation($model);
-
-        if (isset($_POST['RoutineLibrary'])) {
-            $model->attributes = $_POST['RoutineLibrary'];
-            if ($model->save()) {
-                $this->redirect(['/Api/Request/admin/routineLibrary/index']);
-            }
-        }
-
-        $this->render('/routineLibrary/edit', array(
-            'model' => $model,
-            'title' => 'Edit Routine library',
-            'is_readonly' =>
-                (RequestType::model()->count('default_routine_name = ?', [$model->routine_name])) ||
-                (RequestRoutine::model()->count('routine_name = ?', [$model->routine_name]))
-        ));
-    }
-
-    /**
-     * Deletes a particular model.
-     * If deletion is successful, the browser will be redirected to the 'admin' page.
-     * @param integer $id the ID of the model to be deleted
-     */
-    public function actionDelete($id)
-    {
-        $this->loadModel($id)->delete();
-
-        // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-        if (!isset($_GET['ajax'])) {
-            $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
-        }
-    }
-
-    /**
-     * Lists all models.
-     */
-    public function actionIndex()
-    {
-        $dataProvider = new CActiveDataProvider('RoutineLibrary');
-        $this->render('/routineLibrary/index', array(
-            'dataProvider' => $dataProvider,
-            'title' => 'Routine Library'
-        ));
     }
 }

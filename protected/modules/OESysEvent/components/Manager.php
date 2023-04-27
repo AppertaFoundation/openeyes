@@ -18,6 +18,7 @@ namespace OEModule\OESysEvent\components;
 use CApplicationComponent;
 use OE\concerns\InteractsWithApp;
 use OEModule\OESysEvent\contracts\Dispatchable;
+use OEModule\OESysEvent\contracts\Dispatcher;
 use OEModule\OESysEvent\exceptions\UnrecognisedListenerConfigException;
 
 /**
@@ -27,7 +28,7 @@ use OEModule\OESysEvent\exceptions\UnrecognisedListenerConfigException;
  * Uses Yii conventions for the components for initialisation. The observers property is
  * maintained atm for backwards compatibility with the original OEEventManager setup.
  */
-class Manager extends CApplicationComponent
+class Manager extends CApplicationComponent implements Dispatcher
 {
     use InteractsWithApp;
 
@@ -36,6 +37,9 @@ class Manager extends CApplicationComponent
 
     public function init()
     {
+        // ensure we are starting from scratch
+        $this->forgetAll();
+
         foreach ($this->observers as $event_name => $observer_config) {
             if (is_int($event_name)) {
                 // new config style
@@ -53,7 +57,7 @@ class Manager extends CApplicationComponent
         parent::init();
     }
 
-    public function listen($events, ...$listener)
+    public function listen($events, ...$listener): void
     {
         foreach ((array) $events as $event) {
             $this->listeners[$event][] = $this->makeListener(...$listener);
@@ -73,6 +77,22 @@ class Manager extends CApplicationComponent
         foreach ($listeners as $listener) {
             $listener(...$arguments);
         }
+    }
+
+    public function forget($events): void
+    {
+        if (!is_array($events)) {
+            $events = [$events];
+        }
+
+        foreach ($events as $event) {
+            unset($this->listeners[$event]);
+        }
+    }
+
+    public function forgetAll(): void
+    {
+        $this->listeners = [];
     }
 
     protected function makeListener($listener, $method = null): callable
@@ -105,7 +125,7 @@ class Manager extends CApplicationComponent
     protected function makeClassListener($listener_class, $method = null): callable
     {
         return function (...$arguments) use ($listener_class, $method) {
-            $listener = $this->getApp()->$listener_class ?? new $listener_class();
+            $listener = ListenerBuilder::getInstance()->build($listener_class);
 
             return $method ? $listener->$method(...$arguments) : $listener(...$arguments);
         };

@@ -1,15 +1,26 @@
 <?php
+/**
+ * (C) Apperta Foundation, 2022
+ * This file is part of OpenEyes.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @link http://www.openeyes.org.uk
+ *
+ * @author OpenEyes <info@openeyes.org.uk>
+ * @copyright Copyright (C) 2022, Apperta Foundation
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+ */
 
 namespace OEModule\OphCoMessaging\tests\unit\models;
 
-use ComponentStubGenerator;
 use Event;
-use EventSubtype;
-use InteractsWithEventTypeElements;
+use OE\factories\models\EventFactory;
 use OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message;
+use OEModule\OphCoMessaging\models\Mailbox;
 use OEModule\OphCoMessaging\models\OphCoMessaging_Message_MessageType;
-use User;
-use WithFaker;
+use OEModule\OphCoMessaging\models\OphCoMessaging_Message_Recipient;
 use WithTransactions;
 
 /**
@@ -18,8 +29,6 @@ use WithTransactions;
  */
 class Element_OphCoMessaging_MessageTest extends \ModelTestCase
 {
-    use InteractsWithEventTypeElements;
-    use WithFaker;
     use WithTransactions;
 
     protected $element_cls = Element_OphCoMessaging_Message::class;
@@ -28,87 +37,152 @@ class Element_OphCoMessaging_MessageTest extends \ModelTestCase
     /** @test */
     public function event_subtype_is_set_from_message_type()
     {
-        $this->instance = $this->getElementInstance();
         $message_type = $this->getMessageType(true);
-        $this->instance->attributes = $this->generateElementAttributes([
+
+        $element = $this->makeElementForSaving([
             'message_type_id' => $message_type->id
         ]);
 
-        $this->saveElement($this->instance);
+        $element->save();
 
-        $this->assertEquals($message_type->event_subtype, $this->instance->event->firstEventSubtypeItem->event_subtype);
+        $this->assertEquals($message_type->event_subtype, $element->event->firstEventSubtypeItem->event_subtype);
     }
 
     /** @test */
     public function event_subtype_is_removed_from_message_type()
     {
-        $this->instance = $this->getElementInstance();
         $message_type = $this->getMessageType(true);
-        $this->instance->attributes = $this->generateElementAttributes([
-            'message_type_id' => $message_type->id
-        ]);
+        $element = Element_OphCoMessaging_Message::factory()
+            ->withPrimaryRecipient()
+            ->create([
+                'message_type_id' => $message_type->id
+            ]);
 
-        $this->saveElement($this->instance);
+        $event = Event::model()->findByPk($element->event_id);
+        $this->assertNotNull($event->firstEventSubtypeItem);
 
         // create new message type without a subtype
         $message_type2 = $this->getMessageType(false);
-        $this->instance->message_type_id = $message_type2->id;
+        $element->message_type_id = $message_type2->id;
 
-        $this->saveElement($this->instance);
+        $element->save();
 
         // reload event
-        $event = Event::model()->findByPk($this->instance->event_id);
+        $event->refresh();
         $this->assertNull($event->firstEventSubtypeItem);
     }
 
     /** @test */
     public function event_subtype_is_updated_by_changed_message_type()
     {
-        $this->instance = $this->getElementInstance();
         $message_type = $this->getMessageType(true);
-        $this->instance->attributes = $this->generateElementAttributes([
-            'message_type_id' => $message_type->id
-        ]);
+        $element = Element_OphCoMessaging_Message::factory()
+            ->withPrimaryRecipient()
+            ->create([
+                'message_type_id' => $message_type->id
+            ]);
 
-        $this->saveElement($this->instance);
+        $event = Event::model()->findByPk($element->event_id);
+        $this->assertNotNull($event->firstEventSubtypeItem);
 
         // create new message type with a subtype
         $message_type2 = $this->getMessageType(true);
-        $this->instance->message_type_id = $message_type2->id;
+        $element->message_type_id = $message_type2->id;
 
-        $this->saveElement($this->instance);
+        $element->save();
 
-        // reload event
-        $event = Event::model()->findByPk($this->instance->event_id);
-        $this->assertEquals($message_type2->event_subtype, $this->instance->event->firstEventSubtypeItem->event_subtype);
+        $event->refresh();
+
+        $this->assertEquals($message_type2->event_subtype, $event->firstEventSubtypeItem->event_subtype);
     }
 
     public function getMessageType(bool $has_event_subtype = false)
     {
-        $message_type = new OphCoMessaging_Message_MessageType();
-        $message_type->name = $this->faker->unique()->word();
-        $message_type->display_order = 1;
-
+        $factory = OphCoMessaging_Message_MessageType::factory();
         if ($has_event_subtype) {
-            $event_subtype = new EventSubtype();
-            $event_subtype->event_subtype = $this->faker->unique()->word();
-            $event_subtype->dicom_modality_code = "Foo";
-            $event_subtype->icon_name = $this->faker->word();
-            $event_subtype->display_name = $this->faker->word();
-            $event_subtype->save();
-
-            $message_type->event_subtype = $event_subtype->event_subtype;
+            $factory = $factory->withEventSubtype();
         }
-        $message_type->save();
 
-        return $message_type;
+        return $factory->create();
     }
 
     public function generateElementAttributes(array $attributes = [])
     {
         return array_merge([
-            'for_the_attention_of_user_id' => 1, // assumes presence of admin user
             'message_text' => $this->faker->paragraph()
         ], $attributes);
+    }
+
+    protected function makeElementForSaving(array $attributes = [])
+    {
+        $event = EventFactory::forModule('OphCoMessaging')->create();
+        $element = Element_OphCoMessaging_Message::factory()->make(
+            array_merge(
+                ['event_id' => $event->id],
+                $attributes
+            )
+        );
+        // attach a recipient to pass validation
+        $element->recipients = [OphCoMessaging_Message_Recipient::factory()->make([
+            'element_id' => null
+        ])];
+
+        return $element;
+    }
+
+    /** @test */
+    public function primary_recipients_is_required()
+    {
+        $element = Element_OphCoMessaging_Message::factory()->make(['event_id' => null]);
+
+        $this->assertAttributeInvalid($element, 'recipients', 'must be sent to');
+
+        $mailbox = Mailbox::factory()->useExisting()->create();
+
+        $element->recipients = [
+            OphCoMessaging_Message_Recipient::factory()->asCC($mailbox)->make([
+                'element_id' => null
+            ])
+        ];
+
+        $this->assertAttributeInvalid($element, 'recipients', 'must be sent to');
+
+        $element->recipients = [
+            OphCoMessaging_Message_Recipient::factory()->asPrimary($mailbox)->make([
+                'element_id' => null
+            ])
+        ];
+
+        $this->assertAttributeValid($element, 'recipients');
+    }
+
+    /** @test */
+    public function for_the_attention_of_falls_back_to_cc()
+    {
+        $mailbox = Mailbox::factory()->useExisting()->create();
+
+        $element = Element_OphCoMessaging_Message::factory()->withCCRecipients([
+            [$mailbox, false]
+        ])->create();
+
+        $this->assertNotNull($element->for_the_attention_of);
+        $this->assertModelIs($mailbox, $element->for_the_attention_of->mailbox);
+    }
+
+    /** @test */
+    public function for_the_attention_of_is_the_primary_recipient()
+    {
+        $cc = Mailbox::factory()->useExisting()->create();
+        $primary = Mailbox::factory()->create();
+
+        $element = Element_OphCoMessaging_Message::factory()
+            ->withCCRecipients([
+                [$cc, false]
+            ])
+            ->withPrimaryRecipient($primary, false)
+            ->create();
+
+        $this->assertCount(2, $element->recipients);
+        $this->assertModelIs($primary, $element->for_the_attention_of->mailbox);
     }
 }

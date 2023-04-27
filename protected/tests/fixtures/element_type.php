@@ -894,6 +894,16 @@ return array(
         'group_title' => null,
         'element_group_id' => null,
     ),
+    'opnote_cataract' => array(
+        'id' => 39,
+        'name' => 'Cataract',
+        'class_name' => 'Element_OphTrOperationnote_Cataract',
+        'event_type_id' => 4,
+        'display_order' => 110,
+        'default' => 0,
+        'group_title' => 'Cataract',
+
+    )
 
 /*
  'elementType5' => array(

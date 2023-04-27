@@ -36,7 +36,7 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
      */
     public function testCanEditEpisode_SupportServicesFirm_SupportServicesEpisode()
     {
-        $this->assertTrue($this->rules->canEditEpisode($this->getSupportServicesEpisode()));
+        $this->assertTrue($this->rules->canEditEpisode(null, $this->getSupportServicesEpisode()));
     }
 
     /**
@@ -44,7 +44,7 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
      */
     public function testCanEditEpisode_SupportServicesFirm_LegacyEpisode()
     {
-        $this->assertFalse($this->rules->canEditEpisode($this->getLegacyEpisode()));
+        $this->assertFalse($this->rules->canEditEpisode(null, $this->getLegacyEpisode()));
     }
 
     /**
@@ -52,7 +52,7 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
      */
     public function testCanEditEpisode_NormalFirm_LegacyEpisode()
     {
-        $this->assertFalse($this->rules->canEditEpisode($this->getLegacyEpisode()));
+        $this->assertFalse($this->rules->canEditEpisode(null, $this->getLegacyEpisode()));
     }
 
     /**
@@ -60,7 +60,7 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
      */
     public function testCanEditEpisode_NormalFirm_NormalEpisode_MatchingSubspecialty()
     {
-        $this->assertTrue($this->rules->canEditEpisode($this->getNormalEpisode(42)));
+        $this->assertTrue($this->rules->canEditEpisode(null, $this->getNormalEpisode(42)));
     }
 
     /**
@@ -68,7 +68,7 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
      */
     public function testCanCreateEvent_Disabled()
     {
-        $this->assertFalse($this->rules->canCreateEvent($this->getNormalFirm(), $this->getNormalEpisode(), $this->getDisabledEventType()));
+        $this->assertFalse($this->rules->canCreateEvent(null, $this->getNormalFirm(), $this->getNormalEpisode(), $this->getDisabledEventType()));
     }
 
     /**
@@ -76,7 +76,7 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
      */
     public function testCanCreateEvent_SupportServicesFirm_NonSupportServiceEventType()
     {
-        $this->assertFalse($this->rules->canCreateEvent($this->getSupportServicesFirm(), $this->getNormalEpisode(), $this->getNonSupportServicesEventType()));
+        $this->assertFalse($this->rules->canCreateEvent(null, $this->getSupportServicesFirm(), $this->getNormalEpisode(), $this->getNonSupportServicesEventType()));
     }
 
     /**
@@ -84,7 +84,7 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
      */
     public function testCanCreateEvent_SupportServicesFirm_SupportServiceEventType()
     {
-        $this->assertTrue($this->rules->canCreateEvent($this->getSupportServicesFirm(), $this->getSupportServicesEpisode(), $this->getSupportServicesEventType()));
+        $this->assertTrue($this->rules->canCreateEvent(null, $this->getSupportServicesFirm(), $this->getSupportServicesEpisode(), $this->getSupportServicesEventType()));
     }
 
     /**
@@ -92,7 +92,7 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
      */
     public function testCanCreateEvent_NormalFirm_NonSupportServiceEventType()
     {
-        $this->assertTrue($this->rules->canCreateEvent($this->getNormalFirm(), $this->getNormalEpisode(), $this->getNonSupportServicesEventType()));
+        $this->assertTrue($this->rules->canCreateEvent(null, $this->getNormalFirm(), $this->getNormalEpisode(), $this->getNonSupportServicesEventType()));
     }
 
     /**
@@ -100,7 +100,7 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
      */
     public function testCanCreateEvent_NormalFirm_SupportServiceEventType()
     {
-        $this->assertTrue($this->rules->canCreateEvent($this->getNormalFirm(), $this->getNormalEpisode(), $this->getSupportServicesEventType()));
+        $this->assertTrue($this->rules->canCreateEvent(null, $this->getNormalFirm(), $this->getNormalEpisode(), $this->getSupportServicesEventType()));
     }
 
     /**
@@ -108,7 +108,7 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
      */
     public function testCanCreateEvent_LegacyEpisode()
     {
-        $this->assertFalse($this->rules->canCreateEvent($this->getNormalFirm(), $this->getLegacyEpisode(), $this->getNonSupportServicesEventType()));
+        $this->assertFalse($this->rules->canCreateEvent(null, $this->getNormalFirm(), $this->getLegacyEpisode(), $this->getNonSupportServicesEventType()));
     }
 
     /**
@@ -116,7 +116,7 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
      */
     public function testCanCreateEvent_NoData()
     {
-        $this->assertTrue($this->rules->canCreateEvent());
+        $this->assertTrue($this->rules->canCreateEvent(null, ));
     }
 
     /**
@@ -124,7 +124,7 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
      */
     public function testCanCreateEvent_NoEventType()
     {
-        $this->assertTrue($this->rules->canCreateEvent($this->getNormalFirm(), $this->getNormalEpisode()));
+        $this->assertTrue($this->rules->canCreateEvent(null, $this->getNormalFirm(), $this->getNormalEpisode()));
     }
 
     /**
@@ -132,7 +132,7 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
      */
     public function testCanCreateEvent_NoEventType_LegacyEpisode()
     {
-        $this->assertFalse($this->rules->canCreateEvent($this->getNormalFirm(), $this->getLegacyEpisode()));
+        $this->assertFalse($this->rules->canCreateEvent(null, $this->getNormalFirm(), $this->getLegacyEpisode()));
     }
 
     /**
@@ -141,7 +141,7 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
     public function testCanEditEvent_DeletePending()
     {
         $event = $this->getEvent(array('delete_pending' => true));
-        $this->assertFalse($this->rules->canEditEvent($event));
+        $this->assertFalse($this->rules->canEditEvent(null, $event));
     }
 
     /**
@@ -150,7 +150,7 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
     public function testCanEditEvent_CorrectSubspecialty()
     {
         $event = $this->getEvent(array('episode' => $this->getNormalEpisode(42)));
-        $this->assertTrue($this->rules->canEditEvent($event));
+        $this->assertTrue($this->rules->canEditEvent(null, $event));
     }
 
     /**
@@ -159,7 +159,7 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
     public function testCanEditEvent_LegacyEpisode()
     {
         $event = $this->getEvent(array('episode' => $this->getLegacyEpisode()));
-        $this->assertFalse($this->rules->canEditEvent($event));
+        $this->assertFalse($this->rules->canEditEvent(null, $event));
     }
 
     /**
@@ -169,7 +169,7 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
     {
         Yii::app()->params['event_lock_disable'] = true;
         $event = $this->getEvent(array('created_date' => '1999-12-31 23:59:59'));
-        $this->assertTrue($this->rules->canEditEvent($event));
+        $this->assertTrue($this->rules->canEditEvent(null, $event));
     }
 
     /**
@@ -179,7 +179,7 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
     {
         $this->becomeAdminUser();
         $event = $this->getEvent(array('created_date' => '1999-12-31 23:59:59'));
-        $this->assertTrue($this->rules->canEditEvent($event));
+        $this->assertTrue($this->rules->canEditEvent(null, $event));
     }
 
     /**
@@ -189,7 +189,7 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
     {
         $event = $this->getEvent(array('created_date' => '1999-12-31 23:59:59'));
         $event->expects($this->any())->method('moduleAllowsEditing')->will($this->returnValue(true));
-        $this->assertTrue($this->rules->canEditEvent($event));
+        $this->assertTrue($this->rules->canEditEvent(null, $event));
     }
 
     /**
@@ -199,7 +199,7 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
     {
         $event = $this->getEvent(array('created_date' => '1999-12-31 23:59:59'));
         $event->expects($this->any())->method('moduleAllowsEditing')->will($this->returnValue(false));
-        $this->assertFalse($this->rules->canEditEvent($event));
+        $this->assertFalse($this->rules->canEditEvent(null, $event));
     }
 
     /**
@@ -208,7 +208,7 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
     public function testCanEditEvent_TimeLocked()
     {
         $event = $this->getEvent(array('created_date' => date('Y-m-d H:i:s', strtotime('2 days ago'))));
-        $this->assertFalse($this->rules->canEditEvent($event));
+        $this->assertFalse($this->rules->canEditEvent(null, $event));
     }
 
     /**
@@ -218,7 +218,7 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
     {
         $this->markTestSkipped('Test currently failing - likely due to timezone issues');
         $event = $this->getEvent(array('created_date' => date('Y-m-d H:i:s', strtotime('yesterday'))));
-        $this->assertTrue($this->rules->canEditEvent($event));
+        $this->assertTrue($this->rules->canEditEvent(null, $event));
     }
 
     /**
@@ -227,7 +227,7 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
     public function testCanDeleteEvent_WrongUser()
     {
         $event = $this->getEvent(array('created_user_id' => 1, 'created_date' => date('Y-m-d H:i:s')));
-        $this->assertFalse($this->rules->canDeleteEvent($this->getUser(2), $event));
+        $this->assertFalse($this->rules->canDeleteEvent(null, $this->getUser(2), $event));
     }
 
     /**
@@ -236,7 +236,7 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
     public function testCanDeleteEvent_LegacyEpisode()
     {
         $event = $this->getEvent(array('episode' => $this->getLegacyEpisode()));
-        $this->assertFalse($this->rules->canDeleteEvent($this->getUser(), $event));
+        $this->assertFalse($this->rules->canDeleteEvent(null, $this->getUser(), $event));
     }
 
     /**
@@ -246,7 +246,7 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
     {
         Yii::app()->params['event_lock_disable'] = true;
         $event = $this->getEvent(array('created_date' => '1999-12-31 23:59:59'));
-        $this->assertFalse($this->rules->canDeleteEvent($this->getUser(), $event));
+        $this->assertFalse($this->rules->canDeleteEvent(null, $this->getUser(), $event));
     }
 
     /**
@@ -256,7 +256,7 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
     {
         $this->becomeAdminUser();
         $event = $this->getEvent(array('created_user_id' => 1, 'created_date' => '1999-12-31 23:59:59'));
-        $this->assertTrue($this->rules->canDeleteEvent($this->getUser(2), $event));
+        $this->assertTrue($this->rules->canDeleteEvent(null, $this->getUser(2), $event));
     }
 
     /**
@@ -266,7 +266,7 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
     {
         $event = $this->getEvent(array('created_date' => '1999-12-31 23:59:59'));
         $event->expects($this->any())->method('moduleAllowsEditing')->will($this->returnValue(true));
-        $this->assertFalse($this->rules->canDeleteEvent($this->getUser(), $event));
+        $this->assertFalse($this->rules->canDeleteEvent(null, $this->getUser(), $event));
     }
 
     /**
@@ -276,7 +276,7 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
     {
         $event = $this->getEvent(array('created_date' => '1999-12-31 23:59:59'));
         $event->expects($this->any())->method('moduleAllowsEditing')->will($this->returnValue(false));
-        $this->assertFalse($this->rules->canDeleteEvent($this->getUser(), $event));
+        $this->assertFalse($this->rules->canDeleteEvent(null, $this->getUser(), $event));
     }
 
     /**
@@ -285,7 +285,7 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
     public function testCanDeleteEvent_TimeLocked()
     {
         $event = $this->getEvent(array('created_date' => date('Y-m-d H:i:s', strtotime('2 days ago'))));
-        $this->assertFalse($this->rules->canDeleteEvent($this->getUser(), $event));
+        $this->assertFalse($this->rules->canDeleteEvent(null, $this->getUser(), $event));
     }
 
     /**
@@ -294,7 +294,7 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
     public function testCanDeleteEvent_NotTimeLocked()
     {
         $event = $this->getEvent(array('created_date' => date('Y-m-d H:i:s', strtotime('yesterday'))));
-        $this->assertFalse($this->rules->canDeleteEvent($this->getUser(), $event));
+        $this->assertFalse($this->rules->canDeleteEvent(null, $this->getUser(), $event));
     }
 
     /**
@@ -303,7 +303,7 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
     public function testCanRequestEventDeletion_DeletePending()
     {
         $event = $this->getEvent(array('delete_pending' => true));
-        $this->assertFalse($this->rules->canRequestEventDeletion($event));
+        $this->assertFalse($this->rules->canRequestEventDeletion(null, $event));
     }
 
     /**
@@ -313,7 +313,7 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
     {
         $event = $this->getEvent();
         $event->expects($this->any())->method('showDeleteIcon')->will($this->returnValue(false));
-        $this->assertFalse($this->rules->canRequestEventDeletion($event));
+        $this->assertFalse($this->rules->canRequestEventDeletion(null, $event));
     }
 
     /**
@@ -322,7 +322,7 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
     public function testCanRequestEventDeletion_CorrectSubspecialty()
     {
         $event = $this->getEvent(array('episode' => $this->getNormalEpisode(42)));
-        $this->assertTrue($this->rules->canRequestEventDeletion($event));
+        $this->assertTrue($this->rules->canRequestEventDeletion(null, $event));
     }
 
     /**
@@ -331,7 +331,7 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
     public function testCanRequestEventDeletion_LegacyEpisode()
     {
         $event = $this->getEvent(array('episode' => $this->getLegacyEpisode()));
-        $this->assertFalse($this->rules->canRequestEventDeletion($event));
+        $this->assertFalse($this->rules->canRequestEventDeletion(null, $event));
     }
 
     /**
@@ -342,9 +342,14 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
         $this->becomeNormalUserWithCreatePermission();
         $event_type = ComponentStubGenerator::generate(
             'EventType',
-            array()
+            [
+                'disabled' => false,
+                'support_services' => false,
+                'rbac_operation_suffix' => null,
+                'class_name' => 'foo'
+            ]
         );
-        $this->assertTrue($this->rules->canCreateEvent($this->getNormalFirm(), $this->getNormalEpisode(), $event_type));
+        $this->assertTrue($this->rules->canCreateEvent(null, $this->getNormalFirm(), $this->getNormalEpisode(), $event_type));
     }
 
     /**
@@ -355,9 +360,14 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
         $this->becomeTestUserWithCreatePermission();
         $event_type = ComponentStubGenerator::generate(
             'EventType',
-            array('rbac_operation_suffix' => 'Test')
+            [
+                'rbac_operation_suffix' => 'Test',
+                'disabled' => false,
+                'support_services' => false,
+                'class_name' => 'foo'
+            ]
         );
-        $this->assertTrue($this->rules->canCreateEvent($this->getNormalFirm(), $this->getNormalEpisode(), $event_type));
+        $this->assertTrue($this->rules->canCreateEvent(null, $this->getNormalFirm(), $this->getNormalEpisode(), $event_type));
     }
 
     /**
@@ -368,9 +378,14 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
         $this->becomeTestUserWithNoCreatePermission();
         $event_type = ComponentStubGenerator::generate(
             'EventType',
-            array('rbac_operation_suffix' => 'Test')
+            [
+                'rbac_operation_suffix' => 'Test',
+                'disabled' => false,
+                'support_services' => false,
+                'class_name' => 'foo'
+            ]
         );
-        $this->assertFalse($this->rules->canCreateEvent($this->getNormalFirm(), $this->getNormalEpisode(), $event_type));
+        $this->assertFalse($this->rules->canCreateEvent(null, $this->getNormalFirm(), $this->getNormalEpisode(), $event_type));
     }
 
     /**
@@ -381,9 +396,14 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
         $this->becomeTestUserWithNoCreatePermission();
         $event_type = ComponentStubGenerator::generate(
             'EventType',
-            array('rbac_operation_suffix' => 'Test')
+            [
+                'rbac_operation_suffix' => 'Test',
+                'disabled' => false,
+                'support_services' => false,
+                'class_name' => 'foo'
+            ]
         );
-        $this->assertFalse($this->rules->canCreateEvent($this->getNormalFirm(), $this->getNormalEpisode(), $event_type));
+        $this->assertFalse($this->rules->canCreateEvent(null, $this->getNormalFirm(), $this->getNormalEpisode(), $event_type));
     }
 
     private function getSupportServicesFirm()
@@ -413,22 +433,24 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
 
     private function getLegacyEpisode()
     {
-        return $this->getEpisode(array('legacy' => true));
+        return $this->getEpisode(['legacy' => true, 'change_tracker' => false]);
     }
 
     private function getSupportServicesEpisode()
     {
-        return $this->getEpisode(array('support_services' => true));
+        return $this->getEpisode(['legacy' => false, 'support_services' => true, 'change_tracker' => false]);
     }
 
     private function getNormalEpisode($subspecialty_id = 42)
     {
         return $this->getEpisode(
-            array(
+            [
                 'firm' => $this->getNormalFirm($subspecialty_id),
                 'support_services' => false,
                 'subspecialtyID' => $subspecialty_id,
-            )
+                'change_tracker' => false,
+                'legacy' => false
+            ]
         );
     }
 
@@ -436,7 +458,7 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
     {
         return ComponentStubGenerator::generate(
             'EventType',
-            array('disabled' => true, 'support_services' => false)
+            ['disabled' => true, 'support_services' => false]
         );
     }
 
@@ -444,7 +466,7 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
     {
         return ComponentStubGenerator::generate(
             'EventType',
-            array('disabled' => false, 'support_services' => true)
+            ['disabled' => false, 'support_services' => true, 'rbac_operation_suffix' => null, 'class_name' => 'foo']
         );
     }
 
@@ -452,17 +474,18 @@ class AuthRulesTest extends PHPUnit_Framework_TestCase
     {
         return ComponentStubGenerator::generate(
             'EventType',
-            array('disabled' => false, 'support_services' => false)
+            ['disabled' => false, 'support_services' => false, 'rbac_operation_suffix' => null, 'class_name' => 'foo']
         );
     }
 
     private function getEvent(array $props = array())
     {
-        $props += array(
+        $props += [
             'episode' => $this->getNormalEpisode(42),
             'created_user_id' => 1,
             'created_date' => date('Y-m-d'),
-        );
+            'delete_pending' => false
+        ];
 
         return ComponentStubGenerator::generate('Event', $props);
     }

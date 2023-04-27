@@ -51,8 +51,10 @@ OpenEyes.UI = OpenEyes.UI || {};
         user_context: null,
         event_button_selector: '#add-event',
         subspecialty_labels: {},
-        event_list_selector: '.events li',
-        deleted_event_list_selector: '.events li.deleted',
+        event_list_selector: '.events li.complete',
+        deleted_event_list_selector: '.events li.complete.deleted',
+        draft_list_selector: '.events li.draft',
+        deleted_draft_list_selector: '.events li.draft.deleted',
         grouping_picker_class: 'grouping-picker',
         default_sort: 'desc',
         scroll_selector: 'div.oe-scroll-wrapper',
@@ -177,6 +179,11 @@ OpenEyes.UI = OpenEyes.UI || {};
         }
 
         async function loadImage($li, type = '') {
+            // Don't show image for draft events
+            if ($li.hasClass('draft')) {
+                return;
+            }
+
             const $quickview =  $('.oe-event-quickview');
             let event_id = $li.data('event-id');
             const $screenshots = $('.oe-event-quickview .quick-view-content');
@@ -432,6 +439,7 @@ OpenEyes.UI = OpenEyes.UI || {};
         }
 
         const items = this.element.find(this.options.event_list_selector);
+        const drafts = this.element.find(this.options.draft_list_selector);
 
         const parent = items.parent();
 
@@ -462,7 +470,7 @@ OpenEyes.UI = OpenEyes.UI || {};
 
         self.lastSort = self.sortOrder;
 
-        parent.empty().append(sorted);
+        parent.empty().append(drafts).append(sorted);
     };
 
     EpisodeSidebar.prototype.addControls = function () {

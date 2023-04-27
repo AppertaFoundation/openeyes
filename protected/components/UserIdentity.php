@@ -415,8 +415,8 @@ class UserIdentity extends CUserIdentity
         } elseif ($this->is_special || $inst_auth->user_authentication_method == 'LOCAL') {
             $validPw = $user_authentication->verifyPassword($this->password);
 
-            $is_softlocked =  PasswordUtils::testStatus('softlocked', $user_authentication, $this->is_special) && $user_authentication->password_softlocked_until > date("Y-m-d H:i:s");
-            $pwActive = $this->is_special ? true : !(PasswordUtils::testStatus('locked', $user_authentication) || $is_softlocked);
+            $is_softlocked =  PasswordUtils::testStatus($user_authentication, 'softlocked', $this->is_special) && $user_authentication->password_softlocked_until > date("Y-m-d H:i:s");
+            $pwActive = $this->is_special ? true : !(PasswordUtils::testStatus($user_authentication) || $is_softlocked);
 
             if (!($validPw && $pwActive)) { //if failed logon or locked
                 if(!$this->is_special && (!$validPw || $is_softlocked) && !empty(Yii::app()->params['pw_status_checks']['pw_tries'])){ // if the password was not correct and we check the number of tries

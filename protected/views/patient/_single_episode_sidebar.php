@@ -52,10 +52,17 @@ if (
             array(
             'dependency' => array(
               'class' => 'system.caching.dependencies.CDbCacheDependency',
-              'sql' => "SELECT MAX(ev.last_modified_date)
-                        FROM `event` ev
-                          INNER JOIN episode ep ON ep.id = ev.episode_id
-                        WHERE ep.patient_id = " . $this->patient->id
+              'sql' => 'SELECT MAX(date) FROM (
+                          SELECT MAX(ev.last_modified_date) AS date
+                          FROM `event` ev
+                            INNER JOIN episode ep ON ep.id = ev.episode_id
+                          WHERE ep.patient_id = ' . $this->patient->id . '
+                        UNION
+                          SELECT MAX(ed.last_modified_date) AS date
+                          FROM `event_draft` ed
+                            INNER JOIN episode ep ON ep.id = ed.episode_id
+                          WHERE ep.patient_id = ' . $this->patient->id .'
+                        ) AS cache_dates'
               )
             )
         )
@@ -103,100 +110,40 @@ if (
                     } else {
                         $tag = "Le";
                     }
+
                     $subspecialty_name = $episode->getSubspecialtyText();
+
+                    foreach ($episode->draft_events as $draft) {
+                        $this->renderPartial(
+                            '//patient/_single_episode_sidebar_draft_entry',
+                            [
+                                'draft' => $draft,
+                                'subspecialty_name' => $subspecialty_name,
+                                'tag' => $tag,
+                            ]
+                        );
+                    }
+
                     foreach ($episode->events as $event) {
                         /* @var Event $event */
 
-                        $event_li_css = $event->getEventLiCss();
-                        /**
-                         * getting variable: 'event_path', 'event_name', 'event_image', 'event_date', 'event_li_css'
-                         */
-                        extract($event->getEventListDetails());
-
                         $patientTicketing_API = new \OEModule\PatientTicketing\components\PatientTicketing_API();
-                        $virtual_clinic_event = $patientTicketing_API->getTicketForEvent($event);
-                        ?>
 
-                        <li id="js-sideEvent<?php echo $event->id ?>"
-                            class="<?=implode(' ', $event_li_css)?>"
-                            data-event-id="<?= $event->id ?>"
-                            data-event-date="<?= $event->event_date ?>"
-                            data-created-date="<?= $event->created_date ?>"
-                            data-event-year-display="<?= substr($event->NHSDate('event_date'), -4) ?>"
-                            data-event-date-display="<?= $event->NHSDate('event_date') ?>"
-                            data-event-type="<?= $event_name ?>"
-                            data-institution="<?= $event->institution->name ?>"
-                            data-subspecialty="<?= $subspecialty_name ?>"
-                            data-event-icon='<?= $event->getEventIcon('medium') ?>'
-                            <?php if ($event_image !== null) { ?>
-                                data-event-image-url="<?= $event_image->getImageUrl() ?>"
-                            <?php } ?>
-                        >
-                            <div class="tooltip quicklook" style="display: none; ">
-                                <div class="event-name"><?php echo $event_name ?></div>
-                                <div class="event-info"><?php echo str_replace("\n", "<br/>", $event->info) ?></div>
-                                <?php $event_icon_class = '';
-                                $event_issue_text = $event->getIssueText();
-                                $event_issue_class = 'event-issue';
-                                if ($event->hasIssue()) {
-                                    $event_issue_class .= ($event->hasIssue('ready') ? ' ready' : ' alert');
-                                }
-                                /**
-                                 * getting variable: 'event_icon_class', 'event_issue_class', 'event_issue_text'
-                                 */
-                                extract($event->getDetailedIssueText($event_icon_class, $event_issue_text, $event_issue_class));
-                                if (!empty($event_issue_text)) { ?>
-                                    <div class="<?= $event_issue_class ?>">
-                                        <?= $event_issue_text ?>
-                                    </div>
-                                <?php } ?>
-                                <div class="event-name">Institution: <strong><?=$event->institution ?? '-';?></strong></div>
-                                <div class="event-name">Site: <strong><?=$event->site ?? '-';?></strong></div>
-                            </div>
-
-                            <a href="<?=$event_path?>" data-id="<?php echo $event->id ?>">
-                                <?php
-                                if ($event->hasIssue()) {
-                                    if ($event->hasIssue('ready')) {
-                                        $event_icon_class .= ' ready';
-                                    } elseif ($eur = EUREventResults::model()->find('event_id=?', array($event->id)) && $event->hasIssue('EUR Failed')) {
-                                        $event_icon_class .= ' cancelled';
-                                    } elseif ($event->hasIssue('Consent Withdrawn')) {
-                                        $event_icon_class .= ' cancelled';
-                                    } else {
-                                        $event_icon_class .= ' alert';
-                                    }
-                                    if ($event->hasIssue('draft')) {
-                                        $event_icon_class .= ' draft';
-                                    }
-                                }
-                                if ($virtual_clinic_event) {
-                                    $event_icon_class .= ' virtual-clinic';
-                                }
-                                ?>
-                                <span class="event-type js-event-a<?= $event_icon_class ?>">
-                                    <?= $event->getEventIcon() ?>
-                                </span>
-                                <span class="event-extra">
-                                    <?php
-                                    $api = Yii::app()->moduleAPI->get($event->eventType->class_name);
-                                    if ($api !== false && method_exists($api, 'getLaterality')) {
-                                        $this->widget('EyeLateralityWidget', [
-                                            'show_if_both_eyes_are_null' =>
-                                              !property_exists($api, 'show_if_both_eyes_are_null') ||
-                                              $api->show_if_both_eyes_are_null,
-                                            'eye' => $api->getLaterality($event->id),
-                                            'pad' => '',
-                                        ]);
-                                    } ?>
-                                </span>
-                                <span class="event-date <?= ($event->isEventDateDifferentFromCreated()) ? ' backdated' : '' ?>">
-                                    <?=$event->getEventDate()?>
-                                </span>
-                                <span class="tag"><?= $tag ?></span>
-                            </a>
-                        </li>
-                    <?php }
+                        $this->renderPartial(
+                            '//patient/_single_episode_sidebar_event_entry',
+                            array_merge(
+                                [
+                                    'event' => $event,
+                                    'event_li_css' => $event->getEventLiCss(),
+                                    'subspecialty_name' => $subspecialty_name,
+                                    'tag' => $tag,
+                                    'patientTicketing_API' => $patientTicketing_API,
+                                    'virtual_clinic_event' => $patientTicketing_API->getTicketForEvent($event),
+                                ],
+                                $event->getEventListDetails()
+                            )
+                        );
+                    }
                 }
             } ?>
         </ul>
@@ -228,6 +175,7 @@ $this->renderPartial('//patient/add_new_event', array(
     'context_firm' => $this->firm,
     'patient_id' => $this->patient->id,
     'event_types' => EventType::model()->getEventTypeModules(),
+    'drafts' => EventDraft::model()->with('episode')->findAll('patient_id = ?', [$this->patient->id])
 ));
 if ($this->editable) {
     $this->renderPartial('//patient/change_event_context', array(

@@ -15,6 +15,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "ophtrconsent_additional_risk".
  *
@@ -35,6 +37,8 @@
 
 class OphTrConsent_AdditionalRisk extends BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     /**
      * Returns the static model of the specified AR class.
      *
@@ -128,7 +132,7 @@ class OphTrConsent_AdditionalRisk extends BaseActiveRecordVersioned
     {
         $transaction = Yii::app()->db->beginTransaction();
         try {
-            \OphTrConsent_AdditionalRiskSubspecialtyAssignment::model()->deleteAll('additional_risk_id=:id',[':id'=>$this->id]);
+            \OphTrConsent_AdditionalRiskSubspecialtyAssignment::model()->deleteAll('additional_risk_id=:id', [':id'=>$this->id]);
             foreach ($subspecialties as $subspecialty) {
                 $subspecialty_obj = new \OphTrConsent_AdditionalRiskSubspecialtyAssignment;
                 $exists = $subspecialty_obj->find(

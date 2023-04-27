@@ -19,27 +19,24 @@
 namespace OEModule\OphCiExamination\models;
 
 use OE\factories\models\traits\HasFactory;
+
 /**
- * This is the model class for table "ophciexamination_workflow_rule".
+ * This is the model class for rules that apply workflows,
+ * where the appropriate firm/subspecialty/episode status applies.
  *
- * @property int $id
- * @property int $parent_id
- * @property string $clause
- * @property string $value
+ * @property integer $id
+ * @property integer $workflow_id
+ * @property integer $firm_id
+ * @property integer $subspecialty_id
+ * @property integer $episode_status_id
  * @property OphCiExamination_Workflow $workflow
+ * @property Firm $firm
+ * @property Subspecialty $subspecialty
+ * @property EpisodeStatus $episode_status
  */
 class OphCiExamination_Workflow_Rule extends \BaseActiveRecordVersioned
 {
     use HasFactory;
-    /**
-     * Returns the static model of the specified AR class.
-     *
-     * @return OphCiExamination_Workflow_Rule the static model class
-     */
-    public static function model($className = __CLASS__)
-    {
-        return parent::model($className);
-    }
 
     /**
      * @return string the associated database table name
@@ -54,10 +51,10 @@ class OphCiExamination_Workflow_Rule extends \BaseActiveRecordVersioned
      */
     public function rules()
     {
-        return array(
-            array('institution_id, subspecialty_id, firm_id, episode_status_id, workflow_id', 'safe'),
-            array('id', 'safe', 'on' => 'search'),
-        );
+        return [
+            ['subspecialty_id, firm_id, episode_status_id, workflow_id', 'safe'],
+            ['id', 'safe', 'on' => 'search'],
+        ];
     }
 
     /**
@@ -65,14 +62,12 @@ class OphCiExamination_Workflow_Rule extends \BaseActiveRecordVersioned
      */
     public function relations()
     {
-        return array(
-            'workflow' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_Workflow', 'workflow_id'),
-            'parent' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_Workflow_Rule', 'parent_id'),
-            'children' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_Workflow_Rule', 'parent_id'),
-            'subspecialty' => array(self::BELONGS_TO, 'Subspecialty', 'subspecialty_id'),
-            'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
-            'episode_status' => array(self::BELONGS_TO, 'EpisodeStatus', 'episode_status_id'),
-        );
+        return [
+            'workflow' => [self::BELONGS_TO, OphCiExamination_Workflow::class, 'workflow_id'],
+            'subspecialty' => [self::BELONGS_TO, \Subspecialty::class, 'subspecialty_id'],
+            'firm' => [self::BELONGS_TO, \Firm::class, 'firm_id'],
+            'episode_status' => [self::BELONGS_TO, \EpisodeStatus::class, 'episode_status_id'],
+        ];
     }
 
     /**
@@ -126,15 +121,14 @@ class OphCiExamination_Workflow_Rule extends \BaseActiveRecordVersioned
      */
     public function findWorkflowCascading($firm_id, $status_id)
     {
-
         $firm = $firm_id instanceof \Firm ? $firm_id : \Firm::model()->findByPk($firm_id);
         $subspecialty_id = ($firm->serviceSubspecialtyAssignment) ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
-        $institution_id = $firm->institution_id;
 
         $criteria = new \CDbCriteria();
-        $criteria->addCondition('(firm_id = :firm_id OR firm_id IS NULL) and workflow.institution_id = :institution_id');
+        $criteria->addCondition('(firm_id = :firm_id OR firm_id IS NULL) AND (workflow.institution_id = :institution_id OR workflow.institution_id IS NULL)');
         $criteria->order = 'firm_id DESC, episode_status_id DESC, subspecialty_id DESC';
-        $criteria->params = [':firm_id' => $firm->id, ':institution_id' => $institution_id];
+        $criteria->params = [':firm_id' => $firm->id, ':institution_id' => $firm->institution_id];
+        $criteria->with = ['workflow'];
 
         $workflows = self::model()->with('workflow.active_steps')->findAll($criteria);
 

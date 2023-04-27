@@ -1,5 +1,4 @@
 <?php
-
 /**
  * OpenEyes
  *
@@ -16,6 +15,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OE\factories\models\traits\HasFactory;
 use OEModule\OphCiExamination\models\OphCiExaminationAllergy;
 
 /**
@@ -59,8 +59,7 @@ use OEModule\OphCiExamination\models\OphCiExaminationAllergy;
  */
 class Medication extends BaseActiveRecordVersioned
 {
-    use MappedReferenceData;
-
+    use HasFactory;
     use MappedReferenceData {
         buildCriteriaForFindAllAtLevel as baseBuildCriteriaForFindAllAtLevel;
     }
@@ -317,6 +316,10 @@ class Medication extends BaseActiveRecordVersioned
 
         if ($this->isAMP() && $this->vtm_term) {
             $name .= " (" . $this->vtm_term . ")";
+        }
+
+        if($this->isPreservativeFree()) {
+            $name .= ' (No Preservative)';
         }
 
         return $name;
@@ -641,9 +644,26 @@ class Medication extends BaseActiveRecordVersioned
         return "{$unmapped_string}{$number}";
     }
 
-    protected function buildCriteriaForFindAllAtLevel(int $level, Institution $institution)
-    {
-        $baseCriteria = $this->baseBuildCriteriaForFindAllAtLevel($level, $institution);
+    protected function buildCriteriaForFindAllAtLevel(
+        int $level,
+        ?Institution $institution,
+        ?Site $site,
+        ?Specialty $specialty,
+        ?Subspecialty $subspecialty,
+        ?Firm $firm,
+        ?User $user,
+        bool $anyLevel = true
+    ): CDbCriteria {
+        $baseCriteria = $this->baseBuildCriteriaForFindAllAtLevel(
+            $level,
+            $institution,
+            $site,
+            $specialty,
+            $subspecialty,
+            $firm,
+            $user,
+            $anyLevel
+        );
         $baseCriteria->addCondition('source_type != :_localSourceType', 'OR');
         $baseCriteria->params[':_localSourceType'] = static::SOURCE_TYPE_LOCAL;
 

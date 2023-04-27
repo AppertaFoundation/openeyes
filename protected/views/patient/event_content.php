@@ -4,10 +4,10 @@
  * @var $form_id string
  */
 ?>
-<main class="main-event <?php echo $this->moduleStateCssClass; ?>" id="event-content" data-has-errors="<?=($has_errors ?? 'false') ?>">
 
+<main class="main-event <?php echo $this->moduleStateCssClass; ?>" id="event-content" data-has-errors="<?=($has_errors ?? 'false') ?>">
     <h2 class="event-title">
-        <?php echo $this->title ?>
+        <?php echo $this->getTitle() ?>
         <?php if ($this->event->is_automated) {
             $this->renderPartial('//patient/event_automated');
         } ?>
@@ -62,6 +62,7 @@
                             'field' => 1,
                         ),
                     ));
+
                     $this->widget('application.widgets.HiddenField', array(
                         'element' => $this->event,
                         'name' => CHtml::modelName($this->event) . "[last_modified_date]",
@@ -70,6 +71,8 @@
                             'form' => $form_id,
                         ),
                     ));
+
+                    echo CHtml::hiddenField('draft_id', isset($this->draft) ? $this->draft->id : '', ['form' => $form_id]);
                 ?>
             </div>
             <script>
@@ -106,6 +109,23 @@
 
     <?php $this->renderPartial('//patient/_patient_alerts') ?>
     <?php $this->renderPartial('//base/_messages'); ?>
+    <div id="js-auto-save-alerts" class="alert-box warning" style="display:none">
+        Auto save failed due to the following error(s):
+        <ul id="js-auto-save-alerts-list"></ul>
+    </div>
+    <?php if (isset($this->existing_draft) && $this->existing_draft->id) { ?>
+        <div id="js-existing-draft-banner"
+            class="alert-box issue has-actions"
+            data-existing-draft="<?= $this->existing_draft->id ?>"
+            data-existing-draft-url="<?= $this->existing_draft->originating_url ?>"
+            >
+            An existing draft event has been found for this event type. Do you wish to load the existing draft event?
+            <div class="alert-actions">
+                <button id="js-load-existing-draft" class="button blue hint">Yes</button>
+                <button id="js-delete-existing-draft" class="button blue hint">No (delete draft)</button>
+            </div>
+        </div>
+    <?php } ?>
     <?php if (
         $this->event->eventType->custom_hint_text
         && $this->event->eventType->hint_position === 'TOP'

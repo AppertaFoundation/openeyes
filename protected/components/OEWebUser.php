@@ -142,5 +142,4 @@ EOD;
         }
         return $roles;
     }
-
 }

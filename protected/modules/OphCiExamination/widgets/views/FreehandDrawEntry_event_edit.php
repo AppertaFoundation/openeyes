@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -46,7 +47,7 @@ if (!isset($values)) {
                        style="display:<?=(!$values['comments'] ? 'none' : 'inline-flex')?>"
                     ></i>
                     <span id="user-comment-<?=$row_count;?>" class="user-comment">
-                        <?=$values['comments'];?>
+                        <?=\OELinebreakReplacer::replace($values['comments']);?>
                     </span>
                     <div class="js-input-comments-wrapper cols-full" style="display: none;">
                         <div class=" flex-layout flex-left">
@@ -54,10 +55,10 @@ if (!isset($values)) {
                                     placeholder="Comments"
                                     autocomplete="off"
                                     rows="1"
-                                    class="cols-full js-input-comments"
+                                    class="cols-full js-input-comments autosize"
                                     name="<?= $field_prefix ?>[comments]"
                                     id="comments-field-<?=$row_count;?>"><?=\CHtml::encode($values['comments']);?></textarea>
-                            <i class="oe-i remove-circle small-icon pad-left  js-remove-add-comments"></i>
+                            <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
                         </div>
                     </div>
                 </td>

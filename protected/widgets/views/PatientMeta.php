@@ -40,7 +40,10 @@ if (!isset($this->controller) || ($this->controller->id != "patient" && $this->c
         <div class="patient-name">
             <?php if (isset($pathway)) { ?>
                 <a href="<?= $coreapi->generatePatientLandingPageLink($patient, ['pathway_id' => $pathway->id]); ?>">
-            <?php } else { ?>
+            <?php } elseif (isset($link_url)) { ?>
+                <a href="<?= $link_url ?>">
+                <?php
+            } else { ?>
                 <a href="<?= $coreapi->generatePatientLandingPageLink($patient); ?>">
             <?php } ?>
             <span class="patient-surname"><?= $patient->getLast_name(); ?></span>,

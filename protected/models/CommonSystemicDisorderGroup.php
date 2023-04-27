@@ -33,12 +33,12 @@ class CommonSystemicDisorderGroup extends BaseActiveRecordVersioned
 
     protected function getSupportedLevels(): int
     {
-        return ReferenceData::LEVEL_INSTITUTION;
+        return ReferenceData::LEVEL_INSTALLATION | ReferenceData::LEVEL_INSTITUTION;
     }
 
     protected function mappingColumn(int $level): string
     {
-        return $this->tableName().'_id';
+        return $this->tableName() . '_id';
     }
 
 
@@ -63,13 +63,17 @@ class CommonSystemicDisorderGroup extends BaseActiveRecordVersioned
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'institutions' => array(self::MANY_MANY, 'Institution', $this->tableName().'_institution('.$this->tableName().'_id, institution_id)'),
+            'institutions' => array(
+                self::MANY_MANY,
+                'Institution',
+                $this->tableName() . '_institution(' . $this->tableName() . '_id, institution_id)'
+            ),
         );
     }
 
     public function defaultScope()
     {
-        return array('order' => $this->getTableAlias(true, false).'.display_order');
+        return array('order' => $this->getTableAlias(true, false) . '.display_order');
     }
 
     /**
@@ -81,5 +85,18 @@ class CommonSystemicDisorderGroup extends BaseActiveRecordVersioned
             'id' => 'ID',
             'name' => 'Name',
         );
+    }
+
+    /** Expands the reference level assignment for this group to be part of the name */
+    public function getFully_qualified_name()
+    {
+        $name = $this->name . ' - ';
+        if ($this->institutions) {
+            return $name . implode(", ", array_map(function ($institution) {
+                return $institution->short_name;
+            }, $this->institutions));
+        }
+
+        return $name . 'All';
     }
 }

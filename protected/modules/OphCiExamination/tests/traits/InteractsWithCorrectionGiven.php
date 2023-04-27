@@ -15,6 +15,7 @@
 
 namespace OEModule\OphCiExamination\tests\traits;
 
+
 use OEModule\OphCiExamination\models\CorrectionGiven;
 
 trait InteractsWithCorrectionGiven
