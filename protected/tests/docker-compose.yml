@@ -21,7 +21,7 @@ version: "3.4"
 
 services:
   db:
-    image: toukanlabsdocker/oe-sample-db:mariadb_10.6-release-6.6.x
+    image: toukanlabsdocker/oe-sample-db:mariadb_10.6-release-6.7.x
     environment:
       MYSQL_ROOT_PASSWORD: openeyes
       TZ: "Europe/London"
