@@ -100,11 +100,17 @@ class DefaultController extends \BaseModuleController
         $criteria = new \CDbCriteria();
         $params = array();
         $qs_svc = Yii::app()->service->getService(self::$QUEUESET_SERVICE);
-        $criteria->with = ['event', 'patient.contact', 'priority'];
+        $criteria->with = [
+            'event',
+            'event.firm.serviceSubspecialtyAssignment' => ['alias' => 'event_subspecialty'],
+            'patient.contact',
+            'priority'
+        ];
         $criteria->together = true;
 
         // TODO: we probably don't want to have such a gnarly approach to this, we might want to denormalise so that we are able to do eager loading
         // That being said, we might get away with setting together false on the with to do this filtering (multiple query eager loading).
+        //current queue assignment
         $criteria->join = 'JOIN ' . models\TicketQueueAssignment::model()->tableName() . ' cqa ON cqa.ticket_id = t.id and cqa.id = (SELECT id from ' . models\TicketQueueAssignment::model()->tableName() . ' qa2 WHERE qa2.ticket_id = t.id order by qa2.created_date desc limit 1)';
 
         // build queue id list
@@ -148,11 +154,13 @@ class DefaultController extends \BaseModuleController
         if (count($queue_ids)) {
             $criteria->addInCondition('cqa.queue_id', $queue_ids);
         }
+        //the context and subspecialty filter use the event context and subspecialty where the ticket was created
         if (@$filter_options['firm-id']) {
-            $criteria->addColumnCondition(array('cqa.assignment_firm_id' => $filter_options['firm-id']));
+            $criteria->addCondition("event.firm_id=:firm_id");
+            $params[':firm_id'] = $filter_options['firm-id'];
         } elseif (@$filter_options['subspecialty-id']) {
-            $criteria->join .= 'JOIN ' . \Firm::model()->tableName() . ' f ON f.id = cqa.assignment_firm_id JOIN ' . \ServiceSubspecialtyAssignment::model()->tableName() . ' ssa ON ssa.id = f.service_subspecialty_assignment_id';
-            $criteria->addColumnCondition(array('ssa.subspecialty_id' => $filter_options['subspecialty-id']));
+            $criteria->addCondition("event_subspecialty.subspecialty_id=:subspecialty_id");
+            $params[':subspecialty_id'] = $filter_options['subspecialty-id'];
         }
         if (isset($filter_options['patient-ids'])) {
             $criteria->addInCondition('patient_id', $filter_options['patient-ids']);
@@ -184,15 +192,15 @@ class DefaultController extends \BaseModuleController
                 // I wasn't able to get this done using relations and conditions...
                 // ->order = "current_queue.name ASC/DESC" does not bring the required(latest) queue_id from the assignment table
                 $join = <<<SQLJOIN
-                        JOIN patientticketing_ticketqueue_assignment ptta ON ptta.id = 
+                        JOIN patientticketing_ticketqueue_assignment ptta ON ptta.id =
                         (
-                            SELECT id 
+                            SELECT id
                             FROM patientticketing_ticketqueue_assignment
                             WHERE patientticketing_ticketqueue_assignment.ticket_id = t.id
                             ORDER BY patientticketing_ticketqueue_assignment.assignment_date DESC
                             LIMIT 1
                         )
-                        
+
                         JOIN patientticketing_queue q ON q.id = ptta.ticket_id
                 SQLJOIN;
 
@@ -257,10 +265,10 @@ class DefaultController extends \BaseModuleController
         $criteria->distinct = true;
 
         $criteria->join .= ' JOIN patientticketing_ticket ticket ON ticket.patient_id = t.id';
-        $criteria->join .= ' JOIN patientticketing_ticketqueue_assignment cqa ON cqa.ticket_id = ticket.id AND cqa.id = 
-                                                            (	SELECT id 
+        $criteria->join .= ' JOIN patientticketing_ticketqueue_assignment cqa ON cqa.ticket_id = ticket.id AND cqa.id =
+                                                            (	SELECT id
                                                                 FROM patientticketing_ticketqueue_assignment qa2
-                                                                WHERE qa2.ticket_id = ticket.id 
+                                                                WHERE qa2.ticket_id = ticket.id
                                                                 ORDER BY qa2.created_date DESC LIMIT 1
                                                             )';
 
