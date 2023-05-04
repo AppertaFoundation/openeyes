@@ -310,7 +310,7 @@ $field_prefix = $model_name . '[assignment][{{section_key}}][entries][{{entry_ke
                         'is_record_admin' => $is_record_admin,
                         'is_new' => $assigned_psd->isNewRecord,
                         'btn_text' => $btn_text,
-                        'help_info' => $assigned_psd->pgdpsd_id ? 'Adding new Preset<br/><small>Preset orders can not be modified</small>' : 'Building custom order',
+                        'help_info' => $assigned_psd->pgdpsd_id ? 'Adding new Preset<br/><small>Preset orders cannot be modified</small>' : 'Building custom order',
                         'is_confirmed' => $is_confirmed,
                         'assigned_appt' => $assigned_psd->visit_id,
                         'key' => $key
@@ -468,7 +468,7 @@ $field_prefix = $model_name . '[assignment][{{section_key}}][entries][{{entry_ke
     }
     const da = new OpenEyes.OphCiExamination.DrugAdministrationController({
         element: $("#<?= $element_id ?>"),
-        noPermissionIcon: '<i class="oe-i no-permissions small-icon js-has-tooltip" data-tooltip-content="Can not remove a drug already administered"></i>',
+        noPermissionIcon: '<i class="oe-i no-permissions small-icon js-has-tooltip" data-tooltip-content="Cannot remove a drug already administered"></i>',
         trashIcon: '<i class="oe-i trash js-remove-med"></i>',
         is_prescriber: <?= json_encode($is_prescriber) ?>,
         patientAllergies: <?= CJSON::encode($this->patient->getAllergiesId()) ?>,
