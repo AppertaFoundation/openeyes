@@ -4,9 +4,6 @@ class DefaultController extends BaseEventTypeController
 {
     protected function checkUserPGDPSDAssignments()
     {
-        if (\Yii::app()->user->checkAccess('Prescribe') || \Yii::app()->user->checkAccess('Med Administer')) {
-            return true;
-        }
         if (OphDrPGDPSD_AssignedUser::model()->exists('user_id = :user_id', [':user_id' => Yii::app()->user->id])) {
             return true;
         }
@@ -16,19 +13,25 @@ class DefaultController extends BaseEventTypeController
             ->where('user_id = :user_id')
             ->bindValues([':user_id' => Yii::app()->user->id])
             ->queryColumn();
-        return OphDrPGDPSD_AssignedTeam::model()->exists('team_id IN (' . implode(', ', $user_teams) . ')');
+
+        if (!empty($user_teams)) {
+            return OphDrPGDPSD_AssignedTeam::model()->exists('team_id IN (' . implode(', ', $user_teams) . ')');
+        }
+        return false;
     }
 
     public function checkCreateAccess()
     {
+        $authRules = new AuthRules();
         return $this->checkAccess('OprnCreateDA', $this->firm, $this->episode, $this->event_type)
-            || $this->checkUserPGDPSDAssignments();
+            || ($this->checkUserPGDPSDAssignments() && $authRules->canCreateEvent(null, $this->event));
     }
 
     public function checkEditAccess()
     {
+        $authRules = new AuthRules();
         return $this->checkAccess('OprnEditDA', $this->event)
-            || $this->checkUserPGDPSDAssignments();
+            || ($this->checkUserPGDPSDAssignments() && $authRules->canEditEvent(null, $this->event));
     }
 
     public function checkDeleteAccess()
