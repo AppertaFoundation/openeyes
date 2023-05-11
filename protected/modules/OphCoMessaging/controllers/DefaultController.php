@@ -418,11 +418,12 @@ class DefaultController extends \BaseEventTypeController
         }
         $messageElement = $this->getMessageElement();
         $canComment = (
-                (!$messageElement->comments && $this->isIntendedRecipient($user) && !$this->isSender($user))
+                (!$messageElement->comments && $this->isIntendedRecipient($user) && !$this->isSender($user) && $messageElement->message_type->reply_required)
                 || (($this->isIntendedRecipient($user) || $this->isSender($user))
                 && $messageElement->comments
                 && !$messageElement->last_comment->marked_as_read
-                && $messageElement->last_comment->created_user_id != $user->getId())
+                && $messageElement->last_comment->created_user_id != $user->getId()
+                && $messageElement->message_type->reply_required)
             );
 
         return $canComment;
@@ -496,8 +497,10 @@ class DefaultController extends \BaseEventTypeController
 
         if ($el->comments) {
             return false;
-        } elseif (($this->isIntendedRecipient() && $el->for_the_attention_of->marked_as_read)
-                  || ($this->isCopiedToUser($user) && $this->copiedToUserMarkedRead($user))) {
+        } elseif (
+            ($this->isIntendedRecipient() && $el->for_the_attention_of->marked_as_read)
+                  || ($this->isCopiedToUser($user) && $this->copiedToUserMarkedRead($user))
+        ) {
             return true;
         } else {
             return false;

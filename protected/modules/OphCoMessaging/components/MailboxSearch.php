@@ -39,17 +39,19 @@ class MailboxSearch
 
         // The following are common for all 4 kinds of retrieval (received/sent and specific mailbox/all mailboxes for a user)
         $this->criteria->with = [
-            'event',
+            'event'  => [
+                'joinType' => 'INNER JOIN'
+            ],
             'message_type',
             'recipients',
             'recipients.mailbox' => ['condition' => 'mailbox.active <> 0'],
             'sender' => ['condition' => 'sender.active <> 0'],
-            'event.episode',
+            'event.episode' => [
+                'joinType' => 'INNER JOIN'
+            ],
             'event.episode.patient',
             'event.episode.patient.contact'
         ];
-
-        $this->criteria->addCondition('event.deleted = 0');
 
         switch ($folder) {
             case self::FOLDER_ALL:
