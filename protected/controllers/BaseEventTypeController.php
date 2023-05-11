@@ -1125,6 +1125,9 @@ class BaseEventTypeController extends BaseModuleController
             $params['eur_answer_res'] = $this->eur_answer_res;
         }
         $params['customErrorHeaderMessage'] = $this->customErrorHeaderMessage ?? '';
+
+        $params['auto_save_enabled'] = SettingMetadata::model()->getSetting('auto_save_enabled') === "on";
+
         $this->render($this->action->id, $params);
     }
 
@@ -1440,6 +1443,7 @@ class BaseEventTypeController extends BaseModuleController
         }
 
         $params['customErrorHeaderMessage'] = $this->customErrorHeaderMessage ?? '';
+        $params['auto_save_enabled'] = SettingMetadata::model()->getSetting('auto_save_enabled') === "on";
 
         $this->render($this->action->id, $params);
     }
