@@ -61,6 +61,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             let splitInput = input.name.split('[').map(e => e.slice(0,-1)).slice(1);
             splitInput.push(input.value);
             if ( //Special cases that need to be handled
+                (input.name.includes('JSON_string')) ||
                 (input.name.includes('prescribe') && !input.checked) ||
                 (input.name.includes('dose_unit_term') && $(input).attr('disabled') === "disabled")
             ) {
@@ -80,8 +81,16 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
      * @param JSONString JSON string encoding of element attributes
      */
     ElementFormJSONConverter.prototype.substituteAttributesWithJSON = function (elementName, JSONString) {
-        $('#' + elementName).find('input, select, textarea').removeAttr('name');
-        $('#' + elementName).append('<input name="' + elementName.replace('_element','') + '[JSON_string]" type="hidden" value="' + JSONString + '" />');
+        $('#' + elementName).find('input, select, textarea').addClass('js-json-serialized').attr('form', 'medication-management');
+        let jsonInputName = `${elementName.replace('_element','')}[JSON_string]`;
+
+        let jsonInput = $(`#${elementName} > input[name="${jsonInputName}"]`);
+
+        if (jsonInput.length == 0) {
+            $('#' + elementName).append(`<input name="${jsonInputName}" type="hidden" value="${JSONString}"/>`).removeAttr("form");
+        } else {
+            jsonInput.val(JSONString).removeAttr("form");
+        }
     };
 
     /**
