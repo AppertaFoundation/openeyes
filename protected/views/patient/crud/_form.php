@@ -253,6 +253,7 @@ foreach ($ethnic_list as $key => $item) {
                     'patient_identifiers' => $patient_identifiers,
                     'pid_type_necessity_values' => $pid_type_necessity_values,
                     'patient' => $patient,
+                    'is_update' => $is_update,
                 ])
 ?>
         </tbody>

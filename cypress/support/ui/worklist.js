@@ -19,6 +19,14 @@ Cypress.Commands.add('getWorklistArrivedFilterCount', () => {
     return cy.getBySel('clinic-filter-count');
 });
 
+Cypress.Commands.add('openWorklistNavBar', () => {
+    cy.getBySel('nav-worklist-btn').then(($ele) => {
+        if (!$ele.hasClass('open')) {
+            $ele.click();
+        }
+    });
+});
+
 Cypress.Commands.add('hideWorklistNavBar', () => {
     // Close the navbar if it is open
     cy.getBySel('nav-worklist-btn').then(($ele) => {

@@ -525,6 +525,7 @@ $default_urls = $logo_helper->getLogoURLs();
                 <th>Status Necessity</th>
                 <th>Auto Increment</th>
                 <th>Auto Increment Start</th>
+                <th>Only Editable By Admin</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -567,6 +568,7 @@ $default_urls = $logo_helper->getLogoURLs();
                                 'placeholder' => 'Auto Increment Start',
                                 'class' => 'cols-4'
                             ]) ?></td>
+                        <td><?= \CHtml::activeCheckBox($identifier_rule, "[{$row_count}]only_editable_by_admin") ?></td>
                         <td><a href="javascript:void(0)" class="js-delete_patient_identifier">Delete</a></td>
                     </tr>
                 <?php } ?>
@@ -682,6 +684,17 @@ $default_urls = $logo_helper->getLogoURLs();
                    type="text"
                    value="0"
                    name="PatientIdentifierTypeDisplayOrder[{{row_count}}][auto_increment_start]">
+        </td>
+        <td>
+            <input id="ytPatientIdentifierTypeDisplayOrder_{{row_count}}_only_editable_by_admin"
+                   type="hidden"
+                   value="0"
+                   name="PatientIdentifierTypeDisplayOrder[{{row_count}}][only_editable_by_admin]">
+
+            <input id="PatientIdentifierTypeDisplayOrder_{{row_count}}_only_editable_by_admin"
+                   type="checkbox"
+                   value="1"
+                   name="PatientIdentifierTypeDisplayOrder[{{row_count}}][only_editable_by_admin]">
         </td>
         <td><a href="javascript:void(0)" class="js-delete_patient_identifier">Delete</a></td>
     </tr>
