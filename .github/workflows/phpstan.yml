@@ -39,6 +39,8 @@ jobs:
           path: ${{ steps.files.outputs.files_updated }} ${{ steps.files.outputs.files_created }}
           level: 0
           php_version: 8.0
+          version: latest
+
       #  continue-on-error: true
 
       # - name: Create check run

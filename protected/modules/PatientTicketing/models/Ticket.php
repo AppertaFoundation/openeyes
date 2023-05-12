@@ -227,6 +227,16 @@ class Ticket extends \BaseActiveRecordVersionedSoftDelete
     }
 
     /**
+     * Gets the firm that is on the event that created the ticket
+     *
+     * @return string
+     */
+    public function getTicketCreatedEventFirm()
+    {
+        return $this->event->firm->name ?? '';
+    }
+
+    /**
      * Returns true if this ticket was previously in a different queue. False otherwise.
      *
      * @return bool

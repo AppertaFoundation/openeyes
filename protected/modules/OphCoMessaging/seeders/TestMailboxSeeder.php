@@ -1,4 +1,5 @@
 <?php
+
 namespace OEModule\OphCoMessaging\seeders;
 
 use OEModule\OphCoMessaging\models\Mailbox;
@@ -64,6 +65,7 @@ class TestMailboxSeeder extends BaseSeeder
         $user_mailbox_message = Element_OphCoMessaging_Message::factory()
             ->withSender($admin_user, Mailbox::model()->forPersonalMailbox($admin_user->id)->find())
             ->withPrimaryRecipient($user_mailbox)
+            ->withReplyRequired()
             ->create(['message_text' => 'Hello Test User Mailbox ' . $user_mailbox->name]);
 
         // seed a message event with recipient team_mailbox

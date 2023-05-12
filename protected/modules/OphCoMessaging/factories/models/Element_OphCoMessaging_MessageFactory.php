@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Apperta Foundation, 2023
  * This file is part of OpenEyes.
@@ -17,7 +18,6 @@ namespace OEModule\OphCoMessaging\factories\models;
 
 use OE\factories\ModelFactory;
 use OE\factories\models\EventFactory;
-
 use OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message;
 use OEModule\OphCoMessaging\models\Mailbox;
 use OEModule\OphCoMessaging\models\OphCoMessaging_Message_MessageType;
@@ -51,6 +51,20 @@ class Element_OphCoMessaging_MessageFactory extends ModelFactory
     {
         return $this->state([
             'message_type_id' => $type
+        ]);
+    }
+
+    public function withReplyRequired(): self
+    {
+        return $this->state([
+        'message_type_id' => OphCoMessaging_Message_MessageType::factory()->useExisting(['reply_required' => true])
+        ]);
+    }
+
+    public function withReplyNotRequired(): self
+    {
+        return $this->state([
+        'message_type_id' => OphCoMessaging_Message_MessageType::factory()->useExisting(['reply_required' => false])
         ]);
     }
 

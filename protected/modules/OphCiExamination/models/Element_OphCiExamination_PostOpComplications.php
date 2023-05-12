@@ -329,7 +329,7 @@ class Element_OphCiExamination_PostOpComplications extends \SplitEventTypeElemen
             $criteria->addCondition('event_type_id = :event_type_id');
             $criteria->params['patient_id'] = $patient_id;
             $criteria->params['event_type_id'] = $event_type->id;
-            $criteria->order = 't.created_date DESC';
+            $criteria->order = 't.event_date DESC';
 
             $eventLists = $event->with('episode')->findAll($criteria);
 
@@ -343,7 +343,7 @@ class Element_OphCiExamination_PostOpComplications extends \SplitEventTypeElemen
 
                 $procedureList = $procedureListModel->findAll($criteria);
 
-                $date = new \DateTime($event->created_date);
+                $date = new \DateTime($event->event_date);
                 $name = $date->format('d M Y').' ';
 
                 $short_format = array();

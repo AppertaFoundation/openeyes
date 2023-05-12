@@ -21,6 +21,7 @@ namespace OEModule\OphCoMessaging\components;
 
 use OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message;
 use OEModule\OphCoMessaging\models\OphCoMessaging_Message_MessageType;
+use OEModule\OphCoMessaging\models\OphCoMessaging_Message_Recipient;
 
 /**
  * Class MessageCreator.
@@ -136,9 +137,14 @@ class MessageCreator
             $messageElement = new Element_OphCoMessaging_Message();
             $messageElement->event_id = $messageEvent->id;
             $messageElement->created_user_id = $messageElement->last_modified_user_id = $this->sender->id;
-            $messageElement->for_the_attention_of_user_id = $this->recipient->id;
-
             $messageElement->message_type_id = $this->type->id;
+            $messageElement->sender_mailbox_id = $this->sender->personalMailbox->id ?? null;
+
+            $message_recipient = new OphCoMessaging_Message_Recipient();
+            $message_recipient->mailbox_id = $this->recipient->personalMailbox->id;
+            $message_recipient->primary_recipient = true;
+            $messageElement->recipients = [$message_recipient];
+
             if ($this->messageTemplate) {
                 $patient_identifier = \PatientIdentifierHelper::getIdentifierForPatient(
                     \SettingMetadata::model()->getSetting('display_primary_number_usage_code'),
@@ -154,6 +160,11 @@ class MessageCreator
 
             if (!$messageElement->save()) {
                 throw new \CDbException('Element save failed: ' . print_r($messageElement->getErrors(), true));
+            }
+            $messageElement->refresh();
+            $message_recipient->element_id = $messageElement->id;
+            if (!$message_recipient->save()) {
+                throw new \CDbException('Message recipient save failed: ' . print_r($message_recipient->getErrors(), true));
             }
         } else {
             throw new \CDbException('Event save failed: ' . print_r($messageEvent->getErrors(), true));

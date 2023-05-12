@@ -1,42 +1,78 @@
 describe('Test text below search bar shows popup with examples that can be used for searching', () => {
-    beforeEach(() => {
-        cy.resetSystemSettingValue('dob_mandatory_in_search');
-        cy.login();
-    });
 
-    it('On homepage, when user clicks "See all options" text below searchbar, popup with non-mandatory DOB examples appear', () => {
-        cy.setSystemSettingValue('dob_mandatory_in_search', 'off')
+    const DOB_MANDATORY_IN_SEARCH_SETTING = 'dob_mandatory_in_search'
+
+    before(() => {
+
+        // reset 'DOB mandatory in search' setting and login as admin user
+        cy.resetSystemSettingValue(DOB_MANDATORY_IN_SEARCH_SETTING)
+        cy.login()
             .then(() => {
-                cy.visit('/');
+                // Seed:
+                // - primaryPattern (object consisting of primaryIdentifierPrompt key and primaryPattern)
+                // - secondaryPattern (object consisting of secondaryIdentifierPrompt key and secondaryPattern)
+                return cy.runSeeder('', 'SearchExamplesPopupSeeder')
+            }).as('seederData')
+
+    })
+
+    it('On homepage, when user clicks "See all options" text below searchbar, popup with non-mandatory DOB examples appear', () => {      
+        
+        cy.get('@seederData').then((data) => {
+
+            // set 'DOB mandatory in search' to off and visit home
+            cy.setSystemSettingValue(DOB_MANDATORY_IN_SEARCH_SETTING, 'off')
+            cy.visit('/')
+        
+            // assert that the search hint under the Search field does not contain the text 'Date of Birth'
+            cy.getBySel('home-search-help').should('not.contain', 'Date of Birth')
+
+             // click on the search hint to display the 'Available search patterns' popup window
+            cy.getBySel('home-search-help').click()
+
+            // assert that the popup window has been invoked by checking the title text
+            cy.getBySel('popup-search-title').should('have.text', "Available search patterns")
+
+            // assert that the example for the first search pattern contains Given Family only
+            cy.getBySel('popup-search-example').first().should('have.text', "David Smith")
+
+             // assert that the search example pattern based on the primary identifier prompt is displayed (if applicable)
+            Object.keys(data.primaryPattern).forEach (key => {
+                cy.contains(key).parent().contains(data.primaryPattern[key]).should('be.visible')
             })
-            .then(() => {
-                cy.get('div.oe-search-patient').find('a[href="#search-help"]').click();
+
+            // assert that the search example pattern based on the secondary identifier prompt is displayed (if applicable) 
+            Object.keys(data.secondaryPattern).forEach (key => {
+                cy.contains(key).parent().contains(data.secondaryPattern[key]).should('be.visible')
             })
-            .then(() => {
-                cy.get('div.js-search-popup .oe-popup').find('.title').should('have.text', "Available search patterns");
 
-                cy.get('div.js-search-popup .oe-popup').find('tbody tr:first td').should('have.text', "David Smith");
+            // click on the 'x' to close the popup window
+            cy.getBySel('popup-search-close').click()
 
-                cy.get('div.js-search-popup .oe-popup').find('.remove-i-btn').click();
-                cy.get('div.js-search-popup').should('not.be.visible');
-            });
-    });
+            // assert that the popup window is no longer visible
+            cy.getBySel('popup-search-window').should('not.be.visible')
 
+        })
+
+    })
+
+    // Please note that this test step has been streamlined to remove duplication that is not dependent on the 'DOB mandatory in search' setting
     it('On homepage, when user clicks "See all options" text below searchbar, popup with mandatory DOB examples appear', () => {
-        cy.setSystemSettingValue('dob_mandatory_in_search', 'on')
-            .then(() => {
-                cy.visit('/');
-            })
-            .then(() => {
-                cy.get('div.oe-search-patient').find('a[href="#search-help"]').click();
-            })
-            .then(() => {
-                cy.get('div.js-search-popup .oe-popup').find('.title').should('have.text', "Available search patterns");
 
-                cy.get('div.js-search-popup .oe-popup').find('tbody tr:first td').should('have.text', "David Smith 31/12/1975");
+        // set 'DOB mandatory in search' to on, login and and visit home
+        cy.setSystemSettingValue(DOB_MANDATORY_IN_SEARCH_SETTING, 'on')
+        cy.login()
+        cy.visit('/')
 
-                cy.get('div.js-search-popup .oe-popup').find('.remove-i-btn').click();
-                cy.get('div.js-search-popup').should('not.be.visible');
-            });
-    });
-});
+        // assert that the search hint under the Search field contains the text 'Date of Birth'
+        cy.getBySel('home-search-help').should('contain', 'Date of Birth')
+
+        // click on the search hint to display the 'Available search patterns' popup window
+        cy.getBySel('home-search-help').click()
+
+        // assert that the example for the first search pattern contains Given Family + DOB
+        cy.getBySel('popup-search-example').first().should('have.text', "David Smith 31/12/1975")
+            
+    })
+
+})

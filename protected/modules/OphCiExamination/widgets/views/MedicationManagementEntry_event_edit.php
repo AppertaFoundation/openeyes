@@ -247,7 +247,7 @@ $entry_allergy_ids = isset($entry->medication_id) ?
                     </div>
                     <fieldset class="js-datepicker-wrapper js-end-date-wrapper" <?= ($entry->hasErrors() && !$is_new) && ($entry->end_date || $entry->stop_reason_id) ? '' : ' style="display:none;"' ?>>
                         <i class="oe-i stop small pad"></i>
-                        <input id="<?= $model_name ?>_entries_<?= $row_count ?>_end_date" class="js-end-date" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>" data-default="<?= date('Y-m-d') ?>" data-reset-value="<?= $entry->end_date ?>" style="width:80px" placeholder="yyyy-mm-dd" autocomplete="off">
+                        <input id="<?= $model_name ?>_entries_<?= $row_count ?>_end_date" autocomplete="new-password" class="js-end-date" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>" data-default="<?= date('Y-m-d') ?>" data-reset-value="<?= $entry->end_date ?>" style="width:80px" placeholder="yyyy-mm-dd" autocomplete="off">
                     </fieldset>
                 </div>
             </span>

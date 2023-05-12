@@ -1905,6 +1905,7 @@ class AdminController extends BaseAdminController
             $patient_identifier_display_order->status_necessity = $patient_identifier_rule['status_necessity'];
             $patient_identifier_display_order->auto_increment = $patient_identifier_rule['auto_increment'];
             $patient_identifier_display_order->auto_increment_start = $patient_identifier_rule['auto_increment_start'];
+            $patient_identifier_display_order->only_editable_by_admin = $patient_identifier_rule['only_editable_by_admin'];
 
             if (!$patient_identifier_display_order->save()) {
                 $errors[] = $patient_identifier_display_order->getErrors();

@@ -93,7 +93,7 @@ $set_id = isset($this->set) ? $this->set->id : null;
                 <?php }
                 // Remove MUST be last element
                 if ($this->isRequiredInUI($element)) { ?>
-                    <span class="disabled js-has-tooltip" data-tooltip-content="<b>Mandatory Element</b><br/>Can not be left blank">
+                    <span class="disabled js-has-tooltip" data-tooltip-content="<b>Mandatory Element</b><br/>Cannot be left blank">
                         <i class="oe-i medium-icon <?= $element->hasErrors() ? 'asterisk-red' : 'asterisk' ?>"></i>
                     </span>
                 <?php } else { ?>

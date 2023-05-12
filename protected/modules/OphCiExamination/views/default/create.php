@@ -96,7 +96,7 @@
     ));
     ?>
 
-<input type="hidden" name="auto-save-enabled" class="js-auto-save-enabled" value="true">
+<input type="hidden" name="auto-save-enabled" class="js-auto-save-enabled" value=<?= $auto_save_enabled ? "true" : "false" ?>>
 
 <?php $this->renderPartial('auto_save_connection_error');?>
 <?php $this->renderPartial('auto_save_discard_draft');?>
@@ -106,9 +106,11 @@
     $(document).ready( function(){
         window.formHasChanged = true;
 
-        let eventDraftController = new OpenEyes.EventDraftController({formId: '<?= $form_id ?>'});
+        <?php if ($auto_save_enabled) { ?>
+            let eventDraftController = new OpenEyes.EventDraftController({formId: '<?= $form_id ?>'});
 
-        $('.js-auto-save-enabled').data('controller', eventDraftController);
+            $('.js-auto-save-enabled').data('controller', eventDraftController);
+        <?php } ?>
     });
 </script>
 

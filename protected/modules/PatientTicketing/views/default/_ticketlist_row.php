@@ -25,21 +25,21 @@
 ?>
 
 <?php
-    $t_svc = Yii::app()->service->getService($this::$TICKET_SERVICE);
-    $institution = Institution::model()->getCurrent();
-    $selected_site_id = Yii::app()->session['selected_site_id'];
+$t_svc = Yii::app()->service->getService($this::$TICKET_SERVICE);
+$institution = Institution::model()->getCurrent();
+$selected_site_id = Yii::app()->session['selected_site_id'];
 
-    $display_primary_number_usage_code = SettingMetadata::model()->getSetting('display_primary_number_usage_code');
-    $display_secondary_number_usage_code = SettingMetadata::model()->getSetting('display_secondary_number_usage_code');
-    $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient($display_primary_number_usage_code, $ticket->patient->id, $institution->id, $selected_site_id);
-    $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient($display_secondary_number_usage_code, $ticket->patient->id, $institution->id, $selected_site_id);
+$display_primary_number_usage_code = SettingMetadata::model()->getSetting('display_primary_number_usage_code');
+$display_secondary_number_usage_code = SettingMetadata::model()->getSetting('display_secondary_number_usage_code');
+$primary_identifier = PatientIdentifierHelper::getIdentifierForPatient($display_primary_number_usage_code, $ticket->patient->id, $institution->id, $selected_site_id);
+$secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient($display_secondary_number_usage_code, $ticket->patient->id, $institution->id, $selected_site_id);
 ?>
 
 <tr class="divider" data-ticket-id="<?= $ticket->id ?>" data-ticket-info="<?= CHtml::encode($ticket->getInfoData()) ?>">
     <td>
         <i class="oe-i circle-<?php echo $ticket->priority ? $ticket->priority->colour : '' ?> small pad selected"></i>
     </td>
-    <td><?= $ticket->current_queue->name?></td>
+    <td><?= $ticket->current_queue->name ?></td>
     <td>
         <div class="oe-patient-meta">
             <div class="patient-name">
@@ -59,18 +59,22 @@
             </div>
             <div class="patient-gender">
                 <em>Gen</em>
-                <?=$ticket->patient->getGenderString();?>
+                <?= $ticket->patient->getGenderString(); ?>
             </div>
             <div class="patient-age">
                 <em>Age</em>
-                <?=($ticket->patient->isDeceased() ? 'Deceased' : $ticket->patient->getAge()); ?>
+                <?= ($ticket->patient->isDeceased() ? 'Deceased' : $ticket->patient->getAge()); ?>
             </div>
         </div>
     </td>
     <td>
+        <div>
+            <?= $ticket->getTicketCreatedEventFirm() ?><br>
+            <small class="fade"><?= $ticket->user->getFullName() ?></small>
+        </div>
         <div class="small-row"><?= Helper::convertDate2NHS($ticket->created_date) ?><br>
-        <div class="small-row">
-            <small><?= \CHtml::encode($ticket->event->site->name ?? 'Site not recorded'); ?></small>
+            <div class="small-row">
+                <small><?= \CHtml::encode($ticket->event->site->name ?? 'Site not recorded'); ?></small>
     </td>
     <td>
         <div class="flex-t col-gap">
@@ -83,12 +87,12 @@
         </div>
         <div class="actions small-row">
             <?php if ($can_process && !$ticket->is_complete()) : ?>
-                    <a class="button blue hint"
-                       href="<?= Yii::app()->createURL('/PatientTicketing/default/startTicketProcess/', array(
-                           'ticket_id' => $ticket->id,
-                       )); ?>">
-                        <?= $t_svc->getTicketActionLabel($ticket) ?>
-                    </a>
+                <a class="button blue hint"
+                   href="<?= Yii::app()->createURL('/PatientTicketing/default/startTicketProcess/', array(
+                       'ticket_id' => $ticket->id,
+                   )); ?>">
+                    <?= $t_svc->getTicketActionLabel($ticket) ?>
+                </a>
             <?php endif; ?>
 
             <?php if ($ticket->hasHistory()) : ?>

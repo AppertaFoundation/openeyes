@@ -808,7 +808,7 @@ class BaseEventTypeController extends BaseModuleController
         $this->draft = $this->event->draft;
 
         if ($this->draft) {
-            $this->setAndValidateElementsFromData(json_decode($this->draft->data, true));
+            $this->initialiseOpenElementsFromData(json_decode($this->draft->data, true));
         }
 
         if (isset($_GET['template_id'])) {
@@ -1013,10 +1013,7 @@ class BaseEventTypeController extends BaseModuleController
             }
         } else {
             if ($this->draft) {
-                $this->setAndValidateElementsFromData(json_decode($this->draft->data, true));
-                foreach ($this->open_elements as $element) {
-                    $element->clearErrors();
-                }
+                $this->initialiseOpenElementsFromData(json_decode($this->draft->data, true));
             } else {
                 $this->setOpenElementsFromCurrentEvent('create');
             }
@@ -1125,6 +1122,9 @@ class BaseEventTypeController extends BaseModuleController
             $params['eur_answer_res'] = $this->eur_answer_res;
         }
         $params['customErrorHeaderMessage'] = $this->customErrorHeaderMessage ?? '';
+
+        $params['auto_save_enabled'] = SettingMetadata::model()->getSetting('auto_save_enabled') === "on";
+
         $this->render($this->action->id, $params);
     }
 
@@ -1440,6 +1440,7 @@ class BaseEventTypeController extends BaseModuleController
         }
 
         $params['customErrorHeaderMessage'] = $this->customErrorHeaderMessage ?? '';
+        $params['auto_save_enabled'] = SettingMetadata::model()->getSetting('auto_save_enabled') === "on";
 
         $this->render($this->action->id, $params);
     }
@@ -1745,7 +1746,7 @@ class BaseEventTypeController extends BaseModuleController
          * Check if the element has data , but not the element removed flag
          * or if the element has removed flag set and if its not set to 0
          */
-        if (isset($data[$f_key]) && $is_removed) {
+        if (isset($data[$f_key]) && !empty($data[$f_key]) && $is_removed) {
             $keys = array_keys($data[$f_key]);
             if (is_array($data[$f_key][$keys[0]]) && !count(array_filter(array_keys($data[$f_key]), 'is_string'))) {
                 // there is more than one element of this type
@@ -1790,6 +1791,14 @@ class BaseEventTypeController extends BaseModuleController
 
         if ($event_date !== $current_event_date) {
             $this->event->event_date = $event_date;
+        }
+    }
+
+    protected function initialiseOpenElementsFromData($data): void
+    {
+        $this->setAndValidateElementsFromData($data);
+        foreach ($this->open_elements as $element) {
+            $element->clearErrors();
         }
     }
 

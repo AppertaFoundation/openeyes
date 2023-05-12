@@ -179,7 +179,7 @@ class Address extends BaseActiveRecordVersioned
                         } elseif ($field === 'city') {
                             $tempAddress .= $part;
                         } elseif ($field === 'county' || $field === 'postcode') {
-                            $tempAddress .= ', ' . $part;
+                            $tempAddress .= ' ' . $part;
                         } else {
                             $tempAddress .= $part . "\n";
                         }

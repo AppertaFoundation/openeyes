@@ -202,6 +202,7 @@ if (!empty($subspecialty)) { ?>
                 switch (level) {
                     case "1m": // 1 month intentionally flows down
                     case "6m": // 6 month intentionally flows down
+                    case "YTD": // YTD intentionally flows down
                     case "1y": // 1 year    
                         // init locals
                         min = new Date(-8640000000000000);
@@ -215,9 +216,6 @@ if (!empty($subspecialty)) { ?>
                             if (max > charts[i][eye_side]['layout']['xaxis']['range'][1])
                                 max = new Date(charts[i][eye_side]['layout']['xaxis']['range'][1]);
                         }
-                        break;
-
-                    case "YTD": //don't bother here as we are using the current date
                         break;
 
                         // Reset Zoom
@@ -241,7 +239,9 @@ if (!empty($subspecialty)) { ?>
                 case "YTD": //Year to current date
                     temp = new Date();
                     limits[eye_side].max = new Date(temp);
-                    limits[eye_side].min = new Date(temp.setYear(temp.getFullYear() - 1));
+                    temp.setMonth(0);
+                    temp.setDate(1);
+                    limits[eye_side].min = new Date(temp.setYear(temp.getFullYear()));
                     break;
 
                 case "1y": // 1 year                       

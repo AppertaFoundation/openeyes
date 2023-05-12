@@ -55,11 +55,16 @@ class MailboxSearchTest extends \OEDbTestCase
     /** @test */
     public function multiple_mailbox_unread()
     {
-        $this->makeMessageForOne($this->receiver_mailbox, false);
-        $this->makeMessageForOne($this->receiver_mailbox, true);
+        $this->setUpMessagesWithDeletedEquivalents(function () {
+            return [
+                $this->makeMessageForOne($this->receiver_mailbox, false),
+                $this->makeMessageForOne($this->receiver_mailbox, true),
 
-        $this->makeMessageForOne($this->shared_mailbox, false);
-        $this->makeMessageForOne($this->shared_mailbox, true);
+                $this->makeMessageForOne($this->shared_mailbox, false),
+                $this->makeMessageForOne($this->shared_mailbox, true)
+            ];
+        });
+
 
         $receiver_results = $this->searchAll($this->receiver_user, MailboxSearch::FOLDER_UNREAD_ALL);
         $other_results = $this->searchAll($this->other_user, MailboxSearch::FOLDER_UNREAD_ALL);
@@ -71,8 +76,12 @@ class MailboxSearchTest extends \OEDbTestCase
     /** @test */
     public function unread_not_read()
     {
-        $this->makeMessageForOne($this->receiver_mailbox, false);
-        $this->makeMessageForOne($this->receiver_mailbox, true);
+        $this->setUpMessagesWithDeletedEquivalents(function () {
+            return [
+                $this->makeMessageForOne($this->receiver_mailbox, false),
+                $this->makeMessageForOne($this->receiver_mailbox, true)
+            ];
+        });
 
         $results = $this->searchOne($this->receiver_user, $this->receiver_mailbox, MailboxSearch::FOLDER_UNREAD_ALL);
 
@@ -82,8 +91,12 @@ class MailboxSearchTest extends \OEDbTestCase
     /** @test */
     public function read_not_unread()
     {
-        $this->makeMessageForOne($this->receiver_mailbox, true);
-        $this->makeMessageForOne($this->receiver_mailbox, false);
+        $this->setUpMessagesWithDeletedEquivalents(function () {
+            return [
+                $this->makeMessageForOne($this->receiver_mailbox, true),
+                $this->makeMessageForOne($this->receiver_mailbox, false)
+            ];
+        });
 
         $results = $this->searchOne($this->receiver_user, $this->receiver_mailbox, MailboxSearch::FOLDER_READ_ALL);
 
@@ -93,9 +106,13 @@ class MailboxSearchTest extends \OEDbTestCase
     /** @test */
     public function unread_all()
     {
-        $this->makeMessageForOne($this->receiver_mailbox, false);
-        $this->makeMessageForTwo($this->other_mailbox, false, $this->receiver_mailbox, false);
-        $this->makeMessageWithReply($this->receiver_user, $this->receiver_mailbox, $this->sender_user, $this->sender_mailbox);
+        $this->setUpMessagesWithDeletedEquivalents(function () {
+            return [
+                $this->makeMessageForOne($this->receiver_mailbox, false),
+                $this->makeMessageForTwo($this->other_mailbox, false, $this->receiver_mailbox, false),
+                $this->makeMessageWithReply($this->receiver_user, $this->receiver_mailbox, $this->sender_user, $this->sender_mailbox)
+            ];
+        });
 
         $results = $this->searchOne($this->receiver_user, $this->receiver_mailbox, MailboxSearch::FOLDER_UNREAD_ALL);
 
@@ -105,9 +122,12 @@ class MailboxSearchTest extends \OEDbTestCase
     /** @test */
     public function unread_to_primary_recipient()
     {
-        $this->makeMessageForOne($this->receiver_mailbox, false);
-        $this->makeMessageForTwo($this->other_mailbox, false, $this->receiver_mailbox, false);
-
+        $this->setUpMessagesWithDeletedEquivalents(function () {
+            return [
+                $this->makeMessageForOne($this->receiver_mailbox, false),
+                $this->makeMessageForTwo($this->other_mailbox, false, $this->receiver_mailbox, false)
+            ];
+        });
         $results = $this->searchOne($this->receiver_user, $this->receiver_mailbox, MailboxSearch::FOLDER_UNREAD_RECEIVED);
 
         $this->assertCount(1, $results);
@@ -116,8 +136,12 @@ class MailboxSearchTest extends \OEDbTestCase
     /** @test */
     public function unread_to_copy_recipient()
     {
-        $this->makeMessageForOne($this->other_mailbox, false);
-        $this->makeMessageForTwo($this->other_mailbox, false, $this->receiver_mailbox, false);
+        $this->setUpMessagesWithDeletedEquivalents(function () {
+            return [
+                $this->makeMessageForOne($this->other_mailbox, false),
+                $this->makeMessageForTwo($this->other_mailbox, false, $this->receiver_mailbox, false)
+            ];
+        });
 
         $results = $this->searchOne($this->receiver_user, $this->receiver_mailbox, MailboxSearch::FOLDER_UNREAD_COPIED);
 
@@ -127,8 +151,12 @@ class MailboxSearchTest extends \OEDbTestCase
     /** @test */
     public function unread_reply()
     {
-        $this->makeMessageWithReply($this->receiver_user, $this->receiver_mailbox, $this->sender_user, $this->sender_mailbox);
-        $this->makeMessageForOne($this->receiver_mailbox, false);
+        $this->setUpMessagesWithDeletedEquivalents(function () {
+            return [
+                $this->makeMessageWithReply($this->receiver_user, $this->receiver_mailbox, $this->sender_user, $this->sender_mailbox),
+                $this->makeMessageForOne($this->receiver_mailbox, false)
+            ];
+        });
 
         $results = $this->searchOne($this->receiver_user, $this->receiver_mailbox, MailboxSearch::FOLDER_UNREAD_REPLIES);
 
@@ -138,7 +166,11 @@ class MailboxSearchTest extends \OEDbTestCase
     /** @test */
     public function unread_message_sent_to_self_is_in_unread_folder()
     {
-        $this->makeMessageForOne($this->sender_mailbox, false);
+        $this->setUpMessagesWithDeletedEquivalents(function () {
+            return [
+                $this->makeMessageForOne($this->sender_mailbox, false)
+            ];
+        });
 
         $results = $this->searchOne($this->sender_user, $this->sender_mailbox, MailboxSearch::FOLDER_UNREAD_RECEIVED);
 
@@ -216,5 +248,40 @@ class MailboxSearchTest extends \OEDbTestCase
         $search_criteria = $search->makeCriteriaForMailboxesBelongingTo($user);
 
         return Element_OphCoMessaging_Message::model()->findAll($search_criteria);
+    }
+
+    /**
+     * Convenience function to make sure that all query types respect the deleted state of
+     * patient episodes and events.
+     *
+     * @param callable $callback
+     */
+    private function setUpMessagesWithDeletedEquivalents($callback): array
+    {
+        // generate messages to be kept:
+        $generated = $callback();
+
+        // then generate them but delete them at the event level
+        foreach ($callback() as $message) {
+            $this->deleteMessageEvent($message);
+        }
+
+        // generate again, but delete at the episode level
+        foreach ($callback() as $message) {
+            $this->deleteMessageEpisode($message);
+        }
+
+        return $generated;
+    }
+
+    private function deleteMessageEvent(Element_OphCoMessaging_Message $message)
+    {
+        $message->event->softDelete();
+    }
+
+    private function deleteMessageEpisode(Element_OphCoMessaging_Message $message)
+    {
+        $message->event->episode->deleted = 1;
+        $message->event->episode->save();
     }
 }

@@ -68,7 +68,7 @@ if ($context == "sidebar") { ?>
           ]); ?>
         <button type="submit" id="js-find-patient" class="blue hint">Find Patient</button>
         <div class="find-by">
-            <a href="#search-help" onclick="displaySearchPatterns()">Search by ID, or Name<?= $dob_mandatory ? ' and Date of Birth' : '' ?> (click for options)</a>
+            <a href="#search-help" data-test="home-search-help" onclick="displaySearchPatterns()">Search by ID, or Name<?= $dob_mandatory ? ' and Date of Birth' : '' ?> (click for options)</a>
         </div>
       <i class="spinner" style="display: none;" title="Loading..."></i>
     </div>
@@ -77,10 +77,10 @@ if ($context == "sidebar") { ?>
 }
 $this->endWidget(); ?>
 
-<div class="oe-popup-wrap js-search-popup" style="display: none;">
+<div class="oe-popup-wrap js-search-popup" data-test="popup-search-window" style="display: none;">
     <div class="oe-popup">
-        <div class="remove-i-btn"></div>
-        <div class="title">Available search patterns</div>
+        <div class="remove-i-btn" data-test="popup-search-close"></div>
+        <div class="title" data-test="popup-search-title">Available search patterns</div>
         <div class="oe-popup-content false">
             <p>Search is not case sensitive, there is no need to use uppercase</p>
             <table class="large-text">
@@ -96,9 +96,9 @@ $this->endWidget(); ?>
                 </thead>
                 <tbody>
                 <?php foreach ($example_patterns as $pattern => $example) { ?>
-                    <tr>
-                        <th><?= $pattern ?></th>
-                        <td><?= $example ?></td>
+                    <tr data-test="popup-search-row">
+                        <th data-test="popup-search-pattern"><?= $pattern ?></th>
+                        <td data-test="popup-search-example"><?= $example ?></td>
                     </tr>
                 <?php } ?>
                 </tbody>

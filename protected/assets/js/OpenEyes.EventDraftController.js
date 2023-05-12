@@ -224,8 +224,14 @@ var OpenEyes = OpenEyes || {};
 
     EventDraftController.prototype.attemptDraftSave = function(async = true) {
         if (this.disableAutosave) return;
+        if (this.saveInProgress) return;
 
-        let formData = $(`form#${this.options.formId}`).serialize();
+        this.doJSONParsing();
+
+        let formData = $(`form#${this.options.formId}`).filter(':not(.js-json-serialized)').serialize();
+
+        //Add a lock to the save to handle long saves with short intervals sometimes creating duplicate drafts
+        this.saveInProgress = true;
 
         $.ajax(
             {
@@ -289,10 +295,27 @@ var OpenEyes = OpenEyes || {};
                     if (!this.disableAutosave) {
                         this.showConnectionErrorUI();
                     }
+                },
+                complete: () => {
+                    this.saveInProgress = false;
                 }
             }
         );
     };
+
+    EventDraftController.prototype.doJSONParsing = function() {
+        let handle_event;
+        if (window.CustomEvent && typeof window.CustomEvent === 'function') {
+            handle_event = new CustomEvent('handle');
+        } else {
+            handle_event = document.createEvent('CustomEvent');
+            handle_event.initCustomEvent('handle_event', true, true);
+        }
+        let $handler_functions = document.querySelectorAll('.js-save-handler-function');
+        for (let handler of $handler_functions) {
+            handler.dispatchEvent(handle_event);
+        }
+    }
 
     EventDraftController.prototype.showDraftCancelButton = function() {
         $(this.options.draftCancelButtonSelector).show();

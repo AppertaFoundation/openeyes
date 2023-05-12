@@ -50,6 +50,8 @@ final class SeederBuilder
     {
         if ($module_name) {
             $class_name = '\\OEModule\\' . $module_name . '\\seeders\\' . $class_name;
+        } else {
+            $class_name = 'OE\\seeders\\seeders\\' . $class_name;
         }
 
         $context = $this->getApplicationContextForSeeder($context_data);

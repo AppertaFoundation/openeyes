@@ -102,7 +102,7 @@
     
     <td class="js-entry-action">
         {{#is_preset}}
-        <i class="oe-i no-permissions small-icon js-has-tooltip" data-tooltip-content="Drugs within a Preset Order not be changed."></i>
+        <i class="oe-i no-permissions small-icon js-has-tooltip" data-tooltip-content="Drugs within a Preset Order cannot be changed."></i>
         {{/is_preset}}
         {{^is_preset}}
         <i class="oe-i trash js-remove-med"></i>

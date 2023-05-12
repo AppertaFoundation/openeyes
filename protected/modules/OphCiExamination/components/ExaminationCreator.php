@@ -101,6 +101,9 @@ class ExaminationCreator
 
             if (count($examination['patient']['eyes'][0]['reading'][0]['near_visual_acuity'])) {
                 $nearMeasure = $examination['patient']['eyes'][0]['reading'][0]['near_visual_acuity'][0]['measure'];
+                if ($nearMeasure === "N Scale") {
+                    $nearMeasure = "N-Scale @40cm";
+                }
                 $nearUnit = OphCiExamination_VisualAcuityUnit::model()->find('name = :measure', array('measure' => $nearMeasure));
                 $nearVisualAcuity = $this->createVisualAcuity($userId, $examinationEvent, true);
             }

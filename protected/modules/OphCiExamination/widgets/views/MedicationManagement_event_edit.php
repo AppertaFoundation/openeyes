@@ -50,10 +50,11 @@ $unit_options = CHtml::listData(MedicationAttribute::model()->find("name='UNIT_O
 
 $element_errors = $element->getErrors();
 $read_only = $element->event && !empty(ExamController::getMedicationManagementEditable($element->event->getPatient()->id, date('d M Y', strtotime($element->event->event_date)))['errorMessages']);
+
 $entries_from_previous_event = array_filter($element->entries, function ($entry) {
     return is_null($entry->id);
 });
-if (!Yii::app()->request->isPostRequest && !empty($entries_from_previous_event) && !$element->id) {
+if ((!Yii::app()->request->isPostRequest && empty(Yii::app()->request->getParam('draft_id'))) && !empty($entries_from_previous_event) && !$element->id) {
     $element->entries = array_filter($element->entries, function ($e) {
         if (!$e->isStopped()) {
             if (is_null($e->latest_med_use_id)) {
@@ -452,7 +453,7 @@ echo '<script type="text/javascript" src="' . $asset_folder . '/EsignElementWidg
             initRowsFromHistoryElement: function() {
 
                 let copyFields = <?= !$this->isPostedEntries() && $this->element->getIsNewRecord() ? 'true' : 'false' ?>;
-                let has_errors = <?= CJavaScript::encode(Yii::app()->request->isPostRequest) ?>; // if is Post Request then it means validation screen
+                let has_errors = <?= CJavaScript::encode(!empty($this->element->errors)) ?>;
                 let medication_history_bound_keys = [];
                 let medication_management_bound_keys = [];
 

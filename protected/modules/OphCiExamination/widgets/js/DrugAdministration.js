@@ -12,7 +12,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         this.assign_preset_btn_text = 'Assign this Preset Order';
         this.assign_custom_btn_text = 'Assign Custom Order';
         this.custom_help_info = 'Building custom order';
-        this.preset_help_info = 'Adding new Preset<br/><small>Preset orders can not be modified</small>';
+        this.preset_help_info = 'Adding new Preset<br/><small>Preset orders cannot be modified</small>';
         this.init();
     }
 

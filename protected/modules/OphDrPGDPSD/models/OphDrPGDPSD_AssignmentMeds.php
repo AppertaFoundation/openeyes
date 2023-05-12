@@ -206,11 +206,11 @@ class OphDrPGDPSD_AssignmentMeds extends BaseActiveRecordVersioned
             $action_icon['attribute'] = "data-tooltip-content='Block has been cancelled, this drug was not administered'";
         } elseif ($this->state === self::ADMINISTERED_CANCELLED) {
             $action_icon['class'] = " no-permissions small-icon js-has-tooltip";
-            $action_icon['attribute'] = "data-tooltip-content='Can not remove administered drugs'";
+            $action_icon['attribute'] = "data-tooltip-content='Cannot remove administered drugs'";
         } elseif ($this->assignment && !$this->assignment->pgdpsd && !$this->assignment->worklist_patient) {
             if ($this->administered) {
                 $action_icon['class'] = " no-permissions small-icon js-has-tooltip";
-                $action_icon['attribute'] = "data-tooltip-content='Can not remove administered drugs'";
+                $action_icon['attribute'] = "data-tooltip-content='Cannot remove administered drugs'";
             } else {
                 if ($is_prescriber || $is_med_admin) {
                     $action_icon['class'] = " trash js-remove-med";
@@ -222,7 +222,7 @@ class OphDrPGDPSD_AssignmentMeds extends BaseActiveRecordVersioned
             }
         } else {
             $action_icon['class'] = " no-permissions small-icon js-has-tooltip";
-            $action_icon['attribute'] = "data-tooltip-content='Drugs within a Preset Order not be changed'";
+            $action_icon['attribute'] = "data-tooltip-content='Drugs within a Preset Order cannot be changed'";
         }
         return array(
             'administered_ts' => $administered_ts,

@@ -33,7 +33,7 @@
         <tr>
             <td>Site</td>
             <td>
-                <select class="cols-full js-worklists-sites">
+                <select class="cols-full js-worklists-sites" data-test="worklist-filter-panel-select-site">
                     <?php
                     $current_site = Site::model()->getCurrent();
                     $sites = Site::model()->getListForCurrentInstitution();
@@ -71,7 +71,7 @@
     <div class="worklist-mode flex-btns">
         <button data-subpanel="lists" class="selected">Lists</button>
         <button data-subpanel="starred"><i class="oe-i star small selected"></i></button>
-        <button data-subpanel="recent">Recent</button>
+        <button data-subpanel="recent" data-test="worklist-mode-recent-tab">Recent</button>
     </div>
 
     <!-- Lists -->
@@ -150,7 +150,7 @@
 
             <div class="small-row">
                 <label class="highlight">
-                    <input class="js-combine-lists-option" value="single-list" type="checkbox">
+                    <input class="js-combine-lists-option" value="single-list" type="checkbox" data-test="combine-lists-option">
                     Show patients in combined single list
                 </label>
             </div>
@@ -167,7 +167,7 @@
     </div>
 
     <!-- Recent -->
-    <div class="favourites js-worklist-mode-panel" style="display: none" data-subpanel="recent">
+    <div class="favourites js-worklist-mode-panel" style="display: none" data-subpanel="recent" data-test="worklist-mode-panel-recent-list">
         <h3>Recents will automatically change Site and Context</h3>
     </div>
 </div>
@@ -318,7 +318,7 @@
 <script type="text/template" id="js-worklist-filter-panel-template-recent-filter">
     <div class="fav" data-index="{{index}}">
         <div class="details">
-            <div class="site">{{site}}</div>
+            <div class="site" data-test="worklist-filter-panel-template-recent-filter-fav-site">{{site}}</div>
             <div class="context">{{context}}</div>
             <ul class="lists">
                 {{#lists}}
