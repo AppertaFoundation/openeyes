@@ -24,6 +24,11 @@ declare namespace Cypress {
          */
         getWorklistArrivedFilterCount(): Chainable<any>;
         /**
+         * Opens the Navigation bar on the worklist screen
+         *
+         */
+        openWorklistNavBar(): void; 
+        /**
          * Hides the Navigation bar on the worklist screen if it is open
          *
          */
