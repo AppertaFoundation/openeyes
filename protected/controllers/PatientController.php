@@ -2005,7 +2005,7 @@ class PatientController extends BaseController
         $referral = null;
         $patient_user_referral = null;
         $pid_type_necessity_values = $this->getPatientIdentifierTypeNecessityValues();
-        $patient_identifiers = $this->getAndUpdatePatientIdentifiersFromPost($patient, $pid_type_necessity_values);
+        $patient_identifiers = $this->getAndUpdatePatientIdentifiersFromPost($patient, $pid_type_necessity_values, false);
 
         $gpcontact = new Contact();
         $practicecontact = new Contact();
@@ -2155,9 +2155,10 @@ class PatientController extends BaseController
         *
         * @param Patient $patient The patient for the identifiers
         * @param array $pid_type_necessity_values
+        * @param bool $is_update
         * @return PatientIdentifier[]
         */
-    private function getAndUpdatePatientIdentifiersFromPost($patient, $pid_type_necessity_values)
+    private function getAndUpdatePatientIdentifiersFromPost($patient, $pid_type_necessity_values, $is_update)
     {
         $patient_identifiers = [];
         // array that contains the identifier type values have been auto incremented
@@ -2190,12 +2191,14 @@ class PatientController extends BaseController
         if (isset($_POST['PatientIdentifier'])) {
             foreach ($_POST['PatientIdentifier'] as $post_info) {
                 if (array_key_exists('patient_identifier_type_id', $post_info) && array_key_exists($post_info['patient_identifier_type_id'], $patient_identifiers)) {
-                    // only assign post value to non-auto-incremented identifier value
-                    if (!in_array($post_info['patient_identifier_type_id'], $auto_incremented_identifier_type_ids)) {
-                        $patient_identifiers[$post_info['patient_identifier_type_id']]->value = @$post_info['value'];
-                    }
-                    if (array_key_exists('patient_identifier_status_id', $post_info)) {
-                        $patient_identifiers[$post_info['patient_identifier_type_id']]->patient_identifier_status_id = $post_info['patient_identifier_status_id'];
+                    if (!$is_update || $patient_identifiers[$post_info['patient_identifier_type_id']]->patientIdentifierType->isEditableBy(Yii::app()->user, Institution::model()->getCurrent(), Site::model()->getCurrent())) {
+                        // only assign post value to non-auto-incremented identifier value
+                        if (!in_array($post_info['patient_identifier_type_id'], $auto_incremented_identifier_type_ids)) {
+                            $patient_identifiers[$post_info['patient_identifier_type_id']]->value = @$post_info['value'];
+                        }
+                        if (array_key_exists('patient_identifier_status_id', $post_info)) {
+                            $patient_identifiers[$post_info['patient_identifier_type_id']]->patient_identifier_status_id = $post_info['patient_identifier_status_id'];
+                        }
                     }
                 }
             }
@@ -2592,7 +2595,7 @@ class PatientController extends BaseController
 
         $patient_user_referral = isset($patient->patientuserreferral[0]) ? $patient->patientuserreferral[0] : new PatientUserReferral();
         $pid_type_necessity_values = $this->getPatientIdentifierTypeNecessityValues();
-        $patient_identifiers = $this->getAndUpdatePatientIdentifiersFromPost($patient, $pid_type_necessity_values);
+        $patient_identifiers = $this->getAndUpdatePatientIdentifiersFromPost($patient, $pid_type_necessity_values, true);
 
         //only local patient can be edited
         if ($patient->is_local == 0) {

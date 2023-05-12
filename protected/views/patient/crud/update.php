@@ -17,5 +17,6 @@
     'patientuserreferral' => $patientuserreferral,
     'patient_identifiers' => $patient_identifiers,
     'pid_type_necessity_values' => $pid_type_necessity_values,
-    'prevUrl'=>$prevUrl,
+    'prevUrl' => $prevUrl,
+    'is_update' => true,
 )); ?>

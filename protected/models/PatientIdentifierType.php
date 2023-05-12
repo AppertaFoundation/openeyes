@@ -275,4 +275,69 @@ class PatientIdentifierType extends BaseActiveRecordVersioned
         }
         return 0;
     }
+
+    /**
+     * Returns a bool which represents whether the patient identifier is editable
+     * @param $user
+     * @param $institution
+     * @param $site
+     * @return bool
+     */
+    public function isEditableBy(\CWebUser $user, Institution $institution, ?Site $site = null): bool
+    {
+        if ($user->checkAccess('admin')) {
+            return true;
+        }
+
+        $display_order_settings = $this->getTypeDisplayOrder($institution, $site);
+        if (!$display_order_settings) {
+            return false;
+        }
+
+        return !$display_order_settings->only_editable_by_admin;
+    }
+
+    protected function getTypeDisplayOrder(Institution $institution, ?Site $site = null): ?PatientIdentifierTypeDisplayOrder
+    {
+        return $this->filterTypeDisplayOrderForSite(
+            $this->filterTypeDisplayOrderForInstitution($institution),
+            $site
+        );
+    }
+
+    private function filterTypeDisplayOrderForInstitution(Institution $institution): array
+    {
+        return array_filter(
+            $this->typeDisplayOrder,
+            function ($type_display_order) use ($institution) {
+                return $type_display_order->institution_id === $institution->id;
+            }
+        );
+    }
+
+    private function filterTypeDisplayOrderForSite(array $type_display_orders, ?Site $site = null): ?PatientIdentifierTypeDisplayOrder
+    {
+        if ($site !== null) {
+            $for_site = array_filter(
+                $type_display_orders,
+                function ($type_display_order) use ($site) {
+                    return $type_display_order->site_id === $site->id;
+                }
+            );
+            if (count($for_site)) {
+                $first_element = array_shift($for_site);
+                return $first_element;
+            }
+        }
+
+        $type_display_order = array_filter(
+            $type_display_orders,
+            function ($type_display_order) use ($site) {
+                return empty($type_display_order->site_id);
+            }
+        );
+
+        $type_display_order_first_element = array_shift($type_display_order);
+        return $type_display_order_first_element ?? null;
+    }
 }
