@@ -1239,11 +1239,8 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
                         $addressPart = explode("\n", $target->address);
                         $address = '';
                         if ((string)SettingMetadata::model()->getSetting('correspondence_address_force_city_state_postcode_on_same_line') === "on") {
-                            $firstAddress = array_slice($addressPart, 0, -3);
-                            $lastAddress = array_slice($addressPart, -3);
+                            $firstAddress = array_slice($addressPart, 0, 3);
                             $address .= implode("\n", array_map('trim', $firstAddress));
-                            $address .= "\n";
-                            $address .= implode(" ", array_map('trim', $lastAddress));
                         } elseif (($newlines_setting = (int) SettingMetadata::model()->getSetting('correspondence_address_max_lines')) >= 0) {
                             foreach ($addressPart as $index => $part) {
                                 $part = trim($part);
