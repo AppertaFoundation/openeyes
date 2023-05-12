@@ -104,7 +104,7 @@ describe('Managing a patient pathway in the worklist screen', () => {
             cy.getBySel('pathway-status').find('i').should('have.class','js-pathway-finish');
 
             //assert that pathway status is not completed
-            cy.getBySel('pathway-status').find('i').should('have.attr', 'data-tooltip-content').and('equal', 'Patient has left<br/>Quick complete pathway')
+            cy.getBySel('pathway-status').find('i').should('have.attr', 'data-tooltip-content').and('equal', 'Quick complete pathway')
         })
     });
 })

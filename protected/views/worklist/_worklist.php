@@ -239,7 +239,7 @@ $is_ae_worklist = isset($worklist->id) && Yii::app()->db->cache(1000)->createCom
                             default:
                                 // Covers all 'active' statuses, including long-wait and break.
                                 $class .= 'save-blue medium-icon js-pathway-finish';
-                                $tooltip_text = 'Patient has left<br/>Quick complete pathway';
+                                $tooltip_text = 'Quick complete pathway';
                                 break;
                         }
                     } else {

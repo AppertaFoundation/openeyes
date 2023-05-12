@@ -75,7 +75,7 @@ class PathwayTest extends ActiveRecordTestCase
             default:
                 // Covers all 'active' statuses, including long-wait and break.
                 $class .= 'save-blue medium-icon js-pathway-finish';
-                $tooltip_text = 'Patient has left<br/>Quick complete pathway';
+                $tooltip_text = 'Quick complete pathway';
                 break;
         }
         $expected = "<i class=\"$class\" data-tooltip-content=\"$tooltip_text\" data-visit-id=\"$pathway->id\"></i>";
@@ -160,7 +160,9 @@ class PathwayTest extends ActiveRecordTestCase
         foreach ($result as $k => $result_json) {
             $this->assertEquals(
                 $json[$k],
-                array_map(function ($json) { return $this->makeStepJsonComparable($json); }, $result_json)
+                array_map(function ($json) {
+                    return $this->makeStepJsonComparable($json);
+                }, $result_json)
             );
         }
     }

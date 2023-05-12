@@ -372,7 +372,7 @@ class Pathway extends BaseActiveRecordVersioned
             default:
                 // Covers all 'active' statuses, including long-wait and break.
                 $class .= 'save-blue medium-icon js-pathway-finish';
-                $tooltip_text = 'Patient has left<br/>Quick complete pathway';
+                $tooltip_text = 'Quick complete pathway';
                 break;
         }
         return "<i class=\"$class\" data-tooltip-content=\"$tooltip_text\" data-visit-id=\"{$this->id}\"></i>";
