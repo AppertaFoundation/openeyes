@@ -29,7 +29,7 @@ class AddressWithSampleDataTest extends OEDbTestCase
     }
 
     /** @test */
-    public function letter_array_behaviour_respects_city_state_postcode_setting()
+    public function letter_array_behaviour_respects_city_state_postcode_setting_joining_with_spaces()
     {
         $this->fakeSettingMetadata('correspondence_address_force_city_state_postcode_on_same_line', 'on');
 
@@ -41,7 +41,7 @@ class AddressWithSampleDataTest extends OEDbTestCase
             ]);
 
         $this->assertEquals(
-            ['foo', 'bar', 'baz', implode(", ", [$address->city, $address->county, $address->postcode]), $address->country->name],
+            ['foo', 'bar', 'baz', implode(" ", [$address->city, $address->county, $address->postcode]), $address->country->name],
             $address->getLetterArray()
         );
     }
