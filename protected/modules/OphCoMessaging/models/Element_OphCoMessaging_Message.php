@@ -29,12 +29,12 @@ use OEModule\OphCoMessaging\models\Mailbox;
  *
  * @property string $id
  * @property int $event_id
- * @property int $for_the_attention_of_user_id
  * @property int $message_type_id
  * @property int $urgent
  * @property string $message_text
- * @property int $marked_as_read
+ * @property bool $deleted
  * @property int $cc_enabled
+ * @property int $sender_mailbox_id
  *
  * The followings are the available model relations:
  * @property \ElementType $element_type
@@ -42,9 +42,14 @@ use OEModule\OphCoMessaging\models\Mailbox;
  * @property \Event $event
  * @property \User $user
  * @property \User $usermodified
+ * @property Mailbox $sender
  * @property OphCoMessaging_Message_MessageType $message_type
  * @property OphCoMessaging_Message_Recipient $for_the_attention_of
  * @property OphCoMessaging_Message_Recipient[] $recipients
+ * @property OphCoMessaging_Message_Recipient[] $cc_recipients
+ * @property OphCoMessaging_Message_Recipient[] $read_by_recipients
+ * @property OphCoMessaging_Message_Comment[] $comments
+ * @property OphCoMessaging_Message_Comment $last_comment
  */
 class Element_OphCoMessaging_Message extends \BaseEventTypeElement
 {

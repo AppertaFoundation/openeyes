@@ -19,6 +19,8 @@
 
 use OE\factories\models\traits\HasFactory;
 use OEModule\OESysEvent\events\UserSavedSystemEvent;
+use OEModule\OphCoMessaging\models\Mailbox;
+use OEModule\OphCoMessaging\models\MailboxUser;
 
 /**
  * This is the model class for table "User".
@@ -35,6 +37,7 @@ use OEModule\OESysEvent\events\UserSavedSystemEvent;
  *
  * @property User $signOffUser
  * @property Mailbox[] $mailboxes
+ * @property Mailbox $personalMailbox
  * @property Team[] $teams
  */
 class User extends BaseActiveRecordVersioned
@@ -150,7 +153,10 @@ class User extends BaseActiveRecordVersioned
             'signOffUser' => array(self::BELONGS_TO, 'User', 'correspondence_sign_off_user_id'),
             'authentications' => array(self::HAS_MANY, 'UserAuthentication', 'user_id'),
             'pincode' => array(self::HAS_ONE, 'UserPincode', 'user_id'),
-            'teams' => array(self::MANY_MANY, 'Team', 'team_user_assign(user_id, team_id)')
+            'teams' => array(self::MANY_MANY, 'Team', 'team_user_assign(user_id, team_id)'),
+            'userMailboxes' => [self::HAS_MANY, MailboxUser::class, 'user_id'],
+            'mailboxes' => [self::HAS_MANY, Mailbox::class, 'mailbox_id', 'through' => 'userMailboxes'],
+            'personalMailbox' => [self::HAS_ONE, Mailbox::class, 'mailbox_id', 'through' => 'userMailboxes', 'on' => 'personalMailbox.is_personal=1']
         );
 
         if ($this->getScenario() !== 'portal_command') {
@@ -673,7 +679,7 @@ class User extends BaseActiveRecordVersioned
      */
     public function portalUser()
     {
-        $username = \Yii::app()->params["portal_user"] ?? "portal_user";
+        $username = SettingMetadata::model()->getSetting("portal_user") ?: "portal_user";
         $criteria = new CDbCriteria();
         $criteria->compare('username', $username);
         $userAuthentication = UserAuthentication::model()->find($criteria);
