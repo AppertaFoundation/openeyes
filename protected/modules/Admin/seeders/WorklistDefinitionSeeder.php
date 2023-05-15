@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Apperta Foundation, 2023
  * This file is part of OpenEyes.
@@ -15,14 +16,11 @@
 
 namespace OEModule\Admin\seeders;
 
-class WorklistDefinitionSeeder
-{
-    public function __construct(\DataContext $context)
-    {
-        $this->context = $context;
-    }
+use OE\seeders\BaseSeeder;
 
-    public function __invoke()
+class WorklistDefinitionSeeder extends BaseSeeder
+{
+    public function __invoke(): array
     {
         $worklists = \Worklist::factory()->count(5)->create();
 
