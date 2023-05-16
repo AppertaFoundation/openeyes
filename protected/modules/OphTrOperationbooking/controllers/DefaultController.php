@@ -84,9 +84,12 @@ class DefaultController extends OphTrOperationbookingEventController
         return $return;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function afterUpdateElements($event)
     {
-        parent::afterUpdateElements($event);
+        $errors = parent::afterUpdateElements($event);
 
         if (\Yii::app()->request->getPost('schedule_now')) {
             $api = $this->getApp()->moduleAPI->get('OphTrOperationbooking');
@@ -94,6 +97,7 @@ class DefaultController extends OphTrOperationbookingEventController
 
             $this->successUri = '/OphTrOperationbooking/waitingList/index/';
         }
+        return $errors;
     }
 
     /**

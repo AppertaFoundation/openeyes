@@ -1040,16 +1040,12 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
-     * Advance the workflow step for the event if requested.
-     *
-     * @param \Event $event
-     *
-     * @throws \CException
+     * @inheritDoc
      */
     protected function afterUpdateElements($event)
     {
-        parent::afterUpdateElements($event);
-        $this->persistPcrRisk();
+        $errors = parent::afterUpdateElements($event);
+        $errors = array_merge($errors, $this->persistPcrRisk());
         if ($this->step) {
             // Advance the workflow
             if (!$assignment = models\OphCiExamination_Event_ElementSet_Assignment::model()->find(
@@ -1070,6 +1066,7 @@ class DefaultController extends \BaseEventTypeController
 
         // save email address in the contact model
         $this->saveContactEmailAddressForCommunicationPreferences($_POST);
+        return $errors;
     }
 
     protected function afterCreateEvent($event)
@@ -1173,10 +1170,13 @@ class DefaultController extends \BaseEventTypeController
         }
     }
 
+    /**
+     * @inheritDoc
+     */
     protected function afterCreateElements($event)
     {
-        parent::afterCreateElements($event);
-        $this->persistPcrRisk();
+        $errors = parent::afterCreateElements($event);
+        $errors = array_merge($errors, $this->persistPcrRisk());
         if ($this->step) {
             // Advance the workflow
             if (!$assignment = models\OphCiExamination_Event_ElementSet_Assignment::model()->find(
@@ -1197,6 +1197,7 @@ class DefaultController extends \BaseEventTypeController
 
         // save email address in the contact model
         $this->saveContactEmailAddressForCommunicationPreferences($_POST);
+        return $errors;
     }
 
     /**

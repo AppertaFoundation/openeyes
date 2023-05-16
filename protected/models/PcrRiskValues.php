@@ -53,9 +53,10 @@ class PcrRiskValues extends BaseActiveRecordVersioned
      */
     public function rules()
     {
-        return array(
-            array('glaucoma, pxf, diabetic, no_fundal_view, brunescent_white_cataract, alpha_receptor_blocker, can_lie_flat', 'length', 'max' => 1),
-        );
+        return [
+            ['doctor_grade_id', 'required'],
+            ['glaucoma, pxf, diabetic, no_fundal_view, brunescent_white_cataract, alpha_receptor_blocker, can_lie_flat', 'length', 'max' => 1],
+        ];
     }
 
     /**
@@ -63,11 +64,11 @@ class PcrRiskValues extends BaseActiveRecordVersioned
      */
     public function relations()
     {
-        return array(
-            'patient' => array(self::BELONGS_TO, 'Patient', 'patient_id'),
-            'eye' => array(self::BELONGS_TO, 'Eye', 'eye_id'),
-            'doctorGrade' => array(self::BELONGS_TO, 'DoctorGrade', 'doctor_grade_id'),
-        );
+        return [
+            'patient' => [self::BELONGS_TO, 'Patient', 'patient_id'],
+            'eye' => [self::BELONGS_TO, 'Eye', 'eye_id'],
+            'doctorGrade' => [self::BELONGS_TO, 'DoctorGrade', 'doctor_grade_id'],
+        ];
     }
 
     /**
@@ -75,6 +76,8 @@ class PcrRiskValues extends BaseActiveRecordVersioned
      */
     public function attributeLabels()
     {
-        return array();
+        return [
+            'doctor_grade_id' => 'Surgeon Grade',
+        ];
     }
 }
