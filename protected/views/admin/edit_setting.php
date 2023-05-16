@@ -22,10 +22,11 @@
 
 <div>
 <h2>Edit setting: <?= $metadata->name ?></h2>
-<?php if (!empty($metadata->description)) : ?>
+<?php if (!empty($metadata->description)) :
+    $purifier = new CHtmlPurifier(); ?>
     <div class="alert-box info ">
         <b>Info:</b>
-        <?= htmlspecialchars($metadata->description) ?>
+        <?= $purifier->purify($metadata->description) ?>
     </div>
 <?php endif ?>
     <div class="row divider">

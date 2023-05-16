@@ -53,7 +53,7 @@
         }
         ?>
         <div class="collapse-data">
-        <div class="highlighter subtle-invert collapse-data-header-icon collapse"><?= $group->name ?></div>
+        <div class="highlighter subtle-invert collapse-data-header-icon collapse" id="<?= strtolower(str_replace(' ', '_', $group->name)) ?>" ><?= $group->name ?></div>
         <div class="collapse-data-content" style="display: block">
 
         <table class="standard last-right">
@@ -126,26 +126,26 @@
                         </tr>
                     <?php } elseif ($institution_id && $metadata->lowest_setting_level !== 'INSTALLATION') { ?>
                         <tr class="clickable" data-uri="<?= $data_uri ?>">
-                            <td><?php echo $metadata->name ?></td>
-                            <td><?= $metadata_value ?></td>
+                            <td><?= $purifier->purify($metadata->name);?></td>
+                            <td><?= $purifier->purify($metadata_value);?></td>
                             <td>
                             <?php if ($is_admin) { ?>
                                 <i class="oe-i info small js-has-tooltip" data-tooltip-content="This parameter value is specific to the currently selected institution."></i>
                             <?php } ?>
                             </td>
                             <td><?php if (!empty($metadata->description)) : ?>
-                                <i class="oe-i status-query small js-has-tooltip" data-tooltip-content="<?= $metadata->description ?>"></i>
+                                <i class="oe-i status-query small js-has-tooltip" data-tooltip-content="<?= $purifier->purify($metadata->description) ?>"></i>
 
                                 <?php endif ?>
                             </td>
                         </tr>
                     <?php } else { ?>
                         <tr class="clickable" data-uri="<?= $data_uri ?>">
-                            <td><?php echo $metadata->name ?></td>
+                            <td><?= $purifier->purify($metadata->name);?></td>
                             <td><?= $purifier->purify($metadata_value);?></td>
                             <td></td>
                             <td><?php if (!empty($metadata->description)) : ?>
-                                <i class="oe-i status-query small js-has-tooltip" data-tooltip-content="<?= htmlspecialchars($metadata->description) ?>"></i>
+                                <i class="oe-i status-query small js-has-tooltip" data-tooltip-content="<?= $purifier->purify($metadata->description) ?>"></i>
 
                                 <?php endif ?>
                             </td>
