@@ -31,14 +31,10 @@ return array(
             ),
         ),
         'menu_bar_items' => array(
-            'admin' => array(
-                'sub' => array(
-                    'la' => array(
-                        'title' => 'LA Admin',
-                        'uri' => '/OphCoCvi/LocalAuthoritiesAdmin/list',
-                        'restricted' => array(array('OprnCreateCvi', 'user_id')),
-                    ),
-                )
+            'la' => array(
+                'title' => 'LA Admin',
+                'uri' => '/OphCoCvi/LocalAuthoritiesAdmin/list',
+                'restricted' => array(array('OprnCreateCvi', 'user_id')),
             ),
             'cvi' => array(
                 'title' => 'CVI',
