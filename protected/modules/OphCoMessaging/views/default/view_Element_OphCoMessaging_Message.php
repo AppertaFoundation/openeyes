@@ -118,7 +118,7 @@ if (!isset($new_comment)) {
             </div>
             <div class="msg-reader">
                 <div class="missive">
-                    <?= $comment->comment_text ?>
+                <?= Yii::app()->format->Ntext(preg_replace("/\n/", "", preg_replace('/(\s{4})\s+/', '$1', $comment->comment_text))) ?>
                     <div class="read-status" data-test="read-status"><?= $comment->marked_as_read ? ('Read by: ' . $comment->usermodified->getFullName()) : 'Unread' ?></div>
                 </div>
                 <?php if ($this->canMarkCommentRead($comment)) { ?>
@@ -158,7 +158,12 @@ if (!isset($new_comment)) {
                         \CHtml::activeTextArea(
                             $new_comment,
                             'comment_text',
-                            array('class' => 'cols-full increase-text autosize msg-write js-editor-area', 'placeholder' => 'Your reply...', 'rows' => 1, 'data-test' => 'your-reply')
+                            [
+                                'class' => 'cols-full increase-text autosize msg-write js-editor-area',
+                                'placeholder' => 'Your reply...',
+                                'rows' => 1,
+                                'data-test' => 'your-reply'
+                            ]
                         )
                     ?>
                     <div class="msg-preview js-preview-area" style="display: none"></div>
@@ -177,17 +182,29 @@ if (!isset($new_comment)) {
     </div>
 </div>
 <script>
-     $(document).ready(function() {
-         $('.js-preview-action').click(function() {
-             $('.js-preview-area').text($('.js-editor-area').val());
+    function splitLinesIntoBRsIn(intoContainer, text)
+    {
+        const lines = text.split('\n');
 
-             $('.js-preview-action, .js-editor-area').hide();
-             $('.js-edit-or-send-actions, .js-preview-area').show();
-         });
+        intoContainer.empty();
 
-         $('.js-edit-message').click(function() {
-             $('.js-preview-action, .js-editor-area').show();
-             $('.js-edit-or-send-actions, .js-preview-area').hide();
-         });
+        for (line of lines) {
+        intoContainer.append(document.createTextNode(line));
+        intoContainer.append('<br />');
+        }
+    }
+
+    $(document).ready(function() {
+        $('.js-preview-action').click(function() {
+            splitLinesIntoBRsIn($('.js-preview-area'), $('.js-editor-area').val())
+
+            $('.js-preview-action, .js-editor-area').hide();
+            $('.js-edit-or-send-actions, .js-preview-area').show();
+    });
+
+        $('.js-edit-message').click(function() {
+            $('.js-preview-action, .js-editor-area').show();
+            $('.js-edit-or-send-actions, .js-preview-area').hide();
+        });
      });
 </script>
