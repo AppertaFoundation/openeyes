@@ -34,6 +34,24 @@ describe('Testing for the auto save functionality', () => {
             .should('have.attr', 'data-draft-id', seederData.draft_id);
     });
 
+    it('Auto save draft events should only be shown for users they belong to', () => {
+        cy.login('nonsurgeonuser', 'password')
+        cy.visit(seederData.patient_url);
+        // sidebar
+        cy.getBySel('sidebar-draft')
+            .should('not.exist');
+
+        // hotlist
+        cy.getBySel('hotlist-btn').trigger('mouseover');
+        cy.getBySel('hotlist-toggle-drafts').click();
+            cy.get(`[data-test="hotlist-draft-event"][data-id="${seederData.draft_id}"]`).should('not.exist');
+
+        // new event dialogue
+        cy.getBySel('add-new-event-button').click();
+        cy.getBySel('add-new-event-draft')
+            .should('not.exist');
+    });
+
     it('Selecting draft event changes user context to match that of the draft event', () => {
         cy.visit(seederData.draft_update_url);
 
