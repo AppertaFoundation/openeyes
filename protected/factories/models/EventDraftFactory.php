@@ -36,7 +36,7 @@ class EventDraftFactory extends ModelFactory
             'is_auto_save' => true,
             'institution_id' => \Institution::factory()->useExisting(),
             'site_id' => \Site::factory()->useExisting(),
-            'episode_id' => Episode::factory()->useExisting(),
+            'episode_id' => Episode::factory(),
             'event_type_id' => $this->faker->randomElement($this->availableEventTypes()),
             'event_id' => null,
             'data' => '{}'

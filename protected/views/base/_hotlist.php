@@ -91,7 +91,7 @@ if ($this instanceof BaseEventTypeController) {
                             class="js-hotlist-draft-event"
                             data-id="<?= $draft->id ?>"
                             data-test="hotlist-draft-event"
-                            data-patient-href="<?= Yii::app()->createUrl($draft->originating_url . "&draft_id=" . $draft->id) ?>"
+                            data-patient-href="<?= Yii::app()->createUrl("/patientEvent/loadDraft?draft_id=" . $draft->id) ?>"
                         >
                             <td><?= CHtml::encode(PatientIdentifierHelper::getIdentifierValue($draft_patient_primary_identifier)) ?></td>
                             <td>
