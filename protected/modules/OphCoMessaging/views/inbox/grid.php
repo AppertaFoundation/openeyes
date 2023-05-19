@@ -146,14 +146,14 @@ if (!$messages->totalItemCount) {
                 <?php
                 if ($message->message_type->reply_required) {
                     if (isset($message->last_comment)) {
-                        echo '<i class="oe-i status-query-reply small js-has-tooltip" data-tt-type="basic" data-tooltip-content="Query reply"></i>';
+                        echo '<i class="oe-i status-query-reply small js-has-tooltip" data-tt-type="basic" data-tooltip-content="Query reply" data-test="home-mailbox-message-reply-required"></i>';
                     } else {
-                        echo '<i class="oe-i status-query small js-has-tooltip" data-tt-type="basic" data-tooltip-content="Query"></i>';
+                        echo '<i class="oe-i status-query small js-has-tooltip" data-tt-type="basic" data-tooltip-content="Query" data-test="home-mailbox-message-reply-required"></i>';
                     }
                 }
                 ?>
             </td>
-            <td class="message-status nowrap">
+            <td class="message-status nowrap" data-test="home-mailbox-message-sub-type">
                 <?php if (count($message->cc_recipients) > 1) {
                     $copied_users = $message->cc_recipients;
                     foreach ($copied_users as $copied_user) {

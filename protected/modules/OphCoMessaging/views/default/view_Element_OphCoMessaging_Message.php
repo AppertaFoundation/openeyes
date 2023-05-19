@@ -71,7 +71,7 @@ if (!isset($new_comment)) {
                     <?php } ?>
                     <tr>
                 <td><?=\CHtml::encode($element->getAttributeLabel('message_type_id')) ?></td>
-                <td><?= $element->message_type ? $element->message_type->name : 'None' ?></td>
+                <td data-test="message-type"><?= $element->message_type ? $element->message_type->name : 'None' ?></td>
             </tr>
                     
                     <?php if ($element->urgent) { ?>

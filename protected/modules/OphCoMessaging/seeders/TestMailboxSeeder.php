@@ -4,6 +4,7 @@ namespace OEModule\OphCoMessaging\seeders;
 
 use OEModule\OphCoMessaging\models\Mailbox;
 use OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message;
+use OEModule\OphCoMessaging\models\OphCoMessaging_Message_MessageType;
 use OE\seeders\resources\SeededEventResource;
 use OE\seeders\BaseSeeder;
 
@@ -20,8 +21,8 @@ class TestMailboxSeeder extends BaseSeeder
     * - teamName - a test team (with admin and user1 assigned to it)
     * - userMailbox - a user shared mailbox - array with elements name and messageText (with user1 and user2 assigned to it)
     * - teamMailbox - a team shared mailbox - as above (with the test team assigned to it)
-    * - messageEvent1 - a message event with admin as sender and the user shared mailbox as recipient
-    * - messageEvent2 - a message event with the team shared mailbox as recipient
+    * - messageEvent1 - a message event with admin as sender and the user shared mailbox as recipient (and reply required)
+    * - messageEvent2 - a message event with the team shared mailbox as recipient (and reply not required)
     * @return array
     */
     public function __invoke(): array
@@ -61,16 +62,27 @@ class TestMailboxSeeder extends BaseSeeder
             ->withUniqueMailboxName($runtime_prefix)
             ->create();
 
-        // seed a message event with sender - admin - and recipient user_mailbox
+        // seed a message sub type with reply required (ReR)
+        $reply_required_msg_sub_type = OphCoMessaging_Message_MessageType::factory()
+            ->replyRequired()
+            ->create(['name' => 'ReR']);
+
+        // seed a message sub type with reply not required (RNR)
+        $reply_not_required_msg_sub_type = OphCoMessaging_Message_MessageType::factory()
+            ->replyNotRequired()
+            ->create(['name' => 'RNR']);
+
+        // seed a message event with sender - admin - and recipient user_mailbox (and reply required)
         $user_mailbox_message = Element_OphCoMessaging_Message::factory()
             ->withSender($admin_user, Mailbox::model()->forPersonalMailbox($admin_user->id)->find())
             ->withPrimaryRecipient($user_mailbox)
-            ->withReplyRequired()
+            ->withMessageType($reply_required_msg_sub_type)
             ->create(['message_text' => 'Hello Test User Mailbox ' . $user_mailbox->name]);
 
-        // seed a message event with recipient team_mailbox
+        // seed a message event with recipient team_mailbox (and reply not required)
         $team_mailbox_message = Element_OphCoMessaging_Message::factory()
             ->withPrimaryRecipient($team_mailbox)
+            ->withMessageType($reply_not_required_msg_sub_type)
             ->create(['message_text' => 'Hello Test Team Mailbox ' . $team_mailbox->name]);
 
         return [
