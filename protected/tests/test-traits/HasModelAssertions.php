@@ -173,6 +173,7 @@ trait HasModelAssertions
         $this->assertTrue(is_array($expected));
         $this->assertTrue(is_array($received));
         $this->assertEquals(count($expected), count($received));
+
         if (!count($expected)) {
             return;
         }
@@ -182,6 +183,24 @@ trait HasModelAssertions
         $this->assertEquals(
             $this->getSortedModelListPrimaryKeys($expected),
             $this->getSortedModelListPrimaryKeys($received)
+        );
+    }
+
+    public function assertModelArraysMatchOrdered($expected, $received)
+    {
+        $this->assertTrue(is_array($expected));
+        $this->assertTrue(is_array($received));
+        $this->assertEquals(count($expected), count($received));
+
+        if (!count($expected)) {
+            return;
+        }
+
+        $this->assertModelClassesMatch($expected, $received);
+
+        $this->assertEquals(
+            $this->getModelListPrimaryKeys($expected),
+            $this->getModelListPrimaryKeys($received)
         );
     }
 
@@ -210,14 +229,19 @@ trait HasModelAssertions
         return $class[0];
     }
 
-    protected function getSortedModelListPrimaryKeys($models)
+    protected function getModelListPrimaryKeys($models)
     {
-        $pks = array_map(
+        return array_map(
             function ($model) {
                 return $model->getPrimaryKey();
             },
             $models
         );
+    }
+
+    protected function getSortedModelListPrimaryKeys($models)
+    {
+        $pks = $this->getModelListPrimaryKeys($models);
 
         sort($pks);
 

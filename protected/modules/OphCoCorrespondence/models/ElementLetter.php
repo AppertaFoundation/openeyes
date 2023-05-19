@@ -66,17 +66,6 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
     public $macro = null;
 
     /**
-     * Returns the static model of the specified AR class.
-     *
-     * @param string $className
-     * @return ElementLetter the static model class
-     */
-    public static function model($className = __CLASS__)
-    {
-        return parent::model($className);
-    }
-
-    /**
      * @return string the associated database table name
      */
     public function tableName()
@@ -91,26 +80,26 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
     {
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
-        return array(
-            array(
+        return [
+            [
                 'event_id, site_id, print, address, use_nickname, date, introduction, cc, re, body, footer, draft, direct_line, fax, clinic_date,' .
                 'print_all, is_signed_off, to_subspecialty_id, to_firm_id, is_urgent, is_same_condition',
                 'safe'
-            ),
-            array('to_location_id', 'internalReferralToLocationIdValidator'),
-            array('to_subspecialty_id', 'internalReferralServiceValidator'),
-            array('to_firm_id', 'internalReferralFirmValidator'),
-            array('is_same_condition', 'internalReferralConditionValidator'),
-            array('letter_type_id', 'letterTypeValidator'),
-            array('date, introduction, body', 'requiredIfNotDraft'),
-            array('use_nickname , site_id', 'required'),
-            array('date', 'OEDateValidator'),
-            array('clinic_date', 'OEDateValidatorNotFuture'),
+            ],
+            ['to_location_id', 'internalReferralToLocationIdValidator'],
+            ['to_subspecialty_id', 'internalReferralServiceValidator'],
+            ['to_firm_id', 'internalReferralFirmValidator'],
+            ['is_same_condition', 'internalReferralConditionValidator'],
+            ['letter_type_id', 'letterTypeValidator'],
+            ['date, introduction, body', 'requiredIfNotDraft'],
+            ['use_nickname , site_id', 'required'],
+            ['date', 'OEDateValidator'],
+            ['clinic_date', 'OEDateValidatorNotFuture'],
             //array('is_signed_off', 'isSignedOffValidator'), // they do not want this at the moment - waiting for the demo/feedback
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, event_id, site_id, use_nickname, date, introduction, re, body, footer, draft, direct_line, letter_type_id, to_location_id', 'safe', 'on' => 'search'),
-        );
+            ['id, event_id, site_id, use_nickname, date, introduction, re, body, footer, draft, direct_line, letter_type_id, to_location_id', 'safe', 'on' => 'search'],
+        ];
     }
 
     /**
@@ -120,21 +109,21 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
     {
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
-        return array(
-            'element_type' => array(self::HAS_ONE, 'ElementType', 'id', 'on' => "element_type.class_name='" . get_class($this) . "'"),
-            'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
-            'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
-            'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-            'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-            'site' => array(self::BELONGS_TO, 'Site', 'site_id'),
-            'enclosures' => array(self::HAS_MANY, 'LetterEnclosure', 'element_letter_id', 'order' => 'display_order'),
-            'document_instance' => array(self::HAS_MANY, 'DocumentInstance', array( 'correspondence_event_id' => 'event_id')),
-            'letterType' => array(self::BELONGS_TO, 'LetterType', 'letter_type_id'),
-            'toSubspecialty' => array(self::BELONGS_TO, 'Subspecialty', 'to_subspecialty_id'),
-            'toLocation' => array(self::BELONGS_TO, 'OphCoCorrespondence_InternalReferral_ToLocation', 'to_location_id'),
-            'toFirm' => array(self::BELONGS_TO, 'Firm', 'to_firm_id'),
+        return [
+            'element_type' => [self::HAS_ONE, ElementType::class, 'id', 'on' => "element_type.class_name='" . get_class($this) . "'"],
+            'eventType' => [self::BELONGS_TO, EventType::class, 'event_type_id'],
+            'event' => [self::BELONGS_TO, Event::class, 'event_id'],
+            'user' => [self::BELONGS_TO, User::class, 'created_user_id'],
+            'usermodified' => [self::BELONGS_TO, User::class, 'last_modified_user_id'],
+            'site' => [self::BELONGS_TO, Site::class, 'site_id'],
+            'enclosures' => [self::HAS_MANY, LetterEnclosure::class, 'element_letter_id', 'order' => 'display_order'],
+            'document_instance' => [self::HAS_MANY, DocumentInstance::class, ['correspondence_event_id' => 'event_id']],
+            'letterType' => [self::BELONGS_TO, LetterType::class, 'letter_type_id'],
+            'toSubspecialty' => [self::BELONGS_TO, Subspecialty::class, 'to_subspecialty_id'],
+            'toLocation' => [self::BELONGS_TO, OphCoCorrespondence_InternalReferral_ToLocation::class, 'to_location_id'],
+            'toFirm' => [self::BELONGS_TO, Firm::class, 'to_firm_id'],
 
-        );
+        ];
     }
 
     /**
@@ -142,7 +131,7 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
      */
     public function attributeLabels()
     {
-        return array(
+        return [
             'use_nickname' => 'Use Nickname',
             'date' => 'Date',
             'introduction' => 'Salutation',
@@ -159,7 +148,7 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
             'is_same_condition' => '',
             'site_id' => 'Site',
             'letter_type_id' => 'Letter Type',
-        );
+        ];
     }
 
     public function internalReferralServiceValidator($attribute, $params)
@@ -224,9 +213,9 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
         $criteria->compare('id', $this->id, true);
         $criteria->compare('event_id', $this->event_id, true);
 
-        return new CActiveDataProvider(get_class($this), array(
+        return new CActiveDataProvider(get_class($this), [
             'criteria' => $criteria,
-        ));
+        ]);
     }
 
     public function beforeValidate()
@@ -1084,8 +1073,8 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
         $footer = "<div class=\"flex\">";
         if ($esign_element = $this->event->getElementByClass(Element_OphCoCorrespondence_Esign::class)) {
             /** @var Element_OphCoCorrespondence_Esign $esign_element*/
-            $signatures = $esign_element->signatures;
-            if ($primary_signature = array_pop($signatures)) {
+            $signatures = $esign_element->orderedSignatures;
+            if ($primary_signature = array_shift($signatures)) {
                 if (strpos($this->footer, "{e-signature}") !== false) {
                     if (strpos($primary_signature->getPrintout(), "Consultant:") === false && strpos($this->footer, "Consultant:") !== false) {
                         $footer .= "<div>" . nl2br(trim(explode("{e-signature}", $this->footer)[0])) . "<br/>" . $primary_signature->getPrintout() . "<br/>Consultant:" . nl2br(trim(explode("Consultant:", $this->footer)[1])) . "</div>";
@@ -1096,7 +1085,7 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
                     $footer .= "<div>" . nl2br(trim($this->footer)) . "<br/>" . $primary_signature->getPrintout() . "</div>";
                 }
             }
-            if ($secondary_signature = array_pop($signatures)) {
+            if ($secondary_signature = array_shift($signatures)) {
                 $sign_off_text = $secondary_signature->signedUser->correspondence_sign_off_text;
                 $footer .= "<div>" . nl2br(trim($sign_off_text)) . "<br/>" . $secondary_signature->getPrintout() . "</div>";
             }
