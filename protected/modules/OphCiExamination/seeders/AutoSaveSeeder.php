@@ -15,14 +15,39 @@
 
 namespace OEModule\OphCiExamination\seeders;
 
+use Firm;
+use OE\factories\models\UserFactory;
 use OE\seeders\BaseSeeder;
 use OEModule\OphCiExamination\models\SystemicDiagnoses;
+use User;
 
 class AutoSaveSeeder extends BaseSeeder
 {
+    protected ?string $initial_firm_id = null;
+
     public function __invoke(): array
     {
         $core_api = new \CoreAPI();
+
+        $intial_firm_id = $this->getSeederAttribute('initial_firm_id');
+
+        //A user for testing context change when visiting draft
+        $context_change_user = User::factory()
+            ->withLocalAuthForInstitution($this->app_context->getSelectedInstitution())
+            ->withAuthItems([
+                'User',
+                'Edit',
+                'View clinical'
+            ])
+            ->create();
+        $context_change_user_auth = $context_change_user->authentications[0];
+
+        $draft_firm_id = $this->getApp()->db->createCommand()
+            ->select('id')
+            ->from('firm')
+            ->where('id != :firm_id', [':firm_id' => $intial_firm_id])
+            ->limit(1)
+            ->queryScalar();
 
         list($original_diagnosis, $draft_diagnosis) = \Disorder::factory()->useExisting()->count(2)->create();
 
@@ -33,7 +58,15 @@ class AutoSaveSeeder extends BaseSeeder
 
         $draft = \EventDraft::factory()
                ->forEvent($event)
-               ->create(['data' => $encoded_data]);
+               ->forUser($context_change_user)
+               ->create([
+                    'data' => $encoded_data,
+                    'created_user_id' => $context_change_user->id
+                ]);
+
+        $draft->episode->firm_id = $draft_firm_id;
+        $draft->episode->save();
+        $draft->episode->refresh();
 
         $patient = $draft->episode->patient;
 
@@ -45,7 +78,9 @@ class AutoSaveSeeder extends BaseSeeder
             'patient_url' => $core_api->generatePatientLandingPageLink($patient),
             'draft_id' => $draft->id,
             'draft_test_values' => $draft_test_values,
-            'draft_update_url' => '/OphCiExamination/Default/update?id=' . $event->id . '&draft_id=' . $draft->id,
+            'draft_update_url' => '/PatientEvent/loadDraft?draft_id=' . $draft->id,
+            'draft_context_name' => $draft->episode->firm->name,
+            'context_change_user' => ['username' => $context_change_user_auth->username, 'password' => 'password']
         ];
     }
 }

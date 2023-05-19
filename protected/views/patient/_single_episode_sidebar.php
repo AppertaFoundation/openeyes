@@ -42,30 +42,33 @@ $display_deleted_in = $this->displayDeletedEventsIn();
 // 1 for "Deleted Events" category, 2 for "Timeline"
 $display_deleted_events_in_deleted_category = $display_deleted_in && $display_deleted_in === 1;
 
+$user_id = Yii::app()->user->id;
+
 // Cache the sidebar for each patient. Refresh whenever a new event is created for the patient
 // Currently doesn't filter out change-tracker events, as that would likely add additional time to the SQL query
-$epsidebarkey = "_single_episode_sidebar_patient:" . $this->patient->id . "display_deleted:" . $display_deleted_in;
+$epsidebarkey = "_single_episode_sidebar_patient:" . $this->patient->id . "display_deleted:" . $display_deleted_in . "user_id:" . $user_id;
 
 if (
-        $this->beginCache(
-            $epsidebarkey,
-            array(
-            'dependency' => array(
-              'class' => 'system.caching.dependencies.CDbCacheDependency',
-              'sql' => 'SELECT MAX(date) FROM (
-                          SELECT MAX(ev.last_modified_date) AS date
-                          FROM `event` ev
-                            INNER JOIN episode ep ON ep.id = ev.episode_id
-                          WHERE ep.patient_id = ' . $this->patient->id . '
-                        UNION
-                          SELECT MAX(ed.last_modified_date) AS date
-                          FROM `event_draft` ed
-                            INNER JOIN episode ep ON ep.id = ed.episode_id
-                          WHERE ep.patient_id = ' . $this->patient->id .'
-                        ) AS cache_dates'
-              )
+    $this->beginCache(
+        $epsidebarkey,
+        array(
+        'dependency' => array(
+            'class' => 'system.caching.dependencies.CDbCacheDependency',
+            'sql' => 'SELECT MAX(date) FROM (
+                        SELECT MAX(ev.last_modified_date) AS date
+                        FROM `event` ev
+                        INNER JOIN episode ep ON ep.id = ev.episode_id
+                        WHERE ep.patient_id = ' . $this->patient->id . '
+                    UNION
+                        SELECT MAX(ed.last_modified_date) AS date
+                        FROM `event_draft` ed
+                            INNER JOIN episode ep ON ep.id = ed.episode_id 
+                        WHERE ep.patient_id = ' . $this->patient->id . '
+                        AND ed.created_user_id = ' . $user_id . '
+                    ) AS cache_dates'
             )
         )
+    )
 ) {?>
 <div class="sidebar-eventlist">
     <?php
@@ -114,14 +117,16 @@ if (
                     $subspecialty_name = $episode->getSubspecialtyText();
 
                     foreach ($episode->draft_events as $draft) {
-                        $this->renderPartial(
-                            '//patient/_single_episode_sidebar_draft_entry',
-                            [
-                                'draft' => $draft,
-                                'subspecialty_name' => $subspecialty_name,
-                                'tag' => $tag,
-                            ]
-                        );
+                        if (!$draft->is_auto_save || $draft->created_user_id === $user_id) {
+                            $this->renderPartial(
+                                '//patient/_single_episode_sidebar_draft_entry',
+                                [
+                                    'draft' => $draft,
+                                    'subspecialty_name' => $subspecialty_name,
+                                    'tag' => $tag,
+                                ]
+                            );
+                        }
                     }
 
                     foreach ($episode->events as $event) {
@@ -175,7 +180,15 @@ $this->renderPartial('//patient/add_new_event', array(
     'context_firm' => $this->firm,
     'patient_id' => $this->patient->id,
     'event_types' => EventType::model()->getEventTypeModules(),
-    'drafts' => EventDraft::model()->with('episode')->findAll('patient_id = ?', [$this->patient->id])
+    'drafts' => EventDraft::model()
+        ->with('episode')
+        ->findAll(
+            'patient_id = :patient_id AND (t.is_auto_save != 1 OR t.created_user_id = :created_user_id)',
+            [
+                ':patient_id' => $this->patient->id,
+                ':created_user_id' => $user_id
+            ]
+        )
 ));
 if ($this->editable) {
     $this->renderPartial('//patient/change_event_context', array(

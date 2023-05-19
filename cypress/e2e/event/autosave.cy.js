@@ -2,13 +2,15 @@ describe('Testing for the auto save functionality', () => {
     let seederData;
 
     beforeEach(() => {
-        cy.login();
+        //Use a different user when testing drafts as they can change the context of the user
+        // and we don't want the context change to affect other tests
+        cy.login(seederData.context_change_user.username, seederData.context_change_user.password);
     })
-
+        
     before(() => {
         cy.login()
-            .then(() => {
-                cy.runSeeder('OphCiExamination', 'AutoSaveSeeder')
+            .then((body) => {
+                cy.runSeeder('OphCiExamination', 'AutoSaveSeeder', {initial_firm_id: body.body.firm_id})
                     .then(function (data) {
                         seederData = data;
                     });
@@ -30,6 +32,30 @@ describe('Testing for the auto save functionality', () => {
         cy.getBySel('add-new-event-button').click();
         cy.getBySel('add-new-event-draft')
             .should('have.attr', 'data-draft-id', seederData.draft_id);
+    });
+
+    it('Auto save draft events should only be shown for users they belong to', () => {
+        cy.login('nonsurgeonuser', 'password')
+        cy.visit(seederData.patient_url);
+        // sidebar
+        cy.getBySel('sidebar-draft')
+            .should('not.exist');
+
+        // hotlist
+        cy.getBySel('hotlist-btn').trigger('mouseover');
+        cy.getBySel('hotlist-toggle-drafts').click();
+            cy.get(`[data-test="hotlist-draft-event"][data-id="${seederData.draft_id}"]`).should('not.exist');
+
+        // new event dialogue
+        cy.getBySel('add-new-event-button').click();
+        cy.getBySel('add-new-event-draft')
+            .should('not.exist');
+    });
+
+    it('Selecting draft event changes user context to match that of the draft event', () => {
+        cy.visit(seederData.draft_update_url);
+
+        cy.getBySel('user-profile-firm').should('contain', seederData.draft_context_name);
     });
 
     it('Update drafts should replay their contents', () => {

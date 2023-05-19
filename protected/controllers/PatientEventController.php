@@ -30,7 +30,7 @@ class PatientEventController extends BaseController
     {
         return array(
             array('allow',
-                'actions' => array('create', 'hasServiceFirmForSubspecialty'),
+                'actions' => array('create', 'loadDraft', 'hasServiceFirmForSubspecialty'),
                 'users' => array('@'),
             )
         );
@@ -136,6 +136,24 @@ class PatientEventController extends BaseController
     }
 
     /**
+     * @param $request
+     * @return EventDraft
+     * @throws CHttpException
+     */
+    protected function resolveDraft($request)
+    {
+        if ($draft_id = $request->getQuery('draft_id')) {
+            if (!$draft = EventDraft::model()->findByPk($draft_id)) {
+                throw new CHttpException(404, 'Event draft not found.');
+            }
+
+            return $draft;
+        } else {
+            throw new CHttpException(404, 'Invalid request.');
+        }
+    }
+
+    /**
      * @param Firm $context
      * @throws CHttpException
      */
@@ -203,6 +221,25 @@ class PatientEventController extends BaseController
         $this->redirect(
             $app->createUrl($event_type->class_name . '/Default/create') . $query
         );
+    }
+
+    /**
+     * Handles the request to carry out required back end actions before redirecting to the appropriate controller
+     * action for the draft to be loaded.
+     */
+    public function actionLoadDraft() {
+        $app = $this->getApp();
+        $request = $app->getRequest();
+
+        $draft = $this->resolveDraft($request);
+        $context = $draft->episode->firm;
+
+        $this->setContext($context);
+
+        $this->redirect(
+            $app->createUrl($draft->originating_url . "&draft_id=" . $draft->id)
+        );
+
     }
 
     public function actionHasServiceFirmForSubspecialty()

@@ -68,14 +68,17 @@ if (!Yii::app()->user->isGuest) {
         </div>
     <?php } ?>    <div class="oe-user">
         <ul class="oe-user-profile-context">
-            <li><?= $user->first_name . ' ' . $user->last_name; ?>
+            <li data-test="user-profile-name">
+                <?= $user->first_name . ' ' . $user->last_name; ?>
                 <?php if (Yii::app()->params['profile_user_can_edit']) { ?>
                     <a href="<?= Yii::app()->createUrl('/profile'); ?>" data-test="user-profile-link">profile</a>
                 <?php } ?>
             </li>
-            <li id="user-profile-site-institution"><?= Site::model()->findByPk($this->selectedSiteId)->short_name . ' (' .
-                    Institution::model()->findByPk($this->selectedInstitutionId)->short_name . ')' ?></li>
-            <li>
+            <li id="user-profile-site-institution" data-test="user-profile-site-institution">
+                <?= Site::model()->findByPk($this->selectedSiteId)->short_name .
+                    ' (' . Institution::model()->findByPk($this->selectedInstitutionId)->short_name . ')' ?>
+            </li>
+            <li data-test="user-profile-firm">
                 <?= Firm::model()->findByPk($this->selectedFirmId)->getNameAndSubspecialty() ?>
                 <a id="change-firm" href="#" data-window-title="Select a new Site and/or <?= Firm::contextLabel() ?>">change</a>
             </li>

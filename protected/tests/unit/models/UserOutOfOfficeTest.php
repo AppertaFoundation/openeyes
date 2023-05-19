@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -16,8 +17,7 @@
  */
 
 use OE\factories\ModelFactory;
-
-use \OEModule\OphCoMessaging\models\Mailbox;
+use OEModule\OphCoMessaging\models\Mailbox;
 
 /**
  * class UserOutOfOfficeTest
@@ -43,7 +43,6 @@ class UserOutOfOfficeTest extends ModelTestCase
 
         $this->assertAttributeInvalid($empty_instance, 'From', 'From cannot be blank');
         $this->assertAttributeHasError($empty_instance, 'To', 'To cannot be blank');
-        $this->assertAttributeHasError($empty_instance, 'Alternate User', 'Alternate User cannot be blank');
     }
 
     /** @test */

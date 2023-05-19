@@ -16,11 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-if ($this->checkAccess('admin')) {
-    $sites = Site::model()->getListForAllInstitutions();
-} else {
-    $sites = Site::model()->getListForCurrentInstitution();
-}
+
+$sites = Site::model()->getListForCurrentInstitution();
 ?>
 
 <div class="row divider">

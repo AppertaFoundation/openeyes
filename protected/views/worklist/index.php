@@ -234,6 +234,7 @@ $initial_filter = $session_filter_info['filter'];
         }
     }
     ?>
+    <i class="js-pathway-spinner spinner"></i>
 </main>
 <div class="oe-patient-quick-overview" style="display: none;" data-mode="full-to-right">
     <div class="close-icon-btn" style="display: none;" onclick="closePatientPop();">
@@ -1182,13 +1183,18 @@ $initial_filter = $session_filter_info['filter'];
         );
     }
 
-    function performSync() {
+    function performSync(display_spinner = false) {
         const $wl_ctn = $('main#js-clinic-manager');
         const $wl_cat_ul = $('ul#js-worklist-category');
         const selected_category = $('ul#js-worklist-category a.selected').data('worklist');
         const $selected_patient = $('.js-check-patient:checked');
         const $popup = $('.oe-popup-wrap.js-add-psd-popup');
         const $last_sync_time = $('.last-sync');
+
+        if (display_spinner) {
+            $('.js-apply-filter-btn').prop('disabled', true);
+            $('.js-pathway-spinner').show();
+        }
 
         $.get(
             '/worklist/AutoRefresh',
@@ -1197,6 +1203,10 @@ $initial_filter = $session_filter_info['filter'];
                 date_to: $('#worklist-date-to').val(),
             },
             function(resp){
+                if (display_spinner) {
+                    $('.js-apply-filter-btn').prop('disabled', false);
+                    $('.js-pathway-spinner').hide();
+                }
                 if(!resp){
                     return;
                 }
@@ -1334,7 +1344,7 @@ $initial_filter = $session_filter_info['filter'];
             initial_selected_quick_filter: <?= json_encode($session_filter_info['quick']) ?>,
             initial_is_combined: <?= json_encode($session_filter_info['filter']->combined) ?>,
 
-            applyFilter: function() { performSync(); },
+            applyFilter: function() { performSync(true); },
 
             changeShownLists: function(lists) {
                 if (lists === 'all') {

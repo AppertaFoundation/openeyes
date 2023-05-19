@@ -1,5 +1,8 @@
 describe('verifies the desired behaviour of shared mailboxes for messaging', () => {
 
+    const REPLY_REQUIRED_MSG_SUB_TYPE = 'ReR';
+    const REPLY_NOT_REQUIRED_MSG_SUB_TYPE = 'RNR';
+
     let seederData;
 
     before(function () {
@@ -8,7 +11,7 @@ describe('verifies the desired behaviour of shared mailboxes for messaging', () 
         // - a test team - return teamName (assign admin and user1 to the team via seeder)
         // - a user shared mailbox - return userMailbox (with attributes name and messageText) (assign user1 and user2 to it via seeder)
         // - a team shared mailbox - return teamMailbox (with attributes name and messageText) (assign test team to it via seeder)
-        // - 2 message events - 1 with sender admin and recipient userMailbox; 1 with recipient teamMailbox (return messageEvent1 and messageEvent2)
+        // - 2 message events - 1 with sender admin and recipient userMailbox (and reply required); 1 with recipient teamMailbox (and reply not required) - return messageEvent1 and messageEvent2
         cy.login()
             .then(() => {
                 return cy.runSeeder('OphCoMessaging', 'TestMailboxSeeder');
@@ -18,7 +21,7 @@ describe('verifies the desired behaviour of shared mailboxes for messaging', () 
             });
     });
 
-    it('ensures that shared mailboxes exhibit the required behaviour from the home page', function () {
+    it('ensures that shared mailboxes exhibit the required behaviour from the home page', function () {     
 
         let data = seederData;
 
@@ -42,6 +45,8 @@ describe('verifies the desired behaviour of shared mailboxes for messaging', () 
             .within(() => {
                 cy.getBySel('home-mailbox-all').click({force: true})
             })
+        cy.getBySel('home-mailbox-message-reply-required').should('be.visible')
+        cy.getBySel('home-mailbox-message-sub-type').contains(REPLY_REQUIRED_MSG_SUB_TYPE).should('be.visible')
         cy.getBySel('home-mailbox-message-text').contains(data.userMailbox.messageText).should('be.visible')
 
         // assert that the second seeded message has been sent successfully to the team shared mailbox
@@ -50,6 +55,8 @@ describe('verifies the desired behaviour of shared mailboxes for messaging', () 
             .within(() => {
                 cy.getBySel('home-mailbox-all').click({force: true})
             })
+        cy.getBySel('home-mailbox-message-reply-required').should('not.exist')
+        cy.getBySel('home-mailbox-message-sub-type').contains(REPLY_NOT_REQUIRED_MSG_SUB_TYPE).should('be.visible')
         cy.getBySel('home-mailbox-message-text').contains(data.teamMailbox.messageText).should('be.visible')
 
     });
@@ -128,8 +135,14 @@ describe('verifies the desired behaviour of shared mailboxes for messaging', () 
         // log in as user2
         cy.login(data.user2.username, data.user2.password)
 
-        // reply to the sender of the user shared mailbox message (admin)
+        // view the user shared mailbox message
         cy.visit(data.messageEvent1.urls.view)
+
+        // assert that the message type is ReR - reply required - and that it is possible to reply
+        cy.getBySel('message-type').contains(REPLY_REQUIRED_MSG_SUB_TYPE).should('be.visible')
+        cy.getBySel('your-reply').should('be.visible')
+
+        // reply to the sender of the user shared mailbox message (admin)
         cy.getBySel('your-reply').type(REPLY_TEXT)
         cy.getBySel('preview-and-check').click()
         cy.getBySel('send-reply').click()
@@ -157,6 +170,13 @@ describe('verifies the desired behaviour of shared mailboxes for messaging', () 
         // log back in as admin
         cy.login()
 
+        // view the team shared mailbox message
+        cy.visit(data.messageEvent2.urls.view)
+
+        // assert that the message type is RNR - reply not required - and that it is not possible to reply
+        cy.getBySel('message-type').contains(REPLY_NOT_REQUIRED_MSG_SUB_TYPE).should('be.visible')
+        cy.getBySel('your-reply').should('not.exist')
+
         // visit the Audit page and interrogate the message events ...
         cy.visit('/audit')
         cy.getBySel('audit-event-type').select(AUDIT_EVENT_TYPE)
@@ -169,7 +189,6 @@ describe('verifies the desired behaviour of shared mailboxes for messaging', () 
         cy.getBySel('audit-anchor')
             .should('have.attr', 'href')
             .and('include', data.messageEvent1.urls.view.substr(29))
-
 
         // assert that the user shared mailbox message has been subsequently audited as 'delete-request' by user1
         cy.getBySel('audit-action').select(AUDIT_ACTION_DELETE)

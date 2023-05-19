@@ -1199,16 +1199,24 @@ class DefaultController extends BaseEventTypeController
         ]);
     }
 
+    /**
+     * @inheritDoc
+     */
     public function afterUpdateElements($event)
     {
-        parent::afterUpdateElements($event);
+        $errors = parent::afterUpdateElements($event);
         $this->afterCreateorUpdateElements($event);
+        return $errors;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function afterCreateElements($event)
     {
-        parent::afterCreateElements($event);
+        $errors = parent::afterCreateElements($event);
         $this->afterCreateorUpdateElements($event);
+        return $errors;
     }
 
     /**

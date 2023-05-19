@@ -15,7 +15,7 @@
 
 $li_id = 'js-sideDraft' . $draft->id;
 $event_name = $draft->getEventName();
-$event_path = Yii::app()->createUrl($draft->originating_url . "&draft_id=" . $draft->id);
+$event_path = Yii::app()->createUrl("/patientEvent/loadDraft?draft_id=" . $draft->id);
 ?>
 <li id="<?= $li_id ?>"
     class="event draft"

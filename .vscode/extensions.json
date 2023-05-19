@@ -16,6 +16,7 @@
         "redhat.vscode-yaml",
         "slevesque.vscode-zipexplorer",
         "timonwong.shellcheck",
-        "swordev.phpstan"
+        "swordev.phpstan",
+        "chiefmyron.phpunit-test-workbench"
     ]
 }

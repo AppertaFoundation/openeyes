@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Apperta Foundation, 2023
  * This file is part of OpenEyes.
@@ -15,28 +16,38 @@
 
 namespace OEModule\Admin\seeders;
 
-class WorklistDefinitionSeeder
+use OE\seeders\BaseSeeder;
+
+class WorklistDefinitionSeeder extends BaseSeeder
 {
-    public function __construct(\DataContext $context)
+    public function __invoke(): array
     {
-        $this->context = $context;
-    }
+        $worklists = \Worklist::factory()
+        ->withUniquePostfix((string) time())
+        ->withDBUniqueAttribute('name')
+        ->count(5)
+        ->create();
 
-    public function __invoke()
-    {
-        $worklists = \Worklist::factory()->count(5)->create();
-
-        $sites = \Site::factory()->count(2)->create();
+        $sites = \Site::factory()
+            ->withUniquePostfix((string) time())
+            ->withDBUniqueAttribute('short_name')
+            ->count(2)
+            ->create();
 
         for ($i = 0; $i < count($worklists); $i++) {
-            \WorklistPatient::factory()->count(5)->create(['worklist_id' => $worklists[$i]]);
+            \WorklistPatient::factory()
+            ->count(5)
+            ->create(['worklist_id' => $worklists[$i]]);
 
             if ($i == 0 || $i == 1) {
                 $site = $sites[0];
             } else {
                 $site = $sites[1];
             }
-            \WorklistDefinitionDisplayContext::factory()->forWorklistDefinition($worklists[$i]->worklist_definition_id)->forSite($site)->create();
+            \WorklistDefinitionDisplayContext::factory()
+                ->forWorklistDefinition($worklists[$i]->worklist_definition_id)
+                ->forSite($site)
+                ->create();
         }
 
         $worklists_for_sites = [

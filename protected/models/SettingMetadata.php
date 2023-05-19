@@ -88,9 +88,10 @@ class SettingMetadata extends BaseActiveRecordVersioned
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, element_type_id, display_order, field_type_id, key, name, data, default_value, group_id, description', 'safe', 'on' => 'search'),
-            array('default_value,', 'filter', 'filter' => function ($param) {
+            array('default_value', 'filter', 'filter' => function ($param) {
                 return SettingMetadata::getPurifiedValue($param);
             }),
+            array('description', 'filter', 'filter' => array($obj = new CHtmlPurifier(),'purify')),
         );
     }
 

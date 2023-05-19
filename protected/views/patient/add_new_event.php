@@ -92,7 +92,7 @@ ksort($eventTypes);
                     $draft_event = $draft->event;
                     ?>
                 <li class="oe-event-type" data-draft-id="<?= $draft->id ?>" data-test="add-new-event-draft">
-                  <a href="<?= Yii::app()->createUrl($draft->originating_url . "&draft_id=" . $draft->id) ?>" data-id="<?= $draft->id ?>">
+                  <a href="<?= Yii::app()->createUrl("/patientEvent/loadDraft?draft_id=" . $draft->id) ?>" data-id="<?= $draft->id ?>">
                     <span class="event-type draft"><?= $draft->getEventIcon() ?></span>
                     <?= $draft->getEventName() ?>
                     <small><?= (new services\DateTime($draft->last_modified_date))->relative() ?></small>

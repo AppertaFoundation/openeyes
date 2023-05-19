@@ -270,6 +270,7 @@ class DefaultController extends BaseEventTypeController
     protected function afterUpdateElements($event)
     {
         OphCoTherapyapplication_Email::model()->archiveForEvent($event);
+        return [];
     }
 
     /**
