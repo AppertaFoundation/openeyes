@@ -954,8 +954,12 @@ class BaseEventTypeController extends BaseModuleController
                         $this->updateEventStep();
 
                         //TODO: should not be passing event?
-                        $this->afterCreateElements($this->event);
+                        $errors = array_merge($errors, $this->afterCreateElements($this->event));
 
+                        if (!empty($errors)) {
+                            $transaction->rollback();
+                            return;
+                        }
                         $this->logActivity('created event.');
 
                         $this->event->audit('event', 'create');
@@ -1294,50 +1298,56 @@ class BaseEventTypeController extends BaseModuleController
                         }
 
                         //TODO: should not be pasing event?
-                        $this->afterUpdateElements($this->event);
-                        $this->logActivity('updated event');
+                        $errors = array_merge($errors, $this->afterUpdateElements($this->event));
 
-                        $this->event->audit('event', 'update');
-
-                        $this->event->user = Yii::app()->user->id;
-
-                        if (!$this->event->save()) {
-                            throw new SystemException(
-                                'Unable to update event: ' . print_r(
-                                    $this->event->getErrors(),
-                                    true
-                                )
-                            );
-                        }
-
-                        OELog::log("Updated event {$this->event->id}");
-                        Yii::app()->event->dispatch('event_updated', ['event' => $this->event, 'action' => 'update']);
-                        $transaction->commit();
-
-                        $this->afterUpdateEvent($this->event);
-
-                        unset(
-                            Yii::app()->session['active_worklist_patient_id'],
-                            Yii::app()->session['active_step_id'],
-                            Yii::app()->session['active_step_state_data']
-                        );
-
-                        if ($this->event->parent_id) {
-                            $this->redirect(
-                                Yii::app()->createUrl(
-                                    '/' . $this->event->parent->eventType->class_name . '/default/view/' . $this->event->parent_id
-                                )
-                            );
+                        if (!empty($errors)) {
+                            $transaction->rollback();
                         } else {
-                            $template_status = $this->event->getTemplateUpdateStatusForEvent($old_template_data);
+                            $this->logActivity('updated event');
 
-                            if ($template_status !== 'UNNEEDED') {
-                                $this->redirect([$this->successUri . '?template=' . $template_status]);
-                            } else {
-                                $this->redirect([$this->successUri]);
+                            $this->event->audit('event', 'update');
+
+                            $this->event->user = Yii::app()->user->id;
+
+                            if (!$this->event->save()) {
+                                $transaction->rollback();
+                                throw new SystemException(
+                                    'Unable to update event: ' . print_r(
+                                        $this->event->getErrors(),
+                                        true
+                                    )
+                                );
                             }
+
+                            OELog::log("Updated event {$this->event->id}");
+                            Yii::app()->event->dispatch('event_updated', ['event' => $this->event, 'action' => 'update']);
+                            $transaction->commit();
+
+                            $this->afterUpdateEvent($this->event);
+
+                            unset(
+                                Yii::app()->session['active_worklist_patient_id'],
+                                Yii::app()->session['active_step_id'],
+                                Yii::app()->session['active_step_state_data']
+                            );
+
+                            if ($this->event->parent_id) {
+                                $this->redirect(
+                                    Yii::app()->createUrl(
+                                        '/' . $this->event->parent->eventType->class_name . '/default/view/' . $this->event->parent_id
+                                    )
+                                );
+                            } else {
+                                $template_status = $this->event->getTemplateUpdateStatusForEvent($old_template_data);
+
+                                if ($template_status !== 'UNNEEDED') {
+                                    $this->redirect([$this->successUri . '?template=' . $template_status]);
+                                } else {
+                                    $this->redirect([$this->successUri]);
+                                }
+                            }
+                            return;
                         }
-                        return;
                     } else {
                         throw new Exception('Unable to save edits to event');
                     }
@@ -2837,16 +2847,19 @@ class BaseEventTypeController extends BaseModuleController
      * Called after event (and elements) has been updated.
      *
      * @param Event $event
+     * @return array Validation errors
      */
     protected function afterUpdateElements($event)
     {
         $this->updateUniqueCode($event);
+        return [];
     }
 
     /**
-     * Called after event (and elements) have been created.
+     * Called after event (and elements) has been created.
      *
      * @param Event $event
+     * @return array Validation errors
      */
     protected function afterCreateElements($event)
     {
@@ -2857,6 +2870,7 @@ class BaseEventTypeController extends BaseModuleController
         if (!$event->worklist_patient_id) {
             $this->addToUnbookedWorklist($site_id, $firm_id);
         }
+        return [];
     }
 
     /**
@@ -3073,9 +3087,14 @@ class BaseEventTypeController extends BaseModuleController
     {
         $pcrRisk = new \PcrRisk();
         $pcrData = Yii::app()->request->getPost('PcrRisk', array());
+        $success = true;
         foreach ($pcrData as $side => $sideData) {
-            $pcrRisk->persist($side, $this->patient, $sideData);
+            $values = $pcrRisk->persist($side, $this->patient, $sideData);
+            if (!empty($values->getErrors())) {
+                return $values->getErrors();
+            }
         }
+        return [];
     }
 
 

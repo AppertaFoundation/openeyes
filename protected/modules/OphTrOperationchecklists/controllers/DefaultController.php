@@ -1292,7 +1292,7 @@ class DefaultController extends BaseEventTypeController
      */
     protected function afterUpdateElements($event)
     {
-        parent::afterUpdateElements($event);
+        $errors = parent::afterUpdateElements($event);
         if ($this->step && !$this->isDraft) {
             // Advance the workflow
             if (!$assignment = OphTrOperationchecklists_EventElementSetAssignment::model()->find('event_id = ?', array($event->id))) {
@@ -1309,11 +1309,15 @@ class DefaultController extends BaseEventTypeController
             // update the information attribute on the event
             $this->updateEventInfoByStep($this->getCurrentStep()->id);
         }
+        return $errors;
     }
 
+    /**
+     * @inheritDoc
+     */
     protected function afterCreateElements($event)
     {
-        parent::afterCreateElements($event);
+        $errors = parent::afterCreateElements($event);
         if ($this->step && !$this->isDraft) {
             // Advance the workflow
             if (!$assignment = OphTrOperationchecklists_EventElementSetAssignment::model()->find('event_id = ?', array($event->id))) {
@@ -1330,6 +1334,7 @@ class DefaultController extends BaseEventTypeController
             // update the information attribute on the event
             $this->updateEventInfoByStep($this->getCurrentStep()->id);
         }
+        return $errors;
     }
 
     /**

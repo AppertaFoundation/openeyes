@@ -203,36 +203,40 @@ class DefaultController extends BaseEventTypeController
                         }
 
                         // should not be passing event?
-                        $this->afterCreateElements($this->event);
+                        $errors = array_merge($errors, $this->afterCreateElements($this->event));
 
-                        $this->logActivity('created event.');
-
-                        $this->event->audit('event', 'create');
-
-                        Yii::app()->user->setFlash('success', "{$this->event_type->name} created.");
-
-                        $transaction->commit();
-                        /*
-                         * After event saved and transaction is committed
-                         * here we can generate additional events with their own transactions
-                         */
-                        $this->afterCreateEvent($this->event);
-
-                        if ($this->event->parent_id) {
-                            $this->redirect(Yii::app()->createUrl('/' . $this->event->parent->eventType->class_name . '/default/view/' . $this->event->parent_id));
+                        if (!empty($errors)) {
+                            $transaction->rollback();
                         } else {
-                            if (!empty($this->template)) {
-                                $existing_template_data = json_decode($this->template->getDetailRecord()->template_data, true);
+                            $this->logActivity('created event.');
 
-                                $template_status = $this->event->getTemplateUpdateStatusForEvent($existing_template_data);
+                            $this->event->audit('event', 'create');
 
-                                if ($template_status !== 'UNNEEDED') {
-                                    $this->redirect(array($this->successUri . $this->event->id . '?template=' . $template_status));
-                                } else {
-                                    $this->redirect(array($this->successUri . $this->event->id));
-                                }
+                            Yii::app()->user->setFlash('success', "{$this->event_type->name} created.");
+
+                            $transaction->commit();
+                            /*
+                            * After event saved and transaction is committed
+                            * here we can generate additional events with their own transactions
+                            */
+                            $this->afterCreateEvent($this->event);
+
+                            if ($this->event->parent_id) {
+                                $this->redirect(Yii::app()->createUrl('/' . $this->event->parent->eventType->class_name . '/default/view/' . $this->event->parent_id));
                             } else {
-                                $this->redirect(array($this->successUri . $this->event->id . '?template=' . EventTemplate::UPDATE_CREATE_ONLY));
+                                if (!empty($this->template)) {
+                                    $existing_template_data = json_decode($this->template->getDetailRecord()->template_data, true);
+
+                                    $template_status = $this->event->getTemplateUpdateStatusForEvent($existing_template_data);
+
+                                    if ($template_status !== 'UNNEEDED') {
+                                        $this->redirect(array($this->successUri . $this->event->id . '?template=' . $template_status));
+                                    } else {
+                                        $this->redirect(array($this->successUri . $this->event->id));
+                                    }
+                                } else {
+                                    $this->redirect(array($this->successUri . $this->event->id . '?template=' . EventTemplate::UPDATE_CREATE_ONLY));
+                                }
                             }
                         }
                     } else {
@@ -293,10 +297,13 @@ class DefaultController extends BaseEventTypeController
     }
 
 
+    /**
+     * @inheritDoc
+     */
     protected function afterCreateElements($event)
     {
         parent::afterCreateElements($event);
-        $this->persistPcrRisk();
+        return $this->persistPcrRisk();
     }
 
     private function createPrescriptionEvent()
@@ -1558,10 +1565,13 @@ class DefaultController extends BaseEventTypeController
         $element->updateMultiSelectData('OphTrOperationnote_Trabeculectomy_Complications', empty($data['MultiSelect_Complications']) ? array() : $data['MultiSelect_Complications'], 'complication_id');
     }
 
+    /**
+     * @inheritDoc
+     */
     protected function afterUpdateElements($event)
     {
         parent::afterUpdateElements($event);
-        $this->persistPcrRisk();
+        return $this->persistPcrRisk();
     }
 
     private function createCorrespondenceEvent($macro_name = null)

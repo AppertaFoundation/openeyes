@@ -1122,7 +1122,7 @@ class DefaultController extends BaseEventTypeController
     protected function afterUpdateElements($event)
     {
         $this->sendEmail($event);
-        parent::afterUpdateElements($event);
+        return parent::afterUpdateElements($event);
     }
 
     /**
@@ -1131,7 +1131,7 @@ class DefaultController extends BaseEventTypeController
     protected function afterCreateElements($event)
     {
         $this->sendEmail($event);
-        parent::afterCreateElements($event);
+        return parent::afterCreateElements($event);
     }
 
     private function sendEmail(\Event $event): void

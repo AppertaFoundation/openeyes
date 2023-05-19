@@ -427,9 +427,8 @@ class PcrRisk
         $pcrRiskValues->doctor_grade_id = (isset($data['doctor_grade_id']) && $data['doctor_grade_id'] !== '') ? $data['doctor_grade_id'] : null;
         $pcrRiskValues->can_lie_flat = (isset($data['abletolieflat']) && $data['abletolieflat'] !== 'NK') ? $data['abletolieflat'] : null;
 
-        if (!$pcrRiskValues->save()) {
-            throw new CException('PCR Risk failed to save');
-        }
+        $pcrRiskValues->save();
+        return $pcrRiskValues;
     }
 
     /**
