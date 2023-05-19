@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -56,12 +57,11 @@ class Element_OphCoCorrespondence_EsignTest extends ModelTestCase
     public function other_roles_placed_after_primary_or_secondory_roles_in_ordered_signatures()
     {
         $esign_element = Element_OphCoCorrespondence_Esign::factory()->create();
-
         $other_signature = OphCoCorrespondence_Signature::factory()
                              ->create([
                                  'element_id' => $esign_element,
                                  'signed_user_id' => User::factory(),
-                                 'signatory_role' => $this->faker->words(3)
+                                 'signatory_role' => implode(" ", $this->faker->words(3))
                              ]);
 
         $main_role = $this->faker->randomElement([
