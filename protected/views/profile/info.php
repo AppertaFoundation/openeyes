@@ -163,7 +163,7 @@
               <div class="cols-3">
                   <label for="alternate_user">Alternate User:</label>
                   <br />
-                  <small class="fade"><em>Required when out-of-office is enabled</em></small>
+                  <small class="fade"><em>Senders will be told to direct messages to this user when you're out-of-office</em></small>
               </div>
               <div class="cols-5">
                   <?php $this->widget('application.widgets.AutoCompleteSearch', ['field_name' => 'alternate_user']); ?>

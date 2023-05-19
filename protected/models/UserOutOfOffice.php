@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -44,32 +45,32 @@ class UserOutOfOffice extends BaseActiveRecordVersioned
         return parent::model($class_name);
     }
 
-    /**
-     * @return string the associated database table name
-     */
+        /**
+         * @return string the associated database table name
+         */
     public function tableName()
     {
         return 'user_out_of_office';
     }
 
-    /**
-     * @return array validation rules for model attributes.
-     */
+        /**
+         * @return array validation rules for model attributes.
+         */
     public function rules()
     {
         return array(
             array('user_id, enabled', 'required'),
             array('from_date, to_date', 'default', 'setOnEmpty' => true, 'value' => null),
-            array('from_date, to_date, alternate_user_id', 'requiredIfEnabled'),
+            array('from_date, to_date', 'requiredIfEnabled'),
             array('from_date', 'outOfOfficeDurationValidator'),
             array('user_id, from_date, to_date, alternate_user_id, enabled', 'safe'),
             array('user_id, from_date, to_date, alternate_user_id, enabled', 'search'),
         );
     }
 
-    /**
-     * @return array relational rules.
-     */
+        /**
+         * @return array relational rules.
+         */
     public function relations()
     {
         return array(
@@ -102,32 +103,32 @@ class UserOutOfOffice extends BaseActiveRecordVersioned
         ));
     }
 
-    /**
-     * If the out of office notice has been enabled but attributes have not been set
-     *
-     * @param $attribute
-     * @param $params
-     */
+        /**
+         * If the out of office notice has been enabled but attributes have not been set
+         *
+         * @param $attribute
+         * @param $params
+         */
     public function requiredIfEnabled($attribute, $params)
     {
         if ($this->enabled === '1' && (is_null($this->$attribute) || empty($this->$attribute))) {
-            $this->addError($this->getAttributeLabel($attribute), $this->getAttributeLabel($attribute).' cannot be blank');
+            $this->addError($this->getAttributeLabel($attribute), $this->getAttributeLabel($attribute) . ' cannot be blank');
         }
     }
 
     public function outOfOfficeDurationValidator($attribute, $params)
     {
         if ($this->enabled === '1' && !empty($this->to_date) && ($this->to_date < $this->from_date)) {
-            $this->addError('Out of office duration', 'To date cannot be before '.date('d M Y', strtotime($this->from_date)));
+            $this->addError('Out of office duration', 'To date cannot be before ' . date('d M Y', strtotime($this->from_date)));
         }
     }
 
-    /**
-     * Check if the user is out of office and check for alternate user
-     *
-     * @param $userid
-     * @return string|null
-     */
+        /**
+         * Check if the user is out of office and check for alternate user
+         *
+         * @param $userid
+         * @return string|null
+         */
     public function checkUserOutOfOffice($userid)
     {
         $message = null;
@@ -143,19 +144,19 @@ class UserOutOfOffice extends BaseActiveRecordVersioned
             $to_timestamp = $to_datetime->getTimestamp();
 
             if ($user->enabled === '1' && $now_timestamp >= $from_timestamp && $now_timestamp <= $to_timestamp) {
-                $message = $user->user->getFullnameAndTitle()." is currently out of office. You can instead send message to ".$user->alternate_user->getFullnameAndTitle();
+                $message = $user->user->getFullnameAndTitle() . " is currently out of office. You can instead send your message to " . $user->alternate_user->getFullnameAndTitle();
             }
         }
 
         return $message;
     }
 
-    /**
-     * Check if the user is out of office and check for alternate user, via their mailbox
-     *
-     * @param $mailbox_id
-     * @return string|null
-     */
+        /**
+         * Check if the user is out of office and check for alternate user, via their mailbox
+         *
+         * @param $mailbox_id
+         * @return string|null
+         */
     public function checkUserOutOfOfficeViaMailbox($mailbox_id)
     {
         $message = null;
@@ -178,10 +179,14 @@ class UserOutOfOffice extends BaseActiveRecordVersioned
             $to_timestamp = $to_datetime->getTimestamp();
 
             if ($out_of_office->enabled === '1' && $now_timestamp >= $from_timestamp && $now_timestamp <= $to_timestamp) {
-                $message = $out_of_office->user->getFullnameAndTitle()." is currently out of office. You can instead send message to ".$out_of_office->alternate_user->getFullnameAndTitle();
+                $message = $out_of_office->user->getFullnameAndTitle() . " is out of office until <b>" . $to_datetime->format(Helper::FULL_YEAR_FORMAT) . "</b>.";
+                if (isset($out_of_office->alternate_user)) {
+                    $message .= "\n\nThey have nominated <b>" . $out_of_office->alternate_user->getFullnameAndTitle() . "</b> as their alternate user. You can instead send your message to " . $out_of_office->alternate_user->getFullnameAndTitle() . ".";
+                }
             }
-        }
 
-        return $message;
+            $message .= "\n\nIf you still choose to send message to " . $out_of_office->user->getFullnameAndTitle() . ", please be aware that they may not respond until at least the above date.";
+        }
+            return $message;
     }
 }

@@ -181,7 +181,7 @@ if ($element->isNewRecord) {
             success: function (response) {
                 if (response) {
                     var outOfOfficeDialog = new OpenEyes.UI.Dialog.Alert({
-                        title: 'User is out of office',
+                        title: 'Recipient is out of office',
                         content: response,
                     });
                     outOfOfficeDialog.open()
