@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2018
  * This file is part of OpenEyes.
@@ -12,6 +13,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <h2>Advice Leaflet Subspecialty Assignment</h2>
@@ -109,23 +111,23 @@
     // delete a leaflet
     function deleteLeaflet(button) {
         // parse button id for category_id
-        const id_split = button['id'].split("-");
-        const id = id_split[0];
+        const id = button.id.split("-")[0];
 
-        $.ajax({
-            'type': 'POST',
-            'url': baseUrl + '/OphCiExamination/admin/deleteAdviceLeafletSubspecialty',
-            'data': {
-                'YII_CSRF_TOKEN': YII_CSRF_TOKEN,
-                'id': id,
-            },
-            'success': function (html) {
-                if (html === 'error')
+        const xhr = new XMLHttpRequest();
+        const params = `id=${encodeURIComponent(id)}&YII_CSRF_TOKEN=${encodeURIComponent(YII_CSRF_TOKEN)}`;
+        xhr.open('POST', `${baseUrl}/OphCiExamination/admin/deleteAdviceLeafletSubspecialties`);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                const html = xhr.responseText;
+                if (html === "error") {
                     showError("Category could not be deleted");
-                else
+                } else {
                     reloadLeaflets();
+                }
             }
-        });
+        };
+        xhr.send(params);
     }
 
     // load categories for Subspecialty based on id
