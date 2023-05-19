@@ -41,16 +41,6 @@ class Element_OphCoCorrespondence_Esign extends BaseEsignElement
     protected $widgetClass = CorrespondenceEsignElementWidget::class;
 
     /**
-     * Returns the static model of the specified AR class.
-     *
-     * @return static the static model class
-     */
-    public static function model($className = __CLASS__)
-    {
-        return parent::model($className);
-    }
-
-    /**
      * @return string the associated database table name
      */
     public function tableName()
@@ -63,10 +53,10 @@ class Element_OphCoCorrespondence_Esign extends BaseEsignElement
      */
     public function rules()
     {
-        return array(
-            array('event_id', 'safe'),
-            array('id, event_id', 'safe', 'on' => 'search'),
-        );
+        return [
+            ['event_id', 'safe'],
+            ['id, event_id', 'safe', 'on' => 'search'],
+        ];
     }
 
     /**
@@ -76,12 +66,12 @@ class Element_OphCoCorrespondence_Esign extends BaseEsignElement
     {
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
-        return array(
-            'event' => array(self::BELONGS_TO, Event::class, 'event_id'),
-            'user' => array(self::BELONGS_TO, User::class, 'created_user_id'),
-            'usermodified' => array(self::BELONGS_TO, User::class, 'last_modified_user_id'),
-            'signatures' => array(self::HAS_MANY, OphCoCorrespondence_Signature::class, 'element_id'),
-        );
+        return [
+            'event' => [self::BELONGS_TO, Event::class, 'event_id'],
+            'user' => [self::BELONGS_TO, User::class, 'created_user_id'],
+            'usermodified' => [self::BELONGS_TO, User::class, 'last_modified_user_id'],
+            'signatures' => [self::HAS_MANY, OphCoCorrespondence_Signature::class, 'element_id'],
+        ];
     }
 
     /**
@@ -89,10 +79,10 @@ class Element_OphCoCorrespondence_Esign extends BaseEsignElement
      */
     public function attributeLabels()
     {
-        return array(
+        return [
             'id' => 'ID',
             'event_id' => 'Event',
-        );
+        ];
     }
 
     /**
@@ -110,9 +100,9 @@ class Element_OphCoCorrespondence_Esign extends BaseEsignElement
         $criteria->compare('id', $this->id, true);
         $criteria->compare('event_id', $this->event_id, true);
 
-        return new CActiveDataProvider(get_class($this), array(
+        return new CActiveDataProvider(get_class($this), [
             'criteria' => $criteria,
-        ));
+        ]);
     }
 
     /**
@@ -127,11 +117,11 @@ class Element_OphCoCorrespondence_Esign extends BaseEsignElement
                 $signature = new OphCoCorrespondence_Signature();
                 $signature->type = BaseSignature::TYPE_OTHER_USER;
                 $signature->signatory_role = $role;
-                if(Yii::app()->user) {
+                if (Yii::app()->user) {
                     $user = User::model()->findByPk(Yii::app()->user->getId());
                     /** @var User $user */
-                    if($user) {
-                        if($user->signOffUser) {
+                    if ($user) {
+                        if ($user->signOffUser) {
                             $signature->signed_user_id = $user->signOffUser->id;
                             $signature->signatory_name = $user->signOffUser->getFullName();
                         }
@@ -178,6 +168,51 @@ class Element_OphCoCorrespondence_Esign extends BaseEsignElement
     public function getUnsignedMessage(): string
     {
         return "This correspondence must be signed before it can be sent.";
+    }
+
+    /**
+     *
+     * The ordering assumed here for signatory roles is primary > secondary > other.
+     * If either primary and/or secondary are missing, other roles will fill the gaps
+     * if they are assigned to this element.
+     *
+     * @return array An array of signatures, ordered
+     */
+    public function getOrderedSignatures(): array
+    {
+        $ordered = $this->signatures;
+
+        usort(
+            $ordered,
+            static function ($lhs, $rhs) {
+                if ($lhs->signatory_role === self::PRIMARY_ROLE) {
+                    if ($rhs->signatory_role === self::PRIMARY_ROLE) {
+                        return 0;
+                    } else {
+                        return -1;
+                    }
+                } elseif ($lhs->signatory_role === self::SECONDARY_ROLE) {
+                    if ($rhs->signatory_role === self::PRIMARY_ROLE) {
+                        return 1;
+                    } elseif ($rhs->signatory_role === self::SECONDARY_ROLE) {
+                        return 0;
+                    } else {
+                        return -1;
+                    }
+                } else {
+                    if (
+                        $rhs->signatory_role === self::PRIMARY_ROLE ||
+                        $rhs->signatory_role === self::SECONDARY_ROLE
+                    ) {
+                        return 1;
+                    } else {
+                        return 0;
+                    }
+                }
+            }
+        );
+
+        return $ordered;
     }
 
     /**

@@ -63,16 +63,16 @@ class OphCoCorrespondence_Signature extends BaseSignature
     {
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
-        return array(
-            array('element_id, type, secretary', 'required'),
-            array('element_id, id, type', 'numerical', 'integerOnly' => true),
-            array('signature_file_id', 'validateSignatureFile'),
-            array('signatory_role, signatory_name', 'length', 'max' => 64),
-            array('last_modified_date, created_date, date, time, type, signature_file_id', 'safe'),
+        return [
+            ['element_id, type, secretary', 'required'],
+            ['element_id, id, type', 'numerical', 'integerOnly' => true],
+            ['signature_file_id', 'validateSignatureFile'],
+            ['signatory_role, signatory_name', 'length', 'max' => 64],
+            ['last_modified_date, created_date, date, time, type, signature_file_id', 'safe'],
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
-            array('id, element_id, signature_file_id, signed_user_id, signatory_role, signatory_name, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on' => 'search'),
-        );
+            ['id, element_id, signature_file_id, signed_user_id, signatory_role, signatory_name, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on' => 'search'],
+        ];
     }
 
     /**
@@ -92,13 +92,13 @@ class OphCoCorrespondence_Signature extends BaseSignature
     {
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
-        return array(
-            'element' => array(self::BELONGS_TO, Element_OphCoCorrespondence_Esign::class, 'element_id'),
-            'signatureFile' => array(self::BELONGS_TO, ProtectedFile::class, 'signature_file_id'),
-            'signedUser' => array(self::BELONGS_TO, User::class, 'signed_user_id'),
-            'createdUser' => array(self::BELONGS_TO, User::class, 'created_user_id'),
-            'lastModifiedUser' => array(self::BELONGS_TO, User::class, 'last_modified_user_id'),
-        );
+        return [
+            'element' => [self::BELONGS_TO, Element_OphCoCorrespondence_Esign::class, 'element_id'],
+            'signatureFile' => [self::BELONGS_TO, ProtectedFile::class, 'signature_file_id'],
+            'signedUser' => [self::BELONGS_TO, User::class, 'signed_user_id'],
+            'createdUser' => [self::BELONGS_TO, User::class, 'created_user_id'],
+            'lastModifiedUser' => [self::BELONGS_TO, User::class, 'last_modified_user_id'],
+        ];
     }
 
     /**
@@ -106,7 +106,7 @@ class OphCoCorrespondence_Signature extends BaseSignature
      */
     public function attributeLabels()
     {
-        return array(
+        return [
             'id' => "Id",
             'element_id' => 'Element',
             'signature_file_id' => 'Signature File',
@@ -118,7 +118,7 @@ class OphCoCorrespondence_Signature extends BaseSignature
             'created_user_id' => 'Created User',
             'created_date' => 'Created Date',
             'secretary' => 'Signed by secretary',
-        );
+        ];
     }
 
     /**
@@ -149,20 +149,9 @@ class OphCoCorrespondence_Signature extends BaseSignature
         $criteria->compare('created_user_id', $this->created_user_id, true);
         $criteria->compare('created_date', $this->created_date, true);
 
-        return new CActiveDataProvider($this, array(
+        return new CActiveDataProvider($this, [
             'criteria' => $criteria,
-        ));
-    }
-
-    /**
-     * Returns the static model of the specified AR class.
-     * Please note that you should have this exact method in all your CActiveRecord descendants!
-     * @param string $className active record class name.
-     * @return OphCoCorrespondence_Signature the static model class
-     */
-    public static function model($className = __CLASS__)
-    {
-        return parent::model($className);
+        ]);
     }
 
     /**
