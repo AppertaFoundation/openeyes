@@ -62,7 +62,7 @@ class RisksAdminController extends \ModuleAdminController
 
     public function actionEdit($id = null)
     {
-        $admin = $this->_getEditAdmin($id);
+        $admin = $this->getEditAdmin($id);
         $admin->editModel();
     }
 
@@ -71,7 +71,7 @@ class RisksAdminController extends \ModuleAdminController
      * @return \Admin
      */
 
-    private function _getEditAdmin($id = null)
+    private function getEditAdmin($id = null)
     {
         $is_admin = \Yii::app()->user->checkAccess('admin');
         $admin = $this->_getAdmin($id);
@@ -123,13 +123,16 @@ class RisksAdminController extends \ModuleAdminController
         /** @var OphCiExaminationRisk $model */
 
         $data = \Yii::app()->request->getPost('OEModule_OphCiExamination_models_OphCiExaminationRisk');
-        $institutions = \Yii::app()->request->getPost('OEModule\OphCiExamination\models\OphCiExaminationRisk')['institutions'];
+        $institutions = [];
+        if (isset(\Yii::app()->request->getPost('OEModule\OphCiExamination\models\OphCiExaminationRisk')['institutions'])) {
+            $institutions = \Yii::app()->request->getPost('OEModule\OphCiExamination\models\OphCiExaminationRisk')['institutions'];
+        }
         if (\Yii::app()->user->checkAccess('admin') || is_null($id)) {
             $this->_setModelData($model, $data);
         }
 
         if ($model->hasErrors()) {
-            $admin = $this->_getEditAdmin($model);
+            $admin = $this->getEditAdmin($model);
             $this->render($admin->getEditTemplate(), array('admin' => $admin, 'errors' => $model->getErrors()));
             exit;
         }
