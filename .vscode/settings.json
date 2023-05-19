@@ -25,5 +25,12 @@
         }
     ],
     "phpsab.snifferMode": "onType",
-    "phpsab.snifferShowSources": true
+    "phpsab.snifferShowSources": true,
+    "phpunit.phpunit": "vendor/phpunit/phpunit/phpunit",
+    "phpunit.args": [
+        "--configuration ${workspaceFolder}/protected/tests/phpunit.xml"
+    ],
+    "phpunit-test-workbench.php.binaryPath": "vendor/phpunit/phpunit/phpunit",
+    "phpunit-test-workbench.phpunit.locatorPatternConfigXml": "protected/tests/phpunit.xml",
+    "phpunit-test-workbench.phpunit.testDirectory": "**/tests/unit/**"
 }
