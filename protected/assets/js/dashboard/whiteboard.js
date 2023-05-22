@@ -15,6 +15,7 @@ document.addEventListener("DOMContentLoaded", function () {
       let $wbData = $(card).children('.wb-data');
       $wbData.find('ul').toggle();
       $wbData.find('.edit-widget').toggle();
+      autosize();
   }
 
   $('.edit-widget-btn').on('click', function() {
