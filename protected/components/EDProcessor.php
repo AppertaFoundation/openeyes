@@ -198,7 +198,7 @@ SELECT
 -- All episodes for subject patient (see restriction)
 FROM episode in_ep
 -- All events for subject patient
-JOIN event in_ev
+INNER JOIN event in_ev
   ON in_ev.episode_id = in_ep.id
 -- All EyeDraw data point for subject patient events
 JOIN mview_datapoint_node in_mdp
@@ -227,7 +227,7 @@ AND NOT EXISTS (
     -- All episodes for subject patient (see restriction)
     FROM episode in2_ep
     -- All events for subject patient
-    JOIN event in2_ev
+    INNER JOIN event in2_ev
       ON in2_ev.episode_id = in2_ep.id
     -- All EyeDraw data point for subject patient events
     JOIN mview_datapoint_node in2_mdp
