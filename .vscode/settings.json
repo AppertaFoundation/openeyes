@@ -32,5 +32,28 @@
     ],
     "phpunit-test-workbench.php.binaryPath": "vendor/phpunit/phpunit/phpunit",
     "phpunit-test-workbench.phpunit.locatorPatternConfigXml": "protected/tests/phpunit.xml",
-    "phpunit-test-workbench.phpunit.testDirectory": "**/tests/unit/**"
+    "phpunit-test-workbench.phpunit.testDirectory": "**/tests/unit/**",
+    "phpsab.fixerEnable": true,
+    "phpsab.snifferEnable": true,
+    "phpsab.allowedAutoRulesets": [
+        "phpcs.xml",
+        "phpcs.xml.dist",
+        ".phpcs.xml",
+        ".phpcs.xml.dist",
+        "phpcs.ruleset.xml",
+        "ruleset.xml"
+    ],
+    "intelephense.files.exclude": [
+        "**/.git/**",
+        "**/.svn/**",
+        "**/.hg/**",
+        "**/CVS/**",
+        "**/.DS_Store/**",
+        "**/node_modules/**",
+        "**/bower_components/**",
+        "**/vendor/**/{Tests,tests}/**",
+        "**/.history/**",
+        "**/vendor/**/vendor/**"
+    ],
+    "intelephense.format.enable": false,
 }
