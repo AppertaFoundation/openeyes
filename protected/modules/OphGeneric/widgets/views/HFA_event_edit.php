@@ -1,5 +1,4 @@
 <?php
-
 /**
  * OpenEyes.
  *
@@ -42,8 +41,8 @@ use OEModule\OphGeneric\models\HFAEntry;
                             <div class="data-value"><?php echo \CHTML::numberField(
                                 'OEModule_OphGeneric_models_HFA[hfaEntry][' . $index . '][mean_deviation]',
                                 $side ? $side->mean_deviation : '',
-                                ['step' => 'any', 'max' => HFAEntry::MEAN_DEVIATION_MAX, 'min' => HFAEntry::MEAN_DEVIATION_MIN]
-                            ); ?></div>
+                                ['step' => 'any']
+                                                    ); ?></div>
                         </div>
                     </td>
                 </tr>
@@ -56,8 +55,8 @@ use OEModule\OphGeneric\models\HFAEntry;
                             <div class="data-value"><?php echo \CHTML::numberField(
                                 'OEModule_OphGeneric_models_HFA[hfaEntry][' . $index . '][visual_field_index]',
                                 $side ? $side->visual_field_index : '',
-                                ['step' => 'any', 'max' => HFAEntry::VISUAL_FIELD_INDEX_MAX, 'min' => HFAEntry::VISUAL_FIELD_INDEX_MIN]
-                            ); ?></div>
+                                ['step' => 'any']
+                                                    ); ?></div>
                         </div>
                     </td>
                 </tr>
