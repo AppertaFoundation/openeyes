@@ -221,6 +221,7 @@ AND in_ecd.eyedraw_carry_forward_canvas_flag = 1
 -- By identifying NEWER events data within same set-intersection-tuple/laterality in sub-query)
 AND in_ev.deleted = 0
 AND in_ep.deleted = 0
+AND (in_ep.change_tracker = 0 OR in_ep.change_tracker IS NULL)
 AND NOT EXISTS (
     SELECT 1
     -- All episodes for subject patient (see restriction)
@@ -245,6 +246,7 @@ AND NOT EXISTS (
   AND (in2_ev.event_date, in2_ev.created_date) > (in_ev.event_date, in_ev.created_date)
   AND in2_ev.deleted = 0
   AND in2_ep.deleted = 0
+  AND (in2_ep.change_tracker = 0 OR in2_ep.change_tracker IS NULL)
 )
 ORDER BY
   'a'
