@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Copyright Apperta Foundation 2021
  * This file is part of OpenEyes.
@@ -12,6 +13,7 @@
  * @copyright Copyright (C) 2021, Apperta Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <?php
 if ($element->isNewRecord) {
@@ -42,7 +44,7 @@ if ($element->isNewRecord) {
                 </tr>
                 <tr>
                     <td>Address</td>
-                    <td><?= CHtml::activeTextArea($element, 'address', ["class" => "cols-full"]); ?></td>
+                    <td><?= CHtml::activeTextArea($element, 'address', ["class" => "cols-full autosize"]); ?></td>
                 </tr>
                 <tr>
                     <td>Post Code</td>
@@ -105,7 +107,7 @@ if ($element->isNewRecord) {
                 <tr style="display:none" id="div_OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics_describe_ethnics">
                     <td><?=$element->getAttributeLabel('describe_ethnics');?></td>
                     <td>
-                        <?= CHtml::activeTextArea($element, 'describe_ethnics', ['class' => 'cols-full']); ?>
+                        <?= CHtml::activeTextArea($element, 'describe_ethnics', ['class' => 'cols-full autosize']); ?>
                     </td>
                 </tr>
                 </tbody>
@@ -127,11 +129,11 @@ if ($element->isNewRecord) {
                 </tr>
                 <tr>
                     <td>GP's Name</td>
-                    <td><?= CHtml::activeTextArea($element, 'gp_name', ["class" => "cols-full"]); ?></td>
+                    <td><?= CHtml::activeTextArea($element, 'gp_name', ["class" => "cols-full autosize"]); ?></td>
                 </tr>
                 <tr>
                     <td>GP's Address</td>
-                    <td><?= CHtml::activeTextArea($element, 'gp_address', ["class" => "cols-full", "rows" => 5]); ?></td>
+                    <td><?= CHtml::activeTextArea($element, 'gp_address', ["class" => "cols-full autosize", "rows" => 5]); ?></td>
                 </tr>
                 <tr>
                     <td>GP's Post Code</td>
@@ -172,7 +174,7 @@ if ($element->isNewRecord) {
                 </tr>
                 <tr>
                     <td><?=$element->getAttributeLabel('la_address');?></td>
-                    <td><?=\CHtml::activeTextArea($element, 'la_address', ['class' => 'cols-full', 'rows' => 5]);?></td>
+                    <td><?=\CHtml::activeTextArea($element, 'la_address', ['class' => 'cols-full autosize', 'rows' => 5]);?></td>
                 </tr>
                 <tr>
                     <td><?=$element->getAttributeLabel('la_postcode');?></td>
