@@ -56,4 +56,14 @@
         "**/vendor/**/vendor/**"
     ],
     "intelephense.format.enable": false,
+    "intelephense.environment.includePaths": [
+        "vendor/yiisoft/yii/framework/**",
+        "vendor/yiisoft/yii/framework",
+        "${workspaceFolder}/vendor/yii/framework/**",
+        "${workspaceFolder}/vendor/yiisoft/yii/framework",
+        "vendor/fakerphp/faker/src/Faker/**",
+        "vendor/nesk/puphpeteer/src/**",
+        "vendor/nesk/rialto/src/**",
+        "vendor/phpoffice/phpspreadsheet/src/PhpSpreadsheet/**"
+    ],
 }
