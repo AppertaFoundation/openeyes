@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <div class="data-group">
     <?=\CHtml::activeHiddenField($element, $side . '_ed_report'); ?>
@@ -51,7 +53,7 @@
                 false,
                 array(
                     'rows' => 1,
-                    'class' => 'js-comment-field',
+                    'class' => 'js-comment-field autosize cols-full',
                     'placeholder' => $element->getAttributeLabel($side . '_description'),
                 )
             ) ?>
@@ -70,4 +72,3 @@
   </div>
 
 </div>
-
