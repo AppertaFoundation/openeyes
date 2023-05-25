@@ -17,8 +17,8 @@
  */
 
 use OEModule\OphCoMessaging\models\Mailbox;
-use OEModule\OphCoMessaging\models\OphCoMessaging_Message_Recipient;
 use OEModule\OphCoMessaging\models\OphCoMessaging_Message_MessageType;
+use OEModule\OphCoMessaging\models\OphCoMessaging_Message_Recipient;
 
 $for_the_attention_of = $element->for_the_attention_of ?? new OphCoMessaging_Message_Recipient();
 
@@ -37,7 +37,7 @@ $general_type_id = OphCoMessaging_Message_MessageType::model()->find('name = "Ge
 $query_type_id = OphCoMessaging_Message_MessageType::model()->find('name = "Query"')->id;
 
 if ($element->isNewRecord) {
-    $element->message_type_id = $general_type_id;
+    $element->message_type_id = null;
     $element->sender_mailbox_id = $personal_mailbox_id;
 }
 ?>
@@ -90,7 +90,7 @@ if ($element->isNewRecord) {
           <td>
             Type
           </td>
-          <td>
+          <td data-test="message-type-container">
               <?php echo $form->radioButtons(
                   $element,
                   'message_type_id',
@@ -99,7 +99,7 @@ if ($element->isNewRecord) {
                       'id',
                       'name'
                   ),
-                  $element->message_type_id ? $element->message_type_id : 2,
+                  $element->message_type_id,
                   false,
                   false,
                   false,
