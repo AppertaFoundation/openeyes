@@ -532,10 +532,10 @@ class UserIdentity extends CUserIdentity
         reset($firms);
 
         // Select firm
-        if (
-            $user->last_firm_id
-            && Firm::model()->find('id = :id', [':id' => $user->last_firm_id])->institution_id === $app->session['selected_institution_id']
-        ) {
+        $last_firm = Firm::model()->findByPk($user->last_firm_id);
+        $last_firm_institution_id = $last_firm->institution_id ?? null;
+
+        if ($last_firm && (is_null($last_firm_institution_id) || $last_firm_institution_id === $app->session['selected_institution_id'])) {
             $app->session['selected_firm_id'] = $user->last_firm_id;
         } elseif (count($user->firms)) {
             // Set the firm to one the user is associated with

@@ -34,6 +34,7 @@ use OEModule\OphCoMessaging\models\MailboxUser;
  * @property int $global_firm_rights
  * @property int $correspondence_sign_off_user_id
  * @property string $correspondence_sign_off_text
+ * @property int $last_firm_id
  *
  * @property User $signOffUser
  * @property Mailbox[] $mailboxes
@@ -366,7 +367,7 @@ class User extends BaseActiveRecordVersioned
     public function getFirmsForCurrentInstitution()
     {
         $criteria = new CDbCriteria();
-        $criteria->addCondition('institution_id = ' . Yii::app()->session['selected_institution_id'] . ' OR institution_id IS NULL');
+        $criteria->addCondition('t.institution_id = ' . Yii::app()->session['selected_institution_id'] . ' OR t.institution_id IS NULL');
         return $this->getAvailableFirms($criteria);
     }
 
