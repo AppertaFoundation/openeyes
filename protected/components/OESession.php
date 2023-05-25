@@ -145,17 +145,13 @@ class OESession extends CDbHttpSession
     public function getSelectedUser()
     {
         if (!$this->selected_user) {
-            $user_id = $this->get('selected_user_id');
+            $user_id = $this->get('user')->id;
 
             if (empty($user_id)) {
                 $user_id = Yii::app()->user->id;
             }
 
-            if (!$user_id) {
-                return null;
-            }
-
-            $this->selected_user = User::model()->cache(10)->findByPk($user_id);
+            $this->selected_user = User::model()->findByPk($user_id);
             if (!$this->selected_user) {
                 throw new Exception("User with id '$user_id' not found");
             }

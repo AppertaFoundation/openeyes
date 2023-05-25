@@ -55,6 +55,10 @@ trait MocksSession
                 ->willReturnCallback(function () {
                     return Institution::model()->findByPk($this->session_values['selected_institution_id']);
                 });
+            $session->method('getSelectedUser')
+                ->willReturnCallback(function () {
+                    return  User::model()->findByPk(Yii::app()->user->id);
+                });
 
             \Yii::app()->setComponent('session', $session);
         }
