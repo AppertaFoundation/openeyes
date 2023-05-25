@@ -33,11 +33,12 @@ if (!isset($cc_recipients)) {
 $copy_to_recipient_limit = Yii::app()->params['OphCoMessaging_copyto_user_limit'];
 $personal_mailbox_id = Mailbox::model()->forPersonalMailbox(\Yii::app()->user->id)->find()->id;
 
-$general_type_id = OphCoMessaging_Message_MessageType::model()->find('name = "General"')->id;
-$query_type_id = OphCoMessaging_Message_MessageType::model()->find('name = "Query"')->id;
+$message_types = OphCoMessaging_Message_MessageType::model()->findAll(array('order' => 'display_order asc'));
+$default_type_name = \SettingMetadata::model()->getSetting('deafult_ophcomessaging_message_message_type');
+$default_type_id =  !empty($default_type_name) ? array_search($default_type_name, array_column($message_types, 'name')) : null;
 
 if ($element->isNewRecord) {
-    $element->message_type_id = null;
+    $element->message_type_id = isset($default_type_id) ? $message_types[$default_type_id]->id : null;
     $element->sender_mailbox_id = $personal_mailbox_id;
 }
 ?>
@@ -94,11 +95,7 @@ if ($element->isNewRecord) {
               <?php echo $form->radioButtons(
                   $element,
                   'message_type_id',
-                  CHtml::listData(
-                      OEModule\OphCoMessaging\models\OphCoMessaging_Message_MessageType::model()->findAll(array('order' => 'display_order asc')),
-                      'id',
-                      'name'
-                  ),
+                  CHtml::listData($message_types, 'id', 'name'),
                   $element->message_type_id,
                   false,
                   false,
@@ -124,9 +121,9 @@ if ($element->isNewRecord) {
         if (!$element->isNewRecord) {
             foreach ($element->recipients as $recipient) {
                 echo CHtml::hiddenField(
-                CHtml::activeName($element, 'recipients[' . $recipient->mailbox_id . '][id]'),
-                $recipient->id,
-                ['data-test' => 'message-recipient-id']
+                    CHtml::activeName($element, 'recipients[' . $recipient->mailbox_id . '][id]'),
+                    $recipient->id,
+                    ['data-test' => 'message-recipient-id']
                 );
             }
         }
@@ -304,12 +301,6 @@ if ($element->isNewRecord) {
     $('.js-edit-message').click(function() {
       $('.js-preview-action, .js-editor-area').show();
       $('.js-edit-or-send-actions, .js-preview-area').hide();
-    });
-
-    $('.js-message-is-reply').change(function() {
-      const newState = $(this).attr('checked') === 'checked';
-
-      $('.js-message-type').val(newState ? '<?= $query_type_id ?>' : '<?= $general_type_id ?>');
     });
    });
 </script>
