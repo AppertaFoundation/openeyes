@@ -33,6 +33,15 @@ class EventSubtypeFactory extends ModelFactory
         ];
     }
 
+    public function configure()
+    {
+        // event_subtype is the primary key for the table and is a string, so it's possible to have primary key conflicts when generating EventSubtype instances,
+        // hence the need to ensure the generated values are unique.
+        // Uses microtime to prevent issues with tests running in quick succession (i.e. within the same second)
+        return $this->withUniquePostfix(microtime())
+                    ->withDBUniqueAttribute('event_subtype');
+    }
+
     public function allowManualEntry(): self
     {
         return $this->state(function () {

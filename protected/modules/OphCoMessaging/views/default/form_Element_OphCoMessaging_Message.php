@@ -112,7 +112,7 @@ if ($element->isNewRecord) {
               <td>Priority</td>
               <td>
                 <label class="highlight inline">
-                  <?= CHtml::activeCheckBox($element, 'urgent') ?>
+                  <?= CHtml::activeCheckBox($element, 'urgent', ['data-test' => 'message-urgent-status']) ?>
                   Message is urgent <i class="oe-i status-urgent small pad-l"></i>
                 </label>
               </td>
@@ -120,6 +120,17 @@ if ($element->isNewRecord) {
           </tbody>
         </table>
         <?= $form->hiddenField($element, 'sender_mailbox_id') ?>
+        <?php
+        if (!$element->isNewRecord) {
+            foreach ($element->recipients as $recipient) {
+                echo CHtml::hiddenField(
+                CHtml::activeName($element, 'recipients[' . $recipient->mailbox_id . '][id]'),
+                $recipient->id,
+                ['data-test' => 'message-recipient-id']
+                );
+            }
+        }
+        ?>
       </div>
       <div class="cols-6">
         <div class="highlighter">
@@ -199,8 +210,8 @@ if ($element->isNewRecord) {
      const primaryValue = isPrimaryRecipient ? '1' : '0';
 
      const recipientLabel = `<li>${name}<i class="oe-i remove-circle small-icon pad-left"></i></li>`;
-     const mailboxField = `<input type="hidden" name="OEModule_OphCoMessaging_models_OphCoMessaging_Message_Recipient[mailbox_id][${id}]" value="${id}" data-recipient-index="{$index}" />`;
-     const primaryRecipientField = `<input type="hidden" name="OEModule_OphCoMessaging_models_OphCoMessaging_Message_Recipient[primary_recipient][${id}]" value="${primaryValue}" />`;
+     const mailboxField = `<input type="hidden" name="<?= CHtml::activeName($element, 'recipients[${id}][mailbox_id]') ?>" value="${id}" data-recipient-index="{$index}" />`;
+     const primaryRecipientField = `<input type="hidden" name="<?= CHtml::activeName($element, 'recipients[${id}][primary_recipient]') ?>" value="${primaryValue}" />`;
 
      return $('<ul class="oe-multi-select inline">' + recipientLabel + mailboxField + primaryRecipientField + '</ul>');
    }
@@ -272,7 +283,7 @@ if ($element->isNewRecord) {
 
         const userField = $(this).closest('ul');
 
-        const is_primary = userField.find('input[name^="OEModule_OphCoMessaging_models_OphCoMessaging_Message_Recipient[primary_recipient]"]').val();
+        const is_primary = userField.find('input[name$="[primary_recipient]"]').val();
 
         if (is_primary === '1') {
           $('#fao-search').show();

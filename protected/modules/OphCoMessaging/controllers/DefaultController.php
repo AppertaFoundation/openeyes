@@ -281,40 +281,6 @@ class DefaultController extends \BaseEventTypeController
         echo \CJSON::encode($res);
     }
 
-    protected function setComplexAttributes_Element_OphCoMessaging_Message($element, $data, $index)
-    {
-        $recipient_data = $data['OEModule_OphCoMessaging_models_OphCoMessaging_Message_Recipient'] ?? ['mailbox_id' => []];
-        $recipients = [];
-
-        $cc_used = false;
-
-        foreach ($recipient_data['mailbox_id'] as $index => $mailbox_id) {
-            $is_primary_recipient = $recipient_data['primary_recipient'][$index] === '1';
-            $cc_used = $cc_used || $is_primary_recipient;
-
-            $recipient = new OphCoMessaging_Message_Recipient();
-            $recipient->mailbox_id = $mailbox_id;
-            $recipient->primary_recipient = $is_primary_recipient;
-
-            $recipients[] = $recipient;
-        }
-
-        $element->cc_enabled = $cc_used;
-
-        $element->recipients = $recipients;
-    }
-
-    protected function saveComplexAttributes_Element_OphCoMessaging_Message($element, $data, $index)
-    {
-        foreach ($element->recipients as $recipient) {
-            if (empty($recipient->element_id)) {
-                $recipient->element_id = $element->id;
-
-                $recipient->save();
-            }
-        }
-    }
-
     /**
      * Convenience function for performing redirect once a message has been manipulated.
      */

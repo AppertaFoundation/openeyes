@@ -47,14 +47,14 @@ if (!isset($new_comment)) {
                     </tr>
                     <tr>
                         <th>Recipient</th>
-                        <td>
+                        <td data-test="message-primary-recipient-mailbox-name">
                             <?= $element->for_the_attention_of->mailbox->name ?></div>
                         </td>
                     </tr>
                     <?php if ($element->cc_enabled) { ?>
                     <tr>
                         <th>CC'd</th>
-                        <td>
+                        <td data-test="message-cc-recipient-mailbox-names">
                             <?php
                                 $cc_names = [];
 
@@ -79,7 +79,7 @@ if (!isset($new_comment)) {
                         <th>Priority</th>
                         <td>
                             <i class="oe-i status-urgent no-hover small pad-right"></i>
-                            <span class="highlighter orange">Urgent message</span>
+                            <span class="highlighter orange" data-test="message-urgent-indicator">Urgent message</span>
                         </td>
                     </tr>
                     <?php } ?>

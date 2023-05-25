@@ -185,4 +185,54 @@ class Element_OphCoMessaging_MessageTest extends \ModelTestCase
         $this->assertCount(2, $element->recipients);
         $this->assertModelIs($primary, $element->for_the_attention_of->mailbox);
     }
+
+    /** @test */
+    public function cannot_change_recipients_when_updating()
+    {
+        $primary = Mailbox::factory()->create();
+        list($cc1, $cc2) = Mailbox::factory()->count(2)->create();
+
+        $element = Element_OphCoMessaging_Message::factory()
+            ->withCCRecipients([
+                [$cc1, false],
+                [$cc2, false]
+            ])
+            ->withPrimaryRecipient($primary, false)
+            ->create();
+
+        $element->scenario = 'update';
+
+        // Recipients still matches what the element was created with and should be valid
+        $element->recipients = OphCoMessaging_Message_Recipient::model()->findAllByAttributes(['element_id' => $element->id]);
+        $this->assertAttributeValid($element, 'recipients');
+
+        // Recipients does not match what the element was created with so should be invalid
+        $element->recipients = [];
+        $this->assertAttributeInvalid($element, 'recipients', 'cannot have recipients changed');
+    }
+
+    /** @test */
+    public function cc_enabled_set_on_save_when_message_has_cc_recipients()
+    {
+        $primary = Mailbox::factory()->create();
+        list($cc1, $cc2) = Mailbox::factory()->count(2)->create();
+
+        $element_without_cc = Element_OphCoMessaging_Message::factory()
+            ->withPrimaryRecipient($primary, false)
+            ->create();
+
+        $element_with_cc = Element_OphCoMessaging_Message::factory()
+            ->withCCRecipients([
+                [$cc1, false],
+                [$cc2, false]
+            ])
+            ->withPrimaryRecipient($primary, false)
+            ->create();
+
+        $element_without_cc->save(false);
+        $element_with_cc->save(false);
+
+        $this->assertFalse($element_without_cc->cc_enabled);
+        $this->assertTrue($element_with_cc->cc_enabled);
+    }
 }

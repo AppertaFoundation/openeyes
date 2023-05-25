@@ -18,6 +18,7 @@
 import './yii-commands'
 import './ui/index'
 import './ui/worklist'
+import chaiString from 'chai-string'
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
@@ -26,5 +27,7 @@ before(() => {
     // ensure assets are not cached in the browser between test runs
     Cypress.automation('remote:debugger:protocol', {
         command: 'Network.clearBrowserCache'
-      });
+    });
+
+    chai.use(chaiString);
 });
