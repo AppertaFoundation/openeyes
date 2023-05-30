@@ -134,7 +134,7 @@ if ($element->isNewRecord) {
           Information in a message should relate only to the clinical care of the patient. Messages should not be used for the purposes of general communication between users.
         </div>
         <div class="row">
-          <b>Messages are part of the patient record and can not be edited once sent.</b>
+          <b>Messages are part of the patient record and cannot be edited once sent.</b>
         </div>
         <div class="msg-editor">
             <?php if ($element->isNewRecord) { ?>
