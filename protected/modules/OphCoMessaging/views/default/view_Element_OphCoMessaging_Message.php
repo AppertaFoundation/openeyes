@@ -151,7 +151,7 @@ if (!isset($new_comment)) {
                 <hr class="divider" />
                 <div class="msg-reply">Your reply … <small>(can not be edited once sent)</small>
                 <div class="highlighter small-row">
-                    <b>Messages are part of the patient record and can not be edited once sent.</b>
+                    <b>Messages are part of the patient record and cannot be edited once sent.</b>
                 </div>
                 <div class="msg-editor">
                     <?=
