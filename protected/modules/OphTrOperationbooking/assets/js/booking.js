@@ -188,7 +188,7 @@ $(document).ready(function() {
 		} else {
 			e.preventDefault();
 			let dialog = new OpenEyes.UI.Dialog.Confirm({
-				content: "The allowed number of complex bookings has been already been reached for this session. Are you sure you want to add another complex booking?"
+				content: "The allowed number of complex bookings has already been reached for this session. Are you sure you want to add another complex booking?"
 			});
 			dialog.on('ok', function () {
 				$('#bookingForm').submit();
