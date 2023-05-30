@@ -125,9 +125,9 @@
                             </td>
                         </tr>
                     <?php } elseif ($institution_id && $metadata->lowest_setting_level !== 'INSTALLATION') { ?>
-                        <tr class="clickable" data-uri="<?= $data_uri ?>">
+                        <tr class="clickable" data-uri="<?= $data_uri ?>" data-test="admin-system-setting">
                             <td><?= $purifier->purify($metadata->name);?></td>
-                            <td><?= $purifier->purify($metadata_value);?></td>
+                            <td data-test="admin-system-setting-value"><?= $purifier->purify($metadata_value);?></td>
                             <td>
                             <?php if ($is_admin) { ?>
                                 <i class="oe-i info small js-has-tooltip" data-tooltip-content="This parameter value is specific to the currently selected institution."></i>
@@ -140,9 +140,9 @@
                             </td>
                         </tr>
                     <?php } else { ?>
-                        <tr class="clickable" data-uri="<?= $data_uri ?>">
+                        <tr class="clickable" data-uri="<?= $data_uri ?>" data-test="admin-system-setting">
                             <td><?= $purifier->purify($metadata->name);?></td>
-                            <td><?= $purifier->purify($metadata_value);?></td>
+                            <td data-test="admin-system-setting-value"><?= $purifier->purify($metadata_value);?></td>
                             <td></td>
                             <td><?php if (!empty($metadata->description)) : ?>
                                 <i class="oe-i status-query small js-has-tooltip" data-tooltip-content="<?= $purifier->purify($metadata->description) ?>"></i>

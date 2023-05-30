@@ -16,6 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "setting_group".
  *
@@ -26,6 +28,8 @@
  */
 class SettingGroup extends BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     /**
      * @return string the associated database table name
      */
@@ -41,13 +45,13 @@ class SettingGroup extends BaseActiveRecordVersioned
     {
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
-        return array(
-            array('name', 'required'),
-            array('name', 'safe'),
+        return [
+            ['name', 'required'],
+            ['name', 'safe'],
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, name', 'safe', 'on' => 'search'),
-        );
+            ['id, name', 'safe', 'on' => 'search'],
+        ];
     }
 
     /**
@@ -69,10 +73,10 @@ class SettingGroup extends BaseActiveRecordVersioned
      */
     public function attributeLabels()
     {
-        return array(
+        return [
             'id' => 'ID',
             'name' => 'Name',
-        );
+        ];
     }
 
     /**
@@ -90,8 +94,8 @@ class SettingGroup extends BaseActiveRecordVersioned
         $criteria->compare('id', $this->id, true);
         $criteria->compare('name', $this->name, true);
 
-        return new CActiveDataProvider(get_class($this), array(
+        return new CActiveDataProvider(get_class($this), [
             'criteria' => $criteria,
-        ));
+        ]);
     }
 }
