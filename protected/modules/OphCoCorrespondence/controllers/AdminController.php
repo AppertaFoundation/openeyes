@@ -182,9 +182,8 @@ class AdminController extends \ModuleAdminController
         }
 
         if (@$_GET['firm_id']) {
-            $criteria->addCondition('firms_firms.firm_id = :firm_id OR institutions_institutions.institution_id = :institution_id');
+            $criteria->addCondition('firms_firms.firm_id = :firm_id');
             $criteria->params[':firm_id'] = $_GET['firm_id'];
-            $criteria->params[':institution_id'] = Yii::app()->session['selected_institution_id'];
         }
 
         if ($filter_name_and_episode_status) {
