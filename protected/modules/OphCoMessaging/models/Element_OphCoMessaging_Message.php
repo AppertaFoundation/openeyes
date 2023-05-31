@@ -18,9 +18,8 @@
 
 namespace OEModule\OphCoMessaging\models;
 
-use OE\factories\models\traits\HasFactory;
 use EventSubTypeItem;
-use OEModule\OphCoMessaging\models\Mailbox;
+use OE\factories\models\traits\HasFactory;
 
 /**
  * This is the model class for table "et_ophcomessaging_message".
@@ -295,7 +294,14 @@ class Element_OphCoMessaging_Message extends \BaseEventTypeElement
             unset($this->message_type);
         }
 
-        $this->cc_enabled = count($this->cc_recipients ?? []) > 0;
+        $this->cc_enabled = false;
+
+        foreach ($this->recipients as $recipient) {
+            if ($recipient->primary_recipient === '0') {
+                $this->cc_enabled = true;
+                break;
+            }
+        }
 
         return parent::beforeSave();
     }
