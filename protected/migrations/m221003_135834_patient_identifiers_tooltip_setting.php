@@ -15,7 +15,7 @@ class m221003_135834_patient_identifiers_tooltip_setting extends CDbMigration
             'name' => 'Enable Patient Identifier tooltip',
             'description' => 'Enable Patient Identifier tooltip',
             'data' => serialize(['on' => 'On', 'off' => 'Off']),
-            'default_value' => 'on',
+            'default_value' => 'off',
             'group_id' => 15,
         ));
     }
@@ -25,6 +25,7 @@ class m221003_135834_patient_identifiers_tooltip_setting extends CDbMigration
         $this->delete(
             'setting_metadata',
             '`key` = :key',
-            ['key' => 'enable_patient_identifier_tooltip']);
+            ['key' => 'enable_patient_identifier_tooltip']
+        );
     }
 }
