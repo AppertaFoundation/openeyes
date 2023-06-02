@@ -57,7 +57,8 @@ class Element_OphCiExamination_ClinicProcedures extends \BaseEventTypeElement
 
     protected function afterValidate()
     {
-        $entries = $_POST['OEModule_OphCiExamination_models_Element_OphCiExamination_ClinicProcedures']['entries'];
+        // The NULL below is to deal with drafts
+        $entries = $_POST ? $_POST['OEModule_OphCiExamination_models_Element_OphCiExamination_ClinicProcedures']['entries'] : NULL;
         if (isset($entries)) {
             foreach ($entries as $entry) {
                 if (!array_key_exists('date', $entry) || $entry['date'] === '') {
