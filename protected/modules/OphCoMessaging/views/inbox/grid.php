@@ -76,8 +76,8 @@ if (!$messages->totalItemCount) {
         <col class="cols-icon">
         <col class="cols-1">
         <col class="cols-1">
-        <col class="cols-2">
-        <col class="cols-4">
+        <col class="cols-3">
+        <col class="cols-3">
         <col class="cols-1">
     </colgroup>
     <thead>
@@ -201,13 +201,11 @@ if (!$messages->totalItemCount) {
                         && $message->last_comment->created_user_id != \Yii::app()->user->id
                     )
                 ) {
-                    if ($mailbox) {
-                        if ($mailbox->is_personal) { ?>
-                            <i class="oe-i save small pad js-has-tooltip js-mark-as-read-btn" data-tooltip-content="Mark as read"></i>
-                        <?php } else { ?>
-                            <i class="oe-i save-team small pad js-has-tooltip js-mark-as-read-btn" data-tooltip-content="Mark as read for all team members"></i>
-                        <?php }
-                    }
+                    if ($message->for_the_attention_of->mailbox->is_personal) : ?>
+                        <i class="oe-i save small pad js-has-tooltip js-mark-as-read-btn" data-tooltip-content="Mark as read"></i>
+                    <?php else : ?>
+                        <i class="oe-i save-team small pad js-has-tooltip js-mark-as-read-btn" data-tooltip-content="Mark as read for all team members"></i>
+                    <?php endif;
                 } ?>
                 <a href="<?= $link_url ?>">
                     <i class="oe-i direction-right-circle small pad"></i>
