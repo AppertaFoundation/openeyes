@@ -32,7 +32,7 @@
     ],
     "phpunit-test-workbench.php.binaryPath": "vendor/phpunit/phpunit/phpunit",
     "phpunit-test-workbench.phpunit.locatorPatternConfigXml": "protected/tests/phpunit.xml",
-    "phpunit-test-workbench.phpunit.testDirectory": "**/tests/unit/**",
+    "phpunit-test-workbench.phpunit.testDirectory": "protected/**/tests/**",
     "phpsab.fixerEnable": true,
     "phpsab.snifferEnable": true,
     "phpsab.allowedAutoRulesets": [

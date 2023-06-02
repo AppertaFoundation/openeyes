@@ -222,7 +222,7 @@ $coreapi = new CoreAPI();
             allUnreadButton.removeClass('selected');
 
             allUnreadButton.on('click', function() {
-              window.location.href = jQuery.query.remove('mailbox').set('messages', 'all').toString();
+              window.location.href = jQuery.query.remove('mailbox').set('messages', 'unread_all').toString();
             });
         }
       $('.js-mailbox-hd').click(function() {
