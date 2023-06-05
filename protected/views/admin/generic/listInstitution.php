@@ -15,21 +15,28 @@
 ?>
 
 <?php
-$institution_id = !empty($_GET['institution_id']) ? $_GET['institution_id'] : \Yii::app()->session['selected_institution_id'];
+if ($admin->has_global_institution_option && $this->checkAccess('admin')) {
+    $institution_id = Yii::app()->request->getQuery('institution_id');
+    $htmloptions = array('empty' => 'All Institutions', 'class' => 'cols-full js-institution-id');
+} else {
+    $institution_id = !empty($_GET['institution_id']) ? $_GET['institution_id'] : \Yii::app()->session['selected_institution_id'];
+    $htmloptions = array('class' => 'cols-full js-institution-id');
+}
+
 if (!isset($displayOrder)) {
     $displayOrder = 0;
 }
 if (!isset($uniqueid)) {
     $uniqueid = $this->uniqueid;
 }
+
 ?>
 <?php $this->renderPartial('//base/_messages'); ?>
 <div class='<?=$admin->div_wrapper_class?>' >
     <?php if (!$admin->isSubList()) : ?>
         <h2><?php echo $admin->getModelDisplayName(); ?></h2>
         <form method="GET">
-        <?= \CHtml::dropDownList('institution_id', $institution_id, Institution::model()->getTenantedList(false, true),
-                                 array('class' => 'cols-full js-institution-id')) ?>
+        <?= \CHtml::dropDownList('institution_id', $institution_id, Institution::model()->getTenantedList(false, true), $htmloptions) ?>
         </form>
     <?php endif; ?>
     <?php $this->widget('GenericSearch', array('search' => $admin->getSearch(), 'subList' => $admin->isSubList())); ?>

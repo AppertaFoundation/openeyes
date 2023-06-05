@@ -43,6 +43,13 @@ class Admin
     public $div_wrapper_class = 'cols-full';
 
     /**
+     * Determines whether to display an 'All institutions' option in the institution drop-down list.
+     *
+     * @var boolean
+     */
+    public bool $has_global_institution_option = false;
+
+    /**
      * @var string
      */
     protected $listTemplate = '//admin/generic/list';
@@ -96,6 +103,20 @@ class Admin
      * @var string
      */
     protected $customSaveURL;
+
+    /**
+     * Asset manager.
+     *
+     * @var CAssetManager
+     */
+    protected $assetManager;
+
+    /**
+     * Current HTTP request.
+     *
+     * @var CHttpRequest
+     */
+    protected $request;
 
     /**
      * @var string
