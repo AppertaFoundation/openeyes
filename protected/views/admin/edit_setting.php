@@ -61,7 +61,8 @@
         <?= CHtml::submitButton('Save ' . $metadata->name, [
                 'class' => 'green hint',
                 'name' => 'save',
-                'id' => 'et_save'
+                'id' => 'et_save',
+                'data-test' => 'save-system-setting'
             ])
 ?>
 

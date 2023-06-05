@@ -180,12 +180,12 @@ class UserOutOfOffice extends BaseActiveRecordVersioned
 
             if ($out_of_office->enabled === '1' && $now_timestamp >= $from_timestamp && $now_timestamp <= $to_timestamp) {
                 $message = $out_of_office->user->getFullnameAndTitle() . " is out of office until <b>" . $to_datetime->format(Helper::FULL_YEAR_FORMAT) . "</b>.";
+
                 if (isset($out_of_office->alternate_user)) {
                     $message .= "\n\nThey have nominated <b>" . $out_of_office->alternate_user->getFullnameAndTitle() . "</b> as their alternate user. You can instead send your message to " . $out_of_office->alternate_user->getFullnameAndTitle() . ".";
                 }
+                $message .= "\n\nIf you still choose to send message to " . $out_of_office->user->getFullnameAndTitle() . ", please be aware that they may not respond until at least the above date.";
             }
-
-            $message .= "\n\nIf you still choose to send message to " . $out_of_office->user->getFullnameAndTitle() . ", please be aware that they may not respond until at least the above date.";
         }
             return $message;
     }

@@ -9,7 +9,6 @@
         "foxundermoon.shell-format",
         "github.vscode-pull-request-github",
         "janisdd.vscode-edit-csv",
-        "junstyle.php-cs-fixer",
         "mads-hartmann.bash-ide-vscode",
         "mohd-akram.vscode-html-format",
         "naumovs.color-highlight",
@@ -17,6 +16,6 @@
         "slevesque.vscode-zipexplorer",
         "timonwong.shellcheck",
         "swordev.phpstan",
-        "chiefmyron.phpunit-test-workbench"
+        "stuart.unique-window-colors"
     ]
 }

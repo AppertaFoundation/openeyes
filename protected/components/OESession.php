@@ -21,6 +21,7 @@ class OESession extends CDbHttpSession
     protected $selected_firm;
     protected $selected_site;
     protected $selected_institution;
+    protected $selected_user;
 
     //Note to any future developers: OELog does not work reliably in this function. Use error_log() instead and (most likely) find logs in /var/logs/apache2/error.log
     public function writeSession($id, $data)
@@ -139,5 +140,23 @@ class OESession extends CDbHttpSession
         }
 
         return $this->selected_institution;
+    }
+
+    public function getSelectedUser()
+    {
+        if (!$this->selected_user) {
+            $user_id = $this->get('user')->id;
+
+            if (empty($user_id)) {
+                $user_id = Yii::app()->user->id;
+            }
+
+            $this->selected_user = User::model()->findByPk($user_id);
+            if (!$this->selected_user) {
+                throw new Exception("User with id '$user_id' not found");
+            }
+        }
+
+        return $this->selected_user;
     }
 }

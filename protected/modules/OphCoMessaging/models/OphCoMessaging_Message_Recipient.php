@@ -22,6 +22,8 @@ use OE\factories\models\traits\HasFactory;
 /**
  * This is the model class for table "ophcomessaging_message_recipient"
  *
+ * When a message element is created, the recipients associated with that message should not change.
+ *
  * The following are the available columns in table:
  *
  * @property int $id
@@ -34,15 +36,6 @@ use OE\factories\models\traits\HasFactory;
 class OphCoMessaging_Message_Recipient extends \BaseActiveRecordVersioned
 {
     use HasFactory;
-    /**
-     * Returns the static model of the specified AR class.
-     *
-     * @return the static model class
-     */
-    public static function model($classname = __CLASS__)
-    {
-        return parent::model($classname);
-    }
 
     /**
      * @return string the associated database table name
@@ -60,7 +53,8 @@ class OphCoMessaging_Message_Recipient extends \BaseActiveRecordVersioned
         return [
             ['element_id, mailbox_id, primary_recipient', 'safe'],
             ['element_id, mailbox_id', 'required'],
-            ['mailbox_id', 'onlyOnePrimaryRecipientValidator'],
+            ['mailbox_id', 'validateOnlyOnePrimaryRecipient'],
+            ['mailbox_id, primary_recipient', 'validateMailboxAndPrimaryRecipientHaveNotChangedOnUpdate', 'except' => 'insert'],
             ['id, element_id, mailbox_id, primary_recipient', 'safe', 'on' => 'search'],
         ];
     }
@@ -92,18 +86,34 @@ class OphCoMessaging_Message_Recipient extends \BaseActiveRecordVersioned
         $criteria->compare('mailbox_id', $this->mailbox_id, true);
         $criteria->compare('primary_recipient', $this->primary_recipient);
 
-        return new \CActiveDataProvider(get_class($this), array(
+        return new \CActiveDataProvider(get_class($this), [
             'criteria' => $criteria,
-        ));
+        ]);
     }
 
-    public function onlyOnePrimaryRecipientValidator($attribute, $params)
+    public function validateOnlyOnePrimaryRecipient($attribute, $params)
     {
         if ($this->primary_recipient === '1' &&
             !empty($this->element->for_the_attention_of) &&
             $this->element->for_the_attention_of->mailbox_id !== $this->mailbox_id
         ) {
             $this->addError('mailbox_id', 'Only one primary recipient is permitted');
+        }
+    }
+
+    /*
+     * When a message is created, its recipients should not change.
+     * In practical terms this means the mailbox and primary recipient status
+     * need to stay fixed.
+     */
+    public function validateMailboxAndPrimaryRecipientHaveNotChangedOnUpdate()
+    {
+        if ($this->isAttributeDirty('mailbox_id')) {
+            $this->addError('mailbox_id', 'cannot change the mailbox for a recipient after a message has been created');
+        }
+
+        if ($this->isAttributeDirty('primary_recipient')) {
+            $this->addError('primary_recipient', 'cannot change the primary recipient status for a recipient after a message has been created');
         }
     }
 

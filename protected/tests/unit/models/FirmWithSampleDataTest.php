@@ -87,7 +87,7 @@ class FirmWithSampleDataTest extends OEDbTestCase
     protected function getFirmsForDefaultServiceFirmTests(): array
     {
         $not_owning_firm = Firm::factory()
-            ->withNewSubspecialty()
+            ->withSubspecialty()
             ->cannotOwnEpisode()
             ->create([
                 'institution_id' => Institution::factory()

@@ -685,9 +685,10 @@ class CsvController extends BaseController
         //referred to
         if(!empty($patient_raw_data['referred_to'])){
             //Find if exists
-            $referred_to = User::model()->with('authentications')->findByAttributes(array(
-                'authentications.username' => $patient_raw_data['referred_to']
-            ));
+            $referred_to = User::model()->with('authentications')->find(
+                'authentications.username = :username',
+                [':username' => $patient_raw_data['referred_to']]
+            );
             if ($referred_to === null) {
                 $errors[] = 'Cannot find referred to user: ' . $patient_raw_data['referred_to'];
                 return $errors;

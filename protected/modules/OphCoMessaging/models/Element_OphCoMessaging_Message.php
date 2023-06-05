@@ -18,12 +18,14 @@
 
 namespace OEModule\OphCoMessaging\models;
 
-use OE\factories\models\traits\HasFactory;
 use EventSubTypeItem;
-use OEModule\OphCoMessaging\models\Mailbox;
+use OE\factories\models\traits\HasFactory;
 
 /**
  * This is the model class for table "et_ophcomessaging_message".
+ *
+ * Note that the recipients for a message should not be changed after the message is created.
+ * The validator for this rule is the function validateRecipientsHaveNotChangedOnUpdate below.
  *
  * The followings are the available columns in table:
  *
@@ -55,15 +57,7 @@ class Element_OphCoMessaging_Message extends \BaseEventTypeElement
 {
     use HasFactory;
 
-    /**
-     * Returns the static model of the specified AR class.
-     *
-     * @return Element_OphCoMessaging_Message static model class
-     */
-    public static function model($className = __CLASS__)
-    {
-        return parent::model($className);
-    }
+    protected $auto_update_relations = true;
 
     /**
      * @return string the associated database table name
@@ -85,7 +79,8 @@ class Element_OphCoMessaging_Message extends \BaseEventTypeElement
         return [
             ['event_id, message_type_id, urgent, message_text, cc_enabled, sender_mailbox_id', 'safe'],
             ['message_type_id, message_text, sender_mailbox_id', 'required'],
-            ['recipients', 'validateHasPrimaryRecipient'],
+            ['recipients', 'validateHasPrimaryRecipient', 'on' => 'insert'],
+            ['recipients', 'validateRecipientsHaveNotChangedOnUpdate', 'except' => 'insert'],
             ['id, event_id, message_type_id, urgent, message_text, cc_enabled, sender_mailbox_id', 'safe', 'on' => 'search'],
         ];
     }
@@ -172,9 +167,9 @@ class Element_OphCoMessaging_Message extends \BaseEventTypeElement
         $criteria->compare('cc_enabled', $this->cc_enabled);
         $criteria->order = 'created_date desc';
 
-        return new \CActiveDataProvider(get_class($this), array(
+        return new \CActiveDataProvider(get_class($this), [
             'criteria' => $criteria,
-        ));
+        ]);
     }
 
     public function validateHasPrimaryRecipient($attribute, $params)
@@ -187,6 +182,30 @@ class Element_OphCoMessaging_Message extends \BaseEventTypeElement
         }
 
         $this->addError('recipients', 'message must be sent to a recipient');
+    }
+
+    /*
+     * Once a message has beeen created, the recipients are fixed and should not be changed
+     * when the message element is being updated.
+     */
+    public function validateRecipientsHaveNotChangedOnUpdate($attribute, $params)
+    {
+        $existing_recipients = $this->getExistingRecipientsWithIds();
+        $existing_count = count($existing_recipients);
+
+        if (count($this->recipients) === $existing_count) {
+            $intersection = array_uintersect(
+                $this->recipients,
+                $existing_recipients,
+                static function ($new, $old) { return (int)$new->id - (int)$old->id; }
+            );
+
+            if (count($intersection) === $existing_count) {
+                return;
+            }
+        }
+
+        $this->addError('recipients', 'message cannot have recipients changed after being saved');
     }
 
     public function getMessageDate()
@@ -275,6 +294,15 @@ class Element_OphCoMessaging_Message extends \BaseEventTypeElement
             unset($this->message_type);
         }
 
+        $this->cc_enabled = false;
+
+        foreach ($this->recipients as $recipient) {
+            if ($recipient->primary_recipient === '0') {
+                $this->cc_enabled = true;
+                break;
+            }
+        }
+
         return parent::beforeSave();
     }
 
@@ -308,5 +336,16 @@ class Element_OphCoMessaging_Message extends \BaseEventTypeElement
         $event_subtype_item->event_id = $this->event_id;
 
         return $event_subtype_item;
+    }
+
+    private function getExistingRecipientsWithIds()
+    {
+        $criteria = new \CDbCriteria();
+
+        $criteria->select = 'id';
+        $criteria->addCondition('element_id = :element_id');
+        $criteria->params = [':element_id' => $this->id];
+
+        return OphCoMessaging_Message_Recipient::model()->findAll($criteria);
     }
 }

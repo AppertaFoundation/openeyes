@@ -48,4 +48,32 @@ class OphCoMessaging_Message_RecipientTest extends \ModelTestCase
 
         $this->assertAttributeInvalid($second_primary_recipient, 'mailbox_id', 'primary recipient');
     }
+
+    /** @test */
+    public function cannot_change_mailbox_or_primary_recipient_when_assigned_to_a_created_message()
+    {
+        $message = Element_OphCoMessaging_Message::factory()
+                 ->create();
+
+        list($mailbox, $other_mailbox) = Mailbox::factory()->count(2)->create();
+
+        $recipient = OphCoMessaging_Message_Recipient::factory()
+                   ->withElement($message)
+                   ->asPrimary($mailbox)
+                   ->create();
+
+        $recipient->scenario = 'update';
+
+        $recipient->mailbox_id = $mailbox->id;
+        $recipient->primary_recipient = '1';
+
+        $this->assertAttributeValid($recipient, 'mailbox_id');
+        $this->assertAttributeValid($recipient, 'primary_recipient');
+
+        $recipient->mailbox_id = $other_mailbox->id;
+        $recipient->primary_recipient = '0';
+
+        $this->assertAttributeInvalid($recipient, 'mailbox_id', 'cannot change');
+        $this->assertAttributeInvalid($recipient, 'primary_recipient', 'cannot change');
+    }
 }

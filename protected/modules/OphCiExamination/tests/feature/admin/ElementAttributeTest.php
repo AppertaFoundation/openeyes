@@ -42,7 +42,7 @@ class ElementAttributeTest extends OEDbTestCase
         $element_attributes = $this->createAttributesForInstitution($institution);
 
         $response = $this->actingAs($user, $institution)
-            ->get('/oeadmin/ExaminationElementAttributes/list');
+            ->get('/oeadmin/ExaminationElementAttributes/list?institution_id=' . $institution->id);
 
         $table_rows = $response->filter('table.standard tbody tr');
 
@@ -79,7 +79,7 @@ class ElementAttributeTest extends OEDbTestCase
         return [$user, $institution];
     }
 
-    protected function createAttributesForInstitution($institution, $count = 5)
+    protected function createAttributesForInstitution(?Institution $institution, $count = 5)
     {
         $display_orders = range(1, $count);
         // create out of display order
@@ -88,7 +88,7 @@ class ElementAttributeTest extends OEDbTestCase
         $instances = [];
         foreach ($display_orders as $display_order) {
             $instances[] = ModelFactory::factoryFor(OphCiExamination_Attribute::class)->create([
-                'institution_id' => $institution->id,
+                'institution_id' => $institution->id ?? null,
                 'display_order' => $display_order
             ]);
         }

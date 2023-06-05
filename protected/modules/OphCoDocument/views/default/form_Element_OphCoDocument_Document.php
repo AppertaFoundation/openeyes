@@ -25,7 +25,27 @@
 <div class="element-fields full-width flex-layout">
     <input type="hidden" id="removed-docs" name="removed-docs" value="">
     <div id="document-event" class="<?= $element->single_document_id || $element->hasSidedAttributesSet("OR") ? 'cols-full' : 'cols-11' ?>">
-
+    <table class="cols-6 last-right">
+        <tbody>
+            <tr>
+                <td>Event Sub Type</td>
+                <td>
+                    <?php echo $form->dropDownList(
+                        $element,
+                        'event_sub_type',
+                        CHtml::listData(OphCoDocument_Sub_Types::model()->findAll('is_active=1 ORDER BY display_order'), 'id', 'name'),
+                        array('nowrapper' => true),
+                        array(),
+                        array(
+                            'label' => 0,
+                            'field' => 2,
+                        )
+                    ); ?>
+                </td>
+            </tr>     
+        </tbody>
+        </table>
+        <hr class="divider">
         <div id="document_summary" class="flex-t col-gap js-document-summary-wrapper" <?= ($element->single_document_id || $element->hasSidedAttributesSet("OR") ? '' : 'style="display:none"'); ?>>
             <div class="cols-full" data-side="single" <?= ($element->single_document_id ? '' : 'style="display:none"'); ?>>
                 <?php $this->renderPartial('./document_upload_summary', array(
@@ -55,25 +75,8 @@
                 ), false); ?>
             </div>
         </div>
-
-        <table id="document-event-info" class="cols-6 last-left" <?= $element->single_document_id || $element->hasSidedAttributesSet("OR") ? 'style="display:none"' : '' ?>>
+        <table id="document-event-info" class="cols-6 last-right" <?= $element->single_document_id || $element->hasSidedAttributesSet("OR") ? 'style="display:none"' : '' ?>>
             <tbody>
-            <tr>
-                <td>Event Sub Type</td>
-                <td>
-                    <?php echo $form->dropDownList(
-                        $element,
-                        'event_sub_type',
-                        CHtml::listData(OphCoDocument_Sub_Types::model()->findAll('is_active=1 ORDER BY display_order'), 'id', 'name'),
-                        array('nowrapper' => true),
-                        array(),
-                        array(
-                            'label' => 0,
-                            'field' => 2,
-                        )
-                    ); ?>
-                </td>
-            </tr>
             <tr>
                 <td>Upload</td>
                 <td>

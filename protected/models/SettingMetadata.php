@@ -20,6 +20,8 @@ use OE\concerns\CanBeFaked;
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "setting_metadata".
  *
@@ -38,6 +40,7 @@ use OE\concerns\CanBeFaked;
 class SettingMetadata extends BaseActiveRecordVersioned
 {
     use CanBeFaked;
+    use HasFactory;
 
     public static array $CONTEXT_CLASSES = [
         'SettingUser' => 'user_id',
@@ -160,7 +163,7 @@ class SettingMetadata extends BaseActiveRecordVersioned
 
     protected function getSettingValue($model, $key, $condition_field, $condition_value, $element_type)
     {
-        $criteria = new CDbcriteria();
+        $criteria = new CDbCriteria();
 
         if ($condition_field && $condition_value) {
             $criteria->addCondition($condition_field . ' = :' . $condition_field);
@@ -182,7 +185,7 @@ class SettingMetadata extends BaseActiveRecordVersioned
 
     protected function getSettingValueWithConditions($model, $key, $conditions, $element_type)
     {
-        $criteria = new CDbcriteria();
+        $criteria = new CDbCriteria();
 
         foreach ($conditions as $condition_field => $condition_value) {
             if ($condition_field && $condition_value) {

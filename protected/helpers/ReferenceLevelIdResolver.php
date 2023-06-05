@@ -34,7 +34,7 @@ class ReferenceLevelIdResolver
         $this->firm = $firm ?? Yii::app()->session->getSelectedFirm();
         $this->subspecialty = $subspecialty ?? $this->firm->getSubspecialty();
         $this->specialty = $specialty ?? $this->subspecialty->specialty ?? null;
-        $this->user = $user ?? User::model()->findByPk(Yii::app()->user->id);
+        $this->user = $user ?? Yii::app()->session->getSelectedUser();
     }
 
     public function resolveId(string $level_id): ?int

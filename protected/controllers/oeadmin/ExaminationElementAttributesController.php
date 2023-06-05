@@ -46,21 +46,27 @@ class ExaminationElementAttributesController extends BaseAdminController
             'is_multiselect',
         ));
 
-        $institution_id = !empty($_GET['institution_id']) ? $_GET['institution_id'] : \Yii::app()->session['selected_institution_id'];
-        $institution = Institution::model()->findByPk($institution_id);
+        $institution_id = Yii::app()->request->getQuery('institution_id', '');
+
+        if ($institution_id) {
+            $institution = Institution::model()->findByPk($institution_id);
+        } else {
+            $institution = null;
+        }
 
         $criteria = new CDbCriteria();
         $criteria->order = 't.display_order asc';
 
         $admin->getSearch()->setCriteria(
             OphCiExamination_Attribute::model()->getCriteriaForLevels(
-                ReferenceData::LEVEL_ALL,
+                $institution ? ReferenceData::LEVEL_INSTITUTION : ReferenceData::LEVEL_INSTALLATION,
                 $criteria,
-                $institution
+                $institution,
             )
         );
         $admin->setModelDisplayName('Element Attributes');
         $admin->div_wrapper_class = 'cols-8';
+        $admin->has_global_institution_option  = true;
         $admin->getSearch()->setItemsPerPage($this->itemsPerPage);
 
         $admin->setListTemplate('//admin/generic/listInstitution');
@@ -80,7 +86,7 @@ class ExaminationElementAttributesController extends BaseAdminController
         if ($id) {
             $admin->setModelId($id);
         } else {
-            $institution_id = !empty($_GET['institution_id']) ? $_GET['institution_id'] : \Yii::app()->session['selected_institution_id'];
+            $institution_id = Yii::app()->request->getQuery('institution_id', null);
             $model = $admin->getModel();
 
             $model->institution_id = $institution_id;
@@ -263,10 +269,11 @@ class ExaminationElementAttributesController extends BaseAdminController
             }
 
             $criteria->order = 'name';
+            $criteria->addCondition('active = 1');
             $criteria->select = 'id, name';
             $criteria->params = $params;
 
-            $results = OphCiExamination_Attribute::model()->active()->findAll($criteria);
+            $results = OphCiExamination_Attribute::model()->findAllAtLevels(ReferenceData::LEVEL_ALL, $criteria);
 
             $return = array();
             foreach ($results as $resultRow) {

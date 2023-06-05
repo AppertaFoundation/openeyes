@@ -17,6 +17,9 @@
  */
 class CommonOphthalmicDisorderTest extends ActiveRecordTestCase
 {
+    use MocksSession;
+    use \WithFaker;
+
     private CommonOphthalmicDisorder $model;
 
     public $fixtures = array(
@@ -60,6 +63,9 @@ class CommonOphthalmicDisorderTest extends ActiveRecordTestCase
     {
         parent::setUp();
         $this->model = new CommonOphthalmicDisorder();
+        $this->mockCurrentContext();
+        $user = User::model()->findAll(new CDbCriteria(['order' => 'rand()']))[0];
+        $this->mockCurrentUser($user);
     }
 
     /**

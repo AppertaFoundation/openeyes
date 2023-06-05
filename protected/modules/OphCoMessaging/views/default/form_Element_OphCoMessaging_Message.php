@@ -17,8 +17,8 @@
  */
 
 use OEModule\OphCoMessaging\models\Mailbox;
-use OEModule\OphCoMessaging\models\OphCoMessaging_Message_Recipient;
 use OEModule\OphCoMessaging\models\OphCoMessaging_Message_MessageType;
+use OEModule\OphCoMessaging\models\OphCoMessaging_Message_Recipient;
 
 $for_the_attention_of = $element->for_the_attention_of ?? new OphCoMessaging_Message_Recipient();
 
@@ -33,11 +33,12 @@ if (!isset($cc_recipients)) {
 $copy_to_recipient_limit = Yii::app()->params['OphCoMessaging_copyto_user_limit'];
 $personal_mailbox_id = Mailbox::model()->forPersonalMailbox(\Yii::app()->user->id)->find()->id;
 
-$general_type_id = OphCoMessaging_Message_MessageType::model()->find('name = "General"')->id;
-$query_type_id = OphCoMessaging_Message_MessageType::model()->find('name = "Query"')->id;
+$message_types = OphCoMessaging_Message_MessageType::model()->findAll(array('order' => 'display_order asc'));
+$default_type_name = \SettingMetadata::model()->getSetting('deafult_ophcomessaging_message_message_type');
+$default_type_id =  !empty($default_type_name) ? array_search($default_type_name, array_column($message_types, 'name')) : null;
 
 if ($element->isNewRecord) {
-    $element->message_type_id = $general_type_id;
+    $element->message_type_id = isset($default_type_id) ? $message_types[$default_type_id]->id : null;
     $element->sender_mailbox_id = $personal_mailbox_id;
 }
 ?>
@@ -90,16 +91,12 @@ if ($element->isNewRecord) {
           <td>
             Type
           </td>
-          <td>
+          <td data-test="message-type-container">
               <?php echo $form->radioButtons(
                   $element,
                   'message_type_id',
-                  CHtml::listData(
-                      OEModule\OphCoMessaging\models\OphCoMessaging_Message_MessageType::model()->findAll(array('order' => 'display_order asc')),
-                      'id',
-                      'name'
-                  ),
-                  $element->message_type_id ? $element->message_type_id : 2,
+                  CHtml::listData($message_types, 'id', 'name'),
+                  $element->message_type_id,
                   false,
                   false,
                   false,
@@ -112,7 +109,7 @@ if ($element->isNewRecord) {
               <td>Priority</td>
               <td>
                 <label class="highlight inline">
-                  <?= CHtml::activeCheckBox($element, 'urgent') ?>
+                  <?= CHtml::activeCheckBox($element, 'urgent', ['data-test' => 'message-urgent-status']) ?>
                   Message is urgent <i class="oe-i status-urgent small pad-l"></i>
                 </label>
               </td>
@@ -120,13 +117,24 @@ if ($element->isNewRecord) {
           </tbody>
         </table>
         <?= $form->hiddenField($element, 'sender_mailbox_id') ?>
+        <?php
+        if (!$element->isNewRecord) {
+            foreach ($element->recipients as $recipient) {
+                echo CHtml::hiddenField(
+                    CHtml::activeName($element, 'recipients[' . $recipient->mailbox_id . '][id]'),
+                    $recipient->id,
+                    ['data-test' => 'message-recipient-id']
+                );
+            }
+        }
+        ?>
       </div>
       <div class="cols-6">
         <div class="highlighter">
           Information in a message should relate only to the clinical care of the patient. Messages should not be used for the purposes of general communication between users.
         </div>
         <div class="row">
-          <b>Messages are part of the patient record and can not be edited once sent.</b>
+          <b>Messages are part of the patient record and cannot be edited once sent.</b>
         </div>
         <div class="msg-editor">
             <?php if ($element->isNewRecord) { ?>
@@ -199,8 +207,8 @@ if ($element->isNewRecord) {
      const primaryValue = isPrimaryRecipient ? '1' : '0';
 
      const recipientLabel = `<li>${name}<i class="oe-i remove-circle small-icon pad-left"></i></li>`;
-     const mailboxField = `<input type="hidden" name="OEModule_OphCoMessaging_models_OphCoMessaging_Message_Recipient[mailbox_id][${id}]" value="${id}" data-recipient-index="{$index}" />`;
-     const primaryRecipientField = `<input type="hidden" name="OEModule_OphCoMessaging_models_OphCoMessaging_Message_Recipient[primary_recipient][${id}]" value="${primaryValue}" />`;
+     const mailboxField = `<input type="hidden" name="<?= CHtml::activeName($element, 'recipients[${id}][mailbox_id]') ?>" value="${id}" data-recipient-index="{$index}" />`;
+     const primaryRecipientField = `<input type="hidden" name="<?= CHtml::activeName($element, 'recipients[${id}][primary_recipient]') ?>" value="${primaryValue}" />`;
 
      return $('<ul class="oe-multi-select inline">' + recipientLabel + mailboxField + primaryRecipientField + '</ul>');
    }
@@ -272,7 +280,7 @@ if ($element->isNewRecord) {
 
         const userField = $(this).closest('ul');
 
-        const is_primary = userField.find('input[name^="OEModule_OphCoMessaging_models_OphCoMessaging_Message_Recipient[primary_recipient]"]').val();
+        const is_primary = userField.find('input[name$="[primary_recipient]"]').val();
 
         if (is_primary === '1') {
           $('#fao-search').show();
@@ -293,12 +301,6 @@ if ($element->isNewRecord) {
     $('.js-edit-message').click(function() {
       $('.js-preview-action, .js-editor-area').show();
       $('.js-edit-or-send-actions, .js-preview-area').hide();
-    });
-
-    $('.js-message-is-reply').change(function() {
-      const newState = $(this).attr('checked') === 'checked';
-
-      $('.js-message-type').val(newState ? '<?= $query_type_id ?>' : '<?= $general_type_id ?>');
     });
    });
 </script>

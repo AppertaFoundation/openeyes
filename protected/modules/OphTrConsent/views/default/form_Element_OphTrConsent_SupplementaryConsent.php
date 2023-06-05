@@ -29,7 +29,7 @@ if ($element->id) { // add questions we have data for.
     }
 }
 
-$form_id = @$_GET['type_id'] ?? 1;
+$form_id = @$_GET['type_id'] ?? '1';
 $new_q = Ophtrconsent_SupplementaryConsentQuestion::model()->findAllMyQuestionsAsgn(
     $this->event->episode->firm->institution_id,
     $this->event->site_id,

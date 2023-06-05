@@ -29,11 +29,15 @@ describe('create a message via patient record', () => {
                 });
 
             // send the message to our seeded user
+            cy.getBySel('message-type-container').within(() => {
+                cy.get('label').first().click();
+            })
             cy.intercept('/OphCoMessaging/Default/autocompleteMailbox*').as('mailboxAutoComplete')
             cy.getBySel('fao-search').type(data.user.fullName)
             cy.wait('@mailboxAutoComplete')
+
             cy.getBySel('autocomplete-match').contains(data.user.fullName).click()
-            cy.getBySel('your-message').type(data.user.messageText)
+            cy.getBySel('your-message').type(data.user.messageText);
             cy.getBySel('preview-and-check').click()
             cy.getBySel('send-message').click()
 
