@@ -20,9 +20,12 @@
  */
 class InternalReferralSiteFirmMappingTest extends \OEDbTestCase
 {
+    use WithFaker;
     use MocksSession;
     use WithTransactions;
+    use \HasModelAssertions;
     use \FakesSettingMetadata;
+
     /** @test */
     public function find_internal_referral_firms_with_site_param_only_test()
     {
@@ -36,18 +39,18 @@ class InternalReferralSiteFirmMappingTest extends \OEDbTestCase
         $site_mapping_count = 5;
         // create 5 mappings with the same site but different firm
         for ($i = 0; $i < $site_mapping_count; $i++) {
-            $firm = Firm::factory()->withNewSubspecialty()->create();
+            $firm = Firm::factory()->withSubspecialty()->create();
             $mapping[] = InternalReferralSiteFirmMapping::factory()->withSite($site)->withFirm($firm)->create();
         }
 
         // create 1 mapping with a different site and firm
-        $different_firm = Firm::factory()->withNewSubspecialty()->create();
+        $different_firm = Firm::factory()->withSubspecialty()->create();
         $mapping[] = InternalReferralSiteFirmMapping::factory()->withSite($different_site)->withFirm($different_firm)->create();
 
 
         $actual = InternalReferralSiteFirmMapping::findInternalReferralFirms($site->id);
 
-        $this->assertEquals(count($actual), $site_mapping_count);
+        $this->assertEquals($site_mapping_count, count($actual));
     }
 
     /** @test */
@@ -56,43 +59,53 @@ class InternalReferralSiteFirmMappingTest extends \OEDbTestCase
         $this->fakeSettingMetadata('filter_service_firms_internal_referral', 'off');
         $sites = [];
         $site_count = 5;
-        $created_mapping_count = [];
+        $created_mappings = [];
+        $subspecialty_firms = [];
+
         // create 5 sites and initialize the counter
         for ($i = 0; $i < $site_count; $i++) {
             $site = Site::factory()->create();
             $sites[] = $site;
-            $created_mapping_count[$site->id] = [];
         }
 
         $firms = [];
         $ss_count = 5;
+
         // create 5 firms and initialize the counter with 0
         for ($i = 0; $i < $ss_count; $i++) {
-            $firm = Firm::factory()->canOwnEpisode()->withNewSubspecialty()->create();
+            $firm = Firm::factory()->canOwnEpisode()->withSubspecialty()->create();
             $firms[] = $firm;
-            foreach ($created_mapping_count as $key => $mapping) {
-                $created_mapping_count[$key][$firm->subspecialty_id] = 0;
-            }
         }
 
         // create 10 mappings with random site and firm
-        $total_mapping_count = 10;
-        for ($i = 0; $i < $total_mapping_count; $i++) {
-            $rand_site_idx = array_rand($sites);
-            $rand_firm_idx = array_rand($firms);
-            $selected_site = $sites[$rand_site_idx];
-            $selected_firm = $firms[$rand_firm_idx];
-            InternalReferralSiteFirmMapping::factory()->withSite($selected_site)->withFirm($selected_firm)->create();
-            $created_mapping_count[$selected_site->id][$selected_firm->subspecialty_id] += 1;
+
+        for ($i = 0; $i < 5; $i++) {
+            // This loop ensures there are no duplicate mappings whilst still keeping the selection randomised.
+            $num_mappings = rand(1, 5);
+            for ($j = 0; $j < $num_mappings; $j++) {
+                $selected_site = $sites[$i];
+                $selected_firm = $firms[$j];
+                $created_mappings[] = InternalReferralSiteFirmMapping::factory()->withSite($selected_site)->withFirm($selected_firm)->create();
+                $subspecialty_firms[$selected_firm->getSubspecialty()->id][] = $selected_firm;
+            }
         }
 
-        $rand_site_idx = array_rand($sites);
-        $rand_firm_idx = array_rand($firms);
-        $checking_site = $sites[$rand_site_idx];
-        $checking_firm = $firms[$rand_firm_idx];
+        $test_mapping = $this->faker->randomElement($created_mappings);
+        $checking_site = $test_mapping->site;
+        $checking_firm = $test_mapping->firm;
 
-        $actual = InternalReferralSiteFirmMapping::findInternalReferralFirms($checking_site->id, $checking_firm->subspecialty_id);
+        $test_firms = $subspecialty_firms[$checking_firm->getSubspecialty()->id];
 
-        $this->assertEquals(count($actual), $created_mapping_count[$checking_site->id][$checking_firm->subspecialty_id]);
+        $firm_list = [];
+
+        foreach ($test_firms as $firm) {
+            $firm_list[$firm->id] = $firm->name . ($firm->getSubspecialty() ? ' (' . $firm->getSubspecialty()->name . ')' : '');
+        }
+
+        natcasesort($firm_list);
+
+        $actual = InternalReferralSiteFirmMapping::findInternalReferralFirms($checking_site->id, $checking_firm->getSubspecialty()->id);
+
+        $this->assertEquals($firm_list, $actual);
     }
 }

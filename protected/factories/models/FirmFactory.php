@@ -30,18 +30,6 @@ class FirmFactory extends ModelFactory
         ]);
     }
 
-    public function withNewSubspecialty()
-    {
-        return $this->state([
-            'subspecialty_id' => Subspecialty::factory(),
-            'service_subspecialty_assignment_id' => function ($attributes) {
-                return ServiceSubspecialtyAssignment::factory()->state([
-                    'subspecialty_id' => $attributes['subspecialty_id']
-                ]);
-            }
-        ]);
-    }
-
     public function withSubspecialty($subspecialty = null): self
     {
         $subspecialty ??= \Subspecialty::factory()->create();
