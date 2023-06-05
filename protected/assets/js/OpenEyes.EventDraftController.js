@@ -181,7 +181,7 @@ var OpenEyes = OpenEyes || {};
         const draftId = $(this.options.existingDraftBannerSelector).data('existing-draft');
         let url = new URL(
             $(this.options.existingDraftBannerSelector).data('existing-draft-url'),
-            `${window.location.protocol}//${window.location.hostname}`
+            `${window.location.protocol}//${window.location.host}`
         );
         url.searchParams.set('draft_id', draftId);
         window.location = url;
