@@ -869,13 +869,13 @@ function sidePortController(_drawing) {
                     this.addSidePorts();
 
                     if (typeof (phakoIncision) !== 'undefined') {
-                        let incision_meridian = '180';
+                        let incision_meridian = eye_id === 0 ? '180' : '0';
+
                         if (typeof incision_centre_position !== 'undefined' && incision_centre_position[eye_id] !== 'undefined') {
                             incision_meridian = ''+incision_centre_position[eye_id];
                         }
 
                         if (window.event_has_errors !== true) {
-
                             setTimeout(() => {
                                 phakoIncision.setParameterFromString('incisionMeridian', incision_meridian, true);
 
