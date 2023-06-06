@@ -177,7 +177,8 @@ Yii::app()->clientScript->registerScriptFile($jsPath, CClientScript::POS_HEAD);
             </table>
             <div class="data-group inline">
                 <div id="pcr-risk-div" class="highlighter large-text">
-                    PCR Risk <span class="pcr-span"> 6.1 </span> %
+                    PCR Risk <span class="pcr-span"> &nbsp; </span> %
+                    <?php $form->hiddenInput($element, $side . '_pcr_risk', false, ['class' => 'pcr-input']); ?>
                 </div>
             </div>
             <div class="data-group">
