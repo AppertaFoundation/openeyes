@@ -356,7 +356,7 @@ class Firm extends BaseActiveRecordVersioned
                 ->join('user_authentication ua', 'ua.institution_authentication_id = ia.id')
                 ->where('ia.institution_id = :institution_id AND ua.user_id = :user_id')
                 ->limit(1)
-                ->bindValues([':institution_id' => $institution_id, ':user_id' => $this->id])
+                ->bindValues([':institution_id' => $institution_id, ':user_id' => $consultant->id])
                 ->queryScalar();
 
             // Assuming that, despite multiple institution authentications,
