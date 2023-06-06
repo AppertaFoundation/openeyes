@@ -306,9 +306,9 @@ class ClinicOutcomeEntry extends \BaseElement
                 . ' ' . $this->followup_quantity
                 . ' ' . $this->getPeriodLabel()
                 . $this->getRoleLabel()
-                . '. Site: '. $this->getSiteLabel()
-                . '. Subspecialty: '. $this->getSubspecialtylabel()
-                . '. Context: '. $this->getContextLabel()
+                . ($this->site ? '. Site: ' . $this->getSiteLabel() : '')
+                . ($this->subspecialty ? '. Subspecialty: ' . $this->getSubspecialtylabel() : '')
+                . ($this->context ? '. Context: ' . $this->getContextLabel() : '')
                 . ' ' . $this->getDisplayComments() . $risk_status_info['icon'];
         }
 

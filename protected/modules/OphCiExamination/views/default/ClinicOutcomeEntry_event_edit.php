@@ -17,6 +17,9 @@
 ?>
 
 <?php
+if (!isset($template_mode)) {
+    $template_mode = false;
+}
 if (!isset($values)) {
     $risk_status_info = $entry->getRiskStatusLabel();
     $values = array(
@@ -46,6 +49,19 @@ if (!isset($values)) {
         'context' => $entry->getContextLabel(),
     );
 }
+
+if ($template_mode) {
+    $conditional_context_display = <<<EOL
+{{#site}}, Site: {{site}}{{/site}}
+{{#subspecialty}}, Subspecialty: {{subspecialty}}{{/subspecialty}}
+{{#context}}, Context: {{context}}{{/context}}
+EOL;
+} else {
+    $conditional_context_display = (isset($values['site']) ? ', Site: ' . $values['site'] : '')
+    . (isset($values['subspecialty']) ? ', Subspecialty: ' . $values['subspecialty'] : '')
+    . (isset($values['context']) ? ', Context: ' . $values['context'] : '');
+}
+
 ?>
 
 <tr id="<?= $model_name ?>_entries_<?= $row_count ?>" class="row-<?= $row_count ?>" data-key="<?= $row_count ?>"
@@ -95,14 +111,7 @@ if (!isset($values)) {
             . $values['followup_period']
             . $values['role']
             . $values['followup_comments_display']
-            . '. Site: '
-            . $values['site']
-            . ', Subspecialty: '
-            . $values['subspecialty']
-            . ', Context: '
-            . $values['context']
-
-
+            . $conditional_context_display
             ?>
             <?php if ($values['risk_status_id']) { ?>
                 <i
