@@ -124,7 +124,7 @@ $form = $this->beginWidget(
                     $available_firms = count($user_auths) > 0 ? $user->getAllAvailableFirms() : (new User())->getAllAvailableFirms();
 
                     foreach ($available_firms as $firm) {
-                        $firm_label[$firm->id] = "{$firm->name} " . ($firm->serviceSubspecialtyAssignment ? "({$firm->serviceSubspecialtyAssignment->subspecialty->name})" : "") . " [{$firm->institution->name}]";
+                        $firm_label[$firm->id] = "{$firm->name} " . ($firm->serviceSubspecialtyAssignment ? "({$firm->serviceSubspecialtyAssignment->subspecialty->name})" : "") . ($firm->institution ? " ({$firm->institution->name})" : " (All institutions)");
                     }
 
                     echo $form->multiSelectList(
