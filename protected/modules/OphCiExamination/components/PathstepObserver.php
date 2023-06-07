@@ -120,6 +120,9 @@ class PathstepObserver
             return;
         } else {
             $event = $params['event'];
+            if (!$event->worklist_patient || !$event->worklist_patient->pathway) {
+                return;
+            }
 
             $outcome_element = Element_OphCiExamination_ClinicOutcome::model()->find('event_id = :id', [':id' => $event->id]);
 
