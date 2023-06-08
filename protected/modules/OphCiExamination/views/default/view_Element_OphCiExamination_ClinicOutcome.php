@@ -48,7 +48,8 @@ $non_ticket_entries = [];
                     <?php foreach ($non_ticket_entries as $entry) { ?>
                         <tr>
                             <td><?= $row_count ? 'AND' : '' ?></td>
-                            <td><?= $entry->getInfos(); ?></td>
+                            <?php $infos = $entry->getInfos(); ?>
+                            <td><?= $entry->getStatusLabel() ?> <span class="fade"><?= !empty($infos) ? '&nbsp;[ ' . $entry->getInfos() . ' ] ' : ''; ?></span></td>
                         </tr>
                         <?php $row_count++; ?>
                     <?php } ?>

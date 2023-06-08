@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Apperta Foundation, 2023
  * This file is part of OpenEyes.
@@ -33,6 +34,14 @@ class OphCiExamination_Workflow_RuleTest extends ModelTestCase
     use \WithTransactions;
 
     protected $element_cls = OphCiExamination_Workflow_Rule::class;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        // clear out the rules to allow us to set them up fresh with a known state
+        OphCiExamination_Workflow_Rule::model()->deleteAll();
+    }
 
     /** @test */
     public function workflow_cascading_find_order()

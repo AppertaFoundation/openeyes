@@ -440,7 +440,8 @@ if ($historyElement) {
                                 foreach ($non_ticket_entries as $entry) { ?>
                                     <tr>
                                         <td><?= $row_count === 0 ? '' : 'AND' ?></td>
-                                        <td><?= $entry->getInfos(); ?></td>
+                                        <?php $infos = $entry->getInfos(); ?>
+                                        <td><?= $entry->getStatusLabel() ?> <span class="fade"><?= !empty($infos) ? '&nbsp;[ ' . $entry->getInfos() . ' ] ' : ''; ?></span></td>
                                     </tr>
                                     <?php $row_count++; ?>
                                 <?php }
