@@ -363,11 +363,12 @@ class Firm extends BaseActiveRecordVersioned
             // a user's username is identical for all of them.
             $user_auth = UserAuthentication::model()->findByPk($user_auth_id);
 
-            if (!$user_auth) {
-                return $reversed ? $consultant->getReversedFullNameAndTitle($separator) : $consultant->getFullNameAndTitle($separator);
+            if ($consultant->registration_code) {
+                return ($reversed ? $consultant->getReversedFullNameAndTitle($separator) : $consultant->getFullNameAndTitle($separator)) . " ({$username_prefix}{$consultant->registration_code})";
+            } elseif ($user_auth) {
+                return ($reversed ? $consultant->getReversedFullNameAndTitle($separator) : $consultant->getFullNameAndTitle($separator)) . " ({$username_prefix}{$user_auth->username})";
             }
-            return ($reversed ? $consultant->getReversedFullNameAndTitle($separator) : $consultant->getFullNameAndTitle($separator))
-                . " ({$username_prefix}{$user_auth->username})";
+            return $reversed ? $consultant->getReversedFullNameAndTitle($separator) : $consultant->getFullNameAndTitle($separator);
         }
 
         return 'NO CONSULTANT';
