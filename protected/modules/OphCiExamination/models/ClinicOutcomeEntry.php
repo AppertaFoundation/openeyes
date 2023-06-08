@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -16,6 +17,7 @@
  */
 
 namespace OEModule\OphCiExamination\models;
+
 use Period;
 
 /**
@@ -177,9 +179,11 @@ class ClinicOutcomeEntry extends \BaseElement
      */
     public function roleDependencyValidation($attribute)
     {
-        if ($this->role && $this->role->requires_comment
-            && !trim($this->followup_comments)) {
-            $this->addError($attribute, '"' .$this->role->name . '" role requires a comment');
+        if (
+            $this->role && $this->role->requires_comment
+            && !trim($this->followup_comments)
+        ) {
+            $this->addError($attribute, '"' . $this->role->name . '" role requires a comment');
         }
     }
 
@@ -302,21 +306,21 @@ class ClinicOutcomeEntry extends \BaseElement
     {
         if ($this->isFollowUp()) {
             $risk_status_info = $this->getRiskStatusLabel();
-            return $this->getStatusLabel()
-                . ' ' . $this->followup_quantity
+            $display_comments = $this->getDisplayComments();
+            return $this->followup_quantity
                 . ' ' . $this->getPeriodLabel()
                 . $this->getRoleLabel()
-                . ($this->site ? '. Site: ' . $this->getSiteLabel() : '')
-                . ($this->subspecialty ? '. Subspecialty: ' . $this->getSubspecialtylabel() : '')
-                . ($this->context ? '. Context: ' . $this->getContextLabel() : '')
-                . ' ' . $this->getDisplayComments() . $risk_status_info['icon'];
+                . ($this->site ? '. // Site: ' . $this->getSiteLabel() : '')
+                . ($this->subspecialty ? '. // Subspecialty: ' . $this->getSubspecialtylabel() : '')
+                . ($this->context ? '. // Context: ' . $this->getContextLabel() : '')
+                . (!empty($display_comments) ? ' // ' . $display_comments : '') . (!empty($risk_status_info['icon']) ? ' // ' . $risk_status_info['icon'] : '');
         }
 
         if ($this->isDischarge()) {
-            return $this->getStatusLabel() . ' ' . $this->getDischargeStatusLabel() . ' ' . $this->getDischargeDestinationLabel() . ($this->transfer_to ? $this->getTransferToLabel() : '');
+            return $this->getDischargeStatusLabel() . ' // ' . $this->getDischargeDestinationLabel() . ($this->transfer_to ? " // " . $this->getTransferToLabel() : '');
         }
 
-        return $this->getStatusLabel();
+        return null;
     }
 
     public function isPatientTicket()
@@ -342,5 +346,4 @@ class ClinicOutcomeEntry extends \BaseElement
         }
         return false;
     }
-
 }

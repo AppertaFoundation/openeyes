@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -14,6 +15,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <?php
@@ -47,6 +49,7 @@ if (!isset($values)) {
         'site' => $entry->getSiteLabel(),
         'subspecialty' => $entry->getSubspecialtyLabel(),
         'context' => $entry->getContextLabel(),
+        'infos' => $entry->getInfos(),
     );
 }
 
@@ -57,10 +60,12 @@ if ($template_mode) {
 {{#context}}, Context: {{context}}{{/context}}
 EOL;
 } else {
-    $conditional_context_display = (isset($values['site']) ? ', Site: ' . $values['site'] : '')
-    . (isset($values['subspecialty']) ? ', Subspecialty: ' . $values['subspecialty'] : '')
-    . (isset($values['context']) ? ', Context: ' . $values['context'] : '');
+    $conditional_context_display = ((isset($values['site']) && strtoLower($values['site']) != 'any') ? ' // Site: ' . $values['site'] : '')
+    . ((isset($values['subspecialty']) && strtolower($values['subspecialty']) != 'n\a') ? ' // Subspecialty: ' . $values['subspecialty'] : '')
+    . ((isset($values['context']) && strtolower($values['context']) != 'n\a') ? ' // Context: ' . $values['context'] : '');
 }
+
+$conditional_context_display = !empty($conditional_context_display) ? '<span class="fade">&nbsp; [ ' . $conditional_context_display . ' ]</span>' : '';
 
 ?>
 
@@ -100,25 +105,8 @@ EOL;
     </td>
     <td>
         <?php if (!$patient_ticket) { ?>
-            <?=$values['status']
-            . ' '
-            . $values['discharge_status']
-            . ', '
-            . $values['discharge_destination'] . ($values['transfer_to'] ?? null)
-            . ' '
-            . $values['followup_quantity']
-            . ' '
-            . $values['followup_period']
-            . $values['role']
-            . $values['followup_comments_display']
-            . $conditional_context_display
-            ?>
-            <?php if ($values['risk_status_id']) { ?>
-                <i
-                class="<?=$values['risk_status_class']?>"
-                data-tooltip-content="<?=$values['risk_status_content']?>"
-                ></i>
-            <?php } ?>
+            <?=$values['status'] ?>
+            <?= !empty($values['infos']) ? '<span class="fade">&nbsp; [ ' . $values['infos'] . ' ]</span>' : '' ?>
         <?php } elseif ($patient_ticket && $ticket_api) { ?>
             <div data-queue-assignment-form-uri="<?= $ticket_api->getQueueAssignmentFormURI() ?>"
                  id="div_<?= $model_name ?>_patientticket">
