@@ -441,7 +441,10 @@ if ($historyElement) {
                                     <tr>
                                         <td><?= $row_count === 0 ? '' : 'AND' ?></td>
                                         <?php $infos = $entry->getInfos(); ?>
-                                        <td><?= $entry->getStatusLabel() ?> <span class="fade"><?= !empty($infos) ? '&nbsp;[ ' . $entry->getInfos() . ' ] ' : ''; ?></span></td>
+                                        <td>
+                                            <?= $entry->getStatusLabel() ?> <span class="fade"><?= !empty($infos) ? '&nbsp;[ ' . $entry->getInfos() . ' ] ' : ''; ?></span>
+                                            <?= !empty($entry->getRiskStatusLabel()['icon']) ? $entry->getRiskStatusLabel()['icon'] : '' ?>
+                                        </td>
                                     </tr>
                                     <?php $row_count++; ?>
                                 <?php }

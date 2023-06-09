@@ -310,10 +310,10 @@ class ClinicOutcomeEntry extends \BaseElement
             return $this->followup_quantity
                 . ' ' . $this->getPeriodLabel()
                 . $this->getRoleLabel()
+                . (!empty($display_comments) ? $display_comments : '')
                 . ($this->site ? '. // Site: ' . $this->getSiteLabel() : '')
                 . ($this->subspecialty ? '. // Subspecialty: ' . $this->getSubspecialtylabel() : '')
-                . ($this->context ? '. // Context: ' . $this->getContextLabel() : '')
-                . (!empty($display_comments) ? ' // ' . $display_comments : '') . (!empty($risk_status_info['icon']) ? ' // ' . $risk_status_info['icon'] : '');
+                . ($this->context ? '. // Context: ' . $this->getContextLabel() : '');
         }
 
         if ($this->isDischarge()) {

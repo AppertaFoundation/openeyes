@@ -293,7 +293,7 @@ $subspecialty_contexts = $this->getContextFromSubspecialty($contexts, $default_s
             'field_prefix' => $model_name . '[entries][{{row_count}}]',
             'row_count' => '{{row_count}}',
             'patient_ticket' => false,
-            'template_mode' => false,
+            'template_mode' => true,
             'values' => [
                 'status_id' => '{{status_id}}',
                 'status' => '{{status}}',
@@ -320,6 +320,7 @@ $subspecialty_contexts = $this->getContextFromSubspecialty($contexts, $default_s
                 'site_id' => '{{site_id}}',
                 'subspecialty_id' => '{{subspecialty_id}}',
                 'context_id' => '{{context_id}}',
+                'infos' => '{{infos}}',
             ],
         ]
     );

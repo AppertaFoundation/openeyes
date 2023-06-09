@@ -53,19 +53,9 @@ if (!isset($values)) {
     );
 }
 
-if ($template_mode) {
-    $conditional_context_display = <<<EOL
-{{#site}}, Site: {{site}}{{/site}}
-{{#subspecialty}}, Subspecialty: {{subspecialty}}{{/subspecialty}}
-{{#context}}, Context: {{context}}{{/context}}
-EOL;
-} else {
-    $conditional_context_display = ((isset($values['site']) && strtoLower($values['site']) != 'any') ? ' // Site: ' . $values['site'] : '')
-    . ((isset($values['subspecialty']) && strtolower($values['subspecialty']) != 'n\a') ? ' // Subspecialty: ' . $values['subspecialty'] : '')
-    . ((isset($values['context']) && strtolower($values['context']) != 'n\a') ? ' // Context: ' . $values['context'] : '');
+if (!empty($values['infos']) && !$template_mode) {
+    $values['infos'] = '[ ' . $values['infos'] . ' ]';
 }
-
-$conditional_context_display = !empty($conditional_context_display) ? '<span class="fade">&nbsp; [ ' . $conditional_context_display . ' ]</span>' : '';
 
 ?>
 
@@ -106,7 +96,14 @@ $conditional_context_display = !empty($conditional_context_display) ? '<span cla
     <td>
         <?php if (!$patient_ticket) { ?>
             <?=$values['status'] ?>
-            <?= !empty($values['infos']) ? '<span class="fade">&nbsp; [ ' . $values['infos'] . ' ]</span>' : '' ?>
+            <span class="fade">&nbsp;
+                <?=$values['infos'] ?>
+                <?php if ($values['risk_status_id']) { ?>
+                    <i class="<?=$values['risk_status_class']?>"
+                    data-tooltip-content="<?=$values['risk_status_content']?>"
+                    ></i>
+                <?php } ?>
+            </span>
         <?php } elseif ($patient_ticket && $ticket_api) { ?>
             <div data-queue-assignment-form-uri="<?= $ticket_api->getQueueAssignmentFormURI() ?>"
                  id="div_<?= $model_name ?>_patientticket">

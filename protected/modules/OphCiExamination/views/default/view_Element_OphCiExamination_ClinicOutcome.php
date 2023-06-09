@@ -35,10 +35,7 @@ $non_ticket_entries = [];
             $non_ticket_entries[] = $entry;
         }
     } ?>
-    <?php if ($non_ticket_entries) {
-        if (count($non_ticket_entries) === 1) { ?>
-            <div class="large-text"><?= $non_ticket_entries[0]->getInfos(); ?></div>
-        <?php } else { ?>
+    <?php if ($non_ticket_entries) { ?>
             <div class="cols-10">
                 <table class="last-left large-text">
                     <colgroup>
@@ -49,14 +46,17 @@ $non_ticket_entries = [];
                         <tr>
                             <td><?= $row_count ? 'AND' : '' ?></td>
                             <?php $infos = $entry->getInfos(); ?>
-                            <td><?= $entry->getStatusLabel() ?> <span class="fade"><?= !empty($infos) ? '&nbsp;[ ' . $entry->getInfos() . ' ] ' : ''; ?></span></td>
+                            <td>
+                                <?= $entry->getStatusLabel() ?> <span class="fade"><?= !empty($infos) ? '&nbsp;[ ' . $entry->getInfos() . ' ] ' : ''; ?></span>
+                                <?= !empty($entry->getRiskStatusLabel()['icon']) ? $entry->getRiskStatusLabel()['icon'] : '' ?>
+                            </td>
+                            
                         </tr>
                         <?php $row_count++; ?>
                     <?php } ?>
                     </tbody>
                 </table>
             </div>
-        <?php } ?>
     <?php } ?>
     <?php if ($non_ticket_entries && $ticket_entries) { ?>
         <hr class="divider">
