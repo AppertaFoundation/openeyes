@@ -148,7 +148,7 @@ $subspecialty_contexts = $this->getContextFromSubspecialty($contexts, $default_s
                             </ul>
                         </div>
                     </td>
-
+<?php if (!\SettingMetadata::model()->getSetting('hide_addional_followup_options')) : ?>
                     <!-- Site -->
                     <td class="follow-up-options-follow-up-only" style="display: none">
                         <div class="flex-layout flex-top flex-left">
@@ -195,7 +195,7 @@ $subspecialty_contexts = $this->getContextFromSubspecialty($contexts, $default_s
                             </ul>
                         </div>
                     </td>
-
+<?php endif; ?>
                     <!-- Duration time -->
                     <td class="follow-up-options-follow-up-only" style="display: none">
                         <div class="flex-layout flex-top flex-left">
