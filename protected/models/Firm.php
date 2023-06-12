@@ -362,18 +362,19 @@ class Firm extends BaseActiveRecordVersioned
                 ->join('user_authentication ua', 'ua.institution_authentication_id = ia.id')
                 ->where('(ia.institution_id = :institution_id OR ia.institution_id IS NULL) AND ua.user_id = :user_id')
                 ->limit(1)
-                ->bindValues([':institution_id' => $institution_id, ':user_id' => $this->id])
+                ->bindValues([':institution_id' => $institution_id, ':user_id' => $consultant->id])
                 ->queryScalar();
 
             // Assuming that, despite multiple institution authentications,
             // a user's username is identical for all of them.
             $user_auth = UserAuthentication::model()->findByPk($user_auth_id);
 
-            if (!$user_auth) {
-                return $reversed ? $consultant->getReversedFullNameAndTitle($separator) : $consultant->getFullNameAndTitle($separator);
+            if ($consultant->registration_code) {
+                return ($reversed ? $consultant->getReversedFullNameAndTitle($separator) : $consultant->getFullNameAndTitle($separator)) . " ({$username_prefix}{$consultant->registration_code})";
+            } elseif ($user_auth) {
+                return ($reversed ? $consultant->getReversedFullNameAndTitle($separator) : $consultant->getFullNameAndTitle($separator)) . " ({$username_prefix}{$user_auth->username})";
             }
-            return ($reversed ? $consultant->getReversedFullNameAndTitle($separator) : $consultant->getFullNameAndTitle($separator))
-                . " ({$username_prefix}{$user_auth->username})";
+            return $reversed ? $consultant->getReversedFullNameAndTitle($separator) : $consultant->getFullNameAndTitle($separator);
         }
 
         return 'NO CONSULTANT';

@@ -371,12 +371,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             const parent_block = this.closest(parent_selector);
             // the following if statement limits the user to administer all the meds for a confirmed block which is assigned to a date
             // if the user wants to administer all of the meds, they should do it in "Record order as administered" mode
-            if(parseInt(parent_block.querySelector('input[name$="[confirmed]"]').value)
-            && !parseInt(parent_block.querySelector('input[name$="[assignment_id]"]').value)
-            && (parent_block.querySelector('input[name$="[visit_id]"]').value || parent_block.querySelector('input[name$="[create_wp]"]').value)
-            && (parent_block.querySelectorAll('tbody tr').length === 1
-            || parent_block.querySelectorAll(`tbody tr ${administer_btn_selector}:checked`).length === parent_block.querySelectorAll('tbody tr').length
-            )){
+            if (parseInt(parent_block.querySelector('input[name$="[confirmed]"]').value) &&
+            !parseInt(parent_block.querySelector('input[name$="[assignment_id]"]').value) &&
+            (parent_block.querySelector('input[name$="[visit_id]"]').value || parseInt(parent_block.querySelector('input[name$="[create_wp]"]').value)) &&
+            (parent_block.querySelectorAll('tbody tr').length === 1 || parent_block.querySelectorAll(`tbody tr ${administer_btn_selector}:checked`).length === parent_block.querySelectorAll('tbody tr').length)
+            ){
                 $(this).attr('checked', false).prop('checked', false);
                 return;
             }
