@@ -1123,7 +1123,7 @@ class AdminController extends \ModuleAdminController
             $institution_id = Yii::app()->session['selected_institution_id'];
         }
 
-        $complications = models\OphCiExamination_PostOpComplications::model()->available($subspecialty_id)->findAll();
+        $complications = models\OphCiExamination_PostOpComplications::model()->available()->findAll();
         $selected_complications = models\OphCiExamination_PostOpComplications::model()->enabled($institution_id, $subspecialty_id)->findAll();
 
         $this->render('list_OphCiExamination_PostOpComplications', array(
@@ -1202,7 +1202,7 @@ class AdminController extends \ModuleAdminController
         if (isset($_POST[\CHtml::modelName($model)])) {
             $model->attributes = $_POST[\CHtml::modelName($model)];
             if ($model->save()) {
-               // Audit::add('admin', 'update', serialize($model->attributes), false, array('module' => 'OphCiExamination', 'model' => 'OphCiExamination_ElementSet'));
+                // Audit::add('admin', 'update', serialize($model->attributes), false, array('module' => 'OphCiExamination', 'model' => 'OphCiExamination_ElementSet'));
                 Yii::app()->user->setFlash('success', 'Invoice status updated');
 
                 $this->redirect(array('InvoiceStatusList'));
