@@ -23,6 +23,9 @@
 </div>
 
 <?php
+$is_admin = \Yii::app()->user->checkAccess('admin');
+$can_modify = $model->isNewRecord || $is_admin || count($model->institutions) <= 1;
+
 $form = $this->beginWidget('BaseEventTypeCActiveForm', [
     'id' => 'adminform',
     'enableAjaxValidation' => false,
@@ -43,9 +46,12 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', [
                 [
                     'class' => 'cols-full',
                     'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
-                    'disabled' => !Yii::app()->user->checkAccess('admin')
+                    'disabled' => !$can_modify
                 ]
             ) ?>
+            <?php if (!$can_modify) {
+                echo CHtml::activeHiddenField($model, 'name');
+            } ?>
         </td>
     </tr>
     <tr>
@@ -57,26 +63,30 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', [
                 [
                     'class' => 'cols-full',
                     'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
-                    'disabled' => !Yii::app()->user->checkAccess('admin')
+                    'disabled' => !$can_modify
                 ]
             ) ?>
+            <?php if (!$can_modify) {
+                echo CHtml::activeHiddenField($model, 'short_name');
+            } ?>
         </td>
     </tr>
     <tr>
         <td>Institutions</td>
         <td>
-            <?php if ($model->id) {
+            <?php if ($is_admin) {
                 echo $form->multiSelectList(
                     $model,
                     \CHtml::modelName($model) . '[institutions]',
                     'institutions',
                     'id',
-                    Institution::model()->getTenantedList(!\Yii::app()->user->checkAccess('admin')),
+                    Institution::model()->getTenantedList(false),
                     null,
-                    ['class' => 'cols-full', 'empty' => '-- Add --', 'nowrapper' => true]
+                    ['class' => 'cols-full', 'empty' => '-- Add --', 'nowrapper' => true, 'data-test' => 'instrument-institutions-list']
                 );
             } else {
                 echo Institution::model()->getCurrent()->name;
+                echo \CHtml::hiddenField(\CHtml::modelName($model) . '[institutions][]', Institution::model()->getCurrent()->id, ['data-test' => 'instrument-current-institution']);
             } ?>
         </td>
         </td>
@@ -84,7 +94,10 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', [
     <tr>
         <td>Active</td>
         <td>
-            <?= CHtml::activeCheckBox($model, 'active', ['disabled' => !Yii::app()->user->checkAccess('admin')]) ?>
+            <?= CHtml::activeCheckBox($model, 'active', ['disabled' => !$can_modify]) ?>
+            <?php if (!$can_modify) {
+                echo CHtml::activeHiddenField($model, 'active');
+            } ?>
         </td>
     </tr>
     </tbody>

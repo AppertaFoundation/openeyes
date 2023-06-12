@@ -18,6 +18,8 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "ophciexamination_bleb_assessment_central_area".
  *
@@ -27,6 +29,8 @@ namespace OEModule\OphCiExamination\models;
  */
 class OphCiExamination_Qualitative_Scale extends \BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     protected $attribute_options = array();
 
     /**

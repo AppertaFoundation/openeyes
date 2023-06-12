@@ -20,7 +20,7 @@ Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/IntraocularP
 
 ?>
 
-<div class="element-fields element-eyes">
+<div class="element-fields element-eyes" data-test="intraocular-pressure-element">
     <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
     <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) :?>
       <div class="js-element-eye <?=$eye_side?>-eye <?=$page_side?>" data-side="<?=$eye_side?>">

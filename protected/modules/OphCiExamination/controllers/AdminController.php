@@ -88,12 +88,18 @@ class AdminController extends \ModuleAdminController
             }
         }
 
-        $model_list = models\OphCiExamination_Instrument::model()->findAll([
-            'order' => 'display_order asc',
-            'with' => 'institutions',
-            'condition' => !Yii::app()->user->checkAccess('admin') ? 'institutions_institutions.institution_id = :institution_id' : '',
-            'params' => [':institution_id' => Yii::app()->session['selected_institution_id']],
-        ]);
+        if (Yii::app()->user->checkAccess('admin')) {
+            $model_list = models\OphCiExamination_Instrument::model()->findAll([
+                'order' => 'display_order asc',
+            ]);
+        } else {
+            $model_list = models\OphCiExamination_Instrument::model()->findAll([
+                'order' => 'display_order asc',
+                'with' => 'institutions',
+                'condition' => 'institutions_institutions.institution_id = :institution_id',
+                'params' => [':institution_id' => Yii::app()->session['selected_institution_id']],
+            ]);
+        }
 
         $this->render('list_OphCiExamination_IOPInstruments', array(
             'model_class' => 'OphCiExamination_Instrument',
@@ -113,6 +119,11 @@ class AdminController extends \ModuleAdminController
                 $model->name = $post_attributes['name'];
                 $model->short_name = $post_attributes['short_name'];
                 $model->active = $post_attributes['active'];
+
+                if ($this->checkAccess('admin')) {
+                    $model->setScenario('installationAdminSave');
+                }
+
                 $model->save();
 
                 if (Yii::app()->user->checkAccess('admin')) {
