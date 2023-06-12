@@ -22,7 +22,7 @@ namespace OEModule\OphCiExamination\models;
 use OE\factories\models\traits\HasFactory;
 
 /**
- * This is the model class for table "ophciexamination_comorbidities_item".
+ * This is the model class for table "ophciexamination_postop_complications".
  *
  * @property int $id
  * @property string $name
@@ -35,7 +35,7 @@ class OphCiExamination_PostOpComplications extends \BaseActiveRecordVersioned
     /**
      * Returns the static model of the specified AR class.
      *
-     * @return OphCiExamination_Comorbidities_Item the static model class
+     * @return OphCiExamination_PostOpComplications the static model class
      */
     public static function model($className = __CLASS__)
     {

@@ -62,15 +62,16 @@ return array(
                 'Visual Field Test Options' => ['uri' => '/Admin/worklist/visualFieldTestOptions', 'restricted' => ['admin']],
                 'Visual Field Test Presets' => '/Admin/worklist/visualFieldTestPresets',
             ),
-            'Procedure Management' => array(
-                'Procedures' => ['uri' => '/oeadmin/procedure/list', 'restricted' => array('admin')],
-                'Benefits' => ['uri' => '/oeadmin/benefit/list', 'restricted' => array('admin')],
-                'Complications' => ['uri' => '/oeadmin/complication/list', 'restricted' => array('admin')],
-                'OPCS Codes' => ['uri' => '/oeadmin/opcsCode/list', 'restricted' => array('admin')],
+            'Procedure Management' => [
+                'Post-Op Complications' => ['uri' => '/oeadmin/PostOpComplication/list', 'restricted' => ['admin']],
+                'Procedures' => ['uri' => '/oeadmin/procedure/list', 'restricted' => ['admin']],
+                'Benefits' => ['uri' => '/oeadmin/benefit/list', 'restricted' => ['admin']],
+                'Complications' => ['uri' => '/oeadmin/complication/list', 'restricted' => ['admin']],
+                'OPCS Codes' => ['uri' => '/oeadmin/opcsCode/list', 'restricted' => ['admin']],
                 'Procedure - Subspecialty Assignment' =>  '/Admin/procedureSubspecialtyAssignment/edit',
                 'Procedure - Subspecialty Subsection Assignment' =>  '/oeadmin/SubspecialtySubsectionAssignment/list',
-                'Clinic Procedure Assignment' => ['uri' => '/oeadmin/ClinicProcedure/list', 'restricted' => array('admin')]
-            ),
+                'Clinic Procedure Assignment' => ['uri' => '/oeadmin/ClinicProcedure/list', 'restricted' => ['admin']]
+            ],
             'Drugs' => array(
                 // Hidden for now
                 'Anaesthetic Agent' => ['uri' => '/admin/viewAnaestheticAgent', 'restricted' => array('admin')],
