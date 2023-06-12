@@ -88,12 +88,18 @@ class AdminController extends \ModuleAdminController
             }
         }
 
-        $model_list = models\OphCiExamination_Instrument::model()->findAll([
-            'order' => 'display_order asc',
-            'with' => 'institutions',
-            'condition' => !Yii::app()->user->checkAccess('admin') ? 'institutions_institutions.institution_id = :institution_id' : '',
-            'params' => [':institution_id' => Yii::app()->session['selected_institution_id']],
-        ]);
+        if (Yii::app()->user->checkAccess('admin')) {
+            $model_list = models\OphCiExamination_Instrument::model()->findAll([
+                'order' => 'display_order asc',
+            ]);
+        } else {
+            $model_list = models\OphCiExamination_Instrument::model()->findAll([
+                'order' => 'display_order asc',
+                'with' => 'institutions',
+                'condition' => 'institutions_institutions.institution_id = :institution_id',
+                'params' => [':institution_id' => Yii::app()->session['selected_institution_id']],
+            ]);
+        }
 
         $this->render('list_OphCiExamination_IOPInstruments', array(
             'model_class' => 'OphCiExamination_Instrument',
@@ -113,6 +119,11 @@ class AdminController extends \ModuleAdminController
                 $model->name = $post_attributes['name'];
                 $model->short_name = $post_attributes['short_name'];
                 $model->active = $post_attributes['active'];
+
+                if ($this->checkAccess('admin')) {
+                    $model->setScenario('installationAdminSave');
+                }
+
                 $model->save();
 
                 if (Yii::app()->user->checkAccess('admin')) {
@@ -1123,7 +1134,7 @@ class AdminController extends \ModuleAdminController
             $institution_id = Yii::app()->session['selected_institution_id'];
         }
 
-        $complications = models\OphCiExamination_PostOpComplications::model()->available($subspecialty_id)->findAll();
+        $complications = models\OphCiExamination_PostOpComplications::model()->available()->findAll();
         $selected_complications = models\OphCiExamination_PostOpComplications::model()->enabled($institution_id, $subspecialty_id)->findAll();
 
         $this->render('list_OphCiExamination_PostOpComplications', array(
@@ -1202,7 +1213,7 @@ class AdminController extends \ModuleAdminController
         if (isset($_POST[\CHtml::modelName($model)])) {
             $model->attributes = $_POST[\CHtml::modelName($model)];
             if ($model->save()) {
-               // Audit::add('admin', 'update', serialize($model->attributes), false, array('module' => 'OphCiExamination', 'model' => 'OphCiExamination_ElementSet'));
+                // Audit::add('admin', 'update', serialize($model->attributes), false, array('module' => 'OphCiExamination', 'model' => 'OphCiExamination_ElementSet'));
                 Yii::app()->user->setFlash('success', 'Invoice status updated');
 
                 $this->redirect(array('InvoiceStatusList'));

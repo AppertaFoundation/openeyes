@@ -2221,14 +2221,12 @@ class OphCiExamination_API extends \BaseAPI
                 } else {
                     $str .= '<tr><td></td>';
                 }
-                $str .= '<td style="text-align:left">' . $entry->status->name;
-                if ($entry->status->followup) {
-                    $str .= " in {$entry->followup_quantity} {$entry->getPeriodLabel()} ";
-
-                    if (!empty($entry->followup_comments)) {
-                        $str .= "({$entry->followup_comments})";
-                    }
+                $str .= '<td style="text-align:left"><b>' . $entry->status->name . '</b>';
+                $infos = $entry->getInfos();
+                if (!empty($infos)) {
+                    $infos = ' - ' . $infos . '';
                 }
+                $str .= '<span class="fade" style="font-size: 0.95em;"><em> ' . $infos . ' </em></span>';
                 $str .= "</td></tr>";
             }
             $str .= '</tbody></table>';

@@ -27,7 +27,7 @@ class ModuleAdminController extends BaseAdminController
 
         if (file_exists($this->modulePath . '/js/admin.js')) {
             $url = \Yii::app()->createUrl($this->assetPath . '/js/admin.js');
-            Yii::app()->assetManager->clientScript->registerScriptFile($url);
+            Yii::app()->clientScript->registerScriptFile($url);
         }
 
         return parent::beforeAction($action);

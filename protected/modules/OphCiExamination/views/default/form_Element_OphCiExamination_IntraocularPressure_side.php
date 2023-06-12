@@ -17,6 +17,7 @@
  */
 
 use OEModule\OphCiExamination\models;
+use ReferenceData;
 
 $comments = $side . '_comments';
 
@@ -105,7 +106,7 @@ foreach ($readings as $reading) {
     >
       <i class="oe-i comments small-icon"></i>
     </button>
-    <button type="button" class="button hint green js-add-select-search">
+    <button type="button" class="button hint green js-add-select-search" data-test="add-intraocular-pressure-instrument">
       <i class="oe-i plus pro-theme"></i>
     </button>
   </div>
@@ -146,7 +147,7 @@ foreach ($readings as $reading) {
               new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
                   array_map(function ($instrument) {
                       return ['label' => $instrument->name, 'id' => $instrument->id, 'scale' => isset($instrument->scale->values) ? true : false];
-                  }, OEModule\OphCiExamination\models\OphCiExamination_Instrument::model()->findAllByAttributes(['active' => 1]))
+                  }, models\OphCiExamination_Instrument::model()->findAllAtLevels(ReferenceData::LEVEL_ALL, ['scopes' => ['active']]))
               ) ?>, {'id': 'instrument', 'header': 'Instrument'}),
               new OpenEyes.UI.AdderDialog.ItemSet([], {
                   'id': 'reading_value', 'header': 'mm Hg',

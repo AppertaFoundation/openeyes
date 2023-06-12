@@ -258,6 +258,16 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             data.context_id = $selected_context.data('context_id');
             data.context = $selected_context.data('label');
 
+            data.infos = data.followup_quantity
+                + ' ' + data.followup_period
+                + (data.role.length > 0 ? ' with ' + data.role : '')
+                + (data.followup_comments_display != null && data.followup_comments_display.length > 0 ? ' ' + data.followup_comments_display : '')
+                + (data.site != null && data.site.toLowerCase() != 'any' ? ' // Site: ' + data.site : '')
+                + (data.subspecialty != null && data.subspecialty.toLowerCase() != 'n\\a' ? ' // Subspecialty: ' + data.subspecialty : '')
+                + (data.context != null && data.context.toLowerCase() != 'n/a' ? ' // Context: ' + data.context : '');
+
+            data.risk = '<i class="' + data.risk_status_class + '" ></i>';
+
         } else if ($selected_status.data('discharge')) {
             data.discharge_status_id = $selected_discharge_status.data('discharge-status-id');
             data.discharge_status = $selected_discharge_status.data('label');
@@ -265,6 +275,16 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             data.discharge_destination = $selected_discharge_destination.data('label');
             data.transfer_institution_id = $selected_transfer_to.length > 0 ? $selected_transfer_to.data('transfer-institution-id') : null;
             data.transfer_to = $selected_transfer_to.length > 0 ? (' (' + $selected_transfer_to.data('label') + ')') : null;
+
+            data.infos = (data.discharge_status != null && data.discharge_status.length > 0 ? data.discharge_status : '')
+                + (data.discharge_destination != null && data.discharge_destination.length > 0 ? ' // ' + data.discharge_destination : '')
+                + (data.transfer_to != null && data.transfer_to.length > 0 ? ' // ' + data.transfer_to : '');
+        } else {
+            data.infos = '';
+        }
+
+        if (data.infos != '') {
+            data.infos = '[ ' + data.infos + ' ]';
         }
 
         this.hideUniqueOptions($selected_status);

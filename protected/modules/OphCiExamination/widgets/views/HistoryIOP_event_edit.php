@@ -31,7 +31,7 @@ $pastIOPs = $this->getPastIOPs();
     echo \CHtml::activeHiddenField($this->element, "id");
 endif; ?>
 
-<div class="element-fields element-eyes">
+<div class="element-fields element-eyes" data-test="iop-history-element">
     <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) :?>
         <div class="cols-6 js-element-eye <?=$eye_side?>-eye <?=$page_side?>" data-side="<?=$eye_side?>">
             <div class="active-form data-group">

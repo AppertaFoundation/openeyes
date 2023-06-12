@@ -29,6 +29,7 @@ class CreatePersonalMailboxForUserTest extends \OEDbTestCase
     public function tearDown(): void
     {
         \Yii::app()->setComponent('moduleAPI', null);
+        parent::tearDown();
     }
 
 

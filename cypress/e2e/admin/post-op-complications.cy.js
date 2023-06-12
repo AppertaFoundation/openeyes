@@ -1,79 +1,42 @@
-describe('post op complications admin screen behaviour', () => {
-    const complicationNames = [
-        'complication one ' + Date.now(),
-        'complication two ' + Date.now()
-    ]
-    const subspecialtyName = 'test subspecialty ' + Date.now();
-
+describe('test functionality for post-op complications admin screen', () => {
+    let seederData;
+    
     beforeEach(() => {
+        cy.login();
+    })
+
+    before(() => {
         cy.login()
-            .then((context) => {
-                context.visit_url = '/OphCiExamination/admin/postOpComplications?subspecialty_id=' + context.body.subspecialty_id;
-            })
-            .then((context) => {
-                 return cy.runSeeder(
-                    'OphCiExamination',
-                    'PostOpComplicationsAdminSeeder',
-                    {subspecialty_name: subspecialtyName}
-                ).then((seederResult) => {
-                    return {
-                        visit_url: context.visit_url,
-                        post_op_complications: {
-                            assigned: seederResult.post_op_complications.for_default_subspecialty,
-                            unassigned: seederResult.post_op_complications.unassigned,
-                            new_subspecialty_name: seederResult.unused_subspecialty.name
-                        }
-                    }
-                });
-            })
-            .then((context) => {
-                return cy.visit(context.visit_url).then(() => {
-                    return context.post_op_complications;
-                });
-            })
-            .as('postOpComplications');
-    });
-
-    it('loads with the correct number of complications for institution and subspeciality', function () {
-        const complicationsList = cy.getBySel('selected-complications')
-            .find('li');
-
-        complicationsList.should('have.length', this.postOpComplications.assigned.length);
-    });
-
-    it('select and removing complications works as expected', function () {
-        const expectedComplicationsCount = this.postOpComplications.assigned.length + this.postOpComplications.unassigned.length;
-
-        const complicationsSelect = cy.getBySel('complications-select');
-
-        this.postOpComplications.unassigned.forEach((complication) => {
-            complicationsSelect.should('be.visible').select(complication.name, {force: true});
-        });
-
-        const complicationsList = cy.getBySel('selected-complications')
-                            .find('li');
-
-        complicationsList.should('have.length', expectedComplicationsCount);
-
-        // remove the first item and make sure it has been removed from the list
-        complicationsList.first()
-            .find('i')
-            .click({force: true})
             .then(() => {
-                cy.getBySel('selected-complications')
-                            .find('li')
-                            .should('have.length', expectedComplicationsCount - 1);
+                return cy.runSeeder('Admin', 'PostOpComplicationSeeder');
+            })
+            .then((data) => {
+                seederData = data;
             });
+    })
+
+    it('adds a post-op complication and verifies that it appears when searching for its name', () => {
+        cy.visit('/oeadmin/PostOpComplication/edit')
+        cy.getBySel('post-op-complication-admin-name').type(seederData.add_complication_name)
+        cy.getBySel('post-op-complication-admin-save').click()
+        cy.getBySel('post-op-complication-admin-search').type(seederData.add_complication_name)
+        cy.getBySel('post-op-complication-admin-search-btn').click()
+        cy.contains(seederData.add_complication_name).parent('tr').should('be.visible')
     });
 
-    it('switching to new subspeciality loads no selected complications', function() {
-        const subspecialitySelect = cy.get('[data-test="subspeciality-wrapper"] select');
-        subspecialitySelect.should('be.visible').select(this.postOpComplications.new_subspecialty_name, {force: true});
+    it('ensures that post-op complications cannot be deleted if they are assigned to a subspecialty', () => {
+        cy.visit('/oeadmin/PostOpComplication/list')
+        cy.getBySel('post-op-complication-admin-search').type(seederData.assigned_complication_name)
+        cy.getBySel('post-op-complication-admin-search-btn').click()
+        cy.getBySel('post-op-complication-admin-row').contains(seederData.assigned_complication_name).parent('tr').find('input[type=checkbox]').should('not.exist')
+    });
 
-        const complicationsList = cy.getBySel('selected-complications')
-            .find('li');
-
-        complicationsList.should('not.exist');
-
+    it('deletes a post-op complication', () => {
+        cy.visit('/oeadmin/PostOpComplication/list')
+        cy.getBySel('post-op-complication-admin-search').type(seederData.delete_complication_name)
+        cy.getBySel('post-op-complication-admin-search-btn').click()
+        cy.getBySel('post-op-complication-admin-row').contains(seederData.delete_complication_name).parent('tr').find('input[type=checkbox]').check()
+        cy.getBySel('post-op-complication-admin-delete-btn').click()
+        cy.getBySel('post-op-complication-admin-row').contains(seederData.delete_complication_name).should('not.exist')
     });
 });

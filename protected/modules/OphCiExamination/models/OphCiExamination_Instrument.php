@@ -18,6 +18,16 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use BaseActiveRecordVersioned;
+
+use MappedReferenceData;
+use ReferenceData;
+use LookupTable;
+
+use OE\factories\models\traits\HasFactory;
+
+use Institution;
+
 /**
  * This is the model class for table "ophciexamination_instrument".
  *
@@ -26,30 +36,19 @@ namespace OEModule\OphCiExamination\models;
  * @property string $short_name
  * @property int $display_order
  */
-class OphCiExamination_Instrument extends \BaseActiveRecordVersioned
+class OphCiExamination_Instrument extends BaseActiveRecordVersioned
 {
-
-    use \MappedReferenceData;
+    use MappedReferenceData;
+    use HasFactory;
 
     protected function getSupportedLevels(): int
     {
-        return \ReferenceData::LEVEL_INSTITUTION;
+        return ReferenceData::LEVEL_INSTITUTION | ReferenceData::LEVEL_INSTALLATION;
     }
 
     protected function mappingColumn(int $level): string
     {
         return 'instrument_id';
-    }
-
-
-    /**
-     * Returns the static model of the specified AR class.
-     *
-     * @return OphCiExamination_Instrument the static model class
-     */
-    public static function model($className = __CLASS__)
-    {
-        return parent::model($className);
     }
 
     /**
@@ -62,7 +61,7 @@ class OphCiExamination_Instrument extends \BaseActiveRecordVersioned
 
     public function defaultScope()
     {
-        return array('order' => $this->getTableAlias(true, false).'.display_order');
+        return ['order' => $this->getTableAlias(true, false).'.display_order'];
     }
 
     /**
@@ -71,8 +70,9 @@ class OphCiExamination_Instrument extends \BaseActiveRecordVersioned
     public function rules()
     {
         return array(
-                array('name', 'required'),
-                array('id, name, short_name', 'safe', 'on' => 'search'),
+            ['name', 'required'],
+            ['name, short_name, active', 'validateInstrumentNotChangedWhenSharedUnlessInstallationAdmin',  'except' => 'installationAdminSave'],
+            ['id, name, short_name', 'safe', 'on' => 'search'],
         );
     }
 
@@ -81,18 +81,18 @@ class OphCiExamination_Instrument extends \BaseActiveRecordVersioned
      */
     public function relations()
     {
-        return array(
-            'scale' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_Qualitative_Scale', 'scale_id'),
-            'instrument_institution' => array(self::HAS_MANY, 'OphCiExamination_Instrument_Institution', 'instrument_id'),
-            'institutions' => array(self::MANY_MANY, 'Institution', 'ophciexamination_instrument_institution(instrument_id,institution_id)'),
-        );
+        return [
+            'scale' => [self::BELONGS_TO, OphCiExamination_Qualitative_Scale::class, 'scale_id'],
+            'instrument_institution' => [self::HAS_MANY, OphCiExamination_Instrument_Institution::class, 'instrument_id'],
+            'institutions' => [self::MANY_MANY, Institution::class, 'ophciexamination_instrument_institution(instrument_id,institution_id)'],
+        ];
     }
 
     public function behaviors()
     {
-        return array(
-            'LookupTable' => 'LookupTable',
-        );
+        return [
+            'LookupTable' => LookupTable::class,
+        ];
     }
 
     /**
@@ -107,8 +107,15 @@ class OphCiExamination_Instrument extends \BaseActiveRecordVersioned
         $criteria->compare('name', $this->name, true);
         $criteria->compare('short_name', $this->short_name, true);
 
-        return new \CActiveDataProvider(get_class($this), array(
-                'criteria' => $criteria,
-        ));
+        return new \CActiveDataProvider(get_class($this), [
+            'criteria' => $criteria,
+        ]);
+    }
+
+    public function validateInstrumentNotChangedWhenSharedUnlessInstallationAdmin($attribute, $params)
+    {
+        if ($this->isAttributeDirty($attribute) && count($this->institutions) > 1) {
+            $this->addError('name', 'Cannot change the ' . $attribute . ' of a shared instrument unless you are an installation admin');
+        }
     }
 }

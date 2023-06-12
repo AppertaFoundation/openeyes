@@ -22,7 +22,7 @@ namespace OEModule\OphCiExamination\models;
 use OE\factories\models\traits\HasFactory;
 
 /**
- * This is the model class for table "ophciexamination_comorbidities_item".
+ * This is the model class for table "ophciexamination_postop_complications".
  *
  * @property int $id
  * @property string $name
@@ -35,7 +35,7 @@ class OphCiExamination_PostOpComplications extends \BaseActiveRecordVersioned
     /**
      * Returns the static model of the specified AR class.
      *
-     * @return OphCiExamination_Comorbidities_Item the static model class
+     * @return OphCiExamination_PostOpComplications the static model class
      */
     public static function model($className = __CLASS__)
     {
@@ -145,7 +145,7 @@ class OphCiExamination_PostOpComplications extends \BaseActiveRecordVersioned
             'order' => 'cs.display_order',
         );
 
-        $criteria['condition'] = 'cs.institution_id = :institution_id AND cs.subspecialty_id = :subspecialty_id';
+        $criteria['condition'] = '(cs.institution_id IS NULL OR cs.institution_id = :institution_id) AND cs.subspecialty_id = :subspecialty_id';
         $criteria['params'] = array('institution_id' => $institution_id, 'subspecialty_id' => $subspecialty_id);
 
         $this->getDbCriteria()->mergeWith($criteria);
@@ -156,22 +156,12 @@ class OphCiExamination_PostOpComplications extends \BaseActiveRecordVersioned
     /**
      * Named scope to fetch available (non-enabled) items for the given subspecialty.
      *
-     * @param int|null $subspecialty_id Null for default episode summary
-     *
      * @return EpisodeSummaryItem
      */
-    public function available($subspecialty_id = null)
+    public function available()
     {
-        $criteria = array();
-        if ($subspecialty_id) {
-            $criteria = array(
-                'join' => 'LEFT JOIN ophciexamination_postop_complications_subspecialty AS cs ON t.id = cs.complication_id AND cs.subspecialty_id = :subspecialty_id',
-            );
-
-            $criteria['condition'] = 'cs.subspecialty_id IS NULL';
-            $criteria['params'] = array('subspecialty_id' => $subspecialty_id);
-        }
-        $criteria['order'] = 't.display_order ASC, t.id ASC';
+        $criteria['join'] = 'LEFT JOIN ophciexamination_postop_complications_subspecialty AS cs ON t.id = cs.complication_id';
+        $criteria['order'] = 't.name ASC, t.id ASC';
 
         $this->getDbCriteria()->mergeWith($criteria);
 

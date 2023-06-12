@@ -27,10 +27,13 @@ trait WithTransactions
     {
         $this->verifyTestsCanExistInTransaction();
 
+        $this->originalEnableTransactionsState = \Yii::app()->params['enable_transactions'];
+
+        // force transaction enabled to ensure we get one to wrap the test in
+        \Yii::app()->setParams(['enable_transactions' => true]);
+
         $connection = $this->getDbConnection();
         $transaction = $connection->beginTransaction();
-
-        $this->originalEnableTransactionsState = \Yii::app()->params['enable_transactions'];
 
         // disable transaction calls that will fail inside the test transaction
         \Yii::app()->setParams(['enable_transactions' => false]);
