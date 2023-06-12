@@ -121,10 +121,10 @@ if (!empty($subspecialty)) { ?>
                 //set min max
                 for (let i = 0; i < chart_list.length; i++) {
                     //test min
-                    if (my_min_value < chart_list[i]['layout']['xaxis']['range'][0])
+                    if (typeof chart_list[i]['layout']['xaxis']['range'][0] === 'string' && (my_min_value < chart_list[i]['layout']['xaxis']['range'][0]))
                         my_min_value = new Date(chart_list[i]['layout']['xaxis']['range'][0]);
                     //test max
-                    if (my_max_value > chart_list[i]['layout']['xaxis']['range'][1])
+                    if (typeof chart_list[i]['layout']['xaxis']['range'][1] === 'string' && (my_max_value > chart_list[i]['layout']['xaxis']['range'][1]))
                         my_max_value = new Date(chart_list[i]['layout']['xaxis']['range'][1]);
                 }
                 // set these ranges to the min and max values
