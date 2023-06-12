@@ -379,7 +379,7 @@ class WorklistManager extends CComponent
      *
      * @throws Exception
      */
-    public function getDashboardRenderDates(DateTime $start_date, $end_date)
+    public function getDashboardRenderDates(DateTime $start_date, $end_date = null)
     {
         // in case the passed in date is being used for anything else
         $r_date = clone $start_date;
