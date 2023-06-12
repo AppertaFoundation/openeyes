@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -14,6 +15,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 // this extract's execution time is more than the default 500sec
 // for 5yrs time period it can last more than 30min
 ini_set('max_execution_time', 3600);
@@ -226,7 +228,7 @@ class NodExportController extends BaseController
         }
 
         while (true) {
-            $runQuery = $dataQuery['query']. " LIMIT ".$chunk." OFFSET ".$offset.";";
+            $runQuery = $dataQuery['query'] . " LIMIT " . $chunk . " OFFSET " . $offset . ";";
             $dataCmd = Yii::app()->db->createCommand($runQuery);
 
             $data = $dataCmd->queryAll();
@@ -240,7 +242,7 @@ class NodExportController extends BaseController
 
                 file_put_contents($this->exportPath . '/' . $filename . '.csv', $csv, FILE_APPEND);
 
-                $offset+=$chunk;
+                $offset += $chunk;
                 unset($data);
             } else {
                 break;
@@ -554,18 +556,8 @@ EOL;
 EOL;
         Yii::app()->db->createCommand($query)->execute();
         $query = <<<EOL
-
-
                     INSERT INTO `tmp_episode_medication_route` ( `oe_route_id`, `oe_route_name`, `oe_option_id`, `oe_option_name`, `nod_id`, `nod_name` )
                         VALUES
-                        (54, 'Ocular', 1, 'Left', 1, 'Left eye'),
-                        (54, 'Ocular', 2, 'Right', 2 , 'Right eye'),
-                        (54, 'Ocular', 3, 'Both', 4 , 'Both eyes'),
-                        (44, 'Intramuscular', NULL, "", 7, 'Intramuscular injection'),
-                        (62, 'Inhalation', NULL, "", 6, 'Inhaled'),
-                        (81, 'Intracameral', NULL, "", 5, 'Intracameral'),
-                        (40, 'Intradermal', NULL, "", 99, 'Other'),
-                        (77, 'Intravitreal', NULL, "", 99, 'Other'),
                         (18, 'Topical', NULL, "", 99, 'Other'),
                         (19, 'n/a', NULL, "", 99, 'Other'),
                         (20, 'Other', NULL, "", 99, 'Other'),
@@ -588,22 +580,37 @@ EOL;
                         (37, 'Intracavernous', NULL, "", 99, 'Other'),
                         (38, 'Intracervical', NULL, "", 99, 'Other'),
                         (39, 'Intracoronary', NULL, "", 99, 'Other'),
+                        (40, 'Intradermal', NULL, "", 99, 'Other'),
                         (41, 'Intradiscal', NULL, "", 99, 'Other'),
                         (42, 'Intralesional', NULL, "", 99, 'Other'),
                         (43, 'Intralymphatic', NULL, "", 99, 'Other'),
+                        (44, 'Intramuscular', NULL, "", 7, 'Intramuscular injection'),
                         (45, 'Intraocular', NULL, "", 99, 'Other'),
                         (46, 'Intraperitoneal', NULL, "", 99, 'Other'),
                         (47, 'Intrapleural', NULL, "", 99, 'Other'),
                         (48, 'Intrasternal', NULL, "", 99, 'Other'),
                         (49, 'Intrathecal', NULL, "", 99, 'Other'),
                         (50, 'Intrauterine', NULL, "", 99, 'Other'),
+                        (51, 'Intravenous', NULL, "", 9, 'Intravenously'),
                         (52, 'Intravesical', NULL, "", 99, 'Other'),
+                        (53, 'Nasal', NULL, "", 8, 'Intranasally'),
+                        (54, 'Ocular', 1, 'Left', 1, 'Left eye'),
+                        (54, 'Ocular', 2, 'Right', 2 , 'Right eye'),
+                        (54, 'Ocular', 3, 'Both', 4 , 'Both eyes'),
+                        (55, 'Oral', NULL, "", 12, 'Orally'),
                         (56, 'Buccal', NULL, "", 99, 'Other'),
+                        (57, 'Sublingual', NULL, "", 19, 'Sub-lingual'),
                         (58, 'Obsolete-Oromucosal other', NULL, "", 99, 'Other'),
                         (59, 'Periarticular', NULL, "", 99, 'Other'),
                         (60, 'Perineural', NULL, "", 99, 'Other'),
-                        (67, 'Urethral', NULL, "", 99, 'Other'),
+                        (61, 'Rectal', NULL, "", 15, 'Per rectum'),
+                        (62, 'Inhalation', NULL, "", 6, 'Inhaled'),
                         (63, 'Route of administration not applicable', NULL, "", 99, 'Other'),
+                        (64, 'Subconjunctival', NULL, "", 18, 'Subconjunctival'),
+                        (65, 'Subcutaneous', NULL, "", 17, 'Subcutaneously'),
+                        (66, 'Transdermal', NULL, "", 24, 'Trans-cutaneous'),
+                        (67, 'Urethral', NULL, "", 99, 'Other'),
+                        (68, 'Vaginal', NULL, "", 99, 'Other'),
                         (69, 'Obsolete-Intraventricular', NULL, "", 99, 'Other'),
                         (70, 'Body cavity use', NULL, "", 99, 'Other'),
                         (71, 'Haemofiltration', NULL, "", 99, 'Other'),
@@ -612,24 +619,19 @@ EOL;
                         (74, 'Intracerebroventricular', NULL, "", 99, 'Other'),
                         (75, 'Submucosal rectal', NULL, "", 99, 'Other'),
                         (76, 'Regional perfusion', NULL, "", 99, 'Other'),
+                        (77, 'Intravitreal', NULL, "", 99, 'Other'),
                         (78, 'Oromucosal', NULL, "", 99, 'Other'),
                         (79, 'Intraepidermal', NULL, "", 99, 'Other'),
                         (80, 'Epilesional', NULL, "", 99, 'Other'),
+                        (81, 'Intracameral', NULL, "", 5, 'Intracameral'),
                         (82, 'Iontophoresis', NULL, "", 99, 'Other'),
                         (83, 'Intratumoral', NULL, "", 99, 'Other'),
                         (84, 'Subretinal', NULL, "", 99, 'Other'),
                         (85, 'Intestinal use', NULL, "", 99, 'Other'),
-                        (51, 'Intravenous', NULL, "", 9, 'Intravenously'),
-                        (53, 'Nasal', NULL, "", 8, 'Intranasally'),
-                        (44, 'Intramuscular', NULL, "", 7, 'Intramuscular injection'),
-                        (55, 'Oral', NULL, "", 12, 'Orally'),
-                        (61, 'Rectal', NULL, "", 15, 'Per rectum'),
-                        (68, 'Vaginal', NULL, "", 99, 'Other'),
-                        (64, 'Subconjunctival', NULL, "", 18, 'Subconjunctival'),
-                        (57, 'Sublingual', NULL, "", 19, 'Sub-lingual'),
-                        (65, 'Subcutaneous', NULL, "", 17, 'Subcutaneously'),
-                        (66, 'Transdermal', NULL, "", 24, 'Trans-cutaneous');
-
+                        (86, 'Intraglandular', NULL, "", 99, 'Other'),
+                        (87, 'Peritumoral', NULL, "", 99, 'Other'),
+                        (88, 'Peribulbar ocular', NULL, "", 99, 'Other'),
+                        (89, 'Infiltration', NULL, "", 99, 'Other');
 EOL;
         Yii::app()->db->createCommand($query)->execute();
 
@@ -1323,17 +1325,17 @@ SELECT
 FROM event ev
 JOIN episode ep ON ev.episode_id = ep.id
 JOIN event_type et ON ev.event_type_id = et.id
-LEFT JOIN site st ON st.id = ev.site_id 
+LEFT JOIN site st ON st.id = ev.site_id
 JOIN institution it ON it.id = ev.institution_id
 WHERE et.class_name = 'OphTrOperationnote'
 
 EOL;
 
-        if ( $this->startDate ) {
+        if ($this->startDate) {
             $query .= " AND DATE(ev.event_date) >= STR_TO_DATE('{$this->startDate}', '%Y-%m-%d') ";
         }
 
-        if ( $this->endDate ) {
+        if ($this->endDate) {
             $query .= " AND DATE(ev.event_date) <= STR_TO_DATE('{$this->endDate}', '%Y-%m-%d') ";
         }
 
@@ -1367,7 +1369,7 @@ SELECT
 FROM event ev
 JOIN episode ep ON ev.episode_id = ep.id
 JOIN event_type et ON ev.event_type_id = et.id
-LEFT JOIN site st ON st.id = ev.site_id 
+LEFT JOIN site st ON st.id = ev.site_id
 JOIN institution it ON it.id = ev.institution_id
 WHERE ep.patient_id IN (SELECT c.patient_id FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c)
 AND ev.id NOT IN (SELECT c.oe_event_id FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c)
@@ -1400,7 +1402,7 @@ SELECT
 FROM event ev
 JOIN episode ep ON ev.episode_id = ep.id
 JOIN event_type et ON ev.event_type_id = et.id
-LEFT JOIN site st ON st.id = ev.site_id 
+LEFT JOIN site st ON st.id = ev.site_id
 JOIN institution it ON it.id = ev.institution_id
 WHERE ep.patient_id IN (SELECT c.patient_id FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c)
 AND et.class_name IN ('OphCiExamination', 'OphInBiometry', 'OphDrPrescription')
@@ -3670,7 +3672,7 @@ EOL;
         $zip = new ZipArchive();
 
         if ($zip->open($this->exportPath . '/' . $this->zipName, ZIPARCHIVE::CREATE) !== true) {
-            exit("cannot open <$name>\n");
+            exit("Cannot open {$this->exportPath}/{$this->zipName}\n");
         }
 
         foreach (glob($this->exportPath . "/Cataract/*.csv") as $filename) {
