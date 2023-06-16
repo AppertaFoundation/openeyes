@@ -96,8 +96,8 @@ if ($refraction_data) {
                         ?>
                         <div class="refraction">
                             <div class="data-value">
-                                <?= $refraction_data["{$eye_side}_priority_reading"]["refraction"] ?><br />
-                                <?= $refraction_data["{$eye_side}_priority_reading"]["spherical_equivalent"] ?>
+                                <?= $refraction_data["{$eye_side}_priority_reading"] ? $refraction_data["{$eye_side}_priority_reading"]["refraction"] : "" ?><br />
+                                <?= $refraction_data["{$eye_side}_priority_reading"] ? $refraction_data["{$eye_side}_priority_reading"]["spherical_equivalent"] : "" ?>
                                 <?= $refraction_data["{$eye_side}_comments"]
                                     ? Yii::app()->format->Ntext($refraction_data["{$eye_side}_comments"])
                                     : ""?>
