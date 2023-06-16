@@ -120,7 +120,10 @@ if (isset($elements['OEModule\OphTrConsent\models\Element_OphTrConsent_Additiona
                 </td>
             </tr>
         <?php endif; ?>
-        <?php if ($elements['Element_OphTrConsent_AdvancedDecision']->description) { ?>
+        <?php if (
+                    array_key_exists('Element_OphTrConsent_AdvancedDecision', $elements)
+                    && $elements['Element_OphTrConsent_AdvancedDecision']->description
+) { ?>
             <tr>
                 <th>Advanced Decision</th>
                 <td><?= $elements['Element_OphTrConsent_AdvancedDecision']->description ?></td>
