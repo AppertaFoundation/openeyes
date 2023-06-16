@@ -45,7 +45,7 @@ if ($this->event_subtype) {
         <<?=$tab['type']?> class="<?=$class?>"><?=$label?></<?=$tab['type']?>>
     </div>
     <?php } else {?>
-    <a href="<?=$href?>" class="button header-tab <?=$class?> <?=$active?>" <?= $hidden ? "style='display: none'" : ""?>>
+    <a href="<?=$href?>" data-test="button-header-tab-<?=$label?>" class="button header-tab <?=$class?> <?=$active?>" <?= $hidden ? "style='display: none'" : ""?>>
         <?=$label?>
     </a>
     <?php } ?>

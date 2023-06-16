@@ -67,7 +67,7 @@ $uid = \CHtml::modelName($el_class) . "_" . $widget_class . "_" . $row_id;
                     'inputmode' => "numeric",
                     'class' => "user-pin-entry js-pin-input",
                 )); ?>
-                <button type="button" class="try-pin js-sign-button">PIN sign</button>
+                <button type="button" class="try-pin js-sign-button" data-test="pin-sign-button">PIN sign</button>
             </div>
         </div>
     </td>

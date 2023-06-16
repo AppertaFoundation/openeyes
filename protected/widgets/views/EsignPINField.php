@@ -31,10 +31,10 @@ $uid = \CHtml::modelName($el_class) . "_" . $widget_class . "_" . $row_id;
     <td><span class="js-signatory-label"><?= $this->signature->signatory_role ?></span></td>
     <?php endif; ?>
     <!-- Name -->
-    <td><span class="js-signatory-name"><?= $this->signature->signatory_name ?></span></td>
+    <td><span class="js-signatory-name" data-test="signatory-name"><?= $this->signature->signatory_name ?></span></td>
     <!-- Date -->
     <td>
-        <div class="js-signature-date" <?php if(!$this->isSigned()) { echo 'style="display:none"'; }?>>
+        <div class="js-signature-date" data-test="signature-date" <?php if(!$this->isSigned()) { echo 'style="display:none"'; }?>>
             <?php $this->displaySignatureDate() ?>
         </div>
         <div class="js-signature-control" <?php if($this->isSigned()) { echo 'style="display:none"'; }?>>
@@ -46,15 +46,15 @@ $uid = \CHtml::modelName($el_class) . "_" . $widget_class . "_" . $row_id;
                     'class' => "user-pin-entry js-pin-input",
                     "autocomplete"=>"off",
                 )); ?>
-                <button type="button" class="try-pin js-sign-button">PIN sign</button>
+                <button type="button" class="try-pin js-sign-button" data-test="pin-sign-button">PIN sign</button>
             </div>
         </div>
     </td>
     <!-- Signature -->
     <td>
-        <div class="js-signature-wrapper flex-l" <?php if(!$this->isSigned()) { echo 'style="display:none"'; }?>>
+        <div class="js-signature-wrapper flex-l" data-test="signature-wrapper" <?php if(!$this->isSigned()) { echo 'style="display:none"'; }?>>
             <?php $this->displaySignature() ?>
-            <div class="esigned-at">
+            <div class="esigned-at" data-test="esigned-at">
                 <i class="oe-i tick-green small pad-right"></i>Signed <small>at</small> <span class="js-signature-time"><?php $this->displaySignatureTime() ?></span>
             </div>
         </div>
