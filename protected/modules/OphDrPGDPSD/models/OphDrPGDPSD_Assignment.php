@@ -242,18 +242,22 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
 
     public function saveComment($comment)
     {
-        if ($this->comment && ($this->comment instanceof \OphDrPGDPSD_Assignment_Comment)) {
-            $comment_obj = $this->comment;
+        if (is_null($comment) || $comment = '') {
+            $this->comment_id = null;
         } else {
-            $comment_obj = new \OphDrPGDPSD_Assignment_Comment();
-        }
+            if ($this->comment && ($this->comment instanceof \OphDrPGDPSD_Assignment_Comment)) {
+                $comment_obj = $this->comment;
+            } else {
+                $comment_obj = new \OphDrPGDPSD_Assignment_Comment();
+            }
 
-        $comment_obj->comment = $comment;
-        $comment_obj->commented_by = \Yii::app()->user->id;
-        if ($comment_obj->isModelDirty()) {
-            $comment_obj->save();
+            $comment_obj->comment = $comment;
+            $comment_obj->commented_by = \Yii::app()->user->id;
+            if ($comment_obj->isModelDirty()) {
+                $comment_obj->save();
+            }
+            $this->comment_id = $comment_obj->id;
         }
-        $this->comment_id = $comment_obj->id;
     }
 
     /**

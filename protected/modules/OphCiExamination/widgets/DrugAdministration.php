@@ -218,9 +218,7 @@ class DrugAdministration extends BaseMedicationWidget
             $assignment->confirmed = $is_prescriber ? $confirmed : 1;
             $assignment->active = (int)$assignment_data['active'] ?? 0;
             $assignment->comment = $comment;
-            if ($comment) {
-                $assignment->saveComment($comment);
-            }
+            $assignment->saveComment($comment);
             $assignment->cacheMeds($assignment_data_entries);
             $errors = array_merge($errors, $assignment->getErrors());
             $assignment->validate();
