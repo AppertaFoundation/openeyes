@@ -71,7 +71,7 @@ class GenericModelResource extends SeededResource
                 continue;
             }
             if ($definition[0] === CActiveRecord::BELONGS_TO) {
-                $relations[$relation] = $instance->$relation ? $instance->$relation->getAttributes() : null;
+                $instance->$relation ? ($instance->$relation instanceof \CModel && $relations[$relation] = $instance->$relation ? $instance->$relation->getAttributes() : $instance->$relation) : null;
             }
             if ($definition[0] === CActiveRecord::HAS_MANY) {
                 $relations[$relation] = $this->modelsToArrays($instance->$relation, $exclude);

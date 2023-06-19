@@ -65,7 +65,7 @@ class SignImporter
         $protected_file->save(false);
 
         $signature = new OphCoCvi_Signature();
-        $signature->element_id = $this->element->id;
+        $signature->element_id = $this->element ? $this->element->id : null;
         $signature->type = \BaseSignature::TYPE_PATIENT;
         $signature->signatory_role = 'Patient';
         $signature->signatory_name = $this->event->episode->patient->contact->first_name." ".$this->event->episode->patient->contact->last_name;

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Apperta Foundation, 2023
  * This file is part of OpenEyes.
@@ -242,7 +243,7 @@ class EventManager
     protected function validateEvent(\Event $event): void
     {
         // slightly weird situation where the \EventType class_name property doesn't actually align with the module
-        if (strpos(OphGenericModule::class, $event->eventType->class_name) === false) {
+        if (strpos(OphGenericModule::class, $event->eventType->class_name) === false && strpos(\OphInBiometryModule::class, $event->eventType->class_name) === false) {
             throw new \RuntimeException('invalid event type for event manager ' . $event->eventType->class_name);
         }
     }

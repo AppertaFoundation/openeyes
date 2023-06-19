@@ -130,7 +130,7 @@ $dispense_condition_options = array(
                     'Element_OphDrPrescription_Details[items][' . $key . '][laterality]',
                     $item->laterality,
                     CHtml::listData($options, 'id', 'name'),
-                    array('empty' => '-- Select --')
+                    array('empty' => '-- Select --', 'data-test' => 'route-option')
                 );
             } else {
                 echo '-';

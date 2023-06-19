@@ -98,9 +98,14 @@ class OphCiExamination_Diagnosis extends \BaseActiveRecordVersioned
      */
     public function isAttributeDirty($attrName)
     {
+        if (!array_key_exists($attrName, $this->originalAttributes)) {
+            return true;
+        }
+
         if ($this->{$attrName} === null || is_string($this->{$attrName})) {
             return parent::isAttributeDirty($attrName);
         }
+
         $attr_check_method = $this->attr_dirty_check_methods[$attrName] ?? null;
 
         // if there is no special attribute dirty check or no attribute check method exits,

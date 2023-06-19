@@ -15,7 +15,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-
+use OE\factories\models\traits\HasFactory;
 /**
  * This is the model class for table "unique_codes".
  *
@@ -26,6 +26,7 @@
  */
 class UniqueCodeMapping extends BaseActiveRecord
 {
+    use HasFactory;
     /**
      * Returns the static model of the specified AR class.
      *
@@ -54,6 +55,7 @@ class UniqueCodeMapping extends BaseActiveRecord
         return array(
             'event_id' => array(self::BELONGS_TO, 'Event', 'id'),
             'unique_code_id' => array(self::BELONGS_TO, 'UniqueCodes', 'id'),
+            'unique_codes' => [self::BELONGS_TO, 'UniqueCodes', 'unique_code_id'],
             'user_id' => array(self::BELONGS_TO, 'User', 'id'),
         );
     }

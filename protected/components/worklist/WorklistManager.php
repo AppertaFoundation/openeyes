@@ -948,9 +948,6 @@ class WorklistManager extends CComponent
                 }
             }
 
-            $this->updatePathwayStatus($wp);
-            $wp->refresh();
-
             $target = $worklist->worklist_definition_id ? self::$AUDIT_TARGET_AUTO : self::$AUDIT_TARGET_MANUAL;
 
             $this->audit($target, 'add-patient',
@@ -960,6 +957,9 @@ class WorklistManager extends CComponent
             if ($transaction) {
                 $transaction->commit();
             }
+
+            $this->updatePathwayStatus($wp);
+            $wp->refresh();
 
             return $wp;
         } catch (Exception $e) {

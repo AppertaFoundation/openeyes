@@ -45,6 +45,7 @@ foreach ($address_targets as $key => $value) {
                 'id' => 'docman_recipient_' . $row_index,
                 'disabled' => !$is_editable_contact_targets,
                 'style' => (!$is_editable_contact_targets ? 'background-color: lightgray' : ''),
+                'data-test' => 'letter-to_' . $row_index,
             )
     );
         echo CHtml::hiddenField('DocumentTarget[' . $row_index . '][attributes][contact_nickname]', (isset($contact_nickname) ? $contact_nickname : ''));

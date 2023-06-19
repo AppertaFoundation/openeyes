@@ -87,7 +87,7 @@ $footer_array = explode("{e-signature}", $element["footer"]);
                         $element,
                         'letter_type_id',
                         CHtml::listData(LetterType::model()->getActiveLetterTypes(), 'id', 'name'),
-                        array('empty' => 'Select', 'nowrapper' => true, 'class' => 'cols-full')
+                        array('empty' => 'Select', 'nowrapper' => true, 'class' => 'cols-full', 'data-test' => 'letter-type')
                     ) ?>
                 </div>
             </div>
@@ -315,7 +315,7 @@ $footer_array = explode("{e-signature}", $element["footer"]);
                             'macro_id',
                             $macro_id,
                             $element->letter_macros,
-                            array('empty' => 'Select', 'nowrapper' => true, 'class' => 'cols-full')
+                            array('empty' => 'Select', 'nowrapper' => true, 'class' => 'cols-full', 'data-test' => 'letter-template')
                         ) ?>
                     <hr class="divider">
                         <h3>Insert Quick Text</h3>

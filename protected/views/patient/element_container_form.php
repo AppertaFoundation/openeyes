@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <?php
 $section_classes = array('element full edit');
@@ -92,11 +94,14 @@ $set_id = isset($this->set) ? $this->set->id : null;
                     </span>
                 <?php }
                 // Remove MUST be last element
-                if ($this->isRequiredInUI($element)) { ?>
+                if ($this->isRequiredInUI($element)) {
+                    if ($this instanceof \OEModule\OphCiExamination\controllers\DefaultController) {
+                        ?>
                     <span class="disabled js-has-tooltip" data-tooltip-content="<b>Mandatory Element</b><br/>Cannot be left blank">
                         <i class="oe-i medium-icon <?= $element->hasErrors() ? 'asterisk-red' : 'asterisk' ?>"></i>
                     </span>
-                <?php } else { ?>
+                    <?php }
+                } else { ?>
                     <span class="js-remove-element">
                         <?php if (!isset($no_bin) || $no_bin == false) { ?>
                             <i class="oe-i trash-blue"></i>
