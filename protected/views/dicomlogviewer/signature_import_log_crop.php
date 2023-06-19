@@ -28,7 +28,11 @@ Yii::app()->clientScript->registerCssFile('../../node_modules/cropper/dist/cropp
     <div id="signature-crop">
         <img id="canvas_img" src="<?=$img?>" style="display: none;">
         <canvas id="canvas" class="signature_import_log_canvas"></canvas>
-        <div id="signature_import_log_form_hos_num" class="row field-row">
+        <div
+            id="signature_import_log_form_hos_num"
+            class="row field-row"
+            <?php if( $log->event_id > 0 ) { ?>style="display:none;"<?php } ?>
+        >
             <div class="large-2 column">
                 <label for="signature_import_log_form_hos_num">Hospital Number:</label>
             </div>
@@ -73,17 +77,40 @@ Yii::app()->clientScript->registerCssFile('../../node_modules/cropper/dist/cropp
                     CVI date: <span id="cvi_date"></span><br>
                 </div>
             </div>
-            <div class="large-5 end">
-                <button id="btnCrop" class="small primary event-action hide" value="">Save</button>
-                <a href="<?php echo Yii::app()->createUrl('/DicomLogViewer/signatureList?type='.$type.'&page='.$page) ?>"><button class="small primary event-action" value="">Cancel</button></a>
-                <button id="btnManualIgnore" class="small primary event-action" value="">Manual Ignore</button>
-            </div>
         </div>
-        <input type="hidden" id="unique_id" name="signature_import_log_form[unique_id]">
-        <input type="hidden" id="e_t_id" name="signature_import_log_form[e_t_id]" value="<?=$elementy_type_id?>">
-        <input type="hidden" id="e_id" name="signature_import_log_form[e_id]">
-        <input type="hidden" id="event_id" name="signature_import_log_form[event_id]">
-        <input type="hidden" id="log_id" name="signature_import_log_form[log_id]" value="<?=$log_id?>">
+        <div class="large-12">
+            <button id="btnCrop" data-test="crop_button" class="small primary event-action hide" value="">Save</button>
+            <a href="<?php echo Yii::app()->createUrl('/DicomLogViewer/signatureList?type='.$type.'&page='.$page) ?>"><button class="small primary event-action" value="">Cancel</button></a>
+            <button id="btnManualIgnore" class="small primary event-action" value="">Manual Ignore</button>
+        </div>
+        <?php
+        if ($log->event) {
+            $unique_code_mapping = \UniqueCodeMapping::model()->findByAttributes(['event_id' => $log->event->id]);
+            $unique_code = $unique_code_mapping->unique_codes ? $unique_code_mapping->unique_codes->code : null;
+        }
+        ?>
+        <input
+            type="hidden"
+            id="unique_id"
+            name="signature_import_log_form[unique_id]"
+            value="<?= isset($unique_code) && $unique_code ? $unique_code . '"':''; ?>"
+        >
+
+        <input type="hidden" id="e_t_id" name="signature_import_log_form[e_t_id]" value="<?= $element_type_id ?>">
+        <input type="hidden" id="log_id" name="signature_import_log_form[log_id]" value="<?= $log->id ?>">
+        <input
+            type="hidden"
+            id="e_id"
+            name="signature_import_log_form[e_id]"
+            value="<?php if( $log->event_id > 0 ) { echo $log_parameters['e_id']; } ?>"
+        >
+        <input
+            type="hidden"
+            id="event_id"
+            name="signature_import_log_form[event_id]"
+            value="<?php if( $log->event_id > 0 ) { echo $log->event_id; } ?>"
+        >
+        <input type="hidden" id="log_id" name="signature_import_log_form[log_id]" value="<?=$log->id?>">
     </div>
     <?php } ?>
 </div>
@@ -101,44 +128,46 @@ Yii::app()->clientScript->registerCssFile('../../node_modules/cropper/dist/cropp
         context.drawImage(img, 0, 0);
         var cropper = canvas.cropper({
             aspectRatio: 16 / 9,
-            viewMode: 3
+            viewMode: 3,
+            dragMode: 'move'
         });
-        $('#btnCrop').click(function() {
+
+        changeStatus = function(log_id, status_id)
+        {
+            $.ajax({
+                'type': 'POST',
+                'url': baseUrl + '/DicomLogViewer/statusChange',
+                'data': {'id': log_id, 'status_id': status_id, 'event_id': $('#event_id').val(), YII_CSRF_TOKEN: YII_CSRF_TOKEN},
+                'success': function(data) {
+                    new OpenEyes.UI.Dialog.Alert({
+                        title: "<span data-test='answer_string'>Operation was successfull</span>",
+                        onClose: function() { enableButtons();
+                            window.location.href = baseUrl+'/DicomLogViewer/signatureList?type=<?=$type?>&page=<?=$page?>';
+                            enableButtons();
+                        }
+                    }).open();
+
+                }
+            });
+        }
+
+        $('#btnCrop').on('click',function() {
             var croppedImageDataURL = canvas.cropper('getCroppedCanvas').toDataURL("image/png");
             imgData = croppedImageDataURL.replace('data:image/png;base64,','');
             var unique_identifier = $('#unique_id').val();
+            var original_log_id = $('#log_id').val();
             var signatureUrl = baseUrl+"/Api/sign/add";
             var xhr = new XMLHttpRequest();
             xhr.open('POST', signatureUrl, true);
             xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-            var sendObj = JSON.stringify({"unique_identifier":unique_identifier,"image":imgData, "extra_info": '{"e_t_id":'+$('#e_t_id').val()+', "e_id":'+$('#e_id').val()+'}'});
+            var sendObj = JSON.stringify({"unique_identifier":unique_identifier,"image":imgData,"original_log_id":original_log_id, "extra_info": '{"e_t_id":'+$('#e_t_id').val()+',"e_id":'+$('#e_id').val()+'}', 'YII_CSRF_TOKEN': YII_CSRF_TOKEN});
             xhr.send(sendObj);
             xhr.onreadystatechange = function(e) {
                 if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
                     var log_id = $('#log_id').val();
                     var status_id = 5;
 
-                    $.ajax({
-                        'type': 'POST',
-                        'url': baseUrl + '/dicomLogViewer/statusChange',
-                        'data': {'id': log_id, 'status_id': status_id, 'event_id': $('#event_id').val(), YII_CSRF_TOKEN: YII_CSRF_TOKEN},
-                        'success': function(data) {
-                            new OpenEyes.UI.Dialog({
-                                title: "Operation was successfull",
-                                onClose: function() { enableButtons(); },
-                                buttons: {
-                                    "Close" : {
-                                        text: "OK",
-                                        click: function(){
-                                            window.location.href = baseUrl+'/DicomLogViewer/signatureList?type=<?=$type?>&page=<?=$page?>';
-                                            enableButtons();
-                                        }
-                                    },
-                                }
-                            }).open();
-
-                        }
-                    });
+                    changeStatus(log_id, status_id);
                 }
             };
         });

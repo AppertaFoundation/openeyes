@@ -9,7 +9,8 @@
  * @property string $return_message
  * @property datetime $import_datetime
  * @property integer $status_id
-
+ * @property integer event_id
+ * @property integer cropped_file_id
  */
 class SignatureImportLog extends BaseActiveRecord
 {
@@ -36,9 +37,21 @@ class SignatureImportLog extends BaseActiveRecord
     {
         return array(
             array('filename, status_id', 'required'),
-            array('status_id', 'numerical', 'integerOnly'=>true),
+            array('status_id, event_id, cropped_file_id', 'numerical', 'integerOnly'=>true),
             array('filename, return_message, import_datetime', 'safe'),
         );
+    }
+
+    /**
+     * @return array relational rules.
+     */
+    public function relations()
+    {
+        // NOTE: you may need to adjust the relation name and the related
+        // class name for the relations automatically generated below.
+        return [
+            'event' => [self::BELONGS_TO, Event::class, 'event_id'],
+        ];
     }
 
     /**
@@ -50,6 +63,12 @@ class SignatureImportLog extends BaseActiveRecord
     public static function model($className = __CLASS__)
     {
         return parent::model($className);
+    }
+
+    public function getProtectedFileIdFromLogId($log_id)
+    {
+        $file_name = $this->findByPk($log_id)->filename;
+        return \ProtectedFile::model()->findByAttributes(['uid'=>basename($file_name)])->id;
     }
 
     public function getStatusName()

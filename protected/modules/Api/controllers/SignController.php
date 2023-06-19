@@ -94,19 +94,63 @@ class SignController extends \BaseController
         ];
     }
 
+    /**
+     * @param array $data
+     * @return \ProtectedFile
+     * @throws Exception
+     */
+    public function saveToProtectedFile($data)
+    {
+        $filename = "sign_" . md5(time()) . ".png";
+        $protected_file = \ProtectedFile::createForWriting($filename);
+        file_put_contents($protected_file->getPath(), base64_decode($data['origImage']??$data['image']));
+        $protected_file->title = "";
+        $protected_file->description = "";
+        $protected_file->validate();
+        $protected_file->save(false);
+        return $protected_file;
+    }
+
+    /**
+     * @param $protected_file
+     * @param $return_message
+     * @return true
+     */
+    public function saveSignatureImportLog($protected_file, $status_id, $event = null, $return_message = '', $cropped_file_id = null)
+    {
+        $signature_import_log = new SignatureImportLog();
+        $signature_import_log->filename = $protected_file->getPath();
+        $signature_import_log->cropped_file_id = $cropped_file_id;
+        $signature_import_log->status_id = $status_id;
+        $signature_import_log->return_message = $return_message;
+        $signature_import_log->event_id = $event->id ?? null;
+        $signature_import_log->import_datetime = date('Y-m-d H:i:s');
+        $signature_import_log->save(false);
+        return true;
+    }
+
+    public function getOriginalProtectedFileFromLogId($log_id)
+    {
+        $log = \SignatureImportLog::model()->findByPk($log_id);
+        $file_name = basename($log->filename);
+
+        return \ProtectedFile::model()->findByAttributes(['uid'=>$file_name]);
+    }
+
     public function actionAdd()
     {
         header('Access-Control-Allow-Origin: *');
 
-        $return_message = "";
+        $return_message = '';
+        $msg = "";
 
         if (\Yii::app()->request->isPostRequest) {
             $raw = file_get_contents('php://input');
             $data = json_decode($raw, true);
-
             $event = null;
             if (isset($data['unique_identifier'])) {
                 $uniq_code = \UniqueCodes::model();
+
                 $event = $uniq_code->eventFromUniqueCode($data['unique_identifier']);
                 $valid_result = $this->validateRequest($data, $event);
 
@@ -120,45 +164,39 @@ class SignController extends \BaseController
                 $return_message = "No signature data found";
             }
 
+            // Manual crop
+            if (isset($data['original_log_id'])) {
+                $protected_file = $this->getOriginalProtectedFileFromLogId($data['original_log_id']);
+            } else {
+                $protected_file = $this->saveToProtectedFile($data);
+            }
+
             if ($event) {
                 $extra_info = json_decode($data['extra_info'], true);
-
                 $element_type = \ElementType::model()->findByPk($extra_info['e_t_id']);
+
                 $element_instance = $element_type->getInstance();
                 $esign_element = $element_instance->findByAttributes(['event_id' => $event->id]);
-
                 $sign_importer = new SignImporter($event, $esign_element, $element_type, null);
                 $sign_importer->setSignBase64($data['image']);
                 $sign_importer->save();
 
+                $cropped_file_id = $sign_importer->signature->signatureFile->id;
+
                 $cvi_manager = new OphCoCvi_Manager($this->getApp());
                 $cvi_manager->updateEventInfo($event);
+                $return_message = $data['extra_info'] . " " . $data['unique_identifier'];
+                $status_id = SignatureImportLog::STATUS_SUCCESS;
 
-                $signature_import_log =  new SignatureImportLog();
-                $signature_import_log->filename = $sign_importer->getFilePath();
-                $signature_import_log->status_id = SignatureImportLog::STATUS_SUCCESS;
-                $signature_import_log->return_message = $data['extra_info'] . " " . $data['unique_identifier'];
-                $signature_import_log->import_datetime = date('Y-m-d H:i:s');
-                $signature_import_log->save();
+                $this->saveSignatureImportLog($protected_file, $status_id, $event, $return_message, $cropped_file_id);
+                $msg .= 'Correct signature saved!';
             } else {
-                $filename = "sign_" . md5(time()) . ".png";
-                $protected_file = \ProtectedFile::createForWriting($filename);
-                file_put_contents($protected_file->getPath(), base64_decode($data['origImage']));
-                $protected_file->title = "";
-                $protected_file->description = "";
-                $protected_file->validate();
-                $protected_file->save(false);
-
-                $signature_import_log =  new SignatureImportLog();
-                $signature_import_log->filename = $protected_file->getPath();
-                $signature_import_log->status_id = SignatureImportLog::STATUS_FAILED;
-                $signature_import_log->return_message = $return_message;
-                $signature_import_log->import_datetime = date('Y-m-d H:i:s');
-                $signature_import_log->save();
+                $status_id = SignatureImportLog::STATUS_FAILED;
+                $this->saveSignatureImportLog($protected_file, $status_id, null, $return_message);
+                $msg .= 'Failed signature save!';
             }
-            $msg = 'Signature saved!';
         } else {
-            $msg = 'Bad request';
+            $msg .= 'Bad request';
             header("HTTP/1.1 400 {$msg}");
         }
 

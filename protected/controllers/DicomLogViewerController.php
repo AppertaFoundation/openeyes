@@ -94,11 +94,24 @@ class DicomLogViewerController extends BaseController
         ));
     }
 
+    public function getSignatureElementFromEventId($event_id)
+    {
+        $event = \Event::model()->findByPk($event_id);
+        $element = $event->getElementByClass("OEModule\OphCoCvi\models\Element_OphCoCvi_Esign");
+        return $element;
+    }
+
     public function actionSignatureCrop($id, $type = 1, $page = 1)
     {
+        $log_parameters = '';
         $this->layout = 'admin';
-        $file = SignatureImportLog::model()->findByPk($id);
-        $path = $file->filename;
+        $log = SignatureImportLog::model()->findByPk($id);
+        preg_match("/{(?:[^{}]*)}/",$log->return_message,$result);
+        if(!empty($result)) {
+            $log_parameters = json_decode($result[0], true);
+        }
+
+        $path = $log->filename;
         $filetype = pathinfo($path, PATHINFO_EXTENSION);
         $data = @file_get_contents($path);
         if (!$data) {
@@ -106,9 +119,19 @@ class DicomLogViewerController extends BaseController
         } else {
             $img = 'data:image/' . $filetype . ';base64,' . base64_encode($data);
         }
-        $elementy_type_id = ElementType::model()->findByAttributes(array('class_name'=> 'OEModule\OphCoCvi\models\Element_OphCoCvi_Esign'))->id;
+        $element_type_id = ElementType::model()->findByAttributes(array('class_name'=> 'OEModule\OphCoCvi\models\Element_OphCoCvi_Esign'))->id;
 
-        $this->render('/dicomlogviewer/signature_import_log_crop', array('img' => $img, 'log_id' => $id, 'type' => $type, 'elementy_type_id' => $elementy_type_id, 'page' => $page));
+        $this->render(
+            '/dicomlogviewer/signature_import_log_crop',
+            array(
+                'img' => $img,
+                'log' => $log,
+                'type' => $type,
+                'log_parameters' => $log_parameters,
+                'element_type_id' => $element_type_id,
+                'page' => $page
+            )
+        );
     }
 
     /**
@@ -142,9 +165,9 @@ class DicomLogViewerController extends BaseController
 
     public function actionSignatureImageView($id)
     {
-        $file = SignatureImportLog::model()->findByPk($id);
+        $file = ProtectedFile::model()->findByPk($id);
 
-        $filepath = $file->filename;
+        $filepath = $file->getPath();
         if (!file_exists($filepath)) {
             return false;
         }

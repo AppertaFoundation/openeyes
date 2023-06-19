@@ -16,6 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "unique_codes".
  *
@@ -26,6 +28,7 @@
  */
 class UniqueCodes extends BaseActiveRecord
 {
+    use HasFactory;
     /**
      * Returns the static model of the specified AR class.
      *
