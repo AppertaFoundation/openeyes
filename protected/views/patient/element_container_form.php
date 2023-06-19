@@ -87,7 +87,7 @@ $set_id = isset($this->set) ? $this->set->id : null;
             <div class="element-actions">
                 <!-- order is important for layout because of Flex -->
                 <?php if ($this->canViewPrevious($element) || $this->canCopy($element)) { ?>
-                    <span class="js-duplicate-element">
+                    <span class="js-duplicate-element" data-test="duplicate-element-<?= str_replace(' ', '-', $element->elementType->name) ?>">
                         <i class="oe-i duplicate"></i>
                     </span>
                 <?php }
