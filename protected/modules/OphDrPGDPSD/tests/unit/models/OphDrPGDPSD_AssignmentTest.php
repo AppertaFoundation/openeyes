@@ -158,9 +158,7 @@ class OphDrPGDPSD_AssignmentTest extends \ActiveRecordTestCase
             }
         }
         $assignment->cacheMeds($meds);
-        if ($comment) {
-            $assignment->saveComment($comment);
-        }
+        $assignment->saveComment($comment);
         $res = $assignment->save();
         $this->assertEquals($res, $can_save);
     }
