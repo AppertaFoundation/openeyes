@@ -18,9 +18,12 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use OE\factories\models\traits\HasFactory;
+
 class Element_OphCiExamination_NearVisualAcuity extends Element_OphCiExamination_VisualAcuity
 {
     use traits\CustomOrdering;
+    use HasFactory;
 
     protected $relation_defaults = [
         'left_readings' => [
