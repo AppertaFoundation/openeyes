@@ -222,6 +222,7 @@ $(document).ready(function () {
      */
     $('.js-active-elements').delegate('.js-duplicate-element', 'click', function (e) {
         const element = $(this).closest('.element');
+        const callback = $(this).data('copy-element-callback') ?? null;
         const dialog = new OpenEyes.UI.Dialog({
             url: baseUrl + '/' + moduleName + '/default/viewpreviouselements',
             data: { element_type_id: element.data('element-type-id'), patient_id: OE_patient_id },
@@ -238,7 +239,7 @@ $(document).ready(function () {
             $(element).find('> .element-fields').css('opacity', '0.5');
             $(element).find('> .element-fields').find('input, select, textarea').prop('disabled', true);
             $('.oe-popup-wrap').not('#js-overlay').remove();
-            addElement(element, false, element_id);
+            addElement(element, false, element_id, {}, callback);
         }.bind(undefined, dialog, element));
         e.preventDefault();
 
