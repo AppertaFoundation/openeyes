@@ -32,7 +32,7 @@ if (!isset($selected_data) && isset($reading) && isset($reading->value) && isset
 <tr class="visualAcuityReading visual-acuity-reading js-reading-record" data-key="<?php echo $key ?>">
   <td class="cols-3">
       <?php if (isset($reading)  && $reading->id) { ?>
-            <?=\CHtml::hiddenField($name_stub .'['. $key.'][id]', @$reading->id)?>
+            <?=\CHtml::hiddenField($name_stub .'['. $key.'][id]', @$reading->id, ['data-test' => 'visual-acuity-reading-id'])?>
         <?php } ?>
 
       <?=\CHtml::hiddenField($name_stub .'['. $key.'][unit_id]', @$selected_data['reading_unit_id'])?>
