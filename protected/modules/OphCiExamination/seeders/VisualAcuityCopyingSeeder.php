@@ -23,12 +23,19 @@ use Patient;
 
 use OEModule\OphCiExamination\models\{
     Element_OphCiExamination_VisualAcuity,
+    Element_OphCiExamination_NearVisualAcuity,
     OphCiExamination_VisualAcuity_Reading,
+    OphCiExamination_NearVisualAcuity_Reading,
     OphCiExamination_VisualAcuityUnit
 };
 
 class VisualAcuityCopyingSeeder
 {
+    public function __construct(\DataContext $context)
+    {
+        $this->context = $context;
+    }
+
     public function __invoke()
     {
         $patient = Patient::factory()->create();
@@ -37,31 +44,63 @@ class VisualAcuityCopyingSeeder
                    ->forPatient($patient)
                    ->create();
 
-        $existing_va_element = Element_OphCiExamination_VisualAcuity::factory()
-                             ->forEvent($existing_event)
-                             ->bothEyes()
-                             ->create();
+        if ($this->context->additional_data['type'] === 'visual-acuity') {
+            $existing_va_element = Element_OphCiExamination_VisualAcuity::factory()
+                                 ->forEvent($existing_event)
+                                 ->bothEyes()
+                                 ->create();
 
-        $chosen_unit = OphCiExamination_VisualAcuityUnit::factory()
-                     ->useExisting(['active' => true, 'is_va' => true, 'complex_only' => false])
-                     ->create();
+            // TODO Choose a random unit when the bug with ElementForm, where it always maps
+            // the previous element's reading values through the default unit, has been resolved.
+            // In the the meantime, getUnit will return the default unit, so the units will
+            // match when the mapping takes place in form_Element_OphCiExamination_VisualAcuity_Reading
+            $chosen_unit = Element_OphCiExamination_VisualAcuity::model()->getUnit();
 
-        $lhs_reading = OphCiExamination_VisualAcuity_Reading::factory()
-                     ->forElement($existing_va_element)
-                     ->forSide(OphCiExamination_VisualAcuity_Reading::LEFT)
-                     ->forUnit($chosen_unit)
-                     ->create();
+            $lhs_reading = OphCiExamination_VisualAcuity_Reading::factory()
+                         ->forElement($existing_va_element)
+                         ->forSide(OphCiExamination_VisualAcuity_Reading::LEFT)
+                         ->forUnit($chosen_unit)
+                         ->create();
 
-        $rhs_reading = OphCiExamination_VisualAcuity_Reading::factory()
-                     ->forElement($existing_va_element)
-                     ->forSide(OphCiExamination_VisualAcuity_Reading::RIGHT)
-                     ->forUnit($chosen_unit)
-                     ->create();
+            $rhs_reading = OphCiExamination_VisualAcuity_Reading::factory()
+                         ->forElement($existing_va_element)
+                         ->forSide(OphCiExamination_VisualAcuity_Reading::RIGHT)
+                         ->forUnit($chosen_unit)
+                         ->create();
 
-        $existing_va_element->refresh();
+            $existing_va_element->refresh();
 
-        $lhs_combined = $existing_va_element->getCombined('left');
-        $rhs_combined = $existing_va_element->getCombined('right');
+            $lhs_combined = $existing_va_element->getCombined('left');
+            $rhs_combined = $existing_va_element->getCombined('right');
+        } else if ($this->context->additional_data['type'] === 'near-visual-acuity') {
+            $existing_nva_element = Element_OphCiExamination_NearVisualAcuity::factory()
+                                 ->forEvent($existing_event)
+                                 ->bothEyes()
+                                 ->create();
+
+            // TODO Near Visual Acuity also has issues with the default unit so as above
+            // the default unit is used to test the copying functionality currently.
+            $chosen_unit = Element_OphCiExamination_NearVisualAcuity::model()->getUnit();
+
+            $lhs_reading = OphCiExamination_NearVisualAcuity_Reading::factory()
+                         ->forElement($existing_nva_element)
+                         ->forSide(OphCiExamination_VisualAcuity_Reading::LEFT)
+                         ->forUnit($chosen_unit)
+                         ->create();
+
+            $rhs_reading = OphCiExamination_NearVisualAcuity_Reading::factory()
+                         ->forElement($existing_nva_element)
+                         ->forSide(OphCiExamination_VisualAcuity_Reading::RIGHT)
+                         ->forUnit($chosen_unit)
+                         ->create();
+
+            $existing_nva_element->refresh();
+
+            $lhs_combined = $existing_nva_element->getCombined('left');
+            $rhs_combined = $existing_nva_element->getCombined('right');
+        } else {
+            throw new \Exception('Invalid "type" argument to VisualAcuityCopyingSeeder');
+        }
 
         return [
             'previousEvent' => SeededEventResource::from($existing_event)->toArray(),
