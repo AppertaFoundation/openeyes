@@ -273,5 +273,22 @@ $baseAssetsPath = Yii::getPathOfAlias('application.assets');
         $first = false;
         echo $index;
     } ?> ];
+
+
+    $('.element[data-element-type-class="<?= \CHtml::modelName($element) ?>"] .js-duplicate-element')
+      .data('copy-element-callback', function() {
+        const inside = $('.element[data-element-type-class="<?= \CHtml::modelName($element) ?>"]');
+
+        /*
+         * When the previous examination visual acuity data is return in the new element, it includes two hidden fields with the ids
+         * of the readings from the previous events. Unless those ids are removed, they will be sent back to the server such that
+         * the existing readings will have their element_id fields updated to the newly created element, instead of those readings
+         * being preserved with new readings being created for the new element.
+         *
+         * In effect, it moves the readings instead of copying them unless the existing ids are removed.
+         */
+        inside.find(`input[name^="<?= \CHtml::activeName($element, 'left_readings') ?>"][name$="[id]"]`).remove();
+        inside.find(`input[name^="<?= \CHtml::activeName($element, 'right_readings') ?>"][name$="[id]"]`).remove();
+      });
   });
 </script>
