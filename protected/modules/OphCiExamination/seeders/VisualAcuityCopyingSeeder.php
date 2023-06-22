@@ -72,7 +72,7 @@ class VisualAcuityCopyingSeeder
 
             $lhs_combined = $existing_va_element->getCombined('left');
             $rhs_combined = $existing_va_element->getCombined('right');
-        } else if ($this->context->additional_data['type'] === 'near-visual-acuity') {
+        } elseif ($this->context->additional_data['type'] === 'near-visual-acuity') {
             $existing_nva_element = Element_OphCiExamination_NearVisualAcuity::factory()
                                  ->forEvent($existing_event)
                                  ->bothEyes()
