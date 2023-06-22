@@ -284,9 +284,9 @@ if ($element->isNewRecord) {
 
         if (is_primary === '1') {
           $('#fao-search').show();
-        } else {
-          $('#copyto-search').show();
         }
+
+        $('#copyto-search').show();
 
         userField.remove();
     });

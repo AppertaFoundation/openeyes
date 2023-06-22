@@ -86,10 +86,8 @@ OpenEyes.UI = OpenEyes.UI || {};
             return function (...args) {
                 const later = () => {
                     clearTimeout(timer);
-                    console.log('doing');
                     func(...args);
                 };
-                console.log('resetting');
                 clearTimeout(timer);
                 timer = setTimeout(later, wait);
             };
