@@ -41,14 +41,6 @@ $config = $dirname . '/protected/config/main.php';
 $common_config = $dirname . '/protected/config/core/common.php';
 $local_common_config = $dirname . '/protected/config/local/common.php';
 
-foreach (array($common_config, $local_common_config) as $configfile) {
-    foreach (@file($configfile) as $line) {
-        if (preg_match('/^[\s\t]+\'environment\'[\s\t]*=>[\s\t]*\'([a-z]+)\'/', $line, $m)) {
-            $environment = $m [1];
-        }
-    }
-}
-
 // specify how many levels of call stack should be shown in each log message
 defined('YII_TRACE_LEVEL') or define('YII_TRACE_LEVEL', 3);
 
@@ -59,7 +51,7 @@ require_once($yii);
  * for other packages to access, thereby preventing class loader clashes. see OE-13296 for further details.
  */
 if (!class_exists('HTMLPurifier_Bootstrap', false)) {
-    require_once(Yii::getPathOfAlias('system.vendors.htmlpurifier').DIRECTORY_SEPARATOR.'HTMLPurifier.standalone.php');
+    require_once(Yii::getPathOfAlias('system.vendors.htmlpurifier') . DIRECTORY_SEPARATOR . 'HTMLPurifier.standalone.php');
     HTMLPurifier_Bootstrap::registerAutoload();
 }
 

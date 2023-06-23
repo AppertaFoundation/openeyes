@@ -92,7 +92,7 @@ $edit_signature_role = Yii::app()->request->getParam('edit_signature_role');
     <td>
         <?php
         $authRules = new AuthRules();
-        if ($this->isSigned() && $authRules->canEditEvent($this->element->event)) { ?>
+        if ($this->isSigned() && $authRules->canEditEvent(null,$this->element->event)) { ?>
             <?php if (!$edit_signature_role) { ?>
                 <button class="js-signature-edit">Edit</button>
                 <button class="js-signature-delete">Delete</button>

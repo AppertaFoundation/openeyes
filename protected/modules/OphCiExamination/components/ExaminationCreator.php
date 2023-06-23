@@ -95,12 +95,22 @@ class ExaminationCreator
 
             if (count($examination['patient']['eyes'][0]['reading'][0]['visual_acuity'])) {
                 $measure = $examination['patient']['eyes'][0]['reading'][0]['visual_acuity'][0]['measure'];
+
+                //fixes for portal exams
+                if ($measure === "logMAR") {
+                    $measure = "logMAR 1dp";
+                }
+                if ($measure === "logMAR single-letter") {
+                    $measure = "logMAR 2dp";
+                }
                 $unit = OphCiExamination_VisualAcuityUnit::model()->find('name = :measure', array('measure' => $measure));
                 $visualAcuity = $this->createVisualAcuity($userId, $examinationEvent);
             }
 
             if (count($examination['patient']['eyes'][0]['reading'][0]['near_visual_acuity'])) {
                 $nearMeasure = $examination['patient']['eyes'][0]['reading'][0]['near_visual_acuity'][0]['measure'];
+
+                //fix for portal exams
                 if ($nearMeasure === "N Scale") {
                     $nearMeasure = "N-Scale @40cm";
                 }

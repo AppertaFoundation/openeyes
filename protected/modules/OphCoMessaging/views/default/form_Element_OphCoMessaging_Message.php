@@ -59,7 +59,7 @@ if ($element->isNewRecord) {
                 if ($element->isNewRecord) {
                     $this->widget('application.widgets.AutoCompleteSearch', ['field_name' => 'fao-search', 'htmlOptions' => ['placeholder' => 'Search for recipient', 'data-test' => 'fao-search']]);
                     ?>
-                    <div id="fao-field">
+                    <div id="fao-field" data-test="fao-field">
                         <?php if ($element->for_the_attention_of) { ?>
                             <ul class="oe-multi-select inline"><li><?= $element->for_the_attention_of->mailbox->name ?><i class="oe-i remove-circle small-icon pad-left"></i></li></ul>
                             <script type="text/javascript">$("#fao-search").hide();</script>
@@ -75,9 +75,9 @@ if ($element->isNewRecord) {
               <td>
                 <?php
                 if ($element->isNewRecord) {
-                    $this->widget('application.widgets.AutoCompleteSearch', ['field_name' => 'copyto-search', 'htmlOptions' => ['placeholder' => 'Search recipients (only ' . $copy_to_recipient_limit . ' can be copied in)']]);
+                    $this->widget('application.widgets.AutoCompleteSearch', ['field_name' => 'copyto-search', 'htmlOptions' => ['placeholder' => 'Search recipients (only ' . $copy_to_recipient_limit . ' can be copied in)', 'data-test' => 'copyto-search']]);
                     ?>
-                <div id="copyto-field"></div>
+                <div id="copyto-field" data-test="copyto-field"></div>
                 <?php } else { ?>
                 <div class="data-value">
                     <?= implode(array_map(static function ($recipient) {
@@ -284,9 +284,9 @@ if ($element->isNewRecord) {
 
         if (is_primary === '1') {
           $('#fao-search').show();
-        } else {
-          $('#copyto-search').show();
         }
+
+        $('#copyto-search').show();
 
         userField.remove();
     });

@@ -68,7 +68,8 @@ class SignatureImportLog extends BaseActiveRecord
     public function getProtectedFileIdFromLogId($log_id)
     {
         $file_name = $this->findByPk($log_id)->filename;
-        return \ProtectedFile::model()->findByAttributes(['uid'=>basename($file_name)])->id;
+        $protected_file = \ProtectedFile::model()->findByAttributes(['uid'=>basename($file_name)]);
+        return ($protected_file) ? $protected_file->id : null;
     }
 
     public function getStatusName()
