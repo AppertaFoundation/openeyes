@@ -104,11 +104,20 @@ class DicomLogViewerController extends BaseController
     public function actionSignatureCrop($id, $type = 1, $page = 1)
     {
         $log_parameters = '';
+
+        $element_type_id = ElementType::model()->findByAttributes(array('class_name'=> 'OEModule\OphCoCvi\models\Element_OphCoCvi_Esign'))->id;
         $this->layout = 'admin';
         $log = SignatureImportLog::model()->findByPk($id);
+
         preg_match("/{(?:[^{}]*)}/",$log->return_message,$result);
+
         if(!empty($result)) {
             $log_parameters = json_decode($result[0], true);
+        } elseif( $log->event_id > 0 ) {
+            $log_parameters = [
+                'et_id' => $element_type_id,
+                'e_id' => $this->getSignatureElementFromEventId($log->event_id)->id
+            ];
         }
 
         $path = $log->filename;
@@ -119,7 +128,7 @@ class DicomLogViewerController extends BaseController
         } else {
             $img = 'data:image/' . $filetype . ';base64,' . base64_encode($data);
         }
-        $element_type_id = ElementType::model()->findByAttributes(array('class_name'=> 'OEModule\OphCoCvi\models\Element_OphCoCvi_Esign'))->id;
+
 
         $this->render(
             '/dicomlogviewer/signature_import_log_crop',

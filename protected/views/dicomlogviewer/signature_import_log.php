@@ -60,13 +60,13 @@
                         </button>
                     </td>
                     <td>
-                        <div
-                            class="button viewImageButton"
-                            data-url="<?= $log->id ? "/DicomLogViewer/signatureImageView?id=" . $log->getProtectedFileIdFromLogId(
-                                    $log->id
-                                      ) : "//#0" ?>"
-                        > Image
-                        </div>
+                        <?php if($log->id && $protected_file_id = $log->getProtectedFileIdFromLogId($log->id)) { ?>
+                            <div
+                                class="button viewImageButton"
+                                data-url="<?= $log->id ? "/DicomLogViewer/signatureImageView?id=" . $protected_file_id : "//#0" ?>"
+                            > Image
+                            </div>
+                        <?php } ?>
                     </td>
                     <td>
                         <?php

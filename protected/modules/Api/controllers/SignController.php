@@ -173,7 +173,12 @@ class SignController extends \BaseController
 
             if ($event) {
                 $extra_info = json_decode($data['extra_info'], true);
-                $element_type = \ElementType::model()->findByPk($extra_info['e_t_id']);
+                if(!empty($extra_info)){
+                    $element_type = \ElementType::model()->findByPk($extra_info['e_t_id']);
+                } else {
+                    $element_type = null;
+                }
+
 
                 $element_instance = $element_type->getInstance();
                 $esign_element = $element_instance->findByAttributes(['event_id' => $event->id]);
