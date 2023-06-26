@@ -67,8 +67,7 @@
   },
   "autoload-dev": {
     "classmap": [
-      "vendor/sbs/yii-debug-toolbar/Yii2Debug.php",
-      "features/bootstrap/Pages/OpenEyesPage.php"
+      "vendor/sbs/yii-debug-toolbar/Yii2Debug.php"
     ]
   },
   "extra": {
