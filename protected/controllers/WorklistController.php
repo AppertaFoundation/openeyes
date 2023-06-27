@@ -559,7 +559,7 @@ class WorklistController extends BaseController
                     throw new RuntimeException('Could not delete step');
                 };
                 $transaction->commit();
-            } catch(Exception $e) {
+            } catch (Exception $e) {
                 $transaction->rollback();
                 throw $e;
             }
@@ -766,8 +766,10 @@ class WorklistController extends BaseController
                 }
 
                 // if the step is for prescription, only prescriber has the permission to start it
-                if (($step instanceof PathwayStep && $step->type->short_name === 'Rx')
-                || ($step instanceof PathwayTypeStep && $step->step_type->short_name === 'Rx')) {
+                if (
+                    ($step instanceof PathwayStep && $step->type->short_name === 'Rx')
+                    || ($step instanceof PathwayTypeStep && $step->step_type->short_name === 'Rx')
+                ) {
                     $has_permission_to_start = Yii::app()->user->checkAccess('TaskPrescribe');
                 }
                 if ($step) {
@@ -923,22 +925,22 @@ class WorklistController extends BaseController
             $patientData['patientRisks'] = $this->structurePatientRiskData($patient);
 
             $patientVAData = $this->structurePatientVAData($patient, $exam_api);
-            if(isset($patientVAData)){
+            if (isset($patientVAData)) {
                 $patientData['vaData'] = $patientVAData;
             }
 
             $patientRefractionData = $this->structurePatientRefractionData($patient, $exam_api);
-            if(isset($patientRefractionData)){
+            if (isset($patientRefractionData)) {
                 $patientData['refractionData'] = $patientRefractionData;
             }
 
             $patientCCTData = $this->structurePatientCCTData($patient, $exam_api);
-            if(isset($patientCCTData)){
+            if (isset($patientCCTData)) {
                 $patientData['cctData'] = $patientCCTData;
             }
 
             $patientCVIData = $this->structurePatientCVIData($patient, $exam_api);
-            if(isset($patientCVIData)){
+            if (isset($patientCVIData)) {
                 $patientData['cviData'] = $patientCVIData;
             }
 
@@ -949,13 +951,13 @@ class WorklistController extends BaseController
             $patientData['pastSurgery'] = $this->structurePatientPastSurgeryData($patient);
 
             $structuredMedicationsData = $this->structurePatientMedicationsData($patient);
-            if(isset($structuredMedicationsData['systemicMedications'])) {
+            if (isset($structuredMedicationsData['systemicMedications'])) {
                 $patientData['systemicMedications'] = $structuredMedicationsData['systemicMedications'];
             }
-            if(isset($structuredMedicationsData['historyMedications'])) {
+            if (isset($structuredMedicationsData['historyMedications'])) {
                 $patientData['historyMedications'] = $structuredMedicationsData['historyMedications'];
             }
-            if(isset($structuredMedicationsData['eyeMedications'])) {
+            if (isset($structuredMedicationsData['eyeMedications'])) {
                 $patientData['eyeMedications'] = $structuredMedicationsData['eyeMedications'];
             }
 
@@ -965,10 +967,10 @@ class WorklistController extends BaseController
             $patientData['managementSummaries'] = $this->structurePatientManagementSummaryData($patient, $exam_api);
 
             $structuredWorklistData = $this->structurePatientWorklistData($patient);
-            if(isset($structuredWorklistData['worklistPatients'])) {
+            if (isset($structuredWorklistData['worklistPatients'])) {
                 $patientData['worklistPatients'] = $structuredWorklistData['worklistPatients'];
             }
-            if(isset($structuredWorklistData['pastWorklistPatients'])) {
+            if (isset($structuredWorklistData['pastWorklistPatients'])) {
                 $patientData['pastWorklistPatients'] = $structuredWorklistData['pastWorklistPatients'];
             }
 
@@ -1433,7 +1435,7 @@ class WorklistController extends BaseController
             $temp['month'] = $summary->date[1];
             $temp['year'] = $summary->date[2];
             $temp['user'] = $summary->user;
-            $managementSummaries[] = $temp;
+            $managementSummary[] = $temp;
         }
 
         return $managementSummary;
@@ -1494,7 +1496,8 @@ class WorklistController extends BaseController
         return $structuredWorklistData;
     }
 
-    private function structurePatientPlansProblemsData($patient) {
+    private function structurePatientPlansProblemsData($patient)
+    {
         $structuredPlansProblemsData = ['currentPlanProblems' => [], 'pastPlanProblems' => []];
 
         $plansProblemsWidget = $this->createWidget('application.widgets.PlansProblemsWidget', [
@@ -1996,7 +1999,8 @@ class WorklistController extends BaseController
      *
      * @return void
      */
-    public function actionDeleteComment() {
+    public function actionDeleteComment()
+    {
         $step_id = Yii::app()->request->getParam('step_id');
         $step = PathwayStep::model()->findByPk(($step_id));
         if (!$step) {
