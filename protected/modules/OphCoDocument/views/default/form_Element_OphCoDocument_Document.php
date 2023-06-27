@@ -34,15 +34,15 @@
                         $element,
                         'event_sub_type',
                         CHtml::listData(OphCoDocument_Sub_Types::model()->findAll('is_active=1 ORDER BY display_order'), 'id', 'name'),
-                        array('nowrapper' => true),
-                        array(),
-                        array(
+                        ['nowrapper' => true,'empty' => '-- Select --'],
+                        [],
+                        [
                             'label' => 0,
                             'field' => 2,
-                        )
+                        ]
                     ); ?>
                 </td>
-            </tr>     
+            </tr>
         </tbody>
         </table>
         <hr class="divider">
