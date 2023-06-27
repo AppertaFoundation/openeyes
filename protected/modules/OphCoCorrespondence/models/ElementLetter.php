@@ -366,7 +366,7 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
                     'DocumentCategoryCode' => $document_category_code,
                     'DocumentSubCategoryCode' => $document_category_code . '02',
                     'ExternalSupersessionId' => "313|$this->letter_type_id|{$this->event->episode->patient->getHos()}|$this->event_id",
-                    'Consultant' => $this->event->episode->firm->getConsultantNameAndUsername($institution->id, true, '313:', ', '),
+                    'Consultant' => $this->event->episode->firm->getConsultantNameAndUsername($institution->id, true, '', ', '),
                     'ConsultantCode' => $this->event->episode->firm->consultant ? $this->event->episode->firm->consultant->getFormattedRegistrationCode() : '',
                     'Organisation' => $institution->name,
                     'OrganisationCode' => $institution->remote_id,
