@@ -59,7 +59,8 @@ foreach ($address_targets as $key => $value) {
                 'class' => 'full-width docman_contact_type',
                 'data-rowindex' => $row_index,
                 'options' => $option_styles,
-                'disabled' => !$is_editable
+                'disabled' => !$is_editable,
+                'data-test' => 'docman_contact_type'
         ]
     );
 

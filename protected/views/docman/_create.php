@@ -22,7 +22,7 @@
 <?php
     $is_mandatory = isset($is_mandatory) ? $is_mandatory : false;
 ?>
-<table class="cols-full" id="dm_table" data-macro_id="<?php echo $macro_id; ?>">
+<table class="cols-full" id="dm_table" data-test="dm_table" data-macro_id="<?php echo $macro_id; ?>" >
     <colgroup>
         <col>
         <col class="cols-5">
@@ -78,7 +78,7 @@
                                 ));
                                 ?>
                             </td>
-                            <td class="docman_delivery_method align-left">
+                            <td class="docman_delivery_method align-left" data-test="docman_delivery_method">
                                     <?php
                                     $this->renderPartial('//docman/table/delivery_methods', array(
                                             'is_draft' => $element->draft,
@@ -151,7 +151,7 @@
                         ));
                         ?>
                     </td>
-                    <td class="docman_delivery_method">
+                    <td class="docman_delivery_method" data-test="docman_delivery_method">
                         <?php $this->renderPartial('//docman/table/delivery_methods', array(
                             'is_draft' => $element->draft,
                             'contact_type' => strtoupper($macro["contact_type"]),
