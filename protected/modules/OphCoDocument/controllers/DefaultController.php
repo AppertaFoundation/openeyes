@@ -168,7 +168,7 @@ class DefaultController extends BaseEventTypeController
     /**
      * @param $tmp_name
      * @param $original_name
-     * @return int|boolean
+     * @return array
      */
     private function uploadFile($tmp_name, $original_name)
     {
@@ -184,9 +184,9 @@ class DefaultController extends BaseEventTypeController
 
         if ($p_file->save()) {
             unlink($tmp_name);
-            return $p_file->id;
+            return [$p_file->id, []];
         } else {
-            $errors = $p_file->getErrors();
+            return [0, $p_file->getErrors()];
         }
     }
 
@@ -222,7 +222,7 @@ class DefaultController extends BaseEventTypeController
         $return_data = null;
         if (isset($_POST['subTypeId'], $_POST['uploadMode'])) {
             $subTypeId = $_POST['subTypeId'];
-            $documentId = OphCoDocument_Sub_Types::model()->findByPk($subTypeId)->document_id;
+            $documentId = OphCoDocument_Sub_Types::model()->findByPk($subTypeId)->document_id ?? null;
             if ($documentId) {
                 if (!$file = ProtectedFile::model()->findByPk($documentId)) {
                     throw new CHttpException(404, 'File not found');
@@ -248,19 +248,6 @@ class DefaultController extends BaseEventTypeController
     }
 
     /**
-     * @return string
-     */
-    public function getHeaderBackgroundImage()
-    {
-        if ($this->sub_type) {
-            if (in_array($this->sub_type->name, array('OCT', 'Photograph'))) {
-                $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $this->event->eventType->class_name . '.assets'), true) . '/';
-                return $asset_path . 'img/medium' . $this->sub_type->name . '.png';
-            }
-        }
-    }
-
-    /**
      *
      */
     public function actionFileUpload()
@@ -271,13 +258,23 @@ class DefaultController extends BaseEventTypeController
                 if (isset($file["name"][$file_key]) && strlen($file["name"][$file_key]) > 0) {
                     $handler = $this->documentErrorHandler($_FILES, $file_key);
                     if ($handler == null) {
-                        $return_data[$file_key] = $this->uploadFile($file["tmp_name"][$file_key], $file["name"][$file_key]);
+                        [$protected_file_id, $errors] = $this->uploadFile($file["tmp_name"][$file_key], $file["name"][$file_key]);
+
+                        if (!empty($errors)) {
+                            $return_data = [
+                                's' => 0,
+                                'msg' => implode($errors),
+                                'index' => $file_key
+                            ];
+                        } else {
+                            $return_data[$file_key] = $protected_file_id;
+                        }
                     } else {
-                        $return_data = array(
+                        $return_data = [
                             's' => 0,
                             'msg' => $handler,
                             'index' => $file_key
-                        );
+                        ];
                     }
                 }
             }
