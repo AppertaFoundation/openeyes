@@ -91,8 +91,8 @@ $key = 0;
           </table>
           <div class="data-group noReadings">
             <div class="cols-8 column">
-                <?php echo $form->checkBox($element, $eye_side . '_unable_to_assess', array('text-align' => 'right', 'nowrapper' => true))?>
-                <?php echo $form->checkBox($element, $eye_side . '_eye_missing', array('text-align' => 'right', 'nowrapper' => true))?>
+                <?php echo $form->checkBox($element, $eye_side . '_unable_to_assess', array('text-align' => 'right', 'nowrapper' => true, 'data-test' => 'unable_to_assess-input'))?>
+                <?php echo $form->checkBox($element, $eye_side . '_eye_missing', array('text-align' => 'right', 'nowrapper' => true, 'data-test' => 'eye_missing-input'))?>
             </div>
           </div>
             <div id="nearvisualacuity-<?= $eye_side ?>-comments" class="flex-layout flex-left comment-group js-comment-container"
