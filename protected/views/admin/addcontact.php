@@ -40,7 +40,7 @@
         <tbody>
         <?php foreach (
         ['title', 'first_name', 'last_name',
-                           'nick_name', 'primary_phone', 'fax', 'qualifications' , 'national_code'] as $field
+                           'nick_name', 'primary_phone', 'mobile_phone', 'fax', 'email', 'qualifications' , 'national_code'] as $field
 ) : ?>
             <tr>
                 <td><?= $contact->getAttributeLabel($field); ?></td>
