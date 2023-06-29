@@ -74,7 +74,7 @@ if (( null !== SettingMetadata::model()->getSetting('COMPLog_port')) && SettingM
                     'id',
                     'name'
                 ),
-                array('class' => 'inline visualacuity_unit_selector', 'data-record-mode' => $element::RECORD_MODE_SIMPLE)
+                array('class' => 'inline visualacuity_unit_selector', 'data-record-mode' => $element::RECORD_MODE_SIMPLE, 'data-test' => 'visual-acuity-unit-selector')
             );
             if ($element->unit->information) { ?>
             <span class="js-has-tooltip fa oe-i info small"

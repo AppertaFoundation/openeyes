@@ -43,7 +43,7 @@ $key = 0;
                 CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()
                   ->activeOrPk(@$element->unit_id)
                   ->findAllByAttributes(array('is_near' => '1')), 'id', 'name'),
-                array('class' => 'inline', 'data-record-mode' => $element::RECORD_MODE_SIMPLE));
+                array('class' => 'inline', 'data-record-mode' => $element::RECORD_MODE_SIMPLE, 'data-test' => 'near-visual-acuity-unit-selector'));
             if ($element->unit->information) { ?>
             <div class="info">
               <small><em><?php echo $element->unit->information ?></em></small>

@@ -55,6 +55,11 @@ class VisualAcuityCopyingSeeder
             // In the the meantime, getUnit will return the default unit, so the units will
             // match when the mapping takes place in form_Element_OphCiExamination_VisualAcuity_Reading
             $chosen_unit = Element_OphCiExamination_VisualAcuity::model()->getUnit();
+            $alternative_unit = OphCiExamination_VisualAcuityUnit::model()->active()->find([
+                'condition' => 'id <> :already_chosen_id AND is_va <> 0 AND complex_only = 0',
+                'params' => [':already_chosen_id' => $chosen_unit->id],
+                'order' => 'RAND()'
+            ]);
 
             $lhs_reading = OphCiExamination_VisualAcuity_Reading::factory()
                          ->forElement($existing_va_element)
@@ -81,6 +86,11 @@ class VisualAcuityCopyingSeeder
             // TODO Near Visual Acuity also has issues with the default unit so as above
             // the default unit is used to test the copying functionality currently.
             $chosen_unit = Element_OphCiExamination_NearVisualAcuity::model()->getUnit();
+            $alternative_unit = OphCiExamination_VisualAcuityUnit::model()->active()->find([
+                'condition' => 'id <> :already_chosen_id AND is_near <> 0 AND complex_only = 0',
+                'params' => [':already_chosen_id' => $chosen_unit->id],
+                'order' => 'RAND()'
+            ]);
 
             $lhs_reading = OphCiExamination_NearVisualAcuity_Reading::factory()
                          ->forElement($existing_nva_element)
@@ -105,7 +115,8 @@ class VisualAcuityCopyingSeeder
         return [
             'previousEvent' => SeededEventResource::from($existing_event)->toArray(),
             'leftEyeCombined' => $lhs_combined,
-            'rightEyeCombined' => $rhs_combined
+            'rightEyeCombined' => $rhs_combined,
+            'alternativeUnitName' => $alternative_unit->name
         ];
     }
 }

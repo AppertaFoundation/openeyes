@@ -30,7 +30,7 @@ if (!isset($selected_data) && isset($reading) && isset($reading->value) && isset
 
 ?>
 <?php if (isset($selected_data['reading_display'])) { ?>
-<tr class="nearvisualAcuityReading near-visual-acuity-reading js-reading-record" data-key="<?php echo $key?>">
+<tr class="nearvisualAcuityReading near-visual-acuity-reading js-reading-record" data-key="<?php echo $key?>" data-test="near-visual-acuity-reading">
     <td class="cols-3">
         <?php if (isset($reading) && $reading->id) { ?>
             <?=\CHtml::hiddenField($name_stub .'['. $key.'][id]', @$reading->id, ['data-test' => 'near-visual-acuity-reading-id'])?>

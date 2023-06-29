@@ -1,8 +1,13 @@
 describe('near visual acuity behaviour', () => {
-    it('copies a previous near visual acuity entry into a new examination event', () => {
+    beforeEach(() => {
         cy.login();
 
-        cy.runSeeder('OphCiExamination', 'VisualAcuityCopyingSeeder', { type: 'near-visual-acuity' }).then((seederData) => {
+        cy.runSeeder('OphCiExamination', 'VisualAcuityCopyingSeeder', { type: 'near-visual-acuity' })
+            .as('seederData');
+    });
+
+    it('copies a previous near visual acuity entry into a new examination event', () => {
+        cy.get('@seederData').then((seederData) => {
             cy.visit(seederData.previousEvent.view_url).then(() => {
                 cy.getBySel('near-visual-acuity-left-eye').find('[data-test="combined-near-visual-acuity-data"]').contains(seederData.leftEyeCombined);
                 cy.getBySel('near-visual-acuity-right-eye').find('[data-test="combined-near-visual-acuity-data"]').contains(seederData.rightEyeCombined);
@@ -48,6 +53,43 @@ describe('near visual acuity behaviour', () => {
                     // And the data should still exist for the previous examination event
                     cy.getBySel('near-visual-acuity-left-eye').find('[data-test="combined-near-visual-acuity-data"]').contains(seederData.leftEyeCombined);
                     cy.getBySel('near-visual-acuity-right-eye').find('[data-test="combined-near-visual-acuity-data"]').contains(seederData.rightEyeCombined);
+                });
+            });
+        });
+    });
+
+    it('does not produce duplicates when changing the VA Scale after copying previous entries', () => {
+        cy.get('@seederData').then((seederData) => {
+            cy.visitEventCreationUrl(seederData.previousEvent.patient_id, 'OphCiExamination').then(() => {
+                cy.removeElements();
+                cy.addExaminationElement('Near Visual Acuity');
+
+                cy.intercept({
+                    method: 'GET',
+                    url: '/OphCiExamination/default/viewpreviouselements*'
+                }).as('viewPreviousElements');
+
+                cy.getBySel('duplicate-element-Near-Visual-Acuity').click().then(() => {
+                    cy.wait('@viewPreviousElements').then(() => {
+                        cy.intercept({
+                            method: 'GET',
+                            url: '/OphCiExamination/Default/ElementForm*'
+                        }).as('ElementForm');
+
+                        cy.getBySel('copy-previous-element').click().then(() => {
+                            cy.wait('@ElementForm').then(() => {
+                                cy.getBySel('near-visual-acuity-reading').should('have.length', 2);
+
+                                cy.getBySel('near-visual-acuity-unit-selector').select(seederData.alternativeUnitName);
+
+                                // TODO More robust check
+                                // Here the wait accounts for the possible asynchronous addition of duplicate readings
+                                cy.wait(500);
+
+                                cy.getBySel('near-visual-acuity-reading').should('have.length', 2);
+                            });
+                        });
+                    });
                 });
             });
         });
