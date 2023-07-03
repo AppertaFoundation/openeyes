@@ -497,6 +497,16 @@ class User extends BaseActiveRecordVersioned
         return $this->id ? Yii::app()->authManager->getRoles($this->id) : array();
     }
 
+    public function hasRole($targetRole): bool {
+        foreach ($this->getRoles() as $role) {
+            if ($targetRole === $role->name) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     /**
      * @return array|CActiveRecord|mixed|Tag|UserAuthentication|null
      */

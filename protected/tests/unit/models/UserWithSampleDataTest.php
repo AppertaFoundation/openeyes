@@ -19,6 +19,9 @@
  */
 class UserWithSampleDataTest extends OEDbTestCase
 {
+    use WithFaker;
+    use WithTransactions;
+
     public function initalsBehaviourProvider()
     {
         return [
@@ -41,5 +44,21 @@ class UserWithSampleDataTest extends OEDbTestCase
         ]);
 
         $this->assertEquals($expected, $user->getInitials());
+    }
+
+    /**
+     * @covers User
+     * @group user-roles
+     *
+     * @test
+     */
+    public function has_role_returns_true_when_user_has_role()
+    {
+        $roles = $this->faker->randomElements(Yii::app()->authManager->getRoles(), 2);
+
+        $user = User::factory()->withAuthItems([$roles[0]->name])->create();
+
+        $this->assertTrue($user->hasRole($roles[0]->name));
+        $this->assertFalse($user->hasRole($roles[1]->name));
     }
 }
