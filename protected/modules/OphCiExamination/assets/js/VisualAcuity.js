@@ -63,15 +63,15 @@ $(document).ready(function () {
     }
   }));
 
-  $(this).delegate(".va-change-complexity", 'click', function() {
+  $(this).undelegate(".va-change-complexity", 'click').delegate(".va-change-complexity", 'click', function() {
     changeVisualAcuityMode(this);
   });
 
-  $(this).delegate('#nearvisualacuity_unit_change', 'change', function() {
+  $(this).undelegate('#nearvisualacuity_unit_change', 'change').delegate('#nearvisualacuity_unit_change', 'change', function() {
     visualAcuityChange(this, 'near');
   });
 
-  $(this).delegate('#visualacuity_unit_change', 'change', function() {
+  $(this).undelegate('#visualacuity_unit_change', 'change').delegate('#visualacuity_unit_change', 'change', function() {
     visualAcuityChange(this, '');
   });
 
@@ -79,7 +79,7 @@ $(document).ready(function () {
 		OphCiExamination_VisualAcuity_ReadingTooltip($(this));
 	});
 
-  $(this).delegate(
+  $(this).undelegate('.visualAcuityReading .removeReading', 'click').delegate(
     '.visualAcuityReading .removeReading',
     'click', function(e) {
       var activeForm = $(this).closest('.active-form');
@@ -96,7 +96,7 @@ $(document).ready(function () {
       e.preventDefault();
     });
 
-  $(this).delegate(
+  $(this).undelegate('.nearvisualAcuityReading .removeReading', 'click').delegate(
     '.nearvisualAcuityReading .removeReading',
     'click', function(e) {
       var activeForm = $(this).closest('.active-form');
@@ -108,7 +108,7 @@ $(document).ready(function () {
       e.preventDefault();
     });
 
-  $(this).delegate('.addNearReading', 'click', function(e) {
+  $(this).undelegate('.addNearReading', 'click').delegate('.addNearReading', 'click', function(e) {
     var side = $(this).closest('.side').attr('data-side');
     if($(this).hasClass('addNearReading')){
       OphCiExamination_NearVisualAcuity_addReading(side);
@@ -123,8 +123,11 @@ $(document).ready(function () {
    */
   for (let element of ['NearVisualAcuity', 'VisualAcuity']){
     for (let side of ['right', 'left']){
-      $(this).delegate('#OEModule_OphCiExamination_models_Element_OphCiExamination_'+element+'_'+side+'_unable_to_assess,' +
-        '#OEModule_OphCiExamination_models_Element_OphCiExamination_'+element+'_'+side+'_eye_missing', 'click', function () {
+      $(this)
+        .undelegate('#OEModule_OphCiExamination_models_Element_OphCiExamination_'+element+'_'+side+'_unable_to_assess,' +
+                    '#OEModule_OphCiExamination_models_Element_OphCiExamination_'+element+'_'+side+'_eye_missing', 'click')
+        .delegate('#OEModule_OphCiExamination_models_Element_OphCiExamination_'+element+'_'+side+'_unable_to_assess,' +
+                  '#OEModule_OphCiExamination_models_Element_OphCiExamination_'+element+'_'+side+'_eye_missing', 'click', function () {
 
         if ($('#OEModule_OphCiExamination_models_Element_OphCiExamination_'+element+'_'+side+'_unable_to_assess')[0].checked ||
           $('#OEModule_OphCiExamination_models_Element_OphCiExamination_'+element+'_'+side+'_eye_missing')[0].checked){
@@ -138,17 +141,21 @@ $(document).ready(function () {
 
   /* Visual Acuity readings event binding */
 
-  $('#event-content').on('click', '.OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity .js-remove-element', function() {
-    $('.cvi-alert').slideUp(500);
-  });
+  $('#event-content')
+    .off('click', '.OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity .js-remove-element')
+    .on('click', '.OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity .js-remove-element', function() {
+      $('.cvi-alert').slideUp(500);
+    });
 
-  $('#event-content').on('change', '.OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity .va-selector', function() {
-    updateCviAlertState($(this).closest('section'));
-  });
+  $('#event-content').off('change')
+    .off('change', '.OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity .va-selector')
+    .on('change', '.OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity .va-selector', function() {
+      updateCviAlertState($(this).closest('section'));
+    });
 
 
   // Dismiss alert box
-  $('#event-content').on('click', '.dismiss_cva_alert', function(){
+  $('#event-content').off('click', '.dismiss_cva_alert').on('click', '.dismiss_cva_alert', function(){
     var $section = $('section.OEModule_OphCiExamination_models_Element_OphCiExamination_VisualAcuity');
 
     if( $('.ophciexamination.column.event.view').length ) {
