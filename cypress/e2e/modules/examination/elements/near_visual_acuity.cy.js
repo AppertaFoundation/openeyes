@@ -37,8 +37,10 @@ describe('near visual acuity behaviour', () => {
                                 // causes an an update on those readings, changing the element_id, instead of creating new ones.
                                 cy.getBySel('near-visual-acuity-reading-id').should('not.exist');
 
-                                cy.getBySel('unable_to_assess-input').should('not.exist');
-                                cy.getBySel('eye_missing-input').should('not.exist');
+                                cy.getBySel('unable_to_assess-input').should('not.be.visible');
+                                cy.getBySel('unable_to_assess-input').should('not.be.checked');
+                                cy.getBySel('eye_missing-input').should('not.be.visible');
+                                cy.getBySel('eye_missing-input').should('not.be.checked');
 
                                 cy.getBySel('event-action-save').first().click().then(() => {
                                     // New examination event view should contain copied data
