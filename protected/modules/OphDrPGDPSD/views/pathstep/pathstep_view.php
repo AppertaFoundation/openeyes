@@ -7,6 +7,7 @@
  * @var $assignment OphDrPGDPSD_Assignment
  * @var $interactive int
  * @var $for_administer bool
+ * @var $allow_unlock bool
  */
 $is_step_instance = $step instanceof PathwayStep;
 $assigned_meds = $assignment->getAssignedMeds();
@@ -88,7 +89,7 @@ if ($is_step_instance) {
                             foreach (['Right', 'Left'] as $side) {
                                 $eye_med_obj = isset($eye_med[$side]) ? $eye_med[$side] : null;
                                 $lat_id = isset($eye_med[$side]) ? $eye_med[$side]->laterality : null;
-                                $icon_css = isset($eye_med[$side]) ? $side[0]: null;
+                                $icon_css = isset($eye_med[$side]) ? $side[0] : null;
                                 $index = $eye_med_obj ? $eye_med_obj->id : $index;
                                 $this->renderPartial(
                                     'application.modules.OphDrPGDPSD.views.pathstep.pathstep_view_admin',
@@ -153,15 +154,17 @@ if ($is_step_instance) {
                 <?php if ($for_administer) {?>
                     <button class="green hint js-confirm-admin" data-action="confirm_da">Confirm Administration</button>
                     <button class="blue hint js-cancel-admin" data-action="cancel_da">Cancel</button>
-                <?php } else {?>
+                <?php } elseif ($allow_unlock) {?>
                 <div class="oe-user-pin">
                     <input class="user-pin-entry" name="pincode" type="password" maxlength="6" minlength="6" inputmode="numeric" placeholder="*******">
                     <button type="submit" class="try-pin js-unlock" data-action="unlock_da" disabled>Unlock</button>
                 </div>
+                <?php } else { ?>
+                    <button class="disabled">Can only administer on day</button>
+                <?php } ?>
                 <button class="blue i-btn left hint js-ps-popup-btn" data-action="left"<?= $is_first_requested_step ? ' disabled' : ''?>></button>
                 <button class="blue i-btn right hint js-ps-popup-btn" data-action="right"<?= $is_last_step ? ' disabled' : ''?>></button>
                 <button class="red i-btn trash hint js-ps-popup-btn" data-action="remove"></button>
-                <?php } ?>
             <?php } ?>
         </div>
         <?php }?>

@@ -741,9 +741,7 @@ class WorklistController extends BaseController
                         throw new CHttpException(404, 'Unable to retrieve PSD.');
                     }
 
-                    if ((int)$interactive) {
-                        $interactive = $psd_assignment->getAppointmentDetails()['date'] === 'Today' ? 1 : 0;
-                    }
+                    $allow_unlock = $psd_assignment->getAppointmentDetails()['date'] === 'Today' ? 1 : 0;
                     $can_remove_psd = \Yii::app()->user->checkAccess('Prescribe') && (int)$step->status === PathwayStep::STEP_REQUESTED && !$psd_assignment->elements ? '' : 'disabled';
                     $dom = $this->renderPartial(
                         'application.modules.OphDrPGDPSD.views.pathstep.pathstep_view',
@@ -758,6 +756,7 @@ class WorklistController extends BaseController
                             'is_prescriber' => Yii::app()->user->checkAccess('Prescribe'),
                             'can_remove_psd' => $can_remove_psd,
                             'interactive' => (bool)$interactive,
+                            'allow_unlock' => (bool)$allow_unlock
                         ),
                         true
                     );
