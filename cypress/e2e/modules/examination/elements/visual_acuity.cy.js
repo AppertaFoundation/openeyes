@@ -31,6 +31,8 @@ describe('visual acuity behaviour', () => {
 
                         cy.getBySel('copy-previous-element').click().then(() => {
                             cy.wait('@ElementForm').then(() => {
+                                cy.getBySel('visual-acuity-unit-selector').should('have.value', seederData.chosenUnitId);
+
                                 // The ids for the existing readings should not be present as their inclusion in the form data
                                 // causes an an update on those readings, changing the element_id, instead of creating new ones.
                                 cy.getBySel('visual-acuity-reading-id').should('not.exist');
