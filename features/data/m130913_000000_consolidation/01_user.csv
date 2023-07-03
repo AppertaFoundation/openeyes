@@ -1,3 +1,0 @@
-id,username,first_name,last_name,email,active,global_firm_rights,title,qualifications,role,code,password,salt,last_modified_user_id,last_modified_date,created_user_id,created_date,last_firm_id,is_doctor,access_level,contact_id,last_site_id,is_clinical,is_consultant,is_surgeon,has_selected_firms
-1,admin,Enoch,Root,admin@example.com,1,0,Mr,"admin qualification","admin role",,d45409ef1eaa57f5041bf3a1b510097b,FbYJis0YG3,1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",0,1,5,3,,0,0,0,0
-2,user,User,Example,user@example.com,1,0,Mr,"user qualification","user role",,c710790a790ed75065a8434c00c70bfc,E8yB3P02Mq,1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",0,1,0,4,,0,0,0,0

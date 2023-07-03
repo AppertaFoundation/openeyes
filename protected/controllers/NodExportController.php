@@ -234,7 +234,7 @@ class NodExportController extends BaseController
             $data = $dataCmd->queryAll();
 
             if ($offset == 0) {
-                file_put_contents($this->exportPath . '/' . $filename . '.csv', ((implode(',', $dataQuery['header'])) . "\n"), FILE_APPEND);
+                file_put_contents($this->exportPath . '/' . $filename . '.csv', ((implode(',', $dataQuery['header'])) . "\n"));
             }
 
             if (count($data) > 0) {
@@ -707,9 +707,9 @@ EOL;
         ltim.imd_decile AS IMDDecile,
         ii.country AS IMDCountry
         FROM v_patient_details p
-        INNER JOIN postcode_to_lsoa_mapping ptlm ON ptlm.postcode = p.postcode
-        INNER JOIN lsoa_to_imd_mapping ltim ON ltim.lsoa = ptlm.lsoa
-        INNER JOIN imd_import ii ON ltim.imd_import_id = ii.id
+        LEFT JOIN postcode_to_lsoa_mapping ptlm ON ptlm.postcode = p.postcode
+        LEFT JOIN lsoa_to_imd_mapping ltim ON ltim.lsoa = ptlm.lsoa
+        LEFT JOIN imd_import ii ON ltim.imd_import_id = ii.id
         WHERE patient_id IN (${subquery})
       EOL;
         $dataQuery = array(
@@ -1147,10 +1147,10 @@ EOL;
                     ii.country AS IMDCountry,
                     NULL AS IsPrivate
                     FROM patient p
-                    INNER JOIN address a ON a.contact_id = p.contact_id
-                    INNER JOIN postcode_to_lsoa_mapping ptlm ON ptlm.postcode = a.postcode
-                    INNER JOIN lsoa_to_imd_mapping ltim ON ltim.lsoa = ptlm.lsoa
-                    INNER JOIN imd_import ii ON ltim.imd_import_id = ii.id
+                    LEFT JOIN address a ON a.contact_id = p.contact_id
+                    LEFT JOIN postcode_to_lsoa_mapping ptlm ON ptlm.postcode = a.postcode
+                    LEFT JOIN lsoa_to_imd_mapping ltim ON ltim.lsoa = ptlm.lsoa
+                    LEFT JOIN imd_import ii ON ltim.imd_import_id = ii.id
                   WHERE p.id IN
                     (
                         SELECT DISTINCT(c.patient_id)
@@ -1217,11 +1217,11 @@ EOL;
                         IsCVIPartial )
                 SELECT
                 poi.patient_id AS PatientId,
-                STR_TO_DATE(REPLACE(poi.cvi_status_date, '-00', '-01'), '%Y-%m-%d') AS `Date`,
-                (CASE WHEN poi.cvi_status_date LIKE '%-00%' THEN 1 ELSE 0 END) AS IsDateApprox,
+                STR_TO_DATE(REPLACE(IFNULL(poi.registration_date,poi.event_date), '-00', '-01'), '%Y-%m-%d') AS `Date`,
+                (CASE WHEN IFNULL(poi.registration_date,poi.event_date) LIKE '%-00%' THEN 1 ELSE 0 END) AS IsDateApprox,
                 (CASE WHEN poi.cvi_status_id=4 THEN 1 ELSE 0 END) AS IsCVIBlind,
                 (CASE WHEN poi.cvi_status_id=3 THEN 1 ELSE 0 END) AS IsCVIPartial
-                FROM patient_oph_info poi
+                FROM v_patient_cvi_status poi
                 /* Restriction: patients in control events */
                 WHERE poi.patient_id IN ( SELECT c.patient_id FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier}  c );
 EOL;

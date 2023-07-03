@@ -242,7 +242,7 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
 
     public function saveComment($comment)
     {
-        if (is_null($comment) || $comment = '') {
+        if (is_null($comment) || $comment == '') {
             $this->comment_id = null;
         } else {
             if ($this->comment && ($this->comment instanceof \OphDrPGDPSD_Assignment_Comment)) {

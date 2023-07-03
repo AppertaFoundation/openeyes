@@ -37,7 +37,7 @@
                     <?php echo $form->checkBox(
                         $element,
                         'agrees_to_insecure_email_correspondence',
-                        array('nowrapper' => true)
+                        array('nowrapper' => true, 'data-test' => 'agrees_to_insecure_email_correspondence')
                     ) ?>
                 </div>
                 <div class="cols-8 column">

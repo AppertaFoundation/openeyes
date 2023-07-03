@@ -1,2 +1,0 @@
-parameters:
-    behat.console.processor.locator.class: OpenEyesLocatorProcessor

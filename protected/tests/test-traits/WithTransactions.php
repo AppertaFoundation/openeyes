@@ -34,6 +34,9 @@ trait WithTransactions
 
         $connection = $this->getDbConnection();
         $transaction = $connection->beginTransaction();
+        if (!($transaction instanceof CDbTransaction)) {
+            throw new RuntimeException('Unable to initiate a valid transaction.');
+        }
 
         // disable transaction calls that will fail inside the test transaction
         \Yii::app()->setParams(['enable_transactions' => false]);

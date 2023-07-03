@@ -38,7 +38,7 @@ if (!isset($element)) {
             ));
             ?>
         </td>
-    <td class="docman_delivery_method align-left">
+    <td class="docman_delivery_method align-left" data-test="docman_delivery_method">
         <?php $this->renderPartial('//docman/table/delivery_methods', array(
                     'is_draft' => $element->draft,
                     'contact_type' => $selected_contact_type,
