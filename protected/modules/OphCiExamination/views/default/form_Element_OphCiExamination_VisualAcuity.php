@@ -108,6 +108,7 @@ if ($cvi_api) {
     <?php foreach (array('left' => 'right', 'right' => 'left') as $page_side => $eye_side) : ?>
       <div class="js-element-eye <?= $eye_side ?>-eye column <?= $page_side ?> side"
           data-side="<?= $eye_side ?>"
+          data-test="visual-acuity-eye-column"
       >
         <div class="active-form data-group flex-layout"
              style="<?= $element->hasEye($eye_side) ? '' : 'display: none;'?>"

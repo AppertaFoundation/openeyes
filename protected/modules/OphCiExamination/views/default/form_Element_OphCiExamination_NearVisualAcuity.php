@@ -64,6 +64,7 @@ $key = 0;
         ?> inactive <?php
                                } ?>"
           data-side="<?= $eye_side ?>"
+          data-test="near-visual-acuity-eye-column"
     >
       <div class="active-form data-group flex-layout"
            style="<?= $element->hasEye($eye_side)? '': 'display: none;'?>"

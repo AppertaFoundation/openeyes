@@ -58,7 +58,7 @@ describe('near visual acuity behaviour', () => {
         });
     });
 
-    it('does not produce duplicates when changing the VA Scale after copying previous entries', () => {
+    it('does not produce duplicates or eliminate entries when changing the VA Scale after copying previous entries', () => {
         cy.get('@seederData').then((seederData) => {
             cy.visitEventCreationUrl(seederData.previousEvent.patient_id, 'OphCiExamination').then(() => {
                 cy.removeElements();
@@ -78,7 +78,8 @@ describe('near visual acuity behaviour', () => {
 
                         cy.getBySel('copy-previous-element').click().then(() => {
                             cy.wait('@ElementForm').then(() => {
-                                cy.getBySel('near-visual-acuity-reading').should('have.length', 2);
+                                cy.get('[data-test="near-visual-acuity-eye-column"][data-side="left"]').find('[data-test="near-visual-acuity-reading"]').should('have.length', 1);
+                                cy.get('[data-test="near-visual-acuity-eye-column"][data-side="right"]').find('[data-test="near-visual-acuity-reading"]').should('have.length', 1);
 
                                 cy.getBySel('near-visual-acuity-unit-selector').select(seederData.alternativeUnitName);
 
@@ -86,7 +87,8 @@ describe('near visual acuity behaviour', () => {
                                 // Here the wait accounts for the possible asynchronous addition of duplicate readings
                                 cy.wait(500);
 
-                                cy.getBySel('near-visual-acuity-reading').should('have.length', 2);
+                                cy.get('[data-test="near-visual-acuity-eye-column"][data-side="left"]').find('[data-test="near-visual-acuity-reading"]').should('have.length', 1);
+                                cy.get('[data-test="near-visual-acuity-eye-column"][data-side="right"]').find('[data-test="near-visual-acuity-reading"]').should('have.length', 1);
                             });
                         });
                     });
