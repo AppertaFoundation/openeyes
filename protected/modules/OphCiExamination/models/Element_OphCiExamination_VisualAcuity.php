@@ -604,6 +604,17 @@ class Element_OphCiExamination_VisualAcuity extends \BaseEventTypeElement implem
         return round($sum / count($values));
     }
 
+    /**
+     * @param \BaseEventTypeElement $element
+     */
+    public function loadFromExisting($element)
+    {
+        parent::loadFromExisting($element);
+
+        $this->unit_id = null; // Potentially set to default value which affects the result from getUnit()
+        $this->unit_id = $this->getUnit()->id ?? null;
+    }
+
     protected function getDefaultUnitId()
     {
         return $this->getSetting('unit_id');
