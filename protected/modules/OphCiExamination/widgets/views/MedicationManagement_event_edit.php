@@ -459,11 +459,18 @@ echo '<script type="text/javascript" src="' . $asset_folder . '/EsignElementWidg
 
                 $.each(window.HMController.$table.children("tbody").children("tr.js-first-row").not('.originally-stopped'), function(i, historyMedicationRow) {
                     let medication_history_bound_key = $(historyMedicationRow).find('.js-bound-key').val();
+
+                    if (medication_history_bound_key === '') {
+                        medication_history_bound_key = undefined;
+                    }
+
                     let rowNeedsCopying = true;
                     let $medicationManagementRow;
-                    if (medication_history_bound_key && medication_history_bound_key !== '' && !medication_history_bound_keys.includes(medication_history_bound_key)) {
+
+                    if (medication_history_bound_key && !medication_history_bound_keys.includes(medication_history_bound_key)) {
                         medication_history_bound_keys.push(medication_history_bound_key);
                     }
+                    
                     medication_management_bound_keys = [];
 
                     $.each(window.MMController.$table.children("tbody").children("tr.js-first-row"), function(index, medicationManagementRow) {
@@ -489,7 +496,7 @@ echo '<script type="text/javascript" src="' . $asset_folder . '/EsignElementWidg
                             }
                         }
 
-                        if (medication_history_bound_key && medication_management_bound_key === medication_history_bound_key || !medication_history_bound_key && !medication_management_bound_key) {
+                        if (medication_history_bound_key === medication_management_bound_key) {
                             window.HMController.bindEntries($(historyMedicationRow), $(medicationManagementRow), false);
                             window.MMController.disableRemoveButton($(medicationManagementRow));
                             rowNeedsCopying = false;
