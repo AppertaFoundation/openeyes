@@ -38,7 +38,9 @@ this.OpenEyes.UI = this.OpenEyes.UI || {};
         canvasSelector: "",
         eraseButtonSelector: "",
         saveButtonSelector: "",
-        toggleFullScreenButtonSelector: ""
+        toggleFullScreenButtonSelector: "",
+        minLineWidth: 1.5,
+        maxLineWidth: 7.5,
     };
 
     SignatureCapture.prototype.create = function ()
@@ -56,7 +58,9 @@ this.OpenEyes.UI = this.OpenEyes.UI || {};
         // Launch signaturePad widget
         this.signaturePad = new SignaturePad(this.$canvas[0], {
             backgroundColor: BACKGROUND,
-            penColor: FOREGROUND
+            penColor: FOREGROUND,
+            minWidth: this.options.minLineWidth,
+            maxWidth: this.options.maxLineWidth,
         });
         this.addEventHandlers();
     };
