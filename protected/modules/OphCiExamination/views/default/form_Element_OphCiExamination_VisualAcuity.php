@@ -134,7 +134,7 @@ if ($cvi_api) {
               } ?>
               </tbody>
             </table>
-            <div class="data-group noReadings">
+            <div class="data-group noReadings" style="<?= count($element->{$eye_side . '_readings'}) > 0 ? 'display: none;' : '' ?>">
               <div class="cols-8 column end">
                   <?php echo $form->checkBox(
                       $element,

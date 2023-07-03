@@ -90,7 +90,7 @@ $key = 0;
             }?>
             </tbody>
           </table>
-          <div class="data-group noReadings">
+          <div class="data-group noReadings" style="<?= count($element->{$eye_side . '_readings'}) > 0 ? 'display: none;' : '' ?>">
             <div class="cols-8 column">
                 <?php echo $form->checkBox($element, $eye_side . '_unable_to_assess', array('text-align' => 'right', 'nowrapper' => true, 'data-test' => 'unable_to_assess-input'))?>
                 <?php echo $form->checkBox($element, $eye_side . '_eye_missing', array('text-align' => 'right', 'nowrapper' => true, 'data-test' => 'eye_missing-input'))?>
