@@ -171,7 +171,7 @@ $form = $this->beginWidget(
                         'roles',
                         'name',
                         CHtml::listData(
-                            Yii::app()->authManager->getRoles(),
+                            Yii::app()->authManager->getAssignableRoles(Yii::app()->session->getSelectedUser()->id),
                             'name',
                             'name'
                         ),
