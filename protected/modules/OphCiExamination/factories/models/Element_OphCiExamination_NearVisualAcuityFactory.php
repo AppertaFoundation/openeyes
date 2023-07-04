@@ -19,6 +19,7 @@ use OE\factories\ModelFactory;
 use OE\factories\models\EventFactory;
 
 use Eye;
+use OEModule\OphCiExamination\models\Element_OphCiExamination_NearVisualAcuity;
 
 class Element_OphCiExamination_NearVisualAcuityFactory extends ModelFactory
 {
@@ -48,6 +49,26 @@ class Element_OphCiExamination_NearVisualAcuityFactory extends ModelFactory
     {
         return $this->state([
             'eye_id' => Eye::factory()->useExisting(['id' => Eye::BOTH])
+        ]);
+    }
+
+    /**
+     * @return Element_OphCiExamination_NearVisualAcuityFactory
+     */
+    public function simple(): self
+    {
+        return $this->state([
+            'record_mode' => Element_OphCiExamination_NearVisualAcuity::RECORD_MODE_SIMPLE
+        ]);
+    }
+
+    /**
+     * @return Element_OphCiExamination_NearVisualAcuityFactory
+     */
+    public function complex(): self
+    {
+        return $this->state([
+            'record_mode' => Element_OphCiExamination_NearVisualAcuity::RECORD_MODE_COMPLEX
         ]);
     }
 }
