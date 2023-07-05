@@ -2198,11 +2198,8 @@ class PatientController extends BaseController
         if (isset($_POST['PatientIdentifier'])) {
             foreach ($_POST['PatientIdentifier'] as $post_info) {
                 if (array_key_exists('patient_identifier_type_id', $post_info) && array_key_exists($post_info['patient_identifier_type_id'], $patient_identifiers)) {
-                    if (!$is_update || $patient_identifiers[$post_info['patient_identifier_type_id']]->patientIdentifierType->isEditableBy(Yii::app()->user, Institution::model()->getCurrent(), Site::model()->getCurrent())) {
-                        // only assign post value to non-auto-incremented identifier value
-                        if (!in_array($post_info['patient_identifier_type_id'], $auto_incremented_identifier_type_ids)) {
-                            $patient_identifiers[$post_info['patient_identifier_type_id']]->value = @$post_info['value'];
-                        }
+                    if ($patient_identifiers[$post_info['patient_identifier_type_id']]->patientIdentifierType->isEditableBy(Yii::app()->user, Institution::model()->getCurrent(), Site::model()->getCurrent())) {
+                        $patient_identifiers[$post_info['patient_identifier_type_id']]->value = @$post_info['value'];
                         if (array_key_exists('patient_identifier_status_id', $post_info)) {
                             $patient_identifiers[$post_info['patient_identifier_type_id']]->patient_identifier_status_id = $post_info['patient_identifier_status_id'];
                         }

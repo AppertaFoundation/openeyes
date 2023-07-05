@@ -15,7 +15,7 @@
         <td>
             <div class="flex-layout">
             <?php
-                $is_patient_identifier_editable = $is_update && $patient_identifier->patientIdentifierType->isEditableBy(Yii::app()->user, Institution::model()->getCurrent(), Site::model()->getCurrent());
+                $is_patient_identifier_editable = $patient_identifier->patientIdentifierType->isEditableBy(Yii::app()->user, Institution::model()->getCurrent(), Site::model()->getCurrent());
 
                 // To edit a patient identifier value you must take an extra action to make it editable, as this is a sensitive field do the input is disabled by default in update mode
                 echo $form->textField(
@@ -28,19 +28,19 @@
                         'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                         'name' => "PatientIdentifier[{$index}][value]",
                         'onblur' => "findDuplicatesByPatientIdentifier($index);",
-                        'readonly' => $is_update,
+                        'readonly' => (!$is_patient_identifier_editable || $is_update),
                         'style' => ($is_update && Yii::app()->user->checkAccess('admin')) ? 'width: 95%' : '',
                         'class' => $is_update ? 'fade' : '',
                     ]
                 );
                 echo CHtml::hiddenField("PatientIdentifier[{$index}][patient_identifier_type_id]", $patient_identifier->patient_identifier_type_id);
             ?>
-            <?php if ($is_patient_identifier_editable) { ?>
+            <?php if ($is_patient_identifier_editable && $is_update) { ?>
                     <a onclick="removePatientIdentifierReadonlyAttribute(this);" style="cursor: pointer">
                         <i class="oe-i medium pencil pad js-has-tooltip" data-tooltip-content='Click to edit <?= $patient_identifier->patientIdentifierType->short_title ?>'></i>
                     </a>
             </div>
-            <?php } elseif ($is_update) { ?>
+            <?php } elseif (!$is_patient_identifier_editable || $is_update) { ?>
                 <i class="oe-i medium info pad js-has-tooltip" data-tooltip-content='<?= $patient_identifier->patientIdentifierType->short_title ?> can only be editied by an admin user'></i>
             <?php } ?>
         </td>
