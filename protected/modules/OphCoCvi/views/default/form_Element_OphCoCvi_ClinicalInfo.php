@@ -1,3 +1,5 @@
+<script type="text/javascript" src="<?= Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.widgets.js') . '/AutoCompleteSearch.js', true, -1); ?>"></script>
+
 <?php
 /**
  * (C) Copyright Apperta Foundation 2021
@@ -375,18 +377,17 @@ if ($this->checkClinicalEditAccess()) { ?>
                     <tr>
                         <td>
                             <?php
-                            $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                                'name' => 'autocomplete_disorder_id',
-                                'id' => 'autocomplete_disorder_id',
-                                'sourceUrl' => array('default/cilinicalDiagnosisAutocomplete'),
-                                'options' => array(
-                                    'minLength' => '2',
-                                    'select' => "js:function(event, ui) {
-                                        $('#disorder_id').val(ui.item.id);
-                                    }",
-                                ),
-                                'htmlOptions' => array('placeholder' => 'Search', 'class' => 'cols-full'),
-                            )); ?>
+                            $this->widget('application.widgets.AutoCompleteSearch',
+                                [
+                                    'field_name' => 'autocomplete_disorder_id',
+                                    'htmlOptions' =>
+                                        [
+                                            'placeholder' => 'Search',
+                                        ],
+                                    'layoutColumns' => ['field' => '12']
+                                ]);
+
+                            ?>
                             <input type="hidden" id="disorder_id" name="disorder_id">
                             <input type="hidden" id="element_id" name="element_id"
                                    value="<?= CHtml::encode($element->id) ?>">
@@ -502,3 +503,22 @@ if ($this->checkClinicalEditAccess()) { ?>
 <?php } else {
     $this->renderPartial('view_Element_OphCoCvi_ClinicalInfo', array('element' => $element));
 } ?>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        OpenEyes.UI.AutoCompleteSearch.init({
+            input: $('#autocomplete_disorder_id'),
+            url: '/OphCoCvi/default/cilinicalDiagnosisAutocomplete',
+            params: {
+            },
+            maxHeight: '200px',
+            onSelect: function () {
+                let response = OpenEyes.UI.AutoCompleteSearch.getResponse();
+                let input = OpenEyes.UI.AutoCompleteSearch.getInput();
+
+                $('#disorder_id').val(response.id);
+                document.getElementById('autocomplete_disorder_id').value = response.label;
+            }
+        });
+    });
+</script>

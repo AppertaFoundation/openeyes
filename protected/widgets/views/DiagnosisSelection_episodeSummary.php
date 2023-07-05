@@ -29,37 +29,16 @@
     </div>
     <div class="autocomplete-row">
         <?php
-        $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-            'name' => "{$class}[$field]",
-            'id' => "{$class}_{$field}_0",
-            'value' => '',
-            'source' => "js:function(request, response) {
-				$.ajax({
-					'url': '".Yii::app()->createUrl('/disorder/autocomplete')."',
-					'type':'GET',
-					'data':{'term': request.term, 'code': '".$code."'},
-					'success':function(data) {
-						response(data);
-					}
-				});
-			}",
-            //'sourceUrl'=>array('/disorder/autocomplete'.($restrict ? '?restrict='.$restrict : '')),
-            'options' => array(
-                'minLength' => '3',
-                'select' => "js:function(event, ui) {
-					$('#".$class.'_'.$field."_0').val('');
-					$('#".$class.'_'.$field."_enteredDiagnosisText h4').html(ui.item.value);
-					$('#".$class.'_'.$field."_enteredDiagnosisText').show();
-					$('input[id=".$class.'_'.$field."_savedDiagnosis]').val(ui.item.id);
-					$('#".$class.'_'.$field."').focus();
-					return false;
-				}",
-            ),
-            'htmlOptions' => array(
-                'placeholder' => 'or type the first few characters of a diagnosis',
-            ),
-        ));
-        ?>
+            $this->widget('application.widgets.AutoCompleteSearch',
+                [
+                    'field_name' => "{$class}[$field]",
+                    'htmlOptions' =>
+                        [
+                            'placeholder' => 'or type the first few characters of a diagnosis',
+                        ],
+                    'layoutColumns' => ['field' => '12']
+                ]);
+            ?>
     </div>
 </div>
 <input type="hidden" name="<?php echo $class?>[<?php echo $field?>]"
@@ -69,5 +48,28 @@
         $('#<?php echo $class?>_<?php echo $field?>_enteredDiagnosisText h4').html($('option:selected', this).text());
         $('#<?php echo $class?>_<?php echo $field?>_savedDiagnosis').val($(this).val());
         $('#<?php echo $class?>_<?php echo $field?>_enteredDiagnosisText').show();
+    });
+
+    $(document).ready(function() {
+        let element = '<?= "{$class}_$field" ?>';
+
+        OpenEyes.UI.AutoCompleteSearch.init({
+            input: $(`[id="${'<?= "{$class}[$field]" ?>'}"]`),
+            url: '/disorder/autocomplete',
+            params: {
+                'code': function () {return "<?= $code ?>"},
+            },
+            maxHeight: '200px',
+            onSelect: function () {
+                let response = OpenEyes.UI.AutoCompleteSearch.getResponse();
+                let input = OpenEyes.UI.AutoCompleteSearch.getInput();
+
+                $(`[id="${'<?= "{$class}_$field" ?>'}"]`).val('');
+                $(`[id="${element}_enteredDiagnosisText"] h4`).html(response.value);
+                $(`[id="${element}_enteredDiagnosisText"]`).show();
+                $(`input[id="${element}_savedDiagnosis"]`).val(response.id);
+                $(`[id="${element}"]`).focus();
+            }
+        });
     });
 </script>

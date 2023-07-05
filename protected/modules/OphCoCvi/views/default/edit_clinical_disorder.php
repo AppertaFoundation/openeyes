@@ -41,21 +41,15 @@ $patient_type = $disorder->id ? $disorder->patient_type : Yii::app()->request->g
         </div>
         <div class="large-5 column end">
             <?php
-            $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                'name' => 'autocomplete_disorder_id',
-                'id' => 'autocomplete_disorder_id',
-                'value' => ($disorder->disorder_id) ? $disorder->disorder->term : '' ,
-                'sourceUrl' => array('admin/cilinicalDisorderAutocomplete'),
-                'options' => array(
-                    'minLength' => '2',
-                    'select' => "js:function(event, ui) {
-                                $('#disorder_id').val(ui.item.id);
-                                $('#disorder_code_box').show();
-                                $('#disorder_code').html(ui.item.id);
-                                }",
-                ),
-                'htmlOptions' => array('placeholder' => 'or enter disorder here'),
-            ));
+            $this->widget('application.widgets.AutoCompleteSearch',
+                [
+                    'field_name' => 'autocomplete_disorder_id',
+                    'htmlOptions' =>
+                    [
+                        'placeholder' => 'or enter disorder here',
+                    ],
+                    'layoutColumns' => ['field' => '2']
+                ]);
             ?>
             <div id="disorder_code_box" class="<?= isset($disorder->disorder_id) && $disorder->disorder_id != 0 ? 'show' : 'hide' ?>">SNOMED Code: <span id="disorder_code"><?=CHtml::encode($disorder->disorder_id)?></span>
                 <button id="js-clear-disorder" class="button warning tiny">X</button>
@@ -71,7 +65,7 @@ $patient_type = $disorder->id ? $disorder->patient_type : Yii::app()->request->g
         <div class="large-5 column end">
             <?php
             $criteria = new CDbCriteria();
-            $criteria->condition = 'event_type_version = ' . $version . ' AND patient_type=' . $patient_type . ' AND active=1';
+            $criteria->condition = 'patient_type=' . $patient_type . ' AND active=1';
             echo CHtml::dropDownList(
                 'OEModule_OphCoCvi_models_OphCoCvi_ClinicalInfo_Disorder[section_id]',
                 $disorder->section_id,
@@ -94,3 +88,23 @@ $patient_type = $disorder->id ? $disorder->patient_type : Yii::app()->request->g
 
     <?php $this->endWidget() ?>
 </div>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        OpenEyes.UI.AutoCompleteSearch.init({
+            input: $('#autocomplete_disorder_id'),
+            url: '/OphCoCvi/admin/CilinicalDisorderAutocomplete',
+            params: {
+            },
+            maxHeight: '200px',
+            onSelect: function() {
+                let response = OpenEyes.UI.AutoCompleteSearch.getResponse();
+                let input = OpenEyes.UI.AutoCompleteSearch.getInput();
+
+                $('#disorder_id').val(response.id);
+                $('#disorder_code_box').show();
+                $('#disorder_code').html(response.id);
+            }
+        });
+    });
+</script>

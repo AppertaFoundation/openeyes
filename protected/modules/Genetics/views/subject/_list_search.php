@@ -96,14 +96,14 @@
                 ?>
                 <!-- <label for="GeneticsPatient_comments">Search for a diagnosis</label> -->
                 <span id="enteredDiagnosisText" class="<?php echo $value ? '' : 'hidden' ?>">
-                <?php
-                if ($value) {
-                    $disorder = Disorder::model()->findByPk($value);
-                    echo $disorder->term;
-                    ?><i class="oe-i remove-circle small" aria-hidden="true" id="clear-diagnosis-widget"></i><?php
-                }
-                ?>
-            </span>
+                    <?php
+                    if ($value) {
+                        $disorder = Disorder::model()->findByPk($value);
+                        echo $disorder->term;
+                        ?><i class="oe-i remove-circle small" aria-hidden="true" id="clear-diagnosis-widget"></i><?php
+                    }
+                    ?>
+                </span>
                 <?php
                 $this->renderPartial('//disorder/disorderAutoComplete', array(
                     'class' => 'search',
@@ -112,7 +112,8 @@
                     'value' => $value,
                     'clear_diagnosis' => '&nbsp;<i class="oe-i remove-circle small" aria-hidden="true" id="clear-diagnosis-widget"></i>',
                     'placeholder' => 'Search for a diagnosis',
-                    'callback' => null
+                    'callback' => null,
+                    'autocompleteFieldColumns' => 8
                 ));
                 ?>
             </td>

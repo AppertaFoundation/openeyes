@@ -1,11 +1,11 @@
 <div class="patient-activity<?= !empty($layoutColumns['outer']) ? (' cols-' . $layoutColumns['outer']) : null ?>">
-    <input 
-        placeholder="<?= $htmlOptions['placeholder'] ?>" 
-        class="cols-<?= $layoutColumns['field'] ?> search autocompletesearch" 
-        id="<?= $field_name; ?>" 
-        type="text" 
-        value="<?= $htmlOptions['value'] ?? "" ?>" 
-        name="<?= $field_name; ?>" 
+    <input
+        placeholder="<?= $htmlOptions['placeholder'] ?>"
+        class="cols-<?= $layoutColumns['field'] ?> search autocompletesearch"
+        id="<?= $field_name; ?>"
+        type="text"
+        value="<?= $htmlOptions['value'] ?? "" ?>"
+        name="<?= $field_name; ?>"
         autocomplete="off"
         <?= array_key_exists('data-test', $htmlOptions) ? "data-test=" . $htmlOptions['data-test'] : '' ?>>
     <ul class="oe-autocomplete hidden" id="ui-id-1" tabindex="0">

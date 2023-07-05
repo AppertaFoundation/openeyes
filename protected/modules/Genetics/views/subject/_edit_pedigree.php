@@ -32,40 +32,18 @@
             <?php // ok, so this is here because this is saved through the Admin() class and we need to mimic the behavior and the html for the MultiSelectList ?>
         <select class="hidden"></select>
 
-                <input type="hidden" name="GeneticsPatient[MultiSelectList_GeneticsPatient[pedigrees]]" class="multi-select-list-name">
-            <?php
-            $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-              'id' => 'GeneticsPatient_pedigreeAutoComplete',
-              'name' => 'GeneticsPatient[pedigree]',
-              'value' => '',
-              'sourceUrl' => array('pedigree/search'),
-              'options' => array(
-                  'minLength' => '1',
-                  'search' => "js:function( event, ui ) { $('.loader-pedigree').show();}",
-                  'response' => "js:function( event, ui ) { 
-                                                $('.loader-pedigree').hide();
-                                                if (!ui.content.length) {
-                                                var noResult = { value:\"\",label:\"No results found\" };
-                                                ui.content.push(noResult);
-                                            }
-                                        }",
-                  'select' => "js:function(event, ui) {
-                                            if (ui.item.value){
-                                                $('ul.pedigree-list').append(
-                                                    Mustache.render(pedigree_status_template, {
-                                                        pedigreeId: ui.item.value,
-                                                        label: ui.item.label
-                                                    })
-                                                ).show();
-                                                toggleNoPedigreeCheckbox();
-                                            }
-                                            return false;
-                                        }",
-              ),
-              'htmlOptions' => array(
-                  'placeholder' => 'Search for pedigree id',
-              ),
-                ));
+            <input type="hidden" name="GeneticsPatient[MultiSelectList_GeneticsPatient[pedigrees]]" class="multi-select-list-name">
+          <?php
+            $this->widget('application.widgets.AutoCompleteSearch',
+              [
+                  'field_name' => "GeneticsPatient[pedigree]",
+                  'htmlOptions' =>
+                      [
+                          'placeholder' => 'Search for pedigree id',
+                      ],
+                  'layoutColumns' => ['field' => '4'],
+                  'hide_no_result_msg' => true
+              ]);
             ?>
 
         <ul class="MultiSelectList pedigree-list multi-select-selections">
@@ -77,7 +55,7 @@
                       <?= $pedigree->pedigree_id; ?>
                       <?php if ($pedigree->pedigree->gene) : ?>
                         (<?= $pedigree->pedigree->gene->name ?>)
-                        <?php endif; ?>
+                      <?php endif; ?>
                   </span>
                 </a>
 
@@ -119,3 +97,30 @@
   </script>
 
 </div>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        OpenEyes.UI.AutoCompleteSearch.init({
+            input: $(`[id="GeneticsPatient\\[pedigree\\]"]`),
+            url: '/Genetics/pedigree/search',
+            params: {
+            },
+            maxHeight: '200px',
+            minimumCharacterLength: 1,
+            onSelect: function () {
+                let response = OpenEyes.UI.AutoCompleteSearch.getResponse();
+                let input = OpenEyes.UI.AutoCompleteSearch.getInput();
+
+                if (response.value){
+                   $('ul.pedigree-list').append(
+                       Mustache.render(pedigree_status_template, {
+                           pedigreeId: response.value,
+                           label: response.label
+                       })
+                   ).show();
+                   toggleNoPedigreeCheckbox();
+               }
+            }
+        });
+    });
+</script>

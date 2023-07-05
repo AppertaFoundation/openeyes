@@ -4,7 +4,7 @@ function testFilterInput(filterId, searchTerm, expected){
     cy.get(`[data-test=${filterId}]`)
         .should('be.visible')
         .type(searchTerm);
-    cy.get('.ui-autocomplete.ui-menu:visible').find('li').contains(expected).click();
+    cy.get('ul.oe-autocomplete:not(.hidden)').find('li').contains(expected).click();
 
     cy.get('#'+resultId).find('li').as('resultLine').should('have.length',1);
     cy.get('@resultLine').find('.remove').click();

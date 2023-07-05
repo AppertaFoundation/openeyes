@@ -38,37 +38,15 @@ Yii::app()->clientScript->registerCssFile('../../node_modules/cropper/dist/cropp
                 </div>
                 <div class="large-5 column">
                     <?php
-                    $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                        'name' => 'autocomplete_hos_num',
-                        'id' => 'autocomplete_hos_num',
-                        'value' => '',
-                        'sourceUrl' => array('dicomLogViewer/signatureImportLogAutocomplete'),
-                        'options' => array(
-                            'minLength' => '7',
-                            'select' => "js:function(event, ui) {
-                                            $('#autocomplete_hos_num').val(ui.item.hos_num);
-                                            $('#unique_id').val(ui.item.unique_id);
-                                            $('#e_id').val(ui.item.element_id);
-                                            $('#event_id').val(ui.item.event_id);
-                                            $('#cvi_hos_num').html(ui.item.hos_num);
-                                            $('#cvi_patient_name').html(ui.item.patient_name);
-                                            $('#cvi_date').html(ui.item.value);
-                                            $('#cvi_date_box').show();
-                                            $('#btnCrop').show();
-                                            return false;
-                                        }",
-                            'response' => 'js:function(event, ui){
-                                if(ui.content.length === 0){
-                                    $("#cvi_date_box").hide();
-                                    $("#btnCrop").hide();
-                                    $("#no_result").show();
-                                } else {
-                                    $("#no_result").hide();
-                                }
-                            }'
-                        ),
-                        'htmlOptions' => array('placeholder' => 'hospital number here'),
-                    ));
+                    $this->widget('application.widgets.AutoCompleteSearch',
+                        [
+                            'field_name' => 'autocomplete_hos_num',
+                            'htmlOptions' =>
+                                [
+                                    'placeholder' => 'hospital number here',
+                                ],
+                            'layoutColumns' => ['field' => '2']
+                        ]);
                     ?>
                     <div id="no_result" class="alert-box alert column end error hide">There is no suitable CVI event or the CVI has been issued for this hospital number</div>
                     <div id="cvi_date_box" class="hide">
@@ -207,3 +185,29 @@ Yii::app()->clientScript->registerCssFile('../../node_modules/cropper/dist/cropp
     });
 </script>
 <?php } ?>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        OpenEyes.UI.AutoCompleteSearch.init({
+            input: $('#autocomplete_hos_num'),
+            url: '/dicomLogViewer/signatureImportLogAutocomplete',
+            params: {
+            },
+            maxHeight: '200px',
+            onSelect: function () {
+                let response = OpenEyes.UI.AutoCompleteSearch.getResponse();
+                let input = OpenEyes.UI.AutoCompleteSearch.getInput();
+
+                $('#autocomplete_hos_num').val(response.hos_num);
+                $('#unique_id').val(response.unique_id);
+                $('#e_id').val(response.element_id);
+                $('#event_id').val(response.event_id);
+                $('#cvi_hos_num').html(response.hos_num);
+                $('#cvi_patient_name').html(response.patient_name);
+                $('#cvi_date').html(response.value);
+                $('#cvi_date_box').show();
+                $('#btnCrop').show();
+            }
+        });
+    });
+</script>

@@ -108,7 +108,7 @@ class LocalAuthorityController extends \BaseModuleController
         $body_crit->addColumnCondition(array('type.shortname' => 'LA'));
 
         foreach (\CommissioningBody::model()->findAll($body_crit) as $body) {
-            $postcode = explode(" ", \Helper::setPostCodeFormat($cbs->contact->address->postcode));
+            $postcode = explode(" ", \Helper::setPostCodeFormat($body->contact->address->postcode));
 
             $results[] = array(
                 'id' => 'body' . $body->id,
@@ -118,8 +118,8 @@ class LocalAuthorityController extends \BaseModuleController
                     'name' => $body->name,
                     'address' => $body->getLetterAddress(array('delimiter' => ",\n")),
                     'telephone' => $body->contact->primary_phone,
-                    'postcode_1' => $postcode[0],
-                    'postcode_2' => $postcode[1],
+                    'postcode_1' => $postcode[0] ?? '',
+                    'postcode_2' => $postcode[1] ?? '',
                     'email' => isset($body->contact->address) ? $body->contact->email : "",
                 ),
             );

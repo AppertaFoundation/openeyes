@@ -46,55 +46,15 @@
             ?>
 
             <?php
-                $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                    'name' => 'procedure_id_'.$identifier,
-                    'id' => 'autocomplete_procedure_id_'.$identifier,
-                    'source' => "js:function(request, response) {
-						var existingProcedures = [];
-						$('#procedureList_$identifier').children('h4').children('div.procedureItem').map(function() {
-							var text = $.trim($(this).children('span:nth-child(2)').text());
-							existingProcedures.push(text.replace(/ - .*?$/,''));
-						});
-
-						$.ajax({
-							'url': '".Yii::app()->createUrl('procedure/autocomplete')."',
-							'type':'GET',
-							'data':{'term': request.term, 'restrict': '$restrict'},
-							'success':function(data) {
-								data = $.parseJSON(data);
-
-								var result = [];
-
-								for (var i = 0; i < data.length; i++) {
-									var index = $.inArray(data[i], existingProcedures);
-									if (index == -1) {
-										result.push(data[i]);
-									}
-								}
-
-								response(result);
-							}
-						});
-					}",
-                    'options' => array(
-                        'minLength' => '2',
-                        'select' => 'js:function(event, ui) {
-							'.($callback ? $callback.'(ui.item.id, ui.item.value);' : '')."
-							if (typeof(window.callbackVerifyAddProcedure) == 'function') {
-								window.callbackVerifyAddProcedure(ui.item.value,".($durations ? '1' : '0').",function(result) {
-									if (result != true) {
-										$('#autocomplete_procedure_id_$identifier').val('');
-										return;
-									}
-									ProcedureSelectionSelectByName(ui.item.value,true,'$identifier');
-								});
-							} else {
-								ProcedureSelectionSelectByName(ui.item.value,true,'$identifier');
-							}
-						}",
-                    ),
-                'htmlOptions' => array('style' => 'width: 90%;', 'placeholder' => 'or enter procedure here'),
-                )); ?>
+                $this->widget('application.widgets.AutoCompleteSearch',
+                    [
+                        'field_name' => 'procedure_id_'.$identifier,
+                        'htmlOptions' =>
+                    [
+                        'placeholder' => 'or enter procedure here',
+                        ]
+                ]);
+                ?>
 
         </div>
     </div>
@@ -262,6 +222,37 @@
         if ($('input[name=\"<?php echo $class?>[eye_id]\"]:checked').val() == 3) {
             $('#projected_duration_<?php echo $identifier?>').html((parseInt($('#projected_duration_<?php echo $identifier?>').html().match(/[0-9]+/)) * 2) + " mins");
         }
+
+        OpenEyes.UI.AutoCompleteSearch.init({
+            input: $('#procedure_id_' + <?=$identifier?>'),
+            url: '/procedure/autocomplete',
+            params: {
+                'restrict': function () {return "<?= $restrict ?>"},
+            },
+            maxHeight: '200px',
+            onSelect: function () {
+                let response = OpenEyes.UI.AutoCompleteSearch.getResponse();
+                let input = OpenEyes.UI.AutoCompleteSearch.getInput();
+
+                const classField = '<?= $class_field ?>';
+                const callback = '<?= $callback ?>';
+
+                if (callback)
+                    <?= $callback?>('disorder', response.id, response.value);
+
+                if (typeof(window.callbackVerifyAddProcedure) == 'function') {
+                    window.callbackVerifyAddProcedure(ui.item.value,".($durations ? '1' : '0').",function(result) {
+                        if (result != true) {
+                            $('#autocomplete_procedure_id_$identifier').val('');
+                            return;
+                        }
+                        ProcedureSelectionSelectByName(response.value,true,'$identifier');
+                    });
+                } else {
+                    ProcedureSelectionSelectByName(response.value,true,'$identifier');
+                }
+            }
+        });
     });
 
     function ProcedureSelectionSelectByName(name, callback, identifier)

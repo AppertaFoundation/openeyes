@@ -207,39 +207,6 @@ OpenEyes.UI = OpenEyes.UI || {};
 
     DiagnosesSearchController.prototype.initialiseAutocomplete = function(){
         var controller = this;
-
-        controller.$inputField.autocomplete({
-            minLength: 2,
-            delay: 700,
-            source: function (request, response) {
-                $.ajax({
-                    'url': '/disorder/autocomplete',
-                    'type':'GET',
-                    'data':{'term': request.term, 'code': controller.code},
-                    'beforeSend': function(){
-                    },
-                    'success':function(data) {
-                        var temp = $.parseJSON(data);
-                        data = temp ? temp : data;
-                        response(data);
-                    }
-                });
-            },
-            search: function () {
-                controller.$inputField.addClass('inset-loader');
-            },
-            select: function(event, ui){
-                //no multiple option
-                controller.addDiagnosis(null, ui.item);
-
-                //clear input
-                $(this).val("");
-                return false;
-            },
-            response: function (event, ui) {
-                controller.$inputField.removeClass('inset-loader');
-            }
-        });
     };
 
     DiagnosesSearchController.prototype.initialiseTriggers = function(){
