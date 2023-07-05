@@ -75,8 +75,6 @@ class Mailbox extends \BaseActiveRecordVersioned
             'teams' => [self::MANY_MANY, \Team::class, 'mailbox_team(mailbox_id, team_id)'],
             'users' => [self::MANY_MANY, \User::class, 'mailbox_user(mailbox_id, user_id)'],
             'all_messages' => [self::MANY_MANY, Element_OphCoMessaging_Message::class, 'ophcomessaging_message_recipient(mailbox_id, element_id)'],
-            'read_messages' => [self::MANY_MANY, Element_OphCoMessaging_Message::class, 'ophcomessaging_message_recipient(mailbox_id, element_id)'],
-            'unread_messages' => [self::MANY_MANY, Element_OphCoMessaging_Message::class, 'ophcomessaging_message_recipient(mailbox_id, element_id)'],
             'sent_messages' => [self::HAS_MANY, Element_OphCoMessaging_Message::class, 'sender_mailbox_id'],
         ];
     }
@@ -201,6 +199,46 @@ class Mailbox extends \BaseActiveRecordVersioned
                  'condition' => '(users_users.user_id = :user_id OR users_team.user_id = :user_id)',
                  'params' => [':user_id' => $user_id]
              ]);
+
+        return $this;
+    }
+
+    /**
+     * Scope to constrain query to mailboxes included as a sender or receiver of the given message
+     *
+     * @param string|int $element_id
+     * @return self
+     */
+    public function forMessageSender($element_id): self
+    {
+        $this->getDbCriteria()
+            ->mergeWith([
+                'with' => [
+                    'sent_messages' => ['alias' => 'sent']
+                ],
+                'condition' => '(sent.id = :message_id)',
+                'params' => [':message_id' => $element_id]
+            ]);
+
+        return $this;
+    }
+
+    /**
+     * Scope to constrain query to mailboxes included as a sender or receiver of the given message
+     *
+     * @param string|int $element_id
+     * @return self
+     */
+    public function forMessageRecipients($element_id): self
+    {
+        $this->getDbCriteria()
+            ->mergeWith([
+                'with' => [
+                    'all_messages' => ['alias' => 'all']
+                ],
+                'condition' => '(element_id = :message_id AND all_messages_all.mailbox_id = t.id)',
+                'params' => [':message_id' => $element_id]
+            ]);
 
         return $this;
     }

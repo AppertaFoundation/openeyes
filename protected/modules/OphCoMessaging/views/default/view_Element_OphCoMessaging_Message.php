@@ -16,6 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OEModule\OphCoMessaging\models\Mailbox;
+
 ?>
 
 <?php
@@ -112,9 +114,15 @@ if (!isset($new_comment)) {
                 <?php } ?>
             </div>
 
-            <?php foreach ($element->comments as $comment) { ?>
+            <?php foreach ($element->comments as $comment) {
+                    $sender_mailbox = $comment->sender_mailbox;
+                    $reply_sender_label = $comment->user->getFullName();
+                if (isset($sender_mailbox) && !$sender_mailbox->is_personal) {
+                    $reply_sender_label .= " (via {$sender_mailbox->name})";
+                }
+                ?>
             <div class="msg-reply">
-                <?= $comment->user->getFullName() ?>, <?= Helper::convertMySQL2NHS($comment->created_date) ?>
+                <?= $reply_sender_label ?>, <?= Helper::convertMySQL2NHS($comment->created_date) ?>
             </div>
             <div class="msg-reader">
                 <div class="missive">
@@ -150,6 +158,23 @@ if (!isset($new_comment)) {
                 )); ?>
                 <hr class="divider" />
                 <div class="msg-reply">Your reply … <small>(can not be edited once sent)</small>
+                <div class="reply-mailbox">Replying as 
+                    <?=
+                        \CHtml::dropDownList(
+                            'comment_reply_mailbox',
+                            Yii::app()->request->getParam('reply_mailbox') ?? null,
+                            \CHtml::listData(
+                                array_merge(
+                                    Mailbox::model()->forUser(\Yii::app()->user->id)->forMessageSender($element->id)->findAll(),
+                                    Mailbox::model()->forUser(\Yii::app()->user->id)->forMessageRecipients($element->id)->findAll()
+                                ),
+                                'id',
+                                'name'
+                            ),
+                            []
+                        );
+                    ?>
+                </div>
                 <div class="highlighter small-row">
                     <b>Messages are part of the patient record and cannot be edited once sent.</b>
                 </div>

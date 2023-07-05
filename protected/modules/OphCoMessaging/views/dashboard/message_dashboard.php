@@ -127,8 +127,8 @@ $coreapi = new CoreAPI();
       <?php $this->renderPartial('application.modules.OphCoMessaging.views.inbox.grid', array(
             'mailbox' => $selected_mailbox,
             'message_type' => $message_type,
-            'messages' => $messages,
-            'defer_to_comments' => !$is_a_sent_folder, // Show original message in sent folder views, but replies in received folder views
+            'recipient_messages' => $recipient_messages,
+            'is_a_sent_folder' => $is_a_sent_folder, // Show original message in sent folder views, but replies in received folder views
             'coreapi' => $coreapi
         )); ?>
   </div>

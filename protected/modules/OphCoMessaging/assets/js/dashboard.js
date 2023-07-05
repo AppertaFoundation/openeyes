@@ -6,8 +6,8 @@ $(document).ready(function() {
     $('.filter-messages').on('click', 'a', function (e) {
         e.preventDefault();
         const mailbox = $(this).parents('.js-mailbox').data('mailbox-id');
-        const messages = $(this).data('filter')
-        window.location.href = jQuery.query.set('mailbox', mailbox).set('messages', messages);
+        const messages = $(this).data('filter');
+        window.location.href = jQuery.query.empty().set('mailbox', mailbox).set('messages', messages);
     });
 
 	$('#OphCoMessaging_to').add('#OphCoMessaging_from').each(function () {
@@ -29,12 +29,16 @@ $(document).ready(function() {
 
 	$('#OphCoMessaging_Submit').on('click', function (e) {
         e.preventDefault();
+        window.location.href = window.location.pathname;
         window.location.href = jQuery.query
+            .empty()
             .set('OphCoMessaging_from', $('#OphCoMessaging_from').val())
             .set('OphCoMessaging_to', $('#OphCoMessaging_to').val())
             .set('OphCoMessaging_Search_Sender', $('#OphCoMessaging_Search_Sender').val())
             .set('OphCoMessaging_Search_MessageType', $('#OphCoMessaging_Search_MessageType').val())
-            .set('OphCoMessaging_Search', $('#OphCoMessaging_Search').val());
+            .set('OphCoMessaging_Search', $('#OphCoMessaging_Search').val())
+            .set('OphCoMessaging_All_Comments', 1)
+            .set('OphCoMessaging_Original_Element', 1);
     });
 
 	$('.js-expand-message').click(function(){
