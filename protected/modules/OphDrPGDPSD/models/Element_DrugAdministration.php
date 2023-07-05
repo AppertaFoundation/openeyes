@@ -1,5 +1,10 @@
 <?php
 
+namespace OEModule\OphDrPGDPSD\models;
+
+use Audit;
+use Firm;
+use OE\factories\models\traits\HasFactory;
 use OEModule\OphCiExamination\widgets\DrugAdministration;
 use OEModule\OphCiExamination\models\Element_OphCiExamination_DrugAdministration;
 
@@ -16,9 +21,15 @@ use OEModule\OphCiExamination\models\Element_OphCiExamination_DrugAdministration
 
 use OEModule\OphCiExamination\models\BaseMedicationElement;
 use OEModule\OphCiExamination\models\traits\CustomOrdering;
+use Pathway;
+use PathwayStep;
+use PathwayStepType;
+use UnbookedWorklist;
+use WorklistManager;
 
 class Element_DrugAdministration extends BaseMedicationElement
 {
+    use HasFactory;
     use CustomOrdering;
 
     public $do_not_save_entries = true;
@@ -97,7 +108,7 @@ class Element_DrugAdministration extends BaseMedicationElement
     public function getAssignmentRelations()
     {
         return array(
-            'assignments' => array(self::MANY_MANY, 'OphDrPGDPSD_Assignment', 'et_drug_administration_assignments(element_id, assignment_id)'),
+            'assignments' => array(self::MANY_MANY, OphDrPGDPSD_Assignment::class, 'et_drug_administration_assignments(element_id, assignment_id)'),
         );
     }
 
@@ -120,17 +131,17 @@ class Element_DrugAdministration extends BaseMedicationElement
                 continue;
             }
             if ($assignment->create_wp) {
-                $site_id = Yii::app()->session->get('selected_site_id');
-                $firm_id = Yii::app()->session->get('selected_firm_id');
+                $site_id = \Yii::app()->session->get('selected_site_id');
+                $firm_id = \Yii::app()->session->get('selected_firm_id');
                 $firm = Firm::model()->findByPk($firm_id);
                 $subspecialty = $firm->subspecialty ?: null;
                 $unbooked_worklist_manager = new UnbookedWorklist();
-                $unbooked_worklist = $unbooked_worklist_manager->createWorklist(new DateTime(), $site_id, $subspecialty->id);
+                $unbooked_worklist = $unbooked_worklist_manager->createWorklist(new \DateTime(), $site_id, $subspecialty->id);
                 $wl_manager = new WorklistManager();
                 $worklist_patient = $wl_manager->getWorklistPatient($unbooked_worklist, $this->event->episode->patient);
 
                 if (!$worklist_patient) {
-                    $worklist_patient = $wl_manager->addPatientToWorklist($this->event->episode->patient, $unbooked_worklist, new DateTime());
+                    $worklist_patient = $wl_manager->addPatientToWorklist($this->event->episode->patient, $unbooked_worklist, new \DateTime());
                 }
                 if (!$worklist_patient->pathway) {
                     $worklist_patient->worklist->worklist_definition->pathway_type->instancePathway($worklist_patient);
@@ -150,7 +161,7 @@ class Element_DrugAdministration extends BaseMedicationElement
                 $matched_da_steps = $this->getDAPathwaySteps($assignment, $assignment_pathway);
                 // if no matched found, create a new pathway step for current psd
                 if (!$matched_da_steps) {
-                    Yii::app()->event->dispatch('psd_created', array(
+                    \Yii::app()->event->dispatch('psd_created', array(
                         'step_type' => PathwayStepType::model()->find('short_name = \'drug admin\''),
                         'worklist_patient_id' => $assignment->worklist_patient->id,
                         'initial_state' => [
@@ -244,13 +255,13 @@ class Element_DrugAdministration extends BaseMedicationElement
      */
     public function search()
     {
-        $criteria = new CDbCriteria();
+        $criteria = new \CDbCriteria();
 
         $criteria->compare('id', $this->id);
         $criteria->compare('event_id', $this->event_id, true);
         $criteria->compare('type', $this->type, true);
 
-        return new CActiveDataProvider($this, array(
+        return new \CActiveDataProvider($this, array(
             'criteria' => $criteria,
         ));
     }

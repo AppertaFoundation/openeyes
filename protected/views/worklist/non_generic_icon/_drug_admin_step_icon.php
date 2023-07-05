@@ -10,7 +10,8 @@ $type = $step instanceof PathwayStep ? $step->type->type : $step->step_type->typ
     data-patient-id="<?= $visit->patient_id ?>"
     data-assignment-id = "<?=$assignment_id?>"
     data-visit-id="<?= $visit->id ?>"
-    data-pathway-id="<?= $visit->pathway->id ?? null ?>">
+    data-pathway-id="<?= $visit->pathway->id ?? null ?>"
+    data-test="drug-administration-step">
     <span class="step<?= $icon ? " {$icon}" : '' ?>">
         <?= !$icon ? $step->short_name : '' ?>
     </span>

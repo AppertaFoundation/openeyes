@@ -2,12 +2,15 @@
     <?php
     $last = end($assigned_psds);
     foreach ($assigned_psds as $key => $assigned_psd) {
-            $appointment_details = $assigned_psd->getAppointmentDetails();
-            $assignment_type_name = $assigned_psd->getAssignmentTypeAndName();
-            $is_active = $assigned_psd->active;
-            $is_relevant = $assigned_psd->isrelevant;
-            $grey_out_section = !$is_relevant || !$is_active ? 'fade' : null;
-            $deleted_tag = $assigned_psd->getDeletedUI();
+        if ($assigned_psd->anyAssociatedEventDeleted()) {
+            continue;
+        }
+        $appointment_details = $assigned_psd->getAppointmentDetails();
+        $assignment_type_name = $assigned_psd->getAssignmentTypeAndName();
+        $is_active = $assigned_psd->active;
+        $is_relevant = $assigned_psd->isrelevant;
+        $grey_out_section = !$is_relevant || !$is_active ? 'fade' : null;
+        $deleted_tag = $assigned_psd->getDeletedUI();
         ?>
     <div class="order-block">
         <div class="flex row">

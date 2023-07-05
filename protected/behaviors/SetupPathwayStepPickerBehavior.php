@@ -1,4 +1,6 @@
 <?php
+use OEModule\OphDrPGDPSD\models\OphDrPGDPSD_PGDPSD;
+
 class SetupPathwayStepPickerBehavior extends CBehavior
 {
     public function setupPicker(){

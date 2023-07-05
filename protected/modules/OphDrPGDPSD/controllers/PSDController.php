@@ -1,5 +1,7 @@
 <?php
 
+use OEModule\OphDrPGDPSD\models\OphDrPGDPSD_Assignment;
+
 class PSDController extends DefaultController
 {
     protected static $action_types = array(
@@ -118,7 +120,7 @@ class PSDController extends DefaultController
         $pincode = \Yii::app()->request->getParam('pincode', null);
 
         $assignment_id = Yii::app()->request->getParam('assignment_id', null);
-        $assignment = \OphDrPGDPSD_Assignment::model()->findByPk($assignment_id);
+        $assignment = OphDrPGDPSD_Assignment::model()->findByPk($assignment_id);
 
         $ret = array(
             'success' => 0,

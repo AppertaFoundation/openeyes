@@ -1,8 +1,4 @@
 <?php
-
-use Nesk\Puphpeteer\Resources\HTTPResponse;
-use OEModule\OESysEvent\events\PathwayCheckoutSystemEvent;
-
 /**
  * OpenEyes.
  *
@@ -18,6 +14,15 @@ use OEModule\OESysEvent\events\PathwayCheckoutSystemEvent;
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+use Nesk\Puphpeteer\Resources\HTTPResponse;
+use OEModule\OESysEvent\events\PathwayCheckoutSystemEvent;
+
+use OEModule\OphDrPGDPSD\models\{
+    OphDrPGDPSD_PGDPSD,
+    OphDrPGDPSD_Assignment
+};
+
 class WorklistController extends BaseController
 {
     public $layout = 'worklist';

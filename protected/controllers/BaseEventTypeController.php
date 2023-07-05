@@ -1160,7 +1160,7 @@ class BaseEventTypeController extends BaseModuleController
         $this->setOpenElementsFromCurrentEvent('view');
         // Decide whether to display the 'edit' button in the template
         if ($this->editable) {
-            $this->editable = $this->checkEditAccess();
+            $this->editable = !$this->event->delete_pending && $this->checkEditAccess();
         }
 
         $this->logActivity('viewed event');

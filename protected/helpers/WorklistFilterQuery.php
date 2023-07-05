@@ -57,10 +57,24 @@ class WorklistFilterQuery
     private $from;
     private $to;
 
-    private $sortBy;
-    private $optional;
+    public $sortBy;
+    public $optional;
+    public $combined;
 
     private $quick;
+
+    private $wait_time_query;
+
+    private $priority_query;
+    private $priority_values;
+
+    private $risk_query;
+    private $risk_values;
+
+    // Preserve any supplied date period with a name (e.g. today, next week)
+    // for later use in getJSONRepresentation so that it does not lossily return
+    // absolute dates after the conversion in the constructor below.
+    private $relative_period_name = null;
 
     public function __construct($filter = null, $quick = null)
     {
@@ -74,6 +88,8 @@ class WorklistFilterQuery
 
             if (isset($filter->period)) {
                 if (getType($filter->period) === 'string') {
+                    $this->relative_period_name = $filter->period;
+
                     $range = self::convertPeriodToDateRange($filter->period);
 
                     $this->from = $range['from'];
@@ -102,6 +118,7 @@ class WorklistFilterQuery
             $this->context = self::ALL_CONTEXTS;
 
             $this->worklists = self::ALL_WORKLISTS;
+            $this->relative_period_name = 'today'; // Default
             $this->from = null;
             $this->to = null;
 
@@ -398,6 +415,36 @@ class WorklistFilterQuery
         $command->group = 'u.id';
 
         return $command;
+    }
+
+    public function getJSONRepresentation()
+    {
+        $data = [
+            'site' => $this->site,
+            'context' => $this->context,
+            'worklists' => $this->worklists,
+            'sortBy' => $this->sortBy,
+            'optional' => $this->optional,
+            'combined' => $this->combined,
+        ];
+
+        $period = [];
+
+        if ($this->relative_period_name) {
+            $period = $this->relative_period_name;
+        } elseif ($this->from) {
+            $period['from'] = $this->from;
+            $period['to'] = $this->to ?? '';
+        } elseif ($this->to) {
+            $period['from'] = '';
+            $period['to'] = $this->to;
+        }
+
+        if (!empty($period)) {
+            $data['period'] = $period;
+        }
+
+        return json_encode($data);
     }
 
     private function getSortByCriteria(&$command)

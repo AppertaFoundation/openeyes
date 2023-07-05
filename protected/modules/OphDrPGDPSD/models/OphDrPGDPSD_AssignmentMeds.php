@@ -1,4 +1,13 @@
 <?php
+
+namespace OEModule\OphDrPGDPSD\models;
+
+use Medication;
+use MedicationLaterality;
+use MedicationRoute;
+use OE\factories\models\traits\HasFactory;
+use User;
+
 /**
  * This is the model class for table "ophdrpgdpsd_assignment_meds".
  *
@@ -15,8 +24,10 @@
  * @property MedicationRoute $route
  * @property OphDrPGDPSD_PGDPSD $pgdpsd
  */
-class OphDrPGDPSD_AssignmentMeds extends BaseActiveRecordVersioned
+class OphDrPGDPSD_AssignmentMeds extends \BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     const ADMINISTERED = 1;
     const ADMINISTERED_CANCELLED = 2;
     const FOR_FUTURE = 3;
@@ -56,12 +67,12 @@ class OphDrPGDPSD_AssignmentMeds extends BaseActiveRecordVersioned
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'medication' => array(self::BELONGS_TO, 'Medication', 'medication_id'),
-            'assignment' => array(self::BELONGS_TO, 'OphDrPGDPSD_Assignment', 'assignment_id'),
-            'medicationLaterality' => array(self::BELONGS_TO, 'MedicationLaterality', 'laterality'),
-            "route" => array(self::BELONGS_TO, 'MedicationRoute', 'route_id'),
-            "administered_user" => array(self::BELONGS_TO, 'User', 'administered_by'),
-            "event_entry" => array(self::BELONGS_TO, 'Element_DrugAdministration_record', 'administered_id'),
+            'medication' => array(self::BELONGS_TO, Medication::class, 'medication_id'),
+            'assignment' => array(self::BELONGS_TO, OphDrPGDPSD_Assignment::class, 'assignment_id'),
+            'medicationLaterality' => array(self::BELONGS_TO, MedicationLaterality::class, 'laterality'),
+            "route" => array(self::BELONGS_TO, MedicationRoute::class, 'route_id'),
+            "administered_user" => array(self::BELONGS_TO, User::class, 'administered_by'),
+            "event_entry" => array(self::BELONGS_TO, Element_DrugAdministration_record::class, 'administered_id'),
         );
     }
 
@@ -100,7 +111,7 @@ class OphDrPGDPSD_AssignmentMeds extends BaseActiveRecordVersioned
     {
         // @todo Please modify the following code to remove attributes that should not be searched.
 
-        $criteria=new CDbCriteria;
+        $criteria=new \CDbCriteria;
 
         $criteria->compare('id', $this->id);
         $criteria->compare('medication_id', $this->medication_id, true);
@@ -109,7 +120,7 @@ class OphDrPGDPSD_AssignmentMeds extends BaseActiveRecordVersioned
         $criteria->compare('route_id', $this->route_id, true);
         $criteria->compare('pgdpsd_id', $this->pgdpsd_id);
 
-        return new CActiveDataProvider($this, array(
+        return new \CActiveDataProvider($this, array(
             'criteria'=>$criteria,
         ));
     }

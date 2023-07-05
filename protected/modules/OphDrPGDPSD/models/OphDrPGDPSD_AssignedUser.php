@@ -1,5 +1,10 @@
 <?php
 
+namespace OEModule\OphDrPGDPSD\models;
+
+use OE\factories\models\traits\HasFactory;
+use User;
+
 /**
  * This is the model class for table "ophdrpgdpsd_assigneduser".
  *
@@ -18,8 +23,10 @@
  * @property OphDrPGDPSD_PGDPSD $psd
  * @property User $user
  */
-class OphDrPGDPSD_AssignedUser extends BaseActiveRecordVersioned
+class OphDrPGDPSD_AssignedUser extends \BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     /**
      * @return string the associated database table name
      */
@@ -54,10 +61,10 @@ class OphDrPGDPSD_AssignedUser extends BaseActiveRecordVersioned
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-            'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-            'pgdpsd' => array(self::BELONGS_TO, 'OphDrPGDPSD_PGDPSD', 'pgdpsd_id'),
-            'user' => array(self::BELONGS_TO, 'User', 'user_id'),
+            'createdUser' => array(self::BELONGS_TO, User::class, 'created_user_id'),
+            'lastModifiedUser' => array(self::BELONGS_TO, User::class, 'last_modified_user_id'),
+            'pgdpsd' => array(self::BELONGS_TO, OphDrPGDPSD_PGDPSD::class, 'pgdpsd_id'),
+            'user' => array(self::BELONGS_TO, User::class, 'user_id'),
         );
     }
 
@@ -93,7 +100,7 @@ class OphDrPGDPSD_AssignedUser extends BaseActiveRecordVersioned
     {
         // @todo Please modify the following code to remove attributes that should not be searched.
 
-        $criteria=new CDbCriteria;
+        $criteria=new \CDbCriteria;
 
         $criteria->compare('id', $this->id);
         $criteria->compare('pgdpsd_id', $this->pgdpsd_id);
@@ -103,7 +110,7 @@ class OphDrPGDPSD_AssignedUser extends BaseActiveRecordVersioned
         $criteria->compare('created_user_id', $this->created_user_id, true);
         $criteria->compare('created_date', $this->created_date, true);
 
-        return new CActiveDataProvider($this, array(
+        return new \CActiveDataProvider($this, array(
             'criteria'=>$criteria,
         ));
     }

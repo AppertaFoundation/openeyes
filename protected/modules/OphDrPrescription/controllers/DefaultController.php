@@ -15,6 +15,9 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+use OEModule\OphDrPGDPSD\models\OphDrPGDPSD_PGDPSDMeds;
+
 class DefaultController extends BaseEventTypeController
 {
     const FP10_PRINT_MODE = 2;
@@ -359,7 +362,7 @@ class DefaultController extends BaseEventTypeController
      *
      * @param int $current_id - event id to ignore
      *
-     * @return Element_OphDrPrescription_Details
+     * @return ?Element_OphDrPrescription_Details
      */
     public function getPreviousPrescription($current_id = null)
     {
@@ -379,6 +382,8 @@ class DefaultController extends BaseEventTypeController
                     'params' => $params,
             ));
         }
+
+        return null;
     }
 
     /**

@@ -1,5 +1,7 @@
 <?php
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "medication_form".
  *
@@ -24,6 +26,8 @@
  */
 class MedicationForm extends BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     /**
      * @return string the associated database table name
      */
@@ -57,8 +61,8 @@ class MedicationForm extends BaseActiveRecordVersioned
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-            'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
+            'lastModifiedUser' => array(self::BELONGS_TO, User::class, 'last_modified_user_id'),
+            'createdUser' => array(self::BELONGS_TO, User::class, 'created_user_id'),
             'medicationSetItems' => array(self::HAS_MANY, MedicationSetItem::class, 'default_form_id'),
         );
     }

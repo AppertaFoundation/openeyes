@@ -4,13 +4,19 @@ namespace OEModule\OphCiExamination\widgets;
 
 use CDbCriteria;
 use CException;
-use Element_DrugAdministration;
 use Helper;
+use OEModule\OphDrPGDPSD\models\{
+    Element_DrugAdministration,
+    OphDrPGDPSD_PGDPSD,
+    OphDrPGDPSD_Assignment,
+    OphDrPGDPSD_AssignedUser,
+    OphDrPGDPSD_AssignedTeam
+};
 
 class DrugAdministration extends BaseMedicationWidget
 {
     public $examination_element = null;
-    protected static $elementClass = \Element_DrugAdministration::class;
+    protected static $elementClass = Element_DrugAdministration::class;
 
     protected function isAtTip()
     {
@@ -19,7 +25,7 @@ class DrugAdministration extends BaseMedicationWidget
 
     private function hasPGDAssignments($user): bool
     {
-        if (\OphDrPGDPSD_AssignedUser::model()->with('pgdpsd')->exists("user_id = :user_id AND LOWER(pgdpsd.type) = 'pgd'", [':user_id' => $user->id])) {
+        if (OphDrPGDPSD_AssignedUser::model()->with('pgdpsd')->exists("user_id = :user_id AND LOWER(pgdpsd.type) = 'pgd'", [':user_id' => $user->id])) {
             return true;
         }
         $user_teams = \Yii::app()->db->createCommand()
@@ -31,7 +37,7 @@ class DrugAdministration extends BaseMedicationWidget
         if (count($user_teams) <= 0) {
             return false;
         }
-        return \OphDrPGDPSD_AssignedTeam::model()->with('pgdpsd')->exists('team_id IN (' . implode(', ', $user_teams) . ") AND LOWER(pgdpsd.type) = 'pgd'");
+        return OphDrPGDPSD_AssignedTeam::model()->with('pgdpsd')->exists('team_id IN (' . implode(', ', $user_teams) . ") AND LOWER(pgdpsd.type) = 'pgd'");
     }
 
 
@@ -54,7 +60,7 @@ class DrugAdministration extends BaseMedicationWidget
         $psds = array();
         $pgds = array();
         $presets = array();
-        $patient_todo_assignments = \OphDrPGDPSD_Assignment::model()->todoAndActive($this->patient->id, $event_date, $is_prescriber)->findAll();
+        $patient_todo_assignments = OphDrPGDPSD_Assignment::model()->todoAndActive($this->patient->id, $event_date, $is_prescriber)->findAll();
         // avoid duplicated assignments
         $assigned_psds = array_unique(array_merge($patient_todo_assignments, $this->element->assignments));
         $relevant_psds = array();
@@ -121,7 +127,7 @@ class DrugAdministration extends BaseMedicationWidget
          * PGD will display for nominated users and the users with the Prescribe permission
          */
         if ($can_add_presets) {
-            $presets = \OphDrPGDPSD_PGDPSD::model()->findAll("active = 1 AND LOWER(type) IN ('psd', 'pgd')");
+            $presets = OphDrPGDPSD_PGDPSD::model()->findAll("active = 1 AND LOWER(type) IN ('psd', 'pgd')");
             foreach ($presets as $preset) {
                 $med_names = array_map(static function ($med) {
                     return '- ' . $med->medication->getLabel(true);
@@ -205,9 +211,9 @@ class DrugAdministration extends BaseMedicationWidget
             $confirmed = array_key_exists('confirmed', $assignment_data) ? ($assignment_data['confirmed'] ? : null) : null;
             $assignment_data_entries = array_key_exists('entries', $assignment_data) ? $assignment_data['entries'] : array();
             if ($assignment_id) {
-                $assignment = isset($assignment_by_id[$assignment_id]) ? $assignment_by_id[$assignment_id] : \OphDrPGDPSD_Assignment::model()->findByPk($assignment_id);
+                $assignment = isset($assignment_by_id[$assignment_id]) ? $assignment_by_id[$assignment_id] : OphDrPGDPSD_Assignment::model()->findByPk($assignment_id);
             } else {
-                $assignment = new \OphDrPGDPSD_Assignment();
+                $assignment = new OphDrPGDPSD_Assignment();
             }
             if (array_key_exists('create_wp', $assignment_data)) {
                 $assignment->create_wp = (int)$assignment_data['create_wp'];

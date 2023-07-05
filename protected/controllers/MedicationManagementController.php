@@ -18,6 +18,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OEModule\OphDrPGDPSD\models\OphDrPGDPSD_PGDPSD;
 
 class MedicationManagementController extends BaseController
 {
@@ -52,7 +53,7 @@ class MedicationManagementController extends BaseController
     public function actionGetPGDSetForm($pgd_id, $allergy_ids, $key)
     {
         $allergy_ids = CJSON::decode($allergy_ids);
-        $pgd_set = \OphDrPGDPSD_PGDPSD::model()->findByPk($pgd_id);
+        $pgd_set = OphDrPGDPSD_PGDPSD::model()->findByPk($pgd_id);
         $user_id = \Yii::app()->user->id;
         $user = User::model()->findByPk($user_id);
         if ($pgd_set) {
@@ -264,7 +265,7 @@ class MedicationManagementController extends BaseController
     }
     public function actionGetPGDIcon($pgdpsd_id)
     {
-        $pgd = \OphDrPGDPSD_PGDPSD::model()->findByPk($pgdpsd_id);
+        $pgd = OphDrPGDPSD_PGDPSD::model()->findByPk($pgdpsd_id);
         if ($pgd) {
             echo "<i class='oe-i info small pad js-has-tooltip' data-tooltip-content='From PGD {$pgd->id}: {$pgd->name}'></i>";
             return;

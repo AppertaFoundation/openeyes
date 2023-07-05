@@ -16,6 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * Class WorklistFilter.
  *
@@ -26,6 +28,8 @@
  */
 class WorklistRecentFilter extends BaseActiveRecord
 {
+    use HasFactory;
+
     public const MAX_RECENT_FILTERS = 5;
 
     /**

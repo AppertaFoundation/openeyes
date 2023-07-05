@@ -19,6 +19,8 @@ use InstitutionAuthentication;
 use OE\factories\ModelFactory;
 use UserAuthentication;
 
+use WorklistRecentFilter;
+
 class UserFactory extends ModelFactory
 {
     /**
@@ -84,6 +86,13 @@ class UserFactory extends ModelFactory
             return [
                 'contact_id' => \Contact::factory()->create($attributes)
             ];
+        });
+    }
+
+    public function withDefaultWorklistFilter(): self
+    {
+        return $this->afterCreating(function (\User $user) {
+            WorklistRecentFilter::factory()->forUser($user)->create();
         });
     }
 }

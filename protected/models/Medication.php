@@ -74,7 +74,8 @@ class Medication extends BaseActiveRecordVersioned
         return $this->tableName() . '_id';
     }
 
-    const ATTR_PRESERVATIVE_FREE = "PRESERVATIVE_FREE";
+    public const ATTR_PRESERVATIVE_FREE = "PRESERVATIVE_FREE";
+    public const ATTR_UNIT_OF_MEASURE = 'UNIT_OF_MEASURE';
 
     const SOURCE_TYPE_LEGACY = "LEGACY";
     const SOURCE_TYPE_LOCAL = "LOCAL";

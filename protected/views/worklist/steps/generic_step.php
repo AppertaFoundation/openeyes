@@ -11,6 +11,7 @@
 use OEModule\OphCiExamination\models\OphCiExamination_AE_RedFlags_Options;
 use OEModule\OphCiExamination\models\Element_OphCiExamination_AE_RedFlags;
 use OEModule\OphCiExamination\models\OphCiExamination_AE_RedFlags_Options_Assignment;
+use OEModule\OphDrPGDPSD\models\OphDrPGDPSD_PGDPSD;
 
 $is_step_instance = $step instanceof PathwayStep;
 $is_requested = (int)$step->status === PathwayStep::STEP_REQUESTED || !$step->status;

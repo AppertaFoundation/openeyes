@@ -13,6 +13,7 @@
  */
 
 use OEModule\OphCiExamination\models\OphCiExaminationAllergy;
+use OEModule\OphDrPGDPSD\models\OphDrPGDPSD_AssignmentMeds;
 
 $right_eye_id = MedicationLaterality::RIGHT;
 $left_eye_id = MedicationLaterality::LEFT;
@@ -22,6 +23,10 @@ $field_prefix = $model_name . '[assignment][{{section_key}}][entries][{{entry_ke
 <div class="element-fields full-width" id="<?= $element_id ?>">
     <?php
     foreach ($assigned_psds as $key => $assigned_psd) {
+        if ($assigned_psd->anyAssociatedEventDeleted()) {
+            continue;
+        }
+
         $appointment_details = $assigned_psd->getAppointmentDetails();
         $assignment_type_name = $assigned_psd->getAssignmentTypeAndName();
         $hide_button = $assigned_psd->comment ? 'display:none' : '';
@@ -55,7 +60,7 @@ $field_prefix = $model_name . '[assignment][{{section_key}}][entries][{{entry_ke
             }
         }
         ?>
-    <div class="order-block" data-key="<?=$key?>"  data-section-name="<?=$assignment_type_name['name']?>">
+    <div class="order-block" data-key="<?=$key?>"  data-section-name="<?=$assignment_type_name['name']?>" data-test="drug-administration-section">
         <input type="hidden" name="<?=$model_name . "[assignment][{$key}][assignment_id]"?>" value="<?=$assigned_psd->id?>">
         <input type="hidden" name="<?=$model_name . "[assignment][{$key}][pgdpsd_name]"?>" value="<?=$assignment_type_name['name']?>">
         <input type="hidden" name="<?=$model_name . "[assignment][{$key}][visit_id]"?>" value="<?=$assigned_psd->visit_id;?>">
@@ -152,6 +157,7 @@ $field_prefix = $model_name . '[assignment][{{section_key}}][entries][{{entry_ke
                             data-right="<?=(int)$entry->laterality === MedicationLaterality::RIGHT ? 'R' : 'NA';?>"
                             data-left="<?=(int)$entry->laterality === MedicationLaterality::LEFT ? 'L' : 'NA';?>"
                             data-route="<?=$entry->route;?>"
+                            data-test="drug-administration-drug-row"
                             class="<?=$grey_out_section;?>"
                         >
                             <input type="hidden" name="<?=$model_name . "[assignment][{$key}][entries][{$entry_key}][id]"?>" value="<?=$entry->id?>">

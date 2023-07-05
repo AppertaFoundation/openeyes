@@ -40,12 +40,13 @@ if ($this->event_subtype) {
         $label = "<i class='oe-i small pad-r $icon_class'></i>" . $label;
     }
 
+    $data_test = 'button-event-header-tab-' . str_replace(' ', '-', strtolower($label));
     if (isset($tab['type']) && $tab['type']) { ?>
     <div class="button header-tab <?=$active?>" <?= $hidden ? "style='display: none'" : ""?>>
         <<?=$tab['type']?> class="<?=$class?>"><?=$label?></<?=$tab['type']?>>
     </div>
     <?php } else {?>
-    <a href="<?=$href?>" data-test="button-header-tab-<?=$label?>" class="button header-tab <?=$class?> <?=$active?>" <?= $hidden ? "style='display: none'" : ""?>>
+    <a href="<?=$href?>" class="button header-tab <?=$class?> <?=$active?>" <?= $hidden ? "style='display: none'" : ""?> data-test="<?= $data_test ?>">
         <?=$label?>
     </a>
     <?php } ?>

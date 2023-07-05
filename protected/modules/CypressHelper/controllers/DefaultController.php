@@ -2,6 +2,7 @@
 
 namespace OEModule\CypressHelper\controllers;
 
+use CActiveRecord;
 use CWebLogRoute;
 use Event;
 use EventType;

@@ -1,5 +1,9 @@
 <?php
 
+namespace OEModule\OphDrPGDPSD\models;
+
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "et_drug_administration_assignments".
  *
@@ -11,8 +15,9 @@
  * @property Event $event
  */
 
-class Element_DrugAdministration_Assignments extends BaseActiveRecordVersioned
+class Element_DrugAdministration_Assignments extends \BaseActiveRecordVersioned
 {
+    use HasFactory;
     /**
      * @return string the associated database table name
      */
@@ -46,8 +51,8 @@ class Element_DrugAdministration_Assignments extends BaseActiveRecordVersioned
         return array_merge(
             parent::relations(),
             array(
-                'element' => array(self::BELONGS_TO, 'Element_DrugAdministration', 'element_id'),
-                'assignment' => array(self::BELONGS_TO, 'OphDrPGDPSD_Assignment', 'assignment_id'),
+                'element' => array(self::BELONGS_TO, Element_DrugAdministration::class, 'element_id'),
+                'assignment' => array(self::BELONGS_TO, OphTrPGDPSD_assignment::class, 'assignment_id'),
             )
         );
     }
@@ -65,13 +70,13 @@ class Element_DrugAdministration_Assignments extends BaseActiveRecordVersioned
      */
     public function search()
     {
-        $criteria=new CDbCriteria;
+        $criteria=new \CDbCriteria;
 
         $criteria->compare('id', $this->id);
         $criteria->compare('event_id', $this->event_id, true);
         $criteria->compare('type', $this->type, true);
 
-        return new CActiveDataProvider($this, array(
+        return new \CActiveDataProvider($this, array(
             'criteria'=>$criteria,
         ));
     }
