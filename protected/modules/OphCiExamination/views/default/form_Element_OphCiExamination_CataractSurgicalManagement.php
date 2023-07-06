@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
@@ -12,6 +13,7 @@
  * @copyright Copyright (C) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <?php
@@ -123,7 +125,7 @@ $(document).ready(function () {
                 'value' => $value,
                 'type' => 'refractive_myopia',
                 ];
-            }, ['-0.50','-0.75','-1.00','-1.50','-2.00','-2.50'])
+            }, ['-0.50','-0.75','-1.00','-1.50','-2.00','-2.50', '-3.00'])
         )?>,
         <?=$side?>RefractiveCategoriesOptions: {
         'id': '<?=$side?>_refractive_categories_0',
@@ -172,4 +174,3 @@ $(document).ready(function () {
   });
 });
 </script>
-
