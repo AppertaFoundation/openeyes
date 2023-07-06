@@ -16,14 +16,17 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-use OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit;
+use OEModule\OphCiExamination\models\{
+  OphCiExamination_VisualAcuity_Method,
+  OphCiExamination_VisualAcuityUnit
+};
 ?>
 <?php
 /***
  * @var $element \OEModule\OphCiExamination\models\Element_OphCiExamination_NearVisualAcuity
  */
 list($values, $val_options) = $element->getUnitValuesForForm(null, true);
-$methods = CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Method::model()->findAll(), 'id', 'name');
+$methods = \CHtml::listData(OphCiExamination_VisualAcuity_Method::model()->findAll(), 'id', 'name');
 $key = 0;
 ?>
 
@@ -42,7 +45,7 @@ $key = 0;
             <?=\CHtml::dropDownList(
                 'nearvisualacuity_unit_change',
                 @$element->unit_id,
-                CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()
+                \CHtml::listData(OphCiExamination_VisualAcuityUnit::model()
                   ->activeOrPk(@$element->unit_id)
                   ->findAllByAttributes(array('is_near' => '1')), 'id', 'name'),
                 array('class' => 'inline', 'data-record-mode' => $element::RECORD_MODE_SIMPLE, 'data-test' => 'near-visual-acuity-unit-selector'));

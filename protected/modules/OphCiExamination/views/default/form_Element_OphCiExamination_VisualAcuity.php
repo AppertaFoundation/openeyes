@@ -17,7 +17,11 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-use OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit;
+use OEModule\OphCiExamination\models\{
+  OphCiExamination_VisualAcuity_Method,
+  OphCiExamination_VisualAcuityUnit,
+  OphCiExamination_VisualAcuityUnitValue
+};
 
 /**
  * @var \OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity $element
@@ -27,11 +31,11 @@ list($values, $val_options) = $element->getUnitValuesForForm(null, false);
 //Reverse the unit values to ensure bigger value display first.
 $values = array_reverse($values, true);
 //Get the base value that should be displayed whe popup open.
-$unit_id = OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->findByAttributes(array('name' => 'Snellen Metre'))->id;
-$default_display_value = OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnitValue::model()->findByAttributes(array('unit_id' => $unit_id, 'value' => '6/6'))->base_value;
+$unit_id = OphCiExamination_VisualAcuityUnit::model()->findByAttributes(array('name' => 'Snellen Metre'))->id;
+$default_display_value = OphCiExamination_VisualAcuityUnitValue::model()->findByAttributes(array('unit_id' => $unit_id, 'value' => '6/6'))->base_value;
 
 $methods = CHtml::listData(
-    OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Method::model()->findAll(),
+    OphCiExamination_VisualAcuity_Method::model()->findAll(),
     'id',
     'name'
 );
@@ -71,8 +75,7 @@ if (( null !== SettingMetadata::model()->getSetting('COMPLog_port')) && SettingM
                 'visualacuity_unit_change',
                 @$element->unit_id,
                 CHtml::listData(
-                    OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::
-                    model()->activeOrPk(@$element->unit_id)->findAllByAttributes(array('is_va' => '1', 'complex_only' => '0')),
+                    OphCiExamination_VisualAcuityUnit::model()->activeOrPk(@$element->unit_id)->findAllByAttributes(array('is_va' => '1', 'complex_only' => '0')),
                     'id',
                     'name'
                 ),
