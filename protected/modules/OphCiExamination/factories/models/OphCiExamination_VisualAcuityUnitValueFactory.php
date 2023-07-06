@@ -17,76 +17,48 @@ namespace OEModule\OphCiExamination\factories\models;
 
 use OE\factories\ModelFactory;
 
-class OphCiExamination_VisualAcuityUnitFactory extends ModelFactory
+use OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit;
+
+class OphCiExamination_VisualAcuityUnitValueFactory extends ModelFactory
 {
     public function definition(): array
     {
         return [
-            'name' => $this->faker->word(2),
-            'is_va' => $this->faker->boolean(),
-            'is_near' => $this->faker->boolean(),
-            'complex_only' => $this->faker->boolean(),
-            'active' => true,
+            'unit_id' => OphCiExamination_VisualAcuityUnit::factory(),
+            'value' => $this->faker->word(),
+            'base_value' => $this->faker->numberBetween(1, 120),
+            'selectable' => true,
         ];
     }
 
     /**
-     * @return OphCiExamination_VisualAcuityUnitFactory
+     * @param OphCiExamination_VisualAcuityUnit|OphCiExamination_VisualAcuityUnitFactory|string|int $unit
+     * @return OphCiExamination_VisualAcuityUnitValueFactory
      */
-    public function forVA(): self
+    public function forUnit($unit): self
     {
         return $this->state([
-            'is_va' => true
+            'unit_id' => $unit
         ]);
     }
 
     /**
-     * @return OphCiExamination_VisualAcuityUnitFactory
+     * @return OphCiExamination_VisualAcuityUnitValueFactory
      */
-    public function notForVA(): self
+    public function selectable(): self
     {
         return $this->state([
-            'is_va' => false
+            'selectable' => true
         ]);
     }
 
     /**
-     * @return OphCiExamination_VisualAcuityUnitFactory
+     * @return OphCiExamination_VisualAcuityUnitValueFactory
      */
-    public function forNear(): self
+    public function unselectable(): self
     {
         return $this->state([
-            'is_near' => true
-        ]);
-    }
-
-    /**
-     * @return OphCiExamination_VisualAcuityUnitFactory
-     */
-    public function notForNear(): self
-    {
-        return $this->state([
-            'is_near' => false
-        ]);
-    }
-
-    /**
-     * @return OphCiExamination_VisualAcuityUnitFactory
-     */
-    public function complexOnly(): self
-    {
-        return $this->state([
-            'complex_only' => true
-        ]);
-    }
-
-    /**
-     * @return OphCiExamination_VisualAcuityUnitFactory
-     */
-    public function notComplexOnly(): self
-    {
-        return $this->state([
-            'complex_only' => false
+            'selectable' => false
         ]);
     }
 }

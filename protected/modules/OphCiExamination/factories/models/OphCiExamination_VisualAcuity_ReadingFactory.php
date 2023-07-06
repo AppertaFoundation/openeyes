@@ -44,7 +44,7 @@ class OphCiExamination_VisualAcuity_ReadingFactory extends ModelFactory
 
         $unit = $this->faker->randomElement($includes_complex ? $this->getUnits() : $this->getSimpleUnits());
 
-        $value = $this->faker->randomElement($unit->selectableValues);
+        $value = $this->faker->randomElement($unit->values);
 
         return [
             'element_id' => $element_factory,
