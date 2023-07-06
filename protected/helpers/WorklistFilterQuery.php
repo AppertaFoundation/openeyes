@@ -59,17 +59,22 @@ class WorklistFilterQuery
 
     public $sortBy;
     public $optional;
-    public $combined;
+    public bool $combined;
 
     private $quick;
 
-    private $wait_time_query;
+    /** @var string $wait_time_query - query snippet for the wait time retrieval (subquery for sorting) */
+    private string $wait_time_query;
 
-    private $priority_query;
-    private $priority_values;
+    /** @var string $priority_query - query snippet triage event dates for patients (subquery for sorting) */
+    private string $priority_query;
+    /** @var array $priority_values - list of triage priority ids */
+    private array $priority_values;
 
-    private $risk_query;
-    private $risk_values;
+    /** @var string $risk_query - query snippet for risk events dates for patients (subquery for sorting) */
+    private string $risk_query;
+    /** @var array $risk_values - list of clinic outcome risk ids */
+    private array $risk_values;
 
     // Preserve any supplied date period with a name (e.g. today, next week)
     // for later use in getJSONRepresentation so that it does not lossily return
@@ -106,7 +111,7 @@ class WorklistFilterQuery
             $this->sortBy = $filter->sortBy;
             $this->optional = $filter->optional;
 
-            $this->combined = $filter->combined;
+            $this->combined = (bool) $filter->combined;
 
             if (isset($filter->quick)) {
                 $this->quick = $filter->quick;
@@ -149,14 +154,16 @@ class WorklistFilterQuery
         $risk_criteria = new CDbCriteria();
         $risk_criteria->addInCondition('name', ['High', 'Medium', 'Low']);
 
-        $this->risk_values = array_map(static function ($risk) {
-            return $risk->id;
-        },
-        OphCiExamination_ClinicOutcome_Risk_Status::model()->findAll($risk_criteria));
+        $this->risk_values = array_map(
+            function ($risk) {
+                return $risk->id;
+            },
+            OphCiExamination_ClinicOutcome_Risk_Status::model()->findAll($risk_criteria)
+        );
 
         // Cache subqueries for wait time sorting and risk filtering
         $wait_time_command = Yii::app()->db->createCommand();
-        $wait_time_command->select = 'pathway_id, SUM(status = ' . PathwayStep::STEP_STARTED .') AS started_count, MIN(NOW() - end_time) AS step_wait';
+        $wait_time_command->select = 'pathway_id, SUM(status = ' . PathwayStep::STEP_STARTED . ') AS started_count, MIN(NOW() - end_time) AS step_wait';
         $wait_time_command->from = 'pathway_step';
         $wait_time_command->group = 'pathway_id';
 
@@ -762,5 +769,12 @@ class WorklistFilterQuery
                 Yii::app()->session['current_worklist_filter_quick'] = $value;
             }
         }
+    }
+
+    public static function clearLastUsedFilterFromSession(): void
+    {
+        unset(Yii::app()->session['current_worklist_filter_type']);
+        unset(Yii::app()->session['current_worklist_filter_id']);
+        unset(Yii::app()->session['current_worklist_filter_quick']);
     }
 }

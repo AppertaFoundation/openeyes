@@ -627,13 +627,17 @@ OpenEyes.UI = OpenEyes.UI || {};
 
         parent.find('div.fav').remove();
 
-        for (index in savedFilters) {
-            const data = this.makeFilterEntryData(idMappings, savedFilters[index], index);
+        // As each filter is rendered at the top of element (putAfter) we must first reverse 
+        // the saved filters array to ensure desired order is maintained (last_modified desc)
+        Object.keys(savedFilters)
+            .reverse()
+            .forEach((index) => {
+                const data = this.makeFilterEntryData(idMappings, savedFilters[index], index);
 
-            data.name = savedFilters[index].name;
+                data.name = savedFilters[index].name;
 
-            putAfter.after(Mustache.render(template, data));
-        }
+                putAfter.after(Mustache.render(template, data));
+            });
 
         parent.find('div.fav .details').click(function () {
             controller.loadSavedFilter($(this).data('index'));

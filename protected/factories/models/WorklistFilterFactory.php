@@ -21,7 +21,8 @@ class WorklistFilterFactory extends ModelFactory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->unique()->words(3, true)
+            'name' => $this->faker->unique()->words(3, true),
+            'filter' => json_encode($this->faker->words(10))
         ];
     }
 
@@ -49,5 +50,18 @@ class WorklistFilterFactory extends ModelFactory
         $filter = array_merge($filter, $data);
 
         return json_encode($filter);
+    }
+
+    /**
+     * Override persistInstance to call save with its third parameter, $allow_overriding, set to true.
+     * Setting that parameter to true ensures that the value of last_modified_user_id and/or created_user_id
+     * that is provided is maintained.
+     *
+     * @param mixed $instance
+     * @return bool
+     */
+    protected function persistInstance($instance): bool
+    {
+        return $instance->save(false, null, true);
     }
 }

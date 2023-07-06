@@ -53,7 +53,7 @@ if (!Yii::app()->user->isGuest) {
     $navIconUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue'), true) . '/dist/svg/oe-nav-icons.svg';
     if ($as_clinic) { ?>
         <div class="clinic-context">
-            <div class="favourite-btn js-favourite"></div>
+            <div class="favourite-btn js-favourite" data-test="worklist-favourite-btn"></div>
             <div class="details">
                 <div class="context">
                     <?= Firm::model()->findByPk($this->selectedFirmId)->getNameAndSubspecialty() ?>
@@ -75,12 +75,10 @@ if (!Yii::app()->user->isGuest) {
                 <?php } ?>
             </li>
             <li id="user-profile-site-institution" data-test="user-profile-site-institution">
-                <?= Site::model()->findByPk($this->selectedSiteId)->short_name .
-                    ' (' . Institution::model()->findByPk($this->selectedInstitutionId)->short_name . ')' ?>
-            </li>
+                <?= Site::model()->findByPk($this->selectedSiteId)->short_name . ' (' . Institution::model()->findByPk($this->selectedInstitutionId)->short_name . ')' ?></li>
             <li data-test="user-profile-firm">
                 <?= Firm::model()->findByPk($this->selectedFirmId)->getNameAndSubspecialty() ?>
-                <a id="change-firm" href="#" data-window-title="Select a new Site and/or <?= Firm::contextLabel() ?>">change</a>
+                <a id="change-firm" href="#" data-window-title="Select a new Site and/or <?= Firm::contextLabel() ?>" data-test="change-firm">change</a>
             </li>
         </ul>
     </div>

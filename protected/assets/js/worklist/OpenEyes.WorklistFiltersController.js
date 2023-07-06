@@ -351,8 +351,15 @@ var OpenEyes = OpenEyes || {};
             controller.filterIsAltered = false;
 
             controller.filter.id = savedId;
-            controller.savedFilters.push(controller.filter.clone());
 
+            // does filter with savedId already exist in the savedFilters list... if so remove it to prevent duplicates
+            if (controller.savedFilters.filter((filter) => { return filter.id === savedId; }).length > 0) {
+                controller.savedFilters = controller.savedFilters.filter((filter) => { return filter.id !== savedId; });
+            }
+
+            // we want new or updated filters to appear at the top of the list
+            controller.savedFilters.unshift(controller.filter.clone());
+            
             controller.panelView.setSavedTabList(controller.mappings, controller.savedFilters);
         });
     };

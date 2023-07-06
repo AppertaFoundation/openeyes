@@ -49,7 +49,7 @@
         <tr>
             <td>Context</td>
             <td>
-                <select class="cols-full js-worklists-contexts">
+                <select class="cols-full js-worklists-contexts" data-test="worklist-filter-panel-select-context">
                     <option value="all">
                         Any context (Show all pathways)
                     </option>
@@ -70,7 +70,7 @@
     <!-- Panel state -->
     <div class="worklist-mode flex-btns">
         <button data-subpanel="lists" class="selected">Lists</button>
-        <button data-subpanel="starred"><i class="oe-i star small selected"></i></button>
+        <button data-subpanel="starred" data-test="worklist-mode-starred"><i class="oe-i star small selected"></i></button>
         <button data-subpanel="recent" data-test="worklist-mode-recent-tab">Recent</button>
     </div>
 
@@ -162,7 +162,7 @@
     </div>
 
     <!-- Starred -->
-    <div class="favourites js-worklist-mode-panel" style="display: none" data-subpanel="starred">
+    <div class="favourites js-worklist-mode-panel" style="display: none" data-subpanel="starred" data-test="worklist-mode-panel-starred">
         <h3>Favourites will automatically change Site and Context</h3>
     </div>
 
@@ -282,9 +282,9 @@
 </script>
 
 <script type="text/template" id="js-worklist-filter-panel-template-named-filter">
-    <div class="fav">
-        <div class="details" data-index="{{index}}">
-            <div class="name">{{name}}</div>
+    <div class="fav" data-test="favourite">
+        <div class="details" data-index="{{index}}" data-test="favourite-details" >
+            <div class="name"data-test="favourite-name">{{name}}</div>
             <div class="js-full-details" style="display:none">
                 <div class="site">{{site}}</div>
                 <div class="context">{{context}}</div>
@@ -310,7 +310,7 @@
         </div>
 
         <div class="remove-fav .js-remove-filter">
-            <i class="oe-i remove-circle small"></i>
+            <i class="oe-i remove-circle small" data-test="remove-favourite"></i>
         </div>
     </div>
 </script>

@@ -105,7 +105,7 @@ $initial_filter = $session_filter_info['filter'];
 
 <div id="js-worklist-save-filter-popup" class="oe-popup-wrap" style="display: none; z-index: 100">
     <div class="oe-popup ">
-        <div class="close-icon-btn"><i class="oe-i remove-circle pro-theme js-close-popup-btn"></i></div>
+        <div class="close-icon-btn" data-test="worklist-filter-popup-close-icon-btn"><i class="oe-i remove-circle pro-theme js-close-popup-btn"></i></div>
         <div class="title">Save list view in favourites for quick access</div>
         <div class="oe-popup-content wide">
             <div class="flex-t">
@@ -114,7 +114,7 @@ $initial_filter = $session_filter_info['filter'];
                         <tbody>
                             <tr>
                                 <th>Site</th>
-                                <td class="js-filter-site"></td>
+                                <td class="js-filter-site" data-test="worklist-save-filter-site"></td>
                             </tr>
                             <tr>
                                 <th>Context</th>
@@ -138,17 +138,18 @@ $initial_filter = $session_filter_info['filter'];
 
                 <div class="cols-4">
                     <h3>Save favourite as...</h3>
-                    <input type="text" maxlength="128" class="cols-full js-filter-save-name" placeholder="Add favourite name">
+                    <input type="text" maxlength="128" class="cols-full js-filter-save-name" placeholder="Add favourite name" data-test="input-favourite-name">
 
                     <div class="small-row">
                         <small>
                             This is the name that will be shown, only you will see this favourite.
-                            Favourites can be removed or added any time.
+                            Favourites can be removed or added any time.<br/><br/>
+                            <strong>Note: Entering the name of an existing favourite will update that favourite with these new settings.</strong>
                         </small>
                     </div
 
                     <div class="row align-right">
-                        <button class="green hint cols-6 js-save-filter-btn">
+                        <button class="green hint cols-6 js-save-filter-btn" data-test="save-favourite-filter">
                             Save in my favourites
                         </button>
                     </div>

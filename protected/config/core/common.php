@@ -17,10 +17,12 @@
 */
 
 use OE\factories\DataGenerator;
+use OE\listeners\ClearSessionFilterDataOnSessionSiteChange;
 use OEModule\CypressHelper\CypressHelperModule;
 use OEModule\OphCiExamination\components\PathstepObserver;
 use OEModule\OESysEvent\events\ClinicalEventSoftDeletedSystemEvent;
 use OE\listeners\RemoveDraftEventAfterSoftDelete;
+use OEModule\OESysEvent\events\SessionSiteChangedSystemEvent;
 
 // If the old db.conf file (pre docker) exists, use it. Else read environment variable, else read docker secrets
 // Note, docker secrets are the recommended approach for docker environments
@@ -259,6 +261,10 @@ $config = array(
                 [
                     'system_event' => ClinicalEventSoftDeletedSystemEvent::class,
                     'listener' => RemoveDraftEventAfterSoftDelete::class
+                ],
+                [
+                    'system_event' => SessionSiteChangedSystemEvent::class,
+                    'listener' => ClearSessionFilterDataOnSessionSiteChange::class
                 ]
             ),
         ),

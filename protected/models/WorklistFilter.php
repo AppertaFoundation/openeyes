@@ -101,4 +101,12 @@ class WorklistFilter extends BaseActiveRecord
 
         return self::model()->find($criteria);
     }
+
+    // Returns most recently modified filters first
+    public function defaultScope()
+    {
+        return [
+            'order' => 'last_modified_date DESC'
+        ];
+    }
 }

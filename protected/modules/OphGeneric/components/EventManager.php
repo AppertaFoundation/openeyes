@@ -22,7 +22,6 @@ use OEModule\OphGeneric\models\Attachment;
 use OEModule\OphGeneric\models\Comments;
 use OEModule\OphGeneric\models\DeviceInformation;
 use OEModule\OphGeneric\models\HFA;
-use OEModule\OphGeneric\OphGenericModule;
 
 /**
  * A class to abstract event related functionality for use within OphGeneric
@@ -39,6 +38,11 @@ class EventManager
 
     protected const EDITABLE_IMPORTING_ELEMENTS = [
         Comments::class
+    ];
+
+    protected const SUPPORTED_EVENT_TYPES = [
+        'OphGeneric',
+        'OphInBiometry'
     ];
 
     protected static array $managersByEventId = [];
@@ -242,8 +246,7 @@ class EventManager
 
     protected function validateEvent(\Event $event): void
     {
-        // slightly weird situation where the \EventType class_name property doesn't actually align with the module
-        if (strpos(OphGenericModule::class, $event->eventType->class_name) === false && strpos(\OphInBiometryModule::class, $event->eventType->class_name) === false) {
+        if (!in_array($event->eventType->class_name, self::SUPPORTED_EVENT_TYPES)) {
             throw new \RuntimeException('invalid event type for event manager ' . $event->eventType->class_name);
         }
     }
