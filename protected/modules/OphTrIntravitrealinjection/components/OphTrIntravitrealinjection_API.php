@@ -18,7 +18,6 @@
  */
 class OphTrIntravitrealinjection_API extends BaseAPI
 {
-
     private $legacy_api;
 
     /**
@@ -28,8 +27,12 @@ class OphTrIntravitrealinjection_API extends BaseAPI
      */
     protected function getLegacyAPI()
     {
-        if (!$this->legacy_api) {
-            $this->legacy_api = Yii::app()->moduleAPI->get('OphLeIntravitrealinjection');
+        if (Yii::app()->hasModule('OphLeIntravitrealinjection')) {
+            if (!$this->legacy_api) {
+                $this->legacy_api = Yii::app()->moduleAPI->get('OphLeIntravitrealinjection');
+            }
+        } else {
+            $this->legacy_api = null;
         }
 
         return $this->legacy_api;
@@ -153,7 +156,7 @@ class OphTrIntravitrealinjection_API extends BaseAPI
 
         $criteria->addCondition(array(
                 'event.deleted = 0',
-                'treatment.eye_id in (:eye_id,'.SplitEventTypeElement::BOTH.')',
+                'treatment.eye_id in (:eye_id,' . SplitEventTypeElement::BOTH . ')',
                 'event_date <= :since',
                 'event.deleted = 0',
                 'patient.id = :patient_id',
@@ -256,7 +259,6 @@ class OphTrIntravitrealinjection_API extends BaseAPI
         }
 
         return $res;
-
     }
 
     /**
@@ -330,11 +332,12 @@ class OphTrIntravitrealinjection_API extends BaseAPI
      */
     public function getLetterPostInjectionDrops($patient, $use_context = false)
     {
-        if ($el = $this->getElementFromLatestEvent(
-            'Element_OphTrIntravitrealinjection_PostInjectionExamination',
-            $patient,
-            $use_context
-        )
+        if (
+            $el = $this->getElementFromLatestEvent(
+                'Element_OphTrIntravitrealinjection_PostInjectionExamination',
+                $patient,
+                $use_context
+            )
         ) {
             $drops = array();
             if ($el->hasRight()) {
