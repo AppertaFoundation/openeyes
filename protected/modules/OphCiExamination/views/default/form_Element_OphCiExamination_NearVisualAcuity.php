@@ -15,6 +15,8 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+use OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit;
 ?>
 <?php
 /***
@@ -207,9 +209,13 @@ $baseAssetsPath = Yii::getPathOfAlias('application.assets');
 $assetManager->publish($baseAssetsPath . '/components/chosen/', true);
 
 Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath.'/components/chosen/', true).'/chosen.jquery.min.js');
+
+$unit_values_list = OphCiExamination_VisualAcuityUnit::generateUnitsList();
 ?>
 <script type="text/javascript">
     $(document).ready(function() {
+        OphCiExamination_VisualAcuity_unit_values = <?= \CJavaScript::jsonEncode($unit_values_list) ?>;
+        OphCiExamination_VisualAcuity_method_values = <?= \CJavaScript::jsonEncode($methods) ?>;
 
         OphCiExamination_VisualAcuity_method_ids = [ <?php
         $first = true;
