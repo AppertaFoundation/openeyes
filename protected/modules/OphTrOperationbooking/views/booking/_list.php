@@ -203,7 +203,7 @@ if (!$reschedule) {
         Date/Time currently selected:<?php echo Helper::convertDate2NHS($session['date']); ?>, <?php echo substr($session['start_time'], 0, 5) . ' - ' . substr($session['end_time'], 0, 5); ?>
     </div>
     <div class="data-group">
-        <button type="submit" class="large green hint" id="confirm_slot" data-there-is-place-for-complex-booking="<?= $session->isTherePlaceForComplexBooking($operation) ? "true" : "false" ?>">Confirm slot</button>
+        <button type="submit" class="large green hint" id="confirm_slot" data-test="confirm-slot" data-there-is-place-for-complex-booking="<?= $session->isTherePlaceForComplexBooking($operation) ? "true" : "false" ?>">Confirm slot</button>
         <button type="button" class="large red hint" id="cancel_scheduling"><?php echo 'Cancel ' . ($reschedule ? 're-' : '') . 'scheduling';?></button>
     </div>
     <?php

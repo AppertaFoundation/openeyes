@@ -33,7 +33,10 @@
                         false,
                         false,
                         false,
-                        array('nowrapper' => true)
+                        array(
+                            'nowrapper' => true,
+                            'data-test' => 'op-schedule-options'
+                        )
                     ); ?>
                 </td>
             </tr>
