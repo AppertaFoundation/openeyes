@@ -25,6 +25,13 @@ class AdviceLeaflet extends \BaseActiveRecordVersioned
 {
     use HasFactory;
 
+    public function behaviors()
+    {
+        return [
+            'LookupTable' => \LookupTable::class,
+        ];
+    }
+
     /**
      * @return string the associated database table name
      */
@@ -42,6 +49,7 @@ class AdviceLeaflet extends \BaseActiveRecordVersioned
         // will receive user inputs.
         return array(
             array('active', 'numerical', 'integerOnly'=>true),
+            array('name', 'required'),
             array('name', 'length', 'max'=>1024),
             array('last_modified_user_id, created_user_id', 'length', 'max'=>10),
             array('last_modified_date, created_date', 'safe'),

@@ -28,7 +28,7 @@ trait AdminForAdviceGiven
         // Needs a more complex admin screen because of the ability to assign more than 1 leaflet to a category.
         $this->render('list_AdviceLeafletCategory', [
             'title' => 'Advice Leaflet Categories',
-            'model_list' => AdviceLeafletCategory::model()->findAll('active = 1 AND institution_id = :id', [':id' => \Yii::app()->session['selected_institution_id']])
+            'model_list' => AdviceLeafletCategory::model()->findAll('institution_id = :id', [':id' => \Yii::app()->session['selected_institution_id']])
         ]);
     }
 

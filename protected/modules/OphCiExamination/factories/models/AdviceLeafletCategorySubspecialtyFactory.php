@@ -17,29 +17,16 @@ namespace OEModule\OphCiExamination\factories\models;
 
 use Institution;
 use OE\factories\ModelFactory;
+use OEModule\OphCiExamination\models\AdviceLeafletCategory;
+use Subspecialty;
 
-class AdviceLeafletFactory extends ModelFactory
+class AdviceLeafletCategorySubspecialtyFactory extends ModelFactory
 {
     public function definition(): array
     {
         return [
-            'name' => $this->faker->words(10, true),
-            'institution_id' => Institution::factory()->useExisting(),
-            'active' => true
+            'category_id' => AdviceLeafletCategory::factory()->create(),
+            'subspecialty_id' => Subspecialty::factory()->useExisting()
         ];
-    }
-
-    public function active()
-    {
-        return $this->state([
-            'active' => true
-        ]);
-    }
-
-    public function inactive()
-    {
-        return $this->state([
-            'active' => false
-        ]);
     }
 }

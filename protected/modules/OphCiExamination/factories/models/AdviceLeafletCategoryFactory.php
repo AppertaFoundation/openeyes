@@ -17,15 +17,18 @@ namespace OEModule\OphCiExamination\factories\models;
 
 use Institution;
 use OE\factories\ModelFactory;
+use Subspecialty;
+use OE\factories\models\SubspecialtyFactory;
+use OEModule\OphCiExamination\models\AdviceLeafletCategorySubspecialty;
 
-class AdviceLeafletFactory extends ModelFactory
+class AdviceLeafletCategoryFactory extends ModelFactory
 {
     public function definition(): array
     {
         return [
             'name' => $this->faker->words(10, true),
-            'institution_id' => Institution::factory()->useExisting(),
-            'active' => true
+            'institution_id' => Institution::factory()->create(),
+            'active' => $this->faker->boolean()
         ];
     }
 
@@ -41,5 +44,18 @@ class AdviceLeafletFactory extends ModelFactory
         return $this->state([
             'active' => false
         ]);
+    }
+
+    public function forSubspecialty(Subspecialty|SubspecialtyFactory|null $subspecialty = null): self
+    {
+        return $this->afterCreating(function ($category) use ($subspecialty) {
+            if ($subspecialty === null) {
+                $subspecialty  = Subspecialty::factory()->useExisting()->create();
+            }
+            AdviceLeafletCategorySubspecialty::factory()->create([
+                'category_id' => $category,
+                'subspecialty_id' => $subspecialty
+            ]);
+        });
     }
 }
