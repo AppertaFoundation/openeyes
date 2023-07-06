@@ -26,7 +26,8 @@ use OEModule\OphCiExamination\models\{
     Element_OphCiExamination_NearVisualAcuity,
     OphCiExamination_VisualAcuity_Reading,
     OphCiExamination_NearVisualAcuity_Reading,
-    OphCiExamination_VisualAcuityUnit
+    OphCiExamination_VisualAcuityUnit,
+    OphCiExamination_VisualAcuityUnitValue
 };
 
 class VisualAcuityCopyingSeeder
@@ -77,7 +78,7 @@ class VisualAcuityCopyingSeeder
                              ->bothEyes()
                              ->create();
 
-        list($chosen_unit, $alternative_unit) = $this->selectUnits($is_near, false);
+        list($chosen_unit, $alternative_unit) = $this->createUnits();
 
         $lhs_reading = $reading_factory
                      ->forElement($existing_element)
@@ -96,24 +97,18 @@ class VisualAcuityCopyingSeeder
         return [$existing_element, $lhs_reading, $rhs_reading, $chosen_unit, $alternative_unit];
     }
 
-    protected function selectUnits($is_near, $is_complex)
+    protected function createUnits()
     {
-        $conditions = '';
+        $chosen_unit = OphCiExamination_VisualAcuityUnit::factory()->forVA()->forNear()->notComplexOnly()->create();
+        $alternative_unit = OphCiExamination_VisualAcuityUnit::factory()->forVA()->forNear()->notComplexOnly()->create();
 
-        if ($is_near) {
-            $conditions = 'is_near <> 0';
-        } else {
-            $conditions = 'is_va <> 0';
-        }
+        // The alternative unit values are unselectable in order to test what happens when the readings are changed from the chosen
+        // to the alternative unit in the unit selector on the form. Being unselectable should only affect the adders for readings.
+        // At the creation of this seeder the existing behaviour was for readings to disappear if the target value was not selectable,
+        // which is not correct.
+        $chosen_unit_value = OphCiExamination_VisualAcuityUnitValue::factory()->forUnit($chosen_unit)->selectable()->count(4)->create();
+        $alternative_unit_value = OphCiExamination_VisualAcuityUnitValue::factory()->forUnit($alternative_unit)->unselectable()->count(4)->create();
 
-        if (!$is_complex) {
-            $conditions = $conditions . ' AND complex_only = 0';
-        }
-
-        $units = OphCiExamination_VisualAcuityUnit::model()->active()->findAll(
-            ['condition' => $conditions, 'order' => 'RAND()']
-        );
-
-        return array_slice($units, 0, 2);
+        return [$chosen_unit, $alternative_unit];
     }
 }
