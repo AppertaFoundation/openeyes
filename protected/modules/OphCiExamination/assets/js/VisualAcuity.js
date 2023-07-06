@@ -295,8 +295,85 @@ function OphCiExamination_VisualAcuity_bestForSide(side) {
   return null;
 }
 
+function convertVisualAcuityReadingUnitValue(newUnitId, readingBaseValue)
+{
+  const newBaseValues = Object.keys(OphCiExamination_VisualAcuity_unit_values[newUnitId].values);
+  let lowerBound = parseInt(newBaseValues[0]);
+  let chosen = null;
+
+  for (let upperBound of newBaseValues) {
+    upperBound = parseInt(upperBound);
+
+    if (readingBaseValue <= lowerBound) {
+      chosen = lowerBound;
+      break;
+    } else if (readingBaseValue <= upperBound) {
+      if (Math.abs(readingBaseValue - lowerBound) > Math.abs(upperBound - readingBaseValue)) {
+        chosen = upperBound;
+        break;
+      } else {
+        chosen = lowerBound;
+        break;
+      }
+    }
+
+    lowerBound = upperBound;
+  }
+
+  chosen = chosen ?? lowerBound;
+
+  // OphCiExamination_VisualAcuity_unit_values data comes in with string indexes
+  return { baseValue: chosen, value: OphCiExamination_VisualAcuity_unit_values[newUnitId].values[chosen + ""] };
+}
+
+function generateVisualAciutyReadingTooltip(isNear, newUnitId, newBaseValue)
+{
+  const otherUnits = Object.keys(OphCiExamination_VisualAcuity_unit_values).filter((id) => id !== newUnitId);
+  let data = [];
+
+  newBaseValue = parseInt(newBaseValue);
+
+  for (let unitId of otherUnits) {
+    if ((isNear && !OphCiExamination_VisualAcuity_unit_values[unitId].isNear) ||
+        (!isNear && !OphCiExamination_VisualAcuity_unit_values[unitId].isVA)) {
+      continue;
+    }
+
+    const convertedValue = convertVisualAcuityReadingUnitValue(unitId, newBaseValue);
+
+    data.push({
+      name: OphCiExamination_VisualAcuity_unit_values[unitId].name,
+      value: convertedValue.value,
+      approx: convertedValue.baseValue !== newBaseValue,
+    });
+  }
+
+  return JSON.stringify(data);
+}
+
+function convertVisualAcuityReadingUnit(isNear, side, newUnitId, readingBaseValue, methodId)
+{
+  const convertedValue = convertVisualAcuityReadingUnitValue(newUnitId, readingBaseValue);
+
+  // OphCiExamination_VisualAcuity_method_values data comes in with string indexes too
+  const data = {
+    reading_value: convertedValue.baseValue,
+    reading_display: convertedValue.value,
+    tooltip: generateVisualAciutyReadingTooltip(isNear, newUnitId, convertedValue.baseValue),
+    method_id: methodId,
+    method_display: OphCiExamination_VisualAcuity_method_values[methodId + ""],
+  };
+
+  if (isNear) {
+    OphCiExamination_NearVisualAcuity_addReading(side, data);
+  } else {
+    OphCiExamination_VisualAcuity_addReading(side, data);
+  }
+}
+
 function swapElement(element_to_swap, elementTypeClass, params){
     const nva = elementTypeClass.endsWith("NearVisualAcuity");
+    const unitSelector = nva ? '#nearvisualacuity_unit_change' : '#visualacuity_unit_change';
     const sidebar = $('#episodes-and-events').data('patient-sidebar');
     const $menuLi = sidebar.findMenuItemForElementClass(elementTypeClass);
     let $parentLi;
@@ -356,29 +433,11 @@ function swapElement(element_to_swap, elementTypeClass, params){
                 reading_val[eye_side] = [];
                 method[eye_side] = [];
                 $.each(current_eye_va_reading.find('tr'), function(i, row){
-                    // get value
-                    let visualacuity_unit = $('#visualacuity_unit_change option:selected').text();
-                    let conversion_values = $(row).find('td:eq(1) i').data('tooltip');
-                    let method_val = $(row).find('td:eq(2) input').val();
+                    let original_value = $(row).data('base-value');
+                    let method_val = $(row).data('method-id');
 
-                    // get values
-                    let reading_val_li;
-                    for (var i = 0; i < conversion_values.length; i++) {
-                        if(conversion_values[i].name === visualacuity_unit){
-                            reading_val_li = conversion_values[i].value;
-                        }
-                    }
-
-                    let method_li = $('.'+eye_side+' ul[data-id="method"]').find('li[data-id="'+method_val+'"]');
-
-                    // get index and label
-                    reading_val[eye_side].push({
-                        label: reading_val_li
-                    });
-
-                    method[eye_side].push({
-                        val_index: method_li.index(),
-                    });
+                    reading_val[eye_side].push(parseInt(original_value));
+                    method[eye_side].push(parseInt(method_val));
                 });
             }
         });
@@ -389,11 +448,10 @@ function swapElement(element_to_swap, elementTypeClass, params){
         if(Object.keys(reading_val).length > 0 && Object.keys(method).length > 0){
             $.each(Object.keys(reading_val), function(eye_index, eye_side){
                 $.each(reading_val[eye_side], function(i, val){
-                    let target = $('section[data-element-type-name="'+(nva ? 'Near ' : '')+'Visual Acuity"] .'+eye_side);
+                    const visualacuity_unit_id = $(`${unitSelector} option:selected`).val();
+                    const eye = eye_side.substring(0, eye_side.indexOf('-'));
 
-                    target.find('ul[data-id="reading_val"] li[data-label="'+val.label+'"]').addClass('selected');
-                    target.find('ul[data-id="method"] li:eq('+method[eye_side][i].val_index+')').addClass('selected');
-                    target.find('.oe-add-select-search .add-icon-btn').trigger('click');
+                    convertVisualAcuityReadingUnit(nva, eye, visualacuity_unit_id, val, method[eye_side][i]);
                 });
             });
         }
