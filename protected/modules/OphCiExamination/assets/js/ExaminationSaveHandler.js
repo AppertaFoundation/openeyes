@@ -43,6 +43,9 @@ $(document).ready(() => {
         if (status !== "stop") {
             // get form ends with -create or -update
             let form = document.querySelector('#event-content form[id$="-create"], #event-content form[id$="-update"]');
+            if (!form) {
+                console.error('unable to resolve form for submission, check the id value on your form element.');
+            }
             if (close_incomplete_exam_elements === 'on') {
                 verifyElements(e, $(form));
             } else {
