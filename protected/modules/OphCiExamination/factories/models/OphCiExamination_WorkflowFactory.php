@@ -73,4 +73,29 @@ class OphCiExamination_WorkflowFactory extends ModelFactory
             }
         });
     }
+
+    /**
+     * create with one or more element sets as provided
+     *
+     * @param array<OphCiExamination_ElementSet|OphCiExamination_ElementSetFactory> $element_sets
+     * @return self
+     */
+    public function withElementSets(array $element_sets = []): self
+    {
+        return $this->afterCreating(function (OphCiExamination_Workflow $workflow) use ($element_sets) {
+            foreach ($element_sets as $index => $element_set) {
+                if ($element_set instanceof OphCiExamination_ElementSet) {
+                    $element_set->position = $index + 1;
+                    $element_set->workflow_id = $workflow->id;
+                    $element_set->save();
+                } else {
+                    $element_set->state([
+                        'position' => $index + 1,
+                        'workflow_id' => $workflow->id
+                    ])
+                    ->create();
+                }
+            }
+        });
+    }
 }

@@ -19,6 +19,8 @@ namespace OEModule\OphCiExamination\factories\models;
 use ElementType;
 use Institution;
 use OE\factories\ModelFactory;
+use OEModule\OphCiExamination\models\OphCiExamination_ElementSet;
+use OEModule\OphCiExamination\models\OphCiExamination_ElementSetItem;
 use OEModule\OphCiExamination\models\OphCiExamination_Workflow;
 
 class OphCiExamination_ElementSetFactory extends ModelFactory
@@ -34,12 +36,43 @@ class OphCiExamination_ElementSetFactory extends ModelFactory
         ];
     }
 
-        /**
-         * @param OphCiExamination_Workflow|OphCiExamination_WorkflowFactory|int|string $workflow
-         * @return self
-         */
+    /**
+     * @param OphCiExamination_Workflow|OphCiExamination_WorkflowFactory|int|string $workflow
+     * @return self
+     */
     public function forWorkflow($workflow)
     {
         return $this->state([ 'workflow_id' => $workflow ]);
+    }
+
+    public function forElementClasses(string|array $element_classes): self
+    {
+        return $this->afterCreating(function (OphCiExamination_ElementSet $element_set) use ($element_classes) {
+            if (!is_array($element_classes)) {
+                $element_classes = [$element_classes];
+            }
+            foreach ($element_classes as $lement_class) {
+                OphCiExamination_ElementSetItem::factory()
+                    ->forElementClass($lement_class)
+                    ->forElementSet($element_set)
+                    ->create();
+            }
+        });
+    }
+
+    public function forMandatoryElementClasses(string|array $element_classes): self
+    {
+        return $this->afterCreating(function (OphCiExamination_ElementSet $element_set) use ($element_classes) {
+            if (!is_array($element_classes)) {
+                $element_classes = [$element_classes];
+            }
+            foreach ($element_classes as $lement_class) {
+                OphCiExamination_ElementSetItem::factory()
+                    ->mandatory()
+                    ->forElementClass($lement_class)
+                    ->forElementSet($element_set)
+                    ->create();
+            }
+        });
     }
 }

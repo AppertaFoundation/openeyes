@@ -993,6 +993,8 @@ class DefaultController extends \BaseEventTypeController
             $this->set = $this->step;
         }
 
+        $this->mandatoryElements = isset($this->set) ? $this->set->MandatoryElementTypes : null;
+
         // This is the same as update, but with a few extras, so we call the update code and then pick up on the action later
         parent::actionUpdate($id);
     }
@@ -1851,17 +1853,6 @@ class DefaultController extends \BaseEventTypeController
                         'date' => isset($disorder['date']) ? $disorder['date'] : null
                     ];
                 }
-            }
-        }
-
-        if (!empty($data[$model_name]['disorder_id'])) {
-            foreach ($data[$model_name]['disorder_id'] as $i => $disorder_id) {
-                $diagnoses[] = array(
-                    'eye_id' => $diagnosis_eyes[$i],
-                    'disorder_id' => $disorder_id,
-                    'principal' => (@$data['principal_diagnosis'] == $disorder_id),
-                    'date' => isset($data[$model_name]['date'][$i]) ? $data[$model_name]['date'][$i] : null
-                );
             }
         }
 
