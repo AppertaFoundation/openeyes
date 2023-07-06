@@ -288,7 +288,7 @@ $unit_values_list = OphCiExamination_VisualAcuityUnit::generateUnitsList();
         const inside = $('.element[data-element-type-class="<?= \CHtml::modelName($element) ?>"]');
 
         /*
-         * When the previous examination visual acuity data is return in the new element, it includes two hidden fields with the ids
+         * When the previous examination visual acuity data is returned in the new element, it includes two hidden fields with the ids
          * of the readings from the previous events. Unless those ids are removed, they will be sent back to the server such that
          * the existing readings will have their element_id fields updated to the newly created element, instead of those readings
          * being preserved with new readings being created for the new element.
