@@ -176,7 +176,7 @@ $warnings = $this->patient->getWarnings($clinical);
                 </td>
                 <td></td>
                 <td>
-                   <button class="booking-select" data-booking="outpatient-minor-op">Create minor ops note</button>
+                   <button class="booking-select" data-booking="outpatient-minor-op" data-test="create-minor-ops-note">Create minor ops note</button>
                 </td>
               </tr>
               </tbody>

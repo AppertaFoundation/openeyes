@@ -11,7 +11,7 @@
             if ($macro) { ?>
                 <label class="inline highlight">
                     <?= \CHtml::hiddenField('auto_generate_gp_letter_after_' . $suffix, 0); ?>
-                    <?= \CHtml::checkBox('auto_generate_gp_letter_after_' . $suffix, $gp_letter_setting); ?>Generate
+                    <?= \CHtml::checkBox('auto_generate_gp_letter_after_' . $suffix, $gp_letter_setting, ['data-test' => 'generate-standard-gp-letter']); ?>Generate
                     standard GP letter
                 </label>
             <?php }
@@ -19,14 +19,14 @@
             if ($macro) { ?>
                 <label class="inline highlight">
                     <?= \CHtml::hiddenField('auto_generate_optom_letter_after_' . $suffix, 0); ?>
-                    <?= \CHtml::checkBox('auto_generate_optom_letter_after_' . $suffix, $optom_setting); ?>Generate
+                    <?= \CHtml::checkBox('auto_generate_optom_letter_after_' . $suffix, $optom_setting, ['data-test' => 'generate-optom-letter']); ?>Generate
                     standard Optom letter
                 </label>
             <?php } ?>
             <?php if ($drug_set_name) : ?>
                 <label class="inline highlight">
                     <?= \CHtml::hiddenField('auto_generate_prescription_after_' . $suffix, 0); ?>
-                    <?= \CHtml::checkBox('auto_generate_prescription_after_' . $suffix, $prescription_setting); ?>
+                    <?= \CHtml::checkBox('auto_generate_prescription_after_' . $suffix, $prescription_setting, ['data-test' => 'generate-prescription']); ?>
                     Generate prescription
                 </label>
             <?php endif; ?>
@@ -36,7 +36,8 @@
                 \CHtml::listData($sets, 'id', 'name'),
                 [
                     'empty' => '- Standard Sets -',
-                    'style' => 'display:' . ($prescription_setting ? 'inline-block' : 'none')
+                    'style' => 'display:' . ($prescription_setting ? 'inline-block' : 'none'),
+                    'data-test' => 'drug-sets-list'
                 ]
             ) ?>
 
@@ -45,4 +46,3 @@
     </div>
 </div>
 <?php endif; ?>
-
