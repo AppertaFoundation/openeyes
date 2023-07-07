@@ -94,8 +94,7 @@ class OphTrOperationbookingModule extends BaseEventTypeModule
 
     public function isGoldenPatientDisabled()
     {
-        $golden_patient_enabled = Yii::app()->params['op_booking_disable_golden_patient'];
-        return isset($golden_patient_enabled) && $golden_patient_enabled == 'on';
+        return \SettingMetadata::model()->getSetting('op_booking_disable_golden_patient') == 'on';
     }
 
     /**
