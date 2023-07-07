@@ -289,7 +289,7 @@ $procedure_readonly = $this->procedure_readonly;
                             ); ?>
                         </td>
                     </tr>
-                    <?php if (!$this->module->isLACDisabled()) {?>
+                    <?php if ($this->module->showLAC()) {?>
                         <tr>
                             <td>
                                 Cover

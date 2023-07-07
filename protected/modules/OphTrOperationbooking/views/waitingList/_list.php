@@ -198,7 +198,7 @@ Yii::app()->clientScript->registerScriptFile($widgetPath . '/PatientPanelPopupMu
                                     case 'LA':
                                         echo $anaesthetic_type->name;
 
-                                        if ((!$this->module->isLACDisabled()) && $eo->is_lac_required == '1') {
+                                        if (($this->module->showLAC()) && $eo->is_lac_required == '1') {
                                             echo '</li><li>with Cover';
                                         }
                                         break;

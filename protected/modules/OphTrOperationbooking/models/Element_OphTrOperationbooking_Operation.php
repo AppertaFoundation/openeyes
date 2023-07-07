@@ -62,6 +62,7 @@ use OE\factories\models\traits\HasFactory;
 class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
 {
     use HasFactory;
+
     public $count;
     public $reschedule;
 
@@ -936,13 +937,12 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
     /**
      * @return bool
      *
-     * Returns true if the Anaesthetic Cover Required is disabled
+     * Returns true if the Anaesthetic Cover Required question is enabled
      */
 
-    public function isLACDisabled()
+    public function showLAC()
     {
-        $lac_enabled = Yii::app()->params['op_booking_show_lac_required'];
-        return isset($lac_enabled) && $lac_enabled == 'off';
+        return \SettingMetadata::model()->getSetting('op_booking_show_lac_required') == 'on';
     }
 
     /**
@@ -960,7 +960,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
             $type = $this->anaesthetic_type[$i];
             $display .= ' ' . $type->name;
 
-            if ((!$this->isLACDisabled()) && $type->code === 'LA' && $this->is_lac_required == '1') {
+            if (($this->showLAC()) && $type->code === 'LA' && $this->is_lac_required == '1') {
                 $display .= ' with Cover';
             }
         }
