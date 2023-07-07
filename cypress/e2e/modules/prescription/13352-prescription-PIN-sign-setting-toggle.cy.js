@@ -52,7 +52,7 @@ describe('verifies prescription esign behaviour', () => {
         cy.getBySel('esigned-at').invoke('text').as('esignedAt')
 
         // edit the prescription (giving reason)
-        cy.getBySel('button-header-tab-Edit').click()
+        cy.getBySel('button-event-header-tab-edit').click()
         cy.getBySel('reason_2').click()
 
         // assert that the auto signature is still visible (??)

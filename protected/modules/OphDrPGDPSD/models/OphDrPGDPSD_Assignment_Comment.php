@@ -1,4 +1,10 @@
 <?php
+
+namespace OEModule\OphDrPGDPSD\models;
+
+use OE\factories\models\traits\HasFactory;
+use User;
+
 /**
  * This is the model class for table "ophdrpgdpsd_assignment_comment".
  *
@@ -16,6 +22,8 @@
  */
 class OphDrPGDPSD_Assignment_Comment extends \BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     /**
      * @return string the associated database table name
      */
@@ -46,9 +54,9 @@ class OphDrPGDPSD_Assignment_Comment extends \BaseActiveRecordVersioned
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-            'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-            'commented_user' => array(self::BELONGS_TO, 'User', 'commented_by'),
+            'createdUser' => array(self::BELONGS_TO, User::class, 'created_user_id'),
+            'lastModifiedUser' => array(self::BELONGS_TO, User::class, 'last_modified_user_id'),
+            'commented_user' => array(self::BELONGS_TO, User::class, 'commented_by'),
         );
     }
 
@@ -79,13 +87,13 @@ class OphDrPGDPSD_Assignment_Comment extends \BaseActiveRecordVersioned
     {
         // @todo Please modify the following code to remove attributes that should not be searched.
 
-        $criteria=new CDbCriteria;
+        $criteria=new \CDbCriteria;
 
         $criteria->compare('id', $this->id);
         $criteria->compare('comment', $this->comment);
         $criteria->compare('commented_by', $this->commented_by);
 
-        return new CActiveDataProvider($this, array(
+        return new \CActiveDataProvider($this, array(
             'criteria'=>$criteria,
         ));
     }

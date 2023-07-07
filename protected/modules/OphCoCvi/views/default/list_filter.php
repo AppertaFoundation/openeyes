@@ -73,51 +73,19 @@
                     </div>
                     <div class="column large-3">
                         <div class="column large-4 text-right"><label for="createdby">Created By:</label></div>
-                        <div class="column large-8"><?php
-                            $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                                'id' => 'createdby_auto_complete',
-                                'name' => 'createdby_auto_complete',
-                                'value' => '',
-                                'source' => "js:function(request, response) {
-                                    var existing = [];
-                                    $('#createdby_list').children('li').map(function() {
-                                        existing.push(String($(this).data('id')));
-                                    });
-
-                                    $.ajax({
-                                        'url': '" . Yii::app()->createUrl('user/autocomplete') . "',
-                                        'type':'GET',
-                                        'data':{'term': request.term},
-                                        'success':function(data) {
-                                            data = $.parseJSON(data) || [];
-
-                                            var result = [];
-
-                                            for (var i = 0; i < data.length; i++) {
-                                                var index = $.inArray(data[i].id, existing);
-                                                if (index == -1) {
-                                                    result.push(data[i]);
-                                                }
-                                            }
-
-                                            response(result);
-                                        }
-                                    });
-                                    }",
-                                'options' => array(
-                                    'minLength' => '3',
-                                    'select' => "js:function(event, ui) {
-                                    addCreatedByToList(ui.item);
-                                    $('#createdby_auto_complete').val('');
-                                    return false;
-                                }",
-                                ),
-                                'htmlOptions' => array(
-                                    'placeholder' => 'type to search for users',
-                                    'data-test' => 'createdby_auto_complete'
-                                ),
-                            ));
-                            ?>
+                        <div class="column large-8">
+                            <?php
+                                $this->widget('application.widgets.AutoCompleteSearch',
+                                    [
+                                        'field_name' => "createdby_auto_complete",
+                                        'htmlOptions' =>
+                                            [
+                                                'placeholder' => 'type to search for users',
+                                                'data-test' => 'createdby_auto_complete'
+                                            ],
+                                        'layoutColumns' => ['field' => '12']
+                                    ]);
+                                ?>
                             <div>
                                 <ul id="createdby_list" class="multi-select-search scroll">
                                     <?php $createdby_ids = array_key_exists('createdby_ids', $list_filter) ? $list_filter['createdby_ids'] : '';
@@ -139,51 +107,19 @@
                     <div class="column large-3">
                         <div class="column large-4 text-right"><label for="consultants">Consultant signed by:</label>
                         </div>
-                        <div class="column large-8"><?php
-                            $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                                'id' => 'consultant_auto_complete',
-                                'name' => 'consultant_auto_complete',
-                                'value' => '',
-                                'source' => "js:function(request, response) {
-                                    var existing = [];
-                                    $('#consultant_list').children('li').map(function() {
-                                        existing.push(String($(this).data('id')));
-                                    });
-
-                                    $.ajax({
-                                        'url': '" . Yii::app()->createUrl('user/autocomplete') . "',
-                                        'type':'GET',
-                                        'data':{'term': request.term},
-                                        'success':function(data) {
-                                            data = $.parseJSON(data) || [];
-
-                                            var result = [];
-
-                                            for (var i = 0; i < data.length; i++) {
-                                                var index = $.inArray(data[i].id, existing);
-                                                if (index == -1) {
-                                                    result.push(data[i]);
-                                                }
-                                            }
-
-                                            response(result);
-                                        }
-                                    });
-                                    }",
-                                'options' => array(
-                                    'minLength' => '3',
-                                    'select' => "js:function(event, ui) {
-                                    addConsultantToList(ui.item);
-                                    $('#consultant_auto_complete').val('');
-                                    return false;
-                                }",
-                                ),
-                                'htmlOptions' => array(
-                                    'placeholder' => 'type to search for users',
-                                    'data-test' => 'consultant_auto_complete'
-                                ),
-                            ));
-                            ?>
+                        <div class="column large-8">
+                            <?php
+                                $this->widget('application.widgets.AutoCompleteSearch',
+                                    [
+                                        'field_name' => "consultant_auto_complete",
+                                        'htmlOptions' =>
+                                            [
+                                                'placeholder' => 'type to search for users',
+                                                'data-test' => 'consultant_auto_complete'
+                                            ],
+                                        'layoutColumns' => ['field' => '12']
+                                    ]);
+                                ?>
                             <div>
                                 <ul id="consultant_list" class="multi-select-search scroll">
                                     <?php $consultant_ids = array_key_exists('consultant_ids', $list_filter) ? $list_filter['consultant_ids'] : '';
@@ -205,48 +141,18 @@
                         <div class="row">
                             <div class="column large-4 text-right"><label for="consultants">Consultant in
                                     charge:</label></div>
-                            <div class="column large-8"><?php
-                                $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                                    'id' => 'firm_auto_complete',
-                                    'name' => 'firm_auto_complete',
-                                    'value' => '',
-                                    'source' => "js:function(request, response) {
-                                    var existing = [];
-                                    $('#firm_list').children('li').map(function() {
-                                        existing.push(String($(this).data('id')));
-                                    });
-                                    var subspecialty_id = $('#subspecialty_id').val();
-                                    $.ajax({
-                                        'url': '" . Yii::app()->createUrl('OphCoCvi/admin/firmautocomplete') . "',
-                                        'type':'GET',
-                                        'data':{'term': request.term, 'subspecialty_id': subspecialty_id},
-                                        'success':function(data) {
-                                            var result = [];
-
-                                            for (var i = 0; i < data.length; i++) {
-                                                var index = $.inArray(data[i].id, existing);
-                                                if (index == -1) {
-                                                    result.push(data[i]);
-                                                }
-                                            }
-
-                                            response(result);
-                                        }
-                                    });
-                                    }",
-                                    'options' => array(
-                                        'minLength' => '3',
-                                        'select' => "js:function(event, ui) {
-                                    addFirmToList(ui.item);
-                                    $('#firm_auto_complete').val('');
-                                    return false;
-                                }",
-                                    ),
-                                    'htmlOptions' => array(
-                                        'placeholder' => 'type to search for consultants',
-                                        'data-test' => 'firm_auto_complete'
-                                    ),
-                                ));
+                            <div class="column large-8">
+                                <?php
+                                $this->widget('application.widgets.AutoCompleteSearch',
+                                    [
+                                        'field_name' => "firm_auto_complete",
+                                        'htmlOptions' =>
+                                            [
+                                                'placeholder' => 'type to search for users',
+                                                'data-test' => 'firm_auto_complete'
+                                            ],
+                                        'layoutColumns' => ['field' => '12']
+                                    ]);
                                 ?>
                                 <div>
                                     <ul id="firm_list" class="multi-select-search scroll">
@@ -333,6 +239,10 @@
     </div>
 
     <script type="text/javascript">
+        let existingCreatedByUserList = [];
+        let existingConsultantSignedByList = [];
+        let existingFirmList = [];
+
         function addConsultantToList(consultant) {
             var currentIds = $('#consultant_ids').val() ? $('#consultant_ids').val().split(',') : [];
             currentIds.push(consultant.id);
@@ -355,6 +265,11 @@
             }
             $('#consultant_ids').val(newIds.join());
             $('#consultant_ids').trigger('change');
+
+            existingConsultantSignedByList = existingConsultantSignedByList.filter(function(item) {
+                return item != consultantId
+            });
+
             $(li).remove();
         });
 
@@ -380,6 +295,11 @@
             }
             $('#firm_ids').val(newIds.join());
             $('#firm_ids').trigger('change');
+
+            existingFirmList = existingFirmList.filter(function(item) {
+                return item != firmId
+            });
+
             $(li).remove();
         });
 
@@ -409,6 +329,11 @@
             $('#createdby_ids').val(newIds.join());
             $('#createdby_ids').trigger('change');
             $('#search_button').removeAttr('disabled');
+
+            existingCreatedByUserList = existingCreatedByUserList.filter(function(item) {
+                return item != userId
+            });
+
             $(li).remove();
         });
 
@@ -444,5 +369,63 @@
 
         $(document).ready(function () {
             $('.datepicker').datepicker({'showAnim': 'fold', 'dateFormat': 'd M yy'});
+
+            OpenEyes.UI.AutoCompleteSearch.init({
+                input: $('#createdby_auto_complete'),
+                url: '<?= Yii::app()->createUrl('user/autocomplete') ?>',
+                params: {
+                },
+                maxHeight: '200px',
+                onSelect: function () {
+                    let response = OpenEyes.UI.AutoCompleteSearch.getResponse();
+                    let input = OpenEyes.UI.AutoCompleteSearch.getInput();
+
+                    if (!existingCreatedByUserList.includes(response.id)) {
+                        addCreatedByToList(response);
+                        $('#createdby_auto_complete').val('');
+
+                        existingCreatedByUserList.push('' + response.id);
+                    }
+                }
+            });
+
+            OpenEyes.UI.AutoCompleteSearch.init({
+                input: $('#consultant_auto_complete'),
+                url: '<?= Yii::app()->createUrl('user/autocomplete') ?>',
+                params: {
+                },
+                maxHeight: '200px',
+                onSelect: function () {
+                    let response = OpenEyes.UI.AutoCompleteSearch.getResponse();
+                    let input = OpenEyes.UI.AutoCompleteSearch.getInput();
+
+                    if (!existingConsultantSignedByList.includes(response.id)) {
+                        addConsultantToList(response);
+                        $('#consultant_auto_complete').val('');
+
+                        existingConsultantSignedByList.push('' + response.id);
+                    }
+                }
+            });
+
+            OpenEyes.UI.AutoCompleteSearch.init({
+                input: $('#firm_auto_complete'),
+                url: '<?= Yii::app()->createUrl('OphCoCvi/admin/firmautocomplete') ?>',
+                params: {
+                },
+                maxHeight: '200px',
+                onSelect: function () {
+                    let response = OpenEyes.UI.AutoCompleteSearch.getResponse();
+                    let input = OpenEyes.UI.AutoCompleteSearch.getInput();
+
+                    if (!existingFirmList.includes(response.id)) {
+                        addFirmToList(response);
+                        $('#firm_auto_complete').val('');
+
+                        existingFirmList.push('' + response.id);
+                    }
+                }
+            });
+
         });
     </script>

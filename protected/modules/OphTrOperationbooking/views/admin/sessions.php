@@ -100,7 +100,8 @@ if ($this->checkAccess('admin')) {
                         'class' => 'button large header-tab',
                         'name' => 'filter',
                         'type' => 'submit',
-                        'id' => 'et_filter'
+                        'id' => 'et_filter',
+                        'data-test' => 'filter-sessions'
                     ]
                 ); ?>
                 <?php echo CHtml::button(
@@ -157,8 +158,8 @@ if ($this->checkAccess('admin')) {
         <tbody>
         <?php
         foreach ($sessions as $i => $session) {?>
-            <tr class="clickable sortable" data-id="<?php echo $session->id?>" data-uri="OphTrOperationbooking/admin/editSession/<?php echo $session->id?>">
-                <td><input type="checkbox" name="session[]" value="<?php echo $session->id?>" class="sessions" /></td>
+            <tr class="clickable sortable" data-id="<?php echo $session->id?>" data-uri="OphTrOperationbooking/admin/editSession/<?php echo $session->id?>" data-test="sessions-list">
+                <td><input type="checkbox" name="session[]" value="<?php echo $session->id?>" class="sessions" data-test="session-select" /></td>
                 <td><?php echo $session->firm ? $session->firm->nameAndSubspecialtyCode : 'Emergency'?></td>
                 <td><?php echo $session->theatre->name?></td>
                 <td><?php echo $session->NHSDate('date')?></td>

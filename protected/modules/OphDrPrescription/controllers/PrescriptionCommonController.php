@@ -16,6 +16,9 @@
  * @copyright Copyright (c) 2011-2015, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+use OEModule\OphDrPGDPSD\models\OphDrPGDPSD_PGDPSD;
+
 class PrescriptionCommonController extends DefaultController
 {
     protected static $action_types = array(

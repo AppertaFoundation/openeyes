@@ -61,7 +61,7 @@ class OphCoMessaging_APITest extends \OEDbTestCase
         $this->assertEquals($this->total_message_count, $total_message_count, "API returned incorrect total message count for user");
 
         foreach ($mailbox_message_counts as $mailbox_message_count) {
-            $message_count = array_key_exists('count_all', $mailbox_message_count) ? $mailbox_message_count['count_all'] : 0;
+            $message_count = $mailbox_message_count['total_message_count'];
 
             $mailbox = Mailbox::model()->findByPk($mailbox_message_count['id']);
 

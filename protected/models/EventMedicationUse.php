@@ -17,6 +17,7 @@
  */
 
 use OEModule\OphCiExamination\models\HistoryMedicationsStopReason;
+use OEModule\OphDrPGDPSD\models\OphDrPGDPSD_PGDPSD;
 
 /**
  * This is the model class for table "event_medication_use".

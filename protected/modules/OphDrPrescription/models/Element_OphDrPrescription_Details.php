@@ -16,6 +16,8 @@
  */
 
 use \OEModule\OphCiExamination\models\MedicationManagement;
+use OEModule\OphDrPGDPSD\models\OphDrPGDPSD_PGDPSD;
+
 /**
  * The followings are the available columns in table 'et_ophdrprescription_details':.
  *

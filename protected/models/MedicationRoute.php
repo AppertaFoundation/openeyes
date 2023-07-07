@@ -1,5 +1,7 @@
 <?php
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "medication_route".
  *
@@ -25,6 +27,8 @@
  */
 class MedicationRoute extends BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     const ROUTE_EYE = 1;
     const ROUTE_INTRAVITREAL = 6;
 
@@ -62,8 +66,8 @@ class MedicationRoute extends BaseActiveRecordVersioned
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-            'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+            'createdUser' => array(self::BELONGS_TO, User::class, 'created_user_id'),
+            'lastModifiedUser' => array(self::BELONGS_TO, User::class, 'last_modified_user_id'),
             'medicationSets' => array(self::HAS_MANY, MedicationSetItem::class, 'default_route_id'),
             'medications' => array(self::MANY_MANY, Medication::class, array('medication_id' => 'id'), 'through'=>'medication_set'),
         );

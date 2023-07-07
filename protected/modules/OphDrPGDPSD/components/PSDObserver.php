@@ -1,5 +1,10 @@
 <?php
 
+use OEModule\OphDrPGDPSD\models\{
+    OphDrPGDPSD_Assignment,
+    OphDrPGDPSD_PGDPSD
+};
+
 class PSDObserver
 {
     /**

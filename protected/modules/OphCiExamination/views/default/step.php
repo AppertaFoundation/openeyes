@@ -17,24 +17,105 @@
  */
 ?>
 <?php
-$form_id = 'clinical-create';
+$form_id = 'clinical-update';
 $this->beginContent('//patient/event_container', array('no_face'=>false , 'form_id' => $form_id)); ?>
     <?php
-        $this->event_actions[] = EventAction::button('Save', 'save', array('level' => 'save'), array('form' => 'clinical-create'));
-    ?>
-    <?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-        'id' => $form_id
-    ,
-        'enableAjaxValidation' => false,
-        'layoutColumns' => array(
-            'label' => 4,
-            'field' => 8,
-        ),
-    ));
-?>
-        <?php $this->displayErrors($errors)?>
-        <?php $this->renderPartial('//patient/event_elements', array('form' => $form));?>
-        <?php $this->displayErrors($errors, true)?>
+        $this->event_actions[] =
+        EventAction::button(
+            'Cancel',
+            'draft-cancel',
+            ['level' => 'cancel'],
+            [
+                'class' => 'js-event-action-draft-cancel',
+                'type' => 'button',
+                'style' => 'display: none'
+            ]
+        );
+
+        $this->event_actions[] =
+            EventAction::button(
+                'Save Draft',
+                'draft',
+                ['level' => 'draft'],
+                [
+                    'class' => 'js-event-action-save-draft',
+                    'icon-class' => 'draft',
+                    'style' => 'display: none'//Button hidden until draft save functionality is fully implemented
+                ]
+            );
+
+        $this->event_actions[] =
+            EventAction::button(
+                'Confirm & Save',
+                'save',
+                ['level' => 'save'],
+                [
+                    'form' => $form_id,
+                    'class' => 'js-event-action-save-confirm'
+                ]
+            );
+
+        $this->event_actions[] =
+            EventAction::button(
+                'Confirm & Save',
+                'connection-error-save',
+                ['level' => 'save'],
+                [
+                    'class' => 'js-event-action-connection-error-save-confirm fade',
+                    'style' => 'display: none'
+                ]
+            );
+
+        $this->event_actions[] =
+            EventAction::button(
+                'Confirm',
+                'confirm',
+                ['level' => 'confirm'],
+                [
+                    'class' => 'js-event-action-save-confirm-popup',
+                    'type' => 'button',
+                    'style' => 'display: none'
+                ]
+            );
+
+        $this->event_tabs[] = [
+            'label' => 'OE Connection Error',
+            'class' => 'js-connection-error-tab sync-error',
+            'icon-class' => 'sync',
+            'hidden' => true,
+            'href' => '#'
+        ];
+
+        $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+            'id' => $form_id,
+            'enableAjaxValidation' => false,
+            'layoutColumns' => array(
+                'label' => 4,
+                'field' => 8,
+            ),
+        ));
+        ?>
+<input type="hidden" name="auto-save-enabled" class="js-auto-save-enabled" value=<?= $auto_save_enabled ? "true" : "false" ?>>
+
+<?php $this->renderPartial('auto_save_connection_error');?>
+<?php $this->renderPartial('auto_save_discard_draft');?>
+<?php $this->renderPartial('auto_save_warnings', ['form_id' => $form_id]);?>
+
+<script type='text/javascript'>
+    $(document).ready( function(){
+        window.formHasChanged = true;
+
+        <?php if ($auto_save_enabled) { ?>
+            let eventDraftController = new OpenEyes.EventDraftController({formId: '<?= $form_id ?>'});
+
+            $('.js-auto-save-enabled').data('controller', eventDraftController);
+        <?php } ?>
+    });
+</script>
+
+<?php $this->displayErrors($errors)?>
+<?php $this->renderPartial('//patient/event_elements', array('form' => $form));?>
+<?php $this->displayErrors($errors, true)?>
 
 <?php $this->endWidget() ?>
 <?php $this->endContent(); ?>

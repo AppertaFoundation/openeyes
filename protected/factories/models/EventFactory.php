@@ -26,6 +26,7 @@ class EventFactory extends ModelFactory
         }
 
         $namespacedFactoryName = "\\OEModule\\{$moduleName}\\factories{$factoryName}";
+
         if (class_exists($namespacedFactoryName)) {
             return $namespacedFactoryName::new();
         }

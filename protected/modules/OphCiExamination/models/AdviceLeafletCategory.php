@@ -1,6 +1,11 @@
 <?php
 
 namespace OEModule\OphCiExamination\models;
+
+use Institution;
+use Subspecialty;
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "ophciexamination_advice_leaflet_category".
  *
@@ -25,6 +30,14 @@ namespace OEModule\OphCiExamination\models;
 class AdviceLeafletCategory extends \BaseActiveRecordVersioned
 {
     use \MappedReferenceData;
+    use HasFactory;
+
+    public function behaviors()
+    {
+        return [
+            'LookupTable' => \LookupTable::class,
+        ];
+    }
 
     public function getSupportedLevels(): int
     {
@@ -58,6 +71,7 @@ class AdviceLeafletCategory extends \BaseActiveRecordVersioned
         // will receive user inputs.
         return array(
             array('active', 'numerical', 'integerOnly'=>true),
+            array('name', 'required'),
             array('name', 'length', 'max'=>255),
             array('last_modified_user_id, created_user_id', 'length', 'max'=>10),
             array('last_modified_date, created_date', 'safe'),
@@ -131,15 +145,25 @@ class AdviceLeafletCategory extends \BaseActiveRecordVersioned
         ));
     }
 
-    /**
-     * Returns the static model of the specified AR class.
-     * Please note that you should have this exact method in all your CActiveRecord descendants!
-     * @param string $className active record class name.
-     * @return AdviceLeafletCategory the static model class
-     */
-    public static function model($className = __CLASS__)
+    public function forInstitution(Institution $institution): self
     {
-        return parent::model($className);
+        $this->getDbCriteria()->mergeWith([
+            'condition' => $this->getTableAlias(true) . '.institution_id = :institution_id',
+            'params' => [':institution_id' =>  $institution->id]
+        ]);
+
+        return $this;
+    }
+
+    public function forSubspecialty(Subspecialty $subspecialty): self
+    {
+        $this->getDbCriteria()->mergeWith([
+            'with' => ['subspecialties'],
+            'condition' => 'subspecialties.id = :subspecialty_id',
+            'params' => [':subspecialty_id' => $subspecialty->id]
+        ]);
+
+        return $this;
     }
 
     protected function beforeSave()

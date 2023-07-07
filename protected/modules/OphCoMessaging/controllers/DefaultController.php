@@ -205,7 +205,8 @@ class DefaultController extends \BaseEventTypeController
 
         $comment = new OphCoMessaging_Message_Comment();
 
-        $comment->comment_text = @$_POST['OEModule_OphCoMessaging_models_OphCoMessaging_Message_Comment']['comment_text'];
+        $comment->comment_text = isset($_POST['OEModule_OphCoMessaging_models_OphCoMessaging_Message_Comment']['comment_text']) ? $_POST['OEModule_OphCoMessaging_models_OphCoMessaging_Message_Comment']['comment_text'] : null;
+        $comment->mailbox_id = isset($_POST['comment_reply_mailbox']) ? $_POST['comment_reply_mailbox'] : null;
         $comment->element_id = $element->id;
 
         if (!$comment->validate()) {

@@ -1,4 +1,6 @@
 <?php
+use OEModule\OphDrPGDPSD\models\Element_DrugAdministration;
+
 class DrugAdministrationCreator extends \EventCreator
 {
     private $entries = array();
@@ -8,7 +10,7 @@ class DrugAdministrationCreator extends \EventCreator
         $da_event_type = \EventType::model()->find('name = "Drug Administration"');
         parent::__construct($episode, $da_event_type->id);
 
-        $this->elements['Element_DrugAdministration'] = new \Element_DrugAdministration();
+        $this->elements[Element_DrugAdministration::class] = new Element_DrugAdministration();
     }
 
     public function setEntriesAndWorklistPatient($assignment, $worklist_patient_id, $firm_id)

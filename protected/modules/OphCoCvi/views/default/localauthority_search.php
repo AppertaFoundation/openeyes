@@ -17,45 +17,34 @@
 <div id="local_authority_search_wrapper" class="row field-row<?= $hidden ? ' hidden':''?>">
     <div class="large-8 column large-push-2 end">
     <?php
-        $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-            'id' => 'la_auto_complete',
-            'name' => 'la_auto_complete',
-            'value' => '',
-            'source' => "js:function(request, response) {
-            var existing = [];
-            $('#consultant_list').children('li').map(function() {
-                existing.push(String($(this).data('id')));
-            });
-
-            $.ajax({
-                'url': '".Yii::app()->createUrl('/OphCoCvi/localAuthority/autocomplete')."',
-                'type':'GET',
-                'data':{'term': request.term},
-                'success':function(data) {
-                    if (!data.length) {
-                        data = [
-                        {
-                            'label': 'No results found',
-                            'value': response.term
-                        }
-                        ];
-                    }
-                    response(data);
-                }
-            });
-            }",
-            'options' => array(
-                'minLength' => '3',
-                'select' => "js:function(event, ui) {
-                    updateLAFields(ui.item);
-                    $('#la_auto_complete').val('');
-                    return false;
-                }",
-            ),
-            'htmlOptions' => array(
-                'placeholder' => 'Type to search for local authority',
-            ),
-        ));
+        $this->widget('application.widgets.AutoCompleteSearch',
+            [
+                'field_name' => 'la_auto_complete',
+                'htmlOptions' =>
+                    [
+                        'placeholder' => 'Type to search for local authority',
+                    ],
+                'layoutColumns' => ['field' => '12']
+            ]);
         ?>
     </div>
 </div>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        OpenEyes.UI.AutoCompleteSearch.init({
+            input: $('#la_auto_complete'),
+            url: '/OphCoCvi/localAuthority/autocomplete',
+            params: {
+            },
+            maxHeight: '200px',
+            onSelect: function () {
+                let response = OpenEyes.UI.AutoCompleteSearch.getResponse();
+                let input = OpenEyes.UI.AutoCompleteSearch.getInput();
+
+                updateLAFields(response);
+                $('#la_auto_complete').val('');
+            }
+        });
+    });
+</script>

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -23,6 +24,8 @@ return array(
                 'Treatment Drugs' => ['uri' => '/OphTrIntravitrealinjection/admin/viewTreatmentDrugs', 'restricted' => array('admin')],
                 'IOP Lowering Drugs' => ['uri' => '/OphTrIntravitrealinjection/admin/manageIOPLoweringDrugs', 'restricted' => array('admin')],
                 'Injection given by users' => '/OphTrIntravitrealinjection/admin/injectionUsers',
+                'Skin Cleansing Drugs' => ['uri' => '/OphTrIntravitrealinjection/admin/manageSkinDrugs', 'restricted' => array('admin')],
+                'Antiseptic Drugs' => ['uri' => '/OphTrIntravitrealinjection/admin/manageAntisepticDrugs', 'restricted' => array('admin')],
             ]
         ),
         'reports' => array(

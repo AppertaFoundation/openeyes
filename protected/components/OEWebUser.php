@@ -2,7 +2,7 @@
 /**
  * OpenEyes.
  *
- * 
+ *
  * Copyright OpenEyes Foundation, 2017
  *
  * This file is part of OpenEyes.
@@ -20,7 +20,7 @@ class OEWebUser extends CWebUser
 {
 
     private $session_id_to_invalidate;
-
+    
     protected function changeIdentity($id, $name, $states)
     {
         //force regeneration of session id to avoid bug in CWebUser where empty phpsessionid will not be regenerated

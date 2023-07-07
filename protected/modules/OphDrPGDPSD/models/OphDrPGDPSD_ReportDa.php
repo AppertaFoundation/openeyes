@@ -1,5 +1,7 @@
 <?php
 
+use OEModule\OphDrPGDPSD\models\OphDrPGDPSD_Assignment;
+
 class OphDrPGDPSD_ReportDa extends BaseReport
 {
     public $date_type;
@@ -75,7 +77,7 @@ class OphDrPGDPSD_ReportDa extends BaseReport
             default:
                 break;
         }
-        $assignments = \OphDrPGDPSD_Assignment::model()->with('pgdpsd')->findAll($psd_criteria);
+        $assignments = OphDrPGDPSD_Assignment::model()->with('pgdpsd')->findAll($psd_criteria);
         if ($med_name) {
             $assignments = array_filter($assignments, function ($assignment) use ($med_name) {
                 $found = false;
@@ -130,7 +132,7 @@ class OphDrPGDPSD_ReportDa extends BaseReport
                 return true;
             }
         });
-        $assignment_complete_status = \OphDrPGDPSD_Assignment::STATUS_COMPLETE;
+        $assignment_complete_status = OphDrPGDPSD_Assignment::STATUS_COMPLETE;
         foreach ($assignments as $assignment) {
             $report_data = array();
             $assignment_name_type = $assignment->getAssignmentTypeAndName();

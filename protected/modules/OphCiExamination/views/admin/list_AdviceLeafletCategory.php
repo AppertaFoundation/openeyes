@@ -22,7 +22,7 @@
 <?php $this->renderPartial('//base/_messages') ?>
 <div class="cols-5">
     <form id="admin_workflowrules">
-        <table class="standard">
+        <table class="standard" data-test="advice-leaflet-categories">
             <thead>
             <tr>
                 <th><input type="checkbox" name="selectall" id="selectall"/></th>

@@ -72,11 +72,15 @@ class OphCoMessaging_API extends \BaseAPI
             'sender' => \Yii::app()->request->getQuery('OphCoMessaging_Search_Sender', ''),
             'message_type' => \Yii::app()->request->getQuery('OphCoMessaging_Search_MessageType', ''),
             'message_content' => \Yii::app()->request->getQuery('OphCoMessaging_Search', ''),
+            'retrieve_all_comments' => \Yii::app()->request->getQuery('OphCoMessaging_All_Comments', 0),
+            'retrieve_original_element' => \Yii::app()->request->getQuery('OphCoMessaging_Original_Element', 0),
         ];
 
         if ($user == null) {
             $user = \Yii::app()->user;
         }
+
+        $mailbox_id = $search_mailbox_id ?? $mailbox_id;
 
         $searcher = new MailboxSearch(\Yii::app()->user, $message_type, $search_parameters);
 
@@ -86,11 +90,7 @@ class OphCoMessaging_API extends \BaseAPI
             $mailbox = $mailbox ?? Mailbox::model()->findByPk($mailbox_id);
         }
 
-        if ($mailbox === null) {
-            $messages = $searcher->retrieveContentsForMailboxesBelongingTo($user);
-        } else {
-            $messages = $searcher->retrieveContentsForMailbox($mailbox);
-        }
+        $recipient_messages = $searcher->retrieveMailboxContentsUsingSQL($user->id, isset($mailbox_id) ? [$mailbox_id] : null);
 
         list($mailboxes_with_counts, $count_unread_total) = $this->getMessageCounts($user);
 
@@ -100,7 +100,7 @@ class OphCoMessaging_API extends \BaseAPI
                 'count_unread_total' => $count_unread_total,
                 'selected_mailbox' => $mailbox,
                 'message_type' => $message_type,
-                'messages' => $messages,
+                'recipient_messages' => $recipient_messages,
                 'is_a_sent_folder' => $searcher->isSentFolder(),
                 'module_class' => $this->getModuleClass(),
             ]);
@@ -142,18 +142,7 @@ class OphCoMessaging_API extends \BaseAPI
      */
     public function getAllUserMailboxesById($user)
     {
-        $mailboxes = \Yii::app()->db->createCommand()
-            ->select('m.id, m.name, m.is_personal')
-            ->from('mailbox m')
-            ->leftJoin('mailbox_user mu', 'mu.mailbox_id = m.id')
-            ->leftJoin('mailbox_team mt', 'mt.mailbox_id = m.id')
-            ->leftJoin('team_user_assign tua', 'tua.team_id = mt.team_id')
-            ->where(
-                '(mu.user_id = :user_id OR tua.user_id = :user_id) AND m.active <> 0',
-                [':user_id' => $user->id]
-            )
-            ->order('m.is_personal DESC')
-            ->queryAll();
+        $mailboxes = MailboxSearch::getAllMailboxesForUser($user->id);
 
         $by_id = [];
 
@@ -174,78 +163,18 @@ class OphCoMessaging_API extends \BaseAPI
      */
     public function getMessageCounts($user)
     {
-        $mailbox_counts = $this->getAllUserMailboxesById($user);
+        $mailboxes = MailboxSearch::getAllMailboxesForUser($user->id);
 
-        $count_unread_total = 0;
+        $counts_by_id = [];
+        $total_unread_messages = 0;
 
-        $mailbox_received_counts = \Yii::app()->db->createCommand()
-                 ->select('m.id AS id, ' .
-                          'COUNT(msgr.element_id) AS count_all, ' .
-                          'SUM(msgr.marked_as_read = 0) AS count_unread_all, ' .
-                          'SUM(msgr.marked_as_read = 0 AND msgr.primary_recipient <> 0) AS count_unread_received, ' .
-                          'SUM(msgr.marked_as_read = 0 AND msg.urgent <> 0) AS count_unread_urgent, ' .
-                          'SUM(msgr.marked_as_read = 0 AND msgt.name = "Query") AS count_unread_query, ' .
-                          'SUM(msgr.marked_as_read = 0 AND msg.cc_enabled <> 0 AND msgr.primary_recipient = 0) AS count_unread_copied, ' .
-                          'SUM(msgr.marked_as_read <> 0) AS count_read_all, ' .
-                          'SUM(msgr.marked_as_read <> 0 AND msgr.primary_recipient <> 0) AS count_read_received, ' .
-                          'SUM(msgr.marked_as_read <> 0 AND msg.urgent <> 0) AS count_read_urgent, ' .
-                          'SUM(msgr.marked_as_read <> 0 AND msg.cc_enabled <> 0 AND msgr.primary_recipient = 0) AS count_read_copied')
-                 ->from('mailbox m')
-                 ->join('ophcomessaging_message_recipient msgr', 'msgr.mailbox_id = m.id')
-                 ->join('et_ophcomessaging_message msg', 'msgr.element_id = msg.id')
-                 ->join('event e', 'msg.event_id = e.id')
-                 ->leftJoin('ophcomessaging_message_message_type msgt', 'msg.message_type_id = msgt.id')
-                 ->leftJoin('mailbox_user mu', 'mu.mailbox_id = m.id')
-                 ->leftJoin('mailbox_team mt', 'mt.mailbox_id = m.id')
-                 ->leftJoin('team_user_assign tua', 'tua.team_id = mt.team_id')
-                 ->where('(mu.user_id = :user_id OR tua.user_id = :user_id) AND m.active <> 0 AND e.deleted = 0', [':user_id' => $user->id])
-                 ->group('m.id')
-                 ->queryAll();
-
-        foreach ($mailbox_received_counts as $count) {
-            $mailbox_counts[$count['id']] = array_merge($mailbox_counts[$count['id']] ?? [], $count);
-
-            $count_unread_total += $count['count_unread_all'];
+        foreach ($mailboxes as $mailbox) {
+            $counts_for_mailbox = MailboxSearch::getMailboxFolderCounts($user->id, [$mailbox['id']]);
+            $counts_by_id[$mailbox['id']] = array_merge($mailbox, $counts_for_mailbox);
+            $total_unread_messages += $counts_for_mailbox['all_unread'];
         }
 
-        $element_sent_counts_query = \Yii::app()->db->createCommand()
-                 ->select('msg.id AS element_id, ' .
-                          'msg.sender_mailbox_id AS sender_id, ' .
-                          'SUM(msgc.created_user_id <> :user_id AND msgc.marked_as_read = 0) AS ureps, ' .
-                          'SUM((ISNULL(msgc.id) OR msgc.created_user_id = :user_id) AND msgt.name = "Query") AS wfqreps, ' .
-                          'SUM(msgr.marked_as_read = 0) AS urecs')
-                 ->from('et_ophcomessaging_message msg')
-                 ->join('event e', 'msg.event_id = e.id')
-                 ->join('ophcomessaging_message_message_type msgt', 'msg.message_type_id = msgt.id')
-                 ->leftJoin('ophcomessaging_message_recipient msgr', 'msgr.element_id = msg.id')
-                 ->leftJoin('ophcomessaging_message_comment msgc', 'msgc.element_id = msg.id')
-                 ->where('msg.created_user_id = :user_id AND e.deleted = 0', [':user_id' => $user->id])
-                 ->group('msg.id');
-
-        $mailbox_sent_counts = \Yii::app()->db->createCommand()
-                 ->select('m.id AS id, ' .
-                          'COUNT(DISTINCT counts.element_id) AS count_sent_all, ' .
-                          'SUM(counts.ureps > 0) AS count_unread_replies, ' .
-                          'SUM(counts.wfqreps > 0) AS count_sent_unreplied, ' .
-                          'SUM(counts.urecs > 0) AS count_sent_unread')
-                 ->from('mailbox m')
-                 ->join('(' . $element_sent_counts_query->text . ') AS counts', 'm.id = counts.sender_id')
-                 ->leftJoin('mailbox_user mu', 'mu.mailbox_id = m.id')
-                 ->leftJoin('mailbox_team mt', 'mt.mailbox_id = m.id')
-                 ->leftJoin('team_user_assign tua', 'tua.team_id = mt.team_id')
-                 ->where('(mu.user_id = :user_id OR tua.user_id = :user_id) AND m.active <> 0', [':user_id' => $user->id])
-                 ->group('m.id')
-                 ->queryAll();
-
-        foreach ($mailbox_sent_counts as $count) {
-            $mailbox_counts[$count['id']] = array_merge($mailbox_counts[$count['id']] ?? [], $count);
-
-            $mailbox_counts[$count['id']]['count_all'] = ($mailbox_counts[$count['id']]['count_all'] ?? 0) + $count['count_unread_replies'];
-            $mailbox_counts[$count['id']]['count_unread_all'] = ($mailbox_counts[$count['id']]['count_unread_all'] ?? 0) + $count['count_unread_replies'];
-            $count_unread_total += $count['count_unread_replies'];
-        }
-
-        return [$mailbox_counts, $count_unread_total];
+        return [$counts_by_id, $total_unread_messages];
     }
 
     /**

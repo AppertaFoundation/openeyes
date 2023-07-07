@@ -15,6 +15,7 @@
 
 namespace OEModule\OphCoCvi\controllers;
 
+use Exception;
 use Yii;
 use CDbCriteria;
 use OEModule\OphCoCvi\models;
@@ -137,7 +138,7 @@ class AdminController extends \ModuleAdminController
         $where = '(term like :search or id like :search)';
         $where .= ' and active = 1';
         $disorders = \Yii::app()->db->createCommand()
-            ->select('id, term AS value')
+            ->select('id, term AS value, term AS label')
             ->from('disorder')
             ->where($where, array(
                 ':search' => $search,
@@ -209,7 +210,7 @@ class AdminController extends \ModuleAdminController
                 Audit::add('admin-OphCoCvi_ClinicalInfo_Disorder_Section', 'add', $section->id);
 
                 if ($patient_type) {
-                    $this->redirect('/OphCoCvi/admin/clinicalDisorderSection/' . ceil($section->id / $this->items_per_page). '?search[event_type_version]='.$event_type_version.'&search[patient_type]='.$patient_type);
+                    $this->redirect('/OphCoCvi/admin/clinicalDisorderSection/' . ceil($section->id / $this->items_per_page). '?&search[patient_type]='.$patient_type);
                 } else {
                     $this->redirect('/OphCoCvi/admin/clinicalDisorderSection/' . ceil($section->id / $this->items_per_page));
                 }

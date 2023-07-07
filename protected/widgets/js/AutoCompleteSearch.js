@@ -80,7 +80,7 @@ OpenEyes.UI = OpenEyes.UI || {};
         return str.trim();
     }
 
-    function initAutocomplete(input, autocomplete_url, autocomplete_max_height, params, search_data_prefix) {
+    function initAutocomplete(input, autocomplete_url, autocomplete_max_height, params, minimum_character_length, search_data_prefix) {
         function _debounce(func, wait = 300) {
             let timer;
             return function (...args) {
@@ -98,8 +98,9 @@ OpenEyes.UI = OpenEyes.UI || {};
             inputbox = input;
             inputbox.parent().find('.alert-box').addClass('hidden');
 
+            let minLength = minimum_character_length;
             // if input is empty
-            if (search_term.length < 2) {
+            if (search_term.length < minLength) {
                 timeout_id = setTimeout(function () {
                     if (search_term.length === 1) {
                         inputbox.parent().find('.js-min-chars').removeClass('hidden');
@@ -152,6 +153,7 @@ OpenEyes.UI = OpenEyes.UI || {};
         });
 
         input.on('input', function () {
+            exports.input = $(this);
             debouncedInputHandler(this.value.trim());
         });
 
@@ -190,9 +192,8 @@ OpenEyes.UI = OpenEyes.UI || {};
     function successResponse(response) {
 	    $(".oe-autocomplete").empty();
 	    var search_options = ``;
-
         $.each(response,function(index, value) {
-        	search_options += `<li class="oe-menu-item" role="presentation" data-test="autocomplete-match"><a id="ui-id-`+index+`" tabindex="-1" style="text-align: justify">`;
+            search_options += `<li class="oe-menu-item" role="presentation" data-test="autocomplete-match"><a id="ui-id-` + index + `" tabindex="-1">`;
             if (value.fullname !== undefined) {
                 search_options += matchSearchTerm(value.fullname);
             }
@@ -242,12 +243,16 @@ OpenEyes.UI = OpenEyes.UI || {};
         init: function (options) {
             if (options.input) {
                 set_onSelect(options.input, options.onSelect);
-	    		initAutocomplete(options.input, options.url, ('maxHeight' in options )? options.maxHeight:null, options.params);
+                let minimumCharacterLength = ('minimumCharacterLength' in options )? options.minimumCharacterLength : 2;
+	    		initAutocomplete(options.input, options.url, ('maxHeight' in options )? options.maxHeight:null, options.params, minimumCharacterLength);
                 return exports.AutoCompleteSearch;
             }
         },
         getResponse: function () {
             return exports.item_clicked;
+        },
+        getInput: function() {
+            return exports.input;
         }
     };
 

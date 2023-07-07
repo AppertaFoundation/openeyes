@@ -38,7 +38,7 @@ describe('verifies correspondence esign behaviour', () => {
         // save the draft event then recall the form
         cy.getBySel('event-action-save-draft').first().click()
             .then(() => {
-                cy.getBySel('button-header-tab-Edit').click()
+                cy.getBySel('button-event-header-tab-edit').click()
             })
 
         // store the event url and the values that we subsequently need to compare

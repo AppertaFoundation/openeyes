@@ -42,10 +42,14 @@ class EventManagerTest extends \OEDbTestCase
     use \HasModelAssertions;
     use \WithTransactions;
 
-    /** @test */
-    public function can_be_initialised_with_an_event()
+    /**
+     * @test
+     * @testWith    ["OphGeneric"]
+     *              ["OphInBiometry"]
+    */
+    public function can_be_initialised_with_a_module_event($class_name)
     {
-        $event = $this->createEventWithOphGenericType();
+        $event = $this->createEventWithEventTypeClass($class_name);
         $event_manager = EventManager::forEvent($event);
 
         $this->assertNotNull($event_manager);
@@ -129,7 +133,7 @@ class EventManagerTest extends \OEDbTestCase
     /** @test  */
     public function get_display_name_returns_null_when_event_is_not_event_subtype()
     {
-        $event = $this->createEventWithOphGenericType();
+        $event = $this->createEventWithEventTypeClass();
         $event_manager = EventManager::forEvent($event);
 
         $this->assertNull($event_manager->getDisplayName());
@@ -159,7 +163,7 @@ class EventManagerTest extends \OEDbTestCase
             'display_name' => $expected_name
         ]);
 
-        $event = $this->createEventWithOphGenericType();
+        $event = $this->createEventWithEventTypeClass();
 
         $event_subtype_item = EventSubTypeItem::factory()->create([
             'event_id' => $event->id,
@@ -203,12 +207,12 @@ class EventManagerTest extends \OEDbTestCase
         }
     }
 
-    protected function createEventWithOphGenericType(): Event
+    protected function createEventWithEventTypeClass($class_name = 'OphGeneric'): Event
     {
         return $event = Event::factory()->create([
             'event_type_id' => EventType::factory()->create([
                 'name' => $this->faker->uuid(), // to ensure uniqueness over extended test run
-                'class_name' => 'OphGeneric'
+                'class_name' => $class_name
             ])->id
         ]);
     }

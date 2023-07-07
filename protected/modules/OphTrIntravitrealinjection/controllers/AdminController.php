@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -66,7 +67,7 @@ class AdminController extends ModuleAdminController
     public function actionEditTreatmentDrug($id)
     {
         if (!$model = OphTrIntravitrealinjection_Treatment_Drug::model()->findByPk((int) $id)) {
-            throw new Exception('Treatment drug not found with id '.$id);
+            throw new Exception('Treatment drug not found with id ' . $id);
         }
 
         if (isset($_POST['OphTrIntravitrealinjection_Treatment_Drug'])) {
@@ -97,7 +98,7 @@ class AdminController extends ModuleAdminController
                 if ($drug = OphTrIntravitrealinjection_Treatment_Drug::model()->findByPk($id)) {
                     $drug->display_order = $i + 1;
                     if (!$drug->save()) {
-                        throw new Exception('Unable to save drug: '.print_r($drug->getErrors(), true));
+                        throw new Exception('Unable to save drug: ' . print_r($drug->getErrors(), true));
                     }
                 }
             }
@@ -120,6 +121,16 @@ class AdminController extends ModuleAdminController
     public function actionManageIOPLoweringDrugs()
     {
         $this->genericAdmin('Edit IOP Lowering Drugs', 'OphTrIntravitrealinjection_IOPLoweringDrug', ['div_wrapper_class' => 'cols-5']);
+    }
+
+    public function actionManageSkinDrugs()
+    {
+        $this->genericAdmin('Edit Skin cleansing drugs', 'OphTrIntravitrealinjection_SkinDrug', ['div_wrapper_class' => 'cols-5']);
+    }
+
+    public function actionManageAntisepticDrugs()
+    {
+        $this->genericAdmin('Edit Antiseptic drugs', 'OphTrIntravitrealinjection_AntiSepticDrug', ['div_wrapper_class' => 'cols-5']);
     }
 
     public function actionInjectionUsers()
@@ -145,14 +156,14 @@ class AdminController extends ModuleAdminController
     public function actionAddInjectionUser()
     {
         if (!$user = User::model()->findByPk(@$_POST['user_id'])) {
-            throw new Exception('User not found: '.@$_POST['user_id']);
+            throw new Exception('User not found: ' . @$_POST['user_id']);
         }
 
         $injection_user = new OphTrIntravitrealinjection_InjectionUser();
         $injection_user->user_id = $user->id;
 
         if (!$injection_user->save()) {
-            throw new Exception('Unable to save injection user: '.print_r($injection_user->errors, true));
+            throw new Exception('Unable to save injection user: ' . print_r($injection_user->errors, true));
         }
 
         echo '1';

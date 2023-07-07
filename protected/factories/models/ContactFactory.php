@@ -14,7 +14,8 @@ class ContactFactory extends ModelFactory
             'title' => $this->faker->title(),
             'first_name' => $this->faker->firstName(),
             'last_name' => $this->faker->lastName(),
-            'email' => $this->faker->email()
+            'email' => $this->faker->email(),
+            'primary_phone' => $this->faker->phoneNumber()
         ];
     }
 

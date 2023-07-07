@@ -106,6 +106,7 @@ $procedure_readonly = $this->procedure_readonly;
                                 false,
                                 array(
                                     'nowrapper' => true,
+                                    'data-test' => 'op-complexity'
                                 )
                             ) ?>
                         </td>
@@ -283,11 +284,12 @@ $procedure_readonly = $this->procedure_readonly;
                                 array(
                                     'fieldset-class' => $element->getError('anaesthetic_type') ? 'highlighted-error error' : '',
                                     'field' => 'AnaestheticType',
+                                    'data-test' => 'op-anaesthetic-type'
                                 )
                             ); ?>
                         </td>
                     </tr>
-                    <?php if (!$this->module->isLACDisabled()) {?>
+                    <?php if ($this->module->showLAC()) {?>
                         <tr>
                             <td>
                                 Cover
@@ -314,7 +316,10 @@ $procedure_readonly = $this->procedure_readonly;
                                 false,
                                 false,
                                 false,
-                                array('nowrapper' => true)
+                                array(
+                                    'nowrapper' => true,
+                                    'data-test' => 'op-anaesthetic-choice'
+                                )
                             ) ?>
                         </td>
                     </tr>
@@ -323,7 +328,7 @@ $procedure_readonly = $this->procedure_readonly;
                             Patient needs to stop medication
                         </td>
                         <td>
-                            <?php $form->radioBoolean($element, 'stop_medication', array('nowrapper' => true)) ?>
+                            <?php $form->radioBoolean($element, 'stop_medication', array('nowrapper' => true, 'data-test' => 'op-stop-medication')) ?>
                             <?php $form->textArea(
                                 $element,
                                 'stop_medication_details',

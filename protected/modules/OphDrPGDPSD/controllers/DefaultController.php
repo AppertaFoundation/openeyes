@@ -1,5 +1,10 @@
 <?php
 
+use OEModule\OphDrPGDPSD\models\{
+    OphDrPGDPSD_AssignedUser,
+    OphDrPGDPSD_AssignedTeam
+};
+
 class DefaultController extends BaseEventTypeController
 {
     protected function checkUserPGDPSDAssignments()
@@ -14,10 +19,11 @@ class DefaultController extends BaseEventTypeController
             ->bindValues([':user_id' => Yii::app()->user->id])
             ->queryColumn();
 
-        if (!empty($user_teams)) {
+        if(!empty($user_teams)) {
             return OphDrPGDPSD_AssignedTeam::model()->exists('team_id IN (' . implode(', ', $user_teams) . ')');
+        } else {
+            return false;
         }
-        return false;
     }
 
     public function checkCreateAccess()

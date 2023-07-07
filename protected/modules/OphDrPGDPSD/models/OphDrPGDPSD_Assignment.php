@@ -1,5 +1,15 @@
 <?php
 
+namespace OEModule\OphDrPGDPSD\models;
+
+use Institution;
+use MedicationLaterality;
+use OE\factories\models\traits\HasFactory;
+use PathwayStep;
+use Patient;
+use User;
+use WorklistPatient;
+
 /**
  * This is the model class for table "ophdrpgdpsd_assignment".
  *
@@ -20,6 +30,8 @@
  */
 class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     public const INACTIVE = 0;
     public const STATUS_TODO = 1;
     public const STATUS_PART_DONE = 2;
@@ -52,7 +64,7 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
             array('last_modified_user_id, created_user_id', 'length', 'max' => 10),
             // The following rule is used by search().
             array('patient_id, pgdpsd_id, status, visit_id, assigned_meds, comment', 'safe'),
-            array('institution_id', 'default', 'value' => Yii::app()->session->get('selected_institution_id'), 'on' => 'insert'),
+            array('institution_id', 'default', 'value' => \Yii::app()->session->get('selected_institution_id'), 'on' => 'insert'),
             array('active', 'boolean', 'allowEmpty' => false),
             array('active', 'default', 'value' => 1, 'on' => 'insert'),
             array('id, patient_id, visit_id, pgdpsd_id, status, comment_id', 'safe', 'on' => 'search'),
@@ -61,7 +73,7 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
 
     public function defaultScope()
     {
-        $selected_institution_id = Yii::app()->session->get('selected_institution_id');
+        $selected_institution_id = \Yii::app()->session->get('selected_institution_id');
         if (!$selected_institution_id) {
             return array();
         }
@@ -81,21 +93,21 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-            'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-            'pgdpsd' => array(self::BELONGS_TO, 'OphDrPGDPSD_PGDPSD', 'pgdpsd_id'),
-            'patient' => array(self::BELONGS_TO, 'Patient', 'patient_id'),
-            'worklist_patient' => array(self::BELONGS_TO, 'WorklistPatient', 'visit_id'),
-            'assigned_meds' => array(self::HAS_MANY, 'OphDrPGDPSD_AssignmentMeds', 'assignment_id'),
-            'assignments' => array(self::HAS_MANY, 'Element_DrugAdministration_Assignments', 'assignment_id'),
+            'createdUser' => array(self::BELONGS_TO, User::class, 'created_user_id'),
+            'lastModifiedUser' => array(self::BELONGS_TO, User::class, 'last_modified_user_id'),
+            'pgdpsd' => array(self::BELONGS_TO, OphDrPGDPSD_PGDPSD::class, 'pgdpsd_id'),
+            'patient' => array(self::BELONGS_TO, Patient::class, 'patient_id'),
+            'worklist_patient' => array(self::BELONGS_TO, WorklistPatient::class, 'visit_id'),
+            'assigned_meds' => array(self::HAS_MANY, OphDrPGDPSD_AssignmentMeds::class, 'assignment_id'),
+            'assignments' => array(self::HAS_MANY, Element_DrugAdministration_Assignments::class, 'assignment_id'),
             'elements' => array(
                 self::MANY_MANY,
-                'Element_DrugAdministration',
+                Element_DrugAdministration::class,
                 'et_drug_administration_assignments(assignment_id, element_id)',
                 'order' => 'elements.created_date DESC'
             ),
-            'comment' => array(self::BELONGS_TO, 'OphDrPGDPSD_Assignment_Comment', 'comment_id'),
-            'institution' => array(self::BELONGS_TO, 'Institution', 'institution_id'),
+            'comment' => array(self::BELONGS_TO, OphDrPGDPSD_Assignment_Comment::class, 'comment_id'),
+            'institution' => array(self::BELONGS_TO, Institution::class, 'institution_id'),
         );
     }
 
@@ -127,7 +139,7 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
     {
         // @todo Please modify the following code to remove attributes that should not be searched.
 
-        $criteria = new CDbCriteria();
+        $criteria = new \CDbCriteria();
 
         $criteria->compare('id', $this->id);
         $criteria->compare('patient_id', $this->patient_id);
@@ -136,7 +148,7 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
         $criteria->compare('status', $this->status);
         $criteria->compare('comment_id', $this->comment_id);
 
-        return new CActiveDataProvider($this, array(
+        return new \CActiveDataProvider($this, array(
             'criteria' => $criteria,
         ));
     }
@@ -164,7 +176,7 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
                 'elements' => array(
                     'with' => array(
                         'event' => array(
-                            'condition' => "deleted != 1 or (deleted is null and elements.id is null)",
+                            'condition' => "delete_pending != 1 or deleted != 1 or (deleted is null and elements.id is null)",
                         )
                     )
                 )
@@ -204,7 +216,7 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
             if ($id && $orig_meds[$id]) {
                 $entry = $orig_meds[$id];
             } else {
-                $entry = new \OphDrPGDPSD_AssignmentMeds();
+                $entry = new OphDrPGDPSD_AssignmentMeds();
             }
             unset($entry_data['id']);
             $entry->attributes = $entry_data;
@@ -245,10 +257,10 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
         if (is_null($comment) || $comment == '') {
             $this->comment_id = null;
         } else {
-            if ($this->comment && ($this->comment instanceof \OphDrPGDPSD_Assignment_Comment)) {
+            if ($this->comment && ($this->comment instanceof OphDrPGDPSD_Assignment_Comment)) {
                 $comment_obj = $this->comment;
             } else {
-                $comment_obj = new \OphDrPGDPSD_Assignment_Comment();
+                $comment_obj = new OphDrPGDPSD_Assignment_Comment();
             }
 
             $comment_obj->comment = $comment;
@@ -555,6 +567,7 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
     public function getDeletedUI()
     {
         $deleted_tag = null;
+
         if (!(bool)$this->active) {
             $assigned_meds_count = count($this->assigned_meds);
             $administerd_meds_count = $this->getAdministeredMedsCount();
@@ -573,5 +586,17 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
             return $med->administered;
         });
         return count($administered_meds);
+    }
+
+    public function anyAssociatedEventDeleted()
+    {
+        return array_reduce(
+            $this->elements,
+            function ($carry, $element) {
+                return $carry
+                    || $element->event->deleted
+                    || $element->event->delete_pending;
+            }
+        );
     }
 }

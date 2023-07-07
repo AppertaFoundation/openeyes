@@ -1,4 +1,7 @@
 <?php
+
+use OEModule\OESysEvent\events\SessionSiteChangedSystemEvent;
+
 /**
  * OpenEyes.
  *
@@ -22,6 +25,8 @@ class OESession extends CDbHttpSession
     protected $selected_site;
     protected $selected_institution;
     protected $selected_user;
+
+    public const SITE_ID_KEY = 'selected_site_id';
 
     //Note to any future developers: OELog does not work reliably in this function. Use error_log() instead and (most likely) find logs in /var/logs/apache2/error.log
     public function writeSession($id, $data)
@@ -86,6 +91,26 @@ class OESession extends CDbHttpSession
         return true;
     }
 
+    public function offsetSet($offset, $item)
+    {
+        $old_item = $this->offsetGet($offset);
+        parent::offsetSet($offset, $item);
+
+        if ($old_item !== $item) {
+            $this->offsetHasChanged($offset, $old_item, $item);
+        }
+    }
+
+    public function offsetUnset($offset): void
+    {
+        $old_item = $this->offsetExists($offset) ? $this->offsetGet($offset) : null;
+        parent::offsetUnset($offset);
+
+        if (!is_null($old_item)) {
+            $this->offsetHasChanged($offset, $old_item, null);
+        }
+    }
+
     public function getSelectedFirm()
     {
         if (!$this->selected_firm) {
@@ -110,12 +135,12 @@ class OESession extends CDbHttpSession
     public function getSelectedSite()
     {
         if (!$this->selected_site) {
-            $site_id = $this->get('selected_site_id');
+            $site_id = $this->get(self::SITE_ID_KEY);
             if (!$site_id) {
                 return null;
             }
 
-            $this->selected_site = Site::model()->findByPk($this->get('selected_site_id'));
+            $this->selected_site = Site::model()->findByPk($this->get(self::SITE_ID_KEY));
             if (!$this->selected_site) {
                 throw new Exception("Site with id '$site_id' not found");
             }
@@ -158,5 +183,23 @@ class OESession extends CDbHttpSession
         }
 
         return $this->selected_user;
+    }
+
+    protected function offsetHasChanged($offset, $old_item, $new_item): void
+    {
+        if ($offset === self::SITE_ID_KEY) {
+            $this->siteIdHasBeenSet($old_item, $new_item);
+        }
+    }
+
+    protected function siteIdHasBeenSet($old_site_id, $new_site_id): void
+    {
+        if (!is_null($old_site_id)) {
+            // reset model cache just in case
+            $this->selected_site = null;
+            if (!is_null($new_site_id) && (int) $old_site_id !== (int) $new_site_id) {
+                SessionSiteChangedSystemEvent::dispatch($old_site_id, $new_site_id);
+            }
+        }
     }
 }

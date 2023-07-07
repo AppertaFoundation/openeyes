@@ -106,17 +106,19 @@ if ($search->getSearchItems() && is_array($search->getSearchItems())) :
                     case 'disorder':
                         ?>
                         <td id="diagnosis-search">
-                            <span id="enteredDiagnosisText" style="display: none;">&nbsp;</span>
-                            <?php
-                                $this->controller->renderPartial('//disorder/disorderAutoComplete', array(
-                                    'class' => 'search',
-                                    'name' => $key,
-                                    'code' => '',
-                                    'value' => Yii::app()->request->getQuery('search[disorder_id]', ''),
-                                    'clear_diagnosis' => '&nbsp;<i class="oe-i remove-circle small" aria-hidden="true" id="clear-diagnosis-widget"></i>',
-                                    'placeholder' => 'Search for a diagnosis',
-                                ));
-                            ?>
+                            <div style='position: relative'>
+                                <span id="enteredDiagnosisText" style="display: none;">&nbsp;</span>
+                                <?php
+                                    $this->controller->renderPartial('//disorder/disorderAutoComplete', array(
+                                        'class' => 'search',
+                                        'name' => $key,
+                                        'code' => '',
+                                        'value' => Yii::app()->request->getQuery('search[disorder_id]', ''),
+                                        'clear_diagnosis' => '&nbsp;<i class="oe-i remove-circle small" aria-hidden="true" id="clear-diagnosis-widget"></i>',
+                                        'placeholder' => 'Search for a diagnosis',
+                                    ));
+                                ?>
+                            </div>
                         </td>
                         <?php
                         break;

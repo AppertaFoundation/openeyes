@@ -22,6 +22,8 @@ class AuthManager extends CDbAuthManager
     private $rulesets = array();
     private $user_assignments = array();
 
+    public const ADMIN_ROLE_NAME = "admin";
+
     /**
      * AuthManager constructor.
      */
@@ -139,5 +141,55 @@ class AuthManager extends CDbAuthManager
         $auth->setData($data);
 
         return $auth;
+    }
+
+    /**
+     * hasRole
+     * 
+     * Utility to return bool if user has specified role.
+     * 
+     * @param $user_id int
+     * @param $target_role string
+     * 
+     * @return bool
+     */
+    public function hasRole($user_id, $target_role): bool
+    {
+        if(!$user_id) {
+            throw new InvalidArgumentException('Cannot check if user has role of "' . $target_role . '" when no user supplied.');
+        }
+        if(!$target_role) {
+            throw new InvalidArgumentException('Cannot check if user has role when no target role supplied.');
+        }
+
+        foreach ($this->getRoles($user_id) as $role) {
+            if ($target_role === $role->name) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * getAssignableRoles
+     * 
+     * Returns array of roles specified user can allocate
+     * 
+     * @param $user_id int
+     * 
+     * @return CAuthItem[]
+     */
+    public function getAssignableRoles($user_id) {
+        $allRoles = $this->getRoles();
+        
+        if ($this->hasRole($user_id, self::ADMIN_ROLE_NAME)) {
+            return $allRoles;
+        } else {
+            // only admin users can assign new admins
+            return array_filter($allRoles, function ($role) {
+                return $role->name !== self::ADMIN_ROLE_NAME;
+            });
+        }
     }
 }

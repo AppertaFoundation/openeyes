@@ -2,6 +2,9 @@
 /**
  * @var $visit WorklistPatient
  */
+
+use OEModule\OphDrPGDPSD\models\OphDrPGDPSD_Assignment;
+
 $acceptable_wait_time = Pathway::model()->getAcceptableWaitTime();
 $pathway = $visit->pathway;
 ?>
@@ -60,6 +63,14 @@ $pathway = $visit->pathway;
             }
         }
         foreach ($pathway->started_steps as $step) {
+            $assignment_id = $step->getState('assignment_id');
+
+            if ($assignment_id) {
+                if (OphDrPGDPSD_Assignment::model()->findByPk($assignment_id)->anyAssociatedEventDeleted()) {
+                    continue;
+                }
+            }
+
             $status_class = $step->getStatusString() . (empty($step->comment) ? '' : ' has-comments'); ?>
             <?php if (in_array($step->type->short_name, PathwayStep::NON_GENERIC_STEP)) {
                 $short_name = str_replace(' ', '_', $step->type->short_name);
@@ -106,6 +117,14 @@ $pathway = $visit->pathway;
         </span>
         <?php }
         foreach ($pathway->requested_steps as $step) {
+            $assignment_id = $step->getState('assignment_id');
+
+            if ($assignment_id) {
+                if (OphDrPGDPSD_Assignment::model()->findByPk($assignment_id)->anyAssociatedEventDeleted()) {
+                    continue;
+                }
+            }
+
             $status_class = $step->getStatusString() . (empty($step->comment) ? '' : ' has-comments'); ?>
             <?php if (in_array($step->type->short_name, PathwayStep::NON_GENERIC_STEP)) {
                 $short_name = str_replace(' ', '_', $step->type->short_name);

@@ -17,6 +17,8 @@
 
 use OE\factories\models\traits\HasFactory;
 
+use OEModule\OphDrPGDPSD\models\OphDrPGDPSD_Assignment;
+
 /**
  * Class WorklistPatient.
  *
@@ -67,7 +69,7 @@ class WorklistPatient extends BaseActiveRecordVersioned
             'patient' => array(self::BELONGS_TO, 'Patient', 'patient_id'),
             'worklist' => array(self::BELONGS_TO, 'Worklist', 'worklist_id'),
             'worklist_attributes' => array(self::HAS_MANY, 'WorklistPatientAttribute', 'worklist_patient_id'),
-            'order_assignments' => array(self::HAS_MANY, 'OphDrPGDPSD_Assignment', 'visit_id', 'on' => 'order_assignments.active = 1'),
+            'order_assignments' => array(self::HAS_MANY, OphDrPGDPSD_Assignment::class, 'visit_id', 'on' => 'order_assignments.active = 1'),
             'pathway' => array(self::HAS_ONE, 'Pathway', 'worklist_patient_id'),
         );
     }

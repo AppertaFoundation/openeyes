@@ -15,6 +15,12 @@
 
 use Symfony\Component\DomCrawler\Crawler;
 
+/**
+ * Provides support for making application requests in PHPUnit as a full stack request.
+ *
+ * Currently supports GET and POST requests, with the limitation that variables must be
+ * passed as query string parameters, not directly in the path.
+ */
 trait MakesApplicationRequests
 {
     use MocksSession;
@@ -46,14 +52,11 @@ trait MakesApplicationRequests
 
     protected function get($url, $crawl_result = true)
     {
-        $parsed_url = parse_url($url);
-        $url = $parsed_url['path'];
+        $url = $this->extractUrlAndSetGet($url);
 
         $_SERVER['HTTP_USER_AGENT'] = 'phpunit'; // this is used in the main layout template
         $_SERVER['SERVER_NAME'] = 'phpunit';
         $_SERVER['REQUEST_URI'] = $url;
-        // note this is a simple approach that doesn't handle duplicate keys
-        parse_str($parsed_url['query'] ?? '', $_GET);
 
         $requestMock = $this->getMockBuilder(\CHttpRequest::class)
             ->disableOriginalConstructor()
@@ -75,8 +78,10 @@ trait MakesApplicationRequests
         return $crawl_result ? $this->crawl($result) : $result;
     }
 
-    protected function post($url, $form_data = [])
+    protected function post($url, $form_data = []): ApplicationResponseWrapper
     {
+        $url = $this->extractUrlAndSetGet($url);
+
         $_SERVER['HTTP_USER_AGENT'] = 'phpunit'; // this is used in the main layout template
         $_SERVER['REQUEST_URI'] = $url;
         $_POST = $form_data;
@@ -129,5 +134,24 @@ trait MakesApplicationRequests
     {
         $event_handlers = \Yii::app()->getEventHandlers('onBeginRequest');
         $event_handlers->clear();
+    }
+
+    /**
+     * The CUrlManager is normally used to extract path variables to $_GET, either from the query
+     * string or from the path
+     *
+     * To simplify the use of this abstraction, we parse the URL and set $_GET here. This does currently
+     * prevent us from supporting purely path based URLs for this testing pattern.
+     *
+     * @param string $url
+     * @return string
+     */
+    private function extractUrlAndSetGet(string $url): string
+    {
+        $parsed_url = parse_url($url);
+        // note this is a simple approach that doesn't handle duplicate keys
+        parse_str($parsed_url['query'] ?? '', $_GET);
+
+        return $parsed_url['path'];
     }
 }

@@ -50,24 +50,15 @@ $form = $this->beginWidget('FormLayout', array('layoutColumns' => array('label' 
                 <div class="data-group">
                     <div class="label"></div>
                     <?php
-                    $this->widget(
-                        'zii.widgets.jui.CJuiAutoComplete',
-                        array(
-                            'name' => 'drug_autocomplete',
-                            'source' => new CJavaScriptExpression(
-                                'function (req, res) { $.getJSON(' . json_encode($this->createUrl('medication/finddrug')) . ', req, res); }'
-                            ),
-                            'options' => array(
-                                'minLength' => 3,
-                                'focus' => "js:function(e,ui) {
-                                $('#drug_autocomplete').val(ui.item.label);
-                                e.preventDefault();
-                            }",
-                            ),
-                            'htmlOptions' => array('placeholder' => 'or search'),
-                        )
-                    );
-                    ?>
+                        $this->widget('application.widgets.AutoCompleteSearch',
+                            [
+                            'field_name' => "drug_autocomplete",
+                            'htmlOptions' =>
+                            [
+                            'placeholder' => 'or search',
+                            ]
+                        ]);
+                        ?>
                 </div>
             </div>
         </div>
@@ -169,3 +160,25 @@ $form = $this->beginWidget('FormLayout', array('layoutColumns' => array('label' 
 <?php
 
 $this->endWidget();
+?>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        let element = '<?= "{$class}_$field" ?>';
+
+        OpenEyes.UI.AutoCompleteSearch.init({
+            input: $(`[id="${'<?= "{$class}[$field]" ?>'}"]`),
+            url: <?php json_encode($this->createUrl('medication/finddrug')) ?>,
+            params: {
+
+            },
+            maxHeight: '200px',
+            onSelect: function () {
+                let response = OpenEyes.UI.AutoCompleteSearch.getResponse();
+                let input = OpenEyes.UI.AutoCompleteSearch.getInput();
+
+                $('#drug_autocomplete').val(response.label);
+            }
+        });
+    });
+</script>

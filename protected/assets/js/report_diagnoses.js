@@ -1,14 +1,25 @@
 
 function Reports_AddDiagnosis(disorder_id, name) {
-	$('#Reports_diagnoses').append('<tr>' +
-		'<td>'+name+'</td>' +
-		'<td><input type="checkbox" class="principalCheckbox" name="principal[]" value="'+disorder_id+'" />' +
-		'</td>' +
-		'<td>' +
-		'<a href="#" class="small removeDiagnosis" rel="'+disorder_id+'"><i class="oe-i trash"></i></a>' +
-		'</td></tr>');
-	$('#selected_diagnoses').append('<input type="hidden" name="all[]" value="'+disorder_id+'" />');
+    const reportDiagnoses = document.getElementById('Reports_diagnoses');
+    const selectedDiagnoses = document.getElementById('selected_diagnoses');
+
+    const diagnosesCount = reportDiagnoses.querySelectorAll('.removeDiagnosis[rel="' + disorder_id + '"]').length;
+
+    // Only add diagnoses to the table if the disorder_id does not exist
+    if (diagnosesCount == 0) {
+        reportDiagnoses.innerHTML +=
+            '<tr>' +
+            '<td>'+name+'</td>' +
+            '<td><input type="checkbox" class="principalCheckbox" name="principal[]" value="'+disorder_id+'" />' +
+            '</td>' +
+            '<td>' +
+            '<a href="#" class="small removeDiagnosis" rel="'+disorder_id+'"><i class="oe-i trash"></i></a>' +
+            '</td>' +
+            '</tr>';
+        selectedDiagnoses.innerHTML += '<input type="hidden" name="all[]" value="'+disorder_id+'" />';
+    }
 }
+
 
 $(document).ready(function() {
 	$('a.removeDiagnosis').die('click').live('click',function() {

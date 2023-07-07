@@ -50,6 +50,7 @@ class OphCoMessaging_Message_Comment extends \BaseActiveRecordVersioned
     {
         return array(
             'element' => array(self::BELONGS_TO, 'OEModule\\OphCoMessaging\\models\\Element_OphCoMessaging_Message', 'element_id'),
+            'sender_mailbox' => array(self::BELONGS_TO, 'OEModule\\OphCoMessaging\\models\\mailbox', 'mailbox_id'),
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
         );

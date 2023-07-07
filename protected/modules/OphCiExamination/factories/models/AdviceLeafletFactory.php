@@ -25,7 +25,21 @@ class AdviceLeafletFactory extends ModelFactory
         return [
             'name' => $this->faker->words(10, true),
             'institution_id' => Institution::factory()->useExisting(),
-            'active' => 1
+            'active' => true
         ];
+    }
+
+    public function active()
+    {
+        return $this->state([
+            'active' => true
+        ]);
+    }
+
+    public function inactive()
+    {
+        return $this->state([
+            'active' => false
+        ]);
     }
 }

@@ -13,6 +13,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OEModule\OphDrPGDPSD\models\OphDrPGDPSD_PGDPSDMeds;
+
 /**
     * @covers OphDrPGDPSD_PGDPSD
     * @covers OphDrPGDPSD_PGDPSDMeds

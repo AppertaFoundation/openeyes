@@ -94,20 +94,18 @@ class OphTrOperationbookingModule extends BaseEventTypeModule
 
     public function isGoldenPatientDisabled()
     {
-        $golden_patient_enabled = Yii::app()->params['op_booking_disable_golden_patient'];
-        return isset($golden_patient_enabled) && $golden_patient_enabled == 'on';
+        return \SettingMetadata::model()->getSetting('op_booking_disable_golden_patient') == 'on';
     }
 
     /**
      * @return bool
      *
-     * Returns true if the Anaesthetic Cover Required is disabled
+     * Returns true if the Anaesthetic Cover Required question is enabled
      */
 
-    public function isLACDisabled()
+    public function showLAC()
     {
-        $lac_enabled = Yii::app()->params['op_booking_show_lac_required'];
-        return isset($lac_enabled) && $lac_enabled == 'off';
+        return \SettingMetadata::model()->getSetting('op_booking_show_lac_required') == 'on';
     }
 }
 

@@ -1,5 +1,7 @@
 <?php
 
+use OEModule\OphDrPGDPSD\models\OphDrPGDPSD_Assignment;
+
 /**
  * This is the model class for table "pathway_step".
  *

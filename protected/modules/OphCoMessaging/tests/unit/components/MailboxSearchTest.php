@@ -237,17 +237,17 @@ class MailboxSearchTest extends \OEDbTestCase
     private function searchOne(\User $user, Mailbox $mailbox, string $folder): array
     {
         $search = new MailboxSearch($user, $folder);
-        $search_criteria = $search->makeCriteriaForMailbox($mailbox);
+        $messages = $search->retrieveMailboxContentsUsingSQL($user->id, [$mailbox->id])->getData();
 
-        return Element_OphCoMessaging_Message::model()->findAll($search_criteria);
+        return $messages;
     }
 
     private function searchAll(\User $user, $folder): array
     {
         $search = new MailboxSearch($user, $folder);
-        $search_criteria = $search->makeCriteriaForMailboxesBelongingTo($user);
+        $messages = $search->retrieveMailboxContentsUsingSQL($user->id, null)->getData();
 
-        return Element_OphCoMessaging_Message::model()->findAll($search_criteria);
+        return $messages;
     }
 
     /**

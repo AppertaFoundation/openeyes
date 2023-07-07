@@ -13,6 +13,12 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+namespace OEModule\OphDrPGDPSD\models;
+
+use MedicationInfoBox;
+use MedicationLaterality;
+use Team;
+
 /**
  * This is the model class for table "ophdrpgdpsd_pgdpsd".
  *
@@ -63,7 +69,7 @@ class OphDrPGDPSD_PGDPSD extends \BaseActiveRecordVersioned
             array('temp_meds', 'medAssignmentValidator'),
             array('description', 'validateDescription'),
             array('name', 'length', 'max' => 42),
-            array('institution_id', 'default', 'value' => Yii::app()->session->get('selected_institution_id'), 'on' => 'insert'),
+            array('institution_id', 'default', 'value' => \Yii::app()->session->get('selected_institution_id'), 'on' => 'insert'),
             array('last_modified_user_id, created_user_id', 'length', 'max'=>10),
             // The following rule is used by search().
             array('id, name, description, type', 'safe', 'on'=>'search'),
@@ -73,7 +79,7 @@ class OphDrPGDPSD_PGDPSD extends \BaseActiveRecordVersioned
 
     public function defaultScope()
     {
-        $selected_institution_id = Yii::app()->session->get('selected_institution_id');
+        $selected_institution_id = \Yii::app()->session->get('selected_institution_id');
         if (!$selected_institution_id) {
             return array();
         }
@@ -96,7 +102,7 @@ class OphDrPGDPSD_PGDPSD extends \BaseActiveRecordVersioned
         return array(
             'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-            'assigned_meds' => array(self::HAS_MANY, 'OphDrPGDPSD_PGDPSDMeds', 'pgdpsd_id'),
+            'assigned_meds' => array(self::HAS_MANY, OphDrPGDPSD_PGDPSDMeds::class, 'pgdpsd_id'),
             'users' => array(self::MANY_MANY, 'User', 'ophdrpgdpsd_assigneduser(pgdpsd_id, user_id)'),
             'teams' => array(self::MANY_MANY, 'Team', 'ophdrpgdpsd_assignedteam(pgdpsd_id, team_id)'),
             'institution' => array(self::BELONGS_TO, 'Institution', 'institution_id'),
@@ -134,7 +140,7 @@ class OphDrPGDPSD_PGDPSD extends \BaseActiveRecordVersioned
     {
         // @todo Please modify the following code to remove attributes that should not be searched.
 
-        $criteria=new CDbCriteria;
+        $criteria=new \CDbCriteria;
 
         $criteria->compare('id', $this->id);
         $criteria->compare('name', $this->name, true);
@@ -142,7 +148,7 @@ class OphDrPGDPSD_PGDPSD extends \BaseActiveRecordVersioned
         $criteria->compare('description', $this->description);
         $criteria->compare('active', $this->active);
 
-        return new CActiveDataProvider($this, array(
+        return new \CActiveDataProvider($this, array(
             'criteria'=>$criteria,
         ));
     }

@@ -14,6 +14,7 @@
  */
 
 use PHPUnit\Framework\Assert as PHPUnit;
+use Symfony\Component\DomCrawler\Crawler;
 
 class ApplicationResponseWrapper
 {
@@ -77,17 +78,7 @@ class ApplicationResponseWrapper
         }
     }
 
-    protected function isRedirect()
-    {
-        return !is_null($this->redirect);
-    }
-
-    protected function isException()
-    {
-        return !is_null($this->exception);
-    }
-
-    protected function getResponseString()
+    public function getResponseString()
     {
         if ($this->isException()) {
             return $this->exception->getMessage();
@@ -98,5 +89,28 @@ class ApplicationResponseWrapper
         }
 
         return $this->response;
+    }
+
+    public function crawl()
+    {
+        if ($this->isException()) {
+            throw new RuntimeException('Cannot crawl exception response:' . $this->exception->getMessage());
+        }
+
+        if ($this->isRedirect()) {
+            throw new RuntimeException('Cannot crawl redirect response: ' . $this->redirect->url);
+        }
+
+        return new Crawler($this->response);
+    }
+
+    protected function isRedirect()
+    {
+        return !is_null($this->redirect);
+    }
+
+    protected function isException()
+    {
+        return !is_null($this->exception);
     }
 }

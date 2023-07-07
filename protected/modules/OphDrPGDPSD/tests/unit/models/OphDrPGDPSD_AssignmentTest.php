@@ -1,4 +1,10 @@
 <?php
+
+use OEModule\OphDrPGDPSD\models\{
+    OphDrPGDPSD_Assignment,
+    OphDrPGDPSD_PGDPSD,
+};
+
 /**
 * @covers OphDrPGDPSD_PGDPSD
 * @covers OphDrPGDPSD_PGDPSDMeds
@@ -6,7 +12,7 @@
 * @covers OphDrPGDPSD_AssignedTeam
 * @covers OphDrPGDPSD_Assignment
 * @covers OphDrPGDPSD_AssignmentMeds
-* @covers OphDrPGDPSD_AssignmentComment
+* @covers OphDrPGDPSD_Assignment_Comment
 *
 * @group pgdpsd
  */

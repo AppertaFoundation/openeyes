@@ -414,6 +414,49 @@ class OEMigration extends CDbMigration
 
 
     /**
+     * Update the class name field for an element type for the specified event type.
+     * If a use_event_type_as_module_name is true the event type name will be used to specifiy the namespace the element should be in.
+     * This function will look for the element type with the existing class with a LIKE clause so there is not need to prefix that argument with a namespace.
+     *
+     * This should be run inside safeUp/safeDown or a transaction.
+     *
+     * @param string $existing_name
+     * @param string $new_name
+     * @param string|int $event_type_id
+     * @param bool $use_event_type_as_module_name
+     * @return void
+     * @throws Exception
+     */
+    protected function updateElementTypeClassName(string $existing_name, string $new_name, $event_type, bool $use_event_type_as_module_name)
+    {
+        $event_type_id = $this->getIdOfEventTypeByClassName($event_type);
+        $prefix = '';
+
+        if ($use_event_type_as_module_name) {
+            $prefix = 'OEModule\\' . $event_type . '\\models\\';
+        }
+
+        $existing_count = $this->getDbConnection()->createCommand()
+                        ->select('COUNT(id)')
+                        ->from('element_type')
+                        ->where('class_name LIKE CONCAT("%", :existing_name) AND event_type_id = :event_type', [':existing_name' => $existing_name, ':event_type' => $event_type_id])
+                        ->queryScalar();
+
+        if ($existing_count > 1) {
+            throw new \Exception('Element class ' . $existing_name . ' for event type id ' . $event_type_id . ' has duplicates');
+        } else if ($existing_count < 1) {
+            throw new \Exception('Element class ' . $existing_name . ' for event type id ' . $event_type_id . ' does not exist');
+        }
+
+        $this->update(
+            'element_type',
+            ['class_name' => $prefix . $new_name],
+            'class_name LIKE CONCAT("%", :existing_name) AND event_type_id = :event_type',
+            [':existing_name' => $existing_name, ':event_type' => $event_type_id]
+        );
+    }
+
+    /**
      * @description used within subclasses to find out the element_type id based on Class Name
      *
      * @param $class_name

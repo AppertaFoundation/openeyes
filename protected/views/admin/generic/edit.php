@@ -42,7 +42,7 @@ $assetManager = Yii::app()->getAssetManager();
     $autoComplete = array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'));
     echo $form->hiddenInput($admin->getModel(), 'id');
     if (Yii::app()->request->getParam('returnUri')) {
-        echo CHTML::hiddenField('returnUriEdit', Yii::app()->request->getParam('returnUri'));
+        echo CHtml::hiddenField('returnUriEdit', Yii::app()->request->getParam('returnUri'));
     }
     ?>
 
@@ -183,13 +183,10 @@ $assetManager = Yii::app()->getAssetManager();
                                                 if ($(this).val()) {
                                                     //using the disorderAutoComplete.php's select() function which was written for the autocomplete
                                                     select(
-                                                        {target: '#<?=$htmlOptions['id']; ?>'},
+                                                        '#<?=$htmlOptions['id']; ?>',
                                                         {
-                                                            item: {
-                                                                id: $(this).val(),
-                                                                value: $(this).find('option:selected').text(),
-
-                                                            }
+                                                            id: $(this).val(),
+                                                            value: $(this).find('option:selected').text(),
                                                         });
                                                     $(this).val(null);
                                                 }
@@ -264,7 +261,7 @@ $assetManager = Yii::app()->getAssetManager();
                                 echo $form->textArea($admin->getModel(), $field);
                                 break;
                             case 'referer':
-                                echo CHTML::hiddenField('referer', Yii::app()->request->getUrlReferrer());
+                                echo CHtml::hiddenField('referer', Yii::app()->request->getUrlReferrer());
                                 break;
                             case 'hidden':
                                 echo $form->hiddenInput($admin->getModel(), $field);

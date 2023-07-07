@@ -19,10 +19,12 @@ use BaseEventTypeElement;
 use CActiveRecord;
 use CDbCriteria;
 use Element_OphDrPrescription_Details;
+use Event;
 use EventMedicationUse;
 use MedicationFrequency;
 use MedicationLaterality;
 use MedicationRoute;
+use User;
 
 abstract class BaseMedicationElement extends BaseEventTypeElement
 {
@@ -76,9 +78,9 @@ abstract class BaseMedicationElement extends BaseEventTypeElement
         // class name for the relations automatically generated below.
         return array_merge(
             array(
-                'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
-                'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-                'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+                'event' => array(self::BELONGS_TO, Event::class, 'event_id'),
+                'user' => array(self::BELONGS_TO, User::class, 'created_user_id'),
+                'usermodified' => array(self::BELONGS_TO, User::class, 'last_modified_user_id'),
             ),
             $this->getEntryRelations()
         );

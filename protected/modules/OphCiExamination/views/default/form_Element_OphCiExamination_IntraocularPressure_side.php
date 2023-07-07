@@ -17,7 +17,6 @@
  */
 
 use OEModule\OphCiExamination\models;
-use ReferenceData;
 
 $comments = $side . '_comments';
 
@@ -296,5 +295,3 @@ foreach ($readings as $reading) {
       table.show();
   }
 </script>
-
-

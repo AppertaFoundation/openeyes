@@ -18,38 +18,36 @@
  * @var $element \OEModule\OphCiExamination\models\AdviceGiven
  */
 
-use OEModule\OphCiExamination\models\AdviceLeafletCategorySubspecialty;
+use OEModule\OphCiExamination\models\AdviceLeafletCategory;
 
 $model_name = CHtml::modelName($element);
 $current_firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
 
-$criteria = new CDbCriteria();
-$criteria->with = 'category';
-$criteria->addCondition('t.subspecialty_id = :subspecialty_id AND category.institution_id = :institution_id');
-$criteria->order = 't.display_order';
-$criteria->params = [
-    ':subspecialty_id' => $current_firm->getSubspecialtyID(),
-    ':institution_id' => Yii::app()->session['selected_institution_id']
-];
+$leaflet_categories = AdviceLeafletCategory::model()
+    ->active()
+    ->forInstitution(Yii::app()->session->getSelectedInstitution())
+    ->forSubspecialty(Yii::app()->session->getSelectedFirm()->subspecialty)
+    ->with(['leaflets:active'])
+    ->findAll();
 
-$subspecialty_categories = AdviceLeafletCategorySubspecialty::model()->findAll($criteria);
-
-$leaflets = array();
-
-foreach ($subspecialty_categories as $s_category) {
-    $leaflets[$s_category->category->id] = array_map(
-        static function ($leaflet) {
-            return array('id' => $leaflet->id, 'label' => $leaflet->name);
-        },
-        $s_category->category->leaflets
-    );
-}
+$leaflets_by_category = array_reduce(
+    $leaflet_categories,
+    function ($by_category, $category) {
+        $by_category[$category->id] = array_map(
+            function ($leaflet) {
+                return ['id' => $leaflet->id, 'label' => $leaflet->name];
+            },
+            $category->leaflets
+        );
+        return $by_category;
+    }
+);
 
 $categories = array_map(
     static function ($item) {
-        return array('id' => $item->category->id, 'label' => $item->category->name);
+        return array('id' => $item->id, 'label' => $item->name);
     },
-    $subspecialty_categories
+    $leaflet_categories
 );
 
 $itemSets = [];
@@ -112,7 +110,7 @@ foreach ($this->controller->getAttributes($element, $current_firm->getSubspecial
 
 <script type="text/javascript">
     $(function () {
-        let leaflets = <?= json_encode($leaflets) ?>;
+        let leaflets = <?= json_encode($leaflets_by_category) ?>;
         $('#js-leaflet-entries').on('click', '.remove-circle', function() {
             $(this).parent().remove();
         });
@@ -120,7 +118,7 @@ foreach ($this->controller->getAttributes($element, $current_firm->getSubspecial
             openButton: $('#add-leaflet-btn'),
             itemSets: [
                 new OpenEyes.UI.AdderDialog.ItemSet(<?= json_encode($categories) ?>, {'id': 'leaflet-category', 'multiSelect': false}),
-                new OpenEyes.UI.AdderDialog.ItemSet(<?= json_encode( (isset($categories[0]) ? $leaflets[$categories[0]['id']] : [])) ?>, {'id': 'leaflet', 'multiSelect': true})
+                new OpenEyes.UI.AdderDialog.ItemSet(<?= json_encode( (isset($categories[0]) ? $leaflets_by_category[$categories[0]['id']] : [])) ?>, {'id': 'leaflet', 'multiSelect': true})
             ],
             onSelect: function() {
                 if ($(this).closest('td').data('adder-id') === 'leaflet-category') {

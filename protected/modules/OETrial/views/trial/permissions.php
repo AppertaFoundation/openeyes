@@ -83,34 +83,17 @@
                       <?= CHtml::activeLabel($newPermission, 'user'); ?>
                   </td>
                   <td>
-                      <?php $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                          'name' => 'user_id',
-                          'id' => 'autocomplete_user_id',
-                          'source' => "js:function(request, response) {
-                                        $.getJSON('" . $this->createUrl('userAutoComplete') . "', {
-                                            id : $trial->id,
-                                            term : request.term
-                                        }, response);
-                                }",
-                          'options' => array(
-                              'select' => "js:function(event, ui) {
-                                        removeSelectedUser();
-                                        addItem('selected_user_wrapper', ui);
-                                        $('#autocomplete_user_id').val($('#user_name').text());
-                                        return false;
-                        }",
-                              'response' => 'js:function(event, ui){
-                            if (ui.content.length === 0){
-                                $("#no-user-result").show();
-                            } else {
-                                $("#no-user-result").hide();
-                            }
-                        }',
-                          ),
-                          'htmlOptions' => array(
-                              'placeholder' => 'Search Users',
-                          ),
-                      )); ?>
+                      <?php
+                        $this->widget('application.widgets.AutoCompleteSearch',
+                          [
+                              'field_name' => "autocomplete_user_id",
+                              'htmlOptions' =>
+                                  [
+                                      'placeholder' => 'Search Users',
+                                  ],
+                              'hide_no_result_msg' => true
+                          ]);
+                        ?>
                   </td>
                 </tr>
                 <tr>
@@ -173,12 +156,12 @@
 
 <?php if ($permission && $permission->can_manage) : ?>
   <script type="text/javascript">
-    function addItem(wrapper_id, ui) {
+    function addItem(wrapper_id, response) {
       var $wrapper = $('#' + wrapper_id);
 
-      $('#user_name').text(ui.item.label);
+      $('#user_name').text(response.label);
       $wrapper.show();
-      $wrapper.find('.hidden_id').val(ui.item.id);
+      $wrapper.find('.hidden_id').val(response.id);
     }
 
     function removeSelectedUser() {
@@ -379,3 +362,25 @@
     });
   </script>
 <?php endif; ?>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        OpenEyes.UI.AutoCompleteSearch.init({
+            input: $('#autocomplete_user_id'),
+            url: '<?= $this->createUrl('userAutoComplete') ?>',
+            params: {
+                'id': function () {return "<?= $trial->id ?>"},
+            },
+            maxHeight: '200px',
+            minimumCharacterLength: 1,
+            onSelect: function () {
+                let response = OpenEyes.UI.AutoCompleteSearch.getResponse();
+                let input = OpenEyes.UI.AutoCompleteSearch.getInput();
+
+                removeSelectedUser();
+                addItem('selected_user_wrapper', response);
+                $('#autocomplete_user_id').val($('#user_name').text());
+            }
+        });
+    });
+</script>

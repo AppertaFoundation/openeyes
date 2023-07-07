@@ -74,7 +74,7 @@ $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(
                     'cancellation_reason',
                     '',
                     OphTrOperationbooking_Operation_Cancellation_Reason::getReasonsByListNumber($listIndex),
-                    array('empty' => 'Select a reason')
+                    array('empty' => 'Select a reason', 'data-test' => 'op-cancellation-reason')
                 ); ?>
             </div>
         </div>
@@ -88,7 +88,7 @@ $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(
         </div>
         <div class="flex-layout">
             <div class="cols-10 large-offset-2">
-                <button type="submit" class="warning" id="cancel">Cancel operation</button>
+                <button type="submit" class="warning" id="cancel" data-test="cancel-operation">Cancel operation</button>
         <i class="spinner loader" style="display: none;"></i>
             </div>
         </div>

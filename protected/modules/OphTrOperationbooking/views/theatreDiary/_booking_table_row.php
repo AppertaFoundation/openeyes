@@ -91,7 +91,7 @@ $patientSummaryPopup = $this->createWidget(
                 </li>
                     <?php foreach ($operation->anaesthetic_type as $type) :
                         echo '<li>' . $type->name . '</li>';
-                        if ((!$this->module->isLACDisabled()) && $type->code === 'LA' && $operation->is_lac_required == '1') :
+                        if (($this->module->showLAC()) && $type->code === 'LA' && $operation->is_lac_required == '1') :
                             echo '<li>with Cover</li>';
                         endif;
                     endforeach; ?>

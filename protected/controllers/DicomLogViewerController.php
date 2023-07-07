@@ -152,7 +152,7 @@ class DicomLogViewerController extends BaseController
         $where = '(pi.value like :search)';
         //$where = '';
         $cvis = \Yii::app()->db->createCommand()
-            ->select('uc.code AS unique_id, DATE_FORMAT(e.event_date, "%d %b %Y") as value, ps.id AS element_id, pi.value AS hos_num, CONCAT(first_name," ", last_name) AS patient_name, e.id AS event_id')
+            ->select('uc.code AS unique_id, DATE_FORMAT(e.event_date, "%d %b %Y") as label, DATE_FORMAT(e.event_date, "%d %b %Y") as value, ps.id AS element_id, pi.value AS hos_num, CONCAT(first_name," ", last_name) AS patient_name, e.id AS event_id')
             ->from('event e')
             ->join('episode ep', 'e.episode_id = ep.id')
             ->join('patient p', 'ep.patient_id = p.id')

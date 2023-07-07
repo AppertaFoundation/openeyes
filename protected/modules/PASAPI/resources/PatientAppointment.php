@@ -4,6 +4,8 @@ namespace OEModule\PASAPI\resources;
 
 use Pathway;
 
+use OEModule\OphDrPGDPSD\models\OphDrPGDPSD_Assignment;
+
 /**
  * OpenEyes.
  *
@@ -43,6 +45,11 @@ class PatientAppointment extends BaseResource
      * @var \WorklistManager
      */
     protected $worklist_manager;
+
+    /**
+     * @var \Patient
+     */
+    protected $_patient;
 
     /**
      * PatientAppointment constructor.
@@ -157,7 +164,7 @@ class PatientAppointment extends BaseResource
             // set the event.worklist_patient_id to null before doing the delete
             \Event::model()->updateAll(['worklist_patient_id' => null], 'worklist_patient_id = :wp', [':wp' => $model->id]);
 
-            \OphDrPGDPSD_Assignment::model()->updateAll(['visit_id' => null, 'active' => 0], 'visit_id = :wp', [':wp' => $model->id]);
+            OphDrPGDPSD_Assignment::model()->updateAll(['visit_id' => null, 'active' => 0], 'visit_id = :wp', [':wp' => $model->id]);
 
             // Delete all pathways joined to the worklist
             $pathways = \Pathway::model()->findAll('worklist_patient_id = ?', array($model->id));

@@ -15,6 +15,7 @@
 
 namespace OE\factories\models;
 
+use CDbCriteria;
 use OE\factories\ModelFactory;
 
 /**
@@ -32,5 +33,34 @@ class ElementTypeFactory extends ModelFactory
         return [
             'name' => $this->faker->word(),
         ];
+    }
+
+    protected function getExisting($attributes = [])
+    {
+        $modelName = $this->modelName();
+        $criteria = new CDbCriteria();
+        $criteria->order = 'RAND()';
+        $criteria->limit = $this->count ?? 1;
+
+        $this->constrainCriteriaToAvailableEvents($criteria, $attributes);
+
+        return $modelName::model()
+            ->with('eventType')
+            ->findAll($criteria);
+    }
+
+    private function constrainCriteriaToAvailableEvents(CDbCriteria $criteria, array $attributes): void
+    {
+        $qualified_attributes = [];
+        foreach ($attributes as $key => $value) {
+            $qualified_attributes["t.$key"] = $value;
+        }
+        $criteria->addColumnCondition($qualified_attributes);
+
+        // use app module config to constrain the event type class
+        $criteria->addInCondition(
+            'eventType.class_name',
+            array_keys($this->app->getModules())
+        );
     }
 }
