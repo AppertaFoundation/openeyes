@@ -51,7 +51,7 @@ class OphCiExamination_NearVisualAcuity_ReadingFactory extends ModelFactory
 
     public function configure()
     {
-        return $this->afterMaking(static function (OphCiExamination_VisualAcuity_Reading $reading) {
+        return $this->afterMaking(static function (OphCiExamination_NearVisualAcuity_Reading $reading) {
             $reading->value = $reading->value ?? OphCiExamination_VisualAcuityUnitValue::factory()->useExisting(['unit_id' => $reading->unit_id])->create()->base_value;
         });
     }
