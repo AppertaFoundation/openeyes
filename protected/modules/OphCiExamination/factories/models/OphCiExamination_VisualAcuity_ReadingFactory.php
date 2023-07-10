@@ -21,13 +21,12 @@ use OEModule\OphCiExamination\models\{
     Element_OphCiExamination_VisualAcuity,
     OphCiExamination_VisualAcuity_Reading,
     OphCiExamination_VisualAcuity_Method,
-    OphCiExamination_VisualAcuityUnit
+    OphCiExamination_VisualAcuityUnit,
+    OphCiExamination_VisualAcuityUnitValue
 };
 
 class OphCiExamination_VisualAcuity_ReadingFactory extends ModelFactory
 {
-    protected static $unit_cache = null;
-
     public function definition(): array
     {
         $side = $this->faker->randomElement([
@@ -42,17 +41,19 @@ class OphCiExamination_VisualAcuity_ReadingFactory extends ModelFactory
                          ? Element_OphCiExamination_VisualAcuity::factory()->complex()
                          : Element_OphCiExamination_VisualAcuity::factory()->simple();
 
-        $unit = $this->faker->randomElement($includes_complex ? $this->getUnits() : $this->getSimpleUnits());
-
-        $value = $this->faker->randomElement($unit->values);
-
         return [
             'element_id' => $element_factory,
             'side' => $side,
             'method_id' => OphCiExamination_VisualAcuity_Method::factory()->useExisting(['active' => true]),
-            'unit_id' => $unit,
-            'value' => $value->base_value
+            'unit_id' => OphCiExamination_VisualAcuityUnit::factory()->useExisting(['is_va' => true]),
         ];
+    }
+
+    public function configure()
+    {
+        return $this->afterMaking(static function (OphCiExamination_VisualAcuity_Reading $reading) {
+            $reading->value = $reading->value ?? OphCiExamination_VisualAcuityUnitValue::factory()->useExisting(['unit_id' => $reading->unit_id])->create()->base_value;
+        });
     }
 
     /**
@@ -89,24 +90,5 @@ class OphCiExamination_VisualAcuity_ReadingFactory extends ModelFactory
             'unit_id' => $unit,
             'value' => $value->base_value
         ]);
-    }
-
-    protected function getUnits(): array
-    {
-        if (static::$unit_cache === null) {
-            static::$unit_cache = OphCiExamination_VisualAcuityUnit::model()->active()->findAll('is_va <> 0');
-        }
-
-        return static::$unit_cache;
-    }
-
-    protected function getSimpleUnits(): array
-    {
-        return array_filter(
-            $this->getUnits(),
-            static function ($unit) {
-                return !$unit->complex_only;
-            }
-        );
     }
 }
