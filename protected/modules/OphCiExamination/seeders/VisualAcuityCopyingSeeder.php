@@ -106,8 +106,21 @@ class VisualAcuityCopyingSeeder
         // to the alternative unit in the unit selector on the form. Being unselectable should only affect the adders for readings.
         // At the creation of this seeder the existing behaviour was for readings to disappear if the target value was not selectable,
         // which is not correct.
-        $chosen_unit_value = OphCiExamination_VisualAcuityUnitValue::factory()->forUnit($chosen_unit)->selectable()->count(4)->create();
-        $alternative_unit_value = OphCiExamination_VisualAcuityUnitValue::factory()->forUnit($alternative_unit)->unselectable()->count(4)->create();
+        $chosen_unit_value = OphCiExamination_VisualAcuityUnitValue::factory()
+                           ->withUniquePostfix((string) microtime())
+                           ->withDBUniqueAttribute('value')
+                           ->forUnit($chosen_unit)
+                           ->selectable()
+                           ->count(4)
+                           ->create();
+
+        $alternative_unit_value = OphCiExamination_VisualAcuityUnitValue::factory()
+                                ->withUniquePostfix((string) microtime())
+                                ->withDBUniqueAttribute('value')
+                                ->forUnit($alternative_unit)
+                                ->unselectable()
+                                ->count(4)
+                                ->create();
 
         return [$chosen_unit, $alternative_unit];
     }
