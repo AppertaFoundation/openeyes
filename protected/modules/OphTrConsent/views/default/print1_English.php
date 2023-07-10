@@ -123,7 +123,7 @@ if (isset($elements['OEModule\OphTrConsent\models\Element_OphTrConsent_Additiona
         <?php if (
                     array_key_exists('Element_OphTrConsent_AdvancedDecision', $elements)
                     && $elements['Element_OphTrConsent_AdvancedDecision']->description
-                ) { ?>
+) { ?>
             <tr>
                 <th>Advanced Decision</th>
                 <td><?= $elements['Element_OphTrConsent_AdvancedDecision']->description ?></td>
@@ -386,7 +386,7 @@ if (isset($elements['OEModule\OphTrConsent\models\Element_OphTrConsent_Additiona
                     ),
                 'title_label' => 'Job title',
                 'name_label' => 'Print name',
-                'job_title' => $elements['Element_OphTrConsent_Esign']->user->role
+                'job_title' => $elements['Element_OphTrConsent_Confirm']->user->role
             )
         );
     } ?>
