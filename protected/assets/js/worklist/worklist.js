@@ -275,8 +275,12 @@ $(function () {
         checking_pincode = false;
         $(this).prop('disabled', false);
     };
-    let checkPincode = function (event, context, ps) {
-        if (context.value.length < context.maxLength) {
+    let checkPincode = function (event, context, ps) {  
+        // Remove any non numeric chars then anything > 6 chars that remains.
+        // This is a custom function rather than using the maxlength property of the input, as otherwise if a value is pasted in with leading whitespace/non-printables, then the end of the pin gets cropped off
+        context.value = context.value.replace(/\D/g, '').substring(0, 6);
+
+        if (context.value.length < 6) {
             return;
         }
         if (checking_pincode) {
