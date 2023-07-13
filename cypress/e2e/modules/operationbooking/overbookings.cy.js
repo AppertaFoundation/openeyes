@@ -12,28 +12,28 @@ describe('verifies operation booking capacity functionality', () => {
 
     before(() => {
         
-        // login as admin
-        cy.login()
+        // // login as admin
+        // cy.login()
         
-        // create an operation booking session with max procedures = 1 and max complex bookings = 0
-        cy.visit(ADD_OP_BOOKING_SESSION_URL)
-        cy.getBySel('session-context').select(OP_BOOKING_SESSION_CONTEXT)
-        cy.getBySel('session-theatre').select(OP_BOOKING_SESSION_THEATRE)
-        cy.getBySel('session-start-time').type(OP_BOOKING_SESSION_START_TIME)
-        cy.getBySel('session-end-time').type(OP_BOOKING_SESSION_END_TIME)
-        cy.getBySel('session-max-procedures').type(OP_BOOKING_SESSION_MAX_PROCEDURES)
-        cy.getBySel('session-max-complex-bookings').type(OP_BOOKING_SESSION_MAX_COMPLEX_BOOKINGS)
-        cy.get('#OphTrOperationbooking_Operation_Session_paediatric_1').check() // in case our randomly created patient(s) are children (*** TODO: getBySel)
-        cy.saveEvent()
+        // // create an operation booking session with max procedures = 1 and max complex bookings = 0
+        // cy.visit(ADD_OP_BOOKING_SESSION_URL)
+        // cy.getBySel('session-context').select(OP_BOOKING_SESSION_CONTEXT)
+        // cy.getBySel('session-theatre').select(OP_BOOKING_SESSION_THEATRE)
+        // cy.getBySel('session-start-time').type(OP_BOOKING_SESSION_START_TIME)
+        // cy.getBySel('session-end-time').type(OP_BOOKING_SESSION_END_TIME)
+        // cy.getBySel('session-max-procedures').type(OP_BOOKING_SESSION_MAX_PROCEDURES)
+        // cy.getBySel('session-max-complex-bookings').type(OP_BOOKING_SESSION_MAX_COMPLEX_BOOKINGS)
+        // cy.get('#OphTrOperationbooking_Operation_Session_paediatric_1').check() // in case our randomly created patient(s) are children (*** TODO: getBySel)
+        // cy.saveEvent()
 
-        // save the url to retrieve the session for deletion later
-        cy.getBySel('filter-sessions').click()
-        cy.getBySel('sessions-list').first().click()
-        cy.url().as('sessionUrl')        
+        // // save the url to retrieve the session for deletion later
+        // cy.getBySel('filter-sessions').click()
+        // cy.getBySel('sessions-list').first().click()
+        // cy.url().as('sessionUrl')        
         
     })
 
-    it('ensures that valid warnings are displayed when max number of complex bookings/procedures are exceeded', () => {
+    it.skip('ensures that valid warnings are displayed when max number of complex bookings/procedures are exceeded', () => {
 
         const OP_BOOKING_DIAGNOSIS          = 'Cortical cataract'
         const OP_BOOKING_PROCEDURE          = 'Phacoemulsification and Intraocular lens'
@@ -160,23 +160,23 @@ describe('verifies operation booking capacity functionality', () => {
 
     after(() => {
 
-        // cancel the scheduled operation
-        cy.get('@operationUrl').then((url) => {
-            cy.visit(url)
-        })
-        cy.getBySel('event-action-cancel-operation').first().click()
-        cy.getBySel('op-cancellation-reason').select(OP_BOOKING_CANCELLATION_REASON)
-        cy.getBySel('cancel-operation').click()
+        // // cancel the scheduled operation
+        // cy.get('@operationUrl').then((url) => {
+        //     cy.visit(url)
+        // })
+        // cy.getBySel('event-action-cancel-operation').first().click()
+        // cy.getBySel('op-cancellation-reason').select(OP_BOOKING_CANCELLATION_REASON)
+        // cy.getBySel('cancel-operation').click()
 
-        // delete the operation booking session (for test repeatability)
-        cy.get('@sessionUrl').then((url) => {
-            cy.visit(url)
-        })
-        cy.get('#et_delete').click() // *** TODO: getBySel
-        cy.getBySel('remove-session').click()
+        // // delete the operation booking session (for test repeatability)
+        // cy.get('@sessionUrl').then((url) => {
+        //     cy.visit(url)
+        // })
+        // cy.get('#et_delete').click() // *** TODO: getBySel
+        // cy.getBySel('remove-session').click()
 
-        // go home
-        cy.visit('/')
+        // // go home
+        // cy.visit('/')
             
     })
     

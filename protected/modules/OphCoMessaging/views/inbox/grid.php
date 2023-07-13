@@ -19,9 +19,8 @@
  */
 
 use OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message;
-use OEModule\OphCoMessaging\models\OphCoMessaging_Message_MessageType;
 
-$sort_field = 'event_date';
+$sort_field = 'send_date';
 $sort_direction = 'ascend';
 $sort_uri = $mailbox ? "?mailbox={$mailbox->id}&messages={$message_type}&sort=" : "?messages={$message_type}&sort=";
 $default_sort_arg = '.desc';
@@ -36,26 +35,22 @@ if (isset($_GET['sort'])) {
     }
 }
 
-$date_class = 'column-sort' . ($sort_field === 'event_date' ? " $sort_direction active" : '');
-$user_class = 'column-sort' . ($sort_field === 'user' ? " $sort_direction active" : '');
+$date_class = 'column-sort' . ($sort_field === 'send_date' ? " $sort_direction active" : '');
+$user_class = 'column-sort' . ($sort_field === 'sender_mailbox_name' ? " $sort_direction active" : '');
 
-$date_sort_uri = $sort_uri . 'event_date';
-if ($sort_field === 'event_date') {
+$date_sort_uri = $sort_uri . 'send_date';
+if ($sort_field === 'send_date') {
     if (isset($_GET['sort']) && !strpos($_GET['sort'], '.desc')) {
         $date_sort_uri .= '.desc';
-    } else {
-        $date_sort_uri .= '.asc';
     }
 } else {
     $date_sort_uri .= $default_sort_arg;
 }
 
-$user_sort_uri = $sort_uri . 'user';
-if ($sort_field === 'user') {
+$user_sort_uri = $sort_uri . 'sender_mailbox_name';
+if ($sort_field === 'sender_mailbox_name') {
     if (isset($_GET['sort']) && !strpos($_GET['sort'], '.desc')) {
         $user_sort_uri .= '.desc';
-    } else {
-        $user_sort_uri .= '.asc';
     }
 } else {
     $user_sort_uri .= $default_sort_arg;
