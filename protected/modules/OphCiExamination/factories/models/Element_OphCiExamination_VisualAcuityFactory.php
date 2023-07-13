@@ -55,6 +55,18 @@ class Element_OphCiExamination_VisualAcuityFactory extends ModelFactory
     /**
      * @return Element_OphCiExamination_VisualAcuityFactory
      */
+    public function bothEyesAndBEO(): self
+    {
+        return $this->state([
+            'eye_id' => Eye::factory()->useExisting(['id' => Eye::BOTH])
+        ])->afterMaking(static function (Element_OphCiExamination_VisualAcuity $element) {
+            $element->setHasBeo();
+        });
+    }
+
+    /**
+     * @return Element_OphCiExamination_VisualAcuityFactory
+     */
     public function simple(): self
     {
         return $this->state([

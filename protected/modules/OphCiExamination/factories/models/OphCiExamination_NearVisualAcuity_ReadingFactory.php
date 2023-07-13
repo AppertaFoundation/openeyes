@@ -80,11 +80,12 @@ class OphCiExamination_NearVisualAcuity_ReadingFactory extends ModelFactory
 
     /**
      * @param OphCiExamination_VisualAcuityUnit $unit
+     * @param bool $must_be_selectable
      * @return OphCiExamination_NearVisualAcuity_ReadingFactory
      */
-    public function forUnit(OphCiExamination_VisualAcuityUnit $unit): self
+    public function forUnit(OphCiExamination_VisualAcuityUnit $unit, $must_be_selectable = false): self
     {
-        $value = $this->faker->randomElement($unit->selectableValues);
+        $value = $this->faker->randomElement($must_be_selectable ? $unit->selectableValues : $unit->values);
 
         return $this->state([
             'unit_id' => $unit,

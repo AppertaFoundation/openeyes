@@ -55,6 +55,18 @@ class Element_OphCiExamination_NearVisualAcuityFactory extends ModelFactory
     /**
      * @return Element_OphCiExamination_NearVisualAcuityFactory
      */
+    public function bothEyesAndBEO(): self
+    {
+        return $this->state([
+            'eye_id' => Eye::factory()->useExisting(['id' => Eye::BOTH])
+        ])->afterMaking(static function (Element_OphCiExamination_NearVisualAcuity $element) {
+            $element->setHasBeo();
+        });
+    }
+
+    /**
+     * @return Element_OphCiExamination_NearVisualAcuityFactory
+     */
     public function simple(): self
     {
         return $this->state([
