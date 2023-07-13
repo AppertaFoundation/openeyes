@@ -45,22 +45,37 @@ class VisualAcuityCopyingSeeder
                    ->forPatient($patient)
                    ->create();
 
-        list(
-            $existing_element,
-            $lhs_reading, $rhs_reading,
-            $chosen_unit, $alternative_unit
-        ) = $this->createSimpleElement($existing_event, $this->context->additional_data['type'] === 'near-visual-acuity');
+        if (!isset($this->context->additional_data['complex'])) {
+            list(
+                $existing_element,
+                $lhs_reading, $rhs_reading,
+                $chosen_unit, $alternative_unit
+            ) = $this->createSimpleElement($existing_event, $this->context->additional_data['type'] === 'near-visual-acuity');
 
-        $lhs_combined = $existing_element->getCombined('left');
-        $rhs_combined = $existing_element->getCombined('right');
+            $lhs_combined = $existing_element->getCombined('left');
+            $rhs_combined = $existing_element->getCombined('right');
 
-        return [
-            'previousEvent' => SeededEventResource::from($existing_event)->toArray(),
-            'leftEyeCombined' => $lhs_combined,
-            'rightEyeCombined' => $rhs_combined,
-            'chosenUnitId' => $chosen_unit->id,
-            'alternativeUnitName' => $alternative_unit->name
-        ];
+            return [
+                'previousEvent' => SeededEventResource::from($existing_event)->toArray(),
+                'leftEyeCombined' => $lhs_combined,
+                'rightEyeCombined' => $rhs_combined,
+                'chosenUnitId' => $chosen_unit->id,
+                'alternativeUnitName' => $alternative_unit->name
+            ];
+        } else {
+            list(
+                $existing_element,
+                $lhs_reading, $rhs_reading, $beo_reading,
+                $lhs_details, $rhs_details, $beo_details
+            ) = $this->createComplexElement($existing_event, $this->context->additional_data['type'] === 'near-visual-acuity');
+
+            return [
+                'previousEvent' => SeededEventResource::from($existing_event)->toArray(),
+                'lhsDetails' => $lhs_details,
+                'rhsDetails' => $rhs_details,
+                'beoDetails' => $beo_details,
+            ];
+        }
     }
 
     protected function createSimpleElement($existing_event, $is_near)
@@ -95,6 +110,61 @@ class VisualAcuityCopyingSeeder
         $existing_element->refresh();
 
         return [$existing_element, $lhs_reading, $rhs_reading, $chosen_unit, $alternative_unit];
+    }
+
+    protected function createComplexElement($existing_event, $is_near)
+    {
+        $element_factory = $is_near ?
+                         Element_OphCiExamination_NearVisualAcuity::factory() :
+                         Element_OphCiExamination_VisualAcuity::factory();
+
+        $reading_factory = $is_near ?
+                     OphCiExamination_NearVisualAcuity_Reading::factory() :
+                     OphCiExamination_VisualAcuity_Reading::factory();
+
+        $existing_element = $element_factory
+                             ->forEvent($existing_event)
+                             ->complex()
+                             ->bothEyesAndBEO()
+                             ->create();
+
+        list($lhs_unit, $rhs_unit, $beo_unit) = $is_near
+                                              ? OphCiExamination_VisualAcuityUnit::factory()->useExisting(['active' => true, 'is_near' => true])->count(3)->create()
+                                              : OphCiExamination_VisualAcuityUnit::factory()->useExisting(['active' => true, 'is_va' => true])->count(3)->create();
+
+        $lhs_reading = $reading_factory
+                     ->forElement($existing_element)
+                     ->forSide(OphCiExamination_VisualAcuity_Reading::LEFT)
+                     ->forUnit($lhs_unit)
+                     ->create();
+
+        $rhs_reading = $reading_factory
+                     ->forElement($existing_element)
+                     ->forSide(OphCiExamination_VisualAcuity_Reading::RIGHT)
+                     ->forUnit($rhs_unit)
+                     ->create();
+
+        $beo_reading = $reading_factory
+                     ->forElement($existing_element)
+                     ->forSide(OphCiExamination_VisualAcuity_Reading::BEO)
+                     ->forUnit($beo_unit)
+                     ->create();
+
+        return [
+            $existing_element, $lhs_reading, $rhs_reading, $beo_reading,
+            $this->complexReadingDetails($lhs_reading),
+            $this->complexReadingDetails($rhs_reading),
+            $this->complexReadingDetails($beo_reading)
+        ];
+    }
+
+    protected function complexReadingDetails($reading)
+    {
+        return [
+            'method' => $reading->method->name,
+            'unit' => $reading->unit->name,
+            'value' => $reading->display_value
+        ];
     }
 
     protected function createUnits()
