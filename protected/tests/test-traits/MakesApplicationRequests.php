@@ -25,6 +25,7 @@ trait MakesApplicationRequests
 {
     use MocksSession;
 
+
     protected array $originalServerValues = [];
 
     public function setUpMakesApplicationRequests()
@@ -89,11 +90,14 @@ trait MakesApplicationRequests
 
         $requestMock = $this->getMockBuilder(\CHttpRequest::class)
             ->disableOriginalConstructor()
-            ->setMethods(['getCsrfToken', 'getPathInfo', 'redirect'])
+            ->setMethods(['getCsrfToken', 'getPathInfo', 'redirect', 'getBaseUrl'])
             ->getMock();
 
         $redirected = null;
 
+        // so redirect URLs aren't pre-pended with script path
+        $requestMock->method('getBaseUrl')
+            ->willReturn(ApplicationResponseWrapper::BASE_URL);
         $requestMock->method('getCsrfToken')
             ->willReturn('foo');
         $requestMock->method('getPathInfo')
