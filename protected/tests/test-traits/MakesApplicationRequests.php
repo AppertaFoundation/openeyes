@@ -61,7 +61,7 @@ trait MakesApplicationRequests
 
         $requestMock = $this->getMockBuilder(\CHttpRequest::class)
             ->disableOriginalConstructor()
-            ->setMethods(['getCsrfToken', 'getPathInfo'])
+            ->setMethods(['getCsrfToken', 'getPathInfo', 'redirect'])
             ->getMock();
 
         $requestMock->method('getCsrfToken')
@@ -69,12 +69,22 @@ trait MakesApplicationRequests
         $requestMock->method('getPathInfo')
             ->willReturn($url);
 
+        $redirected = null;
+        $requestMock->method('redirect')
+            ->willReturnCallback(function (...$args) use (&$redirected) {
+                $redirected = new ApplicationRedirectWrapper(...$args);
+            });
+
         \Yii::app()->setComponent('request', $requestMock);
 
         ob_start();
         \Yii::app()->run();
         $result = ob_get_contents();
         ob_end_clean();
+
+        if ($redirected) {
+            return ApplicationResponseWrapper::fromRedirect($redirected);
+        }
 
         return $crawl_result ? $this->crawl($result) : $result;
     }
@@ -93,8 +103,6 @@ trait MakesApplicationRequests
             ->setMethods(['getCsrfToken', 'getPathInfo', 'redirect', 'getBaseUrl'])
             ->getMock();
 
-        $redirected = null;
-
         // so redirect URLs aren't pre-pended with script path
         $requestMock->method('getBaseUrl')
             ->willReturn(ApplicationResponseWrapper::BASE_URL);
@@ -102,6 +110,8 @@ trait MakesApplicationRequests
             ->willReturn('foo');
         $requestMock->method('getPathInfo')
             ->willReturn($url);
+
+        $redirected = null;
         $requestMock->method('redirect')
             ->willReturnCallback(function (...$args) use (&$redirected) {
                 $redirected = new ApplicationRedirectWrapper(...$args);
