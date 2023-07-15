@@ -141,7 +141,6 @@ class Element_OphCoMessaging_MessageFactory extends ModelFactory
     public function withCCRecipients($mailboxes_and_marked_as_reads): self
     {
         return $this
-            ->state(['cc_enabled' => true])
             ->afterCreating(function ($message_element) use ($mailboxes_and_marked_as_reads) {
             $recipients = $message_element->recipients;
 
@@ -157,6 +156,11 @@ class Element_OphCoMessaging_MessageFactory extends ModelFactory
             }
 
             $message_element->recipients = $recipients;
+
+            //This is necessary due to changes to the element's beforeSave function 
+            // which cause cc_enabled to always be false when the element is created by a factory
+            $message_element->cc_enabled = true;
+            $message_element->save();
         });
     }
 
