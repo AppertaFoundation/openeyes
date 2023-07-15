@@ -140,7 +140,9 @@ class Element_OphCoMessaging_MessageFactory extends ModelFactory
      */
     public function withCCRecipients($mailboxes_and_marked_as_reads): self
     {
-        return $this->afterCreating(function ($message_element) use ($mailboxes_and_marked_as_reads) {
+        return $this
+            ->state(['cc_enabled' => true])
+            ->afterCreating(function ($message_element) use ($mailboxes_and_marked_as_reads) {
             $recipients = $message_element->recipients;
 
             foreach ($mailboxes_and_marked_as_reads as $mailbox_and_marked_as_read) {
