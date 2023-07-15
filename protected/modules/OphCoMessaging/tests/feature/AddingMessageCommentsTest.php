@@ -40,7 +40,7 @@ class AddingMessageCommentsTest extends OEDbTestCase
     use MakesApplicationRequests;
     use MocksSession;
     use WithFaker;
-    use WithTransactions;
+    //use WithTransactions; // Currently disabled due to database integrity issues caused in other tests
 
     /** @test */
     public function message_marked_unread_for_recipient_when_comment_is_added_by_sender()
@@ -321,7 +321,7 @@ class AddingMessageCommentsTest extends OEDbTestCase
             'View clinical'
         ])->create();
 
-        return [$user, Mailbox::factory()->withUsers([$user])->create()];
+        return [$user, Mailbox::factory()->personalFor($user)->create()];
     }
 
     protected function markReadFor($message_element, $user)
