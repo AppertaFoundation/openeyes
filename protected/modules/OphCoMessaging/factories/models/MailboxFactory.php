@@ -55,8 +55,12 @@ class MailboxFactory extends ModelFactory
      * @param array $users
      * @return MailboxFactory
      */
-    public function withUsers($users): self
+    public function withUsers(array $users = []): self
     {
+        if (empty($users)) {
+            $users = [\User::factory()->create()];
+        }
+
         return $this->state([
             'users' => $users
         ]);
