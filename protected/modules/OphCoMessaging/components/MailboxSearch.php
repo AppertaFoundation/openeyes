@@ -246,7 +246,7 @@ class MailboxSearch
                     latest_comment.latest_comment_id latest_comment_id,
                     ommt.reply_required reply_required,
                     latest_comment.latest_comment_id IS NOT NULL has_reply,
-                    COALESCE(omc.marked_as_read, messages.marked_as_read) marked_as_read,
+                    IF(messages.user_original_sender, COALESCE(omc.marked_as_read, messages.marked_as_read), messages.marked_as_read) marked_as_read,
                     messages.to_me to_me,
                     messages.cc cc,
                     messages.user_original_sender user_original_sender,
