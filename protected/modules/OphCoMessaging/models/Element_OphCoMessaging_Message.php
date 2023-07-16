@@ -355,4 +355,26 @@ class Element_OphCoMessaging_Message extends \BaseEventTypeElement
             [$this->sender_mailbox_id]
         );
     }
+
+    public function setReadStatusForMailbox($mailbox, $is_read) {
+        //We are the original sender
+        if ($this->sender_mailbox_id === $mailbox->id) {
+            $this->latest_comment->marked_as_read = $is_read;
+            $this->latest_comment->save();
+        } else {
+            $recipient = OphCoMessaging_Message_Recipient::model()->findByAttributes(['element_id' => $this->id, 'mailbox_id' => $mailbox->id]);
+            $recipient->marked_as_read = $is_read;
+            $recipient->save();
+        }
+    }
+
+    public function getReadStatusForMailbox($mailbox) {
+        //We are the original sender
+        if ($this->sender_mailbox_id === $mailbox->id) {
+            return $this->latest_comment->marked_as_read;
+        } else {
+            $recipient = OphCoMessaging_Message_Recipient::model()->findByAttributes(['element_id' => $this->id, 'mailbox_id' => $mailbox->id]);
+            return $recipient->marked_as_read;
+        }
+    }
 }

@@ -114,9 +114,7 @@ class DefaultController extends \BaseEventTypeController
 
         $el = $this->getMessageElement();
 
-        $recipient = OphCoMessaging_Message_Recipient::model()->findByAttributes(['element_id' => $el->id, 'mailbox_id' => $mailbox->id]);
-        $recipient->marked_as_read = true;
-        $recipient->save();
+        $el->setReadStatusForMailbox($mailbox, true);
 
         // if ($el->comments && $this->canMarkCommentRead($el->last_comment)) {
         //     $this->markCommentRead($el->last_comment);
@@ -159,10 +157,8 @@ class DefaultController extends \BaseEventTypeController
             User::model()->findByPk(\Yii::app()->user->id)->personalMailbox;
 
         $el = $this->getMessageElement();
-
-        $recipient = OphCoMessaging_Message_Recipient::model()->findByAttributes(['element_id' => $el->id, 'mailbox_id' => $mailbox->id]);
-        $recipient->marked_as_read = true;
-        $recipient->save();
+        
+        $el->setReadStatusForMailbox($mailbox, false);
 
         // $el = $this->getMessageElement();
 
@@ -407,16 +403,16 @@ class DefaultController extends \BaseEventTypeController
         }
         $messageElement = $this->getMessageElement();
 
-        $canComment = !empty(array_intersect($messageElement->getAllInvolvedMailboxIds(), MailboxSearch::getAllMailboxesForUser($user->id)));
+        // $canComment = !empty(array_intersect($messageElement->getAllInvolvedMailboxIds(), MailboxSearch::getAllMailboxesForUser($user->id)));
 
-        // $canComment = (
-        //         (!$messageElement->comments && $this->isIntendedRecipient($user) && !$this->isSender($user) && $messageElement->message_type->reply_required)
-        //         || (($this->isIntendedRecipient($user) || $this->isSender($user))
-        //         && $messageElement->comments
-        //         && !$messageElement->last_comment->marked_as_read
-        //         && $messageElement->last_comment->created_user_id != $user->getId()
-        //         && $messageElement->message_type->reply_required)
-        //     );
+        $canComment = (
+                (!$messageElement->comments && $this->isIntendedRecipient($user) && !$this->isSender($user) && $messageElement->message_type->reply_required)
+                || (($this->isIntendedRecipient($user) || $this->isSender($user))
+                && $messageElement->comments
+                && !($this->isSender($user) && $messageElement->last_comment->marked_as_read)
+                && $messageElement->last_comment->created_user_id != $user->getId()
+                && $messageElement->message_type->reply_required)
+            );
 
         return $canComment;
     }

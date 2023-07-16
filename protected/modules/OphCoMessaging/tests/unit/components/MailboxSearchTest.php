@@ -229,6 +229,7 @@ class MailboxSearchTest extends \OEDbTestCase
         $reply = ModelFactory::factoryFor(OphCoMessaging_Message_Comment::class)
                ->withElement($message)
                ->withUser($to_user)
+               ->withSender($from_mailbox)
                ->create();
 
         return $message;
