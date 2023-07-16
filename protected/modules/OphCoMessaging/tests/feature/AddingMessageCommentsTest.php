@@ -147,10 +147,11 @@ class AddingMessageCommentsTest extends OEDbTestCase
 
         $this->markReadFor($message_element, $primary_user);
 
-        $data_provider = $search->retrieveMailboxContentsUsingSQL($primary_user->id);
+        $data_provider = $search->retrieveMailboxContentsUsingSQL($primary_user->id, [$primary_mailbox->id]);
         // due to construction of the dataprovider in the searcher, we rely on the first
         // entry in the data to validate the total message count
-        $this->assertCount(0, $data_provider->getData());
+        fwrite(STDERR, print_r($data_provider->getData(), true));
+        $this->assertCount(0, $data_provider->getData());//This is correct on the front end but fails in the test?
 
         $data_provider = $search->retrieveMailboxContentsUsingSQL($secondary_user->id);
         // due to construction of the dataprovider in the searcher, we rely on the first
@@ -311,6 +312,177 @@ class AddingMessageCommentsTest extends OEDbTestCase
         // due to construction of the dataprovider in the searcher, we rely on the first
         // entry in the data to validate the total message count
         $this->assertEquals(1, $data_provider->getData()[0]['total_message_count']);
+    }
+
+    //sent message does not show in sender's unread mailbox
+    /** @test */
+    public function sent_message_does_not_show_in_sender_unread_mailbox() {
+        $data = $this->sendMessage();
+        $sender_user = $data['sender']['user'];
+        $sender_mailbox = $data['sender']['mailbox'];
+
+        $this->mockCurrentContext();
+        
+        $search = new MailboxSearch($sender_user, MailboxSearch::FOLDER_UNREAD_ALL);
+        $data_provider = $search->retrieveMailboxContentsUsingSQL($sender_user->id, [$sender_mailbox->id]);
+        $this->assertEmpty($data_provider->getData());
+    }
+
+    //sent message shows in sent mailbox
+    /** @test */
+    public function sent_message_shows_in_sender_sent_mailbox() {
+        $data = $this->sendMessage();
+        $sender_user = $data['sender']['user'];
+        $sender_mailbox = $data['sender']['mailbox'];
+        
+        $this->mockCurrentContext();
+
+        $search = new MailboxSearch($sender_user, MailboxSearch::FOLDER_SENT_ALL);
+        $data_provider = $search->retrieveMailboxContentsUsingSQL($sender_user->id, [$sender_mailbox->id]);
+        $this->assertCount(1, $data_provider->getData());
+    }
+
+    //sent message is marked unread for each recipient
+    // - for primary
+    // - for cc
+    /** @test */
+    public function sent_message_is_marked_unread_for_each_recipient() {
+        $data = $this->sendMessage();
+        $primary_recipient = $data['recipients']['primary']['recipient'];
+        $secondary_recipient = $data['recipients']['secondary']['recipient'];
+        
+        $this->mockCurrentContext();
+
+        $this->assertFalse((bool)$primary_recipient->marked_as_read);
+        $this->assertFalse((bool)$secondary_recipient->marked_as_read);
+    }
+
+    //sent message shows in each recipient's unread mailbox
+    // - for primary
+    // - for cc
+    /** @test */
+    public function sent_message_is_shows_in_each_recipient_mailbox() {
+        $data = $this->sendMessage();
+        $primary_user = $data['recipients']['primary']['user'];
+        $primary_mailbox = $data['recipients']['primary']['mailbox'];
+        $secondary_user = $data['recipients']['secondary']['user'];
+        $secondary_mailbox = $data['recipients']['secondary']['mailbox'];
+        
+        $this->mockCurrentContext();
+
+        $search = new MailboxSearch($primary_user, MailboxSearch::FOLDER_UNREAD_ALL);
+        $data_provider = $search->retrieveMailboxContentsUsingSQL($primary_user->id, [$primary_mailbox->id]);
+        $this->assertCount(1, $data_provider->getData());
+        
+        $search = new MailboxSearch($secondary_user, MailboxSearch::FOLDER_UNREAD_ALL);
+        $data_provider = $search->retrieveMailboxContentsUsingSQL($secondary_user->id, [$secondary_mailbox->id]);
+        $this->assertCount(1, $data_provider->getData());
+    }
+
+    //marking as read updates read status and shows in read mailbox
+    // - for sender
+    // - for primary recipient
+    // - for cc recipient
+    /** @test */
+    public function marking_message_as_read_updates_read_status_and_shows_in_read_mailbox() {
+        $data = $this->sendMessage();
+        $message_element = $data['element'];
+
+        $primary_user = $data['recipients']['primary']['user'];
+        $primary_mailbox = $data['recipients']['primary']['mailbox'];
+        $primary_recipient = $data['recipients']['primary']['recipient'];
+
+        $secondary_user = $data['recipients']['secondary']['user'];
+        $secondary_mailbox = $data['recipients']['secondary']['mailbox'];
+        $secondary_recipient = $data['recipients']['secondary']['recipient'];
+
+        $this->mockCurrentContext();
+
+        $this->markReadFor($message_element, $primary_user);
+        
+        $this->assertFalse((bool) $primary_recipient->marked_as_read);
+
+        $search = new MailboxSearch($primary_user, MailboxSearch::FOLDER_READ_ALL);
+        $data_provider = $search->retrieveMailboxContentsUsingSQL($primary_user->id, [$primary_mailbox->id]);
+        $this->assertCount(1, $data_provider->getData());
+
+        $this->markReadFor($message_element, $secondary_user);
+
+        $this->assertFalse((bool) $secondary_recipient->marked_as_read);
+
+        $search = new MailboxSearch($primary_user, MailboxSearch::FOLDER_READ_ALL);
+        $data_provider = $search->retrieveMailboxContentsUsingSQL($secondary_user->id, [$secondary_mailbox->id]);
+        $this->assertCount(1, $data_provider->getData());
+    }
+
+    //marking as read updates read status and does not show in unread mailbox
+    // - for sender
+    // - for primary recipient
+    // - for cc recipient
+
+
+    //marking as unread updates unread status and shows in unread mailbox
+    // - for sender
+    // - for primary recipient
+    // - for cc recipient
+
+    //marking as unread updates unread status and does not show in read mailbox
+    // - for sender
+    // - for primary recipient
+    // - for cc recipient
+    
+    //adding a comment marks message unread for each other related user, ie
+    // - adding comment as sender marks unread for primary and cc
+    // - adding comment as primary marks unread for sender and cc
+    // - adding comment as cc marks unread for primary and sender
+    //adding a comment marks message read for the sender of the comment
+    // - adding comment as sender marks as read for sender
+    // - adding comment as primary marks as read for primary
+    // - adding comment as cc marks as read for cc
+
+    protected function sendMessage() {
+        [$sender_user, $sender_mailbox] = $this->getMailboxUser();
+        [$primary_user, $primary_mailbox] = $this->getMailboxUser();
+        [$secondary_user, $secondary_mailbox] = $this->getMailboxUser();
+
+        $message_element = Element_OphCoMessaging_Message::factory()
+            ->withSender($sender_user, $sender_mailbox)
+            ->withReplyRequired()
+            ->withPrimaryRecipient($primary_mailbox)
+            ->withCCRecipients([[$secondary_mailbox, false]])
+            ->create();
+
+        $primary_recipient = OphCoMessaging_Message_Recipient::model()
+            ->findByAttributes([
+                'element_id' => $message_element->id,
+                'mailbox_id' => $primary_mailbox->id
+            ]);
+
+        $secondary_recipient = OphCoMessaging_Message_Recipient::model()
+            ->findByAttributes([
+                'element_id' => $message_element->id,
+                'mailbox_id' => $secondary_mailbox->id
+            ]);
+
+        return [
+            'element' => $message_element,
+            'sender' => [
+                'user' => $sender_user,
+                'mailbox' => $sender_mailbox,
+            ],
+            'recipients' => [
+                'primary' => [
+                    'user' => $primary_user,
+                    'mailbox' => $primary_mailbox,
+                    'recipient' => $primary_recipient
+                ],
+                'secondary' => [
+                    'user' => $secondary_user,
+                    'mailbox' => $secondary_mailbox,
+                    'recipient' => $secondary_recipient
+                ],
+            ],
+        ];
     }
 
     protected function getMailboxUser()
