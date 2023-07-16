@@ -13,6 +13,10 @@ trait MocksSession
     public function setupMocksSession()
     {
         $this->beginMocksSession();
+
+        $this->tearDownCallbacks(function () {
+            $this->eraseCurrentSession();
+        });
     }
 
     /**
@@ -141,6 +145,7 @@ trait MocksSession
     {
         $_SESSION = [];
         Yii::app()->setComponent('session', null);
+        Yii::app()->setComponent('user', null);
         $this->setSessionValues([], false);
     }
 }
