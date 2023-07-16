@@ -279,7 +279,7 @@ class MailboxSearch
                         JOIN ophcomessaging_message_recipient primary_recipient ON eom.id = primary_recipient.element_id AND primary_recipient.primary_recipient = 1
                         JOIN `event` ev ON eom.event_id  = ev.id
                         JOIN episode ep ON ev.episode_id = ep.id
-                        WHERE eom.deleted = 0 AND ev.deleted = 0 AND ev.delete_pending = 0
+                        WHERE eom.deleted = 0 AND ev.deleted = 0 AND ev.delete_pending = 0 AND ep.deleted = 0
                     )
                 UNION
                     (
