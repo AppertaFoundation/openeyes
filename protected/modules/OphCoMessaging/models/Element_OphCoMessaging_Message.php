@@ -348,4 +348,11 @@ class Element_OphCoMessaging_Message extends \BaseEventTypeElement
 
         return OphCoMessaging_Message_Recipient::model()->findAll($criteria);
     }
+
+    public function getAllInvolvedMailboxIds() {
+        return array_merge(
+            array_map(function($recipient) { return $recipient->mailbox_id; }, $this->recipients),
+            [$this->sender_mailbox_id]
+        );
+    }
 }

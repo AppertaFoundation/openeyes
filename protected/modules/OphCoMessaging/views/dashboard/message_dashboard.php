@@ -170,8 +170,9 @@ $coreapi = new CoreAPI();
         let message_type = "<?= $message_type ?>";
         let $btn = $(this);
         let $closestTr = $btn.closest('tr');
-        let eventId = $btn.closest('tr').attr('data-event-id');
-        let url = "<?=Yii::app()->createURL("/OphCoMessaging/Default/markRead/")?>" + '/' + eventId;
+        let eventId = $closestTr.attr('data-event-id');
+        let mailboxId = $closestTr.attr('data-mailbox-id');
+        let url = `<?=Yii::app()->createURL("/OphCoMessaging/Default/markRead/")?>/?id=${eventId}&mailbox_id=${mailboxId}`;
 
         // change tick icon with a spinner
         $btn.addClass('spinner as-icon');

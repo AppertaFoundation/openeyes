@@ -115,9 +115,9 @@ if (!$recipient_messages->totalItemCount) {
 
             $patient = Patient::model()->findByPk($message['patient_id']);
 
-            $link_url = Yii::app()->createURL("/OphCoMessaging/default/view/", array("id" => $message['event_id'], "reply_mailbox" => $message['user_mailbox_id']));
+            $link_url = Yii::app()->createURL("/OphCoMessaging/default/view/", array("id" => $message['event_id'], "mailbox_id" => $message['user_mailbox_id']));
             ?>
-        <tr class="<?= ($mailbox && $message['marked_as_read'] ? 'read' : 'unread') ?>" data-event-id="<?= $message['event_id'] ?>">
+        <tr class="<?= ($mailbox && $message['marked_as_read'] ? 'read' : 'unread') ?>" data-event-id="<?= $message['event_id'] ?>" data-mailbox-id="<?=$message['user_mailbox_id']?>">
             <td>
             <?php $this->renderPartial(
                 'application.widgets.views.PatientMeta',

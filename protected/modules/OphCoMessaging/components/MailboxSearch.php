@@ -418,7 +418,7 @@ class MailboxSearch
                         ommt.reply_required reply_required,
                         omc.id IS NOT NULL has_reply,
                         COALESCE(omc.comment_text, element_text) display_text,
-                        COALESCE(omc.marked_as_read, messages.marked_as_read) marked_as_read
+                        messages.marked_as_read marked_as_read
                     FROM
                     (
                         (

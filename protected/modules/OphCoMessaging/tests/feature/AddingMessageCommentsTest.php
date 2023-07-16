@@ -316,9 +316,12 @@ class AddingMessageCommentsTest extends OEDbTestCase
     //sent message does not show in sender's unread mailbox
     /** @test */
     public function sent_message_does_not_show_in_sender_unread_mailbox() {
-        $data = $this->sendMessage();
-        $sender_user = $data['sender']['user'];
-        $sender_mailbox = $data['sender']['mailbox'];
+        list(
+            'sender' => list(
+                'user' => $sender_user,
+                'mailbox' => $sender_mailbox,
+            )
+        ) = $this->sendMessage();
 
         $this->mockCurrentContext();
         
@@ -330,9 +333,12 @@ class AddingMessageCommentsTest extends OEDbTestCase
     //sent message shows in sent mailbox
     /** @test */
     public function sent_message_shows_in_sender_sent_mailbox() {
-        $data = $this->sendMessage();
-        $sender_user = $data['sender']['user'];
-        $sender_mailbox = $data['sender']['mailbox'];
+        list(
+            'sender' => list(
+                'user' => $sender_user,
+                'mailbox' => $sender_mailbox,
+            )
+        ) = $this->sendMessage();
         
         $this->mockCurrentContext();
 
@@ -346,9 +352,16 @@ class AddingMessageCommentsTest extends OEDbTestCase
     // - for cc
     /** @test */
     public function sent_message_is_marked_unread_for_each_recipient() {
-        $data = $this->sendMessage();
-        $primary_recipient = $data['recipients']['primary']['recipient'];
-        $secondary_recipient = $data['recipients']['secondary']['recipient'];
+        list(
+            'recipients' => list(
+                'primary' => list(
+                    'recipient' => $primary_recipient
+                ),
+                'secondary' => list(
+                    'recipient' => $secondary_recipient
+                ),
+            )
+        ) = $this->sendMessage();
         
         $this->mockCurrentContext();
 
@@ -361,11 +374,18 @@ class AddingMessageCommentsTest extends OEDbTestCase
     // - for cc
     /** @test */
     public function sent_message_is_shows_in_each_recipient_mailbox() {
-        $data = $this->sendMessage();
-        $primary_user = $data['recipients']['primary']['user'];
-        $primary_mailbox = $data['recipients']['primary']['mailbox'];
-        $secondary_user = $data['recipients']['secondary']['user'];
-        $secondary_mailbox = $data['recipients']['secondary']['mailbox'];
+        list(
+            'recipients' => list(
+                'primary' => list(
+                    'user' => $primary_user,
+                    'mailbox' => $primary_mailbox,
+                ),
+                'secondary' => list(
+                    'user' => $secondary_user,
+                    'mailbox' => $secondary_mailbox,
+                ),
+            )
+        ) = $this->sendMessage();
         
         $this->mockCurrentContext();
 
@@ -384,16 +404,21 @@ class AddingMessageCommentsTest extends OEDbTestCase
     // - for cc recipient
     /** @test */
     public function marking_message_as_read_updates_read_status_and_shows_in_read_mailbox() {
-        $data = $this->sendMessage();
-        $message_element = $data['element'];
-
-        $primary_user = $data['recipients']['primary']['user'];
-        $primary_mailbox = $data['recipients']['primary']['mailbox'];
-        $primary_recipient = $data['recipients']['primary']['recipient'];
-
-        $secondary_user = $data['recipients']['secondary']['user'];
-        $secondary_mailbox = $data['recipients']['secondary']['mailbox'];
-        $secondary_recipient = $data['recipients']['secondary']['recipient'];
+        list(
+            'element' => $message_element,
+            'recipients' => list(
+                'primary' => list(
+                    'user' => $primary_user,
+                    'mailbox' => $primary_mailbox,
+                    'recipient' => $primary_recipient
+                ),
+                'secondary' => list(
+                    'user' => $secondary_user,
+                    'mailbox' => $secondary_mailbox,
+                    'recipient' => $secondary_recipient
+                ),
+            )
+        ) = $this->sendMessage();
 
         $this->mockCurrentContext();
 
@@ -420,16 +445,21 @@ class AddingMessageCommentsTest extends OEDbTestCase
     // - for cc recipient
     /** @test */
     public function marking_as_read_updates_read_status_and_does_not_show_in_unread_mailbox() {
-        $data = $this->sendMessage();
-        $message_element = $data['element'];
-
-        $primary_user = $data['recipients']['primary']['user'];
-        $primary_mailbox = $data['recipients']['primary']['mailbox'];
-        $primary_recipient = $data['recipients']['primary']['recipient'];
-
-        $secondary_user = $data['recipients']['secondary']['user'];
-        $secondary_mailbox = $data['recipients']['secondary']['mailbox'];
-        $secondary_recipient = $data['recipients']['secondary']['recipient'];
+        list(
+            'element' => $message_element,
+            'recipients' => list(
+                'primary' => list(
+                    'user' => $primary_user,
+                    'mailbox' => $primary_mailbox,
+                    'recipient' => $primary_recipient
+                ),
+                'secondary' => list(
+                    'user' => $secondary_user,
+                    'mailbox' => $secondary_mailbox,
+                    'recipient' => $secondary_recipient
+                ),
+            )
+        ) = $this->sendMessage();
 
         $this->mockCurrentContext();
 
@@ -456,16 +486,21 @@ class AddingMessageCommentsTest extends OEDbTestCase
     // - for cc recipient
     /** @test */
     public function marking_message_as_unread_updates_read_status_and_shows_in_unread_mailbox() {
-        $data = $this->sendMessage();
-        $message_element = $data['element'];
-
-        $primary_user = $data['recipients']['primary']['user'];
-        $primary_mailbox = $data['recipients']['primary']['mailbox'];
-        $primary_recipient = $data['recipients']['primary']['recipient'];
-
-        $secondary_user = $data['recipients']['secondary']['user'];
-        $secondary_mailbox = $data['recipients']['secondary']['mailbox'];
-        $secondary_recipient = $data['recipients']['secondary']['recipient'];
+        list(
+            'element' => $message_element,
+            'recipients' => list(
+                'primary' => list(
+                    'user' => $primary_user,
+                    'mailbox' => $primary_mailbox,
+                    'recipient' => $primary_recipient
+                ),
+                'secondary' => list(
+                    'user' => $secondary_user,
+                    'mailbox' => $secondary_mailbox,
+                    'recipient' => $secondary_recipient
+                ),
+            )
+        ) = $this->sendMessage();
 
         $this->mockCurrentContext();
 
@@ -495,16 +530,22 @@ class AddingMessageCommentsTest extends OEDbTestCase
     // - for cc recipient
     /** @test */
     public function marking_message_as_unread_updates_read_status_and_does_not_show_in_read_mailbox() {
-        $data = $this->sendMessage();
-        $message_element = $data['element'];
-
-        $primary_user = $data['recipients']['primary']['user'];
-        $primary_mailbox = $data['recipients']['primary']['mailbox'];
-        $primary_recipient = $data['recipients']['primary']['recipient'];
-
-        $secondary_user = $data['recipients']['secondary']['user'];
-        $secondary_mailbox = $data['recipients']['secondary']['mailbox'];
-        $secondary_recipient = $data['recipients']['secondary']['recipient'];
+        
+        list(
+            'element' => $message_element,
+            'recipients' => list(
+                'primary' => list(
+                    'user' => $primary_user,
+                    'mailbox' => $primary_mailbox,
+                    'recipient' => $primary_recipient
+                ),
+                'secondary' => list(
+                    'user' => $secondary_user,
+                    'mailbox' => $secondary_mailbox,
+                    'recipient' => $secondary_recipient
+                ),
+            )
+        ) = $this->sendMessage();
 
         $this->mockCurrentContext();
 
