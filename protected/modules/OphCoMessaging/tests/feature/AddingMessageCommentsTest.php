@@ -684,6 +684,21 @@ class AddingMessageCommentsTest extends OEDbTestCase
 
         $this->assertCount(0, $sender_data_provider->getData());
         $this->assertCount(1, $primary_data_provider->getData());
+        $this->assertCount(1, $secondary_data_provider->getData());
+        $this->assertFalse((bool) $primary_recipient->marked_as_read);
+        $this->assertFalse((bool) $secondary_recipient->marked_as_read);
+
+        $this->markReadFor($element, $secondary_user);
+
+        $sender_data_provider = $search->retrieveMailboxContentsUsingSQL($sender_user->id, [$sender_mailbox->id]);
+        $primary_data_provider = $search->retrieveMailboxContentsUsingSQL($primary_user->id, [$primary_mailbox->id]);
+        $secondary_data_provider = $search->retrieveMailboxContentsUsingSQL($secondary_user->id, [$secondary_mailbox->id]);
+
+        $primary_recipient->refresh();
+        $secondary_recipient->refresh();
+
+        $this->assertCount(0, $sender_data_provider->getData());
+        $this->assertCount(1, $primary_data_provider->getData());
         $this->assertCount(0, $secondary_data_provider->getData());
         $this->assertFalse((bool) $primary_recipient->marked_as_read);
         $this->assertTrue((bool) $secondary_recipient->marked_as_read);
@@ -726,7 +741,22 @@ class AddingMessageCommentsTest extends OEDbTestCase
 
         $this->assertCount(1, $sender_data_provider->getData());
         $this->assertCount(0, $primary_data_provider->getData());
-        $this->assertCount(0, $secondary_data_provider->getData());
+        $this->assertCount(1, $secondary_data_provider->getData());
+        $this->assertTrue((bool) $primary_recipient->marked_as_read);
+        $this->assertFalse((bool) $secondary_recipient->marked_as_read);
+
+        $this->markReadFor($element, $secondary_user);
+
+        $sender_data_provider = $search->retrieveMailboxContentsUsingSQL($sender_user->id, [$sender_mailbox->id]);
+        $primary_data_provider = $search->retrieveMailboxContentsUsingSQL($primary_user->id, [$primary_mailbox->id]);
+        $secondary_data_provider = $search->retrieveMailboxContentsUsingSQL($secondary_user->id, [$secondary_mailbox->id]);
+
+        $primary_recipient->refresh();
+        $secondary_recipient->refresh();
+
+        $this->assertCount(1, $sender_data_provider->getData());
+        $this->assertCount(0, $primary_data_provider->getData());
+        $this->assertCount(1, $secondary_data_provider->getData());
         $this->assertTrue((bool) $primary_recipient->marked_as_read);
         $this->assertTrue((bool) $secondary_recipient->marked_as_read);
     }
