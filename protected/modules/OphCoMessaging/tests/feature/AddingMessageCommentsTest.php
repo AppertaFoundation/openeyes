@@ -23,6 +23,7 @@ use OEModule\OphCoMessaging\components\MailboxSearch;
 use OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message;
 use OEModule\OphCoMessaging\models\Mailbox;
 use OEModule\OphCoMessaging\models\OphCoMessaging_Message_Recipient;
+use User;
 use WithFaker;
 use WithTransactions;
 
@@ -40,15 +41,18 @@ class AddingMessageCommentsTest extends OEDbTestCase
     use MakesApplicationRequests;
     use MocksSession;
     use WithFaker;
-    //use WithTransactions; // Currently disabled due to database integrity issues caused in other tests
+    use WithTransactions;
 
     /** @test */
     public function message_marked_unread_for_recipient_when_comment_is_added_by_sender()
     {
+        [$sender, $sender_mailbox] = $this->getMailboxUser();
         $message_element = Element_OphCoMessaging_Message::factory()
             ->withReplyRequired()
             ->withPrimaryRecipient(null, true)
-            ->create();
+            ->create([
+                'sender_mailbox_id' => $sender_mailbox
+            ]);
 
         $recipient = OphCoMessaging_Message_Recipient::model()
             ->find('element_id = ?', [$message_element->id]);
@@ -110,7 +114,7 @@ class AddingMessageCommentsTest extends OEDbTestCase
         $this->mockCurrentUser($primary_user);
 
         // mark read for primary
-        $this->markReadFor($message_element, $primary_user);
+        $this->markReadWithRequest($message_element, $primary_user);
 
         $primary_recipient->refresh();
         $this->assertTrue((bool) $primary_recipient->marked_as_read);
@@ -118,7 +122,7 @@ class AddingMessageCommentsTest extends OEDbTestCase
         $secondary_recipient->refresh();
         $this->assertFalse((bool) $secondary_recipient->marked_as_read);
 
-        $this->postCommentOn($message_element, $primary_user, $primary_mailbox);
+        $this->postCommentWithRequestOn($message_element, $primary_user, $primary_mailbox);
 
         $search = new MailboxSearch(null, MailboxSearch::FOLDER_UNREAD_ALL);
         $data_provider = $search->retrieveMailboxContentsUsingSQL($sender_user->id);
@@ -126,14 +130,14 @@ class AddingMessageCommentsTest extends OEDbTestCase
         // entry in the data to validate the total message count
         $this->assertEquals(1, $data_provider->getData()[0]['total_message_count']);
 
-        $this->markReadFor($message_element, $sender_user);
+        $this->markReadWithRequest($message_element, $sender_user);
 
         $data_provider = $search->retrieveMailboxContentsUsingSQL($sender_user->id);
         // due to construction of the dataprovider in the searcher, we rely on the first
         // entry in the data to validate the total message count
         $this->assertCount(0, $data_provider->getData());
 
-        $this->postCommentOn($message_element, $sender_user, $sender_mailbox);
+        $this->postCommentWithRequestOn($message_element, $sender_user, $sender_mailbox);
 
         $data_provider = $search->retrieveMailboxContentsUsingSQL($primary_user->id);
         // due to construction of the dataprovider in the searcher, we rely on the first
@@ -145,7 +149,7 @@ class AddingMessageCommentsTest extends OEDbTestCase
         // entry in the data to validate the total message count
         $this->assertEquals(1, $data_provider->getData()[0]['total_message_count']);
 
-        $this->markReadFor($message_element, $primary_user);
+        $this->markReadWithRequest($message_element, $primary_user);
 
         $data_provider = $search->retrieveMailboxContentsUsingSQL($primary_user->id, [$primary_mailbox->id]);
         // due to construction of the dataprovider in the searcher, we rely on the first
@@ -159,7 +163,8 @@ class AddingMessageCommentsTest extends OEDbTestCase
     }
 
     /** @test */
-    public function message_marked_read_will_update_message_read_state_correctly() {
+    public function message_marked_read_will_update_message_read_state_correctly()
+    {
         [$sender_user, $sender_mailbox] = $this->getMailboxUser();
         [$primary_user, $primary_mailbox] = $this->getMailboxUser();
 
@@ -183,7 +188,7 @@ class AddingMessageCommentsTest extends OEDbTestCase
         $this->mockCurrentUser($primary_user);
 
         // mark read for primary
-        $this->markReadFor($message_element, $primary_user);
+        $this->markReadWithRequest($message_element, $primary_user);
 
         $primary_recipient->refresh();
         $this->assertTrue((bool) $primary_recipient->marked_as_read);
@@ -195,7 +200,8 @@ class AddingMessageCommentsTest extends OEDbTestCase
     }
 
     /** @test */
-    public function message_marked_read_by_cc_user_remains_read_when_comments_are_made() {
+    public function message_marked_read_by_cc_user_remains_read_when_comments_are_made()
+    {
         [$sender_user, $sender_mailbox] = $this->getMailboxUser();
         [$primary_user, $primary_mailbox] = $this->getMailboxUser();
         [$secondary_user, $secondary_mailbox] = $this->getMailboxUser();
@@ -213,58 +219,41 @@ class AddingMessageCommentsTest extends OEDbTestCase
                 'mailbox_id' => $secondary_mailbox->id
             ]);
 
+        // arrangement sanity checks
         $this->assertFalse((bool) $secondary_recipient->marked_as_read);
+        $this->assertUnreadMessageCount(
+            1,
+            $secondary_user,
+            "message should initially be unread for cc user"
+        );
 
         $this->mockCurrentContext();
-        // $this->mockCurrentUser($primary_user);
-
-        $search = new MailboxSearch($secondary_user, MailboxSearch::FOLDER_UNREAD_ALL);
-        
-        //Ensure that CC recipient actually received the message
-        $data_provider = $search->retrieveMailboxContentsUsingSQL($secondary_user->id, [$secondary_mailbox->id]);
-        // due to construction of the dataprovider in the searcher, we rely on the first
-        // entry in the data to validate the total message count
-        $this->assertEquals(1, $data_provider->getData()[0]['total_message_count']);
-
         // mark read for secondary
-        $this->markReadFor($message_element, $secondary_user);
+        $this->markReadWithRequest($message_element, $secondary_user);
 
-        //Ensure that CC recipient's marked_as_read is left intact by the previous action
-        $secondary_recipient->refresh();
-        $this->assertTrue((bool) $secondary_recipient->marked_as_read);
-        //Ensure that this message does not appear in CC recipient's unread folder
-        $data_provider = $search->retrieveMailboxContentsUsingSQL($secondary_user->id, [$secondary_mailbox->id]);
-        $this->assertEmpty($data_provider->getData());
+        $this->assertUnreadMessageCount(
+            0,
+            $secondary_user,
+            "cc user unread count should be zero after marking read"
+        );
 
         //Comment as the primary recipient of the message
-        $this->postCommentOn($message_element, $primary_user, $primary_mailbox);
+        $this->postCommentWithRequestOn($message_element, $primary_user, $primary_mailbox);
 
-        //Ensure that CC recipient's marked_as_read is left intact by the previous action
-        $secondary_recipient->refresh();
-        $this->assertTrue((bool) $secondary_recipient->marked_as_read);
-        //Ensure that this message does not appear in CC recipient's unread folder
-        $data_provider = $search->retrieveMailboxContentsUsingSQL($secondary_user->id, [$secondary_mailbox->id]);
-        $this->assertEmpty($data_provider->getData());
+        $this->assertUnreadMessageCount(
+            0,
+            $secondary_user,
+            "cc user should remain marked as read after recipient comment addition."
+        );
 
         //Comment as the original sender
-        $this->postCommentOn($message_element, $sender_user, $sender_mailbox);
+        $this->postCommentWithRequestOn($message_element, $sender_user, $sender_mailbox);
 
-        //Ensure that CC recipient's marked_as_read is left intact by the previous action
-        $secondary_recipient->refresh();
-        $this->assertTrue((bool) $secondary_recipient->marked_as_read);
-        //Ensure that this message does not appear in CC recipient's unread folder
-        $data_provider = $search->retrieveMailboxContentsUsingSQL($secondary_user->id, [$secondary_mailbox->id]);
-        $this->assertEmpty($data_provider->getData());
-
-        // mark read for primary
-        $this->markReadFor($message_element, $primary_user);
-
-        //Ensure that CC recipient's marked_as_read is left intact by the previous action
-        $secondary_recipient->refresh();
-        $this->assertTrue((bool) $secondary_recipient->marked_as_read);
-        //Ensure that this message does not appear in CC recipient's unread folder
-        $data_provider = $search->retrieveMailboxContentsUsingSQL($secondary_user->id, [$secondary_mailbox->id]);
-        $this->assertEmpty($data_provider->getData());
+        $this->assertUnreadMessageCount(
+            0,
+            $secondary_user,
+            "cc user should remain marked as read after sender comment addition."
+        );
     }
 
     /** @test */
@@ -290,7 +279,7 @@ class AddingMessageCommentsTest extends OEDbTestCase
 
         $primary_search = new MailboxSearch($primary_user, MailboxSearch::FOLDER_UNREAD_ALL);
         $sender_search = new MailboxSearch($sender_user, MailboxSearch::FOLDER_UNREAD_ALL);
-        
+
         //Assert that message was received by the primary recipient
         $data_provider = $primary_search->retrieveMailboxContentsUsingSQL($primary_user->id, [$primary_mailbox->id]);
         // due to construction of the dataprovider in the searcher, we rely on the first
@@ -304,7 +293,7 @@ class AddingMessageCommentsTest extends OEDbTestCase
         $this->assertEmpty($data_provider->getData());
 
         //post a comment on the message
-        $this->postCommentOn($message_element, $primary_user, $primary_mailbox);
+        $this->postCommentWithRequestOn($message_element, $primary_user, $primary_mailbox);
 
         //assert that the message now appears in the sender's unread mailbox
         $data_provider = $sender_search->retrieveMailboxContentsUsingSQL($sender_user->id, [$sender_mailbox->id]);
@@ -324,7 +313,7 @@ class AddingMessageCommentsTest extends OEDbTestCase
         ) = $this->sendMessage();
 
         $this->mockCurrentContext();
-        
+
         $search = new MailboxSearch($sender_user, MailboxSearch::FOLDER_UNREAD_ALL);
         $data_provider = $search->retrieveMailboxContentsUsingSQL($sender_user->id, [$sender_mailbox->id]);
         $this->assertEmpty($data_provider->getData());
@@ -339,7 +328,7 @@ class AddingMessageCommentsTest extends OEDbTestCase
                 'mailbox' => $sender_mailbox,
             )
         ) = $this->sendMessage();
-        
+
         $this->mockCurrentContext();
 
         $search = new MailboxSearch($sender_user, MailboxSearch::FOLDER_SENT_ALL);
@@ -362,7 +351,7 @@ class AddingMessageCommentsTest extends OEDbTestCase
                 ),
             )
         ) = $this->sendMessage();
-        
+
         $this->mockCurrentContext();
 
         $this->assertFalse((bool)$primary_recipient->marked_as_read);
@@ -386,13 +375,13 @@ class AddingMessageCommentsTest extends OEDbTestCase
                 ),
             )
         ) = $this->sendMessage();
-        
+
         $this->mockCurrentContext();
 
         $search = new MailboxSearch($primary_user, MailboxSearch::FOLDER_UNREAD_ALL);
         $data_provider = $search->retrieveMailboxContentsUsingSQL($primary_user->id, [$primary_mailbox->id]);
         $this->assertCount(1, $data_provider->getData());
-        
+
         $search = new MailboxSearch($secondary_user, MailboxSearch::FOLDER_UNREAD_ALL);
         $data_provider = $search->retrieveMailboxContentsUsingSQL($secondary_user->id, [$secondary_mailbox->id]);
         $this->assertCount(1, $data_provider->getData());
@@ -422,15 +411,15 @@ class AddingMessageCommentsTest extends OEDbTestCase
 
         $this->mockCurrentContext();
 
-        $this->markReadFor($message_element, $primary_user);
-        
+        $this->markReadWithRequest($message_element, $primary_user);
+
         $this->assertTrue((bool) $primary_recipient->marked_as_read);
 
         $search = new MailboxSearch($primary_user, MailboxSearch::FOLDER_READ_ALL);
         $data_provider = $search->retrieveMailboxContentsUsingSQL($primary_user->id, [$primary_mailbox->id]);
         $this->assertCount(1, $data_provider->getData());
 
-        $this->markReadFor($message_element, $secondary_user);
+        $this->markReadWithRequest($message_element, $secondary_user);
 
         $this->assertTrue((bool) $secondary_recipient->marked_as_read);
 
@@ -463,15 +452,15 @@ class AddingMessageCommentsTest extends OEDbTestCase
 
         $this->mockCurrentContext();
 
-        $this->markReadFor($message_element, $primary_user);
-        
+        $this->markReadWithRequest($message_element, $primary_user);
+
         $this->assertTrue((bool) $primary_recipient->marked_as_read);
 
         $search = new MailboxSearch($primary_user, MailboxSearch::FOLDER_UNREAD_ALL);
         $data_provider = $search->retrieveMailboxContentsUsingSQL($primary_user->id, [$primary_mailbox->id]);
         $this->assertEmpty($data_provider->getData());
 
-        $this->markReadFor($message_element, $secondary_user);
+        $this->markReadWithRequest($message_element, $secondary_user);
 
         $this->assertTrue((bool) $secondary_recipient->marked_as_read);
 
@@ -504,18 +493,18 @@ class AddingMessageCommentsTest extends OEDbTestCase
 
         $this->mockCurrentContext();
 
-        $this->markReadFor($message_element, $primary_user);
-        $this->markReadFor($message_element, $secondary_user);
+        $this->markReadWithRequest($message_element, $primary_user);
+        $this->markReadWithRequest($message_element, $secondary_user);
 
-        $this->markUnreadFor($message_element, $primary_user);
-        
+        $this->markUnreadWithRequest($message_element, $primary_user);
+
         $this->assertFalse((bool) $primary_recipient->marked_as_read);
 
         $search = new MailboxSearch($primary_user, MailboxSearch::FOLDER_UNREAD_ALL);
         $data_provider = $search->retrieveMailboxContentsUsingSQL($primary_user->id, [$primary_mailbox->id]);
         $this->assertCount(1, $data_provider->getData());
 
-        $this->markUnreadFor($message_element, $secondary_user);
+        $this->markUnreadWithRequest($message_element, $secondary_user);
 
         $this->assertFalse((bool) $secondary_recipient->marked_as_read);
 
@@ -530,7 +519,7 @@ class AddingMessageCommentsTest extends OEDbTestCase
     // - for cc recipient
     /** @test */
     public function marking_message_as_unread_updates_read_status_and_does_not_show_in_read_mailbox() {
-        
+
         list(
             'element' => $message_element,
             'recipients' => list(
@@ -549,18 +538,18 @@ class AddingMessageCommentsTest extends OEDbTestCase
 
         $this->mockCurrentContext();
 
-        $this->markReadFor($message_element, $primary_user);
-        $this->markReadFor($message_element, $secondary_user);
+        $this->markReadWithRequest($message_element, $primary_user);
+        $this->markReadWithRequest($message_element, $secondary_user);
 
-        $this->markUnreadFor($message_element, $primary_user);
-        
+        $this->markUnreadWithRequest($message_element, $primary_user);
+
         $this->assertFalse((bool) $primary_recipient->marked_as_read);
 
         $search = new MailboxSearch($primary_user, MailboxSearch::FOLDER_READ_ALL);
         $data_provider = $search->retrieveMailboxContentsUsingSQL($primary_user->id, [$primary_mailbox->id]);
         $this->assertEmpty($data_provider->getData());
 
-        $this->markUnreadFor($message_element, $secondary_user);
+        $this->markUnreadWithRequest($message_element, $secondary_user);
 
         $this->assertFalse((bool) $secondary_recipient->marked_as_read);
 
@@ -568,7 +557,7 @@ class AddingMessageCommentsTest extends OEDbTestCase
         $data_provider = $search->retrieveMailboxContentsUsingSQL($secondary_user->id, [$secondary_mailbox->id]);
         $this->assertEmpty($data_provider->getData());
     }
-    
+
     //adding a comment marks message unread for each other related user, ie
     // - adding comment as sender marks unread for primary and cc
     // - adding comment as primary marks unread for sender and cc
@@ -597,13 +586,13 @@ class AddingMessageCommentsTest extends OEDbTestCase
 
         $this->mockCurrentContext();
 
-        $this->markReadFor($element, $primary_user);
-        $this->markReadFor($element, $secondary_user);
+        $this->markReadWithRequest($element, $primary_user);
+        $this->markReadWithRequest($element, $secondary_user);
 
         $this->assertTrue((bool) $primary_recipient->marked_as_read);
         $this->assertTrue((bool) $secondary_recipient->marked_as_read);
 
-        $this->postCommentOn($element, $sender_user, $sender_mailbox);
+        $this->postCommentWithRequestOn($element, $sender_user, $sender_mailbox);
 
         $primary_recipient->refresh();
         $secondary_recipient->refresh();
@@ -611,7 +600,7 @@ class AddingMessageCommentsTest extends OEDbTestCase
         $this->assertFalse((bool) $primary_recipient->marked_as_read);
         $this->assertFalse((bool) $secondary_recipient->marked_as_read);
 
-        $this->markReadFor($element, $secondary_user);
+        $this->markReadWithRequest($element, $secondary_user);
 
         $search = new MailboxSearch($sender_user, MailboxSearch::FOLDER_UNREAD_ALL);
         $data_provider = $search->retrieveMailboxContentsUsingSQL($sender_user->id, [$sender_mailbox->id]);
@@ -619,7 +608,7 @@ class AddingMessageCommentsTest extends OEDbTestCase
         $this->assertCount(0, $data_provider->getData());
         $this->assertTrue((bool) $secondary_recipient->marked_as_read);
 
-        $this->postCommentOn($element, $primary_user, $primary_mailbox);
+        $this->postCommentWithRequestOn($element, $primary_user, $primary_mailbox);
 
         $secondary_recipient->refresh();
         $data_provider = $search->retrieveMailboxContentsUsingSQL($sender_user->id, [$sender_mailbox->id]);
@@ -627,7 +616,7 @@ class AddingMessageCommentsTest extends OEDbTestCase
         $this->assertCount(0, $data_provider->getData());
         $this->assertFalse((bool) $secondary_recipient->marked_as_read);
 
-        $this->postCommentOn($element, $secondary_user, $secondary_mailbox);
+        $this->postCommentWithRequestOn($element, $secondary_user, $secondary_mailbox);
 
         $primary_recipient->refresh();
                 $data_provider = $search->retrieveMailboxContentsUsingSQL($sender_user->id, [$sender_mailbox->id]);
@@ -668,12 +657,12 @@ class AddingMessageCommentsTest extends OEDbTestCase
         $this->assertFalse((bool) $primary_recipient->marked_as_read);
         $this->assertFalse((bool) $secondary_recipient->marked_as_read);
 
-        $this->postCommentOn($element, $primary_user, $primary_mailbox);
+        $this->postCommentWithRequestOn($element, $primary_user, $primary_mailbox);
 
         $primary_recipient->refresh();
         $this->assertTrue((bool) $primary_recipient->marked_as_read);
 
-        $this->postCommentOn($element, $secondary_user, $secondary_mailbox);
+        $this->postCommentWithRequestOn($element, $secondary_user, $secondary_mailbox);
 
         $secondary_recipient->refresh();
         $this->assertTrue((bool) $secondary_recipient->marked_as_read);
@@ -682,7 +671,7 @@ class AddingMessageCommentsTest extends OEDbTestCase
         $data_provider = $search->retrieveMailboxContentsUsingSQL($sender_user->id, [$sender_mailbox->id]);
         $this->assertCount(1, $data_provider->getData());
 
-        $this->postCommentOn($element, $sender_user, $sender_mailbox);
+        $this->postCommentWithRequestOn($element, $sender_user, $sender_mailbox);
 
         $data_provider = $search->retrieveMailboxContentsUsingSQL($sender_user->id, [$sender_mailbox->id]);
         $this->assertCount(0, $data_provider->getData());
@@ -713,40 +702,25 @@ class AddingMessageCommentsTest extends OEDbTestCase
 
         $this->mockCurrentContext();
 
-        $this->postCommentOn($element, $sender_user, $sender_mailbox);
+        $this->postCommentWithRequestOn($element, $sender_user, $sender_mailbox);
 
-        $search = new MailboxSearch(null, MailboxSearch::FOLDER_UNREAD_ALL);
-        $sender_data_provider = $search->retrieveMailboxContentsUsingSQL($sender_user->id, [$sender_mailbox->id]);
-        $primary_data_provider = $search->retrieveMailboxContentsUsingSQL($primary_user->id, [$primary_mailbox->id]);
-        $secondary_data_provider = $search->retrieveMailboxContentsUsingSQL($secondary_user->id, [$secondary_mailbox->id]);
+        $this->assertUnreadMessageCount(
+            1,
+            $secondary_user,
+            "cc user should still be marked unread after first comment"
+        );
 
-        $primary_recipient->refresh();
-        $secondary_recipient->refresh();
+        $this->markReadWithRequest($element, $secondary_user);
 
-        $this->assertCount(0, $sender_data_provider->getData());
-        $this->assertCount(1, $primary_data_provider->getData());
-        $this->assertCount(1, $secondary_data_provider->getData());
-        $this->assertFalse((bool) $primary_recipient->marked_as_read);
-        $this->assertFalse((bool) $secondary_recipient->marked_as_read);
-
-        $this->markReadFor($element, $secondary_user);
-
-        $sender_data_provider = $search->retrieveMailboxContentsUsingSQL($sender_user->id, [$sender_mailbox->id]);
-        $primary_data_provider = $search->retrieveMailboxContentsUsingSQL($primary_user->id, [$primary_mailbox->id]);
-        $secondary_data_provider = $search->retrieveMailboxContentsUsingSQL($secondary_user->id, [$secondary_mailbox->id]);
-
-        $primary_recipient->refresh();
-        $secondary_recipient->refresh();
-
-        $this->assertCount(0, $sender_data_provider->getData());
-        $this->assertCount(1, $primary_data_provider->getData());
-        $this->assertCount(0, $secondary_data_provider->getData());
-        $this->assertFalse((bool) $primary_recipient->marked_as_read);
-        $this->assertTrue((bool) $secondary_recipient->marked_as_read);
+        $this->assertUnreadMessageCount(
+            0,
+            $secondary_user,
+            "cc user should be marked unread after request"
+        );
     }
 
     /** @test */
-    public function cc_recipients_can_mark_primary_replies_read()
+    public function message_is_unread_for_sender_when_comment_made_and_cc_recipients_can_mark_primary_replies_read()
     {
         list(
             'element' => $element,
@@ -770,36 +744,32 @@ class AddingMessageCommentsTest extends OEDbTestCase
 
         $this->mockCurrentContext();
 
-        $this->postCommentOn($element, $primary_user, $primary_mailbox);
+        $this->postCommentWithRequestOn($element, $primary_user, $primary_mailbox);
+        $this->assertUnreadMessageCount(
+            1,
+            $sender_user,
+            "reply by recipient should mark message unread for sender"
+        );
 
-        $search = new MailboxSearch(null, MailboxSearch::FOLDER_UNREAD_ALL);
-        $sender_data_provider = $search->retrieveMailboxContentsUsingSQL($sender_user->id, [$sender_mailbox->id]);
-        $primary_data_provider = $search->retrieveMailboxContentsUsingSQL($primary_user->id, [$primary_mailbox->id]);
-        $secondary_data_provider = $search->retrieveMailboxContentsUsingSQL($secondary_user->id, [$secondary_mailbox->id]);
+        $this->assertUnreadMessageCount(
+            0,
+            $primary_user,
+            "reply by primary recipient should mark message read for them."
+        );
 
-        $primary_recipient->refresh();
-        $secondary_recipient->refresh();
+        $this->assertUnreadMessageCount(
+            1,
+            $secondary_user,
+            "cc should still have unread message after primary reply."
+        );
 
-        $this->assertCount(1, $sender_data_provider->getData());
-        $this->assertCount(0, $primary_data_provider->getData());
-        $this->assertCount(1, $secondary_data_provider->getData());
-        $this->assertTrue((bool) $primary_recipient->marked_as_read);
-        $this->assertFalse((bool) $secondary_recipient->marked_as_read);
+        $this->markReadWithRequest($element, $secondary_user);
 
-        $this->markReadFor($element, $secondary_user);
-
-        $sender_data_provider = $search->retrieveMailboxContentsUsingSQL($sender_user->id, [$sender_mailbox->id]);
-        $primary_data_provider = $search->retrieveMailboxContentsUsingSQL($primary_user->id, [$primary_mailbox->id]);
-        $secondary_data_provider = $search->retrieveMailboxContentsUsingSQL($secondary_user->id, [$secondary_mailbox->id]);
-
-        $primary_recipient->refresh();
-        $secondary_recipient->refresh();
-
-        $this->assertCount(1, $sender_data_provider->getData());
-        $this->assertCount(0, $primary_data_provider->getData());
-        $this->assertCount(1, $secondary_data_provider->getData());
-        $this->assertTrue((bool) $primary_recipient->marked_as_read);
-        $this->assertTrue((bool) $secondary_recipient->marked_as_read);
+        $this->assertUnreadMessageCount(
+            0,
+            $secondary_user,
+            "cc should not have unread once marked as read."
+        );
     }
 
     /** @test */
@@ -822,39 +792,45 @@ class AddingMessageCommentsTest extends OEDbTestCase
 
         $this->mockCurrentContext();
 
-        $search = new MailboxSearch($sender_user, MailboxSearch::FOLDER_UNREAD_ALL);
-        $sender_data_provider = $search->retrieveMailboxContentsUsingSQL($sender_user->id, [$sender_mailbox->id]);
-        $primary_data_provider = $search->retrieveMailboxContentsUsingSQL($primary_user->id, [$primary_mailbox->id]);
+        $this->postCommentWithRequestOn($element, $primary_user, $primary_mailbox);
 
-        $this->assertCount(0, $sender_data_provider->getData());
-        $this->assertCount(1, $primary_data_provider->getData());
-        $this->assertFalse((bool) $primary_recipient->marked_as_read);
+        $this->assertUnreadMessageCount(
+            1,
+            $sender_user,
+            "message should be unread for sender after reply added."
+        );
+        $this->assertUnreadMessageCount(
+            0,
+            $primary_user,
+            "message should be read for primary recipient after they reply."
+        );
 
-        $this->postCommentOn($element, $primary_user, $primary_mailbox);
+        $this->postCommentWithRequestOn($element, $sender_user, $sender_mailbox);
 
-        $sender_data_provider = $search->retrieveMailboxContentsUsingSQL($sender_user->id, [$sender_mailbox->id]);
-        $primary_data_provider = $search->retrieveMailboxContentsUsingSQL($primary_user->id, [$primary_mailbox->id]);
-        $primary_recipient->refresh();
+        $this->assertUnreadMessageCount(
+            0,
+            $sender_user,
+            "message should be read for sender after they reply."
+        );
 
-        $this->assertCount(1, $sender_data_provider->getData());
-        $this->assertCount(0, $primary_data_provider->getData());
-        $this->assertTrue((bool) $primary_recipient->marked_as_read);
+        $this->assertUnreadMessageCount(
+            1,
+            $primary_user,
+            "message should be unread for primary recipient after sender replies."
+        );
 
-        $this->postCommentOn($element, $sender_user, $sender_mailbox);
+        $this->postCommentWithRequestOn($element, $primary_user, $primary_mailbox);
 
-        $sender_data_provider = $search->retrieveMailboxContentsUsingSQL($sender_user->id, [$sender_mailbox->id]);
-        $primary_data_provider = $search->retrieveMailboxContentsUsingSQL($primary_user->id, [$primary_mailbox->id]);
-
-        $this->assertCount(0, $sender_data_provider->getData());
-        $this->assertCount(1, $primary_data_provider->getData());
-
-        $this->postCommentOn($element, $primary_user, $primary_mailbox);
-
-        $sender_data_provider = $search->retrieveMailboxContentsUsingSQL($sender_user->id, [$sender_mailbox->id]);
-        $primary_data_provider = $search->retrieveMailboxContentsUsingSQL($primary_user->id, [$primary_mailbox->id]);
-
-        $this->assertCount(1, $sender_data_provider->getData());
-        $this->assertCount(0, $primary_data_provider->getData());
+        $this->assertUnreadMessageCount(
+            1,
+            $sender_user,
+            "message should be unread again for sender after further reply added."
+        );
+        $this->assertUnreadMessageCount(
+            0,
+            $primary_user,
+            "message should be read for primary recipient after they reply again."
+        );
     }
 
     /** @test */
@@ -885,7 +861,7 @@ class AddingMessageCommentsTest extends OEDbTestCase
         $this->assertCount(1, $secondary_data_provider->getData());
         $this->assertFalse((bool) $secondary_recipient->marked_as_read);
 
-        $this->postCommentOn($element, $secondary_user, $secondary_mailbox);
+        $this->postCommentWithRequestOn($element, $secondary_user, $secondary_mailbox);
 
         $sender_data_provider = $search->retrieveMailboxContentsUsingSQL($sender_user->id, [$sender_mailbox->id]);
         $secondary_data_provider = $search->retrieveMailboxContentsUsingSQL($secondary_user->id, [$secondary_mailbox->id]);
@@ -895,7 +871,7 @@ class AddingMessageCommentsTest extends OEDbTestCase
         $this->assertCount(0, $secondary_data_provider->getData());
         $this->assertTrue((bool) $secondary_recipient->marked_as_read);
 
-        $this->postCommentOn($element, $sender_user, $sender_mailbox);
+        $this->postCommentWithRequestOn($element, $sender_user, $sender_mailbox);
 
         $sender_data_provider = $search->retrieveMailboxContentsUsingSQL($sender_user->id, [$sender_mailbox->id]);
         $secondary_data_provider = $search->retrieveMailboxContentsUsingSQL($secondary_user->id, [$secondary_mailbox->id]);
@@ -903,7 +879,7 @@ class AddingMessageCommentsTest extends OEDbTestCase
         $this->assertCount(0, $sender_data_provider->getData());
         $this->assertCount(1, $secondary_data_provider->getData());
 
-        $this->postCommentOn($element, $secondary_user, $secondary_mailbox);
+        $this->postCommentWithRequestOn($element, $secondary_user, $secondary_mailbox);
 
         $sender_data_provider = $search->retrieveMailboxContentsUsingSQL($sender_user->id, [$sender_mailbox->id]);
         $secondary_data_provider = $search->retrieveMailboxContentsUsingSQL($secondary_user->id, [$secondary_mailbox->id]);
@@ -949,7 +925,7 @@ class AddingMessageCommentsTest extends OEDbTestCase
         $this->assertFalse((bool) $primary_recipient->marked_as_read);
         $this->assertFalse((bool) $secondary_recipient->marked_as_read);
 
-        $this->postCommentOn($element, $secondary_user, $secondary_mailbox);
+        $this->postCommentWithRequestOn($element, $secondary_user, $secondary_mailbox);
 
         $sender_data_provider = $search->retrieveMailboxContentsUsingSQL($sender_user->id, [$sender_mailbox->id]);
         $primary_data_provider = $search->retrieveMailboxContentsUsingSQL($primary_user->id, [$primary_mailbox->id]);
@@ -965,7 +941,7 @@ class AddingMessageCommentsTest extends OEDbTestCase
         $this->assertFalse((bool) $primary_recipient->marked_as_read);
         $this->assertTrue((bool) $secondary_recipient->marked_as_read);
 
-        $this->postCommentOn($element, $sender_user, $sender_mailbox);
+        $this->postCommentWithRequestOn($element, $sender_user, $sender_mailbox);
 
         $sender_data_provider = $search->retrieveMailboxContentsUsingSQL($sender_user->id, [$sender_mailbox->id]);
         $primary_data_provider = $search->retrieveMailboxContentsUsingSQL($primary_user->id, [$primary_mailbox->id]);
@@ -978,7 +954,7 @@ class AddingMessageCommentsTest extends OEDbTestCase
         $primary_recipient->refresh();
         $this->assertFalse((bool) $primary_recipient->marked_as_read);
 
-        $this->postCommentOn($element, $primary_user, $primary_mailbox);
+        $this->postCommentWithRequestOn($element, $primary_user, $primary_mailbox);
 
         $sender_data_provider = $search->retrieveMailboxContentsUsingSQL($sender_user->id, [$sender_mailbox->id]);
         $primary_data_provider = $search->retrieveMailboxContentsUsingSQL($primary_user->id, [$primary_mailbox->id]);
@@ -991,7 +967,7 @@ class AddingMessageCommentsTest extends OEDbTestCase
         $primary_recipient->refresh();
         $this->assertTrue((bool) $primary_recipient->marked_as_read);
 
-        $this->postCommentOn($element, $sender_user, $sender_mailbox);
+        $this->postCommentWithRequestOn($element, $sender_user, $sender_mailbox);
 
         $sender_data_provider = $search->retrieveMailboxContentsUsingSQL($sender_user->id, [$sender_mailbox->id]);
         $primary_data_provider = $search->retrieveMailboxContentsUsingSQL($primary_user->id, [$primary_mailbox->id]);
@@ -1002,7 +978,8 @@ class AddingMessageCommentsTest extends OEDbTestCase
         $this->assertCount(1, $secondary_data_provider->getData());
     }
 
-    protected function sendMessage() {
+    protected function sendMessage(): array
+    {
         [$sender_user, $sender_mailbox] = $this->getMailboxUser();
         [$primary_user, $primary_mailbox] = $this->getMailboxUser();
         [$secondary_user, $secondary_mailbox] = $this->getMailboxUser();
@@ -1058,19 +1035,19 @@ class AddingMessageCommentsTest extends OEDbTestCase
         return [$user, Mailbox::factory()->personalFor($user)->create()];
     }
 
-    protected function markReadFor($message_element, $user)
+    protected function markReadWithRequest($message_element, $user)
     {
         $this->actingAs($user)
             ->get('/OphCoMessaging/default/markRead?id=' . $message_element->event_id);
     }
 
-    protected function markUnreadFor($message_element, $user)
+    protected function markUnreadWithRequest($message_element, $user)
     {
         $this->actingAs($user)
             ->get('/OphCoMessaging/default/markUnread?id=' . $message_element->event_id);
     }
 
-    protected function postCommentOn($message_element, $user, $mailbox, $text = null)
+    protected function postCommentWithRequestOn($message_element, $user, $mailbox, $text = null)
     {
         $this->actingAs($user)
             ->post(
@@ -1082,5 +1059,63 @@ class AddingMessageCommentsTest extends OEDbTestCase
                     ]
                 ]
             );
+    }
+
+    protected function assertUnreadMessageCount(
+        int $count,
+        User $user,
+        string $message = "unread message count for user is incorrect",
+        null|Mailbox|array $mailbox = null
+    ) {
+        $this->assertMessageCount(
+            $count,
+            $user,
+            MailboxSearch::FOLDER_UNREAD_ALL,
+            $mailbox ?? $user->personalMailbox,
+            $message
+        );
+    }
+
+    /**
+     * @param integer $count
+     * @param User $user
+     * @param [type] $folder
+     * @param null|Mailbox|Mailbox[] $mailbox
+     * @param string $message
+     * @return void
+     */
+    protected function assertMessageCount(
+        int $count,
+        User $user,
+        string $folder = MailboxSearch::FOLDER_ALL,
+        null|Mailbox|array $mailbox = null,
+        string $message = "message count for user folder is incorrect"
+    ) {
+        $search = new MailboxSearch($user, $folder);
+
+        $mailbox_ids = $this->mapToIds($mailbox);
+
+        $data = $search->retrieveMailboxContentsUsingSQL($user->id, $mailbox_ids)->getData();
+
+        // due to construction of the dataprovider in the searcher, we rely on the first
+        // entry in the data to validate the total message count
+        if ($count === 0) {
+            $this->assertCount(0, $data, $message);
+        } else {
+            $this->assertArrayHasKey(0, $data, $message);
+            $this->assertEquals($count, $data[0]['total_message_count'], $message);
+        }
+    }
+
+    private function mapToIds($models)
+    {
+        if ($models === null) {
+            return [];
+        }
+        if (!is_array($models)) {
+            $models = [$models];
+        }
+
+        return array_map(function ($model) { return $model->id; }, $models);
     }
 }
