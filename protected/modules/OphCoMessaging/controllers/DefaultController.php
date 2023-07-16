@@ -108,8 +108,8 @@ class DefaultController extends \BaseEventTypeController
      */
     public function actionMarkRead()
     {
-        $mailbox = 
-            Mailbox::model()->findByPk(\Yii::app()->request->getParam('mailbox_id')) ?? 
+        $mailbox =
+            Mailbox::model()->findByPk(\Yii::app()->request->getParam('mailbox_id')) ??
             User::model()->findByPk(\Yii::app()->user->id)->personalMailbox;
 
         $el = $this->getMessageElement();
@@ -152,12 +152,12 @@ class DefaultController extends \BaseEventTypeController
      */
     public function actionMarkUnread($id)
     {
-        $mailbox = 
-            Mailbox::model()->findByPk(\Yii::app()->request->getParam('mailbox_id')) ?? 
+        $mailbox =
+            Mailbox::model()->findByPk(\Yii::app()->request->getParam('mailbox_id')) ??
             User::model()->findByPk(\Yii::app()->user->id)->personalMailbox;
 
         $el = $this->getMessageElement();
-        
+
         $el->setReadStatusForMailbox($mailbox, false);
 
         // $el = $this->getMessageElement();
@@ -242,14 +242,14 @@ class DefaultController extends \BaseEventTypeController
             $transaction = \Yii::app()->db->beginTransaction();
 
             try {
-                $recipients = 
+                $recipients =
                     OphCoMessaging_Message_Recipient::model()
                         ->findAllByAttributes(['element_id' => $element->id]);
 
                 foreach ($recipients as $recipient) {
                     //mark the recipient as unread for each mailbox that didn't send the comment, and read for the one that did
                     $recipient_is_comment_sender = ($recipient->mailbox_id === $comment->mailbox_id);
-                    $recipient->marked_as_read = !$recipient_is_comment_sender;
+                    $recipient->marked_as_read = $recipient_is_comment_sender;
                     $recipient->save();
                 }
 
