@@ -59,18 +59,8 @@ class AddingMessageCommentsTest extends OEDbTestCase
 
         $this->assertTrue((bool) $recipient->marked_as_read);
 
-
         $this->mockCurrentContext();
-        $this->mockCurrentUser($message_element->user);
-
-        $response = $this->post('/OphCoMessaging/default/addComment?id=' . $message_element->event_id, [
-            'comment_reply_mailbox' => $message_element->sender_mailbox_id,
-            'OEModule_OphCoMessaging_models_OphCoMessaging_Message_Comment' => [
-                'comment_text' => $this->faker->sentence()
-            ]
-        ]);
-
-        $response->assertRedirect('/OphCoMessaging/Default/view/' . $message_element->event_id, 'Response should redirect to message view', true);
+        $this->postCommentWithRequestOn($message_element, $sender, $sender_mailbox);
 
         $this->assertDatabaseHas('ophcomessaging_message_comment', [
             'element_id' => $message_element->id,
@@ -200,7 +190,7 @@ class AddingMessageCommentsTest extends OEDbTestCase
     }
 
     /** @test */
-    public function message_marked_read_by_cc_user_remains_read_when_comments_are_made()
+    public function message_marked_read_by_cc_user_resets_to_unread_when_comments_are_made()
     {
         [$sender_user, $sender_mailbox] = $this->getMailboxUser();
         [$primary_user, $primary_mailbox] = $this->getMailboxUser();
@@ -241,16 +231,25 @@ class AddingMessageCommentsTest extends OEDbTestCase
         $this->postCommentWithRequestOn($message_element, $primary_user, $primary_mailbox);
 
         $this->assertUnreadMessageCount(
-            0,
+            1,
             $secondary_user,
             "cc user should remain marked as read after recipient comment addition."
+        );
+
+        // mark read for secondary again
+        $this->markReadWithRequest($message_element, $secondary_user);
+
+        $this->assertUnreadMessageCount(
+            0,
+            $secondary_user,
+            "cc user unread count should be zero after marking read"
         );
 
         //Comment as the original sender
         $this->postCommentWithRequestOn($message_element, $sender_user, $sender_mailbox);
 
         $this->assertUnreadMessageCount(
-            0,
+            1,
             $secondary_user,
             "cc user should remain marked as read after sender comment addition."
         );
@@ -1058,7 +1057,9 @@ class AddingMessageCommentsTest extends OEDbTestCase
                         'comment_text' => $text ?? $this->faker->sentence()
                     ]
                 ]
-            );
+            )
+            ->assertRedirect();
+
     }
 
     protected function assertUnreadMessageCount(
