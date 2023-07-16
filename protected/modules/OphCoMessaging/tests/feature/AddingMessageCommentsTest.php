@@ -647,6 +647,145 @@ class AddingMessageCommentsTest extends OEDbTestCase
         $this->assertCount(0, $data_provider->getData());
     }
 
+    /** @test */
+    public function cc_recipients_can_mark_sender_replies_read()
+    {
+        list(
+            'element' => $element,
+            'sender' => list(
+                'user' => $sender_user,
+                'mailbox' => $sender_mailbox,
+            ),
+            'recipients' => list(
+                'primary' => list(
+                    'user' => $primary_user,
+                    'mailbox' => $primary_mailbox,
+                    'recipient' => $primary_recipient
+                ),
+                'secondary' => list(
+                    'user' => $secondary_user,
+                    'mailbox' => $secondary_mailbox,
+                    'recipient' => $secondary_recipient
+                ),
+            )
+        ) = $this->sendMessage();
+
+        $this->mockCurrentContext();
+
+        $this->postCommentOn($element, $sender_user, $sender_mailbox);
+
+        $search = new MailboxSearch(null, MailboxSearch::FOLDER_UNREAD_ALL);
+        $sender_data_provider = $search->retrieveMailboxContentsUsingSQL($sender_user->id, [$sender_mailbox->id]);
+        $primary_data_provider = $search->retrieveMailboxContentsUsingSQL($primary_user->id, [$primary_mailbox->id]);
+        $secondary_data_provider = $search->retrieveMailboxContentsUsingSQL($secondary_user->id, [$secondary_mailbox->id]);
+
+        $primary_recipient->refresh();
+        $secondary_recipient->refresh();
+
+        $this->assertCount(0, $sender_data_provider->getData());
+        $this->assertCount(1, $primary_data_provider->getData());
+        $this->assertCount(0, $secondary_data_provider->getData());
+        $this->assertFalse((bool) $primary_recipient->marked_as_read);
+        $this->assertTrue((bool) $secondary_recipient->marked_as_read);
+    }
+
+    /** @test */
+    public function cc_recipients_can_mark_primary_replies_read()
+    {
+        list(
+            'element' => $element,
+            'sender' => list(
+                'user' => $sender_user,
+                'mailbox' => $sender_mailbox,
+            ),
+            'recipients' => list(
+                'primary' => list(
+                    'user' => $primary_user,
+                    'mailbox' => $primary_mailbox,
+                    'recipient' => $primary_recipient
+                ),
+                'secondary' => list(
+                    'user' => $secondary_user,
+                    'mailbox' => $secondary_mailbox,
+                    'recipient' => $secondary_recipient
+                ),
+            )
+        ) = $this->sendMessage();
+
+        $this->mockCurrentContext();
+
+        $this->postCommentOn($element, $primary_user, $primary_mailbox);
+
+        $search = new MailboxSearch(null, MailboxSearch::FOLDER_UNREAD_ALL);
+        $sender_data_provider = $search->retrieveMailboxContentsUsingSQL($sender_user->id, [$sender_mailbox->id]);
+        $primary_data_provider = $search->retrieveMailboxContentsUsingSQL($primary_user->id, [$primary_mailbox->id]);
+        $secondary_data_provider = $search->retrieveMailboxContentsUsingSQL($secondary_user->id, [$secondary_mailbox->id]);
+
+        $primary_recipient->refresh();
+        $secondary_recipient->refresh();
+
+        $this->assertCount(1, $sender_data_provider->getData());
+        $this->assertCount(0, $primary_data_provider->getData());
+        $this->assertCount(0, $secondary_data_provider->getData());
+        $this->assertTrue((bool) $primary_recipient->marked_as_read);
+        $this->assertTrue((bool) $secondary_recipient->marked_as_read);
+    }
+
+    /** @test */
+    public function ping_pong_ping_replies_between_sender_and_primary()
+    {
+        list(
+            'element' => $element,
+            'sender' => list(
+                'user' => $sender_user,
+                'mailbox' => $sender_mailbox,
+            ),
+            'recipients' => list(
+                'primary' => list(
+                    'user' => $primary_user,
+                    'mailbox' => $primary_mailbox,
+                    'recipient' => $primary_recipient
+                ),
+            )
+        ) = $this->sendMessage();
+
+        $this->mockCurrentContext();
+
+        $search = new MailboxSearch($sender_user, MailboxSearch::FOLDER_UNREAD_ALL);
+        $sender_data_provider = $search->retrieveMailboxContentsUsingSQL($sender_user->id, [$sender_mailbox->id]);
+        $primary_data_provider = $search->retrieveMailboxContentsUsingSQL($primary_user->id, [$primary_mailbox->id]);
+
+        $this->assertCount(0, $sender_data_provider->getData());
+        $this->assertCount(1, $primary_data_provider->getData());
+        $this->assertFalse((bool) $primary_recipient->marked_as_read);
+
+        $this->postCommentOn($element, $primary_user, $primary_mailbox);
+
+        $sender_data_provider = $search->retrieveMailboxContentsUsingSQL($sender_user->id, [$sender_mailbox->id]);
+        $primary_data_provider = $search->retrieveMailboxContentsUsingSQL($primary_user->id, [$primary_mailbox->id]);
+        $primary_recipient->refresh();
+
+        $this->assertCount(1, $sender_data_provider->getData());
+        $this->assertCount(0, $primary_data_provider->getData());
+        $this->assertTrue((bool) $primary_recipient->marked_as_read);
+
+        $this->postCommentOn($element, $sender_user, $sender_mailbox);
+
+        $sender_data_provider = $search->retrieveMailboxContentsUsingSQL($sender_user->id, [$sender_mailbox->id]);
+        $primary_data_provider = $search->retrieveMailboxContentsUsingSQL($primary_user->id, [$primary_mailbox->id]);
+
+        $this->assertCount(0, $sender_data_provider->getData());
+        $this->assertCount(1, $primary_data_provider->getData());
+
+        $this->postCommentOn($element, $primary_user, $primary_mailbox);
+
+        $sender_data_provider = $search->retrieveMailboxContentsUsingSQL($sender_user->id, [$sender_mailbox->id]);
+        $primary_data_provider = $search->retrieveMailboxContentsUsingSQL($primary_user->id, [$primary_mailbox->id]);
+
+        $this->assertCount(1, $sender_data_provider->getData());
+        $this->assertCount(0, $primary_data_provider->getData());
+    }
+
     protected function sendMessage() {
         [$sender_user, $sender_mailbox] = $this->getMailboxUser();
         [$primary_user, $primary_mailbox] = $this->getMailboxUser();
