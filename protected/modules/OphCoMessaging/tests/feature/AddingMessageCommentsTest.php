@@ -150,8 +150,7 @@ class AddingMessageCommentsTest extends OEDbTestCase
         $data_provider = $search->retrieveMailboxContentsUsingSQL($primary_user->id, [$primary_mailbox->id]);
         // due to construction of the dataprovider in the searcher, we rely on the first
         // entry in the data to validate the total message count
-        fwrite(STDERR, print_r($data_provider->getData(), true));
-        $this->assertCount(0, $data_provider->getData());//This is correct on the front end but fails in the test?
+        $this->assertCount(0, $data_provider->getData());
 
         $data_provider = $search->retrieveMailboxContentsUsingSQL($secondary_user->id);
         // due to construction of the dataprovider in the searcher, we rely on the first
@@ -400,7 +399,7 @@ class AddingMessageCommentsTest extends OEDbTestCase
 
         $this->markReadFor($message_element, $primary_user);
         
-        $this->assertFalse((bool) $primary_recipient->marked_as_read);
+        $this->assertTrue((bool) $primary_recipient->marked_as_read);
 
         $search = new MailboxSearch($primary_user, MailboxSearch::FOLDER_READ_ALL);
         $data_provider = $search->retrieveMailboxContentsUsingSQL($primary_user->id, [$primary_mailbox->id]);
@@ -408,7 +407,7 @@ class AddingMessageCommentsTest extends OEDbTestCase
 
         $this->markReadFor($message_element, $secondary_user);
 
-        $this->assertFalse((bool) $secondary_recipient->marked_as_read);
+        $this->assertTrue((bool) $secondary_recipient->marked_as_read);
 
         $search = new MailboxSearch($primary_user, MailboxSearch::FOLDER_READ_ALL);
         $data_provider = $search->retrieveMailboxContentsUsingSQL($secondary_user->id, [$secondary_mailbox->id]);
@@ -419,17 +418,115 @@ class AddingMessageCommentsTest extends OEDbTestCase
     // - for sender
     // - for primary recipient
     // - for cc recipient
+    /** @test */
+    public function marking_as_read_updates_read_status_and_does_not_show_in_unread_mailbox() {
+        $data = $this->sendMessage();
+        $message_element = $data['element'];
 
+        $primary_user = $data['recipients']['primary']['user'];
+        $primary_mailbox = $data['recipients']['primary']['mailbox'];
+        $primary_recipient = $data['recipients']['primary']['recipient'];
+
+        $secondary_user = $data['recipients']['secondary']['user'];
+        $secondary_mailbox = $data['recipients']['secondary']['mailbox'];
+        $secondary_recipient = $data['recipients']['secondary']['recipient'];
+
+        $this->mockCurrentContext();
+
+        $this->markReadFor($message_element, $primary_user);
+        
+        $this->assertTrue((bool) $primary_recipient->marked_as_read);
+
+        $search = new MailboxSearch($primary_user, MailboxSearch::FOLDER_UNREAD_ALL);
+        $data_provider = $search->retrieveMailboxContentsUsingSQL($primary_user->id, [$primary_mailbox->id]);
+        $this->assertEmpty($data_provider->getData());
+
+        $this->markReadFor($message_element, $secondary_user);
+
+        $this->assertTrue((bool) $secondary_recipient->marked_as_read);
+
+        $search = new MailboxSearch($primary_user, MailboxSearch::FOLDER_UNREAD_ALL);
+        $data_provider = $search->retrieveMailboxContentsUsingSQL($secondary_user->id, [$secondary_mailbox->id]);
+        $this->assertEmpty($data_provider->getData());
+    }
 
     //marking as unread updates unread status and shows in unread mailbox
     // - for sender
     // - for primary recipient
     // - for cc recipient
+    /** @test */
+    public function marking_message_as_unread_updates_read_status_and_shows_in_unread_mailbox() {
+        $data = $this->sendMessage();
+        $message_element = $data['element'];
+
+        $primary_user = $data['recipients']['primary']['user'];
+        $primary_mailbox = $data['recipients']['primary']['mailbox'];
+        $primary_recipient = $data['recipients']['primary']['recipient'];
+
+        $secondary_user = $data['recipients']['secondary']['user'];
+        $secondary_mailbox = $data['recipients']['secondary']['mailbox'];
+        $secondary_recipient = $data['recipients']['secondary']['recipient'];
+
+        $this->mockCurrentContext();
+
+        $this->markReadFor($message_element, $primary_user);
+        $this->markReadFor($message_element, $secondary_user);
+
+        $this->markUnreadFor($message_element, $primary_user);
+        
+        $this->assertFalse((bool) $primary_recipient->marked_as_read);
+
+        $search = new MailboxSearch($primary_user, MailboxSearch::FOLDER_UNREAD_ALL);
+        $data_provider = $search->retrieveMailboxContentsUsingSQL($primary_user->id, [$primary_mailbox->id]);
+        $this->assertCount(1, $data_provider->getData());
+
+        $this->markUnreadFor($message_element, $secondary_user);
+
+        $this->assertFalse((bool) $secondary_recipient->marked_as_read);
+
+        $search = new MailboxSearch($primary_user, MailboxSearch::FOLDER_UNREAD_ALL);
+        $data_provider = $search->retrieveMailboxContentsUsingSQL($secondary_user->id, [$secondary_mailbox->id]);
+        $this->assertCount(1, $data_provider->getData());
+    }
 
     //marking as unread updates unread status and does not show in read mailbox
     // - for sender
     // - for primary recipient
     // - for cc recipient
+    /** @test */
+    public function marking_message_as_unread_updates_read_status_and_does_not_show_in_read_mailbox() {
+        $data = $this->sendMessage();
+        $message_element = $data['element'];
+
+        $primary_user = $data['recipients']['primary']['user'];
+        $primary_mailbox = $data['recipients']['primary']['mailbox'];
+        $primary_recipient = $data['recipients']['primary']['recipient'];
+
+        $secondary_user = $data['recipients']['secondary']['user'];
+        $secondary_mailbox = $data['recipients']['secondary']['mailbox'];
+        $secondary_recipient = $data['recipients']['secondary']['recipient'];
+
+        $this->mockCurrentContext();
+
+        $this->markReadFor($message_element, $primary_user);
+        $this->markReadFor($message_element, $secondary_user);
+
+        $this->markUnreadFor($message_element, $primary_user);
+        
+        $this->assertFalse((bool) $primary_recipient->marked_as_read);
+
+        $search = new MailboxSearch($primary_user, MailboxSearch::FOLDER_READ_ALL);
+        $data_provider = $search->retrieveMailboxContentsUsingSQL($primary_user->id, [$primary_mailbox->id]);
+        $this->assertEmpty($data_provider->getData());
+
+        $this->markUnreadFor($message_element, $secondary_user);
+
+        $this->assertFalse((bool) $secondary_recipient->marked_as_read);
+
+        $search = new MailboxSearch($primary_user, MailboxSearch::FOLDER_READ_ALL);
+        $data_provider = $search->retrieveMailboxContentsUsingSQL($secondary_user->id, [$secondary_mailbox->id]);
+        $this->assertEmpty($data_provider->getData());
+    }
     
     //adding a comment marks message unread for each other related user, ie
     // - adding comment as sender marks unread for primary and cc
@@ -500,6 +597,12 @@ class AddingMessageCommentsTest extends OEDbTestCase
     {
         $this->actingAs($user)
             ->get('/OphCoMessaging/default/markRead?id=' . $message_element->event_id);
+    }
+
+    protected function markUnreadFor($message_element, $user)
+    {
+        $this->actingAs($user)
+            ->get('/OphCoMessaging/default/markUnread?id=' . $message_element->event_id);
     }
 
     protected function postCommentOn($message_element, $user, $mailbox, $text = null)
