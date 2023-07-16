@@ -97,7 +97,7 @@ class Element_OphCoMessaging_Message extends \BaseEventTypeElement
                 self::HAS_ONE,
                 OphCoMessaging_Message_Comment::class,
                 'element_id',
-                'order' => 'created_date DESC'
+                'order' => 'created_date DESC, id DESC'
             ],
             'eventType' => [self::BELONGS_TO, \EventType::class, 'event_type_id'],
             'event' => [self::BELONGS_TO, \Event::class, 'event_id'],
@@ -349,16 +349,23 @@ class Element_OphCoMessaging_Message extends \BaseEventTypeElement
         return OphCoMessaging_Message_Recipient::model()->findAll($criteria);
     }
 
-    public function getAllInvolvedMailboxIds() {
+    public function getAllInvolvedMailboxIds()
+    {
         return array_merge(
-            array_map(function($recipient) { return $recipient->mailbox_id; }, $this->recipients),
+            array_map(
+                function ($recipient) {
+                    return $recipient->mailbox_id;
+                },
+                $this->recipients
+            ),
             [$this->sender_mailbox_id]
         );
     }
 
-    public function setReadStatusForMailbox($mailbox, $is_read) {
+    public function setReadStatusForMailbox($mailbox, bool $is_read)
+    {
         //We are the original sender
-        if ($this->sender_mailbox_id === $mailbox->id) {
+        if ((int) $this->sender_mailbox_id === (int) $mailbox->id) {
             $this->last_comment->marked_as_read = $is_read;
             $this->last_comment->save();
         } else {
@@ -368,9 +375,10 @@ class Element_OphCoMessaging_Message extends \BaseEventTypeElement
         }
     }
 
-    public function getReadStatusForMailbox($mailbox) {
+    public function getReadStatusForMailbox($mailbox)
+    {
         //We are the original sender
-        if ($this->sender_mailbox_id === $mailbox->id) {
+        if ((int) $this->sender_mailbox_id === (int) $mailbox->id) {
             return $this->last_comment->marked_as_read;
         } else {
             $recipient = OphCoMessaging_Message_Recipient::model()->findByAttributes(['element_id' => $this->id, 'mailbox_id' => $mailbox->id]);
