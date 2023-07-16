@@ -22,7 +22,7 @@ class OphCiExamination_VisualAcuityUnitFactory extends ModelFactory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->word(2),
+            'name' => $this->faker->unique()->word(2),
             'is_va' => $this->faker->boolean(),
             'is_near' => $this->faker->boolean(),
             'complex_only' => $this->faker->boolean(),

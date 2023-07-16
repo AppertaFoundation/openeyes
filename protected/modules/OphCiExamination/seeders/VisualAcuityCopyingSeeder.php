@@ -169,8 +169,8 @@ class VisualAcuityCopyingSeeder
 
     protected function createUnits()
     {
-        $chosen_unit = OphCiExamination_VisualAcuityUnit::factory()->forVA()->forNear()->notComplexOnly()->create();
-        $alternative_unit = OphCiExamination_VisualAcuityUnit::factory()->forVA()->forNear()->notComplexOnly()->create();
+        $chosen_unit = OphCiExamination_VisualAcuityUnit::factory()->withUniquePostfix((string) microtime())->withDBUniqueAttribute('name')->forVA()->forNear()->notComplexOnly()->create();
+        $alternative_unit = OphCiExamination_VisualAcuityUnit::factory()->withUniquePostfix((string) microtime())->withDBUniqueAttribute('name')->forVA()->forNear()->notComplexOnly()->create();
 
         // The alternative unit values are unselectable in order to test what happens when the readings are changed from the chosen
         // to the alternative unit in the unit selector on the form. Being unselectable should only affect the adders for readings.
