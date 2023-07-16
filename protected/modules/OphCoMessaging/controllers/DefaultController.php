@@ -18,8 +18,6 @@
 
 namespace OEModule\OphCoMessaging\controllers;
 
-use OELog;
-use OEModule\OphCoMessaging\components\MailboxSearch;
 use OEModule\OphCoMessaging\components\OphCoMessaging_API;
 use OEModule\OphCoMessaging\models\Mailbox;
 use OEModule\OphCoMessaging\models\OphCoMessaging_Message_Comment;
