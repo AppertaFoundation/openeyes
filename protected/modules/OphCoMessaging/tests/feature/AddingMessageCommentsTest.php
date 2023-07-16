@@ -98,58 +98,33 @@ class AddingMessageCommentsTest extends OEDbTestCase
                 'mailbox_id' => $secondary_mailbox->id
             ]);
 
-        $this->assertFalse((bool) $primary_recipient->marked_as_read);
-
         $this->mockCurrentContext();
         $this->mockCurrentUser($primary_user);
 
         // mark read for primary
         $this->markReadWithRequest($message_element, $primary_user);
 
-        $primary_recipient->refresh();
-        $this->assertTrue((bool) $primary_recipient->marked_as_read);
-
-        $secondary_recipient->refresh();
-        $this->assertFalse((bool) $secondary_recipient->marked_as_read);
+        $this->assertUnreadMessageCount(0, $primary_user, "unread count for primary should be zero after marking as read.");
+        $this->assertUnreadMessageCount(1, $secondary_user, "unread count should still be 1 for cc after primary marking as read.");
 
         $this->postCommentWithRequestOn($message_element, $primary_user, $primary_mailbox);
 
-        $search = new MailboxSearch(null, MailboxSearch::FOLDER_UNREAD_ALL);
-        $data_provider = $search->retrieveMailboxContentsUsingSQL($sender_user->id);
-        // due to construction of the dataprovider in the searcher, we rely on the first
-        // entry in the data to validate the total message count
-        $this->assertEquals(1, $data_provider->getData()[0]['total_message_count']);
+        $this->assertUnreadMessageCount(1, $sender_user, "Sender unread count should be 1 after primary reply.");
 
         $this->markReadWithRequest($message_element, $sender_user);
 
-        $data_provider = $search->retrieveMailboxContentsUsingSQL($sender_user->id);
-        // due to construction of the dataprovider in the searcher, we rely on the first
-        // entry in the data to validate the total message count
-        $this->assertCount(0, $data_provider->getData());
+        $this->assertUnreadMessageCount(0, $sender_user, "Sender unread count should be 0 after marking as read.");
 
         $this->postCommentWithRequestOn($message_element, $sender_user, $sender_mailbox);
 
-        $data_provider = $search->retrieveMailboxContentsUsingSQL($primary_user->id);
-        // due to construction of the dataprovider in the searcher, we rely on the first
-        // entry in the data to validate the total message count
-        $this->assertEquals(1, $data_provider->getData()[0]['total_message_count']);
-
-        $data_provider = $search->retrieveMailboxContentsUsingSQL($secondary_user->id);
-        // due to construction of the dataprovider in the searcher, we rely on the first
-        // entry in the data to validate the total message count
-        $this->assertEquals(1, $data_provider->getData()[0]['total_message_count']);
+        $this->assertUnreadMessageCount(1, $primary_user, "unread count for primary should be 1 after sender replied.");
+        $this->assertUnreadMessageCount(1, $secondary_user, "unread count for secondary should be 1 after sender replied.");
 
         $this->markReadWithRequest($message_element, $primary_user);
 
-        $data_provider = $search->retrieveMailboxContentsUsingSQL($primary_user->id, [$primary_mailbox->id]);
-        // due to construction of the dataprovider in the searcher, we rely on the first
-        // entry in the data to validate the total message count
-        $this->assertCount(0, $data_provider->getData());
+        $this->assertUnreadMessageCount(0, $primary_user, "unread count for primary should be zero after marking as read again.");
 
-        $data_provider = $search->retrieveMailboxContentsUsingSQL($secondary_user->id);
-        // due to construction of the dataprovider in the searcher, we rely on the first
-        // entry in the data to validate the total message count
-        $this->assertEquals(1, $data_provider->getData()[0]['total_message_count']);
+        $this->assertUnreadMessageCount(1, $secondary_user, "unread count for secondary should remain 1 after primary marking as read.");
     }
 
     /** @test */
