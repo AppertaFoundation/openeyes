@@ -387,19 +387,23 @@ class AddingMessageCommentsTest extends OEDbTestCase
 
         $this->markReadWithRequest($message_element, $primary_user);
 
-        $this->assertTrue((bool) $primary_recipient->marked_as_read);
-
-        $search = new MailboxSearch($primary_user, MailboxSearch::FOLDER_READ_ALL);
-        $data_provider = $search->retrieveMailboxContentsUsingSQL($primary_user->id, [$primary_mailbox->id]);
-        $this->assertCount(1, $data_provider->getData());
+        $this->assertMessageCount(
+            1,
+            $primary_user,
+            MailboxSearch::FOLDER_READ_ALL,
+            $primary_mailbox,
+            "Message should appear in read folder when marked as read for primary recipient"
+        );
 
         $this->markReadWithRequest($message_element, $secondary_user);
 
-        $this->assertTrue((bool) $secondary_recipient->marked_as_read);
-
-        $search = new MailboxSearch($primary_user, MailboxSearch::FOLDER_READ_ALL);
-        $data_provider = $search->retrieveMailboxContentsUsingSQL($secondary_user->id, [$secondary_mailbox->id]);
-        $this->assertCount(1, $data_provider->getData());
+        $this->assertMessageCount(
+            1,
+            $secondary_user,
+            MailboxSearch::FOLDER_READ_ALL,
+            $secondary_mailbox,
+            "Message should appear in read folder when marked as read for cc recipient"
+        );
     }
 
     //marking as read updates read status and does not show in unread mailbox
@@ -427,20 +431,10 @@ class AddingMessageCommentsTest extends OEDbTestCase
         $this->mockCurrentContext();
 
         $this->markReadWithRequest($message_element, $primary_user);
-
-        $this->assertTrue((bool) $primary_recipient->marked_as_read);
-
-        $search = new MailboxSearch($primary_user, MailboxSearch::FOLDER_UNREAD_ALL);
-        $data_provider = $search->retrieveMailboxContentsUsingSQL($primary_user->id, [$primary_mailbox->id]);
-        $this->assertEmpty($data_provider->getData());
+        $this->assertUnreadMessageCount(0, $primary_user, "message should not be unread for primary after marking read.");
 
         $this->markReadWithRequest($message_element, $secondary_user);
-
-        $this->assertTrue((bool) $secondary_recipient->marked_as_read);
-
-        $search = new MailboxSearch($primary_user, MailboxSearch::FOLDER_UNREAD_ALL);
-        $data_provider = $search->retrieveMailboxContentsUsingSQL($secondary_user->id, [$secondary_mailbox->id]);
-        $this->assertEmpty($data_provider->getData());
+        $this->assertUnreadMessageCount(0, $secondary_user, "message should not be unread for cc user after marking read.");
     }
 
     //marking as unread updates unread status and shows in unread mailbox
