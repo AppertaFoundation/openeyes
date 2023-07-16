@@ -418,7 +418,7 @@ class MailboxSearch
                         ommt.reply_required reply_required,
                         omc.id IS NOT NULL has_reply,
                         COALESCE(omc.comment_text, element_text) display_text,
-                        messages.marked_as_read marked_as_read
+                        IF(messages.user_original_sender, COALESCE(omc.marked_as_read, messages.marked_as_read), messages.marked_as_read) marked_as_read
                     FROM
                     (
                         (
@@ -427,7 +427,7 @@ class MailboxSearch
                                 eom.event_id element_event_id,
                                 eom.message_text element_text,
                                 eom.urgent,
-                                primary_recipient.marked_as_read marked_as_read,
+                                1 marked_as_read,
                                 eom.message_type_id,
                                 eom.created_date,
 

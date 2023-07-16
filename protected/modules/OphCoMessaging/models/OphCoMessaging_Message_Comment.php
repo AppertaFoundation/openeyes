@@ -68,5 +68,7 @@ class OphCoMessaging_Message_Comment extends \BaseActiveRecordVersioned
 
     public function beforeSave() {
         $this->marked_as_read = $this->mailbox_id === $this->element->sender_mailbox_id;
+
+        return parent::beforeSave();
     }
 }
