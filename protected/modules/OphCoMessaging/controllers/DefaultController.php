@@ -116,15 +116,6 @@ class DefaultController extends \BaseEventTypeController
 
         $el->setReadStatusForMailbox($mailbox, true);
 
-        // if ($el->comments && $this->canMarkCommentRead($el->last_comment)) {
-        //     $this->markCommentRead($el->last_comment);
-        // } else {
-        //     if ($el->for_the_attention_of->mailbox->isUserAssociatedWith(\User::model()->findByPk(\Yii::app()->user->id))) {
-        //         $this->markMessageRead($el);
-        //     }
-        //     $this->markCopyToRead($el);
-        // }
-
         if (!isset($_GET['noRedirect']) || !$_GET['noRedirect']) {
             $this->redirectAfterAction();
         } else {
@@ -160,37 +151,6 @@ class DefaultController extends \BaseEventTypeController
 
         $el->setReadStatusForMailbox($mailbox, false);
 
-        // $el = $this->getMessageElement();
-
-        // if ($el->comments) {
-        //     $el->last_comment->marked_as_read = false;
-        //     $el->last_comment->save();
-        // } else {
-        //     $transaction = \Yii::app()->db->beginTransaction();
-
-        //     $recipients = OphCoMessaging_Message_Recipient::model()
-        //                 ->forReceivedByUser(\Yii::app()->user->id)
-        //                 ->forElement($el->id)
-        //                 ->findAll();
-
-        //     try {
-        //         foreach ($recipients as $recipient) {
-        //             $recipient->marked_as_read = false;
-        //             $recipient->save();
-        //         }
-
-        //         $this->updateEvent();
-
-        //         $this->event->audit('event', 'marked unread');
-
-        //         \Yii::app()->user->setFlash('success', '<a href="' . $this->getEventViewUrl() . "\">{$this->event_type->name}</a> marked as unread.");
-
-        //         $transaction->commit();
-        //     } catch (\Exception $e) {
-        //         $transaction->rollback();
-        //         throw $e;
-        //     }
-        // }
         $this->redirectAfterAction();
     }
 
@@ -214,11 +174,6 @@ class DefaultController extends \BaseEventTypeController
     public function actionAddComment($id)
     {
         $element = $this->getMessageElement();
-
-        // if (isset($element->last_comment)) {
-        //     $element->last_comment->marked_as_read = 1;
-        //     $element->last_comment->save();
-        // }
 
         $comment = new OphCoMessaging_Message_Comment();
 
@@ -403,8 +358,6 @@ class DefaultController extends \BaseEventTypeController
         }
         $messageElement = $this->getMessageElement();
 
-        // $canComment = !empty(array_intersect($messageElement->getAllInvolvedMailboxIds(), MailboxSearch::getAllMailboxesForUser($user->id)));
-
         $canComment = (
                 (!$messageElement->comments && $this->isIntendedRecipient($user) && !$this->isSender($user) && $messageElement->message_type->reply_required)
                 || (($this->isIntendedRecipient($user) || $this->isSender($user))
@@ -441,17 +394,6 @@ class DefaultController extends \BaseEventTypeController
         $recipient = OphCoMessaging_Message_Recipient::model()->findByAttributes(['element_id' => $el->id, 'mailbox_id' => $mailbox->id]);
 
         return isset($recipient) && !$recipient->marked_as_read;
-
-        // if ($el->cc_enabled && $this->isCopiedToUser()) {
-        //     return $this->canMarkCopyToRead($el);
-        // } elseif (
-        //     $this->isIntendedRecipient()
-        //     && !$el->for_the_attention_of->marked_as_read
-        // ) {
-        //     return true;
-        // }
-
-        // return false;
     }
 
     /**
@@ -461,8 +403,6 @@ class DefaultController extends \BaseEventTypeController
      */
     public function markMessageRead($el, $mailbox)
     {
-        // $el->for_the_attention_of->marked_as_read = true;
-
         $transaction = \Yii::app()->db->beginTransaction();
 
         try {
@@ -470,7 +410,6 @@ class DefaultController extends \BaseEventTypeController
             $recipient->marked_as_read = true;
             $recipient->save();
 
-            // $el->for_the_attention_of->save();
             $this->updateEvent();
 
             $this->event->audit('event', 'marked read');
@@ -492,52 +431,39 @@ class DefaultController extends \BaseEventTypeController
         $recipient = OphCoMessaging_Message_Recipient::model()->findByAttributes(['element_id' => $el->id, 'mailbox_id' => $mailbox->id]);
 
         return isset($recipient) && $recipient->marked_as_read;
-
-        // $user = \Yii::app()->user;
-
-        // if ($el->comments) {
-        //     return false;
-        // } elseif (
-        //     ($this->isIntendedRecipient() && $el->for_the_attention_of->marked_as_read)
-        //           || ($this->isCopiedToUser($user) && $this->copiedToUserMarkedRead($user))
-        // ) {
-        //     return true;
-        // } else {
-        //     return false;
-        // }
     }
 
-    // public function canMarkCopyToRead($el)
-    // {
-    //     return OphCoMessaging_Message_Recipient::model()
-    //         ->forReceivedByUser(\Yii::app()->user->id)
-    //         ->forElement($el->id)
-    //         ->exists('primary_recipient = 0 AND marked_as_read = 0');
-    // }
+    public function canMarkCopyToRead($el)
+    {
+        return OphCoMessaging_Message_Recipient::model()
+            ->forReceivedByUser(\Yii::app()->user->id)
+            ->forElement($el->id)
+            ->exists('primary_recipient = 0 AND marked_as_read = 0');
+    }
 
-    // public function markCopyToRead($el)
-    // {
-    //     $cc_recipient = OphCoMessaging_Message_Recipient::model()
-    //                   ->forReceivedByUser(\Yii::app()->user->id)
-    //                   ->forElement($el->id)
-    //                   ->find('primary_recipient = 0');
+    public function markCopyToRead($el)
+    {
+        $cc_recipient = OphCoMessaging_Message_Recipient::model()
+                      ->forReceivedByUser(\Yii::app()->user->id)
+                      ->forElement($el->id)
+                      ->find('primary_recipient = 0');
 
-    //     if ($cc_recipient) {
-    //         $transaction = \Yii::app()->db->beginTransaction();
+        if ($cc_recipient) {
+            $transaction = \Yii::app()->db->beginTransaction();
 
-    //         try {
-    //             $cc_recipient->marked_as_read = true;
-    //             $cc_recipient->save();
+            try {
+                $cc_recipient->marked_as_read = true;
+                $cc_recipient->save();
 
-    //             $this->event->audit('event', 'marked read by copied to user');
+                $this->event->audit('event', 'marked read by copied to user');
 
-    //             $transaction->commit();
-    //         } catch (\Exception $e) {
-    //             $transaction->rollback();
-    //             throw $e;
-    //         }
-    //     }
-    // }
+                $transaction->commit();
+            } catch (\Exception $e) {
+                $transaction->rollback();
+                throw $e;
+            }
+        }
+    }
 
     /**
      * Extend the parent method to set event issue data based on user selection.
