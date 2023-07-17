@@ -504,7 +504,7 @@ class MailboxSearch
                                 (:message_to_me IS NULL OR :message_to_me = omr.primary_recipient) AND
                                 (:message_cc IS NULL OR :message_cc <> omr.primary_recipient) AND
                                 (:message_urgent IS NULL OR eom.urgent = :message_urgent) AND
-                                (:message_query IS NULL OR (:message_query = EXISTS(SELECT id FROM ophcomessaging_message_message_type ommt WHERE ommt.name = 'Query' AND ommt.id = eom.message_type_id)))
+                                (:message_query IS NULL OR (:message_query = EXISTS(SELECT id FROM ophcomessaging_message_message_type ommt WHERE ommt.reply_required = 1 AND ommt.id = eom.message_type_id)))
                             )
                     ) messages
                 LEFT OUTER JOIN
