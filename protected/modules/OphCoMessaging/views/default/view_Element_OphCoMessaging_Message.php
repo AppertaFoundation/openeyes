@@ -98,7 +98,12 @@ $mailbox =
                 <div class="missive">
                     <?= Yii::app()->format->Ntext(preg_replace("/\n/", "", preg_replace('/(\s{4})\s+/', '$1', $element->message_text))) ?>
                     <div class="read-status" data-test="read-status">
-                        <?= count($element->read_by_recipients) === 0 ? 'Unread' : 'Read by: ' . $element->getReadByLine() ?>
+                        <?php
+                        // While we are not tracking read status of each individual comment, only show the read by list on the last message/comment in the thread
+                        if (empty($element->comments)) {
+                            echo count($element->read_by_recipients) === 0 ? 'Unread' : 'Read by: ' . $element->getReadByLine();
+                        }
+                        ?>
                     </div>
                 </div>
                 <?php if (empty($element->comments) && $this->canMarkMessageRead($element, $mailbox)) { ?>
@@ -118,7 +123,7 @@ $mailbox =
                 <?php } ?>
             </div>
 
-            <?php foreach ($element->comments as $comment) {
+            <?php foreach ($element->comments as $key => $comment) {
                     $sender_mailbox = $comment->sender_mailbox;
                     $reply_sender_label = $comment->user->getFullName();
                 if (isset($sender_mailbox) && !$sender_mailbox->is_personal) {
@@ -133,7 +138,14 @@ $mailbox =
             <div class="msg-reader">
                 <div class="missive">
                 <?= Yii::app()->format->Ntext(preg_replace("/\n/", "", preg_replace('/(\s{4})\s+/', '$1', $comment->comment_text))) ?>
-                    <div class="read-status" data-test="read-status"><?= $comment->marked_as_read ? ('Read by: ' . $comment->usermodified->getFullName()) : 'Unread' ?></div>
+                    <div class="read-status" data-test="read-status">
+                        <?php
+                        // While we are not tracking read status of each individual comment, only show the read by list on the last message/comment in the thread
+                        if ($key === count($element->comments) - 1) {
+                            echo count($element->read_by_recipients) === 0 ? 'Unread' : 'Read by: ' . $element->getReadByLine();
+                        }
+                        ?>
+                    </div>
                 </div>
                 <?php if ($is_latest_comment && $this->canMarkMessageRead($element, $mailbox)) { ?>
                     <div class="change-msg-status">
@@ -212,6 +224,7 @@ $mailbox =
         </div>
     </div>
 </div>
+
 <script>
     function splitLinesIntoBRsIn(intoContainer, text)
     {
