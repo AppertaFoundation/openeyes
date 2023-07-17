@@ -9,18 +9,18 @@ class MailboxSearch
     public const FOLDER_UNREAD_ALL = 'unread_all';
     public const FOLDER_UNREAD_URGENT = 'unread_urgent';
     public const FOLDER_UNREAD_QUERY = 'unread_query';
-    public const FOLDER_UNREAD_RECEIVED = 'unread_received';
-    public const FOLDER_UNREAD_COPIED = 'unread_copied';
+    public const FOLDER_UNREAD_TO_ME = 'unread_to_me';
+    public const FOLDER_UNREAD_CC = 'unread_cc';
     public const FOLDER_UNREAD_REPLIES = 'unread_replies';
 
     public const FOLDER_READ_ALL = 'read_all';
     public const FOLDER_READ_URGENT = 'read_urgent';
-    public const FOLDER_READ_RECEIVED = 'read_received';
-    public const FOLDER_READ_COPIED = 'read_copied';
+    public const FOLDER_READ_TO_ME = 'read_to_me';
+    public const FOLDER_READ_CC = 'read_cc';
 
-    public const FOLDER_SENT_ALL = 'sent_all';
-    public const FOLDER_SENT_UNREPLIED = 'sent_unreplied';
-    public const FOLDER_SENT_UNREAD = 'sent_unread';
+    public const FOLDER_STARTED_THREADS = 'started_threads';
+    public const FOLDER_WAITING_FOR_REPLY = 'waiting_for_reply';
+    public const FOLDER_UNREAD_BY_RECIPIENT = 'unread_by_recipient';
 
     private const RETRIEVE_RECEIVED = 'received';
     private const RETRIEVE_SENT = 'sent';
@@ -107,14 +107,14 @@ class MailboxSearch
                     $this->message_query = 1;
                     break;
 
-                case self::FOLDER_UNREAD_RECEIVED:
+                case self::FOLDER_UNREAD_TO_ME:
                     $this->retrieve_from = self::RETRIEVE_RECEIVED;
                     $this->message_sent = 0;
                     $this->message_read = 0;
                     $this->message_to_me = 1;
                     break;
 
-                case self::FOLDER_UNREAD_COPIED:
+                case self::FOLDER_UNREAD_CC:
                     $this->retrieve_from = self::RETRIEVE_RECEIVED;
                     $this->message_sent = 0;
                     $this->message_read = 0;
@@ -140,33 +140,33 @@ class MailboxSearch
                     $this->message_urgent = 1;
                     break;
 
-                case self::FOLDER_READ_RECEIVED:
+                case self::FOLDER_READ_TO_ME:
                     $this->retrieve_from = self::RETRIEVE_RECEIVED;
                     $this->message_sent = 0;
                     $this->message_read = 1;
                     $this->message_to_me = 1;
                     break;
 
-                case self::FOLDER_READ_COPIED:
+                case self::FOLDER_READ_CC:
                     $this->retrieve_from = self::RETRIEVE_RECEIVED;
                     $this->message_sent = 0;
                     $this->message_read = 1;
                     $this->message_cc = 1;
                     break;
 
-                case self::FOLDER_SENT_ALL:
+                case self::FOLDER_STARTED_THREADS:
                     $this->retrieve_from = self::RETRIEVE_SENT;
                     $this->message_user_original_sender = 1;
                     break;
 
-                case self::FOLDER_SENT_UNREPLIED:
+                case self::FOLDER_WAITING_FOR_REPLY:
                     $this->retrieve_from = self::RETRIEVE_SENT;
                     $this->message_reply = 0;
                     $this->message_query = 1;
                     $this->message_user_original_sender = 1;
                     break;
 
-                case self::FOLDER_SENT_UNREAD:
+                case self::FOLDER_UNREAD_BY_RECIPIENT:
                     $this->retrieve_from = self::RETRIEVE_SENT;
                     $this->message_sent = 1;
                     $this->message_read = 0;
@@ -216,16 +216,17 @@ class MailboxSearch
         $mailbox_id_params = MailboxSearch::getMailboxQueryParams($user_id, $mailbox_ids);
 
         $sql = "SELECT
+            COUNT(contextualised_messages.element_id) `all`,
             SUM((contextualised_messages.sent = 0 OR contextualised_messages.to_self)) total_message_count,
 
-            SUM((contextualised_messages.sent = 0 OR contextualised_messages.to_self) AND contextualised_messages.marked_as_read = 0) all_unread,
+            SUM((contextualised_messages.sent = 0 OR contextualised_messages.to_self) AND contextualised_messages.marked_as_read = 0) unread_all,
             SUM((contextualised_messages.sent = 0 OR contextualised_messages.to_self) AND contextualised_messages.marked_as_read = 0 AND contextualised_messages.urgent = 1) unread_urgent,
-            SUM((contextualised_messages.sent = 0 OR contextualised_messages.to_self) AND contextualised_messages.marked_as_read = 0 AND contextualised_messages.reply_required = 1) unread_queries,
+            SUM((contextualised_messages.sent = 0 OR contextualised_messages.to_self) AND contextualised_messages.marked_as_read = 0 AND contextualised_messages.reply_required = 1) unread_query,
             SUM((contextualised_messages.sent = 0 OR contextualised_messages.to_self) AND contextualised_messages.marked_as_read = 0 AND contextualised_messages.has_reply = 1) unread_replies,
             SUM((contextualised_messages.sent = 0 OR contextualised_messages.to_self) AND contextualised_messages.marked_as_read = 0 AND contextualised_messages.to_me = 1) unread_to_me,
             SUM((contextualised_messages.sent = 0 OR contextualised_messages.to_self) AND contextualised_messages.marked_as_read = 0 AND contextualised_messages.cc = 1) unread_cc,
 
-            SUM((contextualised_messages.sent = 0 OR contextualised_messages.to_self) AND contextualised_messages.marked_as_read = 1) all_read,
+            SUM((contextualised_messages.sent = 0 OR contextualised_messages.to_self) AND contextualised_messages.marked_as_read = 1) read_all,
             SUM((contextualised_messages.sent = 0 OR contextualised_messages.to_self) AND contextualised_messages.marked_as_read = 1 AND contextualised_messages.urgent = 1) read_urgent,
             SUM((contextualised_messages.sent = 0 OR contextualised_messages.to_self) AND contextualised_messages.marked_as_read = 1 AND contextualised_messages.to_me = 1) read_to_me,
             SUM((contextualised_messages.sent = 0 OR contextualised_messages.to_self) AND contextualised_messages.marked_as_read = 1 AND contextualised_messages.cc = 1) read_cc,
@@ -326,13 +327,13 @@ class MailboxSearch
         if (!$counts) {
             $counts = [
                 'total_message_count' => 0,
-                'all_unread' => 0,
+                'unread_all' => 0,
                 'unread_to_me' => 0,
                 'unread_urgent' => 0,
-                'unread_queries' => 0,
+                'unread_query' => 0,
                 'unread_replies' => 0,
                 'unread_cc' => 0,
-                'all_read' => 0,
+                'read_all' => 0,
                 'read_urgent' => 0,
                 'read_to_me' => 0,
                 'read_cc' => 0,

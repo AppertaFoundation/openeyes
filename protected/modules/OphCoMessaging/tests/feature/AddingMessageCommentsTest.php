@@ -70,6 +70,8 @@ class AddingMessageCommentsTest extends OEDbTestCase
         $recipient->refresh();
 
         $this->assertFalse((bool) $recipient->marked_as_read);
+
+        $this->assertCountQueryMatchesDataQuery($sender, $sender_mailbox);
     }
 
     /** @test */
@@ -125,6 +127,10 @@ class AddingMessageCommentsTest extends OEDbTestCase
         $this->assertUnreadMessageCount(0, $primary_user, "unread count for primary should be zero after marking as read again.");
 
         $this->assertUnreadMessageCount(1, $secondary_user, "unread count for secondary should remain 1 after primary marking as read.");
+
+        $this->assertCountQueryMatchesDataQuery($sender_user, $sender_mailbox);
+        $this->assertCountQueryMatchesDataQuery($primary_user, $primary_mailbox);
+        $this->assertCountQueryMatchesDataQuery($secondary_user, $secondary_mailbox);
     }
 
     /** @test */
@@ -162,6 +168,9 @@ class AddingMessageCommentsTest extends OEDbTestCase
         //Ensure that this message does not appear in CC recipient's unread folder
         $data_provider = $search->retrieveMailboxContentsUsingSQL($primary_user->id, [$primary_mailbox->id]);
         $this->assertEmpty($data_provider->getData());
+
+        $this->assertCountQueryMatchesDataQuery($sender_user, $sender_mailbox);
+        $this->assertCountQueryMatchesDataQuery($primary_user, $primary_mailbox);
     }
 
     /** @test */
@@ -228,6 +237,10 @@ class AddingMessageCommentsTest extends OEDbTestCase
             $secondary_user,
             "cc user should remain marked as read after sender comment addition."
         );
+
+        $this->assertCountQueryMatchesDataQuery($sender_user, $sender_mailbox);
+        $this->assertCountQueryMatchesDataQuery($primary_user, $primary_mailbox);
+        $this->assertCountQueryMatchesDataQuery($secondary_user, $secondary_mailbox);
     }
 
     /** @test */
@@ -274,6 +287,9 @@ class AddingMessageCommentsTest extends OEDbTestCase
         // due to construction of the dataprovider in the searcher, we rely on the first
         // entry in the data to validate the total message count
         $this->assertEquals(1, $data_provider->getData()[0]['total_message_count']);
+
+        $this->assertCountQueryMatchesDataQuery($sender_user, $sender_mailbox);
+        $this->assertCountQueryMatchesDataQuery($primary_user, $primary_mailbox);
     }
 
     //sent message does not show in sender's unread mailbox
@@ -291,6 +307,8 @@ class AddingMessageCommentsTest extends OEDbTestCase
         $search = new MailboxSearch($sender_user, MailboxSearch::FOLDER_UNREAD_ALL);
         $data_provider = $search->retrieveMailboxContentsUsingSQL($sender_user->id, [$sender_mailbox->id]);
         $this->assertEmpty($data_provider->getData());
+
+        $this->assertCountQueryMatchesDataQuery($sender_user, $sender_mailbox);
     }
 
     //sent message shows in sent mailbox
@@ -305,9 +323,11 @@ class AddingMessageCommentsTest extends OEDbTestCase
 
         $this->mockCurrentContext();
 
-        $search = new MailboxSearch($sender_user, MailboxSearch::FOLDER_SENT_ALL);
+        $search = new MailboxSearch($sender_user, MailboxSearch::FOLDER_STARTED_THREADS);
         $data_provider = $search->retrieveMailboxContentsUsingSQL($sender_user->id, [$sender_mailbox->id]);
         $this->assertCount(1, $data_provider->getData());
+
+        $this->assertCountQueryMatchesDataQuery($sender_user, $sender_mailbox);
     }
 
     //sent message is marked unread for each recipient
@@ -359,6 +379,9 @@ class AddingMessageCommentsTest extends OEDbTestCase
         $search = new MailboxSearch($secondary_user, MailboxSearch::FOLDER_UNREAD_ALL);
         $data_provider = $search->retrieveMailboxContentsUsingSQL($secondary_user->id, [$secondary_mailbox->id]);
         $this->assertCount(1, $data_provider->getData());
+
+        $this->assertCountQueryMatchesDataQuery($primary_user, $primary_mailbox);
+        $this->assertCountQueryMatchesDataQuery($secondary_user, $secondary_mailbox);
     }
 
     //marking as read updates read status and shows in read mailbox
@@ -404,6 +427,9 @@ class AddingMessageCommentsTest extends OEDbTestCase
             $secondary_mailbox,
             "Message should appear in read folder when marked as read for cc recipient"
         );
+
+        $this->assertCountQueryMatchesDataQuery($primary_user, $primary_mailbox);
+        $this->assertCountQueryMatchesDataQuery($secondary_user, $secondary_mailbox);
     }
 
     //marking as read updates read status and does not show in unread mailbox
@@ -435,6 +461,9 @@ class AddingMessageCommentsTest extends OEDbTestCase
 
         $this->markReadWithRequest($message_element, $secondary_user);
         $this->assertUnreadMessageCount(0, $secondary_user, "message should not be unread for cc user after marking read.");
+
+        $this->assertCountQueryMatchesDataQuery($primary_user, $primary_mailbox);
+        $this->assertCountQueryMatchesDataQuery($secondary_user, $secondary_mailbox);
     }
 
     //marking as unread updates unread status and shows in unread mailbox
@@ -479,6 +508,9 @@ class AddingMessageCommentsTest extends OEDbTestCase
         $search = new MailboxSearch($primary_user, MailboxSearch::FOLDER_UNREAD_ALL);
         $data_provider = $search->retrieveMailboxContentsUsingSQL($secondary_user->id, [$secondary_mailbox->id]);
         $this->assertCount(1, $data_provider->getData());
+
+        $this->assertCountQueryMatchesDataQuery($primary_user, $primary_mailbox);
+        $this->assertCountQueryMatchesDataQuery($secondary_user, $secondary_mailbox);
     }
 
     //marking as unread updates unread status and does not show in read mailbox
@@ -524,6 +556,9 @@ class AddingMessageCommentsTest extends OEDbTestCase
         $search = new MailboxSearch($primary_user, MailboxSearch::FOLDER_READ_ALL);
         $data_provider = $search->retrieveMailboxContentsUsingSQL($secondary_user->id, [$secondary_mailbox->id]);
         $this->assertEmpty($data_provider->getData());
+
+        $this->assertCountQueryMatchesDataQuery($primary_user, $primary_mailbox);
+        $this->assertCountQueryMatchesDataQuery($secondary_user, $secondary_mailbox);
     }
 
     //adding a comment marks message unread for each other related user, ie
@@ -591,6 +626,10 @@ class AddingMessageCommentsTest extends OEDbTestCase
 
         $this->assertTrue((bool) $primary_recipient->marked_as_read);
         $this->assertCount(0, $data_provider->getData());
+
+        $this->assertCountQueryMatchesDataQuery($sender_user, $sender_mailbox);
+        $this->assertCountQueryMatchesDataQuery($primary_user, $primary_mailbox);
+        $this->assertCountQueryMatchesDataQuery($secondary_user, $secondary_mailbox);
     }
 
     //adding a comment marks message read for the sender of the comment
@@ -643,6 +682,10 @@ class AddingMessageCommentsTest extends OEDbTestCase
 
         $data_provider = $search->retrieveMailboxContentsUsingSQL($sender_user->id, [$sender_mailbox->id]);
         $this->assertCount(0, $data_provider->getData());
+
+        $this->assertCountQueryMatchesDataQuery($sender_user, $sender_mailbox);
+        $this->assertCountQueryMatchesDataQuery($primary_user, $primary_mailbox);
+        $this->assertCountQueryMatchesDataQuery($secondary_user, $secondary_mailbox);
     }
 
     /** @test */
@@ -685,6 +728,10 @@ class AddingMessageCommentsTest extends OEDbTestCase
             $secondary_user,
             "cc user should be marked unread after request"
         );
+
+        $this->assertCountQueryMatchesDataQuery($sender_user, $sender_mailbox);
+        $this->assertCountQueryMatchesDataQuery($primary_user, $primary_mailbox);
+        $this->assertCountQueryMatchesDataQuery($secondary_user, $secondary_mailbox);
     }
 
     /** @test */
@@ -738,6 +785,10 @@ class AddingMessageCommentsTest extends OEDbTestCase
             $secondary_user,
             "cc should not have unread once marked as read."
         );
+
+        $this->assertCountQueryMatchesDataQuery($sender_user, $sender_mailbox);
+        $this->assertCountQueryMatchesDataQuery($primary_user, $primary_mailbox);
+        $this->assertCountQueryMatchesDataQuery($secondary_user, $secondary_mailbox);
     }
 
     /** @test */
@@ -799,6 +850,9 @@ class AddingMessageCommentsTest extends OEDbTestCase
             $primary_user,
             "message should be read for primary recipient after they reply again."
         );
+
+        $this->assertCountQueryMatchesDataQuery($sender_user, $sender_mailbox);
+        $this->assertCountQueryMatchesDataQuery($primary_user, $primary_mailbox);
     }
 
     /** @test */
@@ -854,6 +908,9 @@ class AddingMessageCommentsTest extends OEDbTestCase
 
         $this->assertCount(1, $sender_data_provider->getData());
         $this->assertCount(0, $secondary_data_provider->getData());
+
+        $this->assertCountQueryMatchesDataQuery($sender_user, $sender_mailbox);
+        $this->assertCountQueryMatchesDataQuery($secondary_user, $secondary_mailbox);
     }
 
     /** @test */
@@ -944,6 +1001,10 @@ class AddingMessageCommentsTest extends OEDbTestCase
         $this->assertCount(0, $sender_data_provider->getData());
         $this->assertCount(1, $primary_data_provider->getData());
         $this->assertCount(1, $secondary_data_provider->getData());
+
+        $this->assertCountQueryMatchesDataQuery($sender_user, $sender_mailbox);
+        $this->assertCountQueryMatchesDataQuery($primary_user, $primary_mailbox);
+        $this->assertCountQueryMatchesDataQuery($secondary_user, $secondary_mailbox);
     }
 
     protected function sendMessage(): array
@@ -1074,6 +1135,48 @@ class AddingMessageCommentsTest extends OEDbTestCase
         } else {
             $this->assertArrayHasKey(0, $data, $message);
             $this->assertEquals($count, $data[0]['total_message_count'], $message);
+        }
+    }
+
+    protected function assertCountQueryMatchesDataQuery(
+        User $user,
+        Mailbox $mailbox,
+        string $folders = null,
+    ) {
+        $folders = $folders ?? [
+            MailboxSearch::FOLDER_ALL,
+
+            MailboxSearch::FOLDER_UNREAD_ALL,
+            MailboxSearch::FOLDER_UNREAD_URGENT,
+            MailboxSearch::FOLDER_UNREAD_QUERY,
+            MailboxSearch::FOLDER_UNREAD_TO_ME,
+            MailboxSearch::FOLDER_UNREAD_CC,
+            MailboxSearch::FOLDER_UNREAD_REPLIES,
+
+            MailboxSearch::FOLDER_READ_ALL,
+            MailboxSearch::FOLDER_READ_URGENT,
+            MailboxSearch::FOLDER_READ_TO_ME,
+            MailboxSearch::FOLDER_READ_CC,
+
+            MailboxSearch::FOLDER_STARTED_THREADS,
+            MailboxSearch::FOLDER_WAITING_FOR_REPLY,
+            MailboxSearch::FOLDER_UNREAD_BY_RECIPIENT,
+        ];
+
+        $search = new MailboxSearch($user, MailboxSearch::FOLDER_ALL);
+        $reported_counts = $search->getMailboxFolderCounts($user->id, [$mailbox->id]);
+
+        foreach($folders as $folder) {
+            $search = new MailboxSearch($user, $folder);
+            $mailbox_data = $search->retrieveMailboxContentsUsingSQL($user->id, [$mailbox->id])->getData();
+            
+            $reported_folder_count = $reported_counts[$folder];
+            $actual_returned_message_count = count($mailbox_data);
+            $data_reported_count = $actual_returned_message_count > 0 ? $mailbox_data[0]['total_message_count'] : 0;
+
+            $this->assertEquals($reported_folder_count, $data_reported_count, "count query message count does not match data query message count for folder: $folder");
+            $this->assertEquals($data_reported_count, $actual_returned_message_count, "data query reported message count does not match actual amount of messages returned for folder: $folder");
+            $this->assertEquals($reported_folder_count, $actual_returned_message_count, "count query message count does not match actual amount of messages returned for folder: $folder");
         }
     }
 

@@ -128,7 +128,7 @@ class MailboxSearchTest extends \OEDbTestCase
                 $this->makeMessageForTwo($this->other_mailbox, false, $this->receiver_mailbox, false)
             ];
         });
-        $results = $this->searchOne($this->receiver_user, $this->receiver_mailbox, MailboxSearch::FOLDER_UNREAD_RECEIVED);
+        $results = $this->searchOne($this->receiver_user, $this->receiver_mailbox, MailboxSearch::FOLDER_UNREAD_TO_ME);
 
         $this->assertCount(1, $results);
     }
@@ -143,7 +143,7 @@ class MailboxSearchTest extends \OEDbTestCase
             ];
         });
 
-        $results = $this->searchOne($this->receiver_user, $this->receiver_mailbox, MailboxSearch::FOLDER_UNREAD_COPIED);
+        $results = $this->searchOne($this->receiver_user, $this->receiver_mailbox, MailboxSearch::FOLDER_UNREAD_CC);
 
         $this->assertCount(1, $results);
     }
@@ -172,7 +172,7 @@ class MailboxSearchTest extends \OEDbTestCase
             ];
         });
 
-        $results = $this->searchOne($this->sender_user, $this->sender_mailbox, MailboxSearch::FOLDER_UNREAD_RECEIVED);
+        $results = $this->searchOne($this->sender_user, $this->sender_mailbox, MailboxSearch::FOLDER_UNREAD_TO_ME);
 
         $this->assertCount(1, $results);
     }
