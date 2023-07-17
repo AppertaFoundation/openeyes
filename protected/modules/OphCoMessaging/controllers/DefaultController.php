@@ -76,9 +76,11 @@ class DefaultController extends \BaseEventTypeController
      *
      * @return mixed
      */
-    public function getEventViewUrl()
+    public function getEventViewUrl($additional_params = [])
     {
-        return \Yii::app()->createUrl('/' . $this->getModule()->name . '/Default/view/' . $this->event->id);
+        $param_string = implode('', array_map(function($key, $value) { return "&$key=$value"; }, array_keys($additional_params), array_values($additional_params)));
+
+        return \Yii::app()->createUrl('/' . $this->getModule()->name . '/Default/view/?id=' . $this->event->id . $param_string);
     }
 
     public function initActionView()
@@ -114,8 +116,11 @@ class DefaultController extends \BaseEventTypeController
 
         $el->setReadStatusForMailbox($mailbox, true);
 
+        $this->updateEvent();
+        $this->event->audit('event', 'marked read');
+
         if (!isset($_GET['noRedirect']) || !$_GET['noRedirect']) {
-            $this->redirectAfterAction();
+            $this->redirectAfterAction($mailbox);
         } else {
             $exam_api = new OphCoMessaging_API();
             $this->renderJSON($exam_api->updateMessagesCount(\Yii::app()->user));
@@ -146,10 +151,12 @@ class DefaultController extends \BaseEventTypeController
             User::model()->findByPk(\Yii::app()->user->id)->personalMailbox;
 
         $el = $this->getMessageElement();
-
         $el->setReadStatusForMailbox($mailbox, false);
 
-        $this->redirectAfterAction();
+        $this->updateEvent();
+        $this->event->audit('event', 'marked unread');
+
+        $this->redirectAfterAction($mailbox);
     }
 
     /**
@@ -173,10 +180,12 @@ class DefaultController extends \BaseEventTypeController
     {
         $element = $this->getMessageElement();
 
+        $mailbox_id = isset($_POST['comment_reply_mailbox']) ? $_POST['comment_reply_mailbox'] : null;
+
         $comment = new OphCoMessaging_Message_Comment();
 
         $comment->comment_text = isset($_POST['OEModule_OphCoMessaging_models_OphCoMessaging_Message_Comment']['comment_text']) ? $_POST['OEModule_OphCoMessaging_models_OphCoMessaging_Message_Comment']['comment_text'] : null;
-        $comment->mailbox_id = isset($_POST['comment_reply_mailbox']) ? $_POST['comment_reply_mailbox'] : null;
+        $comment->mailbox_id = $mailbox_id;
         $comment->element_id = $element->id;
 
         if (!$comment->validate()) {
@@ -218,7 +227,7 @@ class DefaultController extends \BaseEventTypeController
                 throw $e;
             }
 
-            $this->redirectAfterAction();
+            $this->redirectAfterAction(Mailbox::model()->findByPk($mailbox_id));
         }
     }
 
@@ -256,9 +265,16 @@ class DefaultController extends \BaseEventTypeController
     /**
      * Convenience function for performing redirect once a message has been manipulated.
      */
-    protected function redirectAfterAction()
+    protected function redirectAfterAction($mailbox = null)
     {
-        $return_url = @$_GET['returnUrl'] ?? @$_POST['returnUrl'] ?? $this->getEventViewUrl();
+        $additional_params = [];
+
+        if (isset($mailbox)) {
+            $additional_params['mailbox_id'] = $mailbox->id;   
+        }
+
+        $return_url = @$_GET['returnUrl'] ?? @$_POST['returnUrl'] ?? $this->getEventViewUrl($additional_params);
+
         $this->redirect($return_url);
     }
 
