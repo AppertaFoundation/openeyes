@@ -179,7 +179,6 @@ class DefaultController extends \BaseEventTypeController
     public function actionAddComment($id)
     {
         $element = $this->getMessageElement();
-
         $mailbox_id = isset($_POST['mailbox_id']) ? $_POST['mailbox_id'] : null;
 
         $comment = new OphCoMessaging_Message_Comment();
@@ -210,9 +209,11 @@ class DefaultController extends \BaseEventTypeController
 
                 foreach ($recipients as $recipient) {
                     //mark the recipient as unread for each mailbox that didn't send the comment, and read for the one that did
-                    $recipient_is_comment_sender = ($recipient->mailbox_id === $comment->mailbox_id);
+                    $recipient_is_comment_sender = ((int) $recipient->mailbox_id === (int) $comment->mailbox_id);
                     $recipient->marked_as_read = $recipient_is_comment_sender;
-                    $recipient->save();
+                    if (!$recipient->save()) {
+                        throw new \RuntimeException('could not update recipient read state: ' . print_r($recipient->getErrors(), true));
+                    };
                 }
 
                 $element->save();
@@ -270,7 +271,7 @@ class DefaultController extends \BaseEventTypeController
         $additional_params = [];
 
         if (isset($mailbox)) {
-            $additional_params['mailbox_id'] = $mailbox->id;   
+            $additional_params['mailbox_id'] = $mailbox->id;
         }
 
         $return_url = @$_GET['returnUrl'] ?? @$_POST['returnUrl'] ?? $this->getEventViewUrl($additional_params);
