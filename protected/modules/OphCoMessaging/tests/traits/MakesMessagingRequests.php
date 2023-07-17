@@ -87,7 +87,7 @@ trait MakesMessagingRequests
     protected function generateCommentPostData(Mailbox $from_mailbox, ?string $text = null): array
     {
         return [
-            'comment_reply_mailbox' => $from_mailbox->id,
+            'mailbox_id' => $from_mailbox->id,
             'OEModule_OphCoMessaging_models_OphCoMessaging_Message_Comment' => [
                 'comment_text' => $text ?? $this->faker->sentence()
             ]
