@@ -74,7 +74,7 @@ class Mailbox extends \BaseActiveRecordVersioned
             'lastModifiedUser' => [self::BELONGS_TO, \User::class, 'last_modified_user_id'],
             'teams' => [self::MANY_MANY, \Team::class, 'mailbox_team(mailbox_id, team_id)'],
             'users' => [self::MANY_MANY, \User::class, 'mailbox_user(mailbox_id, user_id)'],
-            'all_messages' => [self::MANY_MANY, Element_OphCoMessaging_Message::class, 'ophcomessaging_message_recipient(mailbox_id, element_id)'],
+            'received_messages' => [self::MANY_MANY, Element_OphCoMessaging_Message::class, 'ophcomessaging_message_recipient(mailbox_id, element_id)'],
             'sent_messages' => [self::HAS_MANY, Element_OphCoMessaging_Message::class, 'sender_mailbox_id'],
         ];
     }
@@ -224,7 +224,7 @@ class Mailbox extends \BaseActiveRecordVersioned
     }
 
     /**
-     * Scope to constrain query to mailboxes included as a sender or receiver of the given message
+     * Scope to constrain query to mailboxes included as recipient of the given message
      *
      * @param string|int $element_id
      * @return self
@@ -234,9 +234,9 @@ class Mailbox extends \BaseActiveRecordVersioned
         $this->getDbCriteria()
             ->mergeWith([
                 'with' => [
-                    'all_messages' => ['alias' => 'all']
+                    'received_messages' => ['alias' => 'all']
                 ],
-                'condition' => '(element_id = :message_id AND all_messages_all.mailbox_id = t.id)',
+                'condition' => '(element_id = :message_id AND received_messages_all.mailbox_id = t.id)',
                 'params' => [':message_id' => $element_id]
             ]);
 

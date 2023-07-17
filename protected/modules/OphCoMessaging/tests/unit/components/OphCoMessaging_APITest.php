@@ -65,7 +65,7 @@ class OphCoMessaging_APITest extends \OEDbTestCase
 
             $mailbox = Mailbox::model()->findByPk($mailbox_message_count['id']);
 
-            $this->assertEquals(count($mailbox->all_messages), $message_count, "API returned incorrect message count for mailbox");
+            $this->assertEquals(count($mailbox->received_messages), $message_count, "API returned incorrect message count for mailbox");
         }
     }
 
