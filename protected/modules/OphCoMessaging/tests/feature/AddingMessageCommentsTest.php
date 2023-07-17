@@ -950,6 +950,33 @@ class AddingMessageCommentsTest extends OEDbTestCase
         return [$user, Mailbox::factory()->personalFor($user)->create()];
     }
 
+    protected function markReadWithRequest($message_element, $user)
+    {
+        $this->actingAs($user)
+            ->get('/OphCoMessaging/default/markRead?id=' . $message_element->event_id);
+    }
+
+    protected function markUnreadWithRequest($message_element, $user)
+    {
+        $this->actingAs($user)
+            ->get('/OphCoMessaging/default/markUnread?id=' . $message_element->event_id);
+    }
+
+    protected function postCommentWithRequestOn($message_element, $user, $mailbox, $text = null)
+    {
+        $this->actingAs($user)
+            ->post(
+                '/OphCoMessaging/default/addComment?id=' . $message_element->event_id,
+                [
+                    'mailbox_id' => $mailbox->id,
+                    'OEModule_OphCoMessaging_models_OphCoMessaging_Message_Comment' => [
+                        'comment_text' => $text ?? $this->faker->sentence()
+                    ]
+                ]
+            )
+            ->assertRedirect();
+    }
+
     protected function assertUnreadMessageCount(
         int $count,
         User $user,

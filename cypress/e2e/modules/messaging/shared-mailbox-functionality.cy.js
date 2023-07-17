@@ -163,6 +163,7 @@ describe('verifies the desired behaviour of shared mailboxes for messaging', () 
 
         // request the deletion of the user shared mailbox message
         cy.visit(data.messageEvent1.urls.view + `&mailbox_id=${data.teamMailbox.id}`)
+
         cy.getBySel('event-action-').click()
         cy.getBySel('reason-for-deletion').type(DELETE_TEXT)
         cy.getBySel('delete-event').click()
@@ -198,7 +199,5 @@ describe('verifies the desired behaviour of shared mailboxes for messaging', () 
         cy.getBySel('audit-anchor')
             .should('have.attr', 'href')
             .and('include', data.messageEvent1.urls.view.substr(33))
-
     });
-
 });

@@ -38,7 +38,7 @@ class OphCoMessaging_Message_Comment extends \BaseActiveRecordVersioned
     {
         return array(
             array('comment_text', 'safe'),
-            array('comment_text', 'required'),
+            array('comment_text, mailbox_id', 'required'),
             array('id, comment_text', 'safe', 'on' => 'search'),
         );
     }
@@ -71,7 +71,6 @@ class OphCoMessaging_Message_Comment extends \BaseActiveRecordVersioned
         if ($this->isNewRecord && !isset($this->marked_as_read)) {
             $this->marked_as_read = $this->mailbox_id === $this->element->sender_mailbox_id;
         }
-
 
         return parent::beforeSave();
     }

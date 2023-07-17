@@ -180,7 +180,7 @@ class DefaultController extends \BaseEventTypeController
     {
         $element = $this->getMessageElement();
 
-        $mailbox_id = isset($_POST['comment_reply_mailbox']) ? $_POST['comment_reply_mailbox'] : null;
+        $mailbox_id = isset($_POST['mailbox_id']) ? $_POST['mailbox_id'] : null;
 
         $comment = new OphCoMessaging_Message_Comment();
 
