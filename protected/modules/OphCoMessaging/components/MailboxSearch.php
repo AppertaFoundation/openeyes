@@ -329,7 +329,7 @@ class MailboxSearch
 
         if (!$counts) {
             $counts = [
-                'total_message_count' => 0,
+                'all' => 0,
                 'unread_all' => 0,
                 'unread_to_me' => 0,
                 'unread_urgent' => 0,

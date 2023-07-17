@@ -98,8 +98,8 @@ class SeededEventResource extends SeededResource
     protected function urlsArray(): array
     {
         return [
-            'view' => \Yii::app()->createUrl('/' . $this->instance->eventType->class_name . '/Default/view/' . $this->instance->id),
-            'edit' => \Yii::app()->createUrl('/' . $this->instance->eventType->class_name . '/Default/update/' . $this->instance->id)
+            'view' => \Yii::app()->createUrl('/' . $this->instance->eventType->class_name . '/Default/view/?id=' . $this->instance->id),
+            'edit' => \Yii::app()->createUrl('/' . $this->instance->eventType->class_name . '/Default/update/?id=' . $this->instance->id)
         ];
     }
 }

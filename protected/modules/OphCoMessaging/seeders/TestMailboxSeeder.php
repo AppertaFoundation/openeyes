@@ -89,8 +89,8 @@ class TestMailboxSeeder extends BaseSeeder
             'user1' => ['username' => $user1_authentication->username, 'password' => $user1_password, 'fullName' => $user1->getFullName()],
             'user2' => ['username' => $user2_authentication->username, 'password' => $user2_password, 'fullName' => $user2->getFullName()],
             'teamName' => $team->name,
-            'userMailbox' => ['name' => $user_mailbox->name, 'messageText' => $user_mailbox_message->message_text],
-            'teamMailbox' => ['name' => $team_mailbox->name, 'messageText' => $team_mailbox_message->message_text],
+            'userMailbox' => ['id' => $user_mailbox->id, 'name' => $user_mailbox->name, 'messageText' => $user_mailbox_message->message_text],
+            'teamMailbox' => ['id' => $team_mailbox->id, 'name' => $team_mailbox->name, 'messageText' => $team_mailbox_message->message_text],
             'messageEvent1' => SeededEventResource::from($user_mailbox_message->event)->toArray(),
             'messageEvent2' => SeededEventResource::from($team_mailbox_message->event)->toArray(),
         ];
