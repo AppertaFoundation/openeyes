@@ -113,7 +113,6 @@ class DefaultController extends \BaseEventTypeController
             User::model()->findByPk(\Yii::app()->user->id)->personalMailbox;
 
         $el = $this->getMessageElement();
-
         $el->setReadStatusForMailbox($mailbox, true);
 
         $this->updateEvent();
@@ -407,7 +406,18 @@ class DefaultController extends \BaseEventTypeController
     {
         $recipient = OphCoMessaging_Message_Recipient::model()->findByAttributes(['element_id' => $el->id, 'mailbox_id' => $mailbox->id]);
 
-        return isset($recipient) && !$recipient->marked_as_read;
+        //Recipient marked as read status is tracked through their recipient entry
+        if (isset($recipient)) {
+            return !$recipient->marked_as_read;
+        }
+
+        //Sender marked as read status is tracked through the latest comment
+        if ((int) $el->sender_mailbox_id === (int) $mailbox->id && isset($el->last_comment)) {
+            return !$el->last_comment->marked_as_read;
+        }
+
+        return false;
+
     }
 
     /**
@@ -444,7 +454,17 @@ class DefaultController extends \BaseEventTypeController
     {
         $recipient = OphCoMessaging_Message_Recipient::model()->findByAttributes(['element_id' => $el->id, 'mailbox_id' => $mailbox->id]);
 
-        return isset($recipient) && $recipient->marked_as_read;
+        //Recipient marked as read status is tracked through their recipient entry
+        if (isset($recipient)) {
+            return $recipient->marked_as_read;
+        }
+
+        //Sender marked as read status is tracked through the latest comment
+        if ((int) $el->sender_mailbox_id === (int) $mailbox->id && isset($el->last_comment)) {
+            return $el->last_comment->marked_as_read;
+        }
+
+        return false;
     }
 
     public function canMarkCopyToRead($el)
