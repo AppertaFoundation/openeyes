@@ -78,9 +78,10 @@ class DefaultController extends \BaseEventTypeController
      */
     public function getEventViewUrl($additional_params = [])
     {
-        $param_string = implode('', array_map(function($key, $value) { return "&$key=$value"; }, array_keys($additional_params), array_values($additional_params)));
+        $params = array_merge(['id' => $this->event->id], $additional_params);
+        $param_string = http_build_query($params);
 
-        return \Yii::app()->createUrl('/' . $this->getModule()->name . '/Default/view/?id=' . $this->event->id . $param_string);
+        return \Yii::app()->createUrl('/' . $this->getModule()->name . '/Default/view/?' . $param_string);
     }
 
     public function initActionView()
