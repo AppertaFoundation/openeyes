@@ -26,8 +26,8 @@ if (!isset($new_comment)) {
     $new_comment = new \OEModule\OphCoMessaging\models\OphCoMessaging_Message_Comment();
 }
 
-$mailbox = 
-    Mailbox::model()->findByPk(\Yii::app()->request->getParam('mailbox_id')) ?? 
+$mailbox =
+    Mailbox::model()->findByPk(\Yii::app()->request->getParam('mailbox_id')) ??
     \User::model()->findByPk(\Yii::app()->user->id)->personalMailbox;
 ?>
 
@@ -79,7 +79,7 @@ $mailbox =
                 <td><?=\CHtml::encode($element->getAttributeLabel('message_type_id')) ?></td>
                 <td data-test="message-type"><?= $element->message_type ? $element->message_type->name : 'None' ?></td>
             </tr>
-                    
+
                     <?php if ($element->urgent) { ?>
                     <tr>
                         <th>Priority</th>
@@ -103,14 +103,14 @@ $mailbox =
                 </div>
                 <?php if (empty($element->comments) && $this->canMarkMessageRead($element, $mailbox)) { ?>
                 <div class="change-msg-status">
-                    <a class="button" href="<?= Yii::app()->createUrl("{$this->getModule()->name}/Default/markRead/?id={$this->event->id}&mailbox_id={$mailbox->id}") ?>" data-test="mark-as-read">
+                    <a class="button" data-test="mark-as-read-btn" href="<?= Yii::app()->createUrl("{$this->getModule()->name}/Default/markRead/?id={$this->event->id}&mailbox_id={$mailbox->id}") ?>" data-test="mark-as-read">
                         <i class="oe-i save small pad-r"></i>
                         Mark message as read for <?= $mailbox->name ?>
                     </a>
                 </div>
                 <?php } elseif (empty($element->comments) && $this->canMarkMessageUnread($element, $mailbox)) { ?>
                 <div class="change-msg-status">
-                    <a class="button" href="<?= Yii::app()->createUrl("{$this->getModule()->name}/Default/markUnread/?id={$this->event->id}&mailbox_id={$mailbox->id}") ?>" data-test="mark-as-unread">
+                    <a class="button" data-test="mark-as-unread-btn" href="<?= Yii::app()->createUrl("{$this->getModule()->name}/Default/markUnread/?id={$this->event->id}&mailbox_id={$mailbox->id}") ?>" data-test="mark-as-unread">
                         <i class="oe-i save small pad-r"></i>
                         Mark message as unread for <?= $mailbox->name ?>
                     </a>
@@ -164,7 +164,7 @@ $mailbox =
                 )); ?>
                 <hr class="divider" />
                 <div class="msg-reply">Your reply … <small>(can not be edited once sent)</small>
-                <div class="reply-mailbox">Replying as 
+                <div class="reply-mailbox">Replying as
                     <?=
                         \CHtml::dropDownList(
                             'mailbox_id',
