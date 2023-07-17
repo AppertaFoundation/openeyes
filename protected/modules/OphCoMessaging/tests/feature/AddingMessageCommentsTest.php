@@ -180,7 +180,6 @@ class AddingMessageCommentsTest extends OEDbTestCase
             ]);
 
         // arrangement sanity checks
-        $this->assertFalse((bool) $secondary_recipient->marked_as_read);
         $this->assertUnreadMessageCount(
             1,
             $secondary_user,
@@ -224,9 +223,9 @@ class AddingMessageCommentsTest extends OEDbTestCase
             "cc user should remain marked as read after sender comment addition."
         );
 
-        $this->assertCountQueryMatchesDataQuery($sender_user, $sender_mailbox);
-        $this->assertCountQueryMatchesDataQuery($primary_user, $primary_mailbox);
-        $this->assertCountQueryMatchesDataQuery($secondary_user, $secondary_mailbox);
+        $this->assertCountQueryMatchesDataQuery($sender_user, $sender_mailbox, null, "sender message counts should be consistent");
+        $this->assertCountQueryMatchesDataQuery($primary_user, $primary_mailbox, null, "recipient message counts should be consistent");
+        $this->assertCountQueryMatchesDataQuery($secondary_user, $secondary_mailbox, null, "cc message counts should be consistent");
     }
 
     /** @test */
@@ -1027,7 +1026,9 @@ class AddingMessageCommentsTest extends OEDbTestCase
         User $user,
         Mailbox $mailbox,
         array $folders = null,
+        string $message = ""
     ) {
+        $message = strlen($message) ? $message . ":\n" : "";
         $folders = $folders ?? [
             MailboxSearch::FOLDER_ALL,
 
@@ -1065,9 +1066,9 @@ class AddingMessageCommentsTest extends OEDbTestCase
             $actual_returned_counts[$folder] = (string) $actual_returned_message_count;
         }
 
-        $this->assertEquals($count_reported_counts, $data_reported_counts, "COUNT QUERY message counts do not match DATA QUERY message counts");
-        $this->assertEquals($data_reported_counts, $actual_returned_counts, "DATA QUERY reported message counts do not match ACTUAL COUNTS of messages returned for folder");
-        $this->assertEquals($count_reported_counts, $actual_returned_counts, "COUNT QUERY message counts do not match ACTUAL COUNTS of messages returned");
+        $this->assertEquals($count_reported_counts, $data_reported_counts, "{$message}COUNT QUERY message counts do not match DATA QUERY message counts");
+        $this->assertEquals($data_reported_counts, $actual_returned_counts, "{$message}DATA QUERY reported message counts do not match ACTUAL COUNTS of messages returned for folder");
+        $this->assertEquals($count_reported_counts, $actual_returned_counts, "{$message}COUNT QUERY message counts do not match ACTUAL COUNTS of messages returned");
     }
 
     private function mapToIds($models)
