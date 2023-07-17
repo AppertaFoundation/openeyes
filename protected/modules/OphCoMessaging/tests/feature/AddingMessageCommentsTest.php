@@ -884,18 +884,106 @@ class AddingMessageCommentsTest extends OEDbTestCase
         $this->assertCountQueryMatchesDataQuery($primary_user, $primary_mailbox);
     }
 
+    /** @test */
+    public function three_way_usage_of_mailboxes()
+    {
+        [$top_user, $top_mailbox] = $this->getMailboxUser();
+        [$left_user, $left_mailbox] = $this->getMailboxUser();
+        [$right_user, $right_mailbox] = $this->getMailboxUser();
+
+        $this->mockCurrentContext();
+
+        // Primary - Sender - CC
+        $top_sender_left_primary_right_cc_message = $this->createMessage($top_user, $top_mailbox, $left_mailbox, $right_mailbox);
+
+        // CC - Sender - Primary
+        $top_sender_right_primary_left_cc_message = $this->createMessage($top_user, $top_mailbox, $right_mailbox, $left_mailbox);
+
+        // Sender - Primary - CC
+        $left_sender_top_primary_right_cc_message = $this->createMessage($left_user, $left_mailbox, $top_mailbox, $right_mailbox);
+
+        // Sender - CC - Primary
+        $left_sender_right_primary_top_cc_message = $this->createMessage($left_user, $left_mailbox, $right_mailbox, $top_mailbox);
+
+        // CC - Primary - Sender
+        $right_sender_top_primary_left_cc_message = $this->createMessage($right_user, $right_mailbox, $top_mailbox, $left_mailbox);
+
+        // Primary - CC - Sender
+        $right_sender_left_primary_top_cc_message = $this->createMessage($right_user, $right_mailbox, $left_mailbox, $top_mailbox);
+
+        $this->assertUnreadMessageCount(4, $top_user);
+        $this->assertUnreadMessageCount(4, $left_user);
+        $this->assertUnreadMessageCount(4, $right_user);
+
+        // Right (as primary) posts a reply to the message sent by left
+        $this->postCommentWithRequestOn($left_sender_right_primary_top_cc_message, $right_user, $right_mailbox);
+
+        // Right moves to 3 - 1, left moves to 5 - 0
+        $this->assertUnreadMessageCount(3, $right_user);
+        $this->assertReadMessageCount(1, $right_user);
+        $this->assertUnreadMessageCount(5, $left_user);
+
+        // Left (as secondary) marks the message sent by top read
+        $this->markMessageReadWithRequest($top_sender_right_primary_left_cc_message, $left_user);
+
+        // Left moves to 4 - 1, top stays on 4 - 0
+        $this->assertUnreadMessageCount(4, $left_user);
+        $this->assertReadMessageCount(1, $left_user);
+        $this->assertUnreadMessageCount(4, $top_user);
+
+        // Right (as primary) then posts a reply to the message sent by top
+        $this->postCommentWithRequestOn($top_sender_right_primary_left_cc_message, $right_user, $right_mailbox);
+
+        // Right moves to 2 - 2, top moves to 5 - 0
+        $this->assertUnreadMessageCount(2, $right_user);
+        $this->assertReadMessageCount(2, $right_user);
+        $this->assertUnreadMessageCount(5, $top_user);
+
+        // Left stays on 4 - 1
+        $this->assertUnreadMessageCount(4, $left_user);
+        $this->assertReadMessageCount(1, $left_user);
+
+        // Left (as primary) marks the message sent by top read
+        $this->markReadWithRequest($top_sender_left_primary_right_cc_message, $left_user);
+
+        // Left moves to 3 - 2
+        $this->assertUnreadMessageCount(3, $left_user);
+        $this->assertReadMessageCount(2, $left_user);
+
+        // Right (as cc) marks the message sent by top read
+        $this->markReadWithRequest($top_sender_left_primary_right_cc_message, $right_user);
+
+        // Right moves to 1 - 3
+        $this->assertUnreadMessageCount(1, $left_user);
+        $this->assertReadMessageCount(3, $left_user);
+
+        $this->assertCountQueryMatchesDataQuery($top_user, $top_mailbox);
+        $this->assertCountQueryMatchesDataQuery($left_user, $left_mailbox);
+        $this->assertCountQueryMatchesDataQuery($right_user, $right_mailbox);
+    }
+
+    protected function createMessage(User $sender_user, Mailbox $sender_mailbox, Mailbox $primary_mailbox, Mailbox $secondary_mailbox, ?int $count = null)
+    {
+        $factory = Element_OphCoMessaging_Message::factory()
+            ->withSender($sender_user, $sender_mailbox)
+            ->withReplyRequired()
+            ->withPrimaryRecipient($primary_mailbox)
+            ->withCCRecipients([[$secondary_mailbox, false]]);
+
+        if ($count !== null) {
+            $factory->count($count);
+        }
+
+        return $factory->create();
+    }
+
     protected function sendMessage(): array
     {
         [$sender_user, $sender_mailbox] = $this->createMailboxUser();
         [$primary_user, $primary_mailbox] = $this->createMailboxUser();
         [$secondary_user, $secondary_mailbox] = $this->createMailboxUser();
 
-        $message_element = Element_OphCoMessaging_Message::factory()
-            ->withSender($sender_user, $sender_mailbox)
-            ->withReplyRequired()
-            ->withPrimaryRecipient($primary_mailbox)
-            ->withCCRecipients([[$secondary_mailbox, false]])
-            ->create();
+        $message_element = $this->createMessage($sender_user, $sender_mailbox, $primary_mailbox, $secondary_mailbox);
 
         $primary_recipient = OphCoMessaging_Message_Recipient::model()
             ->findByAttributes([
@@ -940,6 +1028,21 @@ class AddingMessageCommentsTest extends OEDbTestCase
             $count,
             $user,
             MailboxSearch::FOLDER_UNREAD_ALL,
+            $mailbox ?? $user->personalMailbox,
+            $message
+        );
+    }
+
+    protected function assertReadMessageCount(
+        int $count,
+        User $user,
+        string $message = "read message count for user is incorrect",
+        null|Mailbox|array $mailbox = null
+    ) {
+        $this->assertMessageCount(
+            $count,
+            $user,
+            MailboxSearch::FOLDER_READ_ALL,
             $mailbox ?? $user->personalMailbox,
             $message
         );
