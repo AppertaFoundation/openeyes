@@ -16,8 +16,6 @@
 namespace OEModule\OphCoMessaging\tests\feature;
 
 use HasDatabaseAssertions;
-use MakesApplicationRequests;
-use MocksSession;
 use OEDbTestCase;
 use OEModule\OphCoMessaging\components\MailboxSearch;
 use OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message;
@@ -40,14 +38,13 @@ class AddingMessageCommentsTest extends OEDbTestCase
 {
     use HasDatabaseAssertions;
     use MakesMessagingRequests;
-    use MocksSession;
     use WithFaker;
     use WithTransactions;
 
     /** @test */
     public function message_marked_unread_for_recipient_when_comment_is_added_by_sender()
     {
-        [$sender, $sender_mailbox] = $this->getMailboxUser();
+        [$sender, $sender_mailbox] = $this->createMailboxUser();
         $message_element = Element_OphCoMessaging_Message::factory()
             ->withReplyRequired()
             ->withPrimaryRecipient(null, true)
@@ -78,9 +75,9 @@ class AddingMessageCommentsTest extends OEDbTestCase
     /** @test */
     public function message_marked_read_for_recipient_has_correct_counts_for_sender_and_primary()
     {
-        [$sender_user, $sender_mailbox] = $this->getMailboxUser();
-        [$primary_user, $primary_mailbox] = $this->getMailboxUser();
-        [$secondary_user, $secondary_mailbox] = $this->getMailboxUser();
+        [$sender_user, $sender_mailbox] = $this->createMailboxUser();
+        [$primary_user, $primary_mailbox] = $this->createMailboxUser();
+        [$secondary_user, $secondary_mailbox] = $this->createMailboxUser();
 
         $message_element = Element_OphCoMessaging_Message::factory()
             ->withSender($sender_user, $sender_mailbox)
@@ -137,8 +134,8 @@ class AddingMessageCommentsTest extends OEDbTestCase
     /** @test */
     public function message_marked_read_will_update_message_read_state_correctly()
     {
-        [$sender_user, $sender_mailbox] = $this->getMailboxUser();
-        [$primary_user, $primary_mailbox] = $this->getMailboxUser();
+        [$sender_user, $sender_mailbox] = $this->createMailboxUser();
+        [$primary_user, $primary_mailbox] = $this->createMailboxUser();
 
         $message_element = Element_OphCoMessaging_Message::factory()
             ->withSender($sender_user, $sender_mailbox)
@@ -163,9 +160,9 @@ class AddingMessageCommentsTest extends OEDbTestCase
     /** @test */
     public function message_marked_read_by_cc_user_resets_to_unread_when_comments_are_made()
     {
-        [$sender_user, $sender_mailbox] = $this->getMailboxUser();
-        [$primary_user, $primary_mailbox] = $this->getMailboxUser();
-        [$secondary_user, $secondary_mailbox] = $this->getMailboxUser();
+        [$sender_user, $sender_mailbox] = $this->createMailboxUser();
+        [$primary_user, $primary_mailbox] = $this->createMailboxUser();
+        [$secondary_user, $secondary_mailbox] = $this->createMailboxUser();
 
         $message_element = Element_OphCoMessaging_Message::factory()
             ->withSender($sender_user, $sender_mailbox)
@@ -173,12 +170,6 @@ class AddingMessageCommentsTest extends OEDbTestCase
             ->withPrimaryRecipient($primary_mailbox)
             ->withCCRecipients([[$secondary_mailbox, false]])
             ->create();
-
-        $secondary_recipient = OphCoMessaging_Message_Recipient::model()
-            ->findByAttributes([
-                'element_id' => $message_element->id,
-                'mailbox_id' => $secondary_mailbox->id
-            ]);
 
         // arrangement sanity checks
         $this->assertUnreadMessageCount(
@@ -231,8 +222,8 @@ class AddingMessageCommentsTest extends OEDbTestCase
 
     /** @test */
     public function comment_added_to_message_by_primary_recipient_marks_message_unread_for_original_sender() {
-        [$sender_user, $sender_mailbox] = $this->getMailboxUser();
-        [$primary_user, $primary_mailbox] = $this->getMailboxUser();
+        [$sender_user, $sender_mailbox] = $this->createMailboxUser();
+        [$primary_user, $primary_mailbox] = $this->createMailboxUser();
 
         $message_element = Element_OphCoMessaging_Message::factory()
             ->withSender($sender_user, $sender_mailbox)
@@ -867,9 +858,9 @@ class AddingMessageCommentsTest extends OEDbTestCase
     /** @test */
     public function counting_matches_content_for_complex_message_chain()
     {
-        [$sender_user, $sender_mailbox] = $this->getMailboxUser();
-        [$primary_user, $primary_mailbox] = $this->getMailboxUser();
-        [$secondary_user, $secondary_mailbox] = $this->getMailboxUser();
+        [$sender_user, $sender_mailbox] = $this->createMailboxUser();
+        [$primary_user, $primary_mailbox] = $this->createMailboxUser();
+        [$secondary_user, $secondary_mailbox] = $this->createMailboxUser();
 
         $initial_messages = Element_OphCoMessaging_Message::factory()
             ->withSender($sender_user, $sender_mailbox)
@@ -895,9 +886,9 @@ class AddingMessageCommentsTest extends OEDbTestCase
 
     protected function sendMessage(): array
     {
-        [$sender_user, $sender_mailbox] = $this->getMailboxUser();
-        [$primary_user, $primary_mailbox] = $this->getMailboxUser();
-        [$secondary_user, $secondary_mailbox] = $this->getMailboxUser();
+        [$sender_user, $sender_mailbox] = $this->createMailboxUser();
+        [$primary_user, $primary_mailbox] = $this->createMailboxUser();
+        [$secondary_user, $secondary_mailbox] = $this->createMailboxUser();
 
         $message_element = Element_OphCoMessaging_Message::factory()
             ->withSender($sender_user, $sender_mailbox)
@@ -937,17 +928,6 @@ class AddingMessageCommentsTest extends OEDbTestCase
                 ],
             ],
         ];
-    }
-
-    protected function getMailboxUser()
-    {
-        $user = \User::factory()->withAuthItems([
-            'User',
-            'Edit',
-            'View clinical'
-        ])->create();
-
-        return [$user, Mailbox::factory()->personalFor($user)->create()];
     }
 
     protected function assertUnreadMessageCount(

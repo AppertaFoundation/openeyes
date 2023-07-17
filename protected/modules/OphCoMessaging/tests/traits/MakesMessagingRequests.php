@@ -25,17 +25,40 @@ trait MakesMessagingRequests
 {
     use MakesApplicationRequests;
 
+    /**
+     *
+     * @return array [User, Mailbox]
+     */
+    protected function createMailboxUser(): array
+    {
+        $user = \User::factory()->withAuthItems([
+            'User',
+            'Edit',
+            'View clinical'
+        ])->create();
+
+        return [$user, Mailbox::factory()->personalFor($user)->create()];
+    }
+
+    protected function urlToViewMessage(Event|Element_OphCoMessaging_Message $message): string
+    {
+        $event_id = $message instanceof Event ? $message->id : $message->event_id;
+
+        return "/OphCoMessaging/default/view?id=$event_id";
+    }
+
+
     protected function markMessageReadWithRequest(Element_OphCoMessaging_Message $message, $user, ?Mailbox $for_mailbox = null)
     {
         $this->actingAs($user)
-            ->get($this->urlToMarkMessageRead($message), $for_mailbox);
+            ->get($this->urlToMarkMessageRead($message, $for_mailbox));
     }
 
     protected function urlToMarkMessageRead(Event|Element_OphCoMessaging_Message $message, ?Mailbox $for_mailbox = null)
     {
         $event_id = $message instanceof Event ? $message->id : $message->event_id;
 
-        $base_url = "/OphCoMessaging/default/markRead?id=$event_id";
+        $base_url = "/OphCoMessaging/default/markRead/?id=$event_id";
 
         if (!$for_mailbox) {
             return $base_url;
