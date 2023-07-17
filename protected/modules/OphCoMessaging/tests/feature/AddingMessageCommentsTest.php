@@ -1164,20 +1164,27 @@ class AddingMessageCommentsTest extends OEDbTestCase
         ];
 
         $search = new MailboxSearch($user, MailboxSearch::FOLDER_ALL);
-        $reported_counts = $search->getMailboxFolderCounts($user->id, [$mailbox->id]);
+        $count_reported_counts = $search->getMailboxFolderCounts($user->id, [$mailbox->id]);
+        //unset this as it's only returned by the count query, and we're comparing whole arrays here
+        unset($count_reported_counts['total_message_count']);
+
+        $data_reported_counts = [];
+        $actual_returned_counts = [];
 
         foreach($folders as $folder) {
             $search = new MailboxSearch($user, $folder);
             $mailbox_data = $search->retrieveMailboxContentsUsingSQL($user->id, [$mailbox->id])->getData();
             
-            $reported_folder_count = $reported_counts[$folder];
             $actual_returned_message_count = count($mailbox_data);
             $data_reported_count = $actual_returned_message_count > 0 ? $mailbox_data[0]['total_message_count'] : 0;
 
-            $this->assertEquals($reported_folder_count, $data_reported_count, "count query message count does not match data query message count for folder: $folder");
-            $this->assertEquals($data_reported_count, $actual_returned_message_count, "data query reported message count does not match actual amount of messages returned for folder: $folder");
-            $this->assertEquals($reported_folder_count, $actual_returned_message_count, "count query message count does not match actual amount of messages returned for folder: $folder");
+            $data_reported_counts[$folder] = (string) $data_reported_count;
+            $actual_returned_counts[$folder] = (string) $actual_returned_message_count;
         }
+
+        $this->assertEquals($count_reported_counts, $data_reported_counts, "COUNT QUERY message counts do not match DATA QUERY message counts");
+        $this->assertEquals($data_reported_counts, $actual_returned_counts, "DATA QUERY reported message counts do not match ACTUAL COUNTS of messages returned for folder");
+        $this->assertEquals($count_reported_counts, $actual_returned_counts, "COUNT QUERY message counts do not match ACTUAL COUNTS of messages returned");
     }
 
     private function mapToIds($models)
