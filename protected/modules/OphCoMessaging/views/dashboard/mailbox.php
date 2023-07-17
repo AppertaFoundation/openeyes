@@ -7,7 +7,7 @@
     <div class="mailbox-hd js-mailbox-hd expand" data-test="home-mailbox-name"><?= $mailbox_with_counts['name'] ?><span class="unread"><?= $mailbox_with_counts['unread_all'] ?? 0 ?></span></div>
     <div class="mailbox-filters" style="display: none">
         <ul class="filter-messages">
-            <li><a href="#" data-filter="all" data-test="home-mailbox-all">All messages<span class="count">(<?= $mailbox_with_counts['total_message_count'] ?? 0 ?>)</span></a></li>
+            <li><a href="#" data-filter="all" data-test="home-mailbox-all">All messages<span class="count">(<?= $mailbox_with_counts['all'] ?? 0 ?>)</span></a></li>
         </ul>
         <ul class="filter-messages">
             <li><a href="#" class="js-folder-counter" data-filter="unread_all" data-test="home-mailbox-unread-all"><div class="flex"><div>Unread - All</div><span class="unread"><?= $mailbox_with_counts['unread_all'] ?? 0 ?></span></div></a></li>

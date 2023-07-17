@@ -41,7 +41,7 @@ class AddingMessageCommentsTest extends OEDbTestCase
     use MakesApplicationRequests;
     use MocksSession;
     use WithFaker;
-    use WithTransactions;
+    // use WithTransactions;
 
     /** @test */
     public function message_marked_unread_for_recipient_when_comment_is_added_by_sender()
@@ -1165,8 +1165,6 @@ class AddingMessageCommentsTest extends OEDbTestCase
 
         $search = new MailboxSearch($user, MailboxSearch::FOLDER_ALL);
         $count_reported_counts = $search->getMailboxFolderCounts($user->id, [$mailbox->id]);
-        //unset this as it's only returned by the count query, and we're comparing whole arrays here
-        unset($count_reported_counts['total_message_count']);
 
         $data_reported_counts = [];
         $actual_returned_counts = [];
@@ -1181,6 +1179,10 @@ class AddingMessageCommentsTest extends OEDbTestCase
             $data_reported_counts[$folder] = (string) $data_reported_count;
             $actual_returned_counts[$folder] = (string) $actual_returned_message_count;
         }
+
+        fwrite(STDERR, print_r($count_reported_counts, true));
+        fwrite(STDERR, print_r($data_reported_counts, true));
+        fwrite(STDERR, print_r($actual_returned_counts, true));
 
         $this->assertEquals($count_reported_counts, $data_reported_counts, "COUNT QUERY message counts do not match DATA QUERY message counts");
         $this->assertEquals($data_reported_counts, $actual_returned_counts, "DATA QUERY reported message counts do not match ACTUAL COUNTS of messages returned for folder");

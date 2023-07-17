@@ -32,7 +32,8 @@ class MailboxSearch
     private $retrieve_original_element = 0;
 
     //Mailbox folder switches
-    private $message_read = null;
+    private $message_read_by_user = null;
+    private $message_read_by_recipient = null;
     private $message_to_me = null;
     private $message_urgent = null;
     private $message_query = null;
@@ -90,67 +91,68 @@ class MailboxSearch
                 case self::FOLDER_UNREAD_ALL:
                     $this->retrieve_from = self::RETRIEVE_RECEIVED_AND_REPLIES;
                     $this->message_sent = 0;
-                    $this->message_read = 0;
+                    $this->message_read_by_user = 0;
                     break;
 
                 case self::FOLDER_UNREAD_URGENT:
                     $this->retrieve_from = self::RETRIEVE_RECEIVED;
                     $this->message_sent = 0;
-                    $this->message_read = 0;
+                    $this->message_read_by_user = 0;
                     $this->message_urgent = 1;
                     break;
 
                 case self::FOLDER_UNREAD_QUERY:
                     $this->retrieve_from = self::RETRIEVE_RECEIVED;
                     $this->message_sent = 0;
-                    $this->message_read = 0;
+                    $this->message_read_by_user = 0;
                     $this->message_query = 1;
                     break;
 
                 case self::FOLDER_UNREAD_TO_ME:
                     $this->retrieve_from = self::RETRIEVE_RECEIVED;
                     $this->message_sent = 0;
-                    $this->message_read = 0;
+                    $this->message_read_by_user = 0;
                     $this->message_to_me = 1;
                     break;
 
                 case self::FOLDER_UNREAD_CC:
                     $this->retrieve_from = self::RETRIEVE_RECEIVED;
                     $this->message_sent = 0;
-                    $this->message_read = 0;
+                    $this->message_read_by_user = 0;
                     $this->message_cc = 1;
                     break;
 
                 case self::FOLDER_UNREAD_REPLIES:
                     $this->retrieve_from = self::RETRIEVE_RECEIVED_AND_REPLIES;
                     $this->message_sent = 0;
-                    $this->message_read = 0;
+                    $this->message_read_by_user = 0;
                     $this->message_reply = 1;
                     break;
 
                 case self::FOLDER_READ_ALL:
                     $this->retrieve_from = self::RETRIEVE_RECEIVED;
-                    $this->message_read = 1;
+                    $this->message_sent = 0;
+                    $this->message_read_by_user = 1;
                     break;
 
                 case self::FOLDER_READ_URGENT:
                     $this->retrieve_from = self::RETRIEVE_RECEIVED;
                     $this->message_sent = 0;
-                    $this->message_read = 1;
+                    $this->message_read_by_user = 1;
                     $this->message_urgent = 1;
                     break;
 
                 case self::FOLDER_READ_TO_ME:
                     $this->retrieve_from = self::RETRIEVE_RECEIVED;
                     $this->message_sent = 0;
-                    $this->message_read = 1;
+                    $this->message_read_by_user = 1;
                     $this->message_to_me = 1;
                     break;
 
                 case self::FOLDER_READ_CC:
                     $this->retrieve_from = self::RETRIEVE_RECEIVED;
                     $this->message_sent = 0;
-                    $this->message_read = 1;
+                    $this->message_read_by_user = 1;
                     $this->message_cc = 1;
                     break;
 
@@ -169,7 +171,7 @@ class MailboxSearch
                 case self::FOLDER_UNREAD_BY_RECIPIENT:
                     $this->retrieve_from = self::RETRIEVE_SENT;
                     $this->message_sent = 1;
-                    $this->message_read = 0;
+                    $this->message_read_by_recipient = 0;
                     break;
 
                 default:
@@ -216,24 +218,23 @@ class MailboxSearch
         $mailbox_id_params = MailboxSearch::getMailboxQueryParams($user_id, $mailbox_ids);
 
         $sql = "SELECT
-            COUNT(contextualised_messages.element_id) `all`,
-            SUM((contextualised_messages.sent = 0 OR contextualised_messages.to_self)) total_message_count,
+            SUM((contextualised_messages.sent = 0 OR contextualised_messages.to_self)) `all`,
 
-            SUM((contextualised_messages.sent = 0 OR contextualised_messages.to_self) AND contextualised_messages.marked_as_read = 0) unread_all,
-            SUM((contextualised_messages.sent = 0 OR contextualised_messages.to_self) AND contextualised_messages.marked_as_read = 0 AND contextualised_messages.urgent = 1) unread_urgent,
-            SUM((contextualised_messages.sent = 0 OR contextualised_messages.to_self) AND contextualised_messages.marked_as_read = 0 AND contextualised_messages.reply_required = 1) unread_query,
-            SUM((contextualised_messages.sent = 0 OR contextualised_messages.to_self) AND contextualised_messages.marked_as_read = 0 AND contextualised_messages.has_reply = 1) unread_replies,
-            SUM((contextualised_messages.sent = 0 OR contextualised_messages.to_self) AND contextualised_messages.marked_as_read = 0 AND contextualised_messages.to_me = 1) unread_to_me,
-            SUM((contextualised_messages.sent = 0 OR contextualised_messages.to_self) AND contextualised_messages.marked_as_read = 0 AND contextualised_messages.cc = 1) unread_cc,
+            SUM((contextualised_messages.sent = 0 OR contextualised_messages.to_self) AND contextualised_messages.marked_as_read_by_user = 0) unread_all,
+            SUM((contextualised_messages.sent = 0 OR contextualised_messages.to_self) AND contextualised_messages.marked_as_read_by_user = 0 AND contextualised_messages.urgent = 1) unread_urgent,
+            SUM((contextualised_messages.sent = 0 OR contextualised_messages.to_self) AND contextualised_messages.marked_as_read_by_user = 0 AND contextualised_messages.reply_required = 1) unread_query,
+            SUM((contextualised_messages.sent = 0 OR contextualised_messages.to_self) AND contextualised_messages.marked_as_read_by_user = 0 AND contextualised_messages.has_reply = 1) unread_replies,
+            SUM((contextualised_messages.sent = 0 OR contextualised_messages.to_self) AND contextualised_messages.marked_as_read_by_user = 0 AND contextualised_messages.to_me = 1) unread_to_me,
+            SUM((contextualised_messages.sent = 0 OR contextualised_messages.to_self) AND contextualised_messages.marked_as_read_by_user = 0 AND contextualised_messages.cc = 1) unread_cc,
 
-            SUM((contextualised_messages.sent = 0 OR contextualised_messages.to_self) AND contextualised_messages.marked_as_read = 1) read_all,
-            SUM((contextualised_messages.sent = 0 OR contextualised_messages.to_self) AND contextualised_messages.marked_as_read = 1 AND contextualised_messages.urgent = 1) read_urgent,
-            SUM((contextualised_messages.sent = 0 OR contextualised_messages.to_self) AND contextualised_messages.marked_as_read = 1 AND contextualised_messages.to_me = 1) read_to_me,
-            SUM((contextualised_messages.sent = 0 OR contextualised_messages.to_self) AND contextualised_messages.marked_as_read = 1 AND contextualised_messages.cc = 1) read_cc,
+            SUM((contextualised_messages.sent = 0 OR contextualised_messages.to_self) AND contextualised_messages.marked_as_read_by_user = 1) read_all,
+            SUM((contextualised_messages.sent = 0 OR contextualised_messages.to_self) AND contextualised_messages.marked_as_read_by_user = 1 AND contextualised_messages.urgent = 1) read_urgent,
+            SUM((contextualised_messages.sent = 0 OR contextualised_messages.to_self) AND contextualised_messages.marked_as_read_by_user = 1 AND contextualised_messages.to_me = 1) read_to_me,
+            SUM((contextualised_messages.sent = 0 OR contextualised_messages.to_self) AND contextualised_messages.marked_as_read_by_user = 1 AND contextualised_messages.cc = 1) read_cc,
 
             SUM(contextualised_messages.user_original_sender = 1) started_threads,
             SUM(contextualised_messages.user_original_sender = 1 AND contextualised_messages.reply_required = 1 AND contextualised_messages.has_reply = 0) waiting_for_reply,
-            SUM((contextualised_messages.sent = 1 OR contextualised_messages.to_self) AND contextualised_messages.marked_as_read = 0) unread_by_recipient
+            SUM((contextualised_messages.sent = 1 OR contextualised_messages.to_self) AND contextualised_messages.marked_as_read_by_recipient = 0) unread_by_recipient
 
             FROM
             (SELECT
@@ -247,7 +248,8 @@ class MailboxSearch
                     latest_comment.latest_comment_id latest_comment_id,
                     ommt.reply_required reply_required,
                     latest_comment.latest_comment_id IS NOT NULL has_reply,
-                    IF(messages.user_original_sender, COALESCE(omc.marked_as_read, messages.marked_as_read), messages.marked_as_read) marked_as_read,
+                    IF(messages.user_original_sender, COALESCE(omc.marked_as_read, messages.marked_as_read_by_user), messages.marked_as_read_by_user) marked_as_read_by_user,
+                    messages.marked_as_read_by_recipient marked_as_read_by_recipient,
                     messages.to_me to_me,
                     messages.cc cc,
                     messages.user_original_sender user_original_sender,
@@ -265,7 +267,8 @@ class MailboxSearch
                         SELECT -- Messages that this mailbox has sent
                             eom.id element_id,
                             eom.urgent,
-                            primary_recipient.marked_as_read marked_as_read,
+                            1 marked_as_read_by_user,
+                            primary_recipient.marked_as_read marked_as_read_by_recipient,
                             eom.message_type_id,
                             um.id = primary_recipient.mailbox_id to_me,
                             0 cc,
@@ -287,7 +290,8 @@ class MailboxSearch
                         SELECT -- Messages that this mailbox has received
                             eom.id element_id,
                             eom.urgent,
-                            omr.marked_as_read marked_as_read,
+                            omr.marked_as_read marked_as_read_by_user,
+                            omr.marked_as_read marked_as_read_by_recipient,
                             eom.message_type_id,
                             omr.primary_recipient to_me,
                             NOT omr.primary_recipient cc,
@@ -419,7 +423,8 @@ class MailboxSearch
                         ommt.reply_required reply_required,
                         omc.id IS NOT NULL has_reply,
                         COALESCE(omc.comment_text, element_text) display_text,
-                        IF(messages.user_original_sender, COALESCE(omc.marked_as_read, messages.marked_as_read), messages.marked_as_read) marked_as_read
+                        IF(messages.user_original_sender, COALESCE(omc.marked_as_read, messages.marked_as_read_by_user), messages.marked_as_read_by_user) marked_as_read_by_user,
+                        messages.marked_as_read_by_recipient marked_as_read_by_recipient
                     FROM
                     (
                         (
@@ -428,7 +433,8 @@ class MailboxSearch
                                 eom.event_id element_event_id,
                                 eom.message_text element_text,
                                 eom.urgent,
-                                1 marked_as_read,
+                                1 marked_as_read_by_user,
+                                primary_recipient.marked_as_read marked_as_read_by_recipient,
                                 eom.message_type_id,
                                 eom.created_date,
 
@@ -467,7 +473,8 @@ class MailboxSearch
                                 eom.event_id element_event_id,
                                 eom.message_text element_text,
                                 eom.urgent,
-                                omr.marked_as_read marked_as_read,
+                                omr.marked_as_read marked_as_read_by_user,
+                                omr.marked_as_read marked_as_read_by_recipient,
                                 eom.message_type_id,
                                 eom.created_date,
 
@@ -520,7 +527,8 @@ class MailboxSearch
                     ON ommt.id = messages.message_type_id
                 WHERE :retrieve_original_element IS NULL OR :retrieve_original_element = 0 OR original_element.original = 1 OR omc.id IS NOT NULL) contextualised_messages
             WHERE -- Perform filtering based on folder flags and search params
-                (:message_read IS NULL OR contextualised_messages.marked_as_read = :message_read) AND
+                (:message_read_by_user IS NULL OR contextualised_messages.marked_as_read_by_user = :message_read_by_user) AND
+                (:message_read_by_recipient IS NULL OR contextualised_messages.marked_as_read_by_recipient = :message_read_by_recipient) AND
                 (:message_reply IS NULL OR contextualised_messages.has_reply = :message_reply) AND
                 (:message_sent IS NULL OR (contextualised_messages.sender_mailbox_id = contextualised_messages.recipient_mailbox_id) OR ((contextualised_messages.sender_mailbox_id = contextualised_messages.user_mailbox_id) = :message_sent)) AND
                 (:search_date_from IS NULL OR DATE(contextualised_messages.send_date) >= :search_date_from) AND
@@ -560,7 +568,8 @@ class MailboxSearch
         $data_provider->params = array_merge(
             [
                 ':target_user_id' => $user_id,
-                ':message_read' => $this->message_read,
+                ':message_read_by_user' => $this->message_read_by_user,
+                ':message_read_by_recipient' => $this->message_read_by_recipient,
                 ':message_to_me' => $this->message_to_me,
                 ':message_urgent' => $this->message_urgent,
                 ':message_query' => $this->message_query,
