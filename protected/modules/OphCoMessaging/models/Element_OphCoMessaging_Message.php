@@ -371,7 +371,9 @@ class Element_OphCoMessaging_Message extends \BaseEventTypeElement
         } else {
             $recipient = OphCoMessaging_Message_Recipient::model()->findByAttributes(['element_id' => $this->id, 'mailbox_id' => $mailbox->id]);
             $recipient->marked_as_read = $is_read;
-            $recipient->save();
+            if (!$recipient->save()) {
+                throw new \RuntimeException("Could not save recipient state" . print_r($recipient->getErrors(), true));
+            }
         }
     }
 
