@@ -364,12 +364,20 @@ class Element_OphCoMessaging_Message extends \BaseEventTypeElement
 
     public function setReadStatusForMailbox($mailbox, bool $is_read)
     {
-        //We are the original sender
         if ((int) $this->sender_mailbox_id === (int) $mailbox->id) {
-            $this->last_comment->marked_as_read = $is_read;
-            $this->last_comment->save();
-        } else {
-            $recipient = OphCoMessaging_Message_Recipient::model()->findByAttributes(['element_id' => $this->id, 'mailbox_id' => $mailbox->id]);
+            // We are the original sender
+            if ($this->last_comment) {
+                $this->last_comment->marked_as_read = $is_read;
+                if (!$this->last_comment->save()) {
+                    throw new \RuntimeException("Could not save recipient state" . print_r($this->last_comment->getErrors(), true));
+                }
+            }
+        }
+
+        $recipient = OphCoMessaging_Message_Recipient::model()
+            ->findByAttributes(['element_id' => $this->id, 'mailbox_id' => $mailbox->id]);
+        if ($recipient) {
+            // if is sender not sent to themselves, recipient could be null
             $recipient->marked_as_read = $is_read;
             if (!$recipient->save()) {
                 throw new \RuntimeException("Could not save recipient state" . print_r($recipient->getErrors(), true));

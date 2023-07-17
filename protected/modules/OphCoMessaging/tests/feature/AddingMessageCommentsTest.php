@@ -42,6 +42,26 @@ class AddingMessageCommentsTest extends OEDbTestCase
     use WithTransactions;
 
     /** @test */
+    public function can_mark_message_sent_to_self_as_read()
+    {
+        [$sender, $sender_mailbox] = $this->createMailboxUser();
+        $message = Element_OphCoMessaging_Message::factory()
+            ->withReplyRequired()
+            ->withPrimaryRecipient($sender_mailbox, false)
+            ->create([
+                'sender_mailbox_id' => $sender_mailbox
+            ]);
+
+        $this->assertUnreadMessageCount(1, $sender);
+
+        $this->mockCurrentContext();
+        $this->markMessageReadWithRequest($message, $sender);
+
+        $this->assertUnreadMessageCount(0, $sender);
+        $this->assertMessageCount(1, $sender);
+    }
+
+    /** @test */
     public function message_marked_unread_for_recipient_when_comment_is_added_by_sender()
     {
         [$sender, $sender_mailbox] = $this->createMailboxUser();
