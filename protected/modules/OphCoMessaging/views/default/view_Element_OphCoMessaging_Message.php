@@ -98,7 +98,7 @@ $mailbox =
                 <div class="missive">
                     <?= Yii::app()->format->Ntext(preg_replace("/\n/", "", preg_replace('/(\s{4})\s+/', '$1', $element->message_text))) ?>
                     <div class="read-status" data-test="read-status">
-                        <?= count($element->read_by_recipients) === 0 ? 'Unread' : 'Read by: ' . $element->getReadByLine() ?>
+                        <!-- FIXME: this needs reinstating once comment read status tracking has been restored <?= count($element->read_by_recipients) === 0 ? 'Unread' : 'Read by: ' . $element->getReadByLine() ?> -->
                     </div>
                 </div>
                 <?php if (empty($element->comments) && $this->canMarkMessageRead($element, $mailbox)) { ?>
@@ -133,7 +133,9 @@ $mailbox =
             <div class="msg-reader">
                 <div class="missive">
                 <?= Yii::app()->format->Ntext(preg_replace("/\n/", "", preg_replace('/(\s{4})\s+/', '$1', $comment->comment_text))) ?>
-                    <div class="read-status" data-test="read-status"><?= $comment->marked_as_read ? ('Read by: ' . $comment->usermodified->getFullName()) : 'Unread' ?></div>
+                    <div class="read-status" data-test="read-status">
+                        <!-- FIXME: this needs reinstating once comment read status tracking has been restored<?= $comment->marked_as_read ? ('Read by: ' . $comment->usermodified->getFullName()) : 'Unread' ?> -->
+                    </div>
                 </div>
                 <?php if ($is_latest_comment && $this->canMarkMessageRead($element, $mailbox)) { ?>
                     <div class="change-msg-status">
