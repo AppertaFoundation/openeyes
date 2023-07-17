@@ -23,6 +23,7 @@ use OEModule\OphCoMessaging\components\MailboxSearch;
 use OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message;
 use OEModule\OphCoMessaging\models\Mailbox;
 use OEModule\OphCoMessaging\models\OphCoMessaging_Message_Recipient;
+use OEModule\OphCoMessaging\tests\traits\MakesMessagingRequests;
 use User;
 use WithFaker;
 use WithTransactions;
@@ -38,7 +39,7 @@ use WithTransactions;
 class AddingMessageCommentsTest extends OEDbTestCase
 {
     use HasDatabaseAssertions;
-    use MakesApplicationRequests;
+    use MakesMessagingRequests;
     use MocksSession;
     use WithFaker;
     use WithTransactions;
@@ -104,7 +105,7 @@ class AddingMessageCommentsTest extends OEDbTestCase
         $this->mockCurrentUser($primary_user);
 
         // mark read for primary
-        $this->markReadWithRequest($message_element, $primary_user);
+        $this->markMessageReadWithRequest($message_element, $primary_user);
 
         $this->assertUnreadMessageCount(0, $primary_user, "unread count for primary should be zero after marking as read.");
         $this->assertUnreadMessageCount(1, $secondary_user, "unread count should still be 1 for cc after primary marking as read.");
@@ -113,7 +114,7 @@ class AddingMessageCommentsTest extends OEDbTestCase
 
         $this->assertUnreadMessageCount(1, $sender_user, "Sender unread count should be 1 after primary reply.");
 
-        $this->markReadWithRequest($message_element, $sender_user);
+        $this->markMessageReadWithRequest($message_element, $sender_user);
 
         $this->assertUnreadMessageCount(0, $sender_user, "Sender unread count should be 0 after marking as read.");
 
@@ -122,7 +123,7 @@ class AddingMessageCommentsTest extends OEDbTestCase
         $this->assertUnreadMessageCount(1, $primary_user, "unread count for primary should be 1 after sender replied.");
         $this->assertUnreadMessageCount(1, $secondary_user, "unread count for secondary should be 1 after sender replied.");
 
-        $this->markReadWithRequest($message_element, $primary_user);
+        $this->markMessageReadWithRequest($message_element, $primary_user);
 
         $this->assertUnreadMessageCount(0, $primary_user, "unread count for primary should be zero after marking as read again.");
 
@@ -151,7 +152,7 @@ class AddingMessageCommentsTest extends OEDbTestCase
         $this->mockCurrentUser($primary_user);
 
         // mark read for primary
-        $this->markReadWithRequest($message_element, $primary_user);
+        $this->markMessageReadWithRequest($message_element, $primary_user);
 
         $this->assertUnreadMessageCount(0, $primary_user, "marking message read should leave primary user with no unread messages.");
 
@@ -188,7 +189,7 @@ class AddingMessageCommentsTest extends OEDbTestCase
 
         $this->mockCurrentContext();
         // mark read for secondary
-        $this->markReadWithRequest($message_element, $secondary_user);
+        $this->markMessageReadWithRequest($message_element, $secondary_user);
 
         $this->assertUnreadMessageCount(
             0,
@@ -206,7 +207,7 @@ class AddingMessageCommentsTest extends OEDbTestCase
         );
 
         // mark read for secondary again
-        $this->markReadWithRequest($message_element, $secondary_user);
+        $this->markMessageReadWithRequest($message_element, $secondary_user);
 
         $this->assertUnreadMessageCount(
             0,
@@ -393,7 +394,7 @@ class AddingMessageCommentsTest extends OEDbTestCase
 
         $this->mockCurrentContext();
 
-        $this->markReadWithRequest($message_element, $primary_user);
+        $this->markMessageReadWithRequest($message_element, $primary_user);
 
         $this->assertMessageCount(
             1,
@@ -403,7 +404,7 @@ class AddingMessageCommentsTest extends OEDbTestCase
             "Message should appear in read folder when marked as read for primary recipient"
         );
 
-        $this->markReadWithRequest($message_element, $secondary_user);
+        $this->markMessageReadWithRequest($message_element, $secondary_user);
 
         $this->assertMessageCount(
             1,
@@ -442,10 +443,10 @@ class AddingMessageCommentsTest extends OEDbTestCase
 
         $this->mockCurrentContext();
 
-        $this->markReadWithRequest($message_element, $primary_user);
+        $this->markMessageReadWithRequest($message_element, $primary_user);
         $this->assertUnreadMessageCount(0, $primary_user, "message should not be unread for primary after marking read.");
 
-        $this->markReadWithRequest($message_element, $secondary_user);
+        $this->markMessageReadWithRequest($message_element, $secondary_user);
         $this->assertUnreadMessageCount(0, $secondary_user, "message should not be unread for cc user after marking read.");
 
         $this->assertCountQueryMatchesDataQuery($primary_user, $primary_mailbox);
@@ -477,14 +478,14 @@ class AddingMessageCommentsTest extends OEDbTestCase
 
         $this->mockCurrentContext();
 
-        $this->markReadWithRequest($message_element, $primary_user);
-        $this->markReadWithRequest($message_element, $secondary_user);
+        $this->markMessageReadWithRequest($message_element, $primary_user);
+        $this->markMessageReadWithRequest($message_element, $secondary_user);
 
-        $this->markUnreadWithRequest($message_element, $primary_user);
+        $this->markMessageUnreadWithRequest($message_element, $primary_user);
 
         $this->assertUnreadMessageCount(1, $primary_user, "primary users should have an unread message after marking unread.");
 
-        $this->markUnreadWithRequest($message_element, $secondary_user);
+        $this->markMessageUnreadWithRequest($message_element, $secondary_user);
         $this->assertUnreadMessageCount(1, $secondary_user, "cc users should have an unread message after marking unread.");
     }
 
@@ -574,7 +575,7 @@ class AddingMessageCommentsTest extends OEDbTestCase
             "cc user should still be marked unread after first comment"
         );
 
-        $this->markReadWithRequest($element, $secondary_user);
+        $this->markMessageReadWithRequest($element, $secondary_user);
 
         $this->assertUnreadMessageCount(
             0,
@@ -631,7 +632,7 @@ class AddingMessageCommentsTest extends OEDbTestCase
             "cc should still have unread message after primary reply."
         );
 
-        $this->markReadWithRequest($element, $secondary_user);
+        $this->markMessageReadWithRequest($element, $secondary_user);
 
         $this->assertUnreadMessageCount(
             0,
@@ -883,8 +884,8 @@ class AddingMessageCommentsTest extends OEDbTestCase
         $this->postCommentWithRequestOn($initial_messages[0], $primary_user, $primary_mailbox);
         $this->postCommentWithRequestOn($initial_messages[2], $primary_user, $primary_mailbox);
 
-        $this->markReadWithRequest($initial_messages[0], $secondary_user);
-        $this->markReadWithRequest($initial_messages[2], $secondary_user);
+        $this->markMessageReadWithRequest($initial_messages[0], $secondary_user);
+        $this->markMessageReadWithRequest($initial_messages[2], $secondary_user);
 
         $this->postCommentWithRequestOn($initial_messages[2], $sender_user, $sender_mailbox);
 
@@ -947,33 +948,6 @@ class AddingMessageCommentsTest extends OEDbTestCase
         ])->create();
 
         return [$user, Mailbox::factory()->personalFor($user)->create()];
-    }
-
-    protected function markReadWithRequest($message_element, $user)
-    {
-        $this->actingAs($user)
-            ->get('/OphCoMessaging/default/markRead?id=' . $message_element->event_id);
-    }
-
-    protected function markUnreadWithRequest($message_element, $user)
-    {
-        $this->actingAs($user)
-            ->get('/OphCoMessaging/default/markUnread?id=' . $message_element->event_id);
-    }
-
-    protected function postCommentWithRequestOn($message_element, $user, $mailbox, $text = null)
-    {
-        $this->actingAs($user)
-            ->post(
-                '/OphCoMessaging/default/addComment?id=' . $message_element->event_id,
-                [
-                    'comment_reply_mailbox' => $mailbox->id,
-                    'OEModule_OphCoMessaging_models_OphCoMessaging_Message_Comment' => [
-                        'comment_text' => $text ?? $this->faker->sentence()
-                    ]
-                ]
-            )
-            ->assertRedirect();
     }
 
     protected function assertUnreadMessageCount(
