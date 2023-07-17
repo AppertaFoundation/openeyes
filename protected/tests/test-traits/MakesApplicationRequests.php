@@ -25,8 +25,8 @@ trait MakesApplicationRequests
 {
     use MocksSession;
 
-
     protected array $originalServerValues = [];
+    private $originalBeginRequestEventHandlers = null;
 
     public function setUpMakesApplicationRequests()
     {
@@ -34,10 +34,9 @@ trait MakesApplicationRequests
 
         $this->removeRequestEventHandling();
         $this->tearDownCallbacks(function () {
-            $_GET = [];
-            $_REQUEST = [];
-            $_POST = [];
+            $this->resetRequestGlobals();
             $_SERVER = $this->originalServerValues;
+            $this->restoreRequestEventHandling();
         });
     }
 
@@ -53,6 +52,7 @@ trait MakesApplicationRequests
 
     protected function get($url, $crawl_result = true)
     {
+        $this->resetRequestGlobals();
         $url = $this->extractUrlAndSetGet($url);
 
         $_SERVER['HTTP_USER_AGENT'] = 'phpunit'; // this is used in the main layout template
@@ -91,6 +91,7 @@ trait MakesApplicationRequests
 
     protected function post($url, $form_data = []): ApplicationResponseWrapper
     {
+        $this->resetRequestGlobals();
         $url = $this->extractUrlAndSetGet($url);
 
         $_SERVER['HTTP_USER_AGENT'] = 'phpunit'; // this is used in the main layout template
@@ -137,6 +138,13 @@ trait MakesApplicationRequests
         return new Crawler($contents);
     }
 
+    private function resetRequestGlobals(): void
+    {
+        $_GET = [];
+        $_REQUEST = [];
+        $_POST = [];
+    }
+
     /**
      * During the bootstrapping of the test environment, Yii::createWebApplication is called
      * This will initialise the standard request object from configuration, which in turn
@@ -146,8 +154,17 @@ trait MakesApplicationRequests
      */
     private function removeRequestEventHandling()
     {
-        $event_handlers = \Yii::app()->getEventHandlers('onBeginRequest');
-        $event_handlers->clear();
+        $this->originalBeginRequestEventHandlers = \Yii::app()->getEventHandlers('onBeginRequest');
+        foreach ($this->originalBeginRequestEventHandlers as $event_handler) {
+            \Yii::app()->detachEventHandler('onBeginRequest', $event_handler);
+        }
+    }
+
+    private function restoreRequestEventHandling()
+    {
+        foreach ($this->originalBeginRequestEventHandlers as $event_handler) {
+            \Yii::app()->attachEventHandler('onBeginRequest', $event_handler);
+        }
     }
 
     /**
