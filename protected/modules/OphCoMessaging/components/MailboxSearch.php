@@ -217,23 +217,23 @@ class MailboxSearch
         $mailbox_id_params = MailboxSearch::getMailboxQueryParams($user_id, $mailbox_ids);
 
         $sql = "SELECT
-            COUNT(DISTINCT contextualised_messages.element_id) `all`,
+            COUNT(DISTINCT contextualised_messages.element_id) `" . static::FOLDER_ALL . "`,
 
-            SUM((contextualised_messages.sent = 0 OR contextualised_messages.to_self) AND contextualised_messages.marked_as_read_by_user = 0) unread_all,
-            SUM((contextualised_messages.sent = 0 OR contextualised_messages.to_self) AND contextualised_messages.marked_as_read_by_user = 0 AND contextualised_messages.urgent = 1) unread_urgent,
-            SUM((contextualised_messages.sent = 0 OR contextualised_messages.to_self) AND contextualised_messages.marked_as_read_by_user = 0 AND contextualised_messages.reply_required = 1) unread_query,
-            SUM((contextualised_messages.sent = 0 OR contextualised_messages.to_self) AND contextualised_messages.marked_as_read_by_user = 0 AND contextualised_messages.has_reply = 1) unread_replies,
-            SUM((contextualised_messages.sent = 0 OR contextualised_messages.to_self) AND contextualised_messages.marked_as_read_by_user = 0 AND contextualised_messages.to_me = 1) unread_to_me,
-            SUM((contextualised_messages.sent = 0 OR contextualised_messages.to_self) AND contextualised_messages.marked_as_read_by_user = 0 AND contextualised_messages.cc = 1) unread_cc,
+            SUM((contextualised_messages.sent = 0 OR contextualised_messages.to_self) AND contextualised_messages.marked_as_read_by_user = 0) " . static::FOLDER_UNREAD_ALL . ",
+            SUM((contextualised_messages.sent = 0 OR contextualised_messages.to_self) AND contextualised_messages.marked_as_read_by_user = 0 AND contextualised_messages.urgent = 1) " . static::FOLDER_UNREAD_URGENT . ",
+            SUM((contextualised_messages.sent = 0 OR contextualised_messages.to_self) AND contextualised_messages.marked_as_read_by_user = 0 AND contextualised_messages.reply_required = 1) " . static::FOLDER_UNREAD_QUERY . ",
+            SUM((contextualised_messages.sent = 0 OR contextualised_messages.to_self) AND contextualised_messages.marked_as_read_by_user = 0 AND contextualised_messages.has_reply = 1) " . static::FOLDER_UNREAD_REPLIES . ",
+            SUM((contextualised_messages.sent = 0 OR contextualised_messages.to_self) AND contextualised_messages.marked_as_read_by_user = 0 AND contextualised_messages.to_me = 1) " . static::FOLDER_UNREAD_TO_ME . ",
+            SUM((contextualised_messages.sent = 0 OR contextualised_messages.to_self) AND contextualised_messages.marked_as_read_by_user = 0 AND contextualised_messages.cc = 1) " . static::FOLDER_UNREAD_CC . ",
 
-            SUM((contextualised_messages.sent = 0 OR contextualised_messages.to_self) AND contextualised_messages.marked_as_read_by_user = 1) read_all,
-            SUM((contextualised_messages.sent = 0 OR contextualised_messages.to_self) AND contextualised_messages.marked_as_read_by_user = 1 AND contextualised_messages.urgent = 1) read_urgent,
-            SUM((contextualised_messages.sent = 0 OR contextualised_messages.to_self) AND contextualised_messages.marked_as_read_by_user = 1 AND contextualised_messages.to_me = 1) read_to_me,
-            SUM((contextualised_messages.sent = 0 OR contextualised_messages.to_self) AND contextualised_messages.marked_as_read_by_user = 1 AND contextualised_messages.cc = 1) read_cc,
+            SUM((contextualised_messages.sent = 0 OR contextualised_messages.to_self) AND contextualised_messages.marked_as_read_by_user = 1) " . static::FOLDER_READ_ALL . ",
+            SUM((contextualised_messages.sent = 0 OR contextualised_messages.to_self) AND contextualised_messages.marked_as_read_by_user = 1 AND contextualised_messages.urgent = 1) " . static::FOLDER_READ_URGENT . ",
+            SUM((contextualised_messages.sent = 0 OR contextualised_messages.to_self) AND contextualised_messages.marked_as_read_by_user = 1 AND contextualised_messages.to_me = 1) " . static::FOLDER_READ_TO_ME . ",
+            SUM((contextualised_messages.sent = 0 OR contextualised_messages.to_self) AND contextualised_messages.marked_as_read_by_user = 1 AND contextualised_messages.cc = 1) " . static::FOLDER_READ_CC . ",
 
-            SUM(contextualised_messages.user_original_sender = 1) started_threads,
-            SUM(contextualised_messages.user_original_sender = 1 AND contextualised_messages.reply_required = 1 AND contextualised_messages.has_reply = 0) waiting_for_reply,
-            SUM((contextualised_messages.sent = 1 OR contextualised_messages.to_self) AND contextualised_messages.marked_as_read_by_recipient = 0) unread_by_recipient
+            SUM(contextualised_messages.user_original_sender = 1) " . static::FOLDER_STARTED_THREADS . ",
+            SUM(contextualised_messages.user_original_sender = 1 AND contextualised_messages.reply_required = 1 AND contextualised_messages.has_reply = 0) " . static::FOLDER_WAITING_FOR_REPLY . ",
+            SUM((contextualised_messages.sent = 1 OR contextualised_messages.to_self) AND contextualised_messages.marked_as_read_by_recipient = 0) " . static::FOLDER_UNREAD_BY_RECIPIENT . "
 
             FROM
             (SELECT
@@ -329,20 +329,20 @@ class MailboxSearch
 
         if (!$counts) {
             $counts = [
-                'all' => 0,
-                'unread_all' => 0,
-                'unread_to_me' => 0,
-                'unread_urgent' => 0,
-                'unread_query' => 0,
-                'unread_replies' => 0,
-                'unread_cc' => 0,
-                'read_all' => 0,
-                'read_urgent' => 0,
-                'read_to_me' => 0,
-                'read_cc' => 0,
-                'started_threads' => 0,
-                'waiting_for_reply' => 0,
-                'unread_by_recipient' => 0
+                self::FOLDER_ALL => 0,
+                self::FOLDER_UNREAD_ALL => 0,
+                self::FOLDER_UNREAD_TO_ME => 0,
+                self::FOLDER_UNREAD_URGENT => 0,
+                self::FOLDER_UNREAD_QUERY => 0,
+                self::FOLDER_UNREAD_REPLIES => 0,
+                self::FOLDER_UNREAD_CC => 0,
+                self::FOLDER_READ_ALL => 0,
+                self::FOLDER_READ_URGENT => 0,
+                self::FOLDER_READ_TO_ME => 0,
+                self::FOLDER_READ_CC => 0,
+                self::FOLDER_STARTED_THREADS => 0,
+                self::FOLDER_WAITING_FOR_REPLY => 0,
+                self::FOLDER_UNREAD_BY_RECIPIENT => 0
             ];
         }
 
