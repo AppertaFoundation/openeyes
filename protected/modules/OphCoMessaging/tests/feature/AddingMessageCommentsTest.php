@@ -677,7 +677,7 @@ class AddingMessageCommentsTest extends OEDbTestCase
             "message should be read for primary recipient after they reply."
         );
 
-        $this->assertMessageCount(1, $primary_user, MailboxSearch::FOLDER_READ_ALL);
+        $this->assertMessageCount(1, $primary_user, MailboxSearch::FOLDER_ALL, null, "primary recipient should have message count when they replied to it.");
         $this->assertMessageCount(1, $primary_user);
 
         $this->postCommentWithRequestOn($element, $sender_user, $sender_mailbox);
@@ -889,7 +889,7 @@ class AddingMessageCommentsTest extends OEDbTestCase
         $this->postCommentWithRequestOn($initial_messages[2], $sender_user, $sender_mailbox);
 
         $this->assertMessageCount(5, $primary_user);
-        $this->assertCountQueryMatchesDataQuery($primary_mailbox, $primary_mailbox);
+        $this->assertCountQueryMatchesDataQuery($primary_user, $primary_mailbox);
     }
 
     protected function sendMessage(): array

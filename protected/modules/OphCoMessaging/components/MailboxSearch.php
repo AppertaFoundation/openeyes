@@ -85,7 +85,6 @@ class MailboxSearch
             switch ($folder) {
                 case self::FOLDER_ALL:
                     $this->retrieve_from = self::RETRIEVE_RECEIVED_AND_REPLIES;
-                    $this->message_sent = 0;
                     break;
 
                 case self::FOLDER_UNREAD_ALL:
@@ -218,7 +217,7 @@ class MailboxSearch
         $mailbox_id_params = MailboxSearch::getMailboxQueryParams($user_id, $mailbox_ids);
 
         $sql = "SELECT
-            SUM((contextualised_messages.sent = 0 OR contextualised_messages.to_self)) `all`,
+            COUNT(DISTINCT contextualised_messages.element_id) `all`,
 
             SUM((contextualised_messages.sent = 0 OR contextualised_messages.to_self) AND contextualised_messages.marked_as_read_by_user = 0) unread_all,
             SUM((contextualised_messages.sent = 0 OR contextualised_messages.to_self) AND contextualised_messages.marked_as_read_by_user = 0 AND contextualised_messages.urgent = 1) unread_urgent,
