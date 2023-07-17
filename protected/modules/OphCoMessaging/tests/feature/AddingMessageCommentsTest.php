@@ -145,15 +145,7 @@ class AddingMessageCommentsTest extends OEDbTestCase
             ->withPrimaryRecipient($primary_mailbox)
             ->create();
 
-        $primary_recipient = OphCoMessaging_Message_Recipient::model()
-            ->findByAttributes([
-                'element_id' => $message_element->id,
-                'mailbox_id' => $primary_mailbox->id
-            ]);
-
-        $search = new MailboxSearch($primary_user, MailboxSearch::FOLDER_UNREAD_ALL);
-
-        $this->assertFalse((bool) $primary_recipient->marked_as_read);
+            $this->assertUnreadMessageCount(1, $primary_user, "primary user should have unread message after test setup.");
 
         $this->mockCurrentContext();
         $this->mockCurrentUser($primary_user);
@@ -161,13 +153,7 @@ class AddingMessageCommentsTest extends OEDbTestCase
         // mark read for primary
         $this->markReadWithRequest($message_element, $primary_user);
 
-        $primary_recipient->refresh();
-        $this->assertTrue((bool) $primary_recipient->marked_as_read);
-        $primary_recipient->refresh();
-        $this->assertTrue((bool) $primary_recipient->marked_as_read);
-        //Ensure that this message does not appear in CC recipient's unread folder
-        $data_provider = $search->retrieveMailboxContentsUsingSQL($primary_user->id, [$primary_mailbox->id]);
-        $this->assertEmpty($data_provider->getData());
+        $this->assertUnreadMessageCount(0, $primary_user, "marking message read should leave primary user with no unread messages.");
 
         $this->assertCountQueryMatchesDataQuery($sender_user, $sender_mailbox);
         $this->assertCountQueryMatchesDataQuery($primary_user, $primary_mailbox);
@@ -1068,7 +1054,7 @@ class AddingMessageCommentsTest extends OEDbTestCase
         $data_reported_counts = [];
         $actual_returned_counts = [];
 
-        foreach($folders as $folder) {
+        foreach ($folders as $folder) {
             $search = new MailboxSearch($user, $folder);
             $mailbox_data = $search->retrieveMailboxContentsUsingSQL($user->id, [$mailbox->id])->getData();
 
