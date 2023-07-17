@@ -1141,7 +1141,7 @@ class AddingMessageCommentsTest extends OEDbTestCase
     protected function assertCountQueryMatchesDataQuery(
         User $user,
         Mailbox $mailbox,
-        string $folders = null,
+        array $folders = null,
     ) {
         $folders = $folders ?? [
             MailboxSearch::FOLDER_ALL,
@@ -1179,10 +1179,6 @@ class AddingMessageCommentsTest extends OEDbTestCase
             $data_reported_counts[$folder] = (string) $data_reported_count;
             $actual_returned_counts[$folder] = (string) $actual_returned_message_count;
         }
-
-        fwrite(STDERR, print_r($count_reported_counts, true));
-        fwrite(STDERR, print_r($data_reported_counts, true));
-        fwrite(STDERR, print_r($actual_returned_counts, true));
 
         $this->assertEquals($count_reported_counts, $data_reported_counts, "COUNT QUERY message counts do not match DATA QUERY message counts");
         $this->assertEquals($data_reported_counts, $actual_returned_counts, "DATA QUERY reported message counts do not match ACTUAL COUNTS of messages returned for folder");
