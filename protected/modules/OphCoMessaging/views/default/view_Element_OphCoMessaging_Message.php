@@ -108,14 +108,14 @@ $mailbox =
                 </div>
                 <?php if (empty($element->comments) && $this->canMarkMessageRead($element, $mailbox)) { ?>
                 <div class="change-msg-status">
-                    <a class="button" data-test="mark-as-read-btn" href="<?= Yii::app()->createUrl("{$this->getModule()->name}/Default/markRead/?id={$this->event->id}&mailbox_id={$mailbox->id}") ?>" data-test="mark-as-read">
+                    <a class="button" data-test="mark-as-read-btn" href="<?= Yii::app()->createUrl("{$this->getModule()->name}/Default/markRead?id={$this->event->id}&mailbox_id={$mailbox->id}") ?>" data-test="mark-as-read">
                         <i class="oe-i save small pad-r"></i>
                         Mark message as read for <?= $mailbox->name ?>
                     </a>
                 </div>
                 <?php } elseif (empty($element->comments) && $this->canMarkMessageUnread($element, $mailbox)) { ?>
                 <div class="change-msg-status">
-                    <a class="button" data-test="mark-as-unread-btn" href="<?= Yii::app()->createUrl("{$this->getModule()->name}/Default/markUnread/?id={$this->event->id}&mailbox_id={$mailbox->id}") ?>" data-test="mark-as-unread">
+                    <a class="button" data-test="mark-as-unread-btn" href="<?= Yii::app()->createUrl("{$this->getModule()->name}/Default/markUnread?id={$this->event->id}&mailbox_id={$mailbox->id}") ?>" data-test="mark-as-unread">
                         <i class="oe-i save small pad-r"></i>
                         Mark message as unread for <?= $mailbox->name ?>
                     </a>
@@ -149,13 +149,13 @@ $mailbox =
                 </div>
                 <?php if ($is_latest_comment && $this->canMarkMessageRead($element, $mailbox)) { ?>
                     <div class="change-msg-status">
-                        <a class="button" href="<?= Yii::app()->createUrl("{$this->getModule()->name}/Default/markRead/?id={$this->event->id}&mailbox_id={$mailbox->id}") ?>" data-test="mark-as-read">
+                        <a class="button" href="<?= Yii::app()->createUrl("{$this->getModule()->name}/Default/markRead?id={$this->event->id}&mailbox_id={$mailbox->id}") ?>" data-test="mark-as-read">
                             <i class="oe-i save small pad-r"></i>Mark message as read for <?= $mailbox->name ?>
                         </a>
                     </div>
                 <?php } elseif ($is_latest_comment && $this->canMarkMessageUnread($element, $mailbox)) { ?>
                     <div class="change-msg-status">
-                        <a class="button" href="<?= Yii::app()->createUrl("{$this->getModule()->name}/Default/markUnread/?id={$this->event->id}&mailbox_id={$mailbox->id}") ?>" data-test="mark-as-unread">
+                        <a class="button" href="<?= Yii::app()->createUrl("{$this->getModule()->name}/Default/markUnread?id={$this->event->id}&mailbox_id={$mailbox->id}") ?>" data-test="mark-as-unread">
                             <i class="oe-i save small pad-r"></i>Mark message as unread for <?= $mailbox->name ?>
                         </a>
                     </div>
@@ -167,7 +167,7 @@ $mailbox =
                 <?php
                 $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
                     'id' => 'comment-form',
-                    'action' => Yii::app()->createUrl('/' . $this->getModule()->name . '/Default/AddComment', array('id' => $this->event->id)),
+                    'action' => Yii::app()->createUrl('/' .  $this->getModule()->name . '/Default/AddComment?id=' . $this->event->id),
                     'enableAjaxValidation' => false,
                     'layoutColumns' => array(
                         'label' => 2,

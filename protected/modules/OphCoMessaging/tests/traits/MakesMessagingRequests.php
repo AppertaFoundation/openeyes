@@ -58,7 +58,7 @@ trait MakesMessagingRequests
     {
         $event_id = $message instanceof Event ? $message->id : $message->event_id;
 
-        $base_url = "/OphCoMessaging/default/markRead/?id=$event_id";
+        $base_url = "/OphCoMessaging/default/markRead?id=$event_id";
 
         if (!$for_mailbox) {
             return $base_url;
