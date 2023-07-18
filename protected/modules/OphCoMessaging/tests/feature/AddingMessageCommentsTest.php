@@ -931,51 +931,44 @@ class AddingMessageCommentsTest extends OEDbTestCase
         // Primary - CC - Sender
         $right_sender_left_primary_top_cc_message = $this->createMessage($right_user, $right_mailbox, $left_mailbox, $top_mailbox);
 
-        $this->assertUnreadMessageCount(4, $top_user);
-        $this->assertUnreadMessageCount(4, $left_user);
-        $this->assertUnreadMessageCount(4, $right_user);
+        $this->assertUnreadAndReadMessageCounts(4, 0, $top_user, "top at the start");
+        $this->assertUnreadAndReadMessageCounts(4, 0, $left_user, "left at the start");
+        $this->assertUnreadAndReadMessageCounts(4, 0, $right_user, "right at the start");
 
         // Right (as primary) posts a reply to the message sent by left
         $this->postCommentWithRequestOn($left_sender_right_primary_top_cc_message, $right_user, $right_mailbox);
 
         // Right moves to 3 - 1, left moves to 5 - 0
-        $this->assertUnreadMessageCount(3, $right_user);
-        $this->assertReadMessageCount(1, $right_user);
-        $this->assertUnreadMessageCount(5, $left_user);
+        $this->assertUnreadAndReadMessageCounts(3, 1, $right_user, "right after replying as primary recipient to a message sent by left");
+        $this->assertUnreadAndReadMessageCounts(5, 0, $left_user, "left which should have right's reply in their unread folder");
 
         // Left (as secondary) marks the message sent by top read
         $this->markMessageReadWithRequest($top_sender_right_primary_left_cc_message, $left_user);
 
         // Left moves to 4 - 1, top stays on 4 - 0
-        $this->assertUnreadMessageCount(4, $left_user);
-        $this->assertReadMessageCount(1, $left_user);
-        $this->assertUnreadMessageCount(4, $top_user);
+        $this->assertUnreadAndReadMessageCounts(4, 1, $left_user, "left after marking a message sent by top read as cc recipient");
+        $this->assertUnreadAndReadMessageCounts(4, 0, $top_user, "top which should not be affected by left marking a message sent by them read");
 
         // Right (as primary) then posts a reply to the message sent by top
         $this->postCommentWithRequestOn($top_sender_right_primary_left_cc_message, $right_user, $right_mailbox);
 
         // Right moves to 2 - 2, top moves to 5 - 0
-        $this->assertUnreadMessageCount(2, $right_user);
-        $this->assertReadMessageCount(2, $right_user);
-        $this->assertUnreadMessageCount(5, $top_user);
-
-        // Left stays on 4 - 1
-        $this->assertUnreadMessageCount(4, $left_user);
-        $this->assertReadMessageCount(1, $left_user);
+        $this->assertUnreadAndReadMessageCounts(2, 2, $right_user, "right after replying as primary recipient to a message sent by top");
+        $this->assertUnreadAndReadMessageCounts(5, 0, $top_user, "top which should have right's reply in their unread folder");
 
         // Left (as primary) marks the message sent by top read
-        $this->markReadWithRequest($top_sender_left_primary_right_cc_message, $left_user);
+        $this->markMessageReadWithRequest($top_sender_left_primary_right_cc_message, $left_user);
 
-        // Left moves to 3 - 2
-        $this->assertUnreadMessageCount(3, $left_user);
-        $this->assertReadMessageCount(2, $left_user);
+        // Left moves to 3 - 2, top moves to 6 - 0
+        $this->assertUnreadAndReadMessageCounts(3, 2, $left_user, "left after replying as primary recipient to a message sent by top");
+        $this->assertUnreadAndReadMessageCounts(6, 0, $top_user, "top which should have left's reply in their unread folder");
 
         // Right (as cc) marks the message sent by top read
-        $this->markReadWithRequest($top_sender_left_primary_right_cc_message, $right_user);
+        $this->markMessageReadWithRequest($top_sender_left_primary_right_cc_message, $right_user);
 
-        // Right moves to 1 - 3
-        $this->assertUnreadMessageCount(1, $left_user);
-        $this->assertReadMessageCount(3, $left_user);
+        // Right moves to 1 - 3, top stays on 6 - 0
+        $this->assertUnreadAndReadMessageCounts(1, 3, $right_user, "right after marking a message sent by top read as cc recipient");
+        $this->assertUnreadAndReadMessageCounts(6, 0, $top_user, "top which should not be affected by right marking a message sent by them read");
 
         $this->assertCountQueryMatchesDataQuery($top_user, $top_mailbox);
         $this->assertCountQueryMatchesDataQuery($left_user, $left_mailbox);
@@ -1066,6 +1059,17 @@ class AddingMessageCommentsTest extends OEDbTestCase
             $mailbox ?? $user->personalMailbox,
             $message
         );
+    }
+
+    protected function assertUnreadAndReadMessageCounts(
+        int $unread_count,
+        int $read_count,
+        User $user,
+        string $who_for = "user",
+        null|Mailbox|array $mailbox = null
+    ) {
+        $this->assertUnreadMessageCount($unread_count, $user, "unread message count for $who_for is incorrect", $mailbox);
+        $this->assertReadMessageCount($read_count, $user, "read message count for $who_for is incorrect", $mailbox);
     }
 
     /**
