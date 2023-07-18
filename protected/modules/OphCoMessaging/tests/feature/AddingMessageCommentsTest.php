@@ -59,12 +59,24 @@ class AddingMessageCommentsTest extends OEDbTestCase
                 'sender_mailbox_id' => $sender_mailbox
             ]);
 
+        $this->assertReadMessageCount(0, $sender);
         $this->assertUnreadMessageCount(1, $sender);
+        $this->assertMessageCount(1, $sender);
+        $this->assertMessageCount(1, $sender, MailboxSearch::FOLDER_UNREAD_TO_ME);
+        $this->assertMessageCount(1, $sender, MailboxSearch::FOLDER_UNREAD_BY_RECIPIENT);
+        $this->assertMessageCount(1, $sender, MailboxSearch::FOLDER_WAITING_FOR_REPLY);
+        $this->assertCountQueryMatchesDataQuery($sender, $sender_mailbox);
 
         $this->markMessageReadWithRequest($message, $sender);
 
+        $this->assertReadMessageCount(1, $sender);
         $this->assertUnreadMessageCount(0, $sender);
         $this->assertMessageCount(1, $sender);
+        $this->assertMessageCount(0, $sender, MailboxSearch::FOLDER_UNREAD_TO_ME);
+        $this->assertMessageCount(0, $sender, MailboxSearch::FOLDER_UNREAD_BY_RECIPIENT);
+        $this->assertMessageCount(1, $sender, MailboxSearch::FOLDER_WAITING_FOR_REPLY);
+
+        $this->assertCountQueryMatchesDataQuery($sender, $sender_mailbox);
     }
 
     /** @test */
