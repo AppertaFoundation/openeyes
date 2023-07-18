@@ -173,6 +173,9 @@ $mailbox =
                         'label' => 2,
                         'field' => 10,
                     ),
+                    'htmlOptions' => [
+                        'data-test' => 'message-comment-form'
+                    ]
                 )); ?>
                 <hr class="divider" />
                 <div class="msg-reply">Your reply … <small>(can not be edited once sent)</small>

@@ -58,6 +58,44 @@ class MessageReadLinksTest extends OEDbTestCase
         $this->assertResponseProvidesMarkAsReadAction($response, $message);
     }
 
+    /** @test */
+    public function recepient_view_offers_mark_as_unread_link()
+    {
+        list($sender, $sender_mailbox) = $this->createMailboxUser();
+        list($recipient, $recipient_mailbox) = $this->createMailboxUser();
+
+        $message = Element_OphCoMessaging_Message::factory()
+                 ->withReplyRequired()
+                 ->withPrimaryRecipient($recipient_mailbox, true)
+                 ->create([
+                     'sender_mailbox_id' => $sender_mailbox
+                 ]);
+
+        $response = $this->actingAs($recipient)
+                         ->get($this->urlToViewMessage($message));
+
+        $this->assertResponseProvidesMarkAsUnreadAction($response, $message);
+    }
+
+    /** @test */
+    public function recepient_view_offers_comment_form_action()
+    {
+        list($sender, $sender_mailbox) = $this->createMailboxUser();
+        list($recipient, $recipient_mailbox) = $this->createMailboxUser();
+
+        $message = Element_OphCoMessaging_Message::factory()
+                 ->withReplyRequired()
+                 ->withPrimaryRecipient($recipient_mailbox, true)
+                 ->create([
+                     'sender_mailbox_id' => $sender_mailbox
+                 ]);
+
+        $response = $this->actingAs($recipient)
+                         ->get($this->urlToViewMessage($message));
+
+        $this->assertResponseProvidesPostCommentAction($response, $message);
+    }
+
     protected function assertResponseProvidesMarkAsReadAction($response, $message)
     {
         $filtered_to_action = $response->filter('[data-test="mark-as-read-btn"]');
@@ -69,4 +107,25 @@ class MessageReadLinksTest extends OEDbTestCase
         );
     }
 
+    protected function assertResponseProvidesMarkAsUnreadAction($response, $message)
+    {
+        $filtered_to_action = $response->filter('[data-test="mark-as-unread-btn"]');
+        $this->assertTrue(count($filtered_to_action) > 0, 'action not found in response');
+        $this->assertStringContainsStringIgnoringCase(
+            $this->urlToMarkMessageUnread($message),
+            $filtered_to_action->first()->attr('href'),
+            'action route is incorrect'
+        );
+    }
+
+    protected function assertResponseProvidesPostCommentAction($response, $message)
+    {
+        $filtered_to_action = $response->filter('[data-test="message-comment-form"]');
+        $this->assertTrue(count($filtered_to_action) > 0, 'action not found in response');
+        $this->assertStringContainsStringIgnoringCase(
+            $this->urlToPostComment($message),
+            $filtered_to_action->first()->attr('action'),
+            'action route is incorrect'
+        );
+    }
 }
