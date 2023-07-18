@@ -24,9 +24,6 @@ trait FakesSettingMetadata
         $this->settingsmetadata_cache[$key] = $value;
 
         $this->ensureModelFaked();
-
-        SettingMetadata::model()
-            ->settingsmetadata_cache[$key] = $value;
     }
 
     protected function ensureModelFaked()
@@ -35,20 +32,15 @@ trait FakesSettingMetadata
             return;
         }
 
-        $fake = new class () {
-            public array $settingsmetadata_cache = [];
+        $mock = $this->getMockBuilder(SettingMetadata::class)
+            ->onlyMethods(['getSetting'])
+            ->getMock();
 
-            public function getSetting($key)
-            {
+        $mock->method('getSetting')
+            ->willReturnCallback(function ($key) {
                 return $this->settingsmetadata_cache[$key] ?? null;
-            }
+            });
 
-            public function checkSetting($key, $value)
-            {
-                return $this->getSetting($key) === $value;
-            }
-        };
-
-        SettingMetadata::fakeWith($fake);
+        SettingMetadata::fakeWith($mock);
     }
 }

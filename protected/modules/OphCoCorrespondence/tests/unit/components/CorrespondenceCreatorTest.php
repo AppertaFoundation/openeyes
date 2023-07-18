@@ -20,6 +20,7 @@ use Episode;
 use HasDatabaseAssertions;
 use LetterMacro;
 use MocksSession;
+use SettingMetadata;
 
 use function PHPUnit\Framework\assertCount;
 
