@@ -21,6 +21,12 @@ use OEModule\OphCoMessaging\tests\traits\MakesMessagingRequests;
 use WithFaker;
 use WithTransactions;
 
+/**
+ * class MessageReadLinksTest
+ * @covers OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message
+ * @group shared-mailboxes
+ * @group sample-data
+ */
 class MessageReadLinksTest extends OEDbTestCase
 {
     use MakesMessagingRequests;
