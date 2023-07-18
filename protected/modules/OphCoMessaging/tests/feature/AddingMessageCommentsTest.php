@@ -370,7 +370,7 @@ class AddingMessageCommentsTest extends OEDbTestCase
     // - for primary recipient
     // - for cc recipient
     /** @test */
-    public function marking_message_as_read_updates_read_status_and_shows_in_read_mailbox()
+    public function marking_message_as_read_updates_is_reflected_in_read_and_unread_mailbox_counts()
     {
         list(
             'element' => $message_element,
@@ -403,45 +403,8 @@ class AddingMessageCommentsTest extends OEDbTestCase
         $this->assertCountQueryMatchesDataQuery($secondary_user, $secondary_mailbox);
     }
 
-    //marking as read updates read status and does not show in unread mailbox
-    // - for sender
-    // - for primary recipient
-    // - for cc recipient
     /** @test */
-    public function marking_as_read_updates_read_status_and_does_not_show_in_unread_mailbox()
-    {
-        list(
-            'element' => $message_element,
-            'recipients' => list(
-                'primary' => list(
-                    'user' => $primary_user,
-                    'mailbox' => $primary_mailbox,
-                    'recipient' => $primary_recipient
-                ),
-                'secondary' => list(
-                    'user' => $secondary_user,
-                    'mailbox' => $secondary_mailbox,
-                    'recipient' => $secondary_recipient
-                ),
-            )
-        ) = $this->sendMessage();
-
-        $this->markMessageReadWithRequest($message_element, $primary_user);
-        $this->assertUnreadMessageCount(0, $primary_user, "message should not be unread for primary after marking read.");
-
-        $this->markMessageReadWithRequest($message_element, $secondary_user);
-        $this->assertUnreadMessageCount(0, $secondary_user, "message should not be unread for cc user after marking read.");
-
-        $this->assertCountQueryMatchesDataQuery($primary_user, $primary_mailbox);
-        $this->assertCountQueryMatchesDataQuery($secondary_user, $secondary_mailbox);
-    }
-
-    //marking as unread updates unread status and shows in unread mailbox
-    // - for sender
-    // - for primary recipient
-    // - for cc recipient
-    /** @test */
-    public function marking_message_shows_in_unread_mailbox()
+    public function marking_message_unread_shows_in_unread_mailbox()
     {
         list(
             'element' => $message_element,
@@ -934,6 +897,10 @@ class AddingMessageCommentsTest extends OEDbTestCase
         $this->assertCountQueryMatchesDataQuery($right_user, $right_mailbox);
     }
 
+    /**
+     * Helper abstraction to build out a standard thread based message for the given
+     * senders and recipients
+     */
     protected function createMessage(User $sender_user, Mailbox $sender_mailbox, Mailbox $primary_mailbox, Mailbox $secondary_mailbox, ?int $count = null)
     {
         $factory = Element_OphCoMessaging_Message::factory()
@@ -949,6 +916,9 @@ class AddingMessageCommentsTest extends OEDbTestCase
         return $factory->create();
     }
 
+    /**
+     * Generic starting point abstraction to setup a message and return the particpants for testing behaviour
+     */
     protected function sendMessage(): array
     {
         [$sender_user, $sender_mailbox] = $this->createMailboxUser();
@@ -1062,6 +1032,11 @@ class AddingMessageCommentsTest extends OEDbTestCase
         }
     }
 
+    /**
+     * This assertion is designed as a sanity check to cover the MailSearch behaviour
+     * which has two separate SQL queries for folder calculations
+     *
+     */
     protected function assertCountQueryMatchesDataQuery(
         User $user,
         Mailbox $mailbox,
