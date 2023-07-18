@@ -381,7 +381,8 @@ class MailboxSearch
                 u.first_name sender_first_name,
                 u.last_name sender_last_name,
                 ev.id event_id,
-                ep.patient_id patient_id FROM
+                ep.patient_id patient_id
+                 FROM
             (SELECT -- Wrap the inner query an additional time to to ensure the count doesn't mess with our selects above
                     COUNT(contextualised_messages.element_id) OVER () total_message_count, contextualised_messages.*
                     FROM
@@ -531,14 +532,28 @@ class MailboxSearch
             JOIN episode ep ON ep.id = ev.episode_id
             JOIN `user` u ON u.id = counted_messages.sender_user_id";
 
+        $sort = new \CSort();
+        $sort->attributes = [
+            'send_date' => [
+                'asc' => 'send_date asc',
+                'desc' => 'send_date desc'],
+            'sender_mailbox_name' => [
+                'asc' => 'sender_mailbox_name asc',
+                'desc' => 'sender_mailbox_name desc']];
+        $sort->defaultOrder = [
+            'sender_mailbox_name' => \CSort::SORT_ASC,
+            'send_date' => \CSort::SORT_ASC
+        ];
+
         $data_provider = new \CSqlDataProvider(
             $sql,
-            array(
+            [
                 'totalItemCount' => MailboxSearch::getMaximumSearchMessageCount(),
-                'pagination' => array(
+                'pagination' => [
                     'pageSize' => 30
-                ),
-            )
+                ],
+                'sort' => $sort
+            ]
         );
 
         $data_provider->params = array_merge(

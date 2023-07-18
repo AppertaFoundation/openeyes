@@ -43,4 +43,9 @@ trait CanBeFaked
 
         return $fake->expects(...func_get_args());
     }
+
+    protected static function hasBeenFaked(): bool
+    {
+        return ModelFakeTracker::getFakeForModel(self::class) !== null;
+    }
 }

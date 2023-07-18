@@ -22,11 +22,11 @@
 
 <div class="element-data element-eyes">
     <?php foreach (array('left' => 'right', 'right' => 'left') as $page_side => $eye_side) : ?>
-      <div class="js-element-eye <?= $eye_side ?>-eye">
+      <div class="js-element-eye <?= $eye_side ?>-eye" data-test="visual-acuity-<?= $eye_side ?>-eye">
           <?php if ($element->hasEye($eye_side)) : ?>
             <div class="data-value">
                   <?php if ($element->getCombined($eye_side)) : ?>
-                    <span class="priority-text">
+                    <span class="priority-text" data-test="combined-visual-acuity-data">
                         <?php echo $element->getCombined($eye_side) ?>
                     </span>
                         <?php echo $this->renderPartial(
