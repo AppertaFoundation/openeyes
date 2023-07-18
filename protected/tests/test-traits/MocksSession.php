@@ -118,7 +118,7 @@ trait MocksSession
         \Yii::app()->setComponent('user', $web_user);
 
         $session = $this->stubSession();
-        $this->setSessionValues(['user' => $web_user]);
+        $this->setSessionValues(['user' => $user]);
 
         return $this;
     }

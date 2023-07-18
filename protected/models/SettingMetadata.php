@@ -150,6 +150,10 @@ class SettingMetadata extends BaseActiveRecordVersioned
      */
     public static function checkSetting($key, $value)
     {
+        if (static::hasBeenFaked()) {
+            return self::model()->getSetting($key) === $value;
+        }
+
         $setting_value = self::model()->findByAttributes(['key' => $key])->getSettingName();
         if (is_string($setting_value)) {
             $setting_value = strtolower($setting_value);
