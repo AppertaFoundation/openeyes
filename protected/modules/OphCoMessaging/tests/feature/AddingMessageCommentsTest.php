@@ -54,7 +54,7 @@ class AddingMessageCommentsTest extends OEDbTestCase
         [$sender, $sender_mailbox] = $this->createMailboxUser();
         $message = Element_OphCoMessaging_Message::factory()
             ->withReplyRequired()
-            ->withPrimaryRecipient($sender_mailbox, false)
+            ->sentToSelf()
             ->create([
                 'sender_mailbox_id' => $sender_mailbox
             ]);
