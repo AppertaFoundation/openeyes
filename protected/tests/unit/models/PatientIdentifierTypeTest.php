@@ -193,6 +193,7 @@ class PatientIdentifierTypeTest extends ModelTestCase
         $response = $this->actingAs($user, $institution)
             ->post('/patient/create', $form_data);
 
+        $response->assertRedirect(null, 'patient creation should redirect', true);
         $urlArray = explode('/', $response->redirect->url);
         $id = $urlArray[count($urlArray) -1];
         $patient_response = Patient::model()->findByPk($id);
