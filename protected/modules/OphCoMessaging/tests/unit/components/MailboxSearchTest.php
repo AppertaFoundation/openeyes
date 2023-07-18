@@ -22,6 +22,7 @@ use OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message;
 use OEModule\OphCoMessaging\models\OphCoMessaging_Message_MessageType;
 use OEModule\OphCoMessaging\models\OphCoMessaging_Message_Recipient;
 use OEModule\OphCoMessaging\models\OphCoMessaging_Message_Comment;
+use User;
 
 /**
  * class MailboxSearchTest
@@ -50,6 +51,45 @@ class MailboxSearchTest extends \OEDbTestCase
         parent::setUp();
 
         $this->setUpMailboxes();
+    }
+
+    /** @test */
+    public function default_sort_order_is_latest_sent_date_descending()
+    {
+        $message_dates = [
+            $this->faker->dateTimeBetween('-5 years', '-1 year'),
+            $this->faker->dateTimeBetween('-11 months', '-10 months'),
+            $this->faker->dateTimeBetween('-9 months', '-8 months'),
+            $this->faker->dateTimeBetween('-5 months', '-3 months'),
+            $this->faker->dateTimeBetween('-2 months', '-1 month')
+        ];
+
+        // create in random order to ensure not relying on PKs for sorting
+        $message_ids = $this->sendMessagesInRandomOrder(
+            array_map(function ($date) { return ['created_date' => $date->format('Y-m-d H:i:s')]; }, $message_dates)
+        );
+        $expected = array_reverse($message_ids);
+
+        $results = $this->messageIdsFromSearch($this->receiver_user, MailboxSearch::FOLDER_ALL);
+
+        $this->assertEquals($expected, $results);
+
+        // now add a reply to a message that should pop it to the top of the list
+        OphCoMessaging_Message_Comment::factory()
+            ->withSender($this->receiver_mailbox)
+            ->create([
+                'element_id' => $expected[2],
+                'created_date' => $this->faker->dateTimeBetween('-3 weeks', '-5 days')->format('Y-m-d H:i:s')
+            ]);
+
+        $updated_expected = $expected;
+        unset($updated_expected[2]);
+        $updated_expected = array_values($updated_expected);
+        array_unshift($updated_expected, $expected[2]);
+
+        $results = $this->messageIdsFromSearch($this->receiver_user, MailboxSearch::FOLDER_ALL);
+
+        $this->assertEquals($updated_expected, $results);
     }
 
     /** @test */
@@ -284,5 +324,35 @@ class MailboxSearchTest extends \OEDbTestCase
     {
         $message->event->episode->deleted = 1;
         $message->event->episode->save();
+    }
+
+    private function sendMessagesInRandomOrder(array $message_attributes): array
+    {
+        $creation_indexes = array_keys($message_attributes);
+        shuffle($creation_indexes);
+        $index_to_message_id = [];
+
+        foreach ($creation_indexes as $index) {
+            $index_to_message_id[$index] = Element_OphCoMessaging_Message::factory()
+                ->withPrimaryRecipient($this->receiver_mailbox, false)
+                ->create($message_attributes[$index]);
+        }
+
+        return array_map(
+            function ($index) use ($index_to_message_id) {
+                return $index_to_message_id[$index]->id;
+            },
+            array_keys($message_attributes)
+        );
+    }
+
+    private function messageIdsFromSearch(User $user, $folder): array
+    {
+        return array_map(
+            function ($message) {
+                return $message['element_id'];
+            },
+            $this->searchAll($user, $folder)
+        );
     }
 }

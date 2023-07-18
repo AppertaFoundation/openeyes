@@ -660,8 +660,7 @@ class MailboxSearch
                 'asc' => 'sender_mailbox_name asc',
                 'desc' => 'sender_mailbox_name desc']];
         $sort->defaultOrder = [
-            'sender_mailbox_name' => \CSort::SORT_ASC,
-            'send_date' => \CSort::SORT_ASC
+            'send_date' => \CSort::SORT_DESC
         ];
 
         $data_provider = new \CSqlDataProvider(
