@@ -342,11 +342,9 @@ class AddingMessageCommentsTest extends OEDbTestCase
         $this->assertFalse((bool)$secondary_recipient->marked_as_read);
     }
 
-    //sent message shows in each recipient's unread mailbox
-    // - for primary
-    // - for cc
     /** @test */
-    public function sent_message_is_shows_in_each_recipient_mailbox() {
+    public function sent_message_shows_in_each_recipient_mailbox()
+    {
         list(
             'recipients' => list(
                 'primary' => list(
@@ -360,13 +358,8 @@ class AddingMessageCommentsTest extends OEDbTestCase
             )
         ) = $this->sendMessage();
 
-        $search = new MailboxSearch($primary_user, MailboxSearch::FOLDER_UNREAD_ALL);
-        $data_provider = $search->retrieveMailboxContentsUsingSQL($primary_user->id, [$primary_mailbox->id]);
-        $this->assertCount(1, $data_provider->getData());
-
-        $search = new MailboxSearch($secondary_user, MailboxSearch::FOLDER_UNREAD_ALL);
-        $data_provider = $search->retrieveMailboxContentsUsingSQL($secondary_user->id, [$secondary_mailbox->id]);
-        $this->assertCount(1, $data_provider->getData());
+        $this->assertUnreadMessageCount(1, $primary_user, "message sent to user should count as unread.");
+        $this->assertUnreadMessageCount(1, $secondary_user, "message cc'd to user should count as unread.");
 
         $this->assertCountQueryMatchesDataQuery($primary_user, $primary_mailbox);
         $this->assertCountQueryMatchesDataQuery($secondary_user, $secondary_mailbox);
@@ -377,7 +370,8 @@ class AddingMessageCommentsTest extends OEDbTestCase
     // - for primary recipient
     // - for cc recipient
     /** @test */
-    public function marking_message_as_read_updates_read_status_and_shows_in_read_mailbox() {
+    public function marking_message_as_read_updates_read_status_and_shows_in_read_mailbox()
+    {
         list(
             'element' => $message_element,
             'recipients' => list(
@@ -395,24 +389,15 @@ class AddingMessageCommentsTest extends OEDbTestCase
         ) = $this->sendMessage();
 
         $this->markMessageReadWithRequest($message_element, $primary_user);
-
-        $this->assertMessageCount(
-            1,
-            $primary_user,
-            MailboxSearch::FOLDER_READ_ALL,
-            $primary_mailbox,
-            "Message should appear in read folder when marked as read for primary recipient"
-        );
+        $this->assertUnreadMessageCount(0, $primary_user, "Message should not still be in unread folder for primary user");
+        $this->assertReadMessageCount(1, $primary_user, "Message should appear in read folder when marked as read for primary user");
+        $this->assertUnreadMessageCount(1, $secondary_user, "Message should still be in unread folder for cc user");
+        $this->assertReadMessageCount(0, $secondary_user, "Message should not be in read folder for cc user when primary marks as read");
 
         $this->markMessageReadWithRequest($message_element, $secondary_user);
 
-        $this->assertMessageCount(
-            1,
-            $secondary_user,
-            MailboxSearch::FOLDER_READ_ALL,
-            $secondary_mailbox,
-            "Message should appear in read folder when marked as read for cc recipient"
-        );
+        $this->assertUnreadMessageCount(0, $secondary_user, "Message should not still be in unread folder for secondary user");
+        $this->assertReadMessageCount(1, $secondary_user, "Message should appear in read folder when marked as read by cc user");
 
         $this->assertCountQueryMatchesDataQuery($primary_user, $primary_mailbox);
         $this->assertCountQueryMatchesDataQuery($secondary_user, $secondary_mailbox);
