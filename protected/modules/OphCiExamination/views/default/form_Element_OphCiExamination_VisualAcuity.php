@@ -17,6 +17,12 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OEModule\OphCiExamination\models\{
+  OphCiExamination_VisualAcuity_Method,
+  OphCiExamination_VisualAcuityUnit,
+  OphCiExamination_VisualAcuityUnitValue
+};
+
 /**
  * @var \OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity $element
  */
@@ -25,11 +31,11 @@ list($values, $val_options) = $element->getUnitValuesForForm(null, false);
 //Reverse the unit values to ensure bigger value display first.
 $values = array_reverse($values, true);
 //Get the base value that should be displayed whe popup open.
-$unit_id = OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()->findByAttributes(array('name' => 'Snellen Metre'))->id;
-$default_display_value = OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnitValue::model()->findByAttributes(array('unit_id' => $unit_id, 'value' => '6/6'))->base_value;
+$unit_id = OphCiExamination_VisualAcuityUnit::model()->findByAttributes(array('name' => 'Snellen Metre'))->id;
+$default_display_value = OphCiExamination_VisualAcuityUnitValue::model()->findByAttributes(array('unit_id' => $unit_id, 'value' => '6/6'))->base_value;
 
 $methods = CHtml::listData(
-    OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Method::model()->findAll(),
+    OphCiExamination_VisualAcuity_Method::model()->findAll(),
     'id',
     'name'
 );
@@ -69,12 +75,11 @@ if (( null !== SettingMetadata::model()->getSetting('COMPLog_port')) && SettingM
                 'visualacuity_unit_change',
                 @$element->unit_id,
                 CHtml::listData(
-                    OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::
-                    model()->activeOrPk(@$element->unit_id)->findAllByAttributes(array('is_va' => '1', 'complex_only' => '0')),
+                    OphCiExamination_VisualAcuityUnit::model()->activeOrPk(@$element->unit_id)->findAllByAttributes(array('is_va' => '1', 'complex_only' => '0')),
                     'id',
                     'name'
                 ),
-                array('class' => 'inline visualacuity_unit_selector', 'data-record-mode' => $element::RECORD_MODE_SIMPLE)
+                array('class' => 'inline visualacuity_unit_selector', 'data-record-mode' => $element::RECORD_MODE_SIMPLE, 'data-test' => 'visual-acuity-unit-selector')
             );
             if ($element->unit->information) { ?>
             <span class="js-has-tooltip fa oe-i info small"
@@ -108,6 +113,7 @@ if ($cvi_api) {
     <?php foreach (array('left' => 'right', 'right' => 'left') as $page_side => $eye_side) : ?>
       <div class="js-element-eye <?= $eye_side ?>-eye column <?= $page_side ?> side"
           data-side="<?= $eye_side ?>"
+          data-test="visual-acuity-eye-column"
       >
         <div class="active-form data-group flex-layout"
              style="<?= $element->hasEye($eye_side) ? '' : 'display: none;'?>"
@@ -133,17 +139,17 @@ if ($cvi_api) {
               } ?>
               </tbody>
             </table>
-            <div class="data-group noReadings">
+            <div class="data-group noReadings" style="<?= count($element->{$eye_side . '_readings'}) > 0 ? 'display: none;' : '' ?>">
               <div class="cols-8 column end">
                   <?php echo $form->checkBox(
                       $element,
                       $eye_side . '_unable_to_assess',
-                      array('text-align' => 'right', 'nowrapper' => true)
+                      array('text-align' => 'right', 'nowrapper' => true, 'data-test' => 'unable_to_assess-input')
                   ) ?>
                   <?php echo $form->checkBox(
                       $element,
                       $eye_side . '_eye_missing',
-                      array('text-align' => 'right', 'nowrapper' => true)
+                      array('text-align' => 'right', 'nowrapper' => true, 'data-test' => 'eye_missing-input')
                   ) ?>
               </div>
             </div>
@@ -260,9 +266,14 @@ if ($cvi_api) {
 <?php
 $assetManager = Yii::app()->getAssetManager();
 $baseAssetsPath = Yii::getPathOfAlias('application.assets');
+
+$unit_values_list = OphCiExamination_VisualAcuityUnit::generateUnitsList();
 ?>
 <script type="text/javascript">
   $(document).ready(function () {
+
+    OphCiExamination_VisualAcuity_unit_values = <?= \CJavaScript::jsonEncode($unit_values_list) ?>;
+    OphCiExamination_VisualAcuity_method_values = <?= \CJavaScript::jsonEncode($methods) ?>;
 
     OphCiExamination_VisualAcuity_method_ids = [ <?php
         $first = true;
@@ -273,5 +284,22 @@ $baseAssetsPath = Yii::getPathOfAlias('application.assets');
         $first = false;
         echo $index;
     } ?> ];
+
+
+    $('.element[data-element-type-class="<?= \CHtml::modelName($element) ?>"] .js-duplicate-element')
+      .data('copy-element-callback', function() {
+        const inside = $('.element[data-element-type-class="<?= \CHtml::modelName($element) ?>"]');
+
+        /*
+         * When the previous examination visual acuity data is returned in the new element, it includes two hidden fields with the ids
+         * of the readings from the previous events. Unless those ids are removed, they will be sent back to the server such that
+         * the existing readings will have their element_id fields updated to the newly created element, instead of those readings
+         * being preserved with new readings being created for the new element.
+         *
+         * In effect, it moves the readings instead of copying them unless the existing ids are removed.
+         */
+        inside.find(`input[name^="<?= \CHtml::activeName($element, 'left_readings') ?>"][name$="[id]"]`).remove();
+        inside.find(`input[name^="<?= \CHtml::activeName($element, 'right_readings') ?>"][name$="[id]"]`).remove();
+      });
   });
 </script>

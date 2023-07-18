@@ -23,15 +23,17 @@ use OEModule\OphCiExamination\widgets\VisualAcuity;
  * @var OphCiExamination_VisualAcuity_Reading $reading
  * @var VisualAcuity $this
  */
+
+$test_prefix = $this->isForNear() ? 'near-visual-acuity-reading' : 'visual-acuity-reading';
 ?>
 
 <tr>
     <?php if ($reading->isBeo()) { ?>
         <td><i class="oe-i small beo"></i></td>
     <?php } ?>
-    <td><?= $reading->method ?></td>
-    <td><?= $reading->unit ?></td>
-    <td><?= $reading->display_value ?></td>
+    <td data-test="<?= $test_prefix ?>-method"><?= $reading->method ?></td>
+    <td data-test="<?= $test_prefix ?>-unit"><?= $reading->unit ?></td>
+    <td data-test="<?= $test_prefix ?>-value"><?= $reading->display_value ?></td>
     <td><?= $reading->source ?></td>
     <?php if ($this->readingsHaveFixation()) { ?>
         <td><?= $reading->fixation ?? '-' ?></td>

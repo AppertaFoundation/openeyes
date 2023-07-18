@@ -29,10 +29,15 @@ if (!isset($selected_data) && isset($reading) && isset($reading->value) && isset
 }
 ?>
 <?php if (isset($selected_data['reading_display'])) { ?>
-<tr class="visualAcuityReading visual-acuity-reading js-reading-record" data-key="<?php echo $key ?>">
+<tr class="visualAcuityReading visual-acuity-reading js-reading-record"
+    data-key="<?php echo $key ?>"
+    data-base-value="<?= $selected_data['reading_value'] ?? '' ?>"
+    data-method-id="<?= $selected_data['method_id'] ?? '' ?>"
+    data-test="visual-acuity-reading"
+>
   <td class="cols-3">
       <?php if (isset($reading)  && $reading->id) { ?>
-            <?=\CHtml::hiddenField($name_stub .'['. $key.'][id]', @$reading->id)?>
+            <?=\CHtml::hiddenField($name_stub .'['. $key.'][id]', @$reading->id, ['data-test' => 'visual-acuity-reading-id'])?>
         <?php } ?>
 
       <?=\CHtml::hiddenField($name_stub .'['. $key.'][unit_id]', @$selected_data['reading_unit_id'])?>
