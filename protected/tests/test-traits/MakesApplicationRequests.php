@@ -26,7 +26,6 @@ trait MakesApplicationRequests
     use MocksSession;
 
     protected array $originalServerValues = [];
-    private $originalBeginRequestEventHandlers = null;
 
     public function setUpMakesApplicationRequests()
     {
@@ -36,7 +35,6 @@ trait MakesApplicationRequests
         $this->tearDownCallbacks(function () {
             $this->resetRequestGlobals();
             $_SERVER = $this->originalServerValues;
-            $this->restoreRequestEventHandling();
         });
     }
 
@@ -143,6 +141,7 @@ trait MakesApplicationRequests
         $_GET = [];
         $_REQUEST = [];
         $_POST = [];
+        \Yii::app()->setComponent('request', null);
     }
 
     /**
@@ -154,17 +153,8 @@ trait MakesApplicationRequests
      */
     private function removeRequestEventHandling()
     {
-        $this->originalBeginRequestEventHandlers = \Yii::app()->getEventHandlers('onBeginRequest');
-        foreach ($this->originalBeginRequestEventHandlers as $event_handler) {
-            \Yii::app()->detachEventHandler('onBeginRequest', $event_handler);
-        }
-    }
-
-    private function restoreRequestEventHandling()
-    {
-        foreach ($this->originalBeginRequestEventHandlers as $event_handler) {
-            \Yii::app()->attachEventHandler('onBeginRequest', $event_handler);
-        }
+        $event_handlers = \Yii::app()->getEventHandlers('onBeginRequest');
+        $event_handlers->clear();
     }
 
     /**
