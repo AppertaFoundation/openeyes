@@ -16,7 +16,9 @@
 namespace OEModule\OphCoMessaging\tests\unit\models;
 
 use Event;
+use Mailer;
 use OE\factories\models\EventFactory;
+use OEModule\OphCoMessaging\factories\models\OphCoMessaging_Message_CommentFactory;
 use OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message;
 use OEModule\OphCoMessaging\models\Mailbox;
 use OEModule\OphCoMessaging\models\OphCoMessaging_Message_Comment;
@@ -286,5 +288,32 @@ class Element_OphCoMessaging_MessageTest extends \ModelTestCase
 
         $this->assertFalse($element_without_cc->cc_enabled);
         $this->assertTrue($element_with_cc->cc_enabled);
+    }
+
+    /** @test */
+    public function read_by_includes_sender_when_sender_has_read_latest_comment()
+    {
+        $receiver = Mailbox::factory()->create();
+        $message = Element_OphCoMessaging_Message::factory()
+            ->withReplyRequired()
+            ->withPrimaryRecipient($receiver, true)
+            ->create();
+
+        $comment = OphCoMessaging_Message_Comment::factory()
+            ->withElement($message)
+            ->withSender($receiver)
+            ->create([
+                // marked as read indicates sender of original message has read this comment
+                'marked_as_read' => false
+            ]);
+
+        $this->assertStringNotContainsString($message->sender->name, $message->getReadByLine());
+
+        $comment->marked_as_read = true;
+        $comment->save();
+
+        $message->refresh();
+
+        $this->assertStringContainsString($message->sender->name, $message->getReadByLine(), 'comment read tracking should indicate when sender has read the thread.');
     }
 }

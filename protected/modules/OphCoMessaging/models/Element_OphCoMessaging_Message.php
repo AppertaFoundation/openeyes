@@ -282,9 +282,15 @@ class Element_OphCoMessaging_Message extends \BaseEventTypeElement
 
     public function getReadByLine()
     {
-        return implode(', ', array_map(static function ($recipient) {
+        $readers = array_map(static function ($recipient) {
             return $recipient->formattedName(true);
-        }, $this->read_by_recipients));
+        }, $this->read_by_recipients);
+
+        if ($this->last_comment && (bool) $this->last_comment->marked_as_read) {
+            $readers[] = $this->sender->name;
+        }
+
+        return implode(', ',  $readers);
     }
 
     protected function beforeSave()
