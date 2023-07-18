@@ -19,6 +19,15 @@ namespace OEModule\OphCoMessaging\models;
 
 use OE\factories\models\traits\HasFactory;
 
+/**
+ * @property string $comment_text
+ * @property string|int $mailbox_id
+ * @property string|int $element_id
+ * @property Element_OphCoMessaging_Message $element
+ * @property Mailbox $sender_mailbox
+ * @property User $user
+ * @property User $usermodified
+ */
 class OphCoMessaging_Message_Comment extends \BaseActiveRecordVersioned
 {
     use HasFactory;
@@ -64,14 +73,5 @@ class OphCoMessaging_Message_Comment extends \BaseActiveRecordVersioned
         return array(
             'comment_text' => 'Comment Text',
         );
-    }
-
-    public function beforeSave()
-    {
-        if ($this->isNewRecord && !isset($this->marked_as_read)) {
-            $this->marked_as_read = $this->mailbox_id === $this->element->sender_mailbox_id;
-        }
-
-        return parent::beforeSave();
     }
 }

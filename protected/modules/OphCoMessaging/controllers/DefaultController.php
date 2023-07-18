@@ -187,6 +187,8 @@ class DefaultController extends \BaseEventTypeController
         $comment->mailbox_id = $mailbox_id;
         $comment->element_id = $element->id;
 
+        $comment->marked_as_read = (int) $comment->mailbox_id === (int) $element->sender_mailbox_id;
+
         if (!$comment->validate()) {
             $this->show_comment_form = true;
 
