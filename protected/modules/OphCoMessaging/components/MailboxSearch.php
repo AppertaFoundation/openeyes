@@ -52,7 +52,8 @@ class MailboxSearch
     private $search_message_type = null;
     private $search_message_content = null;
 
-    //Required for sent message behaviour when a user has sent a message to themselves
+    //Flags for specific corner cases that need to be handled
+    private $allow_unreplied_started_threads = null;
     private $dedupe_to_self_side = null;
 
     public function __construct($user, $folder, $search_parameters = [])
@@ -92,6 +93,7 @@ class MailboxSearch
                 case self::FOLDER_ALL:
                     $this->retrieve_from = self::RETRIEVE_RECEIVED_AND_REPLIES;
                     $this->dedupe_to_self_side = self::DEDUPE_TO_SELF_SENDER;
+                    $this->allow_unreplied_started_threads = 1;
                     break;
 
                 case self::FOLDER_UNREAD_ALL:
@@ -143,14 +145,12 @@ class MailboxSearch
 
                 case self::FOLDER_READ_ALL:
                     $this->retrieve_from = self::RETRIEVE_RECEIVED;
-                    $this->message_sent = 0;
                     $this->message_read_by_user = 1;
                     $this->dedupe_to_self_side = self::DEDUPE_TO_SELF_SENDER;
                     break;
 
                 case self::FOLDER_READ_URGENT:
                     $this->retrieve_from = self::RETRIEVE_RECEIVED;
-                    $this->message_sent = 0;
                     $this->message_read_by_user = 1;
                     $this->message_urgent = 1;
                     $this->dedupe_to_self_side = self::DEDUPE_TO_SELF_SENDER;
@@ -158,7 +158,6 @@ class MailboxSearch
 
                 case self::FOLDER_READ_TO_ME:
                     $this->retrieve_from = self::RETRIEVE_RECEIVED;
-                    $this->message_sent = 0;
                     $this->message_read_by_user = 1;
                     $this->message_to_me = 1;
                     $this->dedupe_to_self_side = self::DEDUPE_TO_SELF_SENDER;
@@ -166,7 +165,6 @@ class MailboxSearch
 
                 case self::FOLDER_READ_CC:
                     $this->retrieve_from = self::RETRIEVE_RECEIVED;
-                    $this->message_sent = 0;
                     $this->message_read_by_user = 1;
                     $this->message_cc = 1;
                     $this->dedupe_to_self_side = self::DEDUPE_TO_SELF_SENDER;
@@ -175,6 +173,7 @@ class MailboxSearch
                 case self::FOLDER_STARTED_THREADS:
                     $this->retrieve_from = self::RETRIEVE_SENT;
                     $this->message_user_original_sender = 1;
+                    $this->allow_unreplied_started_threads = 1;
                     break;
 
                 case self::FOLDER_WAITING_FOR_REPLY:
@@ -182,12 +181,14 @@ class MailboxSearch
                     $this->message_reply = 0;
                     $this->message_query = 1;
                     $this->message_user_original_sender = 1;
+                    $this->allow_unreplied_started_threads = 1;
                     break;
 
                 case self::FOLDER_UNREAD_BY_RECIPIENT:
                     $this->retrieve_from = self::RETRIEVE_SENT;
                     $this->message_sent = 1;
                     $this->message_read_by_recipient = 0;
+                    $this->allow_unreplied_started_threads = 1;
                     break;
 
                 default:
@@ -238,51 +239,69 @@ class MailboxSearch
 
             SUM(
                 (contextualised_messages.sent = 0 OR 
-                    (contextualised_messages.to_self AND contextualised_messages.element_fetched_as_original_sender = 0)
-                ) AND 
-                contextualised_messages.marked_as_read_by_user = 0) " . static::FOLDER_UNREAD_ALL . ",
+                    (contextualised_messages.to_self AND contextualised_messages.element_fetched_as_original_sender = 0)) AND 
+                contextualised_messages.unreplied_started_thread = 0 AND
+                contextualised_messages.marked_as_read_by_user = 0
+            ) " . static::FOLDER_UNREAD_ALL . ",
             SUM(
                 (contextualised_messages.sent = 0 OR 
-                    (contextualised_messages.to_self AND contextualised_messages.element_fetched_as_original_sender = 0)
-                ) AND 
-                contextualised_messages.marked_as_read_by_user = 0 AND contextualised_messages.urgent = 1) " . static::FOLDER_UNREAD_URGENT . ",
+                    (contextualised_messages.to_self AND contextualised_messages.element_fetched_as_original_sender = 0)) AND
+                contextualised_messages.unreplied_started_thread = 0 AND
+                contextualised_messages.marked_as_read_by_user = 0 AND 
+                contextualised_messages.urgent = 1
+            ) " . static::FOLDER_UNREAD_URGENT . ",
             SUM(
                 (contextualised_messages.sent = 0 OR 
-                    (contextualised_messages.to_self AND contextualised_messages.element_fetched_as_original_sender = 0)
-                ) AND 
-                contextualised_messages.marked_as_read_by_user = 0 AND contextualised_messages.reply_required = 1) " . static::FOLDER_UNREAD_QUERY . ",
+                    (contextualised_messages.to_self AND contextualised_messages.element_fetched_as_original_sender = 0)) AND
+                contextualised_messages.unreplied_started_thread = 0 AND
+                contextualised_messages.marked_as_read_by_user = 0 AND 
+                contextualised_messages.reply_required = 1
+            ) " . static::FOLDER_UNREAD_QUERY . ",
             SUM(
                 (contextualised_messages.sent = 0 OR 
-                    (contextualised_messages.to_self AND contextualised_messages.element_fetched_as_original_sender = 0)
-                ) AND 
-                contextualised_messages.marked_as_read_by_user = 0 AND contextualised_messages.has_reply = 1) " . static::FOLDER_UNREAD_REPLIES . ",
+                    (contextualised_messages.to_self AND contextualised_messages.element_fetched_as_original_sender = 0)) AND
+                contextualised_messages.unreplied_started_thread = 0 AND
+                contextualised_messages.marked_as_read_by_user = 0 AND 
+                contextualised_messages.has_reply = 1
+            ) " . static::FOLDER_UNREAD_REPLIES . ",
             SUM(
                 (contextualised_messages.sent = 0 OR 
-                    (contextualised_messages.to_self AND contextualised_messages.element_fetched_as_original_sender = 0)
-                ) AND 
-                contextualised_messages.marked_as_read_by_user = 0 AND contextualised_messages.to_me = 1) " . static::FOLDER_UNREAD_TO_ME . ",
+                    (contextualised_messages.to_self AND contextualised_messages.element_fetched_as_original_sender = 0)) AND
+                contextualised_messages.unreplied_started_thread = 0 AND
+                contextualised_messages.marked_as_read_by_user = 0 AND 
+                contextualised_messages.to_me = 1
+            ) " . static::FOLDER_UNREAD_TO_ME . ",
             SUM(
                 (contextualised_messages.sent = 0 OR 
-                    (contextualised_messages.to_self AND contextualised_messages.element_fetched_as_original_sender = 0)
-                ) AND 
-                contextualised_messages.marked_as_read_by_user = 0 AND contextualised_messages.cc = 1) " . static::FOLDER_UNREAD_CC . ",
+                    (contextualised_messages.to_self AND contextualised_messages.element_fetched_as_original_sender = 0)) AND
+                contextualised_messages.unreplied_started_thread = 0 AND
+                contextualised_messages.marked_as_read_by_user = 0 AND 
+                contextualised_messages.cc = 1
+            ) " . static::FOLDER_UNREAD_CC . ",
 
             SUM(
-                (contextualised_messages.sent = 0 OR 
-                    (contextualised_messages.to_self AND contextualised_messages.element_fetched_as_original_sender = 0)) AND 
-                    contextualised_messages.marked_as_read_by_user = 1) " . static::FOLDER_READ_ALL . ",
+                (contextualised_messages.to_self = 0 OR contextualised_messages.element_fetched_as_original_sender = 0) AND 
+                contextualised_messages.marked_as_read_by_user = 1 AND
+                contextualised_messages.unreplied_started_thread = 0
+            ) " . static::FOLDER_READ_ALL . ",
             SUM(
-                (contextualised_messages.sent = 0 OR 
-                    (contextualised_messages.to_self AND contextualised_messages.element_fetched_as_original_sender = 0)) AND 
-                    contextualised_messages.marked_as_read_by_user = 1 AND contextualised_messages.urgent = 1) " . static::FOLDER_READ_URGENT . ",
+                (contextualised_messages.to_self = 0 OR contextualised_messages.element_fetched_as_original_sender = 0) AND 
+                contextualised_messages.marked_as_read_by_user = 1 AND 
+                contextualised_messages.unreplied_started_thread = 0 AND
+                contextualised_messages.urgent = 1
+            ) " . static::FOLDER_READ_URGENT . ",
             SUM(
-                (contextualised_messages.sent = 0 OR 
-                    (contextualised_messages.to_self AND contextualised_messages.element_fetched_as_original_sender = 0)) AND 
-                    contextualised_messages.marked_as_read_by_user = 1 AND contextualised_messages.to_me = 1) " . static::FOLDER_READ_TO_ME . ",
+                (contextualised_messages.to_self = 0 OR contextualised_messages.element_fetched_as_original_sender = 0) AND 
+                contextualised_messages.marked_as_read_by_user = 1 AND 
+                contextualised_messages.unreplied_started_thread = 0 AND
+                contextualised_messages.to_me = 1
+            ) " . static::FOLDER_READ_TO_ME . ",
             SUM(
-                (contextualised_messages.sent = 0 OR 
-                    (contextualised_messages.to_self AND contextualised_messages.element_fetched_as_original_sender = 0)) AND 
-                    contextualised_messages.marked_as_read_by_user = 1 AND contextualised_messages.cc = 1) " . static::FOLDER_READ_CC . ",
+                (contextualised_messages.to_self = 0 OR contextualised_messages.element_fetched_as_original_sender = 0) AND 
+                contextualised_messages.marked_as_read_by_user = 1 AND 
+                contextualised_messages.unreplied_started_thread = 0 AND
+                contextualised_messages.cc = 1
+            ) " . static::FOLDER_READ_CC . ",
 
             SUM(
                 contextualised_messages.user_original_sender = 1 AND 
@@ -291,16 +310,19 @@ class MailboxSearch
                     contextualised_messages.element_fetched_as_original_sender = 1
                 )
             ) " . static::FOLDER_STARTED_THREADS . ",
+            
             SUM(
                 contextualised_messages.user_original_sender = 1 AND 
                 contextualised_messages.reply_required = 1 AND 
                 contextualised_messages.has_reply = 0
             ) " . static::FOLDER_WAITING_FOR_REPLY . ",
+            
             SUM(
                 (
                     contextualised_messages.sent = 1 AND 
                     (
-                        contextualised_messages.to_self = 0 OR contextualised_messages.element_fetched_as_original_sender = 1
+                        contextualised_messages.to_self = 0 OR 
+                        contextualised_messages.element_fetched_as_original_sender = 1
                     )
                 ) AND 
                 contextualised_messages.marked_as_read_by_recipient = 0
@@ -310,7 +332,8 @@ class MailboxSearch
             (SELECT
                 intermediate_messages.*,
                 (intermediate_messages.sender_mailbox_id = intermediate_messages.user_mailbox_id) `sent`,
-                (intermediate_messages.sender_mailbox_id = intermediate_messages.recipient_mailbox_id) to_self
+                (intermediate_messages.sender_mailbox_id = intermediate_messages.recipient_mailbox_id) to_self,
+                (intermediate_messages.user_original_sender = 1 AND intermediate_messages.has_reply = 0) unreplied_started_thread
                 FROM
                 (SELECT
                     messages.element_id element_id,
@@ -608,6 +631,7 @@ class MailboxSearch
                 WHERE
                 (:retrieve_original_element IS NULL OR :retrieve_original_element = 0 OR original_element.original = 1 OR omc.id IS NOT NULL)) contextualised_messages
             WHERE -- Perform filtering based on folder flags and search params
+                (:allow_unreplied_started_threads = 1 OR (contextualised_messages.user_original_sender = 0 OR contextualised_messages.has_reply = 1) OR contextualised_messages.sender_mailbox_id = contextualised_messages.recipient_mailbox_id) AND
                 (:message_read_by_user IS NULL OR contextualised_messages.marked_as_read_by_user = :message_read_by_user) AND
                 (:message_read_by_recipient IS NULL OR contextualised_messages.marked_as_read_by_recipient = :message_read_by_recipient) AND
                 (:message_reply IS NULL OR contextualised_messages.has_reply = :message_reply) AND
@@ -673,6 +697,7 @@ class MailboxSearch
                 ':search_message_type' => $this->search_message_type,
                 ':search_message_content' => $this->search_message_content,
 
+                ':allow_unreplied_started_threads' => $this->allow_unreplied_started_threads,
                 ':dedupe_to_self_side' => $this->dedupe_to_self_side
             ],
             $mailbox_id_params['values']
