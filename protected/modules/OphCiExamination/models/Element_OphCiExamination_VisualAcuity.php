@@ -20,6 +20,7 @@ namespace OEModule\OphCiExamination\models;
 
 use OEModule\OphCiExamination\models\interfaces\BEOSidedData;
 use OEModule\OphCiExamination\widgets\VisualAcuity as VisualAcuityWidget;
+use OE\factories\models\traits\HasFactory;
 
 /**
  * This is the main record element for Visual Acuity, which records VA for left, right and BEO eyes.
@@ -74,6 +75,7 @@ class Element_OphCiExamination_VisualAcuity extends \BaseEventTypeElement implem
     use traits\CustomOrdering;
     use traits\HasBEOSidedData;
     use traits\HasChildrenWithEventScopeValidation;
+    use HasFactory;
 
     const RECORD_MODE_COMPLEX = 'complex';
     const RECORD_MODE_SIMPLE = 'simple';
@@ -600,6 +602,17 @@ class Element_OphCiExamination_VisualAcuity extends \BaseEventTypeElement implem
             }
         }
         return round($sum / count($values));
+    }
+
+    /**
+     * @param \BaseEventTypeElement $element
+     */
+    public function loadFromExisting($element)
+    {
+        parent::loadFromExisting($element);
+
+        $this->unit_id = null; // Potentially set to default value which affects the result from getUnit()
+        $this->unit_id = $this->getUnit()->id ?? null;
     }
 
     protected function getDefaultUnitId()
