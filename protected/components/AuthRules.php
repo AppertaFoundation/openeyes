@@ -105,7 +105,7 @@ class AuthRules
      *
      * @return bool
      */
-    public function canDeleteEvent($data, User $user, Event $event)
+    public function canDeleteEvent($data, OEWebUser|User $user, Event $event)
     {
         if (!(Yii::app()->user->checkAccess('admin'))) {
             return false;

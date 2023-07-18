@@ -907,9 +907,9 @@ class AddingMessageCommentsTest extends OEDbTestCase
     /** @test */
     public function three_way_usage_of_mailboxes()
     {
-        [$top_user, $top_mailbox] = $this->getMailboxUser();
-        [$left_user, $left_mailbox] = $this->getMailboxUser();
-        [$right_user, $right_mailbox] = $this->getMailboxUser();
+        [$top_user, $top_mailbox] = $this->createMailboxUser();
+        [$left_user, $left_mailbox] = $this->createMailboxUser();
+        [$right_user, $right_mailbox] = $this->createMailboxUser();
 
         $this->mockCurrentContext();
 
