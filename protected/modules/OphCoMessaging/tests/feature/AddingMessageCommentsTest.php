@@ -904,18 +904,12 @@ class AddingMessageCommentsTest extends OEDbTestCase
         $this->assertCountQueryMatchesDataQuery($primary_user, $primary_mailbox);
     }
 
-    /**
-     * It's important to note in this test that messages that are sent but not responded to
-     * will not contribute to the read or unread message tally, only the total messages. This
-     * should probably be looked at make the numbering more consistent in the different categories.
-     *
-     * @test
-     */
+    /** @test */
     public function three_way_usage_of_mailboxes()
     {
-        [$top_user, $top_mailbox] = $this->createMailboxUser();
-        [$left_user, $left_mailbox] = $this->createMailboxUser();
-        [$right_user, $right_mailbox] = $this->createMailboxUser();
+        [$top_user, $top_mailbox] = $this->getMailboxUser();
+        [$left_user, $left_mailbox] = $this->getMailboxUser();
+        [$right_user, $right_mailbox] = $this->getMailboxUser();
 
         $this->mockCurrentContext();
 
@@ -945,9 +939,9 @@ class AddingMessageCommentsTest extends OEDbTestCase
         $this->postCommentWithRequestOn($left_sender_right_primary_top_cc_message, $right_user, $right_mailbox);
 
         // Right moves to 3 - 1, left moves to 5 - 0
-        $this->assertUnreadMessageCount(3, $right_user, "replying to received message should reduce unread count by 1");
-        $this->assertReadMessageCount(1, $right_user, "replying to received message should mark it as read");
-        $this->assertUnreadMessageCount(5, $left_user, "replying to sender should increase unread message count by 1 for the original sender");
+        $this->assertUnreadMessageCount(3, $right_user);
+        $this->assertReadMessageCount(1, $right_user);
+        $this->assertUnreadMessageCount(5, $left_user);
 
         // Left (as secondary) marks the message sent by top read
         $this->markMessageReadWithRequest($top_sender_right_primary_left_cc_message, $left_user);
@@ -965,23 +959,23 @@ class AddingMessageCommentsTest extends OEDbTestCase
         $this->assertReadMessageCount(2, $right_user);
         $this->assertUnreadMessageCount(5, $top_user);
 
-        // Left moves to 5 - 1
-        $this->assertUnreadMessageCount(5, $left_user);
-        $this->assertReadMessageCount(0, $left_user, "left user still has one sent message with no action, so doesn't count as read or unread.");
-
-        // Left (as primary) marks the message sent by top read
-        $this->markMessageReadWithRequest($top_sender_left_primary_right_cc_message, $left_user);
-
-        // Left moves to 4 - 1
+        // Left stays on 4 - 1
         $this->assertUnreadMessageCount(4, $left_user);
         $this->assertReadMessageCount(1, $left_user);
 
+        // Left (as primary) marks the message sent by top read
+        $this->markReadWithRequest($top_sender_left_primary_right_cc_message, $left_user);
+
+        // Left moves to 3 - 2
+        $this->assertUnreadMessageCount(3, $left_user);
+        $this->assertReadMessageCount(2, $left_user);
+
         // Right (as cc) marks the message sent by top read
-        $this->markMessageReadWithRequest($top_sender_left_primary_right_cc_message, $right_user);
+        $this->markReadWithRequest($top_sender_left_primary_right_cc_message, $right_user);
 
         // Right moves to 1 - 3
-        $this->assertUnreadMessageCount(1, $right_user);
-        $this->assertReadMessageCount(3, $right_user);
+        $this->assertUnreadMessageCount(1, $left_user);
+        $this->assertReadMessageCount(3, $left_user);
 
         $this->assertCountQueryMatchesDataQuery($top_user, $top_mailbox);
         $this->assertCountQueryMatchesDataQuery($left_user, $left_mailbox);
@@ -1129,7 +1123,7 @@ class AddingMessageCommentsTest extends OEDbTestCase
 
             MailboxSearch::FOLDER_STARTED_THREADS,
             MailboxSearch::FOLDER_WAITING_FOR_REPLY,
-            MailboxSearch::FOLDER_UNREAD_BY_RECIPIENT
+            MailboxSearch::FOLDER_UNREAD_BY_RECIPIENT,
         ];
 
         $search = new MailboxSearch($user, MailboxSearch::FOLDER_ALL);

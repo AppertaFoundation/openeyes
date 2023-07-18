@@ -252,7 +252,7 @@ class MailboxSearch
                     messages.to_me to_me,
                     messages.cc cc,
                     messages.user_original_sender user_original_sender,
-                    messages.sender_mailbox_id sender_mailbox_id,
+                    COALESCE(omc.mailbox_id, messages.sender_mailbox_id) sender_mailbox_id,
                     messages.user_mailbox_id user_mailbox_id,
                     IF (omc.id IS NOT NULL, -- Method of determining who the recipient is for this message, as it depends on who has replied and in what order
                         IF(omc.mailbox_id = messages.user_mailbox_id,
@@ -415,7 +415,7 @@ class MailboxSearch
                         omc.id comment_id,
                         omc.comment_text comment_text,
                         COALESCE(omc.created_date, messages.created_date) send_date,
-                        messages.sender_mailbox_id sender_mailbox_id,
+                        COALESCE(omc.mailbox_id, messages.sender_mailbox_id) sender_mailbox_id,
                         COALESCE(omc.created_user_id, messages.sender_user_id) sender_user_id,
                         COALESCE(comment_sender_mailbox.name, messages.sender_mailbox_name) sender_mailbox_name,
                         COALESCE(comment_sender_mailbox.is_personal, messages.sender_mailbox_personal) sender_mailbox_personal,
