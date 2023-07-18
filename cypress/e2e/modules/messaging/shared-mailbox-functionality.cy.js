@@ -76,7 +76,7 @@ describe('verifies the desired behaviour of shared mailboxes for messaging', () 
 
         // mark the message sent to the user shared mailbox as read
         cy.visit(data.messageEvent1.urls.view + `&mailbox_id=${data.userMailbox.id}`)
-        cy.getBySel('mark-as-read').click()
+        cy.getBySel('mark-as-read-btn').click()
 
         // log in as user2
         cy.login(data.user2.username, data.user2.password)
@@ -86,7 +86,7 @@ describe('verifies the desired behaviour of shared mailboxes for messaging', () 
         cy.getBySel('read-status').contains(READ_STATUS + data.user1.fullName).should('be.visible')
 
         // mark the message as unread
-        cy.getBySel('mark-as-unread').click()
+        cy.getBySel('mark-as-unread-btn').click()
 
         // log back in as user1
         cy.login(data.user1.username, data.user1.password)
