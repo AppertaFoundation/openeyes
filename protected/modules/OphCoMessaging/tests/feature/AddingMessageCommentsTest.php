@@ -257,29 +257,15 @@ class AddingMessageCommentsTest extends OEDbTestCase
 
         $this->assertFalse((bool) $primary_recipient->marked_as_read);
 
-        $primary_search = new MailboxSearch($primary_user, MailboxSearch::FOLDER_UNREAD_ALL);
-        $sender_search = new MailboxSearch($sender_user, MailboxSearch::FOLDER_UNREAD_ALL);
-
-        //Assert that message was received by the primary recipient
-        $data_provider = $primary_search->retrieveMailboxContentsUsingSQL($primary_user->id, [$primary_mailbox->id]);
-        // due to construction of the dataprovider in the searcher, we rely on the first
-        // entry in the data to validate the total message count
-        $this->assertEquals(1, $data_provider->getData()[0]['total_message_count']);
-
-        //assert that message does not show in the sender's unread mailbox
-        $data_provider = $sender_search->retrieveMailboxContentsUsingSQL($sender_user->id, [$sender_mailbox->id]);
-        // due to construction of the dataprovider in the searcher, we rely on the first
-        // entry in the data to validate the total message count
-        $this->assertEmpty($data_provider->getData());
+        $this->assertUnreadMessageCount(1, $primary_user);
+        $this->assertMessageCount(1, $primary_user);
+        $this->assertUnreadMessageCount(0, $sender_user);
+        $this->assertMessageCount(1, $sender_user);
 
         //post a comment on the message
         $this->postCommentWithRequestOn($message_element, $primary_user, $primary_mailbox);
 
-        //assert that the message now appears in the sender's unread mailbox
-        $data_provider = $sender_search->retrieveMailboxContentsUsingSQL($sender_user->id, [$sender_mailbox->id]);
-        // due to construction of the dataprovider in the searcher, we rely on the first
-        // entry in the data to validate the total message count
-        $this->assertEquals(1, $data_provider->getData()[0]['total_message_count']);
+        $this->assertUnreadMessageCount(1, $sender_user);
 
         $this->assertCountQueryMatchesDataQuery($sender_user, $sender_mailbox);
         $this->assertCountQueryMatchesDataQuery($primary_user, $primary_mailbox);
@@ -303,28 +289,44 @@ class AddingMessageCommentsTest extends OEDbTestCase
         $this->assertCountQueryMatchesDataQuery($sender_user, $sender_mailbox);
     }
 
-    //sent message shows in sent mailbox
     /** @test */
-    public function sent_message_shows_in_sender_sent_mailbox() {
-        list(
-            'sender' => list(
-                'user' => $sender_user,
-                'mailbox' => $sender_mailbox,
-            )
-        ) = $this->sendMessage();
+    public function sender_mailbox_counts_follow_expected_logic()
+    {
+        [$sender, $sender_mailbox] = $this->createMailboxUser();
+        [$recipient, $recipient_mailbox] = $this->createMailboxUser();
+        $message_count = 3;
+        $messages = Element_OphCoMessaging_Message::factory()
+            ->withSender($sender, $sender_mailbox)
+            ->withReplyRequired()
+            ->withPrimaryRecipient($recipient_mailbox, false)
+            ->count($message_count)
+            ->create();
 
-        $search = new MailboxSearch($sender_user, MailboxSearch::FOLDER_STARTED_THREADS);
-        $data_provider = $search->retrieveMailboxContentsUsingSQL($sender_user->id, [$sender_mailbox->id]);
-        $this->assertCount(1, $data_provider->getData());
+        $this->assertMessageCount(3, $sender, MailboxSearch::FOLDER_STARTED_THREADS);
+        $this->assertReadMessageCount(0, $sender, "sent messages are not included in read message total");
+        $this->assertCountQueryMatchesDataQuery($sender, $sender_mailbox);
 
-        $this->assertCountQueryMatchesDataQuery($sender_user, $sender_mailbox);
+        $this->postCommentWithRequestOn($messages[0], $recipient);
+
+        $this->assertMessageCount(3, $sender, MailboxSearch::FOLDER_STARTED_THREADS);
+
+        $this->assertUnreadMessageCount(1, $sender, "a reply to a sent message should count to the unread message total for a sender.");
+        $this->assertCountQueryMatchesDataQuery($sender, $sender_mailbox);
+
+        $this->postCommentWithRequestOn($messages[0], $sender);
+
+        $this->assertMessageCount(3, $sender, MailboxSearch::FOLDER_STARTED_THREADS);
+        $this->assertReadMessageCount(1, $sender, "once a thread has responses, it should count toward the read total for a sender");
+        $this->assertUnreadMessageCount(0, $sender, "being the last user to reply should mark the thread message as read for a sender");
+        $this->assertCountQueryMatchesDataQuery($sender, $sender_mailbox);
     }
 
     //sent message is marked unread for each recipient
     // - for primary
     // - for cc
     /** @test */
-    public function sent_message_is_marked_unread_for_each_recipient() {
+    public function sent_message_is_marked_unread_for_each_recipient()
+    {
         list(
             'recipients' => list(
                 'primary' => list(
