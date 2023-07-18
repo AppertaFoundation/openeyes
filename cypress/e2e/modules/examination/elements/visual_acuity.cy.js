@@ -9,12 +9,12 @@ describe('visual acuity behaviour', () => {
 
         it('copies a previous visual acuity entry into a new examination event', () => {
             cy.get('@seederData').then((seederData) => {
-                cy.visit(seederData.previousEvent.view_url).then(() => {
+                cy.visit(seederData.previousEvent.urls.view).then(() => {
                     cy.getBySel('visual-acuity-left-eye').find('[data-test="combined-visual-acuity-data"]').contains(seederData.leftEyeCombined);
                     cy.getBySel('visual-acuity-right-eye').find('[data-test="combined-visual-acuity-data"]').contains(seederData.rightEyeCombined);
                 });
 
-                cy.visitEventCreationUrl(seederData.previousEvent.patient_id, 'OphCiExamination').then(() => {
+                cy.visitEventCreationUrl(seederData.previousEvent.patient.id, 'OphCiExamination').then(() => {
                     cy.removeElements();
                     cy.addExaminationElement('Visual Acuity');
 
@@ -43,7 +43,7 @@ describe('visual acuity behaviour', () => {
                                     cy.getBySel('eye_missing-input').should('not.be.visible');
                                     cy.getBySel('eye_missing-input').should('not.be.checked');
 
-                                    cy.getBySel('event-action-save').first().click().then(() => {
+                                    cy.saveEvent().then(() => {
                                         // New examination event view should contain copied data
                                         cy.location('pathname').should('contain', '/view');
                                         cy.getBySel('visual-acuity-left-eye').find('[data-test="combined-visual-acuity-data"]').contains(seederData.leftEyeCombined);
@@ -54,7 +54,7 @@ describe('visual acuity behaviour', () => {
                         });
                     });
 
-                    cy.visit(seederData.previousEvent.view_url).then(() => {
+                    cy.visit(seederData.previousEvent.urls.view).then(() => {
                         // And the data should still exist for the previous examination event
                         cy.getBySel('visual-acuity-left-eye').find('[data-test="combined-visual-acuity-data"]').contains(seederData.leftEyeCombined);
                         cy.getBySel('visual-acuity-right-eye').find('[data-test="combined-visual-acuity-data"]').contains(seederData.rightEyeCombined);
@@ -65,7 +65,7 @@ describe('visual acuity behaviour', () => {
 
         it('does not produce duplicates or eliminate entries when changing the VA Scale after copying previous entries', () => {
             cy.get('@seederData').then((seederData) => {
-                cy.visitEventCreationUrl(seederData.previousEvent.patient_id, 'OphCiExamination').then(() => {
+                cy.visitEventCreationUrl(seederData.previousEvent.patient.id, 'OphCiExamination').then(() => {
                     cy.removeElements();
                     cy.addExaminationElement('Visual Acuity');
 
@@ -123,11 +123,11 @@ describe('visual acuity behaviour', () => {
             cy.login();
 
             cy.runSeeder('OphCiExamination', 'VisualAcuityCopyingSeeder', { type: 'visual-acuity', complex: true }).then((seederData) => {
-                cy.visit(seederData.previousEvent.view_url).then(() => {
+                cy.visit(seederData.previousEvent.urls.view).then(() => {
                     checkComplexViewData(seederData);
                 });
 
-                cy.visitEventCreationUrl(seederData.previousEvent.patient_id, 'OphCiExamination').then(() => {
+                cy.visitEventCreationUrl(seederData.previousEvent.patient.id, 'OphCiExamination').then(() => {
                     cy.removeElements();
                     cy.addExaminationElement('Visual Acuity');
 
@@ -158,7 +158,7 @@ describe('visual acuity behaviour', () => {
 
                                     cy.getBySel('visual-acuity-add-beo').should('not.be.visible');
 
-                                    cy.getBySel('event-action-save').first().click().then(() => {
+                                    cy.saveEvent().then(() => {
                                         // New examination event view should contain copied data
                                         cy.location('pathname').should('contain', '/view');
                                         checkComplexViewData(seederData);
@@ -168,7 +168,7 @@ describe('visual acuity behaviour', () => {
                         });
                     });
 
-                    cy.visit(seederData.previousEvent.view_url).then(() => {
+                    cy.visit(seederData.previousEvent.urls.view).then(() => {
                         // And the data should still exist for the previous examination event
                         checkComplexViewData(seederData);
                     });

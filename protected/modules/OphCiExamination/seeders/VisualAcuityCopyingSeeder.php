@@ -15,10 +15,10 @@
 
 namespace OEModule\OphCiExamination\seeders;
 
-use OEModule\CypressHelper\resources\SeededEventResource;
 
 use OE\factories\models\EventFactory;
-
+use OE\seeders\BaseSeeder;
+use OE\seeders\resources\SeededEventResource;
 use Patient;
 
 use OEModule\OphCiExamination\models\{
@@ -30,14 +30,9 @@ use OEModule\OphCiExamination\models\{
     OphCiExamination_VisualAcuityUnitValue
 };
 
-class VisualAcuityCopyingSeeder
+class VisualAcuityCopyingSeeder extends BaseSeeder
 {
-    public function __construct(\DataContext $context)
-    {
-        $this->context = $context;
-    }
-
-    public function __invoke()
+    public function __invoke(): array
     {
         $patient = Patient::factory()->create();
 
@@ -45,12 +40,12 @@ class VisualAcuityCopyingSeeder
                    ->forPatient($patient)
                    ->create();
 
-        if (!isset($this->context->additional_data['complex'])) {
+        if (!$this->getSeederAttribute('complex')) {
             list(
                 $existing_element,
                 $lhs_reading, $rhs_reading,
                 $chosen_unit, $alternative_unit
-            ) = $this->createSimpleElement($existing_event, $this->context->additional_data['type'] === 'near-visual-acuity');
+            ) = $this->createSimpleElement($existing_event, $this->getSeederAttribute('type') === 'near-visual-acuity');
 
             $lhs_combined = $existing_element->getCombined('left');
             $rhs_combined = $existing_element->getCombined('right');
@@ -62,20 +57,20 @@ class VisualAcuityCopyingSeeder
                 'chosenUnitId' => $chosen_unit->id,
                 'alternativeUnitName' => $alternative_unit->name
             ];
-        } else {
-            list(
-                $existing_element,
-                $lhs_reading, $rhs_reading, $beo_reading,
-                $lhs_details, $rhs_details, $beo_details
-            ) = $this->createComplexElement($existing_event, $this->context->additional_data['type'] === 'near-visual-acuity');
-
-            return [
-                'previousEvent' => SeededEventResource::from($existing_event)->toArray(),
-                'lhsDetails' => $lhs_details,
-                'rhsDetails' => $rhs_details,
-                'beoDetails' => $beo_details,
-            ];
         }
+
+        list(
+            $existing_element,
+            $lhs_reading, $rhs_reading, $beo_reading,
+            $lhs_details, $rhs_details, $beo_details
+        ) = $this->createComplexElement($existing_event, $this->getSeederAttribute('type') === 'near-visual-acuity');
+
+        return [
+            'previousEvent' => SeededEventResource::from($existing_event)->toArray(),
+            'lhsDetails' => $lhs_details,
+            'rhsDetails' => $rhs_details,
+            'beoDetails' => $beo_details,
+        ];
     }
 
     protected function createSimpleElement($existing_event, $is_near)
