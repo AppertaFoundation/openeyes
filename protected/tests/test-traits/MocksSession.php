@@ -10,7 +10,7 @@ trait MocksSession
 {
     protected array $session_values = [];
 
-    public function setupMocksSession()
+    public function setUpMocksSession()
     {
         $this->beginMocksSession();
 
