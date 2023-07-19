@@ -43,7 +43,8 @@ class Element_OphCoMessaging_MessageTest extends \ModelTestCase
         $message_type = $this->getMessageType(true);
 
         $element = $this->makeElementForSaving([
-            'message_type_id' => $message_type->id
+            'message_type_id' => $message_type->id,
+            'sender_mailbox_id' => Mailbox::factory()->useExisting(['is_personal' => true])
         ]);
 
         $element->save();
@@ -187,7 +188,10 @@ class Element_OphCoMessaging_MessageTest extends \ModelTestCase
     /** @test */
     public function primary_recipients_is_required()
     {
-        $element = Element_OphCoMessaging_Message::factory()->make(['event_id' => null]);
+        $element = Element_OphCoMessaging_Message::factory()->make([
+            'event_id' => null,
+            'sender_mailbox_id' => null
+        ]);
 
         $this->assertAttributeInvalid($element, 'recipients', 'must be sent to');
 

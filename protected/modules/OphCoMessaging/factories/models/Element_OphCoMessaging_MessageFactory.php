@@ -37,7 +37,8 @@ class Element_OphCoMessaging_MessageFactory extends ModelFactory
             'message_text' => $this->faker->sentence(128),
             'sender_mailbox_id' => Mailbox::factory()->withUsers()->isPersonal(),
             'created_user_id' => function ($attributes) {
-                return Mailbox::model()->findByPk($attributes['sender_mailbox_id'])->getUserForPersonalMailbox();
+                $mailbox = Mailbox::model()->findByPk($attributes['sender_mailbox_id']);
+                return $mailbox ? $mailbox->getUserForPersonalMailbox() : null;
             },
             'urgent' => false,
         ];
