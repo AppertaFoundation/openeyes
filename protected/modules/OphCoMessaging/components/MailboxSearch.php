@@ -189,6 +189,7 @@ class MailboxSearch
                     $this->message_sent = 1;
                     $this->message_read_by_recipient = 0;
                     $this->allow_unreplied_started_threads = 1;
+                    $this->dedupe_to_self_side = self::DEDUPE_TO_SELF_SENDER;
                     break;
 
                 default:
@@ -313,6 +314,10 @@ class MailboxSearch
             
             SUM(
                 contextualised_messages.user_original_sender = 1 AND 
+                (
+                    contextualised_messages.to_self = 0 OR 
+                    contextualised_messages.element_fetched_as_original_sender = 1
+                ) AND
                 contextualised_messages.reply_required = 1 AND 
                 contextualised_messages.has_reply = 0
             ) " . static::FOLDER_WAITING_FOR_REPLY . ",
@@ -333,7 +338,7 @@ class MailboxSearch
                 intermediate_messages.*,
                 (intermediate_messages.sender_mailbox_id = intermediate_messages.user_mailbox_id) `sent`,
                 (intermediate_messages.sender_mailbox_id = intermediate_messages.recipient_mailbox_id) to_self,
-                (intermediate_messages.user_original_sender = 1 AND intermediate_messages.has_reply = 0) unreplied_started_thread
+                (intermediate_messages.user_original_sender = 1 AND intermediate_messages.has_reply = 0 AND element_fetched_as_original_sender = 1) unreplied_started_thread
                 FROM
                 (SELECT
                     messages.element_id element_id,
