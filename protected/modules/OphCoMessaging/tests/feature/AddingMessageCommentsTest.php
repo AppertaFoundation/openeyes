@@ -80,6 +80,35 @@ class AddingMessageCommentsTest extends OEDbTestCase
     }
 
     /** @test */
+    public function marking_a_message_unread_after_replying_to_it_will_count_in_the_unread_folder()
+    {
+        [$sender_user, $sender_mailbox] = $this->createMailboxUser();
+        [$primary_user, $primary_mailbox] = $this->createMailboxUser();
+
+        $message = Element_OphCoMessaging_Message::factory()
+            ->withSender($sender_user, $sender_mailbox)
+            ->withReplyRequired()
+            ->withPrimaryRecipient($primary_mailbox)
+            ->create();
+
+        $this->assertReadMessageCount(0, $primary_user);
+        $this->assertUnreadMessageCount(1, $primary_user);
+        $this->assertMessageCount(1, $primary_user);
+
+        $this->postCommentWithRequestOn($message, $primary_user);
+
+        $this->assertReadMessageCount(1, $primary_user);
+        $this->assertUnreadMessageCount(0, $primary_user);
+        $this->assertMessageCount(1, $primary_user);
+
+        $this->markMessageReadWithRequest($message, $primary_user);
+
+        $this->assertReadMessageCount(0, $primary_user);
+        $this->assertUnreadMessageCount(1, $primary_user);
+        $this->assertMessageCount(1, $primary_user);
+    }
+
+    /** @test */
     public function message_marked_unread_for_recipient_when_comment_is_added_by_sender()
     {
         [$sender, $sender_mailbox] = $this->createMailboxUser();
