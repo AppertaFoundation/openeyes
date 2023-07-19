@@ -101,7 +101,7 @@ class AddingMessageCommentsTest extends OEDbTestCase
         $this->assertUnreadMessageCount(0, $primary_user);
         $this->assertMessageCount(1, $primary_user);
 
-        $this->markMessageReadWithRequest($message, $primary_user);
+        $this->markMessageUnreadWithRequest($message, $primary_user);
 
         $this->assertReadMessageCount(0, $primary_user);
         $this->assertUnreadMessageCount(1, $primary_user);
