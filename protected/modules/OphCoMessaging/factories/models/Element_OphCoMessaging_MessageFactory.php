@@ -35,7 +35,7 @@ class Element_OphCoMessaging_MessageFactory extends ModelFactory
             'event_id' => EventFactory::forModule('OphCoMessaging'),
             'message_type_id' => OphCoMessaging_Message_MessageType::factory()->useExisting(),
             'message_text' => $this->faker->sentence(128),
-            'sender_mailbox_id' => Mailbox::factory()->useExisting(['is_personal' => true]),
+            'sender_mailbox_id' => Mailbox::factory()->withUsers()->isPersonal(),
             'created_user_id' => function ($attributes) {
                 return Mailbox::model()->findByPk($attributes['sender_mailbox_id'])->getUserForPersonalMailbox();
             },
