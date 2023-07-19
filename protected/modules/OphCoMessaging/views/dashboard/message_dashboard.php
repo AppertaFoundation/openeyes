@@ -145,7 +145,7 @@ $coreapi = new CoreAPI();
         $(`.js-mailbox[data-mailbox-id="${id}"] .js-folder-counter`).each(function() {
             let folder = $(this).data('filter');
             // Get the text of the folder name before the message count
-            let folderUnreadCount = counts['count_' + folder] || 0;
+            let folderUnreadCount = counts[folder] || 0;
 
             if ($(this).find('.unread').length !== 0) {
               $(this).find('.unread').text(folderUnreadCount);
