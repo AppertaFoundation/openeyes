@@ -891,9 +891,9 @@ class AddingMessageCommentsTest extends OEDbTestCase
         // Left (as primary) marks the message sent by top read
         $this->markMessageReadWithRequest($top_sender_left_primary_right_cc_message, $left_user);
 
-        // Top moves to 6 - 0, left moves to 4 - 1,  right stays 2 - 2
+        // Top stays on 5 - 0, left moves to 4 - 1,  right stays 2 - 2
         $this->assertUnreadAndReadMessageCounts(5, 0, $top_user, "top which should not be affected by left marking a message sent by them read");
-        $this->assertUnreadAndReadMessageCounts(4, 1, $left_user, "left after replying as primary recipient to a message sent by top");
+        $this->assertUnreadAndReadMessageCounts(4, 1, $left_user, "left after marking a message sent by top read as primary recipient");
         $this->assertUnreadAndReadMessageCounts(2, 2, $right_user, "right which should not be affected by left marking a message sent by top read");
 
         // Right (as cc) marks the message sent by top read
@@ -903,6 +903,47 @@ class AddingMessageCommentsTest extends OEDbTestCase
         $this->assertUnreadAndReadMessageCounts(5, 0, $top_user, "top which should not be affected by right marking a message sent by them read");
         $this->assertUnreadAndReadMessageCounts(4, 1, $left_user, "left which should not be affected by right marking a message sent by top read");
         $this->assertUnreadAndReadMessageCounts(1, 3, $right_user, "right after marking a message sent by top read as cc recipient");
+
+        // Top (as sender) then posts a reply to the reply sent by right
+        $this->postCommentWithRequestOn($top_sender_right_primary_left_cc_message, $top_user, $top_mailbox);
+
+        // Top moves to 4 - 1, left stays on 4 - 1, right moves to 2 - 2
+        $this->assertUnreadAndReadMessageCounts(4, 1, $top_user, "top after replying to a reply on a message it sent");
+        $this->assertUnreadAndReadMessageCounts(4, 1, $left_user, "left which should not be affected by right replying to top");
+        $this->assertUnreadAndReadMessageCounts(2, 2, $right_user, "right after receiving a reply back from top to a message sent by top");
+
+        // TODO Enable once CC replies are a go - all the counts below for top will need to be adjusted once this is ready to be included
+        // Top (as secondary) then posts a reply to the message sent by right
+        // $this->postCommentWithRequestOn($right_sender_left_primary_top_cc_message, $top_user, $top_mailbox);
+
+        // // Top moves to 3 - 1, left stays on 4 - 1, right moves to 3 - 2
+        // $this->assertUnreadAndReadMessageCounts(3, 1, $top_user, "top after replying as cc recipient to a message sent by right");
+        // $this->assertUnreadAndReadMessageCounts(4, 1, $left_user, "left which should not be affected by top replying to right");
+        // $this->assertUnreadAndReadMessageCounts(3, 2, $right_user, "right after receing a reply from top on a message by right");
+
+        // Left (as primary) then posts a reply to the message sent by right
+        $this->postCommentWithRequestOn($right_sender_left_primary_top_cc_message, $left_user, $left_mailbox);
+
+        // Top stays on 4 - 1, left moves to 3 - 2, right stays on 3 - 2 (as $top_cc_right_sender_left_primary receives both replies, status should change only once)
+        $this->assertUnreadAndReadMessageCounts(4, 1, $top_user, "top which should not be affected by left replying to a message sent by right");
+        $this->assertUnreadAndReadMessageCounts(3, 2, $left_user, "left which should not be affected by top replying to right");
+        $this->assertUnreadAndReadMessageCounts(3, 2, $right_user, "right after receing a reply from left on the same message by right that already has a reply from top");
+
+        // Left (as primary) marks the message sent by top read
+        $this->markMessageUnreadWithRequest($top_sender_left_primary_right_cc_message, $left_user);
+
+        // Top stays on 4 - 1, left moves to 4 - 1,  right stays 3 - 2
+        $this->assertUnreadAndReadMessageCounts(4, 1, $top_user, "top which should not be affected by left marking a message sent by them read");
+        $this->assertUnreadAndReadMessageCounts(4, 1, $left_user, "left after marking a message sent by top unread as primary recipient");
+        $this->assertUnreadAndReadMessageCounts(3, 2, $right_user, "right which should not be affected by left marking a message sent by top read");
+
+        // Top (as sender) then posts a reply to the message sent by itself
+        $this->postCommentWithRequestOn($top_sender_left_primary_right_cc_message, $top_user, $top_mailbox);
+
+        // Top moves to 4 - 2, left stays on 4 - 1, right moves to 4 - 1
+        $this->assertUnreadAndReadMessageCounts(4, 2, $top_user, "top after replying to a message it sent");
+        $this->assertUnreadAndReadMessageCounts(4, 1, $left_user, "left which should not be affected by right replying to top");
+        $this->assertUnreadAndReadMessageCounts(4, 1, $right_user, "right after receiving a reply back from top to a message sent by top");
 
         $this->assertCountQueryMatchesDataQuery($top_user, $top_mailbox);
         $this->assertCountQueryMatchesDataQuery($left_user, $left_mailbox);
