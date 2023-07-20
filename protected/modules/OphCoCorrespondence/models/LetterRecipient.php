@@ -1,4 +1,7 @@
 <?php
+
+use OE\factories\models\traits\HasFactory;
+
 /**
  * OpenEyes.
  *
@@ -17,6 +20,8 @@
  */
 class LetterRecipient extends BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     public function tableName()
     {
         return 'ophcocorrespondence_letter_recipient';

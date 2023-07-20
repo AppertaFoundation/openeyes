@@ -29,9 +29,9 @@ class OphCoMessaging_Message_CommentFactory extends ModelFactory
     {
         return [
             'element_id' => ModelFactory::factoryFor(Element_OphCoMessaging_Message::class),
-            'comment_text' => $this->faker->sentence(128),
+            'comment_text' => $this->faker->sentence(64),
             'marked_as_read' => false,
-            'created_user_id' => \User::factory()->useExisting()
+            'created_user_id' => \User::factory()->useExisting(),
         ];
     }
 
@@ -61,6 +61,17 @@ class OphCoMessaging_Message_CommentFactory extends ModelFactory
     {
         return $this->state([
             'created_user_id' => $user
+        ]);
+    }
+
+    /**
+     * @param Mailbox $user
+     * @return OphCoMessaging_Message_CommentFactory
+     */
+    public function withSender($mailbox): self
+    {
+        return $this->state([
+            'mailbox_id' => $mailbox->id
         ]);
     }
 

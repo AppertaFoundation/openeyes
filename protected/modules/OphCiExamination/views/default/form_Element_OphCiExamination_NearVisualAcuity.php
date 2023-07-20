@@ -15,13 +15,18 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+use OEModule\OphCiExamination\models\{
+  OphCiExamination_VisualAcuity_Method,
+  OphCiExamination_VisualAcuityUnit
+};
 ?>
 <?php
 /***
  * @var $element \OEModule\OphCiExamination\models\Element_OphCiExamination_NearVisualAcuity
  */
 list($values, $val_options) = $element->getUnitValuesForForm(null, true);
-$methods = CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Method::model()->findAll(), 'id', 'name');
+$methods = \CHtml::listData(OphCiExamination_VisualAcuity_Method::model()->findAll(), 'id', 'name');
 $key = 0;
 ?>
 
@@ -40,10 +45,10 @@ $key = 0;
             <?=\CHtml::dropDownList(
                 'nearvisualacuity_unit_change',
                 @$element->unit_id,
-                CHtml::listData(OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit::model()
+                \CHtml::listData(OphCiExamination_VisualAcuityUnit::model()
                   ->activeOrPk(@$element->unit_id)
                   ->findAllByAttributes(array('is_near' => '1')), 'id', 'name'),
-                array('class' => 'inline', 'data-record-mode' => $element::RECORD_MODE_SIMPLE));
+                array('class' => 'inline', 'data-record-mode' => $element::RECORD_MODE_SIMPLE, 'data-test' => 'near-visual-acuity-unit-selector'));
             if ($element->unit->information) { ?>
             <div class="info">
               <small><em><?php echo $element->unit->information ?></em></small>
@@ -64,6 +69,7 @@ $key = 0;
         ?> inactive <?php
                                } ?>"
           data-side="<?= $eye_side ?>"
+          data-test="near-visual-acuity-eye-column"
     >
       <div class="active-form data-group flex-layout"
            style="<?= $element->hasEye($eye_side)? '': 'display: none;'?>"
@@ -89,10 +95,10 @@ $key = 0;
             }?>
             </tbody>
           </table>
-          <div class="data-group noReadings">
+          <div class="data-group noReadings" style="<?= count($element->{$eye_side . '_readings'}) > 0 ? 'display: none;' : '' ?>">
             <div class="cols-8 column">
-                <?php echo $form->checkBox($element, $eye_side . '_unable_to_assess', array('text-align' => 'right', 'nowrapper' => true))?>
-                <?php echo $form->checkBox($element, $eye_side . '_eye_missing', array('text-align' => 'right', 'nowrapper' => true))?>
+                <?php echo $form->checkBox($element, $eye_side . '_unable_to_assess', array('text-align' => 'right', 'nowrapper' => true, 'data-test' => 'unable_to_assess-input'))?>
+                <?php echo $form->checkBox($element, $eye_side . '_eye_missing', array('text-align' => 'right', 'nowrapper' => true, 'data-test' => 'eye_missing-input'))?>
             </div>
           </div>
             <div id="nearvisualacuity-<?= $eye_side ?>-comments" class="flex-layout flex-left comment-group js-comment-container"
@@ -206,9 +212,13 @@ $baseAssetsPath = Yii::getPathOfAlias('application.assets');
 $assetManager->publish($baseAssetsPath . '/components/chosen/', true);
 
 Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($baseAssetsPath.'/components/chosen/', true).'/chosen.jquery.min.js');
+
+$unit_values_list = OphCiExamination_VisualAcuityUnit::generateUnitsList();
 ?>
 <script type="text/javascript">
     $(document).ready(function() {
+        OphCiExamination_VisualAcuity_unit_values = <?= \CJavaScript::jsonEncode($unit_values_list) ?>;
+        OphCiExamination_VisualAcuity_method_values = <?= \CJavaScript::jsonEncode($methods) ?>;
 
         OphCiExamination_VisualAcuity_method_ids = [ <?php
         $first = true;
@@ -219,5 +229,21 @@ Yii::app()->clientScript->registerScriptFile($assetManager->getPublishedUrl($bas
             $first = false;
             echo $index;
         } ?> ];
+
+        $('.element[data-element-type-class="<?= \CHtml::modelName($element) ?>"] .js-duplicate-element')
+          .data('copy-element-callback', function() {
+            const inside = $('.element[data-element-type-class="<?= \CHtml::modelName($element) ?>"]');
+
+            /*
+             * When the previous examination near visual acuity data is returned in the new element, it includes two hidden fields with the ids
+             * of the readings from the previous events. Unless those ids are removed, they will be sent back to the server such that
+             * the existing readings will have their element_id fields updated to the newly created element, instead of those readings
+             * being preserved with new readings being created for the new element.
+             *
+             * In effect, it moves the readings instead of copying them unless the existing ids are removed.
+             */
+            inside.find(`input[name^="<?= \CHtml::activeName($element, 'left_readings') ?>"][name$="[id]"]`).remove();
+            inside.find(`input[name^="<?= \CHtml::activeName($element, 'right_readings') ?>"][name$="[id]"]`).remove();
+          });
     });
 </script>

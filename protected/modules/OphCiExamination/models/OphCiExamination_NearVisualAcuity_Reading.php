@@ -19,9 +19,12 @@
 namespace OEModule\OphCiExamination\models;
 
 use OEModule\OphCiExamination\models\traits\HasRelationOptions;
+use OE\factories\models\traits\HasFactory;
 
 class OphCiExamination_NearVisualAcuity_Reading extends OphCiExamination_VisualAcuity_Reading
 {
+    use HasFactory;
+
     protected static $complex_relations = ["source", "occluder"];
 
     public function tableName()

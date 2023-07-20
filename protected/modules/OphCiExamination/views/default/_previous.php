@@ -47,7 +47,8 @@
             <?php if ($element->canCopy()) { ?>
               <button name="copy" class="copy_element small"
                       data-element-id="<?php echo $element->id ?>"
-                      data-element-type-class="<?=\CHtml::modelName($element) ?>">
+                      data-element-type-class="<?=\CHtml::modelName($element) ?>"
+                      data-test="copy-previous-element">
                 Copy
               </button>
             <?php } ?>

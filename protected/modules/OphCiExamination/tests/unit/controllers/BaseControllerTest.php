@@ -26,6 +26,13 @@ abstract class BaseControllerTest extends \OEDbTestCase
 
     public string $moduleCls = 'OphCiExamination';
 
+    public function tearDown(): void
+    {
+        \Yii::app()->setComponent('controller', null);
+
+        parent::tearDown();
+    }
+
     protected function getMockAssetManager()
     {
         return $this->getMockBuilder(\AssetManager::class)

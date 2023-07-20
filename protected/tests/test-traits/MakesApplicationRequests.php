@@ -33,9 +33,7 @@ trait MakesApplicationRequests
 
         $this->removeRequestEventHandling();
         $this->tearDownCallbacks(function () {
-            $_GET = [];
-            $_REQUEST = [];
-            $_POST = [];
+            $this->resetRequestGlobals();
             $_SERVER = $this->originalServerValues;
         });
     }
@@ -52,6 +50,7 @@ trait MakesApplicationRequests
 
     protected function get($url, $crawl_result = true)
     {
+        $this->resetRequestGlobals();
         $url = $this->extractUrlAndSetGet($url);
 
         $_SERVER['HTTP_USER_AGENT'] = 'phpunit'; // this is used in the main layout template
@@ -60,13 +59,19 @@ trait MakesApplicationRequests
 
         $requestMock = $this->getMockBuilder(\CHttpRequest::class)
             ->disableOriginalConstructor()
-            ->setMethods(['getCsrfToken', 'getPathInfo'])
+            ->setMethods(['getCsrfToken', 'getPathInfo', 'redirect'])
             ->getMock();
 
         $requestMock->method('getCsrfToken')
             ->willReturn('foo');
         $requestMock->method('getPathInfo')
             ->willReturn($url);
+
+        $redirected = null;
+        $requestMock->method('redirect')
+            ->willReturnCallback(function (...$args) use (&$redirected) {
+                $redirected = new ApplicationRedirectWrapper(...$args);
+            });
 
         \Yii::app()->setComponent('request', $requestMock);
 
@@ -75,11 +80,16 @@ trait MakesApplicationRequests
         $result = ob_get_contents();
         ob_end_clean();
 
+        if ($redirected) {
+            return ApplicationResponseWrapper::fromRedirect($redirected);
+        }
+
         return $crawl_result ? $this->crawl($result) : $result;
     }
 
     protected function post($url, $form_data = []): ApplicationResponseWrapper
     {
+        $this->resetRequestGlobals();
         $url = $this->extractUrlAndSetGet($url);
 
         $_SERVER['HTTP_USER_AGENT'] = 'phpunit'; // this is used in the main layout template
@@ -89,15 +99,18 @@ trait MakesApplicationRequests
 
         $requestMock = $this->getMockBuilder(\CHttpRequest::class)
             ->disableOriginalConstructor()
-            ->setMethods(['getCsrfToken', 'getPathInfo', 'redirect'])
+            ->setMethods(['getCsrfToken', 'getPathInfo', 'redirect', 'getBaseUrl'])
             ->getMock();
 
-        $redirected = null;
-
+        // so redirect URLs aren't pre-pended with script path
+        $requestMock->method('getBaseUrl')
+            ->willReturn(ApplicationResponseWrapper::BASE_URL);
         $requestMock->method('getCsrfToken')
             ->willReturn('foo');
         $requestMock->method('getPathInfo')
             ->willReturn($url);
+
+        $redirected = null;
         $requestMock->method('redirect')
             ->willReturnCallback(function (...$args) use (&$redirected) {
                 $redirected = new ApplicationRedirectWrapper(...$args);
@@ -121,6 +134,14 @@ trait MakesApplicationRequests
     protected function crawl(string $contents)
     {
         return new Crawler($contents);
+    }
+
+    private function resetRequestGlobals(): void
+    {
+        $_GET = [];
+        $_REQUEST = [];
+        $_POST = [];
+        \Yii::app()->setComponent('request', null);
     }
 
     /**

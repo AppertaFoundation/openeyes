@@ -45,6 +45,8 @@ class DefaultController extends BaseEventTypeController
     public function init()
     {
         $this->allowed_file_types = Yii::app()->params['OphCoDocument']['allowed_file_types'];
+        // NOTE: the php ini setting `post_max_size` must be set to a value greater than `upload_max_filesize` to allow for overheads.
+        // Failure to do this will mean that the post is rejected before the file finishes uploading
         $this->max_document_size = Helper::return_bytes(ini_get('upload_max_filesize'));
         $this->jsVars['max_document_name_length'] = $this->max_document_name_length;
         $this->max_content_length = Helper::return_bytes(ini_get('upload_max_filesize'));

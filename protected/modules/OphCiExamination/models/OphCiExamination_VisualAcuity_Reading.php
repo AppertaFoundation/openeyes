@@ -20,6 +20,7 @@ namespace OEModule\OphCiExamination\models;
 
 use OEModule\OphCiExamination\models\traits\HasRelationOptions;
 use OEModule\OphCiExamination\models\traits\HasWithHeadPosture;
+use OE\factories\models\traits\HasFactory;
 
 /**
  * This is the model class for table "ophciexamination_visualacuity_reading".
@@ -44,6 +45,7 @@ class OphCiExamination_VisualAcuity_Reading extends \BaseActiveRecordVersioned
 {
     use HasWithHeadPosture;
     use HasRelationOptions;
+    use HasFactory;
 
     const BEO = 2;
     const LEFT = 1;

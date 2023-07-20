@@ -117,7 +117,7 @@ this.OpenEyes.UI = this.OpenEyes.UI || {};
                         return true;
                     }
                 }
-                return (data[(imgWidth*y + x) * 4 + 3] !== 0);
+                return false;
             },
             scanY = function (fromTop) {
                 let offset = fromTop ? 1 : -1;
@@ -285,6 +285,11 @@ this.OpenEyes.UI = this.OpenEyes.UI || {};
 
         // Set flag
         this.isFullScreen = true;
+
+        // This is needed after the change in size to reset the background,
+        // otherwise the background colour won't match the one specified and the cropping
+        // will return the entire fullscreen canvas area.
+        this.signaturePad.clear();
     };
 
     /*

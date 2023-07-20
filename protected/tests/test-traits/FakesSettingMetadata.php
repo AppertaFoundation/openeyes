@@ -23,24 +23,23 @@ trait FakesSettingMetadata
     {
         $this->settingsmetadata_cache[$key] = $value;
 
-        $this->ensureModelFaked(SettingMetadata::class, ['getSetting']);
-
-        SettingMetadata::model()
-            ->method('getSetting')
-            ->willReturnCallback(function ($key) {
-                return $this->settingsmetadata_cache[$key] ?? null;
-            });
+        $this->ensureModelFaked();
     }
 
-    protected function ensureModelFaked($model_class, $methods = [])
+    protected function ensureModelFaked()
     {
         if (ModelFakeTracker::getFakeForModel(SettingMetadata::class)) {
             return;
         }
 
         $mock = $this->getMockBuilder(SettingMetadata::class)
-            ->onlyMethods($methods)
+            ->onlyMethods(['getSetting'])
             ->getMock();
+
+        $mock->method('getSetting')
+            ->willReturnCallback(function ($key) {
+                return $this->settingsmetadata_cache[$key] ?? null;
+            });
 
         SettingMetadata::fakeWith($mock);
     }

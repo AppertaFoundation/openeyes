@@ -37,6 +37,12 @@ class DefaultControllerVisualAcuityTest extends BaseDefaultControllerTest
     use \WithTransactions;
     use InteractsWithVisualAcuity;
 
+    public function tearDown(): void
+    {
+        $_GET = [];
+        parent::tearDown();
+    }
+
     /** @test */
     public function saving_a_simple_element()
     {

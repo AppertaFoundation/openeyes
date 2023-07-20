@@ -21,9 +21,12 @@ class SeededUserResource extends SeededResource
 {
     private string $_password = 'password';
 
-    public static function from(User $user): self
+    public static function from(User $user, string $password = 'password'): self
     {
-        return new SeededUserResource($user);
+        $resource = new static($user);
+        $resource->setPassword($password);
+
+        return $resource;
     }
 
     public function setPassword(string $password)

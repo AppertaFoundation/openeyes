@@ -97,7 +97,7 @@ class Element_OphCoMessaging_Message extends \BaseEventTypeElement
                 self::HAS_ONE,
                 OphCoMessaging_Message_Comment::class,
                 'element_id',
-                'order' => 'created_date DESC'
+                'order' => 'created_date DESC, id DESC'
             ],
             'eventType' => [self::BELONGS_TO, \EventType::class, 'event_type_id'],
             'event' => [self::BELONGS_TO, \Event::class, 'event_id'],
@@ -282,9 +282,15 @@ class Element_OphCoMessaging_Message extends \BaseEventTypeElement
 
     public function getReadByLine()
     {
-        return implode(', ', array_map(static function ($recipient) {
+        $readers = array_map(static function ($recipient) {
             return $recipient->formattedName(true);
-        }, $this->read_by_recipients));
+        }, $this->read_by_recipients);
+
+        if ($this->last_comment && (bool) $this->last_comment->marked_as_read) {
+            $readers[] = $this->sender->name;
+        }
+
+        return implode(', ',  $readers);
     }
 
     protected function beforeSave()
@@ -347,5 +353,52 @@ class Element_OphCoMessaging_Message extends \BaseEventTypeElement
         $criteria->params = [':element_id' => $this->id];
 
         return OphCoMessaging_Message_Recipient::model()->findAll($criteria);
+    }
+
+    public function getAllInvolvedMailboxIds()
+    {
+        return array_merge(
+            array_map(
+                function ($recipient) {
+                    return $recipient->mailbox_id;
+                },
+                $this->recipients
+            ),
+            [$this->sender_mailbox_id]
+        );
+    }
+
+    public function setReadStatusForMailbox($mailbox, bool $is_read)
+    {
+        if ((int) $this->sender_mailbox_id === (int) $mailbox->id) {
+            // We are the original sender
+            if ($this->last_comment) {
+                $this->last_comment->marked_as_read = $is_read;
+                if (!$this->last_comment->save()) {
+                    throw new \RuntimeException("Could not save recipient state" . print_r($this->last_comment->getErrors(), true));
+                }
+            }
+        }
+
+        $recipient = OphCoMessaging_Message_Recipient::model()
+            ->findByAttributes(['element_id' => $this->id, 'mailbox_id' => $mailbox->id]);
+        if ($recipient) {
+            // if is sender not sent to themselves, recipient could be null
+            $recipient->marked_as_read = $is_read;
+            if (!$recipient->save()) {
+                throw new \RuntimeException("Could not save recipient state" . print_r($recipient->getErrors(), true));
+            }
+        }
+    }
+
+    public function getReadStatusForMailbox($mailbox)
+    {
+        //We are the original sender
+        if ((int) $this->sender_mailbox_id === (int) $mailbox->id) {
+            return $this->last_comment->marked_as_read;
+        } else {
+            $recipient = OphCoMessaging_Message_Recipient::model()->findByAttributes(['element_id' => $this->id, 'mailbox_id' => $mailbox->id]);
+            return $recipient->marked_as_read;
+        }
     }
 }

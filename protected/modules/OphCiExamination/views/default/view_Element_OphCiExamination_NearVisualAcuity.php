@@ -18,12 +18,12 @@
 ?>
 <div class="element-data element-eyes">
     <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) : ?>
-      <div class="js-element-eye <?= $eye_side ?>-eye column">
+      <div class="js-element-eye <?= $eye_side ?>-eye column" data-test="near-visual-acuity-<?= $eye_side ?>-eye">
           <?php if ($element->hasEye($eye_side)) : ?>
             <div class="data-value">
                 <?php if ($element->getCombined($eye_side)) :
                     echo $element->unit->name ?>
-              <span class="priority-text">
+              <span class="priority-text" data-test="combined-near-visual-acuity-data">
                     <?php echo $element->getCombined($eye_side) ?>
               </span>
                     <?php echo $this->renderPartial(

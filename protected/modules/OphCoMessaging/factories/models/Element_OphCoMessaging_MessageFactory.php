@@ -35,9 +35,10 @@ class Element_OphCoMessaging_MessageFactory extends ModelFactory
             'event_id' => EventFactory::forModule('OphCoMessaging'),
             'message_type_id' => OphCoMessaging_Message_MessageType::factory()->useExisting(),
             'message_text' => $this->faker->sentence(128),
-            'sender_mailbox_id' => Mailbox::factory()->useExisting(['is_personal' => true]),
+            'sender_mailbox_id' => Mailbox::factory()->withUsers()->isPersonal(),
             'created_user_id' => function ($attributes) {
-                return Mailbox::model()->findByPk($attributes['sender_mailbox_id'])->getUserForPersonalMailbox();
+                $mailbox = Mailbox::model()->findByPk($attributes['sender_mailbox_id']);
+                return $mailbox ? $mailbox->getUserForPersonalMailbox() : null;
             },
             'urgent' => false,
         ];
@@ -57,14 +58,14 @@ class Element_OphCoMessaging_MessageFactory extends ModelFactory
     public function withReplyRequired(): self
     {
         return $this->state([
-        'message_type_id' => OphCoMessaging_Message_MessageType::factory()->useExisting(['reply_required' => true])
+            'message_type_id' => OphCoMessaging_Message_MessageType::factory()->useExisting(['reply_required' => true])
         ]);
     }
 
     public function withReplyNotRequired(): self
     {
         return $this->state([
-        'message_type_id' => OphCoMessaging_Message_MessageType::factory()->useExisting(['reply_required' => false])
+            'message_type_id' => OphCoMessaging_Message_MessageType::factory()->useExisting(['reply_required' => false])
         ]);
     }
 
@@ -73,6 +74,23 @@ class Element_OphCoMessaging_MessageFactory extends ModelFactory
         return $this->state([
             'message_text' => $text
         ]);
+    }
+
+    public function sentToSelf($marked_as_read = false): self
+    {
+        return $this->afterCreating(function ($message_element) use ($marked_as_read) {
+            // Work around an indirect modification issue
+            $recipients = $message_element->recipients;
+
+            $recipients[] = OphCoMessaging_Message_Recipient::factory()
+                          ->withElement($message_element)
+                          ->asPrimary($message_element->sender)
+                          ->create([
+                            'marked_as_read' => $marked_as_read
+                          ]);
+
+            $message_element->recipients = $recipients;
+        });
     }
 
     /**
@@ -140,22 +158,28 @@ class Element_OphCoMessaging_MessageFactory extends ModelFactory
      */
     public function withCCRecipients($mailboxes_and_marked_as_reads): self
     {
-        return $this->afterCreating(function ($message_element) use ($mailboxes_and_marked_as_reads) {
-            $recipients = $message_element->recipients;
+        return $this
+            ->afterCreating(function ($message_element) use ($mailboxes_and_marked_as_reads) {
+                $recipients = $message_element->recipients;
 
-            foreach ($mailboxes_and_marked_as_reads as $mailbox_and_marked_as_read) {
-                list($mailbox, $marked_as_read) = $mailbox_and_marked_as_read;
+                foreach ($mailboxes_and_marked_as_reads as $mailbox_and_marked_as_read) {
+                    list($mailbox, $marked_as_read) = $mailbox_and_marked_as_read;
 
-                $recipients[] = OphCoMessaging_Message_Recipient::factory()
+                    $recipients[] = OphCoMessaging_Message_Recipient::factory()
                               ->withElement($message_element)
                               ->asCC($mailbox)
                               ->create([
                                 'marked_as_read' => $marked_as_read
                               ]);
-            }
+                }
 
-            $message_element->recipients = $recipients;
-        });
+                $message_element->recipients = $recipients;
+
+            //This is necessary due to changes to the element's beforeSave function
+            // which cause cc_enabled to always be false when the element is created by a factory
+                $message_element->cc_enabled = true;
+                $message_element->save();
+            });
     }
 
     /**

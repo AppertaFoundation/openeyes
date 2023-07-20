@@ -10,9 +10,13 @@ trait MocksSession
 {
     protected array $session_values = [];
 
-    public function setupMocksSession()
+    public function setUpMocksSession()
     {
         $this->beginMocksSession();
+
+        $this->tearDownCallbacks(function () {
+            $this->eraseCurrentSession();
+        });
     }
 
     /**
@@ -114,7 +118,7 @@ trait MocksSession
         \Yii::app()->setComponent('user', $web_user);
 
         $session = $this->stubSession();
-        $this->setSessionValues(['user' => $web_user]);
+        $this->setSessionValues(['user' => $user]);
 
         return $this;
     }
@@ -141,6 +145,7 @@ trait MocksSession
     {
         $_SESSION = [];
         Yii::app()->setComponent('session', null);
+        Yii::app()->setComponent('user', null);
         $this->setSessionValues([], false);
     }
 }

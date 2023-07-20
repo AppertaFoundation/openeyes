@@ -171,7 +171,7 @@ class OphCoMessaging_API extends \BaseAPI
         foreach ($mailboxes as $mailbox) {
             $counts_for_mailbox = MailboxSearch::getMailboxFolderCounts($user->id, [$mailbox['id']]);
             $counts_by_id[$mailbox['id']] = array_merge($mailbox, $counts_for_mailbox);
-            $total_unread_messages += $counts_for_mailbox['all_unread'];
+            $total_unread_messages += $counts_for_mailbox['unread_all'];
         }
 
         return [$counts_by_id, $total_unread_messages];

@@ -19,9 +19,11 @@
  * @var \OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity $element
  * @var \OEModule\OphCiExamination\widgets\VisualAcuity $this
  */
+
+$test_prefix = $this->isForNear() ? 'near-visual-acuity' : 'visual-acuity';
 ?>
 <div class="element-data full-width">
-    <div class="element-both-eyes">
+    <div class="element-both-eyes" data-test="<?= $test_prefix ?>-beo">
         <?php if ($readings = $element->beo_readings) { ?>
             <table class="cols-11 last-left">
                 <colgroup>
@@ -68,7 +70,7 @@
     </div>
     <div class="element-eyes">
         <?php foreach (['right', 'left'] as $eye_side) { ?>
-            <div class="<?= $eye_side ?>-eye">
+            <div class="<?= $eye_side ?>-eye" data-test="<?= $test_prefix ?>-<?= $eye_side ?>-eye">
                 <?php if ($side_readings = $element->{"{$eye_side}_readings"}) { ?>
                     <table class="cols-full last-left">
                         <colgroup>

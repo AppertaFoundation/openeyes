@@ -120,6 +120,10 @@ class CorrespondenceCreator extends \EventCreator
             $this->addErrors($element->getErrors());
         }
 
+        if ($esign->attemptAutoSign()) {
+            $this->completeAutoSignRecord($esign);
+        }
+
         if (!$esign->save(false)) {
             $this->addErrors($esign->getErrors());
         }
@@ -133,5 +137,33 @@ class CorrespondenceCreator extends \EventCreator
         }
 
         return !$this->hasErrors();
+    }
+
+    /**
+     * AutoSign provides minimal functionality to generate the "proof" of signature as though
+     * PIN has been entered by the user. Saving such an element is usually done with additional
+     * data being passed through from the web front end to create a complete record.
+     *
+     * In the context of creating correspondence without the supplementary data provided through
+     * the form, we must derive the additional information to allow the element to be saved.
+     *
+     * @param Element_OphCoCorrespondence_Esign $esign
+     * @return void
+     */
+    private function completeAutoSignRecord(Element_OphCoCorrespondence_Esign $esign): void
+    {
+        $signature = $esign->signatures[0] ?? null;
+        if (!$signature) {
+            return;
+        }
+
+        $user = SignatureHelper::getUserForSigning();
+
+        if (!isset($signature->signatory_name)) {
+            $signature->signatory_name = $user->getFullNameAndTitle();
+        }
+        if (!isset($signature->secretary)) {
+            $signature->secretary = $user->hasRole('Secretary');
+        }
     }
 }

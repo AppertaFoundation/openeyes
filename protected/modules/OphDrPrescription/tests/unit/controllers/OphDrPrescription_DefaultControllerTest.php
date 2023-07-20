@@ -15,6 +15,13 @@ class OphDrPrescription_DefaultControllerTest extends OEDbTestCase
 
     public string $moduleCls = 'OphDrPrescription';
 
+    public function tearDown(): void
+    {
+        \Yii::app()->setComponent('request', null);
+
+        parent::tearDown();
+    }
+
     public function getDefaultController($methods = [])
     {
         return $this->getController(DefaultController::class, $methods);

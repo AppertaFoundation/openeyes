@@ -156,7 +156,7 @@ if ($is_step_instance) {
                     <button class="blue hint js-cancel-admin" data-action="cancel_da">Cancel</button>
                 <?php } elseif ($allow_unlock) {?>
                 <div class="oe-user-pin">
-                    <input class="user-pin-entry" name="pincode" type="password" maxlength="6" minlength="6" inputmode="numeric" placeholder="*******">
+                    <input class="user-pin-entry" name="pincode" type="password" inputmode="numeric" placeholder="*******">
                     <button type="submit" class="try-pin js-unlock" data-action="unlock_da" disabled>Unlock</button>
                 </div>
                 <?php } else { ?>

@@ -515,7 +515,7 @@ class Pathway extends BaseActiveRecordVersioned
         if ($start_time) {
             //start_time is a string in some cases, to be able to compare it to end_time it must be a DateTime object
             if (gettype($start_time) === 'string') {
-                $start_time = DateTime::createFromFormat('Y-m-d H:i:s', $this->start_time);
+                $start_time = DateTime::createFromFormat('Y-m-d H:i:s', $start_time);
             }
 
             // find the started break steps

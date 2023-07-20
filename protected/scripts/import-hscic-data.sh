@@ -93,7 +93,7 @@ else
     fi
 
     if [ "${optom}" = "true" ]; then
-        if ! php "$yiicroot"/yiic processhscicdata downloadAndImportFromUrl --type=optom --interval=full --region="${region,,}" --audit=false "$extraparams"; then
+        if ! php "$yiicroot"/yiic processhscicdata import --type=optom --interval=full --region="${region,,}" --audit=false "$extraparams"; then
             error_exit "Failed to import Optometrist data"
         fi
     fi

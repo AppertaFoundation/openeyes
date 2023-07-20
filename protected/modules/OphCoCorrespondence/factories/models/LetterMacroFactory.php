@@ -30,6 +30,13 @@ class LetterMacroFactory extends ModelFactory
         ];
     }
 
+    public function forPatientRecipient(): self
+    {
+        return $this->state([
+            'recipient_id' => LetterRecipient::factory()->forPatient()
+        ]);
+    }
+
     /**
      * @param array|Site $site
      */

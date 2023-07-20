@@ -25,6 +25,10 @@ if (!isset($new_comment)) {
     // ensure we have base comment object
     $new_comment = new \OEModule\OphCoMessaging\models\OphCoMessaging_Message_Comment();
 }
+
+$mailbox =
+    Mailbox::model()->findByPk(\Yii::app()->request->getParam('mailbox_id')) ??
+    \User::model()->findByPk(\Yii::app()->user->id)->personalMailbox;
 ?>
 
 <div class="element-data full-width">
@@ -75,7 +79,7 @@ if (!isset($new_comment)) {
                 <td><?=\CHtml::encode($element->getAttributeLabel('message_type_id')) ?></td>
                 <td data-test="message-type"><?= $element->message_type ? $element->message_type->name : 'None' ?></td>
             </tr>
-                    
+
                     <?php if ($element->urgent) { ?>
                     <tr>
                         <th>Priority</th>
@@ -94,32 +98,39 @@ if (!isset($new_comment)) {
                 <div class="missive">
                     <?= Yii::app()->format->Ntext(preg_replace("/\n/", "", preg_replace('/(\s{4})\s+/', '$1', $element->message_text))) ?>
                     <div class="read-status" data-test="read-status">
-                        <?= count($element->read_by_recipients) === 0 ? 'Unread' : 'Read by: ' . $element->getReadByLine() ?>
+                        <?php
+                        // While we are not tracking read status of each individual comment, only show the read by list on the last message/comment in the thread
+                        if (empty($element->comments)) {
+                            echo count($element->read_by_recipients) === 0 ? 'Unread' : 'Read by: ' . $element->getReadByLine();
+                        }
+                        ?>
                     </div>
                 </div>
-                <?php if ($this->canMarkMessageRead($element)) { ?>
+                <?php if (empty($element->comments) && $this->canMarkMessageRead($element, $mailbox)) { ?>
                 <div class="change-msg-status">
-                    <a class="button" href="<?= Yii::app()->createUrl($this->getModule()->name . '/Default/markRead/' . $this->event->id) ?>" data-test="mark-as-read">
+                    <a class="button" data-test="mark-as-read-btn" href="<?= Yii::app()->createUrl("{$this->getModule()->name}/Default/markRead?id={$this->event->id}&mailbox_id={$mailbox->id}") ?>">
                         <i class="oe-i save small pad-r"></i>
-                        Mark message as read
+                        Mark message as read for <?= $mailbox->name ?>
                     </a>
                 </div>
-                <?php } elseif ($this->canMarkMessageUnread($element)) { ?>
+                <?php } elseif (empty($element->comments) && $this->canMarkMessageUnread($element, $mailbox)) { ?>
                 <div class="change-msg-status">
-                    <a class="button" href="<?= Yii::app()->createUrl($this->getModule()->name . '/Default/markUnread/' . $this->event->id) ?>" data-test="mark-as-unread">
+                    <a class="button" data-test="mark-as-unread-btn" href="<?= Yii::app()->createUrl("{$this->getModule()->name}/Default/markUnread?id={$this->event->id}&mailbox_id={$mailbox->id}") ?>">
                         <i class="oe-i save small pad-r"></i>
-                        Mark message as unread
+                        Mark message as unread for <?= $mailbox->name ?>
                     </a>
                 </div>
                 <?php } ?>
             </div>
 
-            <?php foreach ($element->comments as $comment) {
+            <?php foreach ($element->comments as $key => $comment) {
                     $sender_mailbox = $comment->sender_mailbox;
                     $reply_sender_label = $comment->user->getFullName();
                 if (isset($sender_mailbox) && !$sender_mailbox->is_personal) {
                     $reply_sender_label .= " (via {$sender_mailbox->name})";
                 }
+
+                $is_latest_comment = (int) $comment->id === (int) $element->last_comment->id;
                 ?>
             <div class="msg-reply">
                 <?= $reply_sender_label ?>, <?= Helper::convertMySQL2NHS($comment->created_date) ?>
@@ -127,18 +138,25 @@ if (!isset($new_comment)) {
             <div class="msg-reader">
                 <div class="missive">
                 <?= Yii::app()->format->Ntext(preg_replace("/\n/", "", preg_replace('/(\s{4})\s+/', '$1', $comment->comment_text))) ?>
-                    <div class="read-status" data-test="read-status"><?= $comment->marked_as_read ? ('Read by: ' . $comment->usermodified->getFullName()) : 'Unread' ?></div>
+                    <div class="read-status" data-test="read-status">
+                        <?php
+                        // While we are not tracking read status of each individual comment, only show the read by list on the last message/comment in the thread
+                        if ($key === count($element->comments) - 1) {
+                            echo count($element->read_by_recipients) === 0 ? 'Unread' : 'Read by: ' . $element->getReadByLine();
+                        }
+                        ?>
+                    </div>
                 </div>
-                <?php if ($this->canMarkCommentRead($comment)) { ?>
+                <?php if ($is_latest_comment && $this->canMarkMessageRead($element, $mailbox)) { ?>
                     <div class="change-msg-status">
-                        <a class="button" href="<?= Yii::app()->createUrl($this->getModule()->name . '/Default/markRead/' . $this->event->id) ?>" data-test="mark-as-read">
-                            <i class="oe-i save small pad-r"></i>Mark message as read
+                        <a class="button" href="<?= Yii::app()->createUrl("{$this->getModule()->name}/Default/markRead?id={$this->event->id}&mailbox_id={$mailbox->id}") ?>" data-test="mark-as-read-btn">
+                            <i class="oe-i save small pad-r"></i>Mark message as read for <?= $mailbox->name ?>
                         </a>
                     </div>
-                <?php } elseif ($this->canMarkCommentUnread($comment)) { ?>
+                <?php } elseif ($is_latest_comment && $this->canMarkMessageUnread($element, $mailbox)) { ?>
                     <div class="change-msg-status">
-                        <a class="button" href="<?= Yii::app()->createUrl($this->getModule()->name . '/Default/markUnread/' . $this->event->id) ?>" data-test="mark-as-unread">
-                            <i class="oe-i save small pad-r"></i>Mark message as unread
+                        <a class="button" href="<?= Yii::app()->createUrl("{$this->getModule()->name}/Default/markUnread?id={$this->event->id}&mailbox_id={$mailbox->id}") ?>" data-test="mark-as-unread-btn">
+                            <i class="oe-i save small pad-r"></i>Mark message as unread for <?= $mailbox->name ?>
                         </a>
                     </div>
                 <?php } ?>
@@ -149,20 +167,23 @@ if (!isset($new_comment)) {
                 <?php
                 $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
                     'id' => 'comment-form',
-                    'action' => Yii::app()->createUrl('/' . $this->getModule()->name . '/Default/AddComment', array('id' => $this->event->id)),
+                    'action' => Yii::app()->createUrl('/' .  $this->getModule()->name . '/Default/AddComment?id=' . $this->event->id),
                     'enableAjaxValidation' => false,
                     'layoutColumns' => array(
                         'label' => 2,
                         'field' => 10,
                     ),
+                    'htmlOptions' => [
+                        'data-test' => 'message-comment-form'
+                    ]
                 )); ?>
                 <hr class="divider" />
                 <div class="msg-reply">Your reply … <small>(can not be edited once sent)</small>
-                <div class="reply-mailbox">Replying as 
+                <div class="reply-mailbox">Replying as
                     <?=
                         \CHtml::dropDownList(
-                            'comment_reply_mailbox',
-                            Yii::app()->request->getParam('reply_mailbox') ?? null,
+                            'mailbox_id',
+                            isset($mailbox) ? $mailbox->id : null,
                             \CHtml::listData(
                                 array_merge(
                                     Mailbox::model()->forUser(\Yii::app()->user->id)->forMessageSender($element->id)->findAll(),
@@ -206,6 +227,7 @@ if (!isset($new_comment)) {
         </div>
     </div>
 </div>
+
 <script>
     function splitLinesIntoBRsIn(intoContainer, text)
     {
