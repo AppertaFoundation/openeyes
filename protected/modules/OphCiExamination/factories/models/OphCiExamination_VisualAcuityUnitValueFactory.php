@@ -26,7 +26,7 @@ class OphCiExamination_VisualAcuityUnitValueFactory extends ModelFactory
         return [
             'unit_id' => OphCiExamination_VisualAcuityUnit::factory(),
             'value' => $this->faker->unique()->word(2),
-            'base_value' => $this->faker->numberBetween(1, 120),
+            'base_value' => $this->faker->unique()->numberBetween(1, 120),
             'selectable' => true,
         ];
     }
@@ -61,4 +61,6 @@ class OphCiExamination_VisualAcuityUnitValueFactory extends ModelFactory
             'selectable' => false
         ]);
     }
+
+
 }
