@@ -19,6 +19,15 @@ namespace OEModule\OphCoMessaging\models;
 
 use OE\factories\models\traits\HasFactory;
 
+/**
+ * @property string $comment_text
+ * @property string|int $mailbox_id
+ * @property string|int $element_id
+ * @property Element_OphCoMessaging_Message $element
+ * @property Mailbox $sender_mailbox
+ * @property User $user
+ * @property User $usermodified
+ */
 class OphCoMessaging_Message_Comment extends \BaseActiveRecordVersioned
 {
     use HasFactory;
@@ -38,7 +47,7 @@ class OphCoMessaging_Message_Comment extends \BaseActiveRecordVersioned
     {
         return array(
             array('comment_text', 'safe'),
-            array('comment_text', 'required'),
+            array('comment_text, mailbox_id', 'required'),
             array('id, comment_text', 'safe', 'on' => 'search'),
         );
     }

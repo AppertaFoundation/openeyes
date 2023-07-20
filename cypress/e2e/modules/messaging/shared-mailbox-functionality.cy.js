@@ -75,18 +75,18 @@ describe('verifies the desired behaviour of shared mailboxes for messaging', () 
         cy.login(data.user1.username, data.user1.password)
 
         // mark the message sent to the user shared mailbox as read
-        cy.visit(data.messageEvent1.urls.view)
-        cy.getBySel('mark-as-read').click()
+        cy.visit(`${data.messageEvent1.urls.view}?mailbox_id=${data.userMailbox.id}`)
+        cy.getBySel('mark-as-read-btn').click()
 
         // log in as user2
         cy.login(data.user2.username, data.user2.password)
 
         // assert that the user shared mailbox message is marked as read (by user1)
-        cy.visit(data.messageEvent1.urls.view)
+        cy.visit(`${data.messageEvent1.urls.view}?mailbox_id=${data.userMailbox.id}`)
         cy.getBySel('read-status').contains(READ_STATUS + data.user1.fullName).should('be.visible')
 
         // mark the message as unread
-        cy.getBySel('mark-as-unread').click()
+        cy.getBySel('mark-as-unread-btn').click()
 
         // log back in as user1
         cy.login(data.user1.username, data.user1.password)
@@ -109,7 +109,7 @@ describe('verifies the desired behaviour of shared mailboxes for messaging', () 
 
         cy.getBySel('audit-anchor')
             .should('have.attr', 'href')
-            .and('include', data.messageEvent1.urls.view.substr(29))
+            .and('include', data.messageEvent1.urls.view.substr(33))
 
         // assert that the user shared mailbox message has been subsequently audited as 'marked unread' by user2
         cy.getBySel('audit-action').select(AUDIT_ACTION_UNREAD)
@@ -118,7 +118,7 @@ describe('verifies the desired behaviour of shared mailboxes for messaging', () 
 
         cy.getBySel('audit-anchor')
             .should('have.attr', 'href')
-            .and('include', data.messageEvent1.urls.view.substr(29))
+            .and('include', data.messageEvent1.urls.view.substr(33))
 
     });
 
@@ -162,7 +162,8 @@ describe('verifies the desired behaviour of shared mailboxes for messaging', () 
         cy.getBySel('home-mailbox-message-text').contains(REPLY_TEXT).should('not.exist')
 
         // request the deletion of the user shared mailbox message
-        cy.visit(data.messageEvent1.urls.view)
+        cy.visit(`${data.messageEvent1.urls.view}?mailbox_id=${data.teamMailbox.id}`)
+
         cy.getBySel('event-action-').click()
         cy.getBySel('reason-for-deletion').type(DELETE_TEXT)
         cy.getBySel('delete-event').click()
@@ -171,7 +172,7 @@ describe('verifies the desired behaviour of shared mailboxes for messaging', () 
         cy.login()
 
         // view the team shared mailbox message
-        cy.visit(data.messageEvent2.urls.view)
+        cy.visit(`${data.messageEvent2.urls.view}?mailbox_id=${data.teamMailbox.id}`)
 
         // assert that the message type is RNR - reply not required - and that it is not possible to reply
         cy.getBySel('message-type').contains(REPLY_NOT_REQUIRED_MSG_SUB_TYPE).should('be.visible')
@@ -188,7 +189,7 @@ describe('verifies the desired behaviour of shared mailboxes for messaging', () 
 
         cy.getBySel('audit-anchor')
             .should('have.attr', 'href')
-            .and('include', data.messageEvent1.urls.view.substr(29))
+            .and('include', data.messageEvent1.urls.view.substr(33))
 
         // assert that the user shared mailbox message has been subsequently audited as 'delete-request' by user1
         cy.getBySel('audit-action').select(AUDIT_ACTION_DELETE)
@@ -197,8 +198,6 @@ describe('verifies the desired behaviour of shared mailboxes for messaging', () 
 
         cy.getBySel('audit-anchor')
             .should('have.attr', 'href')
-            .and('include', data.messageEvent1.urls.view.substr(29))
-
+            .and('include', data.messageEvent1.urls.view.substr(33))
     });
-
 });

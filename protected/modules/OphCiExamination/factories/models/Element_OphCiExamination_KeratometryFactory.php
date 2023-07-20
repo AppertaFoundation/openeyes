@@ -83,7 +83,7 @@ class Element_OphCiExamination_KeratometryFactory extends ModelFactory
     {
         $independent_attrs = [
             'ba_index_value' => $this->faker->randomFloat(1, 0, 999),
-            'anterior_k1_value' => $this->faker->randomFloat(1, 0, 150),
+            'anterior_k1_value' => $this->faker->randomFloat(1, 1, 150),
             'axis_anterior_k1_value' => $this->faker->randomFloat(1, -150, -1),
             'axis_anterior_k2_value' => $this->faker->randomFloat(1, -150, -1),
             // no rules in the element when the factory was being created, so this is a guess

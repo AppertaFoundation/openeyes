@@ -13,35 +13,29 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-namespace OE\seeders\resources;
+namespace OE\seeders\traits;
 
-use \User;
+use Institution;
+use User;
 
-class SeededUserResource extends SeededResource
+trait CreatesAuthenticatableUsers
 {
-    private string $_password = 'password';
+    /**
+     * @param Institution $institution
+     * @param string $password
+     * @param array|string $auth_items
+     * @return array[User $user, string $username, string $password]
+     */
+    public function createAuthenticatableUser(
+        Institution $institution,
+        string $password = 'password',
+        $auth_items = ['Edit', 'User', 'View clinical']
+    ): array {
+        $user = User::factory()
+            ->withLocalAuthForInstitution($institution, $password)
+            ->withAuthItems((array) $auth_items)
+            ->create();
 
-    public static function from(User $user, string $password = 'password'): self
-    {
-        $resource = new static($user);
-        $resource->setPassword($password);
-
-        return $resource;
-    }
-
-    public function setPassword(string $password)
-    {
-        $this->_password = $password;
-    }
-
-    public function toArray(): array
-    {
-        $auth = $this->instance->authentications[0];
-
-        return [
-            'id' => $this->instance->id,
-            'username' => $auth->username,
-            'password' => $this->_password,
-        ];
+        return [$user, $user->authentications[0]->username, $password];
     }
 }

@@ -145,7 +145,7 @@ $coreapi = new CoreAPI();
         $(`.js-mailbox[data-mailbox-id="${id}"] .js-folder-counter`).each(function() {
             let folder = $(this).data('filter');
             // Get the text of the folder name before the message count
-            let folderUnreadCount = counts['count_' + folder] || 0;
+            let folderUnreadCount = counts[folder] || 0;
 
             if ($(this).find('.unread').length !== 0) {
               $(this).find('.unread').text(folderUnreadCount);
@@ -170,8 +170,9 @@ $coreapi = new CoreAPI();
         let message_type = "<?= $message_type ?>";
         let $btn = $(this);
         let $closestTr = $btn.closest('tr');
-        let eventId = $btn.closest('tr').attr('data-event-id');
-        let url = "<?=Yii::app()->createURL("/OphCoMessaging/Default/markRead/")?>" + '/' + eventId;
+        let eventId = $closestTr.attr('data-event-id');
+        let mailboxId = $closestTr.attr('data-mailbox-id');
+        let url = `<?=Yii::app()->createURL("/OphCoMessaging/Default/markRead/")?>/?id=${eventId}&mailbox_id=${mailboxId}`;
 
         // change tick icon with a spinner
         $btn.addClass('spinner as-icon');
