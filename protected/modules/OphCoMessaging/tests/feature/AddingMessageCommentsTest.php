@@ -82,7 +82,7 @@ class AddingMessageCommentsTest extends OEDbTestCase
     /** @test */
     public function marking_a_message_unread_after_replying_to_it_will_count_in_the_unread_folder()
     {
-        $this->markTestSkipped('This edge case to the count checks has been identified as low priority and to be resolved in the next release (6.7.10)');
+        $this->markTestSkipped('This edge case to the count checks has been identified as low priority and to be resolved in the next release (6.7.10). The ticket for this is OE-14894.');
 
         [$sender_user, $sender_mailbox] = $this->createMailboxUser();
         [$primary_user, $primary_mailbox] = $this->createMailboxUser();
