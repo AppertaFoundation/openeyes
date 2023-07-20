@@ -34,7 +34,6 @@ use OEModule\OphCiExamination\models\OphCiExaminationAllergy;
 class DefaultControllerAllergiesTest extends BaseDefaultControllerTest
 {
     use \HasModelAssertions;
-    use \WithTransactions;
 
     /** @test */
     public function ensure_reactions_are_saved_correctly_for_entries()

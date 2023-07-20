@@ -16,9 +16,12 @@
 namespace OEModule\OphCoMessaging\tests\unit\models;
 
 use Event;
+use Mailer;
 use OE\factories\models\EventFactory;
+use OEModule\OphCoMessaging\factories\models\OphCoMessaging_Message_CommentFactory;
 use OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message;
 use OEModule\OphCoMessaging\models\Mailbox;
+use OEModule\OphCoMessaging\models\OphCoMessaging_Message_Comment;
 use OEModule\OphCoMessaging\models\OphCoMessaging_Message_MessageType;
 use OEModule\OphCoMessaging\models\OphCoMessaging_Message_Recipient;
 use WithTransactions;
@@ -40,7 +43,8 @@ class Element_OphCoMessaging_MessageTest extends \ModelTestCase
         $message_type = $this->getMessageType(true);
 
         $element = $this->makeElementForSaving([
-            'message_type_id' => $message_type->id
+            'message_type_id' => $message_type->id,
+            'sender_mailbox_id' => Mailbox::factory()->useExisting(['is_personal' => true])
         ]);
 
         $element->save();
@@ -96,6 +100,57 @@ class Element_OphCoMessaging_MessageTest extends \ModelTestCase
         $this->assertEquals($message_type2->event_subtype, $event->firstEventSubtypeItem->event_subtype);
     }
 
+    /** @test */
+    public function message_can_be_marked_as_read_when_sent_to_self()
+    {
+        $message = Element_OphCoMessaging_Message::factory()
+            ->sentToSelf()
+            ->create();
+
+        $message->setReadStatusForMailbox($message->sender, true);
+
+        $recipient = OphCoMessaging_Message_Recipient::model()->findByAttributes(['element_id' => $message->id]);
+
+        $this->assertTrue((bool) $recipient->marked_as_read);
+    }
+
+    /** @test */
+    public function message_can_be_marked_as_read_for_recipient()
+    {
+        $recipient_mailbox = Mailbox::factory()->create();
+        $message = Element_OphCoMessaging_Message::factory()
+            ->withPrimaryRecipient($recipient_mailbox)
+            ->create();
+
+        $message->setReadStatusForMailbox($recipient_mailbox, true);
+
+        $recipient = OphCoMessaging_Message_Recipient::model()
+            ->findByAttributes(['element_id' => $message->id, 'mailbox_id' => $recipient_mailbox->id]);
+
+        $this->assertTrue((bool) $recipient->marked_as_read);
+    }
+
+    /** @test */
+    public function message_can_be_marked_as_read_for_thread()
+    {
+        $recipient_mailbox = Mailbox::factory()->create();
+        $message = Element_OphCoMessaging_Message::factory()
+            ->withReplyRequired()
+            ->withPrimaryRecipient($recipient_mailbox)
+            ->create();
+
+        $comment = OphCoMessaging_Message_Comment::factory()
+            ->withElement($message)
+            ->withSender($recipient_mailbox)
+            ->create();
+
+        $message->setReadStatusForMailbox($message->sender, true);
+
+        $comment->refresh();
+
+        $this->assertTrue((bool) $comment->marked_as_read);
+    }
+
     public function getMessageType(bool $has_event_subtype = false)
     {
         $factory = OphCoMessaging_Message_MessageType::factory();
@@ -133,7 +188,10 @@ class Element_OphCoMessaging_MessageTest extends \ModelTestCase
     /** @test */
     public function primary_recipients_is_required()
     {
-        $element = Element_OphCoMessaging_Message::factory()->make(['event_id' => null]);
+        $element = Element_OphCoMessaging_Message::factory()->make([
+            'event_id' => null,
+            'sender_mailbox_id' => null
+        ]);
 
         $this->assertAttributeInvalid($element, 'recipients', 'must be sent to');
 
@@ -234,5 +292,32 @@ class Element_OphCoMessaging_MessageTest extends \ModelTestCase
 
         $this->assertFalse($element_without_cc->cc_enabled);
         $this->assertTrue($element_with_cc->cc_enabled);
+    }
+
+    /** @test */
+    public function read_by_includes_sender_when_sender_has_read_latest_comment()
+    {
+        $receiver = Mailbox::factory()->create();
+        $message = Element_OphCoMessaging_Message::factory()
+            ->withReplyRequired()
+            ->withPrimaryRecipient($receiver, true)
+            ->create();
+
+        $comment = OphCoMessaging_Message_Comment::factory()
+            ->withElement($message)
+            ->withSender($receiver)
+            ->create([
+                // marked as read indicates sender of original message has read this comment
+                'marked_as_read' => false
+            ]);
+
+        $this->assertStringNotContainsString($message->sender->name, $message->getReadByLine());
+
+        $comment->marked_as_read = true;
+        $comment->save();
+
+        $message->refresh();
+
+        $this->assertStringContainsString($message->sender->name, $message->getReadByLine(), 'comment read tracking should indicate when sender has read the thread.');
     }
 }

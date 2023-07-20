@@ -16,8 +16,12 @@
 namespace OEModule\OphCoMessaging\tests\unit\models;
 
 use OE\factories\ModelFactory;
+use OEModule\OphCoMessaging\components\OphCoMessaging_API;
 use OEModule\OphCoMessaging\models\Mailbox;
 use OEModule\OphCoMessaging\factories\models\MailboxFactory;
+use OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message;
+use OEModule\OphCoMessaging\models\OphCoMessaging_Message_Comment;
+use OEModule\OphCoMessaging\models\OphCoMessaging_Message_Recipient;
 
 /**
  * class MailboxTest
@@ -57,6 +61,43 @@ class MailboxTest extends \ModelTestCase
         $is_personal_rules = $this->getRulesForAttribute($mailbox, 'is_personal');
         $this->assertContains('boolean', $is_personal_rules);
 
+    }
+
+    /** @test */
+    public function received_messages_relationship()
+    {
+        $mailbox = Mailbox::factory()->withUsers()->create();
+
+        $expected = Element_OphCoMessaging_Message::factory()
+            ->withPrimaryRecipient($mailbox)
+            ->count(3)
+            ->create();
+
+        // sent messages not part of relationship even with reply
+        $element = Element_OphCoMessaging_Message::factory()
+            ->withSender($mailbox->users[0], $mailbox)
+            ->create();
+
+        OphCoMessaging_Message_Comment::factory()
+            ->withElement($element)
+            ->create();
+
+        $this->assertModelArraysMatch($expected, $mailbox->received_messages);
+    }
+
+    /** @test */
+    public function for_message_recipients_scope()
+    {
+        $expected = Mailbox::factory()->withUsers()->count(2)->create();
+        // others to be ignored
+        Mailbox::factory()->withUsers()->count(2)->create();
+
+        $message = Element_OphCoMessaging_Message::factory()
+            ->withPrimaryRecipient($expected[0])
+            ->withCCRecipients([[$expected[1], false]])
+            ->create();
+
+        $this->assertModelArraysMatch($expected, Mailbox::model()->forMessageRecipients($message->id)->findAll());
     }
 
     protected function getRulesForAttribute($instance, $attribute): array

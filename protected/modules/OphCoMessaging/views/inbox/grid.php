@@ -115,9 +115,9 @@ if (!$recipient_messages->totalItemCount) {
 
             $patient = Patient::model()->findByPk($message['patient_id']);
 
-            $link_url = Yii::app()->createURL("/OphCoMessaging/default/view/", array("id" => $message['event_id'], "reply_mailbox" => $message['user_mailbox_id']));
+            $link_url = Yii::app()->createURL("/OphCoMessaging/default/view/", array("id" => $message['event_id'], "mailbox_id" => $message['user_mailbox_id']));
             ?>
-        <tr class="<?= ($mailbox && $message['marked_as_read'] ? 'read' : 'unread') ?>" data-event-id="<?= $message['event_id'] ?>">
+        <tr class="<?= ($mailbox && $message['marked_as_read_by_user'] ? 'read' : 'unread') ?>" data-event-id="<?= $message['event_id'] ?>" data-mailbox-id="<?=$message['user_mailbox_id']?>">
             <td>
             <?php $this->renderPartial(
                 'application.widgets.views.PatientMeta',
@@ -170,11 +170,11 @@ if (!$recipient_messages->totalItemCount) {
             </td>
             <td class="nowrap">
                 <?php
-                if (!$message['marked_as_read']) {
+                if (!$message['marked_as_read_by_user']) {
                     if ($message['user_mailbox_personal']) : ?>
-                        <i class="oe-i save small pad js-has-tooltip js-mark-as-read-btn" data-tooltip-content="Mark as read"></i>
+                        <i class="oe-i save small pad js-has-tooltip js-mark-as-read-btn" data-tooltip-content="Mark as read" data-test="mark-as-read-btn"></i>
                     <?php else : ?>
-                        <i class="oe-i save-team small pad js-has-tooltip js-mark-as-read-btn" data-tooltip-content="Mark as read for all team members"></i>
+                        <i class="oe-i save-team small pad js-has-tooltip js-mark-as-read-btn" data-tooltip-content="Mark as read for all team members" data-test="mark-as-read-btn"></i>
                     <?php endif;
                 } ?>
                 <a href="<?= $link_url ?>">

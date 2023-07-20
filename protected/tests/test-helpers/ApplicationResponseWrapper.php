@@ -18,6 +18,8 @@ use Symfony\Component\DomCrawler\Crawler;
 
 class ApplicationResponseWrapper
 {
+    public const BASE_URL = 'RESPONSE-WRAPPER-BASE-URL';
+
     public ?string $response;
     public ?ApplicationRedirectWrapper $redirect;
 
@@ -54,7 +56,7 @@ class ApplicationResponseWrapper
         );
 
         if (!is_null($url)) {
-            PHPUnit::assertEquals($url, $this->redirect->url, $message  . ":\nReceived redirect {$this->redirect->url} does not equal $url");
+            PHPUnit::assertEquals(self::BASE_URL . $url, $this->redirect->url, $message  . ":\nReceived redirect {$this->redirect->url} does not equal $url");
         }
     }
 

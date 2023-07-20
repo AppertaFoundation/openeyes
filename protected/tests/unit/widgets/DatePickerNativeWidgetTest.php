@@ -31,6 +31,12 @@ class DatePickerNativeWidgetTest extends OEDbTestCase
     protected $controller_cls = BaseController::class;
     protected $expected_date_input_format = 'Y-m-d';
 
+    public function tearDown(): void
+    {
+        \Yii::app()->setComponent('request', null);
+        parent::tearDown();
+    }
+
     public function maxAndMinDateDataProvider()
     {
         return [

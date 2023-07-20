@@ -41,6 +41,15 @@ class NinePositionsControllerTest extends BaseControllerTest
         $this->mockSession();
     }
 
+    public function tearDown(): void
+    {
+        \Yii::app()->setComponent('assetManager', null);
+        \Yii::app()->setComponent('request', null);
+        $_GET = [];
+
+        parent::tearDown();
+    }
+
     /** @test */
     public function get_exception_for_non_existent_patient()
     {

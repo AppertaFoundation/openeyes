@@ -32,6 +32,15 @@ abstract class BaseDefaultControllerTest extends BaseControllerTest
         $_POST = $_GET = $_REQUEST = []; // reset the common globals
     }
 
+    public function tearDown(): void
+    {
+        \Yii::app()->setComponent('assetManager', null);
+        \Yii::app()->setComponent('request', null);
+        $_REQUEST = [];
+
+        parent::tearDown();
+    }
+
     public function getDefaultController($methods = null)
     {
         $base_methods_to_mock = ['addToUnbookedWorklist'];
