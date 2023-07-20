@@ -7,12 +7,15 @@ use OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message;
 use OEModule\OphCoMessaging\models\OphCoMessaging_Message_MessageType;
 use OE\seeders\resources\SeededEventResource;
 use OE\seeders\BaseSeeder;
+use OE\seeders\traits\CreatesAuthenticatableUsers;
 
 /**
 * Seeder for generating data used solely in the test to verify desired behaviour of shared mailboxes (messaging/shared-mailbox-functionality.cy.js)
 */
 class TestMailboxSeeder extends BaseSeeder
 {
+    use CreatesAuthenticatableUsers;
+
     /**
     * Returns the data required to verify the desired behaviour of shared mailboxes.
     * Return data includes:
@@ -30,21 +33,8 @@ class TestMailboxSeeder extends BaseSeeder
         $current_institution = $this->app_context->getSelectedInstitution();
         $runtime_prefix = (string) time();
 
-        // seed user1
-        $user1_password = 'password';
-        $user1 = \User::factory()
-            ->withLocalAuthForInstitution($current_institution, $user1_password)
-            ->withAuthItems(['Edit', 'User', 'View clinical'])
-            ->create();
-        $user1_authentication = $user1->authentications[0];
-
-        // seed user2
-        $user2_password = 'password';
-        $user2 = \User::factory()
-            ->withLocalAuthForInstitution($current_institution, $user2_password)
-            ->withAuthItems(['Edit', 'User', 'View clinical'])
-            ->create();
-        $user2_authentication = $user2->authentications[0];
+        [$user1, $user1_username, $user1_password] = $this->createAuthenticatableUser($current_institution);
+        [$user2, $user2_username, $user2_password] = $this->createAuthenticatableUser($current_institution);
 
         // seed test team and assign admin and user1 to the team
         $admin_user = \User::model()->findByPk(1);
@@ -86,8 +76,8 @@ class TestMailboxSeeder extends BaseSeeder
             ->create(['message_text' => 'Hello Test Team Mailbox ' . $team_mailbox->name]);
 
         return [
-            'user1' => ['username' => $user1_authentication->username, 'password' => $user1_password, 'fullName' => $user1->getFullName()],
-            'user2' => ['username' => $user2_authentication->username, 'password' => $user2_password, 'fullName' => $user2->getFullName()],
+            'user1' => ['username' => $user1_username, 'password' => $user1_password, 'fullName' => $user1->getFullName()],
+            'user2' => ['username' => $user2_username, 'password' => $user2_password, 'fullName' => $user2->getFullName()],
             'teamName' => $team->name,
             'userMailbox' => ['id' => $user_mailbox->id, 'name' => $user_mailbox->name, 'messageText' => $user_mailbox_message->message_text],
             'teamMailbox' => ['id' => $team_mailbox->id, 'name' => $team_mailbox->name, 'messageText' => $team_mailbox_message->message_text],

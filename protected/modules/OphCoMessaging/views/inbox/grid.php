@@ -172,9 +172,9 @@ if (!$recipient_messages->totalItemCount) {
                 <?php
                 if (!$message['marked_as_read_by_user']) {
                     if ($message['user_mailbox_personal']) : ?>
-                        <i class="oe-i save small pad js-has-tooltip js-mark-as-read-btn" data-tooltip-content="Mark as read"></i>
+                        <i class="oe-i save small pad js-has-tooltip js-mark-as-read-btn" data-tooltip-content="Mark as read" data-test="mark-as-read-btn"></i>
                     <?php else : ?>
-                        <i class="oe-i save-team small pad js-has-tooltip js-mark-as-read-btn" data-tooltip-content="Mark as read for all team members"></i>
+                        <i class="oe-i save-team small pad js-has-tooltip js-mark-as-read-btn" data-tooltip-content="Mark as read for all team members" data-test="mark-as-read-btn"></i>
                     <?php endif;
                 } ?>
                 <a href="<?= $link_url ?>">
