@@ -160,26 +160,26 @@ class Element_OphCoMessaging_MessageFactory extends ModelFactory
     {
         return $this
             ->afterCreating(function ($message_element) use ($mailboxes_and_marked_as_reads) {
-            $recipients = $message_element->recipients;
+                $recipients = $message_element->recipients;
 
-            foreach ($mailboxes_and_marked_as_reads as $mailbox_and_marked_as_read) {
-                list($mailbox, $marked_as_read) = $mailbox_and_marked_as_read;
+                foreach ($mailboxes_and_marked_as_reads as $mailbox_and_marked_as_read) {
+                    list($mailbox, $marked_as_read) = $mailbox_and_marked_as_read;
 
-                $recipients[] = OphCoMessaging_Message_Recipient::factory()
+                    $recipients[] = OphCoMessaging_Message_Recipient::factory()
                               ->withElement($message_element)
                               ->asCC($mailbox)
                               ->create([
                                 'marked_as_read' => $marked_as_read
                               ]);
-            }
+                }
 
-            $message_element->recipients = $recipients;
+                $message_element->recipients = $recipients;
 
             //This is necessary due to changes to the element's beforeSave function
             // which cause cc_enabled to always be false when the element is created by a factory
-            $message_element->cc_enabled = true;
-            $message_element->save();
-        });
+                $message_element->cc_enabled = true;
+                $message_element->save();
+            });
     }
 
     /**

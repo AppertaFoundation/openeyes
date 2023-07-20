@@ -30,8 +30,7 @@ trait CreatesAuthenticatableUsers
         Institution $institution,
         string $password = 'password',
         $auth_items = ['Edit', 'User', 'View clinical']
-    ): array
-    {
+    ): array {
         $user = User::factory()
             ->withLocalAuthForInstitution($institution, $password)
             ->withAuthItems((array) $auth_items)

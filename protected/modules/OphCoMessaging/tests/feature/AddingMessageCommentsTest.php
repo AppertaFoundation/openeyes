@@ -282,7 +282,8 @@ class AddingMessageCommentsTest extends OEDbTestCase
     }
 
     /** @test */
-    public function comment_added_to_message_by_primary_recipient_marks_message_unread_for_original_sender() {
+    public function comment_added_to_message_by_primary_recipient_marks_message_unread_for_original_sender()
+    {
         [$sender_user, $sender_mailbox] = $this->createMailboxUser();
         [$primary_user, $primary_mailbox] = $this->createMailboxUser();
 
@@ -1179,6 +1180,8 @@ class AddingMessageCommentsTest extends OEDbTestCase
             $models = [$models];
         }
 
-        return array_map(function ($model) { return $model->id; }, $models);
+        return array_map(function ($model) {
+            return $model->id;
+        }, $models);
     }
 }

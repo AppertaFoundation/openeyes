@@ -40,7 +40,9 @@ class DashboardSeeder extends BaseSeeder
         return [
             'user' => SeededUserResource::from($user, $password)->toArray(),
             'userMailbox' => GenericModelResource::from($user->personalMailbox)->toArray(),
-            'messages' => array_map(function ($message) { return SeededEventResource::from($message->event)->toArray(); }, $messages),
+            'messages' => array_map(function ($message) {
+                return SeededEventResource::from($message->event)->toArray();
+            }, $messages),
             // random sample of folders for now
             'folders' => [MailboxSearch::FOLDER_ALL, MailboxSearch::FOLDER_READ_ALL, MailboxSearch::FOLDER_READ_CC, MailboxSearch::FOLDER_UNREAD_ALL, MailboxSearch::FOLDER_UNREAD_CC]
         ];
