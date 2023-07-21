@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <div class="eyedraw-fields">
     <?=\CHtml::activeHiddenField($element, $side . '_ed_report'); ?>
@@ -31,6 +33,6 @@
     <?=\CHtml::activeTextArea(
         $element,
         $side . '_description',
-        array('rows' => '1', 'placeholder' => $element->getAttributeLabel($side . '_description'))
+        array('rows' => '1', 'placeholder' => $element->getAttributeLabel($side . '_description'), 'class' => 'autosize')
     ) ?>
 </div>
