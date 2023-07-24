@@ -52,7 +52,7 @@ if (YII_DEBUG && !empty(getenv('YII_DEBUG_BAR_IPS'))) {
         'components' => array(
             'debug' => array(
                 'class' => 'Yii2Debug',
-                'allowedIPs' => array(getenv('YII_DEBUG_BAR_IPS')),
+                'allowedIPs' => array_map('trim', explode(',', str_replace("'", "", getenv('YII_DEBUG_BAR_IPS')))),
                 'showConfig' => true,
             ),
             'db' => array(
