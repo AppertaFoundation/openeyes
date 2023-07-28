@@ -42,6 +42,10 @@ declare namespace Cypress {
          */
         saveEvent(): Chainable<any>
         /**
+         * click the cancel button on the current OE Event form
+         */
+        cancelEvent(): Chainable<any>
+        /**
          * Look for the event saved confirmation message. Checks if is created or updated based on the isNewEvent flag
          * @param isNewEvent defaults to true
          */

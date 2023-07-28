@@ -73,7 +73,7 @@ if (!isset($values)) {
             <tr>
                 <td><?= $values['full_name']; ?> <?= $values['date']; ?></td>
                 <td>
-                    <button class="blue hint js-image-annotate" data-annotate-row-index="<?= $row_count;?>">Annotate image</button>
+                    <button class="blue hint js-image-annotate" data-annotate-row-index="<?= $row_count;?>" data-test="annotate-freehand-drawing-image-btn">Annotate image</button>
                 </td>
             </tr>
             </tbody>
@@ -107,9 +107,11 @@ if (!isset($values)) {
                 <td><?= $values['full_name']; ?> <?= $values['date']; ?></td>
                 <td><button
                             class="green hint js-save-annotation"
+                            data-test="save-freehand-drawing-annotation-btn"
                             data-annotate-row-index="<?= $row_count;?>">Save annotation</button> <button
                                                                     data-annotate-row-index="<?= $row_count;?>"
                                                                     data-template-url="<?= $values['template_url']; ?>"
+                                                                    data-test="cancel-freehand-drawing-annotation-btn"
                                                                     class="red hint js-cancel-annotation">Clear & cancel annotations</button>
                 </td>
             </tr>
@@ -129,8 +131,8 @@ if (!isset($values)) {
         <input type="hidden" name="<?= $field_prefix ?>[protected_file_id]"
                value="<?= $values['protected_file_id'] ?>"/>
 
-        <input type="hidden" class="js-image-data-<?= $row_count; ?>" name="image[<?= $row_count; ?>][data]"/>
-        <input type="hidden" class="js-image-name-<?= $row_count; ?>" name="image[<?= $row_count; ?>][name]"
+        <input type="hidden" class="js-image-data-<?= $row_count; ?>" name="<?= $field_prefix ?>[image][data]"/>
+        <input type="hidden" class="js-image-name-<?= $row_count; ?>" name="<?= $field_prefix ?>[image][name]"
                value="<?= $values['filename']; ?>"/>
 
         <div class="toolbox">

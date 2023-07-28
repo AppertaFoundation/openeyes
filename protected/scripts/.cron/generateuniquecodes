@@ -1,2 +1,2 @@
-# Run weekly to pull latest ODS / HSCIC GP and practice data
-${CRON_GENERTAEUNIQUECODES_SCH:-55 5 * * 7}  bash $WROOT/protected/scripts/cronrunner.sh 'bash $WROOT/protected/scripts/generateuniquecodes.sh'
+# Run weekly to pull replenish pool of unique codes for external integratons
+${CRON_GENERTAEUNIQUECODES_SCH:-55 5 * * 0} bash $WROOT/protected/scripts/cronrunner.sh 'bash $WROOT/protected/scripts/generateuniquecodes.sh'

@@ -43,7 +43,7 @@ $model_name = CHtml::modelName($element);
         ?>
 
     <div class="add-data-actions flex-item-bottom">
-        <button class="button hint green js-add-select-search" id="show-add-template-popup">
+        <button class="button hint green js-add-select-search" id="show-add-template-popup" data-test="add-freehand-drawing-template-btn">
             <i class="oe-i plus pro-theme"></i>
         </button>
     </div>

@@ -59,6 +59,10 @@ Cypress.Commands.add('saveEvent', () => {
     return cy.get('#et_save').click();
 });
 
+Cypress.Commands.add('cancelEvent', () => {
+    return cy.get('[data-test="event-action-cancel"]:visible').first().click();
+});
+
 Cypress.Commands.add('assertEventSaved', (isNewEvent) => {
     if (isNewEvent !== false) {
         return cy.get('#flash-success').contains('created');

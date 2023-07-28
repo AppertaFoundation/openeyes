@@ -51,15 +51,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             if (is_not_init) {
                 this.initTemplate($row.dataset.templateUrl, $row.dataset.key);
                 is_not_init.classList.remove('js-not-initialized');
-                let $is_edited = $row.getElementsByTagName(`image[${index}][is_edited]`);
-                if (!$is_edited.length) {
-                    $is_edited = OpenEyes.UI.DOM.createElement('input', {
-                        type: 'hidden',
-                        name: `image[${index}][is_edited]`,
-                        value: 1
-                    });
-                    $row.appendChild($is_edited);
-                }
+
+                this.setIsEdited(index, $row);
             }
 
             // Copy comments textarea content from the un-annotated view
@@ -76,6 +69,9 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             document.getElementById(`annotate-wrapper-${index}`).style.display = 'none';
             document.getElementById(`js-img-preview-${index}`).src = this.$wrapper.querySelector(`.js-image-data-${index}`).value;
 
+            const $row = document.getElementById(`js-annotate-image-${index}`);
+            this.setIsEdited(index, $row);
+
             this.enableButtonIfNoAnnotation();
         });
 
@@ -89,10 +85,8 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
             OpenEyes.UI.DOM.trigger($wrapper.querySelector('.js-clear-all'), 'click');
             document.getElementById(`js-img-preview-${index}`).src = $button.dataset.templateUrl;
-            const $is_edited = document.getElementsByName(`image[${index}][is_edited]`);
-            if ($is_edited.length) {
-                $is_edited[0].remove();
-            }
+
+            this.removeIsEdited(index);
 
             this.enableButtonIfNoAnnotation();
         });
@@ -153,6 +147,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
     };
 
     FreehandDraw.prototype.addTemplate = function (item) {
+        const self = this;
         const row_count = OpenEyes.Util.getNextDataKey('.oe-annotate-image', 'key');
         const template = Mustache.render($('#new_drawing_template').text(), {
             row_count: row_count,
@@ -178,17 +173,12 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
                 reader.onload = () => resolve(reader.result);
                 reader.readAsDataURL(blob);
             });
-            // to achive the saving we have to set the is_edited input
-            const $wrapper = document.getElementById(`js-annotate-image-${row_count}`);
-            const $is_edited = OpenEyes.UI.DOM.createElement('input', {
-                type: 'hidden',
-                name: `image[${row_count}][is_edited]`,
-                value: 1
-            });
-            $wrapper.appendChild($is_edited);
 
-            // and set the actual image-data
-            const inputs = document.getElementsByName(`image[${row_count}][data]`);
+            const $wrapper = document.getElementById(`js-annotate-image-${row_count}`);
+            self.setIsEdited(row_count, $wrapper);
+
+            // set the actual image-data
+            const inputs = document.getElementsByName(`OEModule_OphCiExamination_models_FreehandDraw[entries][${row_count}][image][data]`);
             if (inputs.length) {
                 inputs[0].value = data_url;
             }
@@ -228,6 +218,30 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         });
 
         return imageAnnotator;
+    };
+
+    FreehandDraw.prototype.setIsEdited = function (index, $intoContainer) {
+        let $is_edited = document.getElementsByName(`OEModule_OphCiExamination_models_FreehandDraw[entries][${index}][image][is_edited]`);
+
+        if ($is_edited.length === 0) {
+            $is_edited = OpenEyes.UI.DOM.createElement('input', {
+                type: 'hidden',
+                name: `OEModule_OphCiExamination_models_FreehandDraw[entries][${index}][image][is_edited]`,
+                value: 1
+            });
+
+            $is_edited.dataset.test = 'freehand-drawing-is-edited-input';
+
+            $intoContainer.appendChild($is_edited);
+        }
+    };
+
+    FreehandDraw.prototype.removeIsEdited = function(index) {
+        const $is_edited = document.getElementsByName(`OEModule_OphCiExamination_models_FreehandDraw[entries][${index}][image][is_edited]`);
+
+        if ($is_edited.length) {
+            $is_edited[0].remove();
+        }
     };
 
     exports.FreehandDraw = FreehandDraw;
