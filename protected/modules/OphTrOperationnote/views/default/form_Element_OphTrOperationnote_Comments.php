@@ -64,7 +64,7 @@ $is_outpatient_minor_op = isset($data['outpatient_minor_op']) && $data['outpatie
 if ($this->action->id == 'create') {
     $this->widget('EventAutoGenerateCheckboxesWidget', [
         'suffix' => strtolower($this->event->eventType->class_name),
-        'disable_auto_generate_for' => $is_outpatient_minor_op ? ['prescription', 'gp_letter', 'optom'] : ['optom'],
+        'disable_auto_generate_for' => $is_outpatient_minor_op ? ['prescription', 'gp_letter', 'optom'] : [],
     ]);
 }
 

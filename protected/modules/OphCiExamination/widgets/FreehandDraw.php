@@ -42,8 +42,6 @@ class FreehandDraw extends \BaseEventElementWidget
             throw new \CException('invalid element class ' . get_class($element) . ' for ' . static::class);
         }
 
-        $image_data = \Yii::app()->request->getParam('image', []);
-
         // pre-cache current entries so any entries that remain in place will use the same db row
         $entries_by_id = [];
         if (!$element->isNewRecord) {
@@ -62,11 +60,13 @@ class FreehandDraw extends \BaseEventElementWidget
                 }
                 $entry->comments = $drawing_entry['comments'];
                 $entry->protected_file_id = $drawing_entry['protected_file_id'];
-                $file_content = $image_data[$i]['data'];
-                $name = $image_data[$i]['name'];
-                $is_edited = $image_data[$i]['is_edited'] ?? 0;
+                $file_content = $drawing_entry['image']['data'];
+                $name = $drawing_entry['image']['name'];
+                $is_edited = $drawing_entry['image']['is_edited'] ?? 0;
 
-                if ($is_edited) {
+                // If is_edited is not set but there is no previous file, create one anyway
+                // to prevent an exception later on with a null protected file field
+                if ($is_edited || !$drawing_entry['protected_file_id']) {
                     $protected_file = $this->createProtectedFileFromDataURL($file_content, $name);
                     $entry->protected_file_id = $protected_file->id;
 

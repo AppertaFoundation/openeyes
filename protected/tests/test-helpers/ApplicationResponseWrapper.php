@@ -21,30 +21,32 @@ class ApplicationResponseWrapper
     public const BASE_URL = 'RESPONSE-WRAPPER-BASE-URL';
 
     public ?string $response;
+    public ?array $headers;
     public ?ApplicationRedirectWrapper $redirect;
 
     public ?Exception $exception;
 
-    public function __construct(?string $response = null, ?ApplicationRedirectWrapper $redirect = null, ?Exception $exception = null)
+    public function __construct(?string $response = null, array $headers = [], ?ApplicationRedirectWrapper $redirect = null, ?Exception $exception = null)
     {
         $this->response = $response;
+        $this->headers = $headers;
         $this->redirect = $redirect;
         $this->exception = $exception;
     }
 
-    public static function fromOutputString(string $string): ApplicationResponseWrapper
+    public static function fromOutputString(string $string, array $headers = []): ApplicationResponseWrapper
     {
-        return new self($string);
+        return new self($string, $headers);
     }
 
     public static function fromRedirect(ApplicationRedirectWrapper $redirect): ApplicationResponseWrapper
     {
-        return new self(null, $redirect);
+        return new self(null, [], $redirect);
     }
 
     public static function fromException(Exception $exception): ApplicationResponseWrapper
     {
-        return new self(null, null, $exception);
+        return new self(null, [], null, $exception);
     }
 
     public function assertRedirect($url = null, string $message = 'Response is not a redirect', bool $showResponseOnFail = false)
@@ -78,6 +80,19 @@ class ApplicationResponseWrapper
                 PHPUnit::assertEquals($expected_value, $this->exception->$property, print_r($this->exception, true));
             }
         }
+    }
+
+    public function assertContentTypeHeaderSent(string $expected_content_type)
+    {
+        PHPUnit::assertTrue(
+            array_reduce(
+                $this->headers,
+                static function ($flag, $actual_header) use ($expected_content_type) {
+                    return (str_starts_with(strtolower($actual_header), 'content-type:') && str_contains($actual_header, $expected_content_type)) || $flag;
+                },
+                false
+            )
+        );
     }
 
     public function getResponseString()
