@@ -1581,7 +1581,7 @@ class BaseEventTypeController extends BaseModuleController
         $user_id = Yii::app()->user->id;
 
         $structured_form_data = null;
-        parse_str(urldecode($form_data), $structured_form_data);
+        parse_str($form_data, $structured_form_data);
 
         $transaction = Yii::app()->db->beginTransaction();
 

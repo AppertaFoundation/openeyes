@@ -24,7 +24,8 @@ trait RenderJsonTrait
      */
     protected function renderJSON($data)
     {
-        header('Content-type: application/json');
+        $this->sendJSONHeader('Content-type: application/json');
+
         echo json_encode($data);
 
         foreach (Yii::app()->log->routes as $route) {
@@ -32,6 +33,27 @@ trait RenderJsonTrait
                 $route->enabled = false; // disable any weblogroutes
             }
         }
-        Yii::app()->end();
+
+        $this->endJSONResponse();
+    }
+
+    protected function sendJSONHeader($header)
+    {
+        $wrapper = \Yii::app()->params['header_wrapper_callback'] ?? null;
+
+        if ($wrapper) {
+            if (is_callable($wrapper)) {
+                call_user_func($wrapper, $header);
+            }
+        } else {
+            header($header);
+        }
+    }
+
+    protected function endJSONResponse()
+    {
+        if (!(\Yii::app()->params['header_wrapper_callback'] ?? null)) {
+            \Yii::app()->end();
+        }
     }
 }

@@ -118,17 +118,25 @@ trait MakesApplicationRequests
 
         \Yii::app()->setComponent('request', $requestMock);
 
+        $headers = [];
+
+        $this->setHeaderSettingWrapper($headers);
+
         ob_start();
         try {
             \Yii::app()->run();
             $output = ob_get_contents();
+
             ob_end_clean();
+            $this->removeHeaderSettingWrapper();
         } catch (Exception $e) {
             ob_end_clean();
+            $this->removeHeaderSettingWrapper();
+
             return ApplicationResponseWrapper::fromException($e);
         }
 
-        return $redirected === null ? ApplicationResponseWrapper::fromOutputString($output) : ApplicationResponseWrapper::fromRedirect($redirected);
+        return $redirected === null ? ApplicationResponseWrapper::fromOutputString($output, $headers) : ApplicationResponseWrapper::fromRedirect($redirected);
     }
 
     protected function crawl(string $contents)
@@ -174,5 +182,17 @@ trait MakesApplicationRequests
         parse_str($parsed_url['query'] ?? '', $_GET);
 
         return $parsed_url['path'];
+    }
+
+    private function setHeaderSettingWrapper(&$headers)
+    {
+        \Yii::app()->params['header_wrapper_callback'] = static function ($header) use (&$headers) {
+            $headers[] = $header;
+        };
+    }
+
+    private function removeHeaderSettingWrapper()
+    {
+        unset(\Yii::app()->params['header_wrapper_callback']);
     }
 }
