@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -18,7 +19,6 @@
 namespace OEModule\PASAPI\tests\feature;
 
 use Patient;
-use PatientIdentifier;
 use OEModule\OphCiExamination\models\Element_OphCiExamination_CommunicationPreferences;
 
 /**
@@ -26,7 +26,7 @@ use OEModule\OphCiExamination\models\Element_OphCiExamination_CommunicationPrefe
  * @group pasapi
  * @group pas-api
  */
-class PASAPI_Patient_Test extends PASAPI_BaseTest
+class PASAPI_Patient_Test_V1 extends PASAPI_BaseTest
 {
     protected $base_url_stub = 'Patient/';
 
@@ -41,20 +41,20 @@ class PASAPI_Patient_Test extends PASAPI_BaseTest
 
     public function testEmptyPatient()
     {
-        $this->setExpectedHttpError(400);
-        $this->put('TEST01', null);
+        $this->setExpectedHttpError(422);
+        $this->put('TEST01/identifier-type/' . self::IDENTIFIER_TYPE, null);
     }
 
     public function testMalformedPatient()
     {
-        $this->setExpectedHttpError(400);
-        $this->put('TEST01', '<Patient>');
+        $this->setExpectedHttpError(422);
+        $this->put('TEST01/identifier-type/' . self::IDENTIFIER_TYPE, '<Patient>');
     }
 
     public function testMismatchedRootTag()
     {
-        $this->setExpectedHttpError(400);
-        $this->put('BADTAG', '<OEPatient />');
+        $this->setExpectedHttpError(422);
+        $this->put('BADTAG/identifier-type/' . self::IDENTIFIER_TYPE, '<OEPatient />');
     }
 
     public function testPatientResourceValidation()
@@ -64,10 +64,9 @@ class PASAPI_Patient_Test extends PASAPI_BaseTest
     <HospitalNumber>92312423</HospitalNumber>
 </Patient>
 EOF;
-        $this->setExpectedHttpError(400);
-        $this->put('TESTVALIDATION', $xml);
+        $this->setExpectedHttpError(422);
+        $this->put('TESTVALIDATION/identifier-type/' . self::IDENTIFIER_TYPE, $xml);
         $this->assertXPathFound('/Failure');
-
     }
 
     public function testPatientModelValidation()
@@ -80,8 +79,8 @@ EOF;
     <DateOfBirth>1978-03-01</DateOfBirth>
 </Patient>
 EOF;
-        $this->setExpectedHttpError(400);
-        $this->put('TESTMODELVALIDATION', $xml);
+        $this->setExpectedHttpError(422);
+        $this->put('TESTMODELVALIDATION/identifier-type/' . self::IDENTIFIER_TYPE, $xml);
         $this->assertXPathFound('/Failure');
     }
 
@@ -120,7 +119,7 @@ EOF;
 </Patient>
 EOF;
         $this->expected_response_code = 201;
-        $this->put('92312423/identifier-type/LOCAL-1-0', $xml);
+        $this->put('92312423/identifier-type/' . self::IDENTIFIER_TYPE, $xml);
 
         $id = $this->xPathQuery('/Success//Id')->item(0)->nodeValue;
 
@@ -170,7 +169,7 @@ EOF;
             \Episode::class
         ];
 
-        $this->put('01010101/identifier-type/LOCAL-1-0', $xml);
+        $this->put('01010101/identifier-type/' . self::IDENTIFIER_TYPE, $xml);
 
         $this->assertXPathFound('/Success');
 
@@ -191,7 +190,7 @@ EOF;
         $xml = preg_replace('/updateOnly="1"/', '', $xml);
 
         $this->expected_response_code = 201;
-        $this->put('01010101/identifier-type/LOCAL-1-0', $xml);
+        $this->put('01010101/identifier-type/' . self::IDENTIFIER_TYPE, $xml);
         $id = $this->xPathQuery('/Success//Id')->item(0)->nodeValue;
 
         $patient = Patient::model()->findByPk($id);
@@ -241,7 +240,7 @@ EOF;
 </Patient>
 EOF;
         $this->expected_response_code = 201;
-        $this->put('1234535/identifier-type/LOCAL-1-0', $xml);
+        $this->put('1234535/identifier-type/' . self::IDENTIFIER_TYPE, $xml);
         $id = $this->xPathQuery('/Success//Id')->item(0)->nodeValue;
 
         $patient = Patient::model()->findByPk($id);
@@ -253,7 +252,7 @@ EOF;
         $xml = preg_replace('/DateOfBirth>1978-03-01/', 'DateOfBirth>' . $new_dob, $xml);
 
         $this->expected_response_code = 200;
-        $this->put('1234535/identifier-type/LOCAL-1-0', $xml);
+        $this->put('1234535/identifier-type/' . self::IDENTIFIER_TYPE, $xml);
 
         $patient = Patient::model()->findByPk($id);
         $this->assertNotNull($patient);
@@ -290,7 +289,7 @@ EOF;
     <GpCode>G3258868</GpCode>
 </Patient>
 EOF;
-        $this->put('010101010/identifier-type/LOCAL-1-0', $xml, [
+        $this->put('010101010/identifier-type/' . self::IDENTIFIER_TYPE, $xml, [
             'X-OE-Update-Only' => 1,
         ]);
 
@@ -440,14 +439,14 @@ EOF;
     {
         $this->markTestSkipped('Partial update has been broken by the changes for multi tenancy and identifier resolution');
         $this->expected_response_code = 201;
-        $this->put('4534563/identifier-type/LOCAL-1-0', $initial);
+        $this->put('4534563/identifier-type/' . self::IDENTIFIER_TYPE, $initial);
 
         $id = $this->xPathQuery('/Success//Id')->item(0)->nodeValue;
 
         $patient = Patient::model()->findByPk($id);
         $this->assertNotNull($patient);
 
-        $this->put('4534563/identifier-type/LOCAL-1-0', $partial, array(
+        $this->put('4534563/identifier-type/' . self::IDENTIFIER_TYPE, $partial, array(
             'X-OE-Partial-Record' => 1,
         ));
 
@@ -469,7 +468,7 @@ EOF;
 EOF;
         $this->expected_response_code = 201;
 
-        $this->put('010101010/identifier-type/LOCAL-1-0', $xml, array(
+        $this->put('010101010/identifier-type/' . self::IDENTIFIER_TYPE, $xml, array(
             'X-OE-Partial-Record' => 1,
         ));
 
@@ -582,7 +581,7 @@ EOF;
     {
         $this->expected_response_code = 201;
 
-        $this->put('4534563/identifier-type/LOCAL-1-0', $initial);
+        $this->put('4534563/identifier-type/' . self::IDENTIFIER_TYPE, $initial);
 
         $id = $this->xPathQuery('/Success//Id')->item(0)->nodeValue;
 
@@ -590,7 +589,7 @@ EOF;
         $this->assertNotNull($patient);
 
         $this->expected_response_code = 200;
-        $this->put('4534563/identifier-type/LOCAL-1-0', $update);
+        $this->put('4534563/identifier-type/' . self::IDENTIFIER_TYPE, $update);
 
         $patient = Patient::model()->findByPk($id);
 

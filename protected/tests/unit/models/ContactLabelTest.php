@@ -88,7 +88,7 @@ class ContactLabelTest extends ActiveRecordTestCase
             'name' => 'Name',
             'letter_template_only' => 'Letter Template Only',
             'is_private' => 'Is Private',
-            'max_number_per_patient' => 'Max Number Per Patient'
+            'max_number_per_patient' => 'Max Number Per Patient',
         );
         $this->assertEquals($expected, $this->model->attributeLabels());
     }

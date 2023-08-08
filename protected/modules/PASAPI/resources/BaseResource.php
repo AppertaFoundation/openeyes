@@ -24,10 +24,12 @@ use OEModule\PASAPI\models\XpathRemap;
 abstract class BaseResource
 {
     protected static $resource_type;
+    protected static $model_class;
 
     protected $version;
     protected $schema;
     private $audit_data;
+    public $isNewResource = false;
 
     public $warnings = array();
     public $errors = array();
@@ -73,7 +75,7 @@ abstract class BaseResource
      *
      * @throws \Exception
      */
-    public function __construct($version, $options = array())
+    final public function __construct($version, $options = array())
     {
         if (!$version) {
             throw new \Exception('Schema version required to create resource');
@@ -82,7 +84,7 @@ abstract class BaseResource
         $this->schema = static::getSchema($version);
 
         if (!$this->schema) {
-            throw new \Exception('Schema not found for resource '.static::$resource_type);
+            throw new \Exception('Schema not found for resource ' . static::$resource_type);
         }
 
         foreach ($options as $key => $value) {
@@ -113,7 +115,7 @@ abstract class BaseResource
             return new $class();
         }
 
-        $cls = new ReflectionClass($class);
+        $cls = new \ReflectionClass($class);
 
         return $cls->newInstanceArgs($args);
     }
@@ -180,7 +182,7 @@ abstract class BaseResource
             return $obj;
         }
 
-        static::remapValues($doc, XpathRemap::model()->findAllByXpath('/'.static::$resource_type));
+        static::remapValues($doc, XpathRemap::model()->findAllByXpath('/' . static::$resource_type));
 
         $obj = static::fromXmlDom($version, $doc->documentElement, $options);
         $obj->addAuditData('input', \CHtml::encode($xml));
@@ -202,7 +204,7 @@ abstract class BaseResource
     public static function fromXmlDom($version, \DOMElement $element, $options = array())
     {
         if ($element->tagName != static::$resource_type) {
-            return static::errorInit($version, array("Mismatched root tag {$element->tagName} for resource type ".static::$resource_type));
+            return static::errorInit($version, array("Mismatched root tag {$element->tagName} for resource type " . static::$resource_type));
         }
 
         $obj = new static($version, $options);
@@ -218,9 +220,9 @@ abstract class BaseResource
      * @param $version
      * @param $id
      *
-     * @return BaseResource
+     * @return BaseResource|null
      */
-    public static function fromResourceId($version, $id)
+    public static function fromResourceId($version, $id): ?BaseResource
     {
         $finder = new PasApiAssignment();
 
@@ -233,6 +235,7 @@ abstract class BaseResource
                 return $obj;
             }
         }
+        return null;
     }
 
     /**
@@ -316,7 +319,7 @@ abstract class BaseResource
                         if (!$list_item instanceof \DOMElement) {
                             continue;
                         }
-                        $cls = __NAMESPACE__.'\\'.$schema[$local_name]['resource'];
+                        $cls = __NAMESPACE__ . '\\' . $schema[$local_name]['resource'];
                         $this->{$local_name}[] = $cls::fromXmlDom($this->version, $list_item, $options);
                     }
                     break;
@@ -342,7 +345,7 @@ abstract class BaseResource
                     }
                     break;
                 case 'resource':
-                    $cls = __NAMESPACE__.'\\'.$schema[$local_name]['resource'];
+                    $cls = __NAMESPACE__ . '\\' . $schema[$local_name]['resource'];
                     $this->{$local_name} = $cls::fromXmlDom($this->version, $child, $options);
                     break;
                 case 'boolean':
@@ -446,7 +449,7 @@ abstract class BaseResource
                         continue;
                     }
                     if (!$resource->validate()) {
-                        $tag_pos = count($resources_to_validate) > 1 ? ':'.($idx + 1) : null;
+                        $tag_pos = count($resources_to_validate) > 1 ? ':' . ($idx + 1) : null;
                         foreach ($resource->errors as $err) {
                             $this->addError("{$tag}{$tag_pos} error: {$err}");
                         }
@@ -545,11 +548,20 @@ abstract class BaseResource
     public function audit($audit_type, $data = null, $msg = null, $properties = array())
     {
         if ($data) {
-            $data = array_merge($this->getAuditData(), $data);
+            $data = json_encode(array_merge(json_decode($this->getAuditData(), true), $data));
         } else {
             $data = $this->getAuditData();
         }
 
         \Audit::add($this->getAuditTarget(), $audit_type, $data, null, $properties);
+    }
+
+    /**
+     * Allows saving of the resource into the data model. This should be overridden on each resource that supports saving.
+     *
+     * @return void
+     */
+    public function save()
+    {
     }
 }

@@ -8,6 +8,9 @@
   "HospitalNumber": {
     "type": "string"
   },
+  "IdentifierTypeCode": {
+    "type": "string"
+  },
   "Title": {
     "type": "string"
   },
@@ -30,6 +33,10 @@
     "type": "choice",
     "choices": ["M", "F", "U"]
   },
+  "ContactList": {
+    "type": "list",
+    "resource": "PatientContact"
+  },
   "AddressList": {
     "type": "list",
     "resource": "Address"
@@ -49,11 +56,13 @@
   "IsDeceased": {
     "type": "boolean"
   },
-  "PracticeCode": {
-    "type": "string"
+  "Practice": {
+    "type": "resource",
+    "resource": "Practice"
   },
-  "GpCode": {
-    "type": "string"
+  "GP": {
+    "type": "resource",
+    "resource": "GP"
   },
   "LanguageCode": {
     "type": "string"

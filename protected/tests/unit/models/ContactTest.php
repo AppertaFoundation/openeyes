@@ -84,7 +84,8 @@ class ContactTest extends ActiveRecordTestCase
              'last_name' => 'Last name',
              'qualifications' => 'Qualifications',
              'contact_label_id' => 'Label',
-             'email' => 'Email'
+             'email' => 'Email',
+             'pas_id' => 'PAS ID',
         );
 
         $this->assertEquals($expected, $this->model->attributeLabels(), 'Attribute labels should match.');

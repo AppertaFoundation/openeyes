@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2014
  * This file is part of OpenEyes.
@@ -12,6 +13,7 @@
  * @copyright Copyright (C) 2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 use GuzzleHttp\Exception\BadResponseException;
@@ -23,7 +25,7 @@ class RestTestCase extends OEDbTestCase
     protected static $schema = null;
     protected static $namespaces = array();
 
-    protected $client;
+    protected Client $client;
 
     protected $response;
     protected $doc = null;
@@ -49,8 +51,6 @@ class RestTestCase extends OEDbTestCase
                 ]
             ]
         );
-
-
     }
 
     protected function setExpectedHttpError($code)
@@ -110,16 +110,16 @@ class RestTestCase extends OEDbTestCase
 
         if ((strpos($this->response->getHeader('content-type')[0], 'xml') !== false) && !empty((string) $this->response->getBody())) {
             $this->doc = new DOMDocument();
-            $this->doc->loadXML($this->response->getBody());
+            $this->doc->loadXML((string) $this->response->getBody());
             if (static::$schema) {
-                $this->assertTrue($this->doc->schemaValidate(Yii::app()->getBasePath().'/'.static::$schema));
+                $this->assertTrue($this->doc->schemaValidate(Yii::app()->getBasePath() . '/' . static::$schema));
             }
         }
 
         $this->assertEquals(
             $this->expected_response_code,
             $this->response->getStatusCode(),
-            "Incorrect status code " . $this->response->getStatusCode() . " has body response:" . $this->response->getBody()
+            "Incorrect status code " . $this->response->getStatusCode() . " has body response:" . (string) $this->response->getBody()
         );
     }
 

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -31,7 +32,7 @@ abstract class PASAPI_BaseTest extends \RestTestCase
     /**
      * @var Client
      */
-    protected $client;
+    protected Client $client;
     /**
      * @var User
      */
@@ -50,6 +51,10 @@ abstract class PASAPI_BaseTest extends \RestTestCase
     protected $additional_clean_up_models = [];
 
     protected $capture_error_responses = true;
+
+    protected string $pas_api_test_base_url = 'http://localhost/PASAPI/V1/';
+
+    protected $base_url_stub;
 
     protected function createTestUser()
     {
@@ -103,8 +108,6 @@ abstract class PASAPI_BaseTest extends \RestTestCase
         PASAPITestState::$user = $user_authentication->user;
     }
 
-    protected $base_url_stub;
-
     public function setUp(): void
     {
         parent::setUp();
@@ -114,7 +117,7 @@ abstract class PASAPI_BaseTest extends \RestTestCase
 
         $this->client = new Client(
             [
-                'base_uri' => \Yii::app()->params['pas_api_test_base_url'] . $this->base_url_stub,
+                'base_uri' => $this->pas_api_test_base_url . $this->base_url_stub,
                 'auth' => [$this->username, $this->user_password],
                 'headers' => [
                     'Accept' => 'application/xml',

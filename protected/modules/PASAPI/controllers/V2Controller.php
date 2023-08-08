@@ -26,11 +26,11 @@ use OEModule\PASAPI\resources\PatientMerge;
 use PatientIdentifier;
 use UserIdentity;
 
-class V1Controller extends \CController
+class V2Controller extends \CController
 {
-    protected static $resources = array('Patient', 'PatientAppointment', 'PatientMerge');
+    protected static $resources = array('Patient', 'GP', 'Practice', 'CommissioningBody', 'PatientAppointment', 'PatientMerge');
     protected static $create_only_resources = ['DidNotAttend'];
-    protected static $version = 'V1';
+    protected static $version = 'V2';
     protected static $supported_formats = array('xml');
 
     public static $UPDATE_ONLY_HEADER = 'HTTP_X_OE_UPDATE_ONLY';
@@ -66,7 +66,6 @@ class V1Controller extends \CController
     {
         if (in_array($actionID, static::$resources)) {
             $_GET['resource_type'] = $actionID;
-
             switch (\Yii::app()->getRequest()->getRequestType()) {
                 case 'PUT':
                     return parent::createAction('Update');
@@ -145,7 +144,7 @@ class V1Controller extends \CController
     public function expectedParametersForAction($action)
     {
         return array(
-            'update' => 'id, identifier-type',
+            'update' => 'id',
             'delete' => 'id',
             'create' => null,
         )[strtolower($action->id)];
@@ -158,7 +157,10 @@ class V1Controller extends \CController
      */
     public function invalidActionParams($action)
     {
-        $this->sendErrorResponse(400, array('Missing request parameter(s). Required parameter(s) are: ' . $this->expectedParametersForAction($action)));
+        $this->sendErrorResponse(
+            400,
+            array('Missing request parameter(s). Required parameter(s) are: ' . $this->expectedParametersForAction($action))
+        );
     }
 
     public function getResourceModel($resource_type)
@@ -243,10 +245,10 @@ class V1Controller extends \CController
      * @param $resource_type
      * @param $id
      */
-    public function actionUpdate($resource_type, $id, $identifier_type)
+    public function actionUpdate($resource_type, $id)
     {
         if (!in_array($resource_type, static::$resources)) {
-            $this->sendErrorResponse(404, "Unrecognised Resource type {$resource_type}");
+            $this->sendErrorResponse(404, ["Unrecognised Resource type {$resource_type}"]);
         }
 
         if (!$id) {
@@ -256,10 +258,6 @@ class V1Controller extends \CController
         $resource_model = $this->getResourceModel($resource_type);
 
         $body = \Yii::app()->request->rawBody;
-        $patient_identifier_type = \PatientIdentifierType::model()->findByAttributes(['unique_row_string' => $identifier_type]);
-        if ($patient_identifier_type) {
-            \Yii::app()->session["selected_institution_id"] = $patient_identifier_type->institution_id;
-        }
 
         try {
             /** @var BaseResource $resource */
@@ -270,22 +268,32 @@ class V1Controller extends \CController
 
             $resource->id = $id; // LOCAL number
 
-            switch ($resource_type) {
-                case "Patient":
-                    /** @var Patient $resource */
-                    $this->validatePatientResource($resource, $id, $identifier_type);
-                    break;
+            $identifier_type = $resource->getAssignedProperty('IdentifierTypeCode');
 
-                case "PatientAppointment":
-                    /** @var PatientAppointment $resource */
-                    $resource->setPatientIdentifierType($patient_identifier_type);
-                    break;
+            $patient_identifier_type = null;
 
-                case "PatientMerge":
-                    /** @var PatientMerge $resource */
-                    $resource->setPatientIdentifierType($patient_identifier_type)
-                             ->setAndValidatePatients();
-                    break;
+            if ($identifier_type) {
+                $patient_identifier_type = \PatientIdentifierType::model()->findByAttributes(['unique_row_string' => $identifier_type]);
+                if ($patient_identifier_type) {
+                    \Yii::app()->session["selected_institution_id"] = $patient_identifier_type->institution_id;
+                }
+                switch ($resource_type) {
+                    case "Patient":
+                        /** @var Patient $resource */
+                        $this->validatePatientResource($resource, $id, $identifier_type);
+                        break;
+
+                    case "PatientAppointment":
+                        /** @var PatientAppointment $resource */
+                        $resource->setPatientIdentifierType($patient_identifier_type);
+                        break;
+
+                    case "PatientMerge":
+                        /** @var PatientMerge $resource */
+                        $resource->setPatientIdentifierType($patient_identifier_type)
+                                 ->setAndValidatePatients();
+                        break;
+                }
             }
 
             if ($resource->errors) {
@@ -313,7 +321,7 @@ class V1Controller extends \CController
 
             //@ TODO: Test for PatientAppointment
             // this is \PASAPI\resources\Patient
-            if ($resource instanceof Patient) {
+            if ($resource instanceof Patient && $patient_identifier_type) {
                 // Resource and Patient are saved at this point
 
 
@@ -335,12 +343,16 @@ class V1Controller extends \CController
                     // patient/value/type combination is not in the DB, we can add it
                     // using the $id here because the crossCheck function can change the assignment (aka Patient)
                     \PatientIdentifierHelper::addNumberToPatient($patient, $patient_identifier_type, $id);
-                } else {
-                    // Patient already has this type/value, nothing to do, it is a simple update
                 }
 
                 $global_institution_id = \PatientIdentifierHelper::getGlobalInstitutionIdFromSetting();
-                $global_patient_identifier = \PatientIdentifierHelper::getIdentifierForPatient('GLOBAL', $patient->id, $global_institution_id, null, true);
+                $global_patient_identifier = \PatientIdentifierHelper::getIdentifierForPatient(
+                    'GLOBAL',
+                    $patient->id,
+                    $global_institution_id,
+                    null,
+                    true
+                );
 
 
                 // NHS number update
@@ -362,7 +374,8 @@ class V1Controller extends \CController
 
                     if ($duplicate_patient_identifier) {
                         $duplicate_patient_identifier->deleted = 1;
-                        $duplicate_patient_identifier->source_info = \PatientIdentifierHelper::PATIENT_IDENTIFIER_DELETED_BY_STRING . $patient->id . '[' . time() . ']';
+                        $duplicate_patient_identifier->source_info = \PatientIdentifierHelper::PATIENT_IDENTIFIER_DELETED_BY_STRING
+                            . $patient->id . '[' . time() . ']';
                         $duplicate_patient_identifier->save();
                     }
 
@@ -370,8 +383,6 @@ class V1Controller extends \CController
                             // here we can update the NHS number
                             $global_patient_identifier->value = $resource->getAssignedProperty('NHSNumber');
                             $global_patient_identifier->update(['value']);
-                    } else {
-                        // values are equal, nothing to do
                     }
 
                     $global_patient_identifier->source_info = \PatientIdentifierHelper::PATIENT_IDENTIFIER_ACTIVE_SOURCE_INFO;
@@ -541,6 +552,11 @@ class V1Controller extends \CController
 
     private function validatePatientResource($resource, $id, $identifier_type)
     {
+        if ($resource instanceof Patient) {
+            // Set the assignment IDs for the GP and Practice to the GP and Practice HSCIC codes respectively.
+            $resource->GP->id = $resource->GP->getAssignedProperty('Code');
+            $resource->Practice->id = $resource->Practice->getAssignedProperty('Code');
+        }
         $patient_identifier_type = \PatientIdentifierType::model()->findByAttributes(['unique_row_string' => $identifier_type]);
 
         if (!$patient_identifier_type) {
@@ -550,7 +566,10 @@ class V1Controller extends \CController
         // validate the local number
         $is_id_valid = $patient_identifier_type->validateTerm($id);
         if ($is_id_valid === false) {
-            $this->sendErrorResponse(422, ["Patient number (format) in request URL is invalid: '{$id}'. Acceptable: {$patient_identifier_type->validate_regex}"]);
+            $this->sendErrorResponse(
+                422,
+                ["Patient number (format) in request URL is invalid: '{$id}'. Acceptable: {$patient_identifier_type->validate_regex}"]
+            );
         }
 
         $global_type = \PatientIdentifierHelper::getCurrentGlobalType();
@@ -567,14 +586,20 @@ class V1Controller extends \CController
         $xml_nhs_num = $resource->getAssignedProperty('NHSNumber');
         $is_global_num_valid = $global_type->validateTerm($xml_nhs_num, true);
         if (!$is_global_num_valid) {
-            $this->sendErrorResponse(422, ["Patient NHSNumber (format) in XML is invalid: '{$xml_nhs_num}'. Acceptable: {$global_type->validate_regex}"]);
+            $this->sendErrorResponse(
+                422,
+                ["Patient NHSNumber (format) in XML is invalid: '{$xml_nhs_num}'. Acceptable: {$global_type->validate_regex}"]
+            );
         }
 
         // validate HospitalNumber in XML
         $hos_num = $resource->getAssignedProperty('HospitalNumber');
         $is_id_valid = $patient_identifier_type->validateTerm($hos_num);
         if ($is_id_valid === false) {
-            $this->sendErrorResponse(422, ["Patient number (format) in XML is invalid: '{$hos_num}'. Acceptable: {$patient_identifier_type->validate_regex}"]);
+            $this->sendErrorResponse(
+                422,
+                ["Patient number (format) in XML is invalid: '{$hos_num}'. Acceptable: {$patient_identifier_type->validate_regex}"]
+            );
         }
 
         if ($hos_num !== $id) {

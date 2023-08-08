@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Apperta Foundation, 2022
  * This file is part of OpenEyes.

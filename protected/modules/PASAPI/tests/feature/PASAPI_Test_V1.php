@@ -25,13 +25,13 @@ use GuzzleHttp\Client;
  * @group pasapi
  * @group pas-api
  */
-class PASAPI_Test extends PASAPI_BaseTest
+class PASAPI_Test_V1 extends PASAPI_BaseTest
 {
     protected function initialiseClient($options = [])
     {
         $options = array_merge(
             [
-                'base_uri' => \Yii::app()->params['pas_api_test_base_url'],
+                'base_uri' => $this->pas_api_test_base_url,
                 'headers' => [
                     'Accept' => 'application/xml',
                 ]

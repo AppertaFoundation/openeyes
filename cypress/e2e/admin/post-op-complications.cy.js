@@ -37,6 +37,6 @@ describe('test functionality for post-op complications admin screen', () => {
         cy.getBySel('post-op-complication-admin-search-btn').click()
         cy.getBySel('post-op-complication-admin-row').contains(seederData.delete_complication_name).parent('tr').find('input[type=checkbox]').check()
         cy.getBySel('post-op-complication-admin-delete-btn').click()
-        cy.getBySel('post-op-complication-admin-row').contains(seederData.delete_complication_name).should('not.exist')
+        cy.getBySel('post-op-complication-admin-row').should('not.exist')
     });
 });
