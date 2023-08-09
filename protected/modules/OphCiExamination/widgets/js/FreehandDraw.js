@@ -38,8 +38,14 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
         OpenEyes.UI.DOM.addEventListener(this.$wrapper, 'click', '.js-image-annotate', (e) => {
             e.preventDefault();
 
-            //disable save button if annotate is open
-            document.getElementById('et_save').disabled = true;
+            // Disable the event action buttons (i.e., cancel and save) while the annotation is open
+            // Prevents exiting event before annotation is saved
+            const elements = document.querySelectorAll('[class^="js-event-action-"]');
+
+            elements.forEach(element => {
+                element.disabled = true;
+            });
+
             const $button = e.target;
             const index = $button.dataset.annotateRowIndex;
             $button.closest('.freedraw-group').style.display = "none";
@@ -143,7 +149,12 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             }
         });
 
-        document.getElementById('et_save').disabled = is_open;
+        // re-enable the event action buttons (i.e., cancel and save)
+        const elements = document.querySelectorAll('[class^="js-event-action-"]');
+
+        elements.forEach(element => {
+            element.disabled = is_open;
+        });
     };
 
     FreehandDraw.prototype.addTemplate = function (item) {
