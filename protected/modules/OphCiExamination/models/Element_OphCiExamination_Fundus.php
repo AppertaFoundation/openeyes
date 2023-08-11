@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: mike
@@ -8,9 +9,12 @@
 
 namespace OEModule\OphCiExamination\models;
 
-class Element_OphCiExamination_Fundus  extends \SplitEventTypeElement
+class Element_OphCiExamination_Fundus extends \SplitEventTypeElement
 {
     use traits\CustomOrdering;
+
+    public $exclude_element_from_empty_discard_check = true;
+
     public $auto_update_relations = true;
     public $relation_defaults = array(
         'left_vitreous' => array(

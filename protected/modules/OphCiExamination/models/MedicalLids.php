@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -16,7 +17,6 @@
  */
 
 namespace OEModule\OphCiExamination\models;
-
 
 /**
  * Class MedicalLids
@@ -41,6 +41,9 @@ namespace OEModule\OphCiExamination\models;
 class MedicalLids extends \SplitEventTypeElement
 {
     use traits\CustomOrdering;
+
+    public $exclude_element_from_empty_discard_check = true;
+
     /**
      * Returns the static model of the specified AR class.
      *
