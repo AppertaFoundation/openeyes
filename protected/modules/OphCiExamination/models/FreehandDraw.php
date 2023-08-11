@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -15,10 +16,9 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-
 namespace OEModule\OphCiExamination\models;
 
-
+use OE\factories\models\traits\HasFactory;
 use OEModule\OphCiExamination\widgets\FreehandDraw as FreehandDrawWidget;
 
 /**
@@ -38,8 +38,15 @@ use OEModule\OphCiExamination\widgets\FreehandDraw as FreehandDrawWidget;
 class FreehandDraw extends \BaseEventTypeElement
 {
     use traits\CustomOrdering;
+    use HasFactory;
+
     protected $auto_update_relations = true;
     protected $widgetClass = FreehandDrawWidget::class;
+
+    /**
+     * This is useful as a placeholder for older events that may have a missing image. It provides a bas64 encoded 1x1 pixel transparent image
+     */
+    public const SINGLE_PIXEL_IMAGE_DATA_PLACEHOLDER = 'image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAQMAAAAl21bKAAAAA1BMVEUAAACnej3aAAAAAXRSTlMAQObYZgAAAApJREFUCNdjYAAAAAIAAeIhvDMAAAAASUVORK5CYII=';
 
     /**
      * Returns the static model of the specified AR class.

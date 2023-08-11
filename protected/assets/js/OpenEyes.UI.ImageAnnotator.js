@@ -152,6 +152,10 @@
     ImageAnnotator.prototype.resetCanvas = async function(imgUrl) {
 
         this.$canvas.clear();
+        if (typeof this.imageUrl === "undefined" || this.imageUrl == "") {
+            console.error('Image file was missing, the rest of canvas reset has been skipped');
+            return;
+        }
         let img = await this.getMeta(this.imageUrl);
         let w = img.naturalWidth;
         let h = img.naturalHeight;
