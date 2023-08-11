@@ -21,7 +21,8 @@ use OEModule\OphCiExamination\models\OphCiExamination_Triage_ChiefComplaint;
 use OEModule\OphCiExamination\models\OphCiExamination_Triage_EyeInjury;
 
 $triage = $element->triage ?: new OphCiExamination_Triage();
-$model_name = CHtml::modelName($element) . "[triage]";
+$original_model_name = CHtml::modelName($element);
+$model_name = $original_model_name . "[triage]";
 $priority_list = OphCiExamination_Triage_Priority::model()->findAll();
 
 $display_treat_as_adult = false;
@@ -51,7 +52,7 @@ if (!$element->isNewRecord) {
 $treat_as_input_type = $display_treat_as_paediatric && $display_treat_as_adult ? 'radio' : 'hidden';
 ?>
 
-<div class="element-fields full-width">
+<div class="element-fields full-width" id="<?= $original_model_name ?>_element">
     <div class="flex-t">
         <div class="cols-5">
             <table class="cols-full last-left">
@@ -168,6 +169,9 @@ $eyes = [
 
 <script type="text/javascript" src="<?= Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.widgets.js') . '/AutoCompleteSearch.js', true, -1); ?>"></script>
 <script type="text/javascript">
+
+    const container = document.querySelector('#<?= $original_model_name ?>_element');
+
     OpenEyes.UI.AutoCompleteSearch.init({
         input: $('#triage_hospital_search'),
         url: '/site/listSites',
@@ -219,8 +223,10 @@ $eyes = [
     });
 
     $(document).ready(function () {
-        if ($('input[name$="[time]"]').val() === '') {
-            $('input[name$="[time]"]').val(setCurrentTime());
+        const timeInput = container.querySelector('input[name$="[time]"]');
+
+        if (timeInput.value === "") {
+            timeInput.value = setCurrentTime();
         }
 
         $('#triage-hospital').on('click', '.oe-i.remove-circle.small-icon.pad-left', function (e) {
@@ -286,7 +292,8 @@ $eyes = [
             $eye_lat_icons.append('<i class="oe-i laterality small pad NA"></i>');
             $eye_lat_icons.append('<i class="oe-i laterality small pad NA"></i>');
         }
-        $('input[name$="[eye_id]"]').val(eye_id);
+
+        container.querySelector('input[name$="[eye_id]"]').value = eye_id;
 
         if ($('#OphCiExamination_diagnoses').length > 0 && typeof diagnosesController !== 'undefined') {
             diagnosesController.compareWithTriage();
