@@ -66,14 +66,9 @@ class FreehandDraw extends \BaseEventElementWidget
 
                 // If is_edited is not set but there is no previous file, create one anyway
                 // to prevent an exception later on with a null protected file field
-                if ($is_edited || !$drawing_entry['protected_file_id']) {
+                if ($is_edited || empty($drawing_entry['protected_file_id'])) {
                     $protected_file = $this->createProtectedFileFromDataURL($file_content, $name);
                     $entry->protected_file_id = $protected_file->id;
-
-                    if ($drawing_entry['protected_file_id']) {
-                        $old_protected_file = \ProtectedFile::model()->findByPk($drawing_entry['protected_file_id']);
-                        $old_protected_file->delete();
-                    }
                 }
 
                 $entries[] = $entry;

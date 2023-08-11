@@ -94,4 +94,75 @@ describe('freehand drawing element behaviour', () => {
             });
         });
     });
+
+    it('preserves the template image for an existing event when a draft is saved during an update', () => {
+        cy.login().then(() => {
+            return cy.createPatient();
+        }).then((patient) => {
+            cy.visitEventCreationUrl(patient.id, 'OphCiExamination').then(() => {
+                cy.removeElements();
+
+                cy.addExaminationElement('Freehand drawing').then((element) => {
+                    cy.getBySel('add-freehand-drawing-template-btn').click();
+
+                    cy.intercept({
+                        method: 'GET',
+                        url: '/ProtectedFile/Download/*'
+                    }).as('annotationImage');
+
+                    cy.get('[data-test="add-options"] li').first().click();
+                    cy.getBySel('add-icon-btn').click();
+
+                    cy.wait('@annotationImage');
+
+                    cy.getBySel('annotate-freehand-drawing-image-btn').click().then(() => {
+                        cy.getBySel('save-freehand-drawing-annotation-btn').click()
+                    });
+
+                    cy.saveEvent().then(() => {
+                        cy.assertEventSaved(true);
+
+                        cy.location('href').then((eventViewLocation) => {
+                            cy.intercept({
+                                method: 'POST',
+                                url: 'OphCiExamination/Default/saveDraft'
+                            }).as('editingDraftSave');
+
+                            cy.getBySel('button-event-header-tab-edit').click();
+
+                            cy.getBySel('annotate-freehand-drawing-image-btn').click().then(() => {
+                                cy.getBySel('save-freehand-drawing-annotation-btn').click()
+                            });
+
+                            cy.wait('@editingDraftSave', {requestTimeout: 60000});
+
+                            cy.visit(eventViewLocation);
+
+                            cy.getBySel('button-event-header-tab-edit').click();
+
+                            cy.visit(eventViewLocation);
+                        });
+                    });
+                });
+            });
+        });
+    });
+
+    it('handles missing images files without throwing exceptions', () => {
+        cy.login();
+
+        cy.runSeeder('OphCiExamination', 'ClobberedFreehandDrawingSeeder').then((seederData) => {
+            cy.visit(seederData.event.urls.view);
+
+            cy.getBySel('freedraw-entry-file-name').contains('File Missing');
+
+            cy.visit(seederData.event.urls.edit);
+
+            cy.removeElements('Freehand drawing');
+
+            cy.saveEvent().then(() => {
+                cy.getBySel('freedraw-entry-file-name', ':visible').contains('File Missing');
+            });
+        });
+    });
 });

@@ -37,6 +37,7 @@ $(document).ready(function() {
             .set('OphCoMessaging_Search_Sender', $('#OphCoMessaging_Search_Sender').val())
             .set('OphCoMessaging_Search_MessageType', $('#OphCoMessaging_Search_MessageType').val())
             .set('OphCoMessaging_Search', $('#OphCoMessaging_Search').val())
+            .set('OphCoMessaging_Search_Mailbox', $('#OphCoMessaging_Search_Mailbox').val())
             .set('OphCoMessaging_All_Comments', 1)
             .set('OphCoMessaging_Original_Element', 1);
     });

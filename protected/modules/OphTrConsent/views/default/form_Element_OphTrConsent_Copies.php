@@ -30,7 +30,7 @@
                         Paper copy accepted by patient?
                     </td>
                     <td>
-                        <fieldset>
+                        <fieldset data-test='consent-paper-copies'>
                             <?= $form->radioButtons(
                                 $element,
                                 'copies_id',
@@ -40,7 +40,7 @@
                                 false,
                                 false,
                                 false,
-                                array('nowrapper' => true),
+                                array('nowrapper' => true, ),
                                 null
                             );
 ?>

@@ -316,14 +316,14 @@ $type_assessment = new OphTrConsent_Type_Assessment();
             )
         );
     } ?>
-
+    <?php if (\SettingMetadata::model()->getSetting('display_covid_19_consent')) : ?>
     <div class="highlighter"><h3>COVID-19</h3>
         <p>In the majority, COVID-19 causes a mild, self-limiting illness but symptoms may be highly variable amongst
             individuals. It is important that you understand the specific risk profile to yourself.</p>
         <p>Although we make every effort to minimise the risk of an infection, we cannot guarantee zero risk of COVID-19
             transmission.</p>
-        <p>For more information: www.gov.uk/coronavirus</p></div>
-
-
+        <p>For more information: www.gov.uk/coronavirus</p>
+    </div>
+    <?php endif ?>
 </main>
 </body>

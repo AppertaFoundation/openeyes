@@ -17,6 +17,8 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * Class FreehandDraw_Entry
  * @package OEModule\OphCiExamination\models
@@ -29,6 +31,8 @@ namespace OEModule\OphCiExamination\models;
  */
 class FreehandDraw_Entry extends \BaseEventTypeElement
 {
+    use HasFactory;
+
     /**
      * Returns the static model of the specified AR class.
      *

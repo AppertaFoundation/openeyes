@@ -114,7 +114,7 @@
         </div>
         <div class="add-data-actions flex-item-bottom">
             <button id="add_patient_contact_button" type="button" class="green hint js-add-select-btn"
-                    data-popup="add-patient-contact">Add contact
+                    data-popup="add-patient-contact" data-test="consent-add-contact">Add contact
             </button>
         </div>
     </div>

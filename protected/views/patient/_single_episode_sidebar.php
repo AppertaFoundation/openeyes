@@ -64,7 +64,6 @@ if (
                         FROM `event_draft` ed
                             INNER JOIN episode ep ON ep.id = ed.episode_id 
                         WHERE ep.patient_id = ' . $this->patient->id . '
-                        AND ed.created_user_id = ' . $user_id . '
                     ) AS cache_dates'
             )
         )

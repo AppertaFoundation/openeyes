@@ -39,6 +39,7 @@
         [
             'nowrapper' => true,
             'disabled' => $disabled,
+            'data-test' => 'consent-type',
             'options' => [
                 $element->type_id => [ 'selected' => true ]
             ]
