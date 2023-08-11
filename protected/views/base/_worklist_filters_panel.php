@@ -212,6 +212,7 @@
 
         worklistButton.click(worklistsFilterPanelClickFunc);
         worklistButton.hover(worklistsFilterPanelEnterFunc, worklistsFilterPanelExitFunc);
+        worklistFilterPanel.hover(worklistsFilterPanelEnterFunc, worklistsFilterPanelExitFunc);
 
         let hotlistPanelEnterFunc = function () {
             hotlistPanel.show();
