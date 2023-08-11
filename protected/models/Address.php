@@ -309,6 +309,13 @@ class Address extends BaseActiveRecordVersioned
         }
         $this->date_start = Helper::convertNHS2MySQL($this->date_start);
         $this->date_end = Helper::convertNHS2MySQL($this->date_end);
+
+        if ($this->isNewRecord) {
+            if ($this->country_id == "") {
+                $this->country_id = $this->getDefaultCountryId();
+            }
+        }
+
         return parent::beforeValidate();
     }
 }
