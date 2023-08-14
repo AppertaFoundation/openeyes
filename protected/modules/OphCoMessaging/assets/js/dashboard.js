@@ -39,7 +39,8 @@ $(document).ready(function() {
             .set('OphCoMessaging_Search', $('#OphCoMessaging_Search').val())
             .set('OphCoMessaging_Search_Mailbox', $('#OphCoMessaging_Search_Mailbox').val())
             .set('OphCoMessaging_All_Comments', 1)
-            .set('OphCoMessaging_Original_Element', 1);
+            .set('OphCoMessaging_Original_Element', 1)
+            .set('OphCoMessaging_Unreplied_Started_Threads', 1);
     });
 
 	$('.js-expand-message').click(function(){
