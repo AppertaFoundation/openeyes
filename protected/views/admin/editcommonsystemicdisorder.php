@@ -25,11 +25,14 @@ Yii::app()->clientScript->registerScriptFile(
 );
 
 if ($this->checkAccess('admin')) {
-    $options = array('empty' => 'All Institutions');
+    $options = ['empty' => 'All Institutions'];
 } else {
-    $options = array();
+    $options = [];
 }
+
+$options['data-test'] = 'common-systemic-disorders-institution-select';
 ?>
+<script type="text/javascript" src="<?= Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.widgets.js') . '/AutoCompleteSearch.js', true, -1); ?>"></script>
 <form method="get">
     <table class="cols-7">
         <colgroup>
@@ -57,7 +60,6 @@ if ($this->checkAccess('admin')) {
             'header' => 'Order',
             'type' => 'raw',
             'value' => function ($data, $row) {
-                $row++;
                 return '<span>&uarr;&darr;</span>' .
                     CHtml::hiddenField("CommonSystemicDisorder[$row][id]", $data->id) .
                     CHtml::hiddenField("CommonSystemicDisorder[$row][display_order]", $data->display_order);
@@ -71,7 +73,6 @@ if ($this->checkAccess('admin')) {
             'htmlOptions' => array('width' => '180px', 'data-test' => 'disorder-term'),
             'value' => function ($data, $row) {
                 $term = null;
-                $row++;
                 if ($data->disorder) {
                     $term = $data->disorder->term;
                 }
@@ -106,16 +107,16 @@ if ($this->checkAccess('admin')) {
         'itemsCssClass' => 'generic-admin standard sortable',
         'template' => '{items}',
         'emptyTagName' => 'span',
-        'rowHtmlOptionsExpression' => 'array("data-row"=>($row+1))',
+        'rowHtmlOptionsExpression' => 'array("data-row"=>$row)',
         'enableSorting' => false,
         'columns' => $columns
     ));
     ?>
 
     <div>
-        <button class="button large" type="button" id="add_new">Add</button>
+        <button class="button large" type="button" id="add_new" data-test="add-common-systemic-disorder-btn">Add</button>
         &nbsp
-        <button class="button large generic-admin-save" type="submit">Save</button>
+        <button class="button large generic-admin-save" type="submit" data-test="save-common-systemic-disorders-btn">Save</button>
     </div>
 </form>
 
@@ -144,11 +145,37 @@ if ($this->checkAccess('admin')) {
             'renderCommonlyUsedDiagnoses': false,
             'code': '',
             'singleTemplate':
+                "<div style='position: relative'>" +
                 "<span class='medication-display' style='display:none'>" + "<a href='javascript:void(0)' class='diagnosis-rename'><i class='oe-i remove-circle small' aria-hidden='true' title='Change disorder'></i></a> " +
                 "<span class='diagnosis-name'></span></span>" +
                 "{{{input_field}}}" +
                 "<input type='hidden' id='{{field_prefix}}_" + $row.data('row') + "_disorder_id_actual' " +
-                "name='{{field_prefix}}[" + $row.data('row') + "][disorder_id]' class='savedDiagnosis' value=''>"
+                "name='{{field_prefix}}[" + $row.data('row') + "][disorder_id]' class='savedDiagnosis' value=''>" +
+                "<ul class='oe-autocomplete' data-test='disorder-autocomplete-list'></ul>" +
+                "</div>"
+        });
+
+        OpenEyes.UI.AutoCompleteSearch.init({
+            input: $row.find('.diagnoses-search-autocomplete'),
+            url: '/disorder/autocomplete',
+            params: {
+                code: function () {
+                    return '';
+                }
+            },
+            maxHeight: '200px',
+            onSelect: function(){
+                let response = OpenEyes.UI.AutoCompleteSearch.getResponse();
+                let input = OpenEyes.UI.AutoCompleteSearch.getInput();
+
+                input.val(response.label);
+                input.hide();
+                input.siblings('.savedDiagnosis').val(response.id);
+                input.siblings('.medication-display').show();
+                input.siblings('.medication-display').find('.diagnosis-name').text(response.label);
+                //clear input
+                $(this).val("");
+            }
         });
 
         $row.on('click', 'a.delete', function () {
@@ -211,10 +238,12 @@ if ($this->checkAccess('admin')) {
             </span>
             <input class="diagnoses-search-autocomplete diagnoses-search-inputfield ui-autocomplete-input"
                    data-saved-diagnoses="" type="text" name="CommonSystemicDisorder[{{row_count}}][disorder_id]"
+                   data-test="disorder-term-input"
                    id="CommonSystemicDisorder_{{row_count}}_disorder_id" autocomplete="off">
             <span role="status" aria-live="polite" class="ui-helper-hidden-accessible"></span>
             <input type="hidden" name="CommonSystemicDisorder[{{row_count}}][disorder_id]" class="savedDiagnosis"
                    value="">
+            <ul class="oe-autocomplete" data-test="disorder-autocomplete-list"></ul>
         </td>
         <td>
             <select name="CommonSystemicDisorder[{{row_count}}][group_id]"
