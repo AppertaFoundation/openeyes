@@ -1,4 +1,4 @@
-describe('systemic disorder widget behaviour', () => {
+describe('systemic disorder widget behaviour', { testIsolation: false }, () => {
 
     // Date added to allow multiple runs in same environment without conflict
     let expectedDisorderTerm1 = 'Expected One ' + Date.now();
@@ -39,6 +39,8 @@ describe('systemic disorder widget behaviour', () => {
     });
 
     beforeEach(() => {
+        cy.clearLocalStorage();
+        cy.clearCookies();
         cy.getModelByAttributes('Disorder', {term: expectedDisorderTerm1})
             .as('expectedDisorder1');
         cy.getModelByAttributes('Disorder', {term: expectedDisorderTerm2})
