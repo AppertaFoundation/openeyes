@@ -34,6 +34,7 @@ class BaseEventTypeElement extends BaseElement
     // allow us to store a widget on the element so that it doesn't have to widgetised twice
     public $widget = null;
     public $is_initialized = false;
+    public $exclude_element_from_empty_discard_check = false;
     /**
      * set to true for the element to load from previous
      * @see BaseElement::loadFromExisting

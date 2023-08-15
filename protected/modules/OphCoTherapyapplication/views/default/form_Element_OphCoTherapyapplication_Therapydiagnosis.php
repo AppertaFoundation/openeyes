@@ -57,7 +57,7 @@ foreach ($l1_disorders as $disorder) {
         <div class="inactive-form" style="<?= $element->hasEye($eye_side) ? "display: none;" : "" ?>">
           <div class="add-side">
             <a href="#">
-              Add right side
+              Add <?=ucfirst($eye_side)?> side
               <span class="icon-add-side"></span>
             </a>
           </div>

@@ -91,7 +91,7 @@ class CommonSystemicDisorderController extends BaseAdminController
                     $common_systemic_disorder = new CommonSystemicDisorder();
                 }
 
-                $common_systemic_disorder->group_id = $disorder['group_id'];
+                $common_systemic_disorder->group_id = $disorder['group_id'] ?? null;
                 $common_systemic_disorder->disorder_id = $disorder['disorder_id'];
                 $common_systemic_disorder->display_order = $disorder['display_order'];
 

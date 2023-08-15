@@ -638,7 +638,7 @@ $(document).ready(function() {
                 }
             });
         } else {
-            OphCoCorrespondence_do_print(false);
+            OphCoCorrespondence_do_print(false,true);
             e.preventDefault();
         }
     });
@@ -866,12 +866,11 @@ function inArray(needle, haystack) {
     return false;
 }
 
-function OphCoCorrespondence_do_print(all) {
-
+function OphCoCorrespondence_do_print(all,only_print_the_to) {
     var data = {};
-    if (all) {
-        data['all'] = 1;
-    }
+
+    data['all'] = all || false;
+    data['only_print_the_to'] = only_print_the_to || false;
 
     if ($('#OphCoCorrespondence_print_checked').length && $('#OphCoCorrespondence_print_checked').val() == 1) {
         data['OphCoCorrespondence_print_checked'] = 1;

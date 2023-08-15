@@ -59,12 +59,17 @@ class MailboxSearch
     public function __construct($user, $folder, $search_parameters = [])
     {
         if (!empty($search_parameters['retrieve_all_comments'])) {
-            $this->retrieve_all_comments = 1;
+            $this->retrieve_all_comments = $search_parameters['retrieve_all_comments'];
             $folder = null;
         }
 
         if (!empty($search_parameters['retrieve_original_element'])) {
-            $this->retrieve_original_element = 1;
+            $this->retrieve_original_element = $search_parameters['retrieve_original_element'];
+            $folder = null;
+        }
+
+        if (!empty($search_parameters['allow_unreplied_started_threads'])) {
+            $this->allow_unreplied_started_threads = $search_parameters['allow_unreplied_started_threads'];
             $folder = null;
         }
 

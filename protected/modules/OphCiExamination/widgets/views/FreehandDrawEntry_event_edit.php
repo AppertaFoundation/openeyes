@@ -16,13 +16,19 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OEModule\OphCiExamination\models\FreehandDraw;
+
 if (!isset($values)) {
     $values = array(
         'id' => $entry->id,
         'protected_file_id' => $entry->protected_file_id,
-        'template_url' => $entry->protected_file->getDownloadURL(),
-        'filename' => $entry->protected_file->name,
-        'full_name' => $entry->protected_file->user->fullName,
+        // If the protected file is missing, use a single pixel placeholder image in its place to prevent the event from crashing.
+        // This at least allows comments to be viewed, even if the image has been lost
+        'template_url' => $entry->protected_file ?
+            $entry->protected_file->getDownloadURL() :
+            'data:' . FreehandDraw::SINGLE_PIXEL_IMAGE_DATA_PLACEHOLDER,
+        'filename' => $entry->protected_file ? $entry->protected_file->name : '! File Missing !',
+        'full_name' => $entry->protected_file ? $entry->protected_file->user->fullName : '',
         'date' => \Helper::convertMySQL2NHS($entry->last_modified_date),
         'comments' => $entry->comments,
     );

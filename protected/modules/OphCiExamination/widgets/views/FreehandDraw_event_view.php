@@ -24,7 +24,9 @@
             <div class="flex-t col-gap">
 
                 <div class="cols-6">
+                    <?php if ($entry->protected_file) : ?>
                     <img src="<?= $entry->protected_file->getDownloadURL() ?>" width="100%">
+                    <?php endif ?>
                 </div>
 
 
@@ -32,7 +34,7 @@
                     <table class="cols-full last-left">
                         <tbody>
                         <tr>
-                            <td><?= $entry->protected_file->name ?></td>
+                            <td data-test="freedraw-entry-file-name"><?= $entry->protected_file ? $entry->protected_file->name : '! File Missing !' ?></td>
                         </tr>
                         <tr>
                             <td>

@@ -1,4 +1,4 @@
-describe('ophthalmic disorder group behaviour', () => {
+describe('ophthalmic disorder group behaviour', { testIsolation: false }, () => {
 
     // Date added to allow multiple runs in same environment without conflict
     let groupName1 = 'Group One ' + Date.now();
@@ -61,6 +61,8 @@ describe('ophthalmic disorder group behaviour', () => {
     });
 
     beforeEach(() => {
+        cy.clearLocalStorage();
+        cy.clearCookies();
         cy.getModelByAttributes('Disorder', {term: group1DisorderTerm})
             .as('group1Disorder');
         cy.getModelByAttributes('Disorder', {term: group2DisorderTerm})

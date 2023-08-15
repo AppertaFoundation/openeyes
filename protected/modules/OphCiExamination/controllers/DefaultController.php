@@ -1792,7 +1792,7 @@ class DefaultController extends \BaseEventTypeController
      */
     protected function saveComplexAttributes_Element_OphCiExamination_Pain($element, $data, $index)
     {
-        $entries = $data['OEModule_OphCiExamination_models_Element_OphCiExamination_Pain']['entries'];
+        $entries = $data['OEModule_OphCiExamination_models_Element_OphCiExamination_Pain']['entries'] ?? [];
 
         foreach ($entries as $entry) {
             if (isset($entry['id'])) {

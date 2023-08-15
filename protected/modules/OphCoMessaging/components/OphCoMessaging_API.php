@@ -62,35 +62,38 @@ class OphCoMessaging_API extends \BaseAPI
         $message_type = array_key_exists('messages', $_GET) && $_GET['messages'] ? $_GET['messages'] : self::DEFAULT_MESSAGES_FOLDER;
         $mailbox_id = array_key_exists('mailbox', $_GET) && $_GET['mailbox'] ? $_GET['mailbox'] : null;
 
-        $search_mailbox_id = \Yii::app()->request->getQuery('OphCoMessaging_Search_Mailbox', null);
-        $date_from = \Yii::app()->request->getQuery('OphCoMessaging_from', '');
-        $date_to = \Yii::app()->request->getQuery('OphCoMessaging_to', '');
-
-        $search_parameters = [
-            'date_from' => $date_from ? date("Y-m-d", strtotime($date_from)) : null,
-            'date_to' => $date_to ? date("Y-m-d", strtotime($date_to)) : null,
-            'sender' => \Yii::app()->request->getQuery('OphCoMessaging_Search_Sender', ''),
-            'message_type' => \Yii::app()->request->getQuery('OphCoMessaging_Search_MessageType', ''),
-            'message_content' => \Yii::app()->request->getQuery('OphCoMessaging_Search', ''),
-            'retrieve_all_comments' => \Yii::app()->request->getQuery('OphCoMessaging_All_Comments', 0),
-            'retrieve_original_element' => \Yii::app()->request->getQuery('OphCoMessaging_Original_Element', 0),
-        ];
+        $search_parameters = [];
 
         if ($user == null) {
             $user = \Yii::app()->user;
         }
 
-        $mailbox_id = $search_mailbox_id ?? $mailbox_id;
+        if (array_key_exists('OphCoMessaging_Search_Mailbox', $_GET)) {
+            $search_mailbox_id = \Yii::app()->request->getQuery('OphCoMessaging_Search_Mailbox', null);
+            $date_from = \Yii::app()->request->getQuery('OphCoMessaging_from', '');
+            $date_to = \Yii::app()->request->getQuery('OphCoMessaging_to', '');
+
+            $search_parameters = [
+                'date_from' => $date_from ? date("Y-m-d", strtotime($date_from)) : null,
+                'date_to' => $date_to ? date("Y-m-d", strtotime($date_to)) : null,
+                'sender' => \Yii::app()->request->getQuery('OphCoMessaging_Search_Sender', ''),
+                'message_type' => \Yii::app()->request->getQuery('OphCoMessaging_Search_MessageType', ''),
+                'message_content' => \Yii::app()->request->getQuery('OphCoMessaging_Search', ''),
+                'retrieve_all_comments' => \Yii::app()->request->getQuery('OphCoMessaging_All_Comments', 0),
+                'retrieve_original_element' => \Yii::app()->request->getQuery('OphCoMessaging_Original_Element', 0),
+                'allow_unreplied_started_threads' => \Yii::app()->request->getQuery('OphCoMessaging_Unreplied_Started_Threads', 0),
+            ];
+
+            $mailbox_id = $search_mailbox_id;
+        }
 
         $searcher = new MailboxSearch(\Yii::app()->user, $message_type, $search_parameters);
 
-        if ($search_mailbox_id !== null) {
-            $mailbox = Mailbox::model()->findByPk($search_mailbox_id);
-        } else {
-            $mailbox = $mailbox ?? Mailbox::model()->findByPk($mailbox_id);
+        if ($mailbox_id !== null) {
+            $mailbox = Mailbox::model()->findByPk($mailbox_id);
         }
 
-        $recipient_messages = $searcher->retrieveMailboxContentsUsingSQL($user->id, isset($mailbox_id) ? [$mailbox_id] : null);
+        $recipient_messages = $searcher->retrieveMailboxContentsUsingSQL($user->id, isset($mailbox) ? [$mailbox->id] : null);
 
         list($mailboxes_with_counts, $count_unread_total) = $this->getMessageCounts($user);
 

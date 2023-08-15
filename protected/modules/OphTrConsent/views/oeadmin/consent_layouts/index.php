@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -14,6 +15,7 @@
  * @copyright Copyright (c) 2021, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <form id="leaflets_firm" method="GET">
@@ -59,7 +61,6 @@
                                             array(
                                                 'class_name' => 'OphTrConsent'
                                             )
-
                                         )->id
                                     )
                                 )
@@ -106,15 +107,10 @@
 
                 $.ajax({
                     'type': 'POST',
-                    'url': baseUrl + '/oeadmin/ConsentLayouts/sortAssessments',
+                    'url': baseUrl + '/OphTrConsent/oeadmin/ConsentLayouts/sortAssessments',
                     'data': {
                         YII_CSRF_TOKEN: YII_CSRF_TOKEN,
                         order: ids
-                    },
-                    'success': function (data) {
-                        new OpenEyes.UI.Dialog.Alert({
-                            content: 'Re-ordered'
-                        }).open();
                     }
                 });
             },

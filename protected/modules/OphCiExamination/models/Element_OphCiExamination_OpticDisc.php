@@ -46,6 +46,8 @@ class Element_OphCiExamination_OpticDisc extends \SplitEventTypeElement
     // used for the letter string method in the eyedraw element behavior
     public $letter_string_prefix = "Optic Disc:\n";
 
+    public $exclude_element_from_empty_discard_check = true;
+
     /**
      * Returns the static model of the specified AR class.
      *

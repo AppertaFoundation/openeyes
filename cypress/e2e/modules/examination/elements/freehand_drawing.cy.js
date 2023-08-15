@@ -95,7 +95,7 @@ describe('freehand drawing element behaviour', () => {
         });
     });
 
-    it('saves the initial template image when the is_edited flag is unset', () => {
+    it('preserves the template image for an existing event when a draft is saved during an update', () => {
         cy.login().then(() => {
             return cy.createPatient();
         }).then((patient) => {
@@ -123,8 +123,6 @@ describe('freehand drawing element behaviour', () => {
                         cy.assertEventSaved(true);
 
                         cy.location('href').then((eventViewLocation) => {
-                            console.log(eventViewLocation);
-
                             cy.intercept({
                                 method: 'POST',
                                 url: 'OphCiExamination/Default/saveDraft'
@@ -146,6 +144,24 @@ describe('freehand drawing element behaviour', () => {
                         });
                     });
                 });
+            });
+        });
+    });
+
+    it('handles missing images files without throwing exceptions', () => {
+        cy.login();
+
+        cy.runSeeder('OphCiExamination', 'ClobberedFreehandDrawingSeeder').then((seederData) => {
+            cy.visit(seederData.event.urls.view);
+
+            cy.getBySel('freedraw-entry-file-name').contains('File Missing');
+
+            cy.visit(seederData.event.urls.edit);
+
+            cy.removeElements('Freehand drawing');
+
+            cy.saveEvent().then(() => {
+                cy.getBySel('freedraw-entry-file-name', ':visible').contains('File Missing');
             });
         });
     });

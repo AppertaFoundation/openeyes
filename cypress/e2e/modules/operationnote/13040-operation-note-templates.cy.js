@@ -167,8 +167,11 @@ describe('test operation note template functionality', () => {
         });
     });
 
-    describe('verify that user profile template page is functional', () => {
+    describe('verify that user profile template page is functional', { testIsolation: false }, () => {
         beforeEach(() => {
+            cy.clearLocalStorage()
+            cy.clearCookies()
+
             cy.login();
 
             cy.getBySel("user-profile-link").click();

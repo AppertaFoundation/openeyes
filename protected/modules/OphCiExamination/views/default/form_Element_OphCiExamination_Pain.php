@@ -4,6 +4,7 @@
 
 <div class="element-fields full-width">
     <!-- Chronologically sorted pain recordings -->
+    <input type="hidden" name="<?= $element_model_name ?>[present]" value="1" />
     <div class="cols-17">
         <table id="pain-entries-table" class="cols-full">
             <colgroup>

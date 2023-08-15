@@ -38,7 +38,7 @@
                             "lackOfCapacityReasonIds",
                             CHtml::listData(\OEModule\OphTrConsent\models\OphTrConsent_LackOfCapacityReason::model()->findAll(), "id", "label"),
                             array(
-                                'labelOptions' => array("style" => "display: inline-block", "class" => "js-lcr-id highlight"),
+                                'labelOptions' => array("style" => "display: inline-block", "class" => "js-lcr-id highlight", 'data-test' => 'consent-lack-of-capacity-reasons'),
                             )
                         ); ?>
                     </li>

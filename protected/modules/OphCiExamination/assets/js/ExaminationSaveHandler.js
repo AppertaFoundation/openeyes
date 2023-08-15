@@ -61,7 +61,7 @@ $(document).ready(() => {
         let dirty_elements = $('input[name^="[element_dirty]"][value="1"]').map(function() { return $(this).parent().data('element-type-class'); }).get();
         let empty_mandatory_element = false;
         $all_elements.each(function() {
-            if (!dirty_elements.find((element) => element == $(this).data('element-type-class'))) {
+            if (!dirty_elements.find((element) => element == $(this).data('element-type-class')) && !$(this).data('exclude-element-from-empty-discard-check')) {
                 if ($(this).data('mandatory') === true) {
                     empty_mandatory_element = true;
                 } else {
