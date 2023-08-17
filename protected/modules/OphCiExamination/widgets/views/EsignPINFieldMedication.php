@@ -56,7 +56,7 @@ if (!$element->isSigned()) {
                 'placeholder' => "********",
                 'maxlength' => 8,
                 'inputmode' => "numeric",
-                'class' => "user-pin-entry js-pin-input"
+                'class' => "user-pin-entry js-pin-input dirty-check-ignore"
             )); ?>
             <button type="button" class="try-pin js-sign-button">Sign by PIN</button>
         </div>
@@ -68,10 +68,10 @@ if (!$element->isSigned()) {
             <span class="tabspace"></span>
         </div>
         <div class="flex-l">
-            <div class="js-signature-wrapper"><?= $this->displaySignature() ?></div>
+            <div class="js-signature-wrapper"><?php $this->displaySignature() ?></div>
             <div class="esigned-at">
                 <i class="oe-i tick-green small pad-right"></i>
-                Signed <small>at</small> <span class="js-signature-time"><?= $this->displaySignatureTime() ?></span>
+                Signed <small>at</small> <span class="js-signature-time"><?php $this->displaySignatureTime() ?></span>
             </div>
         </div>
     </div>
