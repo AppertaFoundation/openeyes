@@ -103,8 +103,8 @@ $site_id = Yii::app()->session['selected_site_id'];
                     <td><?= $booking->operation->event->episode->patient->gender ?></td>
                     <td><?= $booking->NHSDate('session_date') ?></td>
                     <td><?= $booking->ward ? $booking->ward->name : 'None' ?></td>
-                    <td><?= $booking->session->firm->pas_code ?></td>
-                    <td><?= $booking->session->firm->serviceSubspecialtyAssignment->subspecialty->name ?></td>
+                    <td><?= isset($booking->session->firm) ? $booking->session->firm->pas_code : '' ?></td>
+                    <td><?= isset($booking->session->firm->serviceSubspecialtyAssignment->subspecialty) ? $booking->session->firm->serviceSubspecialtyAssignment->subspecialty->name : '' ?></td>
                 </tr>
             <?php }
         } ?>

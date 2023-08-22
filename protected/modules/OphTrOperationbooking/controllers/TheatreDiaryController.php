@@ -25,7 +25,7 @@ class TheatreDiaryController extends BaseModuleController
     {
         return array(
             array('allow',
-                'actions' => array('index', 'search', 'filterFirms', 'filterTheatres', 'filterWards', 'setDiaryFilter', 'getSessionTimestamps', 'checkRequired'),
+                'actions' => array('index', 'search', 'filterFirms', 'filterTheatres', 'filterWards', 'setDiaryFilter', 'checkRequired'),
                 'roles' => array('OprnViewClinical'),
             ),
             array('allow',
@@ -162,6 +162,7 @@ class TheatreDiaryController extends BaseModuleController
         $error = false;
         $errorMessage = '';
 
+        $emergency_list = isset($data['emergency_list']) && $data['emergency_list'] === '1' ? true : false;
         $data['date-start'] = Helper::convertNHS2MySQL(@$data['date-start']);
         $data['date-end'] = Helper::convertNHS2MySQL(@$data['date-end']);
 
@@ -207,7 +208,7 @@ class TheatreDiaryController extends BaseModuleController
             ':endDate' => $endDate,
         );
 
-        if (@$data['emergency_list']) {
+        if ($emergency_list) {
             $criteria->addCondition('firm.id is null');
         } else {
             $criteria->addCondition('firm.id is not null');
@@ -236,9 +237,6 @@ class TheatreDiaryController extends BaseModuleController
                 $criteria->addCondition('activeBookings.ward_id is not null');
             }
         }
-
-        $criteria->addCondition('site.institution_id = :institution_id');
-        $criteria->params[':institution_id'] = Yii::app()->session['selected_institution_id'];
 
         $criteria->order = 'site.short_name, `t`.display_order, `t`.code, sessions.date, sessions.start_time, sessions.end_time';
 
@@ -293,9 +291,12 @@ class TheatreDiaryController extends BaseModuleController
      */
     public function getBookingList($data)
     {
-        foreach (array('date-start', 'date-end', 'subspecialty-id', 'site-id') as $required) {
-            if (!isset($data[$required])) {
-                throw new Exception('invalid request for booking list');
+        $emergency_list = isset($data['emergency_list']) && $data['emergency_list'] === '1' ? true : false;
+        if (!$emergency_list) {
+            foreach (array('date-start', 'date-end', 'subspecialty-id', 'site-id') as $required) {
+                if (!isset($data[$required])) {
+                    throw new Exception('invalid request for booking list');
+                }
             }
         }
 
@@ -307,27 +308,28 @@ class TheatreDiaryController extends BaseModuleController
         $criteria->params[':dateFrom'] = Helper::convertNHS2MySQL($data['date-start']);
         $criteria->params[':dateTo'] = Helper::convertNHS2MySQL($data['date-end']);
 
-        if (@$data['emergency_list']) {
+        if ($emergency_list) {
             $criteria->addCondition('firm.id IS NULL');
         } else {
-            if ($data['site-id'] !== 'All') {
+            if (isset($data['firm-id']) && strtolower($data['firm-id']) !== 'all') {
+                $criteria->addCondition('firm.id = :firmId');
+                $criteria->params[':firmId'] = $data['firm-id'];
+            }
+
+            if (strtolower($data['site-id']) !== 'all') {
                 $criteria->addCondition('theatre.site_id = :siteId');
                 $criteria->params[':siteId'] = $data['site-id'];
             }
-            if ($data['subspecialty-id'] !== 'All') {
+
+            if (strtolower($data['subspecialty-id']) !== 'all') {
                 $criteria->addCondition('subspecialty_id = :subspecialtyId');
                 $criteria->params[':subspecialtyId'] = $data['subspecialty-id'];
             }
-        }
 
-        if (@$data['ward-id'] && $data['ward-id'] !== 'All' ) {
-            $criteria->addCondition('ward.id = :wardId');
-            $criteria->params[':wardId'] = $data['ward-id'];
-        }
-
-        if (@$data['firm-id'] && $data['firm-id'] !== 'All') {
-            $criteria->addCondition('firm.id = :firmId');
-            $criteria->params[':firmId'] = $data['firm-id'];
+            if (isset($data['ward-id']) && strtolower($data['ward-id']) !== 'all') {
+                $criteria->addCondition('ward.id = :wardId');
+                $criteria->params[':wardId'] = $data['ward-id'];
+            }
         }
 
         $criteria->addCondition('`t`.booking_cancellation_date is null');
@@ -358,7 +360,6 @@ class TheatreDiaryController extends BaseModuleController
                                 'episode' => array(
                                     'with' => array(
                                         'patient' => array(
-                                            'with' => 'contact',
                                             'with' => 'identifiers'
                                         ),
                                     ),
@@ -429,7 +430,7 @@ class TheatreDiaryController extends BaseModuleController
      */
     public function actionFilterWards()
     {
-        echo CHtml::tag('option', array('value' => ''), CHtml::encode('All wards'), true);
+        echo CHtml::tag('option', array('value' => 'All'), CHtml::encode('All wards'), true);
 
         if (!empty($_POST['site_id'])) {
             $wards = $this->getFilteredWards($_POST['site_id']);
@@ -656,22 +657,6 @@ class TheatreDiaryController extends BaseModuleController
     {
         foreach ($_POST as $key => $value) {
             YiiSession::set('theatre_searchoptions', $key, $value);
-        }
-    }
-
-    /**
-     * Ajax action to retrieve the modification data for a given session.
-     */
-    public function actionGetSessionTimestamps()
-    {
-        if (isset($_POST['session_id'])) {
-            if ($session = Session::model()->findByPk($_POST['session_id'])) {
-                $ex = explode(' ', $session->last_modified_date);
-                $last_modified_date = $ex[0];
-                $last_modified_time = $ex[1];
-                $user = User::model()->findByPk($session->last_modified_user_id);
-                echo 'Modified on ' . Helper::convertMySQL2NHS($last_modified_date) . ' at ' . $last_modified_time . ' by ' . $user->first_name . ' ' . $user->last_name;
-            }
         }
     }
 
