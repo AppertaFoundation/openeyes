@@ -71,10 +71,12 @@ host=${DATABASE_HOST:-"localhost"}
 nobanner=0
 migrate=1
 clearaudit=0
+clearfiles=0
 bannertext=""
 branch=0
 demo=0
 droparchive=0
+freehanddrawreset=0
 nofiles=0
 showhelp=0
 checkoutparams="--sample-only --no-fix --depth 1 --single-branch"
@@ -143,6 +145,14 @@ while [[ $# -gt 0 ]]; do
     --no-files)
         echo "Protected files will not be reset"
         nofiles=1
+        ;;
+    --clear-files | -cf)
+        clearfiles=1
+        echo "Protected files will be cleaned - you will probably want to re-import defaukt freehand drawing templates by adding the $(-fd) switch"
+        ;;
+    --freehand-draw-templates | -fd)
+        echo "Freehand drawing templates will be re-populated"
+        freehanddrawreset=1
         ;;
     -p) # set dbpassword and move on to next param
         dbpassword="$2"
@@ -348,6 +358,7 @@ if [ $nofiles = "0" ]; then
     echo Deleting protected files
     # remove protected/files
     sudo rm -rf "$WROOT"/protected/files/*
+    [ $clearfiles -eq 0 ] && sudo cp -r "$MODULEROOT"/sample/sql/demo/files/* "$WROOT"/protected/files/ || :
     sudo chown www-data:www-data "$WROOT"/protected/files
     sudo chmod 6774 "$WROOT"/protected/files
     # remove any docman process files
@@ -570,8 +581,9 @@ if [[ $eventimages == "1" && $demo == "1" ]]; then
 fi
 
 # Repopulate the freehand drawing templates
-php $WROOT/protected/yiic populatefreehanddrawingtemplates
-
+if [ $freehanddrawreset -eq 1 ]; then
+    php $WROOT/protected/yiic populatefreehanddrawingtemplates
+fi
 # restart the service if we stopped it
 if [ $dwservrunning = 1 ]; then
     echo "Restarting dicom-file-watcher..."
