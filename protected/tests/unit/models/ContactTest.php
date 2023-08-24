@@ -16,231 +16,344 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class ContactTest extends ActiveRecordTestCase
+
+use ModelTestCase;
+use WithTransactions;
+use WithFaker;
+
+use Contact;
+use ContactLabel;
+use ContactLocation;
+
+use Site;
+use User;
+use Gp;
+use Person;
+use Patient;
+
+class ContactTest extends ModelTestCase
 {
-    public $model;
-    public $fixtures = array(
-        'contactlabels' => 'ContactLabel',
-        'contacts' => 'Contact',
-        'addresses' => 'Address',
-        'contactlocations' => 'ContactLocation',
-        'sites' => 'Site',
-        'institutions' => 'Institution',
-        'person' => 'Person',
+    use WithTransactions;
+    use WithFaker;
 
-      );
-
-    public function getModel()
-    {
-        return Contact::model();
-    }
-
-    public function dataProvider_Search()
-    {
-        return array(
-          array(array('nick_name' => 'Aylward'), 1, array('contact1')),
-          array(array('nick_name' => 'Collin'), 1, array('contact2')),
-          array(array('nick_name' => 'Allan'), 1, array('contact3')),
-          array(array('nick_name' => 'Blah'), 0, array()),
-          array(array('email' => 'Shore@Shore.com'), 1, array('contact4')),
-        );
-    }
-
-      /**
-       * Sets up the fixture, for example, opens a network connection.
-       * This method is called before a test is executed.
-       */
-    public function setUp(): void
-      {
-        parent::setUp();
-        $this->model = new Contact();
-          //setup attributes to test with = contacts1
-          $this->model->setAttributes($this->contacts('contact1')->getAttributes());
-    }
+    protected $element_cls = Contact::class;
 
     /**
-     * @covers Contact
-     * @throws CException
-     */
-    public function testRules()
-    {
-        parent::testRules();
-        $this->assertTrue($this->contacts('contact1')->validate());
-        $this->assertEmpty($this->contacts('contact1')->errors);
-    }
-
-    /**
+     * @test
      * @covers Contact
      */
-    public function testAttributeLabels()
+    public function attribute_labels()
     {
-        $expected = array(
-             'id' => 'ID',
-             'nick_name' => 'Nickname',
+        $expected = [
+            'id' => 'ID',
+            'nick_name' => 'Nickname',
             'primary_phone' => 'Phone number',
             'mobile_phone' => 'Mobile number',
             'title' => 'Title',
             'first_name' => 'First name',
-             'last_name' => 'Last name',
-             'qualifications' => 'Qualifications',
-             'contact_label_id' => 'Label',
-             'email' => 'Email'
-        );
+            'last_name' => 'Last name',
+            'qualifications' => 'Qualifications',
+            'contact_label_id' => 'Label',
+            'email' => 'Email'
+        ];
 
-        $this->assertEquals($expected, $this->model->attributeLabels(), 'Attribute labels should match.');
+        $this->assertEquals($expected, Contact::model()->attributeLabels(), 'Attribute labels should match.');
     }
 
     /**
+     * @test
      * @covers Contact
      */
-    public function testGetFullName()
+    public function getFullNametestG()
     {
-        $c1 = $this->contacts('contact1');
+        $title = $this->faker->word();
+        $first_name = $this->faker->word();
+        $last_name = $this->faker->word(2);
 
-        $expected = trim(implode(' ', array($c1->title, $c1->first_name, $c1->last_name)));
-        $result = $this->model->getFullName();
+        $contact = Contact::factory()->make([
+            'title' => $title,
+            'first_name' => $first_name,
+            'last_name' => $last_name
+        ]);
+
+        $expected = trim(implode(' ', [$title, $first_name, $last_name]));
+        $result = $contact->getFullName();
 
         $this->assertEquals($expected, $result);
     }
 
     /**
+     * @test
      * @covers Contact
      */
-    public function testGetReversedFullName()
+    public function getReversedFullName_for_title_first_name_and_last_name()
     {
-        $c1 = $this->contacts('contact1');
+        $title = $this->faker->word();
+        $first_name = $this->faker->word();
+        $last_name = $this->faker->word(2);
 
-        $expected = trim(implode(' ', array($c1->title, $c1->last_name, $c1->first_name)));
-        $result = $this->model->getReversedFullName();
+        $contact = Contact::factory()->make([
+            'title' => $title,
+            'first_name' => $first_name,
+            'last_name' => $last_name
+        ]);
+
+        $expected = trim(implode(' ', [$title, $last_name, $first_name]));
+        $result = $contact->getReversedFullName();
 
         $this->assertEquals($expected, $result);
     }
 
     /**
+     * @test
      * @covers Contact
      */
-    public function testGetSalutationName()
+    public function getSalutationName_for_title_and_last_name()
     {
-        $c1 = $this->contacts('contact1');
-        $expected = $c1->title.' '.$c1->last_name;
-        $result = $this->model->GetSalutationName();
+        $title = $this->faker->word();
+        $last_name = $this->faker->word(2);
+
+        $contact = Contact::factory()->make([
+            'title' => $title,
+            'last_name' => $last_name
+        ]);
+
+        $expected = $title . ' ' . $last_name;
+        $result = $contact->GetSalutationName();
 
         $this->assertEquals($expected, $result);
     }
 
     /**
+     * @test
      * @covers Contact
      */
-    public function testContactLine_withLocation()
+    public function contactLine_with_location()
     {
-        $c1 = $this->contacts('contact1');
-        $location = $this->contactlocations('contactlocation1');
-        $expectedwithlocation = $c1->getFullName().' ('.$c1->label->name.', '.$location.')';
+        $title = $this->faker->word();
+        $first_name = $this->faker->word();
+        $last_name = $this->faker->word(2);
 
-        $resultwithlocation = $this->model->ContactLine($location);
+        $label = ContactLabel::factory()->create();
+
+        $contact = Contact::factory()->make([
+            'title' => $title,
+            'first_name' => $first_name,
+            'last_name' => $last_name,
+            'contact_label_id' => $label
+        ]);
+
+        $location = ContactLocation::factory()->forContact($contact)->create();
+
+        $expectedwithlocation = $contact->getFullName() . ' (' . $label->name . ', ' . $location . ')';
+
+        $resultwithlocation = $contact->ContactLine($location);
         $this->assertEquals($expectedwithlocation, $resultwithlocation);
     }
 
     /**
+     * @test
      * @covers Contact
      */
-    public function testContactLine_withoutLocation()
+    public function contactLine_without_location()
     {
-        $c1 = $this->contacts('contact1');
-        $expectedwithoutlocation = $c1->getFullName().' ('.$c1->label->name.')';
-        $resultwithoutlocation = $this->model->ContactLine();
+        $title = $this->faker->word();
+        $first_name = $this->faker->word();
+        $last_name = $this->faker->word(2);
+
+        $label = ContactLabel::factory()->create();
+
+        $contact = Contact::factory()->make([
+            'title' => $title,
+            'first_name' => $first_name,
+            'last_name' => $last_name,
+            'contact_label_id' => $label
+        ]);
+
+        $expectedwithoutlocation = $contact->getFullName() . ' (' . $label->name . ')';
+        $resultwithoutlocation = $contact->ContactLine();
         $this->assertEquals($expectedwithoutlocation, $resultwithoutlocation);
     }
 
     /**
+     * @test
      * @covers Contact
      */
-    public function testFindByLabel_noPartialMatch()
+    public function findByLabel_no_partial_matchs_without_percent_symbol()
     {
-        $label = $this->contactlabels('contactlabel1');
-        $res = Contact::model()->findByLabel('aylw', $label->name);
+        $title = $this->faker->word();
+        $first_name = $this->faker->word();
+        $last_name_partial = $this->faker->word();
+        $last_name_rest = $this->faker->word();
+        $last_name = $last_name_partial . ' ' . $last_name_rest;
 
-        $this->assertEquals(array(), $res, 'No partial match without % appended to search term');
+        $label = ContactLabel::factory()->create();
+
+        $contact = Contact::factory()->make([
+            'title' => $title,
+            'first_name' => $first_name,
+            'last_name' => $last_name,
+            'contact_label_id' => $label
+        ]);
+
+        $res = Contact::model()->findByLabel($last_name_partial, $label->name);
+
+        $this->assertEquals([], $res, 'No partial match without % appended to search term');
     }
 
     /**
+     * @test
      * @covers Contact
      */
-    public function testFindByLabel_wildcardMatchWithoutLocation()
+    public function findByLabel_wildcard_matches_without_location()
     {
-        $c4 = $this->contacts('contact4');
-        $c5 = $this->contacts('contact5');
-        $label = $c4->label;
-        $term = strtolower(substr($c4->last_name, 0, 3));
+        $last_name_partial = $this->faker->word();
+        $last_name_rest = $this->faker->word();
+        $last_name = $last_name_partial . ' ' . $last_name_rest;
+
+        $label = ContactLabel::factory()->create();
+
+        $contact1 = Contact::factory()->create([
+            'last_name' => $last_name,
+            'contact_label_id' => $label
+        ]);
+
+        $contact2 = Contact::factory()->create([
+            'last_name' => $last_name,
+            'contact_label_id' => $label
+        ]);
+
+        $term = strtolower($last_name_partial);
         $res = Contact::model()->findByLabel($term.'%', $label->name);
 
-        $expected = array(
-            array('line' => $c5->ContactLine(), 'contact_id' => $c5->id),
-            array('line' => $c4->ContactLine(), 'contact_id' => $c4->id),
-        );
+        $expected = [
+            ['line' => $contact1->ContactLine(), 'contact_id' => $contact1->id],
+            ['line' => $contact2->ContactLine(), 'contact_id' => $contact2->id],
+        ];
+
+        usort($res, static function ($lhs, $rhs) {
+            return $lhs['contact_id'] <=> $rhs['contact_id'];
+        });
+        usort($expected, static function ($lhs, $rhs) {
+            return $lhs['contact_id'] <=> $rhs['contact_id'];
+        });
 
         $this->assertEquals($expected, $res, 'Should match the contact with wildcard appended to substring of last name');
     }
+
     /**
+     * @test
      * @covers Contact
      */
-    public function testFindByLabel_wildcardMatchWithLocation()
+    public function findByLabel_wildcard_matches_with_location()
     {
-        $label = $this->contactlabels('contactlabel1');
-        $res = Contact::model()->findByLabel('aylw%', $label->name);
-        $c1 = $this->contacts('contact1');
-        $expected = array(array('line' => $c1->ContactLine('City Road, flat 1, flitchley'), 'contact_location_id' => $this->contactlocations('contactlocation1')->id));
+        $last_name_partial = $this->faker->word();
+        $last_name_rest = $this->faker->word();
+        $last_name = $last_name_partial . ' ' . $last_name_rest;
+
+        $label = ContactLabel::factory()->create();
+
+        $contact = Contact::factory()->create([
+            'last_name' => $last_name,
+            'contact_label_id' => $label
+        ]);
+
+        $site_name = $this->faker->word();
+        $site = Site::factory()->create(['name' => $site_name, 'contact_id' => $contact]);
+
+        $location = ContactLocation::factory()->forContact($contact)->forSite($site)->create();
+        $address = $contact->address ?? Address::factory()->create(['contact_id' => $contact]);
+
+        $res = Contact::model()->findByLabel($last_name_partial . '%', $label->name);
+        $expected = [['line' => $contact->ContactLine($site_name . ', ' . $address->address1 . ', ' . $address->city), 'contact_location_id' => $location->id]];
 
         $this->assertEquals($expected, $res, 'Should match the first contact with wildcard appended to term');
     }
 
     /**
+     * @test
      * @covers Contact
      */
-    public function testFindByLabel_wildcardMatchPerson()
+    public function findByLabel_wildcard_matches_person()
     {
+        $last_name_partial = $this->faker->word();
+        $last_name_rest = $this->faker->word();
+        $last_name = $last_name_partial . ' ' . $last_name_rest;
+
+        $label = ContactLabel::factory()->create();
+
+        $contact1 = Contact::factory()->create([
+            'last_name' => $last_name,
+            'contact_label_id' => $label
+        ]);
+
+        $contact2 = Contact::factory()->create([
+            'last_name' => $last_name,
+            'contact_label_id' => $label
+        ]);
+
         // note checking restricted to only Person as the search term matches a non-Person contact as well
-        $c5 = $this->contacts('contact5');
-        $term = strtolower(substr($c5->last_name, 0, 3));
-        $expected = array(array('line' => $c5->ContactLine(), 'contact_id' => $c5->id));
-        $res = Contact::model()->findByLabel($term.'%', $c5->label->name, false, 'person');
+        Person::factory()->create(['contact_id' => $contact2]);
+
+        $term = strtolower($last_name_partial);
+        $expected = [['line' => $contact2->ContactLine(), 'contact_id' => $contact2->id]];
+        $res = Contact::model()->findByLabel($term . '%', $label->name, false, 'person');
 
         $this->assertEquals($expected, $res);
     }
 
     /**
-     * @dataProvider dataProvider_Search
+     * @test
      * @covers Contact
-     * @param $searchTerms
-     * @param $numResults
-     * @param $expectedKeys
      */
-    public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys)
+    public function searching_with_valid_terms_returns_expected_results()
     {
-        $contact = new Contact();
-        $contact->setAttributes($searchTerms);
-        $results = $contact->search();
-        $data = $results->getData();
+        $nick_name = $this->faker->word();
+        $email = $this->faker->email();
 
-        $expectedResults = array();
-        if (!empty($expectedKeys)) {
-            foreach ($expectedKeys as $key) {
-                $expectedResults[] = $this->contacts($key);
-            }
+        $search_terms = [
+            ['nick_name' => $nick_name],
+            ['email' => 'foo@' . (string)microtime() . '.bar.invalid'],
+            ['email' => $email]
+        ];
+
+        $expected_results = [
+            Contact::factory()->create(['nick_name' => $nick_name]),
+            Contact::factory()->create(['email' => $email])
+        ];
+
+        $data = [];
+
+        foreach ($search_terms as $search_term) {
+            $contact = new Contact();
+            $contact->setAttributes($search_term);
+            $results = $contact->search();
+            $data = array_merge($data, $results->getData());
         }
 
-        $this->assertEquals($numResults, $results->getItemCount(), 'Number of results should match.');
-        $this->assertEquals($expectedResults, $data, 'Actual results should match.');
+        $this->assertModelArraysMatch($expected_results, $data);
     }
 
     /**
+     * @test
      * @covers Contact
      */
-    public function testGetType()
+    public function contact_types_match_models()
     {
-        $this->model->setAttribute('id', 1);
-        $result = $this->model->GetType();
-        $expected = $this->contacts('contact1')->GetType();
-        $this->assertEquals($expected, $result);
+        $contacts = array_combine(
+            ['Gp', 'Patient', 'Person', 'User'],
+            Contact::factory()->count(4)->create()
+        );
+
+        Gp::factory()->create(['contact_id' => $contacts['Gp']]);
+        Patient::factory()->create(['contact_id' => $contacts['Patient']]);
+        Person::factory()->create(['contact_id' => $contacts['Person']]);
+        User::factory()->create(['contact_id' => $contacts['User']]);
+
+        foreach ($contacts as $expected => $contact) {
+            $result = $contact->GetType();
+
+            $this->assertEquals($expected, $result);
+        }
     }
 }

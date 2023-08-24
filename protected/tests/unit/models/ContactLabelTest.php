@@ -16,116 +16,73 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class ContactLabelTest extends ActiveRecordTestCase
+
+use ModelTestCase;
+use WithTransactions;
+use WithFaker;
+use MocksSession;
+
+use Institution;
+use Site;
+use ContactLabel;
+
+/**
+ *
+ * @group sample-data
+ */
+class ContactLabelTest extends ModelTestCase
 {
-    /**
-     * @var ContactLabel
-     */
-    public $model;
-    public $fixtures = array(
-        'Contact',
-        'contactlabels' => 'ContactLabel',
-        'Institution',
-    );
+    use WithTransactions;
+    use WithFaker;
+    use MocksSession;
 
-    public function getModel()
-    {
-        return ContactLabel::model();
-    }
-
-    public function dataProvider_Search()
-    {
-        return array(
-            array(array('id' => 1, 'name' => 'contactlabel 1'), 1, array('contactlabel1')),
-            array(array('id' => 2, 'name' => 'contactlabel 2'), 1, array('contactlabel2')),
-        );
-    }
+    protected $element_cls = ContactLabel::class;
 
     /**
-     * Sets up the fixture, for example, opens a network connection.
-     * This method is called before a test is executed.
-     */
-    public function setUp(): void
-    {
-        parent::setUp();
-        $this->model = new ContactLabel();
-    }
-
-    /**
+     * @test
      * @covers ContactLabel
      */
-    public function testModel()
+    public function search_with_valid_terms_returns_expected_results()
     {
-        $this->assertEquals('ContactLabel', get_class(ContactLabel::model()), 'Class name should match model.');
-    }
+        $valid_name = $this->faker->word();
+        $invalid_name = $this->faker->word() . (string)microtime();
 
-    /**
-     * @covers ContactLabel
-     */
-    public function testTableName()
-    {
-        $this->assertEquals('contact_label', $this->model->tableName());
-    }
+        $expected_results = [
+            ContactLabel::factory()->create(['name' => $valid_name])
+        ];
 
-    /**
-     * @covers ContactLabel
-     * @throws CException
-     */
-    public function testRules()
-    {
-        parent::testRules();
-        $this->assertTrue($this->contactlabels('contactlabel1')->validate());
-        $this->assertEmpty($this->contactlabels('contactlabel1')->errors);
-    }
+        $search_terms = [
+            ['name' => $invalid_name],
+            ['name' => $valid_name]
+        ];
 
-    /**
-     * @covers ContactLabel
-     */
-    public function testAttributeLabels()
-    {
-        $expected = array(
-            'id' => 'ID',
-            'name' => 'Name',
-            'letter_template_only' => 'Letter Template Only',
-            'is_private' => 'Is Private',
-            'max_number_per_patient' => 'Max Number Per Patient'
-        );
-        $this->assertEquals($expected, $this->model->attributeLabels());
-    }
+        $data = [];
 
-    /**
-     * @covers ContactLabel
-     * @dataProvider dataProvider_Search
-     * @param $searchTerms
-     * @param $numResults
-     * @param $expectedKeys
-     */
-    public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys)
-    {
-        $contactlabel = new ContactLabel();
-        $contactlabel->setAttributes($searchTerms);
-        $results = $contactlabel->search();
-        $data = $results->getData();
-
-        $expectedResults = array();
-        if (!empty($expectedKeys)) {
-            foreach ($expectedKeys as $key) {
-                $expectedResults[] = $this->contactlabels($key);
-            }
+        foreach ($search_terms as $search_term) {
+            $contactlabel = new ContactLabel();
+            $contactlabel->setAttributes($search_term);
+            $results = $contactlabel->search();
+            $data = array_merge($data, $results->getData());
         }
-        $this->assertEquals($numResults, $results->getItemCount());
-        $this->assertEquals($expectedResults, $data);
+
+        $this->assertModelArraysMatch($expected_results, $data);
     }
 
     /**
+     * @test
      * @covers ContactLabel
      */
-    public function testStaffType()
+    public function staff_type()
     {
-        Yii::app()->session['selected_site_id'] = 1;
+        $name = $this->faker->word();
 
-        $result = $this->model->staffType();
-        $expected = 'Default staff';
+        $institution = Institution::factory()->create(['name' => $name, 'short_name' => $name]);
+        $site = Site::factory()->create(['institution_id' => $institution]);
+
+        $this->mockCurrentContext(null, $site, $institution);
+
+        $result = ContactLabel::model()->staffType();
+        $expected = $name . ' staff';
 
         $this->assertEquals($expected, $result);
     }
