@@ -181,7 +181,7 @@ class SiteController extends BaseController
             if ($type == 'esigndevice') {
                 $view = 'login';
                 $return_url = "/site/deviceready";
-            } elseif ($type == 'esigndevicepin' && !is_null($username)  && !is_null($user_id) && !is_null($institution_id) && !is_null($site_id) ) {
+            } elseif ($type == 'esigndevicepin' && !is_null($username)  && !is_null($user_id) && !is_null($institution_id) && !is_null($site_id)) {
                 $model = new LoginFormMobileDevice();
                 $model->user_id = $user_id;
                 $model->username = $username;
@@ -208,8 +208,8 @@ class SiteController extends BaseController
                     Yii::app()->session['confirm_site_and_firm'] = true;
                     Yii::app()->session['shown_version_reminder'] = true;
                     // Check the user has admin role and auto version check enabled
-                    $autoVersionEnabled = strpos(strtolower(SettingInstallation::model()->findByAttributes(['key' => "auto_version_check"])->value), 'enable');
-                    if (Yii::app()->user->checkAccess('admin') && !($autoVersionEnabled === false)) {
+                    $autoVersionEnabled = SettingMetadata::model()->getSetting('auto_version_check') === 'enable';
+                    if (Yii::app()->user->checkAccess('admin') && $autoVersionEnabled === true) {
                         $this->doVersionCheck();
                     }
                     $this->redirect($return_url);
@@ -227,7 +227,8 @@ class SiteController extends BaseController
         }
 
         // display the login form
-        $this->render($view,
+        $this->render(
+            $view,
             array(
                 'model' => $model,
                 'login_type' => $type,
@@ -575,7 +576,7 @@ class SiteController extends BaseController
 
     public function actionListSites($term)
     {
-        $criteria = new CDbCriteria;
+        $criteria = new CDbCriteria();
         $criteria->addSearchCondition('LOWER(name)', strtolower($term), true, 'OR');
         $criteria->addCondition('institution_id != :institution_id');
         $criteria->params[':institution_id'] = \Yii::app()->session['selected_institution_id'];
