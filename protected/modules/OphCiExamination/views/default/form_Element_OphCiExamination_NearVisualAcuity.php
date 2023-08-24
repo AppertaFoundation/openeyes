@@ -40,7 +40,6 @@ $key = 0;
 
 <div class="element-both-eyes">
   <div>
-        <?php if ($element->isNewRecord) { ?>
         <span class="data-label">VA Scale &nbsp;&nbsp;</span>
             <?=\CHtml::dropDownList(
                 'nearvisualacuity_unit_change',
@@ -49,13 +48,12 @@ $key = 0;
                   ->activeOrPk(@$element->unit_id)
                   ->findAllByAttributes(array('is_near' => '1')), 'id', 'name'),
                 array('class' => 'inline', 'data-record-mode' => $element::RECORD_MODE_SIMPLE, 'data-test' => 'near-visual-acuity-unit-selector'));
-            if ($element->unit->information) { ?>
+if ($element->unit->information) { ?>
             <div class="info">
               <small><em><?php echo $element->unit->information ?></em></small>
             </div>
                   <?php
-            }
-        } ?>
+}?>
   </div>
 </div>
 
