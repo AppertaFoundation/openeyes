@@ -419,7 +419,7 @@ function queueLoginOverlay() {
 		},
 		success: function (resp) {
 			let current_unix_timestamp = Math.floor((new Date()).getTime() / 1000);
-			
+
 			//Add a delay to ensure the session has actually expired before we allow the user to log in again
 			let delay = 5;
 
@@ -939,20 +939,20 @@ function eSignDevicePopup() {
  * Resize an element based on the height of its content.
  */
 function setHeightToContent(element) {
-	if (element.clientHeight > 0) {
-		element.style.height = '5px';
-		element.style.height = `${element.scrollHeight}px`;
+    if (element.clientHeight > 0) {
+        // Set the initial height to 5px to ensure the text area shrinks when content is removed.
+        element.style.height = `5px`;
+        element.style.height = `${element.scrollHeight}px`;
+        // handle minimum height - specified by rows
+        if (element.hasAttribute('rows')) {
+            const lineHeight = parseFloat(getComputedStyle(element).lineHeight);
+            const rows = parseInt(element.getAttribute('rows'), 10);
 
-		// handle minimum height -specified by rows
-		if (element.hasAttribute('rows')) {
-			const rows = parseInt(element.getAttribute('rows'), 10);
-			const lineHeight = parseFloat(getComputedStyle(element).lineHeight);
-
-			const minHeight = rows * lineHeight;
-			element.style.height = `${Math.max(minHeight, element.scrollHeight)}px`;
-		}
-	}
-};
+            const minHeight = rows * lineHeight;
+            element.style.height = `${Math.max(minHeight, element.scrollHeight)}px`;
+        }
+    }
+}
 
 /**
  * Automatically resize any textareas with the autosize class. Including dynamic resizing during typing.
@@ -960,15 +960,6 @@ function setHeightToContent(element) {
 function autosize() {
 	// select all textarea elements with the class 'autosize'
 	const textareas = document.querySelectorAll('textarea.autosize');
-
-	// sets the height of any textareas that are not currently visible but become visible later
-	const observer = new IntersectionObserver(entries => {
-		entries.forEach(entry => {
-			if (entry.isIntersecting) {
-				setHeightToContent(entry.target);
-			}
-		});
-	});
 
 	textareas.forEach(textarea => {
 		setHeightToContent(textarea);
@@ -980,10 +971,5 @@ function autosize() {
 		if (target.matches('.autosize')) {
 			setHeightToContent(target);
 		}
-	});
-
-	// observe for the text area becoming visible
-	textareas.forEach(textarea => {
-		observer.observe(textarea);
 	});
 }
