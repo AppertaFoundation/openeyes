@@ -23,7 +23,7 @@
 <tr data-key="<?= $row_count ?>">
     <td>
         <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?= $reading->id ?>"/>
-        <?= \CHtml::textField("{$field_prefix}[sphere]", $reading->sphere, [
+        <?= \CHtml::textField("{$field_prefix}[sphere]", $reading->sphere_display, [
             'id' => "{$field_prefix}_sphere_{$row_count}",
             'data-adder-id' => "{$field_prefix}_sphere",
             'data-adder-header' => $reading->getAttributeLabel('sphere'),
@@ -38,7 +38,7 @@
         ]) ?>
     </td>
     <td>
-        <?= \CHtml::textField("{$field_prefix}[cylinder]", $reading->cylinder, [
+        <?= \CHtml::textField("{$field_prefix}[cylinder]", $reading->cylinder_display, [
             'id' => "{$field_prefix}_cylinder_{$row_count}",
             'data-adder-id' => "{$field_prefix}_cylinder",
             'data-adder-header' => $reading->getAttributeLabel('cylinder'),
