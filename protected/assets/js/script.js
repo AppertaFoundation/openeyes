@@ -179,35 +179,22 @@ $(document).ready(function () {
 		});
 	}());
 
-	(function expandElementList() {
-		// check for view elementss
-		if ($('.element-data').length == 0) return;
+    OpenEyes.UI.DOM.addEventListener(document, 'click', '.js-listview-expand-btn', function () {
+        const $iconBtn = $(this);
+        const listId = $iconBtn.data('list');
+        const $quick = $(`#js-listview-${listId}-pro`);
+        const $full = $(`#js-listview-${listId}-full`);
 
-		$('.js-listview-expand-btn').each(function () {
-			// id= js-listview-[data-list]-full | quick
-			let listid = $(this).data('list');
-			let listview = new ListView($(this),
-				$('#js-listview-' + listid + '-pro'),
-				$('#js-listview-' + listid + '-full'));
-		});
+        if ($iconBtn.hasClass('expand')) {
+            $quick.hide();
+            $full.show();
+        } else {
+            $quick.show();
+            $full.hide();
+        }
 
-		function ListView($iconBtn, $quick, $full) {
-			let quick = $quick.css('display') !== 'none';
-
-			$iconBtn.click(function () {
-				$(this).toggleClass('collapse expand');
-				quick = !quick;
-
-				if (quick) {
-					$quick.show();
-					$full.hide();
-				} else {
-					$quick.hide();
-					$full.show();
-				}
-			});
-		}
-	})();
+        $iconBtn.toggleClass('collapse expand');
+    });
 
 	/**
 	 * Tab hover
