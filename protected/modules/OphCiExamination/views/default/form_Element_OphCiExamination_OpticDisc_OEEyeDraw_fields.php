@@ -91,9 +91,9 @@
   </div>
   <div class="data-group">
         <?=\CHtml::activeTextArea($element, $side . '_description', array(
-          'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
           'rows' => 1,
           'placeholder' => $element->getAttributeLabel($side . '_description'),
+          'class' => 'autosize',
       )) ?>
   </div>
 </div>
