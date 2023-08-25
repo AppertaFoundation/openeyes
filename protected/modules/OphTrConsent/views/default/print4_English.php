@@ -294,7 +294,7 @@ $type_assessment = new OphTrConsent_Type_Assessment();
             'signature' => $elements[Element_OphTrConsent_Esign::class]
                 ->getSignatureByInitiatorAttributes($elements[Element_OphTrConsent_Esign::class]->getElementType()->id, 0),
             'title_label' => 'Job title',
-            'name_label' => 'Interpreter name',
+            'name_label' => 'Print name',
         )
     ); ?>
 

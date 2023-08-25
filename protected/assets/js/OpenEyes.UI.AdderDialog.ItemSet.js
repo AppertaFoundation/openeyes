@@ -31,12 +31,6 @@
     ItemSet.prototype.create = function () {
     };
 
-    ItemSet.prototype.hide = function () {
-        if (this.options.hideByDefault) {
-            $('#'+this.options.id).parent().css('display', 'none');
-        }
-    };
-
     exports.ItemSet = ItemSet;
 
 }(OpenEyes.UI.AdderDialog));
