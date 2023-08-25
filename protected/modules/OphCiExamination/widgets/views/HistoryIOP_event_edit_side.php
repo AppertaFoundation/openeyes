@@ -72,10 +72,10 @@ foreach ($readings as $reading) {
         <th></th>
         <th></th>
         <th colspan="2">
-            <i class="oe-i small pad js-listview-expand-btn expand" data-list="historyiop-<?= $side ?>"></i>
+            <i class="oe-i small pad js-listview-expand-btn expand" data-list="historyiop-<?= $side ?>" data-test="listview-expand-btn"></i>
         </th>
         </thead>
-        <tbody id="js-listview-historyiop-<?= $side ?>-full" style="display: none;">
+        <tbody id="js-listview-historyiop-<?= $side ?>-full" style="display: none;" data-test="listview-historyiop-<?= $side ?>">
         <?php foreach ($pastIOPs as $iop) { ?>
             <?php $date = $iop->event->event_date; ?>
             <?php foreach ($iop->{$side . '_values'} as $iop_value) { ?>

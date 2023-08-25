@@ -1,6 +1,6 @@
 <?php
 ?>
-<tr data-key="<?= $key ?>">
+<tr data-key="<?= $key ?>" data-test="dr-rentinopathy-row">
     <td>
         <?= $retinopathy_feature->feature->grade ?>
     </td>

@@ -18,6 +18,9 @@ class MailboxSearch
     public const FOLDER_READ_TO_ME = 'read_to_me';
     public const FOLDER_READ_CC = 'read_cc';
 
+    public const FOLDER_SENT_ALL = 'sent_all';
+    public const FOLDER_SENT_REPLIES = 'sent_replies';
+
     public const FOLDER_STARTED_THREADS = 'started_threads';
     public const FOLDER_WAITING_FOR_REPLY = 'waiting_for_reply';
     public const FOLDER_UNREAD_BY_RECIPIENT = 'unread_by_recipient';
@@ -59,12 +62,17 @@ class MailboxSearch
     public function __construct($user, $folder, $search_parameters = [])
     {
         if (!empty($search_parameters['retrieve_all_comments'])) {
-            $this->retrieve_all_comments = 1;
+            $this->retrieve_all_comments = $search_parameters['retrieve_all_comments'];
             $folder = null;
         }
 
         if (!empty($search_parameters['retrieve_original_element'])) {
-            $this->retrieve_original_element = 1;
+            $this->retrieve_original_element = $search_parameters['retrieve_original_element'];
+            $folder = null;
+        }
+
+        if (!empty($search_parameters['allow_unreplied_started_threads'])) {
+            $this->allow_unreplied_started_threads = $search_parameters['allow_unreplied_started_threads'];
             $folder = null;
         }
 
@@ -170,6 +178,20 @@ class MailboxSearch
                     $this->dedupe_to_self_side = self::DEDUPE_TO_SELF_SENDER;
                     break;
 
+                case self::FOLDER_SENT_ALL:
+                    $this->retrieve_from = self::RETRIEVE_SENT;
+                    $this->message_sent = 1;
+                    $this->allow_unreplied_started_threads = 1;
+                    $this->dedupe_to_self_side = self::DEDUPE_TO_SELF_RECEIVER;
+                    break;
+
+                case self::FOLDER_SENT_REPLIES:
+                    $this->retrieve_from = self::RETRIEVE_SENT;
+                    $this->message_sent = 1;
+                    $this->message_reply = 1;
+                    $this->dedupe_to_self_side = self::DEDUPE_TO_SELF_RECEIVER;
+                    break;
+
                 case self::FOLDER_STARTED_THREADS:
                     $this->retrieve_from = self::RETRIEVE_SENT;
                     $this->message_user_original_sender = 1;
@@ -236,73 +258,92 @@ class MailboxSearch
         $mailbox_id_params = MailboxSearch::getMailboxQueryParams($user_id, $mailbox_ids);
 
         $sql = "SELECT
-            COUNT(DISTINCT contextualised_messages.element_id) `" . static::FOLDER_ALL . "`,
+            COUNT(DISTINCT contextualised_messages.element_id) :folder_all,
 
             SUM(
                 (contextualised_messages.sent = 0 OR 
                     (contextualised_messages.to_self AND contextualised_messages.element_fetched_as_original_sender = 0)) AND 
                 contextualised_messages.unreplied_started_thread = 0 AND
                 contextualised_messages.marked_as_read_by_user = 0
-            ) " . static::FOLDER_UNREAD_ALL . ",
+            ) :folder_unread_all,
             SUM(
                 (contextualised_messages.sent = 0 OR 
                     (contextualised_messages.to_self AND contextualised_messages.element_fetched_as_original_sender = 0)) AND
                 contextualised_messages.unreplied_started_thread = 0 AND
                 contextualised_messages.marked_as_read_by_user = 0 AND 
                 contextualised_messages.urgent = 1
-            ) " . static::FOLDER_UNREAD_URGENT . ",
+            ) :folder_unread_urgent,
             SUM(
                 (contextualised_messages.sent = 0 OR 
                     (contextualised_messages.to_self AND contextualised_messages.element_fetched_as_original_sender = 0)) AND
                 contextualised_messages.unreplied_started_thread = 0 AND
                 contextualised_messages.marked_as_read_by_user = 0 AND 
                 contextualised_messages.reply_required = 1
-            ) " . static::FOLDER_UNREAD_QUERY . ",
+            ) :folder_unread_query,
             SUM(
                 (contextualised_messages.sent = 0 OR 
                     (contextualised_messages.to_self AND contextualised_messages.element_fetched_as_original_sender = 0)) AND
                 contextualised_messages.unreplied_started_thread = 0 AND
                 contextualised_messages.marked_as_read_by_user = 0 AND 
                 contextualised_messages.has_reply = 1
-            ) " . static::FOLDER_UNREAD_REPLIES . ",
+            ) :folder_unread_replies,
             SUM(
                 (contextualised_messages.sent = 0 OR 
                     (contextualised_messages.to_self AND contextualised_messages.element_fetched_as_original_sender = 0)) AND
                 contextualised_messages.unreplied_started_thread = 0 AND
                 contextualised_messages.marked_as_read_by_user = 0 AND 
                 contextualised_messages.to_me = 1
-            ) " . static::FOLDER_UNREAD_TO_ME . ",
+            ) :folder_unread_to_me,
             SUM(
                 (contextualised_messages.sent = 0 OR 
                     (contextualised_messages.to_self AND contextualised_messages.element_fetched_as_original_sender = 0)) AND
                 contextualised_messages.unreplied_started_thread = 0 AND
                 contextualised_messages.marked_as_read_by_user = 0 AND 
                 contextualised_messages.cc = 1
-            ) " . static::FOLDER_UNREAD_CC . ",
+            ) :folder_unread_cc,
 
             SUM(
                 (contextualised_messages.to_self = 0 OR contextualised_messages.element_fetched_as_original_sender = 0) AND 
                 contextualised_messages.marked_as_read_by_user = 1 AND
                 contextualised_messages.unreplied_started_thread = 0
-            ) " . static::FOLDER_READ_ALL . ",
+            ) :folder_read_all,
             SUM(
                 (contextualised_messages.to_self = 0 OR contextualised_messages.element_fetched_as_original_sender = 0) AND 
                 contextualised_messages.marked_as_read_by_user = 1 AND 
                 contextualised_messages.unreplied_started_thread = 0 AND
                 contextualised_messages.urgent = 1
-            ) " . static::FOLDER_READ_URGENT . ",
+            ) :folder_read_urgent,
             SUM(
                 (contextualised_messages.to_self = 0 OR contextualised_messages.element_fetched_as_original_sender = 0) AND 
                 contextualised_messages.marked_as_read_by_user = 1 AND 
                 contextualised_messages.unreplied_started_thread = 0 AND
                 contextualised_messages.to_me = 1
-            ) " . static::FOLDER_READ_TO_ME . ",
+            ) :folder_read_to_me,
             SUM(
                 (contextualised_messages.to_self = 0 OR contextualised_messages.element_fetched_as_original_sender = 0) AND 
                 contextualised_messages.marked_as_read_by_user = 1 AND 
                 contextualised_messages.unreplied_started_thread = 0 AND
                 contextualised_messages.cc = 1
-            ) " . static::FOLDER_READ_CC . ",
+            ) :folder_read_cc,
+
+            SUM(
+                contextualised_messages.sent = 1 AND
+                (
+                    contextualised_messages.to_self = 0 OR 
+                    contextualised_messages.element_fetched_as_original_sender = 1
+                )
+            ) :folder_sent_all,
+
+            SUM(
+                (
+                    contextualised_messages.sent = 1 AND
+                    (
+                        contextualised_messages.to_self = 0 OR 
+                        contextualised_messages.element_fetched_as_original_sender = 1
+                    )
+                ) AND 
+                contextualised_messages.has_reply = 1
+            ) :folder_sent_replies,
 
             SUM(
                 contextualised_messages.user_original_sender = 1 AND 
@@ -310,7 +351,7 @@ class MailboxSearch
                     contextualised_messages.to_self = 0 OR 
                     contextualised_messages.element_fetched_as_original_sender = 1
                 )
-            ) " . static::FOLDER_STARTED_THREADS . ",
+            ) :folder_started_threads,
             
             SUM(
                 contextualised_messages.user_original_sender = 1 AND 
@@ -320,7 +361,7 @@ class MailboxSearch
                 ) AND
                 contextualised_messages.reply_required = 1 AND 
                 contextualised_messages.has_reply = 0
-            ) " . static::FOLDER_WAITING_FOR_REPLY . ",
+            ) :folder_waiting_for_reply,
             
             SUM(
                 (
@@ -331,7 +372,7 @@ class MailboxSearch
                     )
                 ) AND 
                 contextualised_messages.marked_as_read_by_recipient = 0
-            ) " . static::FOLDER_UNREAD_BY_RECIPIENT . "
+            ) :folder_unread_by_recipient
 
             FROM
             (SELECT
@@ -427,7 +468,26 @@ class MailboxSearch
 
         $mailbox_counts_command = \Yii::app()->db->createCommand($sql);
 
-        $mailbox_counts_command->params = $mailbox_id_params['values'];
+        $mailbox_folders = [
+            ':folder_all' => self::FOLDER_ALL,
+            ':folder_unread_all' => self::FOLDER_UNREAD_ALL,
+            ':folder_unread_to_me' => self::FOLDER_UNREAD_TO_ME,
+            ':folder_unread_urgent' => self::FOLDER_UNREAD_URGENT,
+            ':folder_unread_query' => self::FOLDER_UNREAD_QUERY,
+            ':folder_unread_replies' => self::FOLDER_UNREAD_REPLIES,
+            ':folder_unread_cc' => self::FOLDER_UNREAD_CC,
+            ':folder_read_all' => self::FOLDER_READ_ALL,
+            ':folder_read_urgent' => self::FOLDER_READ_URGENT,
+            ':folder_read_to_me' => self::FOLDER_READ_TO_ME,
+            ':folder_read_cc' => self::FOLDER_READ_CC,
+            ':folder_sent_all' => self::FOLDER_SENT_ALL,
+            ':folder_sent_replies' => self::FOLDER_SENT_REPLIES,
+            ':folder_started_threads' => self::FOLDER_STARTED_THREADS,
+            ':folder_waiting_for_reply' => self::FOLDER_WAITING_FOR_REPLY,
+            ':folder_unread_by_recipient' => self::FOLDER_UNREAD_BY_RECIPIENT
+        ];
+
+        $mailbox_counts_command->params = array_merge($mailbox_folders, $mailbox_id_params['values']);
 
         $counts = $mailbox_counts_command->queryRow();
 
@@ -444,6 +504,8 @@ class MailboxSearch
                 self::FOLDER_READ_URGENT => 0,
                 self::FOLDER_READ_TO_ME => 0,
                 self::FOLDER_READ_CC => 0,
+                self::FOLDER_SENT_ALL => 0,
+                self::FOLDER_SENT_REPLIES => 0,
                 self::FOLDER_STARTED_THREADS => 0,
                 self::FOLDER_WAITING_FOR_REPLY => 0,
                 self::FOLDER_UNREAD_BY_RECIPIENT => 0

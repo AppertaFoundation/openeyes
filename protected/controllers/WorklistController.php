@@ -1371,6 +1371,8 @@ class WorklistController extends BaseController
 
     private function structurePatientSocialHistoryData($patient)
     {
+        $purifier = new CHtmlPurifier();
+
         $socialHistory = [];
 
         $socialHistoryWidget = $this->createWidget(
@@ -1386,40 +1388,40 @@ class WorklistController extends BaseController
             $socialHistory['nilRecord'] = true;
         } else {
             if ($element->occupation) {
-                $socialHistory['occupation']['label'] = CHtml::encode($element->getAttributeLabel('occupation_id'));
-                $socialHistory['occupation']['value'] = \CHtml::encode($element->getDisplayOccupation());
+                $socialHistory['occupation']['label'] = $purifier->purify($element->getAttributeLabel('occupation_id'));
+                $socialHistory['occupation']['value'] = $purifier->purify($element->getDisplayOccupation());
             }
             if ($element->driving_statuses) {
-                $socialHistory['drivingStatuses']['label'] = CHtml::encode($element->getAttributeLabel('driving_statuses'));
+                $socialHistory['drivingStatuses']['label'] = $purifier->purify($element->getAttributeLabel('driving_statuses'));
                 $temp = '';
                 foreach ($element->driving_statuses as $item) {
-                    $temp .= $item->name . '<br/>';
+                    $temp .= $item->name . "\n";
                 }
                 $socialHistory['drivingStatuses']['value'] = $temp;
             }
             if ($element->smoking_status) {
-                $socialHistory['smokingStatus']['label'] = CHtml::encode($element->getAttributeLabel('smoking_status_id'));
-                $socialHistory['smokingStatus']['value'] = \CHtml::encode($element->smoking_status->name);
+                $socialHistory['smokingStatus']['label'] = $purifier->purify($element->getAttributeLabel('smoking_status_id'));
+                $socialHistory['smokingStatus']['value'] = $purifier->purify($element->smoking_status->name);
             }
             if ($element->accommodation) {
-                $socialHistory['accommodation']['label'] = CHtml::encode($element->getAttributeLabel('accommodation_id'));
-                $socialHistory['accommodation']['value'] = \CHtml::encode($element->accommodation->name);
+                $socialHistory['accommodation']['label'] = $purifier->purify($element->getAttributeLabel('accommodation_id'));
+                $socialHistory['accommodation']['value'] = $purifier->purify($element->accommodation->name);
             }
             if ($element->comments) {
-                $socialHistory['comments']['label'] = CHtml::encode($element->getAttributeLabel('comments'));
-                $socialHistory['comments']['value'] = \CHtml::encode($element->comments);
+                $socialHistory['comments']['label'] = $purifier->purify($element->getAttributeLabel('comments'));
+                $socialHistory['comments']['value'] = $purifier->purify($element->comments);
             }
             if (isset($element->carer)) {
-                $socialHistory['carer']['label'] = CHtml::encode($element->getAttributeLabel('carer_id'));
-                $socialHistory['carer']['value'] = \CHtml::encode($element->carer);
+                $socialHistory['carer']['label'] = $purifier->purify($element->getAttributeLabel('carer_id'));
+                $socialHistory['carer']['value'] = $purifier->purify($element->carer->name);
             }
             if (isset($element->alcohol_intake)) {
-                $socialHistory['alcoholIntake']['label'] = CHtml::encode($element->getAttributeLabel('alcohol_intake'));
-                $socialHistory['alcoholIntake']['value'] = \CHtml::encode($element->alcohol_intake) . ' units/week';
+                $socialHistory['alcoholIntake']['label'] = $purifier->purify($element->getAttributeLabel('alcohol_intake'));
+                $socialHistory['alcoholIntake']['value'] = $purifier->purify($element->alcohol_intake) . ' units/week';
             }
             if (isset($element->substance_misuse)) {
-                $socialHistory['substanceMisuse']['label'] = CHtml::encode($element->getAttributeLabel('substance_misuse'));
-                $socialHistory['substanceMisuse']['value'] = \CHtml::encode($element->substance_misuse->name);
+                $socialHistory['substanceMisuse']['label'] = $purifier->purify($element->getAttributeLabel('substance_misuse'));
+                $socialHistory['substanceMisuse']['value'] = $purifier->purify($element->substance_misuse->name);
             }
         }
 

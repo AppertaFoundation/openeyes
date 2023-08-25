@@ -20,7 +20,7 @@ $pick_behavior = new SetupPathwayStepPickerBehavior();
 $path_step_type_ids = json_encode($pick_behavior->getPathwayStepTypesRequirePicker());
 $picker_setup = $pick_behavior->setupPicker();
 ?>
-<div class="clinic-pathway-btn" id="clinic-pathway-btn">
+<div class="clinic-pathway-btn" id="clinic-pathway-btn" data-test="clinic-pathway-btn">
     <?= ucfirst($pathway->getStatusString()) ?>
     <div class="wait-duration">
         <?= $pathway->getTotalDurationHTML() ?>

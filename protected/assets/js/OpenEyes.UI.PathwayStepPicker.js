@@ -836,6 +836,9 @@
             if (lastStep.length > 0) {
                 const data = {
                     step_id: lastStep.data('pathstep-id'),
+                    step_type_id: lastStep.data('pathstep-type-id'),
+                    visit_id: lastStep.data('visit-id'),
+                    pathway_id : lastStep.data('pathway-id'),
                     YII_CSRF_TOKEN: YII_CSRF_TOKEN
                 };
 

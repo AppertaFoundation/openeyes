@@ -26,6 +26,10 @@ use OEModule\OphCoMessaging\components\MailboxSearch;
             <li><a href="#" class="js-folder-counter" data-filter="<?= MailboxSearch::FOLDER_READ_URGENT ?>" data-test="home-mailbox-read-urgent">Read - Urgent <i class="oe-i status-urgent small pad-l no-click"></i><span class="count">(<?= $mailbox_with_counts[MailboxSearch::FOLDER_READ_URGENT] ?? 0 ?>)</span></a></li>
             <li><a href="#" class="js-folder-counter" data-filter="<?= MailboxSearch::FOLDER_READ_CC ?>" data-test="home-mailbox-read-copied">Read - CC'd <i class="oe-i duplicate small pad-l no-click"></i><span class="count">(<?= $mailbox_with_counts[MailboxSearch::FOLDER_READ_CC] ?? 0 ?>)</span></a></li>
         </ul>
+        <ul class="filter-messages">
+            <li><a href="#" class="js-folder-counter" data-filter="<?= MailboxSearch::FOLDER_SENT_ALL ?>" data-test="home-mailbox-sent-all">Sent - All<span class="count">(<?= $mailbox_with_counts[MailboxSearch::FOLDER_SENT_ALL] ?? 0 ?>)</span></a></li>
+            <li><a href="#" class="js-folder-counter" data-filter="<?= MailboxSearch::FOLDER_SENT_REPLIES ?>" data-test="home-mailbox-sent-replies">Sent - Replies<span class="count">(<?= $mailbox_with_counts[MailboxSearch::FOLDER_SENT_REPLIES] ?? 0 ?>)</span></a></li>
+        </ul>
         <?php if ($mailbox_with_counts['is_personal'] !== '0') { ?>
         <ul class="filter-messages">
             <li><a href="#" class="js-folder-counter" data-filter="<?= MailboxSearch::FOLDER_STARTED_THREADS ?>" data-test="home-mailbox-sent-all">Started threads<span class="count">(<?= $mailbox_with_counts[MailboxSearch::FOLDER_STARTED_THREADS] ?? 0 ?>)</span></a></li>

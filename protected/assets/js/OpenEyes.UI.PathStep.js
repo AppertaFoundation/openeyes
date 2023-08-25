@@ -349,7 +349,18 @@
         }
 
         step_actions.each((i, action) => $(action).prop('disabled', disable));
-    }
+    };
+
+    /*
+     * Update the pathstep icon reference when a valid selector is passed to the function
+     */
+    PathStep.prototype.updateIconSelector = function (newPathstepIcon) {
+        if (newPathstepIcon) {
+            this.pathstepIcon = newPathstepIcon;
+        } else {
+            console.error('Invalid selector for updateIconSelector');
+        }
+    };
 
     exports.PathStep = PathStep;
 

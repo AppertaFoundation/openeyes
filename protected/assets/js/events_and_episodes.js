@@ -34,7 +34,7 @@ $(document).ready(function () {
     $(document).on('click', '.add-icon-btn', function () {
         markElementDirty($(this).closest('.element'));
     });
-    $('#event-content').on('change', 'select, input, textarea', function () {
+    $('#event-content').on('change', 'select:not(.dirty-check-ignore), input:not(.dirty-check-ignore), textarea:not(.dirty-check-ignore)', function () {
         markElementDirty($(this).closest('.element'));
     });
 

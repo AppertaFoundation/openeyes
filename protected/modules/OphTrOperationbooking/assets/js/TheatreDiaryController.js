@@ -290,24 +290,41 @@ $(document).ready(function() {
 		}, enableButtons);
 	});
 
-	$('#btn_print_diary_list').click(function() {
-		if ($('#site-id').val() == '' || $('#subspecialty-id').val() == '' || $('#date-start').val() == '' || $('#date-end').val() == '') {
-			new OpenEyes.UI.Dialog.Alert({
-				content: 'To print the booking list you must select a site, a subspecialty and a date range.',
-				onClose: function() {
-					scrollTo(0,0);
-				}
-			}).open();
-			return false;
-		}
-		disableButtons();
+    function openAlertDialog(msg){
+        new OpenEyes.UI.Dialog.Alert({
+            content: msg,
+            onClose: function() {
+                scrollTo(0,0);
+            }
+        }).open();
+    }
+
+	$('#btn_print_diary_list').on('click', () => {
+        let isEmergency = $('#emergency_list').is(':checked');
+
+        if (isEmergency && ($('#date-start').val().trim() === '' || $('#date-end').val().trim() === '')) {
+            openAlertDialog('To print the emergency booking list you must select a date range.');
+            return false;
+        } else if (
+            !isEmergency &&
+            (
+                $('#site-id').val().toLowerCase() === 'all' ||
+                $('#subspecialty-id').val().toLowerCase() === 'all' ||
+                $('#date-start').val().trim() === '' ||
+                $('#date-end').val().trim() === ''
+            )
+        ) {
+            openAlertDialog('To print the booking list you must select a site, a subspecialty and a date range.');
+            return false;
+        }
+
+        disableButtons();
 		printElem('printList',{
 			pageTitle:'openeyes printout',
 			printBodyOptions:{
 				styleToAdd:'width:auto !important; margin: 0.75em !important;',
 				classNameToAdd:'openeyesPrintout'
 			},
-			//overrideElementCSS:['css/module.css',{href:'css/module.css',media:'print'}]
 		}, enableButtons);
 	});
 
@@ -649,7 +666,7 @@ $(document).ready(function() {
 	if ($('#theatreList').data('autoload')) {
 		getDiary();
 	}
-	
+
 });
 
 function getDiary() {
@@ -800,10 +817,11 @@ function theatreDiaryIconHovers() {
 }
 
 function printElem(method,options, callback){
+    searchData = $('#theatre-filter').serialize()+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN;
 	$.ajax({
 		'url': baseUrl+'/OphTrOperationbooking/theatreDiary/'+method,
 		'type': 'POST',
-		'data': searchData+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
+		'data': searchData,
 		'success': function(data) {
 			$('#printable').html(data);
 			$('#printable').printElement(options);
@@ -816,7 +834,7 @@ function printElem(method,options, callback){
 }
 
 function cancel_edit(dont_reset_checkboxes) {
-	
+
 	const $tbody = $(`#tbody_${theatre_edit_session_id}`);
 	const $form = $tbody.closest('form');
 

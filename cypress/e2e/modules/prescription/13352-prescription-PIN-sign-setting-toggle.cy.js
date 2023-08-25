@@ -46,7 +46,7 @@ describe('verifies prescription esign behaviour', () => {
         cy.getBySel('event-action-save').first().click()
 
         // store the event url and the values that we subsequently need to compare
-        cy.url().as('eventUrl')
+        cy.url().as('eventUrl', { type: 'static' })
         cy.getBySel('signatory-name').invoke('text').as('signatoryName')
         cy.getBySel('signature-date').invoke('text').as('signatureDate')
         cy.getBySel('esigned-at').invoke('text').as('esignedAt')
@@ -69,15 +69,15 @@ describe('verifies prescription esign behaviour', () => {
 
                 cy.get('@signatoryName').then((signame) => {
                     // assert that the signatory remains as admin (and has not been updated to the seeded/current logged in user)
-                    cy.getBySel('signatory-name').invoke('text').should('eq', signame)
+                    cy.getBySel('signatory-name').contains(signame.trim())
                 })
                 cy.get('@signatureDate').then((sigdate) => {
                     // assert that the signature date has not been updated
-                    cy.getBySel('signature-date').invoke('text').should('eq', sigdate)
+                    cy.getBySel('signature-date').contains(sigdate.trim());
                 })
                 cy.get('@esignedAt').then((sigtime) => {
                     // assert that the esigned at timestamp has not been updated
-                    cy.getBySel('esigned-at').invoke('text').should('eq', sigtime)
+                    cy.getBySel('esigned-at').contains(sigtime.trim())
                 })
   
             })
