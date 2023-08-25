@@ -1,5 +1,7 @@
 <?php
 
+use PDepend\Util\Log;
+
 /**
  * OpenEyes.
  *
@@ -16,20 +18,6 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-
-use ModelTestCase;
-use WithTransactions;
-use WithFaker;
-
-use Contact;
-use ContactLabel;
-use ContactLocation;
-
-use Site;
-use User;
-use Gp;
-use Person;
-use Patient;
 
 class ContactTest extends ModelTestCase
 {
@@ -224,7 +212,7 @@ class ContactTest extends ModelTestCase
         ]);
 
         $term = strtolower($last_name_partial);
-        $res = Contact::model()->findByLabel($term.'%', $label->name);
+        $res = Contact::model()->findByLabel($term . '%', $label->name);
 
         $expected = [
             ['line' => $contact1->ContactLine(), 'contact_id' => $contact1->id],
@@ -308,7 +296,7 @@ class ContactTest extends ModelTestCase
      */
     public function searching_with_valid_terms_returns_expected_results()
     {
-        $nick_name = $this->faker->word();
+        $nick_name = $this->faker->slug(2);
         $email = $this->faker->email();
 
         $search_terms = [
