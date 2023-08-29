@@ -61,7 +61,7 @@
         <div class="row">
             <h4>Remove step from patient</h4>
             <ul class="btn-list">
-                <li id="undo-add-step" class="red">Remove last "todo" pathway step</li>
+                <li id="undo-add-step" class="red" data-test="undo-add-step">Remove last "todo" pathway step</li>
             </ul>
         </div>
         <?php } ?>

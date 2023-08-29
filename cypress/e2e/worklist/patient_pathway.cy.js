@@ -107,4 +107,24 @@ describe('Managing a patient pathway in the worklist screen', () => {
             cy.getBySel('pathway-status').find('i').should('have.attr', 'data-tooltip-content').and('equal', 'Quick complete pathway')
         })
     });
+
+    it('remove last todo pathway step', function () {
+
+        cy.getWorklist(worklistPatient.worklist_id).within(() => {
+            // Add new General Task step after check out
+            cy.getBySel('add-step').click();
+        });
+
+        cy.getBySel("path-step-decision-\\/-review").click();
+
+        cy.getBySel(`fork-step-${worklistPatient.worklist_id}`).should('exist');
+
+        cy.getBySel('undo-add-step').click();
+
+        cy.getBySel(`fork-step-${worklistPatient.worklist_id}`).should('not.exist');
+
+        cy.reload();
+
+        cy.getBySel(`fork-step-${worklistPatient.worklist_id}`).should('not.exist');
+    });
 })

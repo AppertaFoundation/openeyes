@@ -18,6 +18,8 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "et_ophciexamination_intraocularpressure".
  *
@@ -34,6 +36,8 @@ namespace OEModule\OphCiExamination\models;
 class Element_OphCiExamination_IntraocularPressure extends \SplitEventTypeElement
 {
     use traits\CustomOrdering;
+    use HasFactory;
+
     public $service;
 
     protected $errorExceptions = array(

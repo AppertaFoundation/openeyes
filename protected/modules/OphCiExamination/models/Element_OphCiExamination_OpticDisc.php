@@ -123,6 +123,15 @@ class Element_OphCiExamination_OpticDisc extends \SplitEventTypeElement
     }
 
     /**
+     * @inheritdoc
+     * @return bool
+     */
+    public function isDirtyWhenNewRecord(): bool
+    {
+        return true;
+    }
+
+    /**
      * @return array relational rules.
      */
     public function relations()

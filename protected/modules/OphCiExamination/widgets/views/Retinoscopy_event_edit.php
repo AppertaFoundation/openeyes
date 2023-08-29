@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Apperta Foundation, 2020
  * This file is part of OpenEyes.
@@ -61,15 +62,15 @@ $model_name = \CHtml::modelName($element);
                     </div>
 
                     <!-- using tables in here for better layout control -->
-                    <table class="cols-7">
+                    <table class="cols-7 last-left">
                         <tbody>
                         <tr>
                             <td><?= $element->getAttributeLabel("{$eye_side}_dilated") ?></td>
                             <td><input id="<?= "{$model_name}_{$eye_side}_hidden" ?>" type="hidden" value="0" name="<?= "{$model_name}[{$eye_side}_dilated]" ?>" />
                                 <?= \CHtml::checkBox(
-                                "{$model_name}[{$eye_side}_dilated]",
-                                (string)$element->{"{$eye_side}_dilated"} === '1',
-                                ['value' => '1', 'data-adder-ignore' => 'true']
+                                    "{$model_name}[{$eye_side}_dilated]",
+                                    (string)$element->{"{$eye_side}_dilated"} === '1',
+                                    ['value' => '1', 'data-adder-ignore' => 'true']
                                 ); ?></td>
                         </tr>
                         <tr>
@@ -81,10 +82,10 @@ $model_name = \CHtml::modelName($element);
                                        data-adder-wd-value-field="true"
                                 />
                                 <?= \CHtml::dropDownList(
-                                                                                               "{$model_name}[{$eye_side}_working_distance_id]",
-                                                                                               $element->{"{$eye_side}_working_distance_id"},
-                                                                                               CHtml::listData($element->{"{$eye_side}_working_distance_options"}, 'id', 'name'),
-                                                                                               [
+                                    "{$model_name}[{$eye_side}_working_distance_id]",
+                                    $element->{"{$eye_side}_working_distance_id"},
+                                    CHtml::listData($element->{"{$eye_side}_working_distance_options"}, 'id', 'name'),
+                                    [
                                         'class' => 'cols-4',
                                         'data-adder-input-id' => "working_distance",
                                         'data-adder-header' => $element->getAttributeLabel("{$eye_side}_working_distance"),
@@ -104,7 +105,7 @@ $model_name = \CHtml::modelName($element);
                                             )
                                         )
                                                                                                ]
-                                                                                           );
+                                );
                                 ?></td>
                         </tr>
                         <tr>

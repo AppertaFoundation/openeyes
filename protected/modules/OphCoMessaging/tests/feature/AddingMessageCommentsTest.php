@@ -1144,6 +1144,9 @@ class AddingMessageCommentsTest extends OEDbTestCase
             MailboxSearch::FOLDER_READ_TO_ME,
             MailboxSearch::FOLDER_READ_CC,
 
+            MailboxSearch::FOLDER_SENT_ALL,
+            MailboxSearch::FOLDER_SENT_REPLIES,
+
             MailboxSearch::FOLDER_STARTED_THREADS,
             MailboxSearch::FOLDER_WAITING_FOR_REPLY,
             MailboxSearch::FOLDER_UNREAD_BY_RECIPIENT,

@@ -208,8 +208,14 @@
 
             $(this.options.itemSets).each(function(index, itemSet) {
                 let header = (itemSet.options.header) ? itemSet.options.header : '';
-                $('<th style="' + itemSet.options.style + '" data-id="' + itemSet.options.id + '"/>').text(header).appendTo(dialog.headers);
-                let $td = $('<td data-adder-id="' + itemSet.options.id + '" />', { style: itemSet.options.style }).appendTo(dialog.$tr);
+                let style = itemSet.options.style;
+
+                if (itemSet.options.hideByDefault) {
+                    style = style === '' ? 'display: none' : style + '; display: none';
+                }
+
+                $('<th style="' + style + '" data-id="' + itemSet.options.id + '" data-test="add-header"/>').text(header).appendTo(dialog.headers);
+                let $td = $('<td data-adder-id="' + itemSet.options.id + '" style="' + style + '" />').appendTo(dialog.$tr);
                 let $listContainer = $('<div />', { class: 'flex-layout flex-top flex-left', id: itemSet.options.id }).appendTo($td);
 
                 if (itemSet.options.supportSigns) {
@@ -232,9 +238,6 @@
                 if (itemSet.options.showInfo) {
                     dialog.generateInfoDisplay(itemSet).appendTo($listContainer);
                 }
-            });
-            $(this.options.itemSets).each(function(index, itemSet) {
-                itemSet.hide();
             });
         }
     };

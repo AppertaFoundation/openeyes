@@ -117,6 +117,15 @@ class Element_OphCiExamination_PosteriorPole extends \SplitEventTypeElement
     }
 
     /**
+     * @inheritdoc
+     * @return bool
+     */
+    public function isDirtyWhenNewRecord(): bool
+    {
+        return true;
+    }
+
+    /**
      * @return array relational rules.
      */
     public function relations()

@@ -54,7 +54,7 @@ $set_id = isset($this->set) ? $this->set->id : null;
         if (isset($_POST['element_dirty'][$model_name])) {
             $element_dirty = $_POST['element_dirty'][$model_name];
         } elseif ($element->isNewRecord) {
-            $element_dirty = 0;
+            $element_dirty = $element->isDirtyWhenNewRecord() ? 1 : 0;
         } else {
             $element_dirty = 1;
         } ?>

@@ -5,6 +5,7 @@ parameters:
     - vendor/yiisoft/yii/framework
     - protected/behaviors
     - protected/components
+    - protected/commands
     - protected/controllers
     - protected/helpers
     - protected/models

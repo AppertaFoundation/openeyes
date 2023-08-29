@@ -69,32 +69,30 @@ if (( null !== SettingMetadata::model()->getSetting('COMPLog_port')) && SettingM
 
 <div class="element-both-eyes">
   <div>
-        <?php if ($element->isNewRecord) { ?>
-          <span class="data-label">VA Scale &nbsp;&nbsp;</span>
-            <?=\CHtml::dropDownList(
-                'visualacuity_unit_change',
-                @$element->unit_id,
-                CHtml::listData(
-                    OphCiExamination_VisualAcuityUnit::model()->activeOrPk(@$element->unit_id)->findAllByAttributes(array('is_va' => '1', 'complex_only' => '0')),
-                    'id',
-                    'name'
-                ),
-                array('class' => 'inline visualacuity_unit_selector', 'data-record-mode' => $element::RECORD_MODE_SIMPLE, 'data-test' => 'visual-acuity-unit-selector')
-            );
-            if ($element->unit->information) { ?>
-            <span class="js-has-tooltip fa oe-i info small"
-                  data-tooltip-content="<?php echo $element->unit->information ?>"></span>
-            <?php }
-        }
+        <span class="data-label">VA Scale &nbsp;&nbsp;</span>
+          <?=\CHtml::dropDownList(
+              'visualacuity_unit_change',
+              @$element->unit_id,
+              CHtml::listData(
+                  OphCiExamination_VisualAcuityUnit::model()->activeOrPk(@$element->unit_id)->findAllByAttributes(array('is_va' => '1', 'complex_only' => '0')),
+                  'id',
+                  'name'
+              ),
+              array('class' => 'inline visualacuity_unit_selector', 'data-record-mode' => $element::RECORD_MODE_SIMPLE, 'data-test' => 'visual-acuity-unit-selector')
+          );
+if ($element->unit->information) { ?>
+          <span class="js-has-tooltip fa oe-i info small"
+                data-tooltip-content="<?php echo $element->unit->information ?>"></span>
+<?php }
 
-        if (( null !== SettingMetadata::model()->getSetting('COMPLog_port')) && SettingMetadata::model()->getSetting('COMPLog_port') > 0) {
-            ?>
+if (( null !== SettingMetadata::model()->getSetting('COMPLog_port')) && SettingMetadata::model()->getSetting('COMPLog_port') > 0) {
+    ?>
           <button class="button blue hint" name="complog" id="et_complog">Measure in COMPLog</button>
           <iframe id="complog_launcher" src="" width="0" height="0" style="display:none;">
           </iframe>
-            <?php
-        }
-        ?>
+    <?php
+}
+?>
       </div>
 </div>
 

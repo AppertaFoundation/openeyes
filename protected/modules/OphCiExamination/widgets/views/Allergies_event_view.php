@@ -25,7 +25,7 @@
                     );
                     ?>
 
-              <div id="js-listview-allergies-pro" class="cols-full listview-pro">
+              <div id="js-listview-allergies-pro" class="cols-full listview-pro" data-test="listview-allergies-pro">
                     <table class="last-left">
                         <tbody>
                             <tr>
@@ -89,7 +89,7 @@
                         </tbody>
                     </table>
                 </div>
-                <div id="js-listview-allergies-full" class="cols-full listview-full" style="display: none;">
+                <div id="js-listview-allergies-full" class="cols-full listview-full" style="display: none;"  data-test="listview-allergies-full">
 
                     <div class="flex-layout">
 
@@ -196,7 +196,7 @@
         </div>
                 <?php if (count($element->entries)) : ?>
             <div>
-                <i class="oe-i small js-listview-expand-btn expand" data-list="allergies"></i>
+                <i class="oe-i small js-listview-expand-btn expand" data-list="allergies" data-test="listview-expand-btn"></i>
             </div>
                 <?php endif; ?>
             <?php } ?>

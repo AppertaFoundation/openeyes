@@ -55,7 +55,7 @@ class AutoSetRuleController extends BaseAdminController
 
         $data_provider->pagination = $pagination;
 
-        $command = new PopulateAutoMedicationSetsCommand('PopulateAutoMedicationSets', new CConsoleCommandRunner());
+        $command = new \PopulateAutoMedicationSetsCommand('PopulateAutoMedicationSets', new CConsoleCommandRunner());
         $command_is_running = $command->actionCheckRunning();
 
         $this->render('/AutoSetRule/index', [
@@ -237,10 +237,7 @@ class AutoSetRuleController extends BaseAdminController
                 array_push($unique_med, $item['medication_id']);
             }
         }
-
-        header('Content-type: application/json');
         echo CJSON::encode($data);
-        \Yii::app()->end();
     }
 
     /**
@@ -349,7 +346,7 @@ class AutoSetRuleController extends BaseAdminController
 
     public function actionCheckRebuildIsRunning()
     {
-        $command = new PopulateAutoMedicationSetsCommand('PopulateAutoMedicationSets', new CConsoleCommandRunner());
+        $command = new \PopulateAutoMedicationSetsCommand('PopulateAutoMedicationSets', new CConsoleCommandRunner());
         echo $command->actionCheckRunning();
     }
 

@@ -15,8 +15,12 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use OE\factories\models\traits\HasFactory;
+
 class OphCiExamination_IntraocularPressure_Value extends \BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     public function tableName()
     {
         return 'ophciexamination_intraocularpressure_value';

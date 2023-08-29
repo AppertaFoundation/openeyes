@@ -141,6 +141,18 @@ class BaseElement extends BaseActiveRecordVersioned
     }
 
     /**
+     *  When isDirtyWhenNewRecord returns true, an element which is a new record
+     *  will have its element_dirty field set to true, which is useful e.g, for avoiding
+     *  the discard empty popups dialogue box.
+     *
+     * @return bool
+     */
+    public function isDirtyWhenNewRecord(): bool
+    {
+        return false;
+    }
+
+    /**
      * Apply data (in array format) to the element. Override this in each element to apply complex data.
      *
      * @param array $data

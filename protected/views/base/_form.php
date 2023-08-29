@@ -38,7 +38,7 @@ if (!Yii::app()->user->isGuest) {
             $this->widget('PasswordStaleWidgetReminder');
         }
 
-        if (empty(Yii::app()->session['shown_version_reminder']) && Yii::app()->user->checkAccess('admin')) {
+        if (empty(Yii::app()->session['shown_version_reminder']) && Yii::app()->user->checkAccess('admin') && \SettingMetadata::model()->getSetting('auto_version_check') === 'enable') {
             Yii::app()->session['shown_version_reminder'] = true;
             $this->widget('VersionCheckWidgetReminder');
         }

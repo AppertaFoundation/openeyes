@@ -26,7 +26,7 @@ $picker_setup = $pick_behavior->setupPicker();
 <div class="clinic-pathway">
     <table class="oec-patients in-event">
         <tbody>
-        <tr>
+        <tr id="js-pathway-<?= $pathway->worklist_patient->id ?>">
             <td><?= $pathway->worklist_patient->scheduledtime ?></td>
             <td>
                 <div class="list-name"><?= $pathway->worklist_patient->worklist->name ?></div>
@@ -53,7 +53,8 @@ $picker_setup = $pick_behavior->setupPicker();
                       data-patient-id="<?= $pathway->worklist_patient->patient_id ?>"
                       data-visit-id="<?= $pathway->worklist_patient->id ?>"
                       data-pathstep-id="comment"
-                      data-pathstep-type-id="">
+                      data-pathstep-type-id=""
+                      data-test="pathway-comment-btn">
                     <span class="step i-comments"></span>
                     <span class="info" style="display: none;"></span>
                 </span>

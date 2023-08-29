@@ -94,6 +94,10 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
         });
 
         $(controller.options.wrapperSelector).on('change', controller.options.fileInputSelector, function () {
+            if (this.files.length < 1) {
+                return;
+            }
+
             let $field = $(this);
             let file_type = this.files[0].type;
 

@@ -658,7 +658,7 @@ $(function () {
                     $thisStep.addClass('has-comments');
 
                     // update the associated pathstepIcon of the current pathstep object
-                    ps.pathstepIcon = $thisStep.get(0); 
+                    ps.updateIconSelector($thisStep.get(0));
 
                     const oldSteps = collectActiveTodoStepsFrom($pathway);
                     let $commentButton = ps.pathwayId ? $('.comments[data-pathway-id="' + ps.pathwayId + '"]') : $('.comments[data-visit-id="' + ps.visitID + '"]');
