@@ -945,8 +945,8 @@ function setHeightToContent(element) {
  * Automatically resize any textareas with the autosize class. Including dynamic resizing during typing.
  */
 function autosize() {
-	// select all textarea elements with the class 'autosize'
-	const textareas = document.querySelectorAll('textarea.autosize');
+	// select all textarea elements with classes that we want to autosize
+	const textareas = document.querySelectorAll('textarea.autosize, textarea.js-comment-field, textarea.js-input-comments');
 
 	textareas.forEach(textarea => {
 		setHeightToContent(textarea);
@@ -955,8 +955,11 @@ function autosize() {
 	// add an event listener for all the textareas
 	document.addEventListener('input', event => {
 		const target = event.target;
-		if (target.matches('.autosize')) {
+		const targetIsInList = Array.from(textareas).includes(target);
+
+		if (targetIsInList) {
 			setHeightToContent(target);
 		}
 	});
+
 }
