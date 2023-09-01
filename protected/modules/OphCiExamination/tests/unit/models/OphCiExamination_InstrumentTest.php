@@ -119,7 +119,9 @@ class OphCiExamination_InstrumentTest extends ModelTestCase
                      ->create();
 
         $installation_response = $this->actingAs($installation_admin, $institution1)
-            ->get(static::IOP_INSTRUMENTS_VIEW_ADMIN_URL);
+            ->get(static::IOP_INSTRUMENTS_VIEW_ADMIN_URL)
+            ->assertSuccessful()
+            ->crawl();
 
         $installation_instruments = $installation_response->filter('[data-test="iop-instrument-name"]')->extract(['_text']);
 
@@ -128,7 +130,9 @@ class OphCiExamination_InstrumentTest extends ModelTestCase
         $this->assertContains($instrument3->name, $installation_instruments);
 
         $institution_response = $this->actingAs($institution_admin, $institution1)
-            ->get(static::IOP_INSTRUMENTS_VIEW_ADMIN_URL);
+            ->get(static::IOP_INSTRUMENTS_VIEW_ADMIN_URL)
+            ->assertSuccessful()
+            ->crawl();
 
         $institution_instruments = $institution_response->filter('[data-test="iop-instrument-name"]')->extract(['_text']);
 
@@ -156,7 +160,9 @@ class OphCiExamination_InstrumentTest extends ModelTestCase
         array_push($tenanted_institutions, $installation_institution);
 
         $response = $this->actingAs($installation_admin, $installation_institution)
-                  ->get(static::IOP_INSTRUMENTS_ADD_ADMIN_URL);
+                  ->get(static::IOP_INSTRUMENTS_ADD_ADMIN_URL)
+                  ->assertSuccessful()
+                  ->crawl();
 
         $options = $response->filter('[data-test="instrument-institutions-list"] option')->extract(['value']);
 
@@ -189,7 +195,9 @@ class OphCiExamination_InstrumentTest extends ModelTestCase
             ->create();
 
         $response = $this->actingAs($institution_admin, $institution)
-                  ->get(static::IOP_INSTRUMENTS_ADD_ADMIN_URL);
+                  ->get(static::IOP_INSTRUMENTS_ADD_ADMIN_URL)
+                  ->assertSuccessful()
+                  ->crawl();
 
         $this->assertEquals(0, $response->filter('[data-test="instrument-institutions-list"]')->count());
 
@@ -197,10 +205,5 @@ class OphCiExamination_InstrumentTest extends ModelTestCase
 
         $this->assertEquals(1, $field->count());
         $this->assertEquals($institution->id, $field->extract(['value'])[0]);
-    }
-
-    protected function admin_edit_url_for(OphCiExamination_Instrument $instrument): string
-    {
-        return IOP_INSTRUMENTS_EDIT_ADMIN_URL . $instrument->id;
     }
 }

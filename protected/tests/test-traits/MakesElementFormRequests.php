@@ -16,12 +16,13 @@
 use ElementType;
 use User;
 use Patient;
+use Symfony\Component\DomCrawler\Crawler;
 
 trait MakesElementFormRequests
 {
     use MakesApplicationRequests;
 
-    public function getElementForm(ElementType $element_type, ?Patient $patient = null, ?User $user = null)
+    public function getElementForm(ElementType $element_type, ?Patient $patient = null, ?User $user = null): Crawler
     {
         $patient ??= Patient::factory()->create();
 
@@ -38,7 +39,9 @@ trait MakesElementFormRequests
             'previous_id' => '',
         ]);
 
-        return $this->actingAs($user)->get($url);
+        return $this->actingAs($user)->get($url)
+            ->assertSuccessful()
+            ->crawl();
     }
 
     public function extractElementDirtyValue($model, $response)

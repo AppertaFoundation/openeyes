@@ -71,15 +71,4 @@ class PostOpComplicationsTest extends \OEDbTestCase
             OphCiExamination_PostOpComplications::model()->enabled($institution->id, $subspecialty->id)->findAll()
         );
     }
-
-    protected function createUserWithInstitution()
-    {
-        $user = \User::model()->findByAttributes(['first_name' => 'admin']);
-
-        $institution = Institution::factory()
-            ->withUserAsMember($user)
-            ->create();
-
-        return [$user, $institution];
-    }
 }

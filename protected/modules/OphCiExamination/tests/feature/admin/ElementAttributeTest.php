@@ -42,7 +42,9 @@ class ElementAttributeTest extends OEDbTestCase
         $element_attributes = $this->createAttributesForInstitution($institution);
 
         $response = $this->actingAs($user, $institution)
-            ->get('/oeadmin/ExaminationElementAttributes/list?institution_id=' . $institution->id);
+            ->get('/oeadmin/ExaminationElementAttributes/list?institution_id=' . $institution->id)
+            ->assertSuccessful()
+            ->crawl();
 
         $table_rows = $response->filter('table.standard tbody tr');
 

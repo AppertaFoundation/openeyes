@@ -98,17 +98,6 @@ class KeratometryTest extends \OEDbTestCase
         $this->assertEventTypeElementCreatedFor($patient, Element_OphCiExamination_Keratometry::class, $this->getExpectedElementData($element_with_data->getAttributes()));
     }
 
-    protected function createUserWithInstitution()
-    {
-        $user = \User::model()->findByAttributes(['first_name' => 'admin']);
-
-        $institution = \Institution::factory()
-            ->withUserAsMember($user)
-            ->create();
-
-        return [$user, $institution];
-    }
-
     protected function getExpectedElementData($data)
     {
         // quick filter to just extract the sided data fields from the given data

@@ -34,11 +34,37 @@ trait MakesApplicationRequests
         $this->removeRequestEventHandling();
         $this->tearDownCallbacks(function () {
             $this->resetRequestGlobals();
+            $this->removeHeaderSettingWrapper();
             $_SERVER = $this->originalServerValues;
         });
     }
 
-    protected function actingAs($user, $for_institution = null)
+    /**
+     * By default will try to use an existing user for the given params.
+     * If none are provided, will look for the standard admin user that
+     * exists in the sample dataset.
+     *
+     * Will create a new institution and make the User a member of it.
+     *
+     * @param array|null $user_params
+     * @return array
+     */
+    protected function createUserWithInstitution(?array $user_params = null): array
+    {
+        if ($user_params === null) {
+            $user_params = ['first_name' => 'admin'];
+        }
+
+        $user = \User::factory()->useExisting($user_params)->create();
+
+        $institution = \Institution::factory()
+            ->withUserAsMember($user)
+            ->create();
+
+        return [$user, $institution];
+    }
+
+    protected function actingAs($user, $for_institution = null): self
     {
         $this->mockCurrentUser($user);
         if ($for_institution) {
@@ -48,7 +74,14 @@ trait MakesApplicationRequests
         return $this;
     }
 
-    protected function get($url, $crawl_result = true)
+    protected function ajaxRequest(): self
+    {
+        $_SERVER['HTTP_X_REQUESTED_WITH'] = 'XMLHttpRequest';
+
+        return $this;
+    }
+
+    protected function get($url)
     {
         $this->resetRequestGlobals();
         $url = $this->extractUrlAndSetGet($url);
@@ -57,34 +90,29 @@ trait MakesApplicationRequests
         $_SERVER['SERVER_NAME'] = 'phpunit';
         $_SERVER['REQUEST_URI'] = $url;
 
-        $requestMock = $this->getMockBuilder(\CHttpRequest::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['getCsrfToken', 'getPathInfo', 'redirect'])
-            ->getMock();
-
-        $requestMock->method('getCsrfToken')
-            ->willReturn('foo');
-        $requestMock->method('getPathInfo')
-            ->willReturn($url);
 
         $redirected = null;
-        $requestMock->method('redirect')
-            ->willReturnCallback(function (...$args) use (&$redirected) {
-                $redirected = new ApplicationRedirectWrapper(...$args);
-            });
-
-        \Yii::app()->setComponent('request', $requestMock);
+        $this->mockRequest($url, $redirected);
+        $headers = [];
+        $this->setHeaderSettingWrapper($headers);
 
         ob_start();
-        \Yii::app()->run();
-        $result = ob_get_contents();
+        try {
+            \Yii::app()->run();
+        } catch (\Exception $e) {
+            // ensure that we handle thrown exceptions gracefully.
+            ob_end_clean();
+            return ApplicationResponseWrapper::fromException($e);
+        }
+
+        $output = ob_get_contents();
         ob_end_clean();
 
         if ($redirected) {
             return ApplicationResponseWrapper::fromRedirect($redirected);
         }
 
-        return $crawl_result ? $this->crawl($result) : $result;
+        return $redirected === null ? ApplicationResponseWrapper::fromOutputString($output, $headers) : ApplicationResponseWrapper::fromRedirect($redirected);
     }
 
     protected function post($url, $form_data = []): ApplicationResponseWrapper
@@ -97,29 +125,10 @@ trait MakesApplicationRequests
         $_POST = $form_data;
         $_REQUEST = $form_data;
 
-        $requestMock = $this->getMockBuilder(\CHttpRequest::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['getCsrfToken', 'getPathInfo', 'redirect', 'getBaseUrl'])
-            ->getMock();
-
-        // so redirect URLs aren't pre-pended with script path
-        $requestMock->method('getBaseUrl')
-            ->willReturn(ApplicationResponseWrapper::BASE_URL);
-        $requestMock->method('getCsrfToken')
-            ->willReturn('foo');
-        $requestMock->method('getPathInfo')
-            ->willReturn($url);
-
         $redirected = null;
-        $requestMock->method('redirect')
-            ->willReturnCallback(function (...$args) use (&$redirected) {
-                $redirected = new ApplicationRedirectWrapper(...$args);
-            });
-
-        \Yii::app()->setComponent('request', $requestMock);
+        $this->mockRequest($url, $redirected);
 
         $headers = [];
-
         $this->setHeaderSettingWrapper($headers);
 
         ob_start();
@@ -128,10 +137,8 @@ trait MakesApplicationRequests
             $output = ob_get_contents();
 
             ob_end_clean();
-            $this->removeHeaderSettingWrapper();
         } catch (Exception $e) {
             ob_end_clean();
-            $this->removeHeaderSettingWrapper();
 
             return ApplicationResponseWrapper::fromException($e);
         }
@@ -194,5 +201,27 @@ trait MakesApplicationRequests
     private function removeHeaderSettingWrapper()
     {
         unset(\Yii::app()->params['header_wrapper_callback']);
+    }
+
+    private function mockRequest(string $url, &$redirected): void
+    {
+        $requestMock = $this->getMockBuilder(\CHttpRequest::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getBaseUrl', 'getCsrfToken', 'getPathInfo', 'redirect'])
+            ->getMock();
+
+        // so redirect URLs aren't pre-pended with script path
+        $requestMock->method('getBaseUrl')
+        ->willReturn(ApplicationResponseWrapper::BASE_URL);
+        $requestMock->method('getCsrfToken')
+            ->willReturn('foo');
+        $requestMock->method('getPathInfo')
+            ->willReturn($url);
+        $requestMock->method('redirect')
+            ->willReturnCallback(function (...$args) use (&$redirected) {
+                $redirected = new ApplicationRedirectWrapper(...$args);
+            });
+
+        \Yii::app()->setComponent('request', $requestMock);
     }
 }

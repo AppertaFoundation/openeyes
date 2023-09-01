@@ -72,15 +72,4 @@ class MandatoryElementExaminationWorkflowTest extends \OEDbTestCase
         // mandatory attribute is set to string values
         $this->assertEquals('true', $expected_to_be_mandatory->attr('data-mandatory'));
     }
-
-    protected function createUserWithInstitution()
-    {
-        $user = \User::model()->findByAttributes(['first_name' => 'admin']);
-
-        $institution = \Institution::factory()
-            ->withUserAsMember($user)
-            ->create();
-
-        return [$user, $institution];
-    }
 }

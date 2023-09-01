@@ -384,17 +384,6 @@ class DiagnosesUpdatingPatientDataBehaviourTest extends \OEDbTestCase
     }
 
     // TODO: refactor (see PCRRiskTest)
-    protected function createUserWithInstitution()
-    {
-        $user = \User::model()->findByAttributes(['first_name' => 'admin']);
-
-        $institution = \Institution::factory()
-            ->withUserAsMember($user)
-            ->create();
-
-        return [$user, $institution];
-    }
-
     protected function assertExaminationDiagnosesRecordedFor(\Patient $patient, array $diagnoses)
     {
         $element_table = Element_OphCiExamination_Diagnoses::model()->tableName();
