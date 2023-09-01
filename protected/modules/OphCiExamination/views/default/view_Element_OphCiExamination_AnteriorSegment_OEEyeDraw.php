@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <?php
     $cross_section_ed = $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
@@ -45,12 +47,12 @@
 
 <div class="eyedraw-data stack">
     <?php if ($report = $element->{$side . '_ed_report'}) : ?>
-      <div class="data-value"><?php echo nl2br($report) ?></div>
+      <div class="data-value"><?= Yii::app()->format->Ntext($report) ?></div>
     <?php endif; ?>
 
     <?php if ($description = $element->{$side . '_description'}) : ?>
       <div class="data-label"><?php echo $element->getAttributeLabel($side . '_description') ?>:</div>
-      <div class="data-value"><?=\CHtml::encode($description) ?></div>
+      <div class="data-value"><?=Yii::app()->format->Ntext($description) ?></div>
     <?php endif; ?>
 
     <?php /* See OE-4283 */ ?>
