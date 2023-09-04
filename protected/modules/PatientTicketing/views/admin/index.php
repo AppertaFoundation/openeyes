@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,11 +16,12 @@
  * @copyright Copyright (c) 2011-2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <?php
 $assetManager = Yii::app()->getAssetManager();
-$widgetPath = $assetManager->publish('protected/widgets/js', true);
+$widgetPath = $assetManager->getPublishedPathOfAlias('application.widgets.js');
 Yii::app()->clientScript->registerScriptFile($widgetPath . '/MultiSelectList.js');
 ?>
 <h2><?= $title ?></h2>
@@ -57,7 +59,8 @@ Yii::app()->clientScript->registerScriptFile($widgetPath . '/MultiSelectList.js'
             'class' => 'generic-admin-save button large',
             'formaction' => '/admin/addMapping',
             'formmethod' => 'POST',
-        ]);
+        ]
+    );
     echo CHtml::submitButton(
         'Remove selected from current Institution',
         [

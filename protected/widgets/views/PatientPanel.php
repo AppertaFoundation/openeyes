@@ -48,7 +48,7 @@ if ($summary) {
     $this->render('application.widgets.views.PatientPanelSummary', array('deceased' => $deceased,'trialContext' => $trialContext,'navIconsUrl' => $navIconsUrl));
 
     $assetManager = Yii::app()->getAssetManager();
-    $widgetPath = $assetManager->publish('protected/widgets/js', true);
+    $widgetPath = $assetManager->getPublishedPathOfAlias('application.widgets.js');
     Yii::app()->clientScript->registerScriptFile($widgetPath . '/PatientPanelPopup.js');
 } else { ?>
     <td>
@@ -98,7 +98,7 @@ if ($summary) {
     </td>
     <?php
       $assetManager = Yii::app()->getAssetManager();
-      $widgetPath = $assetManager->publish('protected/widgets/js');
+      $widgetPath = $assetManager->getPublishedPathOfAlias('application.widgets.js');
       Yii::app()->clientScript->registerScriptFile($widgetPath . '/PatientPanelPopupMulti.js');
     ?>
 <?php } ?>

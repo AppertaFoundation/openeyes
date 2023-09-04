@@ -165,8 +165,7 @@ $patientSummaryPopup = $this->createWidget(
 <?php
 if ($show_patient_summary_popup) {
     $assetManager = Yii::app()->getAssetManager();
-    $widgetPath = $assetManager->publish('protected/widgets/js');
-    Yii::app()->clientScript->registerScriptFile($widgetPath . '/PatientPanelPopupMulti.js');
+    Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->getPublishedPathOfAlias('application.widgets.js') . '/PatientPanelPopupMulti.js');
     ?>
 <script>
     $(function () {
