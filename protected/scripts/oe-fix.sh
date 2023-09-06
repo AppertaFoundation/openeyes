@@ -164,10 +164,10 @@ if [ "$composer" == "1" ]; then
     echo "DEPENDENCIES BEING EVALUATED..."
     # delete the lock file first as we want to be sure it gets regenerated (note the lock file is no longer comitted to version control)
     rm "$WROOT/composer.lock" 2>/dev/null || :
-    echo "Installing/updating composer dependencies"
+    echo -e "\n** Installing/updating composer dependencies **"
     sudo -E composer install --working-dir=$WROOT --no-plugins --no-scripts --prefer-dist --no-interaction --optimize-autoloader $composerexta
 
-    echo "Installing/updating npm dependencies"
+    echo -e "\n** Installing/updating npm dependencies **"
 
     # have to cd, as not all npm commands support setting a working directory
     cd "$WROOT" || exit 1
