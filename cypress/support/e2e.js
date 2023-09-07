@@ -19,9 +19,12 @@ import './yii-commands'
 import './ui/index'
 import './ui/worklist'
 import chaiString from 'chai-string'
+import "cypress-cloud/support";
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
+
+require("cypress-cloud/support");
 
 before(() => {
     // ensure assets are not cached in the browser between test runs

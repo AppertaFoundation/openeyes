@@ -16,10 +16,10 @@ jobs:
   include:
     - # PR builds - phpunit
       if: type = pull_request
-      script: PUID=$(id -u) BUILD_BRANCH=$TRAVIS_PULL_REQUEST_BRANCH docker-compose -f protected/tests/docker-compose.yml run --use-aliases web
+      script: PUID=$(id -u) TESTS_TO_RUN="PHPUNIT-SAMPLE;PHPUNIT-FIXTURES" BUILD_BRANCH=$TRAVIS_PULL_REQUEST_BRANCH COMMIT_ID=$TRAVIS_COMMIT BUILD_ID=$TRAVIS_BUILD_ID BUILD_NUMBER=$TRAVIS_BUILD_NUMBER docker-compose -f protected/tests/docker-compose.yml run -v "$HOME/.ssh/id_rsa:/run/secrets/SSH_PRIVATE_KEY" --use-aliases web
       name: "All tests"
     - # Branch builds - phpunit fixtures
       if: type = push AND (branch in (master, develop) OR branch =~ /^release\/\S*$/ OR branch =~ /^bugfix\/\S*$/)
-      script: PUID=$(id -u) BUILD_BRANCH=$TRAVIS_BRANCH docker-compose -f protected/tests/docker-compose.yml run --use-aliases web
+      script: PUID=$(id -u) TESTS_TO_RUN="PHPUNIT-SAMPLE;CYPRESS_SHORT;PHPUNIT-FIXTURES" BUILD_BRANCH=$TRAVIS_BRANCH COMMIT_ID=$TRAVIS_COMMIT BUILD_ID=$TRAVIS_BUILD_ID BUILD_NUMBER=$TRAVIS_BUILD_NUMBER docker-compose -f protected/tests/docker-compose.yml run -v "$HOME/.ssh/id_rsa:/run/secrets/SSH_PRIVATE_KEY" --use-aliases web
       name: "All tests (branch)"
 

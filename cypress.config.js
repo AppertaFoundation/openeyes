@@ -1,4 +1,5 @@
 const { defineConfig } = require("cypress");
+const { cloudPlugin } = require("cypress-cloud/plugin");
 const del = require('del');
 
 module.exports = defineConfig({
@@ -8,13 +9,21 @@ module.exports = defineConfig({
     viewportWidth: 1280,
     viewportHeight: 737,
     setupNodeEvents(on, config) {
+
       on('after:spec', (spec, results) => {
-        if (results && results.stats.failures === 0 && results.video) {
-          // delete the video if test is successful and there is a video
-          // This saves a lot of time as otherwise the video is compressed then uploaded to the dashboard
-          return del(results.video)
+        if (results && results.video) {
+          // Do we have failures for any retry attempts?
+          const failures = results.tests.some((test) =>
+            test.attempts.some((attempt) => attempt.state === 'failed')
+          )
+          if (!failures) {
+            // delete the video if the spec passed and no tests retried
+            fs.unlinkSync(results.video)
+          }
         }
       })
+
+      return cloudPlugin(on, config);
     },
     defaultCommandTimeout: 7000,
     retries: {

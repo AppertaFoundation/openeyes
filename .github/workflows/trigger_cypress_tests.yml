@@ -1,0 +1,42 @@
+name: Trigger Cypress Test run
+
+## Triggers the build of deployable images for the OE application.
+## The actual build happens in a separate, public repository - to avoid wasting action minutes in the private repo
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  trigger-cypress:
+    name: Trigger Cypress
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Resolve ref
+        uses: rlespinasse/github-slug-action@v4
+
+      - name: Repository Dispatch
+        uses: peter-evans/repository-dispatch@v2.1.1
+        with:
+          token: ${{ secrets.TKLACCESS_TOKEN }}
+          repository: toukanlabs/external-action-runner
+          event-type: "cypress_run_pr_tests_${{ env.GITHUB_REF_SLUG }}_${{ env.GITHUB_EVENT_PULL_REQUEST_HEAD_SHA_SHORT }}_${{ github.run_attempt}}"
+          client-payload: |
+            {
+              "GITHUB_REF_NAME": "${{ github.ref_name }}",
+              "GITHUB_REF": "${{ github.ref }}",
+              "GITHUB_SHA": "${{ github.sha }}",
+              "GITHUB_HEAD_REF": "${{ github.head_ref }}",
+              "GITHUB_HEAD_SHA": "${{ github.event.pull_request.head.sha }}",
+              "GITHUB_REPOSITORY": "${{ github.repository }}",
+              "GITHUB_RUN_ID": "${{ github.run_id }}",
+              "GITHUB_RUN_NUMBER": "${{ github.run_number }}",
+              "GITHUB_RUN_ATTEMPT": "${{ github.run_attempt }}",
+              "GITHUB_EVENT_NAME": "${{ github.event_name }}"
+            }
+
+      # Output actions path for toukanlabs/external-action-runner
+      - name: Link to external action
+        run: |
+          echo "To see progress go to https://github.com/toukanlabs/external-action-runner/actions and look for the run named cypress_run_pr_tests_${{ env.GITHUB_REF_SLUG }}_${{ env.GITHUB_EVENT_PULL_REQUEST_HEAD_SHA_SHORT }}_${{ github.run_attempt}}"

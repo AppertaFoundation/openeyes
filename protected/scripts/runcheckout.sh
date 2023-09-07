@@ -15,6 +15,9 @@ if [ "$DIR" != "/tmp" ]; then
     exit 1
 fi
 
+# Set git to use ssh rather than git+ssh (this is needed for the git ls-remote command to work)
+export GIT_SSH_COMMAND="ssh"
+
 # Process commandline parameters
 SCRIPTDIR="" # will be passed in from oe-checkout.sh
 WROOT=""     # will be passed in from oe-checkout.sh

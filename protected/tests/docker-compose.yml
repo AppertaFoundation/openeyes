@@ -42,8 +42,8 @@ services:
     image: toukanlabsdocker/oe-web-dev:php8.0
     environment:
       OE_MODE: "TEST"
-      TESTS_TO_RUN: "PHPUNIT-SAMPLE;CYPRESS_SHORT;PHPUNIT-FIXTURES"
-      TEST_UPLOAD_TO_TRANSFER_SH: "TRUE"
+      TESTS_TO_RUN: "${TESTS_TO_RUN:-}"
+      # TEST_UPLOAD_TO_TRANSFER_SH: "TRUE"
       OE_QUIET_DEBUG_LOG: "TRUE"
       OE_APP_LOG_LEVELS: "error"
       # OUTPUT_APPLICATION_LOGS: "FALSE"
@@ -60,13 +60,16 @@ services:
       DATABASE_USER: "openeyes"
       DATABASE_PASS: "openeyes"
       OE_INSTITUTION_CODE: "NEW"
-      DISPLAY: "${DISPLAY:-:99.0}"
+      DISPLAY: "${DISPLAY:-}"
       BUILD_BRANCH: "${BUILD_BRANCH:-master}"
       PUID: ${PUID:-1000}
       CYPRESS_RECORD_KEY: ${CYPRESS_RECORD_KEY:-}
+      CURRENTS_RECORD_KEY: ${CURRENTS_RECORD_KEY:-}
+      CURRENTS_PROJECT_ID: ${CURRENTS_PROJECT_ID:-}
       COMMIT_ID: ${COMMIT_ID:-}
       BUILD_ID: ${BUILD_ID:-}
       BUILD_NUMBER: ${BUILD_NUMBER:-}
+      SSH_PRIVATE_KEY: ${SSH_PRIVATE_KEY:-}
       ## TRAVIS-SPECIFIC VARIABLES FROM BUILD HOST - Used by some tests (e.g cypress cloud)
       ## See https://docs.travis-ci.com/user/environment-variables/#default-environment-variables for definitions
       ## These will be ignored by other CI platforms
@@ -96,8 +99,6 @@ services:
       TRAVIS_TEST_RESULT: ${TRAVIS_TEST_RESULT:-}
       TRAVIS_TAG: ${TRAVIS_TAG:-}
       TRAVIS_BUILD_STAGE_NAME: ${TRAVIS_BUILD_STAGE_NAME:-}
-    secrets:
-      - source: SSH_PRIVATE_KEY
     stdin_open: true
     tty: true
     depends_on:
@@ -111,6 +112,3 @@ services:
 
 volumes:
   protected-files:
-secrets:
-  SSH_PRIVATE_KEY:
-    file: ~/.ssh/id_rsa
