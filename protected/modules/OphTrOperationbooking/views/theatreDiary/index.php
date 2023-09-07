@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2020
  * This file is part of OpenEyes.
@@ -12,6 +13,7 @@
  * @copyright Copyright (C) 2020, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <div class="oe-full-header">
@@ -64,7 +66,7 @@
 
 <?php
 $assetManager = Yii::app()->getAssetManager();
-$widgetPath = $assetManager->publish('protected/widgets/js');
+$widgetPath = $assetManager->getPublishedPathOfAlias('application.widgets.js');
 Yii::app()->clientScript->registerScriptFile($widgetPath . '/PatientPanelPopupMulti.js');
 ?>
 
@@ -84,4 +86,3 @@ Yii::app()->clientScript->registerScriptFile($widgetPath . '/PatientPanelPopupMu
         }
     }
 </style>
-

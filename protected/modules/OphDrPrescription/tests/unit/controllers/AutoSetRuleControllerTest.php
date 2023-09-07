@@ -29,22 +29,12 @@ class AutoSetRuleControllerTest extends \OEDbTestCase
         list($user, $institution) = $this->createUserWithInstitution();
 
         $response = $this->actingAs($user, $institution)
-            ->get('/OphDrPrescription/OphDrPrescriptionAdmin/autoSetRule/searchmedication');
+            ->get('/OphDrPrescription/OphDrPrescriptionAdmin/autoSetRule/searchmedication')
+            ->assertSuccessful();
 
-        $json = json_decode($response->text(), true);
+        $json = json_decode($response->getResponseString(), true);
 
         // Assert that the pagination property exists in the JSON that gets returned
         $this->assertNotNull($json['pagination']);
-    }
-
-    protected function createUserWithInstitution()
-    {
-        $user = \User::model()->findByAttributes(['first_name' => 'admin']);
-
-        $institution = Institution::factory()
-            ->withUserAsMember($user)
-            ->create();
-
-        return [$user, $institution];
     }
 }

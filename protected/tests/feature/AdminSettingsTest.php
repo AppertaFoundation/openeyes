@@ -69,17 +69,8 @@ class AdminSettingsTest extends OEDbTestCase
         $url = '/admin/editSystemSetting?' . http_build_query(['key' => $setting_key, 'class' => 'SettingInstallation']);
 
         return $this->actingAs($this->admin_user, $this->setting_institution)
-                    ->get($url);
-    }
-
-    protected function createUserWithInstitution()
-    {
-        $user = User::model()->findByAttributes(['first_name' => 'admin']);
-
-        $institution = ModelFactory::factoryFor(Institution::class)
-            ->withUserAsMember($user)
-            ->create();
-
-        return [$user, $institution];
+                    ->get($url)
+                    ->assertSuccessful()
+                    ->crawl();
     }
 }

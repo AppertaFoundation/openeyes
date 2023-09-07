@@ -42,7 +42,10 @@ class DraftAutoSaveTest extends \OEDbTestCase
             'episode_id' => $episode->id
         ]);
 
-        $response = $this->actingAs($user, $institution)->get("/OphCiExamination/default/step/?id={$event->id}&patient_id={$patient->id}", true);
+        $response = $this->actingAs($user, $institution)
+            ->get("/OphCiExamination/default/step/?id={$event->id}&patient_id={$patient->id}")
+            ->assertSuccessful()
+            ->crawl();
 
         $this->assertTrue(filter_var($response->filter('.js-auto-save-enabled')->first()->attr('value'), FILTER_VALIDATE_BOOLEAN));
     }
@@ -61,19 +64,11 @@ class DraftAutoSaveTest extends \OEDbTestCase
             'episode_id' => $episode->id
         ]);
 
-        $response = $this->actingAs($user, $institution)->get("/OphCiExamination/default/step/?id={$event->id}&patient_id={$patient->id}", true);
+        $response = $this->actingAs($user, $institution)
+            ->get("/OphCiExamination/default/step/?id={$event->id}&patient_id={$patient->id}")
+            ->assertSuccessful()
+            ->crawl();
 
         $this->assertFalse(filter_var($response->filter('.js-auto-save-enabled')->first()->attr('value'), FILTER_VALIDATE_BOOLEAN));
-    }
-
-    protected function createUserWithInstitution()
-    {
-        $user = \User::model()->findByAttributes(['first_name' => 'admin']);
-
-        $institution = \Institution::factory()
-            ->withUserAsMember($user)
-            ->create();
-
-        return [$user, $institution];
     }
 }

@@ -21,7 +21,7 @@ jobs:
     steps:
 
       - name: Resolve ref
-        uses: rlespinasse/github-slug-action@v3.x
+        uses: rlespinasse/github-slug-action@v4
 
       - name: Emit repository_dispatch
         uses: mvasigh/dispatch-action@main
@@ -31,7 +31,7 @@ jobs:
           token: ${{ secrets.TKLACCESS_TOKEN }}
           repo: external-action-runner
           owner: toukanlabs
-          event_type: "Build Image: ${{ env.GITHUB_REF_NAME }}"
+          event_type: "build-oe-image_${{ env.GITHUB_REF_SLUG }}"
           message: | 
             { 
               "GITHUB_REF_NAME": "${{ env.GITHUB_REF_NAME }}",

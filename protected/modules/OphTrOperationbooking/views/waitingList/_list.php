@@ -37,7 +37,7 @@ $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPrompt
 );
 
 $assetManager = Yii::app()->getAssetManager();
-$widgetPath = $assetManager->publish('protected/widgets/js');
+$widgetPath = $assetManager->getPublishedPathOfAlias('application.widgets.js');
 Yii::app()->clientScript->registerScriptFile($widgetPath . '/PatientPanelPopupMulti.js');
 
 ?>

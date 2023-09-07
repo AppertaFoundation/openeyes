@@ -87,22 +87,10 @@ class DefaultGenericCommentsTest extends \OEDbTestCase
         $url = self::LOAD_ELEMENT_BY_PROCEDURE_URL . '?' . http_build_query($data, '', '&');
 
         $response = $this->actingAs($user, $institution)
-                  ->get($url);
+                  ->get($url)
+                  ->assertSuccessful()
+                  ->crawl();
 
         return $response->filter('[data-test="generic-procedure-comments"]')->text();
-    }
-
-    // TODO: Refactor this out along with similiar instances in other existing tests.
-    // This is common functionality in other tests that use MakesApplicationRequests::actingAs.
-    // They all mark it as something to refactor.
-    protected function createUserWithInstitution()
-    {
-        $user = \User::model()->findByAttributes(['first_name' => 'admin']);
-
-        $institution = \Institution::factory()
-            ->withUserAsMember($user)
-            ->create();
-
-        return [$user, $institution];
     }
 }

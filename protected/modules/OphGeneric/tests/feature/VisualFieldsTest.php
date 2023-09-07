@@ -68,7 +68,9 @@ class VisualFieldsTest extends \OEDbTestCase
         $expected_title = EventManager::forEvent($event)->getDisplayName();
 
         $response = $this->actingAs($user)
-            ->get('/OphGeneric/Default/print?id=' . $event->id);
+            ->get('/OphGeneric/Default/print?id=' . $event->id)
+            ->assertSuccessful()
+            ->crawl();
 
         $title = $response->filter('.print-title');
         $this->assertEquals($expected_title, $title->first()->innerText());

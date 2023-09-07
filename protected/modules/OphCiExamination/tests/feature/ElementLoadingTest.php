@@ -136,24 +136,8 @@ class ElementLoadingTest extends \OEDbTestCase
 
         $this->mockCurrentContext($episode->firm, null, $institution);
 
-        try {
-            $response = $this->actingAs($user, $institution)
-            ->get("/OphCiExamination/Default/ElementForm?id={$element_type->id}&patient_id={$patient->id}", false);
-
-            $this->assertNotEmpty($response);
-        } catch (\Exception $e) {
-            $this->fail("Unable to load ${class_name} for examination event:\n" . $e->getMessage() . "\n" .  $e->getTraceAsString());
-        }
-    }
-
-    protected function createUserWithInstitution()
-    {
-        $user = \User::model()->findByAttributes(['first_name' => 'admin']);
-
-        $institution = \Institution::factory()
-            ->withUserAsMember($user)
-            ->create();
-
-        return [$user, $institution];
+        $this->actingAs($user, $institution)
+            ->get("/OphCiExamination/Default/ElementForm?id={$element_type->id}&patient_id={$patient->id}")
+            ->assertSuccessful("$class_name element could not be loaded for examination event.");
     }
 }

@@ -68,26 +68,15 @@ class OptometristShortcodeTest extends \OEDbTestCase
     {
         list($user, $institution) = $this->createUserWithInstitution();
 
-        $response = $this->actingAs(
-                $user,
-                $institution
-            )->post('/OphCoCorrespondence/Default/ExpandStrings',
-            [
-                'patient_id' => $patient->id,
-                'text' => $shortcode
-            ]);
+        $response = $this->actingAs($user, $institution)
+            ->post(
+                '/OphCoCorrespondence/Default/ExpandStrings',
+                [
+                    'patient_id' => $patient->id,
+                    'text' => $shortcode
+                ]
+            );
 
         $this->assertEquals($expected, $response->response);
-    }
-
-    protected function createUserWithInstitution()
-    {
-        $user = User::model()->findByAttributes(['first_name' => 'admin']);
-        return [
-            $user,
-            Institution::factory()
-                ->withUserAsMember($user)
-                ->create()
-        ];
     }
 }

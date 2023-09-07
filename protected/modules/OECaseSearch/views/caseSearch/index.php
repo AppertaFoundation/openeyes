@@ -107,12 +107,12 @@ $user_searches = array_map(
                 'variables' => $variables,
                 'total_patients' => $patients->totalItemCount,
                 'list_selector' => '.oe-search-results',
-                'display' => ($view ==='plot'),
+                'display' => ($view === 'plot'),
             ));
             $this->renderPartial('patient_drill_down_list', array(
                 'patients' => $patients,
                 'display_class' => 'oe-search-results',
-                'display' => ($view ==='list'),
+                'display' => ($view === 'list'),
             ));
         } else { ?>
             <div class="alert-box info">No patients found.</div>
@@ -491,8 +491,7 @@ foreach ($patients->getData() as $i => $SearchPatient) {
     $assetPath = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.assets'), true, -1);
     Yii::app()->clientScript->registerScriptFile($assetPath . '/js/toggle-section.js');
     $assetManager = Yii::app()->getAssetManager();
-    $widgetPath = $assetManager->publish('protected/widgets/js');
-    Yii::app()->clientScript->registerScriptFile($widgetPath . '/PatientPanelPopupMulti.js');
+    Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->getPublishedPathOfAlias('application.widgets.js') . '/PatientPanelPopupMulti.js');
 ?>
 
 <script type="text/javascript">

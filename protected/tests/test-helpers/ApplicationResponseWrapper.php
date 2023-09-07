@@ -26,6 +26,8 @@ class ApplicationResponseWrapper
 
     public ?Exception $exception;
 
+    protected ?Crawler $crawled_response = null;
+
     public function __construct(?string $response = null, array $headers = [], ?ApplicationRedirectWrapper $redirect = null, ?Exception $exception = null)
     {
         $this->response = $response;
@@ -49,9 +51,16 @@ class ApplicationResponseWrapper
         return new self(null, [], null, $exception);
     }
 
-    public function assertRedirect($url = null, string $message = 'Response is not a redirect', bool $showResponseOnFail = false)
+    public function assertSuccessful(string $message = "Request should have returned content"): self
     {
+        PHPUnit::assertFalse($this->isException(), "Exception " . ($this->exception ? get_class($this->exception) : '') . " was triggered by request\n$message");
+        PHPUnit::assertFalse($this->isRedirect(), "Redirect to " . ($this->redirect ? $this->redirect->url : '') . " was triggered by request\n$message");
 
+        return $this;
+    }
+
+    public function assertRedirect($url = null, string $message = 'Response is not a redirect', bool $showResponseOnFail = false): self
+    {
         PHPUnit::assertTrue(
             $this->isRedirect(),
             $message . ($showResponseOnFail ? ":\n" . $this->getResponseString() : "")
@@ -60,29 +69,40 @@ class ApplicationResponseWrapper
         if (!is_null($url)) {
             PHPUnit::assertEquals(self::BASE_URL . $url, $this->redirect->url, $message  . ":\nReceived redirect {$this->redirect->url} does not equal $url");
         }
+
+        return $this;
     }
 
-    public function assertRedirectContains(string $partial, ?string $message, bool $showResponseOnFail = false)
+    public function assertRedirectContains(string $partial, ?string $message, bool $showResponseOnFail = false): self
     {
         $this->assertRedirect(null, $message, $showResponseOnFail);
 
         PHPUnit::assertStringContainsString($partial, $this->redirect->url, $message);
+
+        return $this;
     }
 
-    public function assertException(?string $expected_class = null, ?array $expected_properties = null)
+    public function assertException(?string $expected_class = null, ?array $expected_properties = null): self
     {
-        PHPUnit::assertNotNull($this->exception);
+        PHPUnit::assertNotNull($this->exception, 'exception was not thrown');
         if ($expected_class) {
             PHPUnit::assertInstanceOf($expected_class, $this->exception);
         }
+
         if ($expected_properties) {
             foreach ($expected_properties as $property => $expected_value) {
-                PHPUnit::assertEquals($expected_value, $this->exception->$property, print_r($this->exception, true));
+                if ($property === 'message') {
+                    PHPUnit::assertStringContainsStringIgnoringCase($expected_value, $this->exception->getMessage());
+                } else {
+                    PHPUnit::assertEquals($expected_value, $this->exception->$property, print_r($this->exception, true));
+                }
             }
         }
+
+        return $this;
     }
 
-    public function assertContentTypeHeaderSent(string $expected_content_type)
+    public function assertContentTypeHeaderSent(string $expected_content_type): self
     {
         PHPUnit::assertTrue(
             array_reduce(
@@ -93,9 +113,11 @@ class ApplicationResponseWrapper
                 false
             )
         );
+
+        return $this;
     }
 
-    public function getResponseString()
+    public function getResponseString(): string
     {
         if ($this->isException()) {
             return $this->exception->getMessage();
@@ -108,7 +130,7 @@ class ApplicationResponseWrapper
         return $this->response;
     }
 
-    public function crawl()
+    public function crawl(): Crawler
     {
         if ($this->isException()) {
             throw new RuntimeException('Cannot crawl exception response:' . $this->exception->getMessage());
@@ -118,7 +140,11 @@ class ApplicationResponseWrapper
             throw new RuntimeException('Cannot crawl redirect response: ' . $this->redirect->url);
         }
 
-        return new Crawler($this->response);
+        if (!$this->crawled_response) {
+            $this->crawled_response = new Crawler($this->response);
+        }
+
+        return $this->crawled_response;
     }
 
     protected function isRedirect()

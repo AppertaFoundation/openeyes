@@ -43,7 +43,9 @@ class ProfileTest extends OEDbTestCase
         ]);
 
         $response = $this->actingAs($user, $institution)
-            ->get('/profile/firms');
+            ->get('/profile/firms')
+            ->assertSuccessful()
+            ->crawl();
 
         $this->assertCount(
             1,
@@ -81,7 +83,9 @@ class ProfileTest extends OEDbTestCase
         ]);
 
         $response = $this->actingAs($user, $institution)
-            ->get('/profile/firms');
+            ->get('/profile/firms')
+            ->assertSuccessful()
+            ->crawl();
 
         $this->assertCount(
             0,
@@ -114,7 +118,9 @@ class ProfileTest extends OEDbTestCase
         ]);
 
         $response = $this->actingAs($user, $institution)
-            ->get('/profile/firms');
+            ->get('/profile/firms')
+            ->assertSuccessful()
+            ->crawl();
 
         $firm_rows = $response->filter('[data-test="selected_firms"] tbody tr[data-attr-id="' . $expected_firm->id . '"]');
 
@@ -146,7 +152,9 @@ class ProfileTest extends OEDbTestCase
         ]);
 
         $response = $this->actingAs($user, $institution)
-            ->get('/profile/firms');
+            ->get('/profile/firms')
+            ->assertSuccessful()
+            ->crawl();
 
         $this->assertCount(
             1,
@@ -159,17 +167,4 @@ class ProfileTest extends OEDbTestCase
             'Found unexpected firm in options for selection in firm profile page'
         );
     }
-
-    // TODO: Set up user rather then use admin
-    protected function createUserWithInstitution()
-    {
-        $user = User::model()->findByAttributes(['first_name' => 'admin']);
-
-        $institution = ModelFactory::factoryFor(Institution::class)
-            ->withUserAsMember($user)
-            ->create();
-
-        return [$user, $institution];
-    }
-
 }

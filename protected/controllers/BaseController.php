@@ -290,6 +290,8 @@ class BaseController extends Controller
         }
         $this->jsVars['YII_CSRF_TOKEN'] = Yii::app()->request->csrfToken;
         $this->jsVars['OE_core_asset_path'] = Yii::app()->assetManager->getPublishedPathOfAlias('application.assets');
+        $this->jsVars['OE_core_asset_js_path'] = Yii::app()->assetManager->getPublishedPathOfAlias('application.assets.js');
+        $this->jsVars['OE_core_widget_js_path'] = Yii::app()->assetManager->getPublishedPathOfAlias('application.widgets.js');
         $this->jsVars['OE_module_name'] = $this->module ? $this->module->id : false;
         $this->jsVars['OE_html_autocomplete'] = SettingMetadata::model()->getSetting('html_autocomplete');
         $this->jsVars['OE_event_print_method'] = SettingMetadata::model()->getSetting('event_print_method');
@@ -418,9 +420,7 @@ class BaseController extends Controller
         UniqueCodeMapping::model()->unlock();
         //Yii::app()->db->createCommand("UNLOCK TABLES")->execute();
 
-        if ($record) {
-            return $record["id"];
-        }
+        return $record ? $record["id"] : null;
     }
 
     public function setPageTitle($pageTitle)

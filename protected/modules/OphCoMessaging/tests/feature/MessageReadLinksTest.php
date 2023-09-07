@@ -53,7 +53,9 @@ class MessageReadLinksTest extends OEDbTestCase
             ]);
 
         $response = $this->actingAs($recipient)
-            ->get($this->urlToViewMessage($message));
+            ->get($this->urlToViewMessage($message))
+            ->assertSuccessful()
+            ->crawl();
 
         $this->assertResponseProvidesMarkAsReadAction($response, $message);
     }
@@ -65,14 +67,16 @@ class MessageReadLinksTest extends OEDbTestCase
         list($recipient, $recipient_mailbox) = $this->createMailboxUser();
 
         $message = Element_OphCoMessaging_Message::factory()
-                 ->withReplyRequired()
-                 ->withPrimaryRecipient($recipient_mailbox, true)
-                 ->create([
-                     'sender_mailbox_id' => $sender_mailbox
-                 ]);
+            ->withReplyRequired()
+            ->withPrimaryRecipient($recipient_mailbox, true)
+            ->create([
+                'sender_mailbox_id' => $sender_mailbox
+            ]);
 
         $response = $this->actingAs($recipient)
-                         ->get($this->urlToViewMessage($message));
+            ->get($this->urlToViewMessage($message))
+            ->assertSuccessful()
+            ->crawl();
 
         $this->assertResponseProvidesMarkAsUnreadAction($response, $message);
     }
@@ -84,14 +88,16 @@ class MessageReadLinksTest extends OEDbTestCase
         list($recipient, $recipient_mailbox) = $this->createMailboxUser();
 
         $message = Element_OphCoMessaging_Message::factory()
-                 ->withReplyRequired()
-                 ->withPrimaryRecipient($recipient_mailbox, true)
-                 ->create([
-                     'sender_mailbox_id' => $sender_mailbox
-                 ]);
+            ->withReplyRequired()
+            ->withPrimaryRecipient($recipient_mailbox, true)
+            ->create([
+                'sender_mailbox_id' => $sender_mailbox
+            ]);
 
         $response = $this->actingAs($recipient)
-                         ->get($this->urlToViewMessage($message));
+            ->get($this->urlToViewMessage($message))
+            ->assertSuccessful()
+            ->crawl();
 
         $this->assertResponseProvidesPostCommentAction($response, $message);
     }

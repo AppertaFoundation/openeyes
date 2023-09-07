@@ -45,7 +45,9 @@ class AdviceLeafletCategoryTest extends OEDbTestCase
         ]);
 
         $response = $this->actingAs($user, $institution)
-            ->get('/OphCiExamination/admin/adviceLeafletCategories');
+            ->get('/OphCiExamination/admin/adviceLeafletCategories')
+            ->assertSuccessful()
+            ->crawl();
 
         $this->assertCount(
             1,
@@ -62,17 +64,5 @@ class AdviceLeafletCategoryTest extends OEDbTestCase
             $response->filter('[data-test="advice-leaflet-categories"] input[value="' . $other_institution_leaflet_category->id . '"]'),
             'Should not find category for other institution in options for selection in advice leaflet categories page'
         );
-    }
-
-    // TODO: Set up user rather then use admin
-    protected function createUserWithInstitution()
-    {
-        $user = User::model()->findByAttributes(['first_name' => 'admin']);
-
-        $institution = ModelFactory::factoryFor(Institution::class)
-            ->withUserAsMember($user)
-            ->create();
-
-        return [$user, $institution];
     }
 }

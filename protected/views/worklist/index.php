@@ -253,8 +253,7 @@ $initial_filter = $session_filter_info['filter'];
 </script>
 <?php
     $assetManager = Yii::app()->getAssetManager();
-    $widgetPath = $assetManager->publish('protected/widgets/js');
-    Yii::app()->clientScript->registerScriptFile($widgetPath . '/PatientPanelPopupMulti.js');
+    Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->getPublishedPathOfAlias('application.widgets.js') . '/PatientPanelPopupMulti.js');
 ?>
 <script id="oe-patient-quick-overview-template" type="text/html">
     <div class="oe-patient-meta">
