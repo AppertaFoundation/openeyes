@@ -15,10 +15,10 @@ describe('behaviour of the admin screen for common systemic disorders', () => {
         cy.getBySel('add-common-systemic-disorder-btn').click().then(() => {
             cy.intercept('/disorder/autocomplete*').as('autocomplete');
 
-            cy.getBySel('disorder-term-input').clear().type(this.seederData.disorder1.term);
+            cy.getBySel('disorder-term-input').clear().type(this.seederData.disorder0.term);
 
             cy.wait('@autocomplete').then(() => {
-                cy.getBySel('disorder-autocomplete-list').contains(this.seederData.disorder1.term);
+                cy.getBySel('disorder-autocomplete-list').should('contain', this.seederData.disorder0.term);
             });
         });
     });
@@ -30,22 +30,32 @@ describe('behaviour of the admin screen for common systemic disorders', () => {
         cy.getBySel('add-common-systemic-disorder-btn').click().then(() => {
             cy.intercept('/disorder/autocomplete*').as('autocomplete');
 
-            cy.getBySel('disorder-term-input').clear().type(this.seederData.disorder1.term);
+            cy.getBySel('disorder-term-input').clear().type(this.seederData.disorder0.term);
 
             cy.wait('@autocomplete').then(() => {
                 cy.getBySel('autocomplete-match').first().click().then(() => {
+                    // alias the first selected disorder for assertion at the end of the test step
+                    cy.getBySel('disorder-name0').invoke('text').as('disorderName0');
                     cy.getBySel('save-common-systemic-disorders-btn').click().then(() => {
                         cy.getBySel('add-common-systemic-disorder-btn').click().then(() => {
                             cy.intercept('/disorder/autocomplete*').as('autocomplete');
 
-                            cy.getBySel('disorder-term-input').clear().type(this.seederData.disorder2.term);
+                            cy.getBySel('disorder-term-input').clear().type(this.seederData.disorder1.term);
 
                             cy.wait('@autocomplete').then(() => {
                                 cy.getBySel('autocomplete-match').first().click().then(() => {
+                                    // alias the second selected disorder for assertion at the end of the test step
+                                    cy.getBySel('disorder-name1').invoke('text').as('disorderName1');
                                     cy.getBySel('save-common-systemic-disorders-btn').click().then(() => {
                                         cy.getBySel('disorder-term').should('have.length', 2);
-                                        cy.getBySel('disorder-term').contains(this.seederData.disorder1.term);
-                                        cy.getBySel('disorder-term').contains(this.seederData.disorder2.term);
+                                        // assert that the first selected disorder is in the list
+                                        cy.get('@disorderName0').then((diagname0) => {
+                                            cy.getBySel('disorder-term').should('contain', diagname0);
+                                        });
+                                        // assert that the second selected disorder is in the list
+                                        cy.get('@disorderName1').then((diagname1) => {
+                                            cy.getBySel('disorder-term').should('contain', diagname1);
+                                        });
                                     });
                                 });
                             });
