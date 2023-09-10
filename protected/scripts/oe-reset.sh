@@ -148,7 +148,7 @@ while [[ $# -gt 0 ]]; do
         ;;
     --clear-files | -cf)
         clearfiles=1
-        echo "Protected files will be cleaned - you will probably want to re-import defaukt freehand drawing templates by adding the $(-fd) switch"
+        echo "Protected files will be cleaned - you will probably want to re-import default freehand drawing templates by adding the -fd switch"
         ;;
     --freehand-draw-templates | -fd)
         echo "Freehand drawing templates will be re-populated"
@@ -486,7 +486,7 @@ if [ $migrate == "1" ]; then
 
         basefolder="$MODULEROOT/sample/sql/demo"
 
-        find "$basefolder" "$basefolder"/post-migrate/ "$basefolder"/local-post -maxdepth 1 -type f -printf '%f\0%p\n' | sort -t '\0' -V | awk -F '\0' '{print $2}' | while read f; do
+        find "$basefolder" "$basefolder"/post-migrate/ "$basefolder"/local-post -maxdepth 1 -type f -printf '%f\0%p\n' | sort -t '\0' -V | awk -F '\0' '{print $2}' | while read -r f; do
             if [[ $f == *.sql ]]; then
                 echo "importing $f"
                 eval "$dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $f"

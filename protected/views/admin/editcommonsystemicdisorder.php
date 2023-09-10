@@ -147,7 +147,7 @@ $options['data-test'] = 'common-systemic-disorders-institution-select';
             'singleTemplate':
                 "<div style='position: relative'>" +
                 "<span class='medication-display' style='display:none'>" + "<a href='javascript:void(0)' class='diagnosis-rename'><i class='oe-i remove-circle small' aria-hidden='true' title='Change disorder'></i></a> " +
-                "<span class='diagnosis-name'></span></span>" +
+                "<span class='diagnosis-name' data-test='disorder-name" + $row.data('row') + "'></span></span>" +
                 "{{{input_field}}}" +
                 "<input type='hidden' id='{{field_prefix}}_" + $row.data('row') + "_disorder_id_actual' " +
                 "name='{{field_prefix}}[" + $row.data('row') + "][disorder_id]' class='savedDiagnosis' value=''>" +

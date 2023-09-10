@@ -43,6 +43,7 @@ services:
     environment:
       OE_MODE: "TEST"
       TESTS_TO_RUN: "${TESTS_TO_RUN:-}"
+      CYPRESS_FAIL_FAST_VALUE: "${CYPRESS_FAIL_FAST_VALUE:-}"
       # TEST_UPLOAD_TO_TRANSFER_SH: "TRUE"
       OE_QUIET_DEBUG_LOG: "TRUE"
       OE_APP_LOG_LEVELS: "error"

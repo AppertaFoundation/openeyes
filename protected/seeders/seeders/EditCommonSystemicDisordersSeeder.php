@@ -45,11 +45,11 @@ class EditCommonSystemicDisordersSeeder extends BaseSeeder
                 'id' => $institution->id,
                 'name' => $institution->name
             ],
-            'disorder1' => [
+            'disorder0' => [
                 'id' => $disorders[0]->id,
                 'term' => $disorders[0]->term
             ],
-            'disorder2' => [
+            'disorder1' => [
                 'id' => $disorders[1]->id,
                 'term' => $disorders[1]->term
             ]
