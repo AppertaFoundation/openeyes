@@ -268,7 +268,6 @@ $config = array(
                 ]
             ),
         ),
-        'fhirClient' => array('class' => 'FhirClient'),
         'fhirMarshal' => array('class' => 'FhirMarshal'),
         'log' => array(
             'class' => 'CLogRouter',

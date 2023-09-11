@@ -16,19 +16,11 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-/**
- * Created by PhpStorm.
- * User: veta
- * Date: 14/08/2016
- * Time: 22:58
- */
-
-//use Zend;
-require_once 'Zend/Http/Client.php';
-
 class OptomPortalConnection
 {
-    private $yii;
+    private $proxy = null;
+    private $header = ["Accept: application/vnd.OpenEyesPortal.v1+json"];
+    protected $config = [];
 
     /**
      * For validating the configuration keys
@@ -46,42 +38,14 @@ class OptomPortalConnection
     );
 
     /**
-     * @var Zend_Http_Client
-     */
-    protected $client;
-    protected $config = array();
-
-    /**
-     * @return Zend_Http_Client
-     */
-    public function getClient()
-    {
-        return $this->client;
-    }
-
-    /**
-     * @return array
-     */
-    public function getConfig()
-    {
-        return $this->config;
-    }
-
-
-    /**
      * OptomPortalConnection constructor.
-     * 
-     * @param CApplication $yii - for dependency injection/testing
      */
-    public function __construct($yii = null)
+    public function __construct()
     {
-        if ($yii === null) {
-            $this->yii = Yii::app();
-        }
+        $this->proxy = SettingMetadata::model()->getSetting('curl_proxy');
 
         $this->setConfig();
-        $this->initClient();
-        $this->login();
+        $this->getPortalAccessToken();
     }
 
     /**
@@ -89,9 +53,9 @@ class OptomPortalConnection
      *
      * @throws InvalidArgumentException
      */
-    protected function setConfig()
+    private function setConfig()
     {
-        $config = $this->yii->params['portal'];
+        $config = SettingMetadata::model()->getSetting('portal');
         if (!$config) {
             throw new InvalidArgumentException('Missing portal configuration for ' . __CLASS__);
         }
@@ -105,104 +69,98 @@ class OptomPortalConnection
         $this->config = $config;
     }
 
-
     /**
-     * Init HTTP client.
-     *
-     * @throws Zend_Http_Client_Exception
+     * @param string $url
+     * @param array|NULL $params
+     * @param bool $use_post
+     * @return false|resource
      */
-    protected function initClient()
+    private function setCurl(string $url, ?array $params = null, bool $use_post = true)
     {
-        $clientConfig = array();
-        if ($this->yii->params['curl_proxy']){
-            $proxy = parse_url($this->yii->params['curl_proxy']);
-            $clientConfig['adapter'] = 'Zend_Http_Client_Adapter_Proxy';
-            $clientConfig['proxy_host'] = $proxy['host'];
-            if (array_key_exists('port', $proxy)){
-                $clientConfig['proxy_port'] = $proxy['port'];
-            }
+        $ch = curl_init($url);
+
+        if (!empty($this->proxy)) {
+            curl_setopt($ch, CURLOPT_PROXY, $this->proxy);
+        }
+        if (!empty($params)) {
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
+        } else {
+            curl_setopt($ch, CURLOPT_POST, $use_post);
         }
 
-        $client = new Zend_Http_Client($this->config['uri'], $clientConfig);
-        $client->setHeaders('Accept', 'application/vnd.OpenEyesPortal.v1+json');
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $this->header);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FAILONERROR, true);
+        curl_setopt($ch, CURLOPT_VERBOSE, false);
 
-        // Revert to pre-PHP5.6 defaults for peer verification, for sites behind a proxy.
-        $streamOptions = array(
-            'ssl' => array(
-                'verify_peer' => false,
-                'verify_peer_name' => false,
-                )
-            );
+        return $ch;
+    }
 
-        $adapter = $client->getAdapter();
-        $adapter->setStreamContext($streamOptions);
-
-        $this->client = $client;
+    private function executeCurl($curl, $error_message)
+    {
+        $curl_result = curl_exec($curl);
+        if (curl_errno($curl)) {
+            throw new Exception("$error_message Curl error: " . curl_error($curl));
+        }
+        return $curl_result;
     }
 
     /**
-     * Login to the API, set the auth header.
-     * @throws Zend_Http_Client_Exception
+     * Get the access token from the API and set the auth header.
      * @throws Exception
      */
-    protected function login()
+    private function getPortalAccessToken()
     {
-        $this->client->setUri($this->config['uri'] . $this->config['endpoints']['auth']);
-        $this->client->setParameterPost($this->config['credentials']);
-        $response = $this->client->request('POST');
-        if ($response->getStatus() > 299) {
-            throw new Exception('Unable to login, user credentials in config incorrect');
+        $curl = $this->setCurl($this->config["uri"] . $this->config["endpoints"]["auth"], $this->config["credentials"]);
+        $curl_result = $this->executeCurl($curl, "Unable to get access token.");
+        $json_response = json_decode($curl_result, true);
+        curl_close($curl);
+
+        if (!is_array($json_response) || !array_key_exists('access_token', $json_response)) {
+            throw new \Exception('The server did not send a valid JSON reply.');
         }
-        $jsonResponse = json_decode($response->getBody(), true);
-        $this->client->resetParameters();
-        $this->client->setHeaders('Authorization', 'Bearer ' . $jsonResponse['access_token']);
+
+        $this->header[] = "Authorization: Bearer " . $json_response['access_token'];
+    }
+
+    public function getExaminations(array $params)
+    {
+        $curl = $this->setCurl($this->config["uri"] . $this->config['endpoints']['examinations'], $params);
+        $curl_result = $this->executeCurl($curl, "Unable to retrieve examinations.");
+        $json_response = json_decode($curl_result, true);
+        curl_close($curl);
+
+        return $json_response;
     }
 
     /**
      * Search the API for signatures.
      *
      * @return mixed
-     * @throws Zend_Http_Client_Exception
+     * @throws Exception
      */
     public function signatureSearch($start_date = null, $uniqueId = null)
     {
-        if ($uniqueId && $this->client) {
-            $this->client->setUri($this->config['uri'] . str_replace('searches', $uniqueId,
-                    $this->config['endpoints']['signatures']));
-            $method = 'GET';
+        if ($uniqueId) {
+            $url = $this->config['uri'] . str_replace('searches', $uniqueId, $this->config['endpoints']['signatures']);
+            $use_post = false;
             // just to make sure that start date is not specified
             $start_date = null;
         } else {
-            if ($this->client) {
-                $this->client->setUri($this->config['uri'] . $this->config['endpoints']['signatures']);
-                $method = 'POST';
-            }
+            $url = $this->config['uri'] . $this->config['endpoints']['signatures'];
+            $use_post = true;
         }
 
-        if ($start_date && $this->client) {
-            $this->client->setParameterPost(array('start_date' => $start_date));
+        $params = null;
+        if ($start_date) {
+            $params = ['start_date' => $start_date];
         }
 
-        if ($this->client) {
-            $response = $this->client->request($method);
-            return json_decode($response->getBody(), true);
-        }
-    }
+        $curl = $this->setCurl($url, $params, $use_post);
 
-    /**
-     * Creates a new ProtectedFile for the new signature image
-     *
-     * @param $imageData
-     * @return ProtectedFile
-     */
-    public function createNewSignatureImage($imageData, $fileId)
-    {
-        $protected_file = new \ProtectedFile();
-        $protected_file = $protected_file->createForWriting('cvi_signature_' . $fileId);
+        $curl_result = $this->executeCurl($curl, "Unable to retrieve signatures.");
 
-        if (file_put_contents($protected_file->getPath(), $imageData)) {
-            $protected_file->save();
-            return $protected_file;
-        }
+         return json_decode($curl_result, true);
     }
 }

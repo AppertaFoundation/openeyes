@@ -24,6 +24,7 @@ use OEModule\OphCoCvi\models\Element_OphCoCvi_EventInfo;
 use mikehaertl\pdftk\Pdf;
 use OEModule\OphCoMessaging\components\MessageCreator;
 use OEModule\OphCoMessaging\models\OphCoMessaging_Message_MessageType;
+use ProtectedFile;
 
 require_once str_replace('index.php', 'vendor/setasign/fpdi/src/PdfParser/PdfParser.php', \Yii::app()->getRequest()->getScriptFile());
 /**
@@ -1052,14 +1053,35 @@ class OphCoCvi_Manager extends \CComponent
     }
 
     /**
+     * Creates a new ProtectedFile for the new signature image
+     *
+     * @param $imageData
+     * @param $fileId
+     * @return null|ProtectedFile
+     * @throws \Exception
+     */
+    public function createNewSignatureImage($imageData, $fileId): ?ProtectedFile
+    {
+        $protected_file = new ProtectedFile();
+        $protected_file = $protected_file->createForWriting('cvi_signature_' . $fileId);
+
+        if (file_put_contents($protected_file->getPath(), $imageData)) {
+            $protected_file->save();
+            return $protected_file;
+        }
+
+        return null;
+    }
+
+    /**
      * @param        $signatureFile
      * @param \Event $event
      * @throws \Exception
      */
     public function saveUserSignature($signatureFile, \Event $event)
     {
-        $portal_connection = new \OptomPortalConnection();
-        if ($new_file = $portal_connection->createNewSignatureImage($signatureFile, $event->id)) {
+        $new_file = $this->createNewSignatureImage($signatureFile, $event->id);
+        if ($new_file) {
             if ($clinic_element = $this->getClinicalElementForEvent($event)) {
                 $clinic_element->consultant_signature_file_id = $new_file->id;
                 $clinic_element->consultant_id = \Yii::app()->user->id;

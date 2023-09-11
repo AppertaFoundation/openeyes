@@ -21,7 +21,6 @@
  *
  * @group undefined
  */
-require_once 'Zend/Ldap.php';
 
 class UserIdentityTest extends OEDbTestCase
 {
@@ -143,70 +142,6 @@ class UserIdentityTest extends OEDbTestCase
         $this->assertFalse((bool) $user->global_firm_rights);
 
         $this->assertTrue($userIdentity->authenticate());
-    }
-
-    /**
-     * @covers UserIdentity
-     */
-    public function testLdapLogin()
-    {
-        Yii::app()->params['auth_source'] = 'LDAP';
-
-        $ZendLdapStub = $this->createMock('Zend_Ldap', array(), array(), '', false);
-
-        $ZendLdapStub->expects($this->any())
-             ->method('bind')
-             ->will($this->returnValue(true));
-
-        $ZendLdapStub->expects($this->any())
-             ->method('getEntry')
-             ->will($this->returnValue(array(
-                 'givenname' => array('stub'),
-                 'sn' => array('stub'),
-                 'mail' => array('stub@stub.com'),
-             )));
-
-        $userIdentity = $this->getMockBuilder(UserIdentity::class)
-            ->setMethods(['getLdap'])
-            ->setConstructorArgs(['JoeBloggs', 'password'])
-            ->getMock();
-        $userIdentity->expects($this->any())
-                ->method('getLdap')
-                ->will($this->returnValue($ZendLdapStub));
-
-        $this->assertTrue($userIdentity->authenticate());
-    }
-
-    /**
-     * @covers UserIdentity
-     */
-    public function testInvalidLdapLogin()
-    {
-        Yii::app()->params['auth_source'] = 'LDAP';
-
-        $ZendLdapStub = $this->getMock('Zend_Ldap', array(), array(), '', false);
-        $ZendLdapStub->expects($this->any())
-             ->method('bind')
-             ->will($this->throwException(new Exception()));
-
-        $ZendLdapStub->expects($this->any())
-             ->method('getEntry')
-             ->will($this->returnValue(array(
-                 'givenname' => array('stub'),
-                 'sn' => array('stub'),
-                 'mail' => array('stub@stub.com'),
-             )));
-
-        $userIdentity = $this->getMock('UserIdentity', array('getLdap'), array('JoeBloggs', 'password'));
-        $userIdentity->expects($this->any())
-                ->method('getLdap')
-                ->will($this->returnValue($ZendLdapStub));
-
-        $this->assertFalse($userIdentity->authenticate());
-        $this->assertEquals(
-            $userIdentity->errorCode,
-            UserIdentity::ERROR_USERNAME_INVALID
-        );
     }
 
     /**
