@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2023
  * This file is part of OpenEyes.
@@ -13,8 +14,6 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-use OE\factories\ModelFactory;
-
 /**
  * @group sample-data
  * @group feature
@@ -26,17 +25,30 @@ class AdminSettingsTest extends OEDbTestCase
     use WithTransactions;
     use WithFaker;
 
-    protected $admin_user;
+    protected $installation_admin_user;
+    protected $institution_admin_user;
     protected $setting_institution;
 
     public function setUp(): void
     {
         parent::setUp();
 
-        list($user, $institution) = $this->createUserWithInstitution();
+        $this->installation_admin_user = User::factory()
+                                       ->withUniquePostfix(microtime())
+                                       ->withDBUniqueAttribute('first_name')
+                                       ->withAuthItems(['User', 'admin'])
+                                       ->create();
 
-        $this->admin_user = $user;
-        $this->setting_institution = $institution;
+        $this->institution_admin_user = User::factory()
+                                      ->withUniquePostfix(microtime())
+                                      ->withDBUniqueAttribute('first_name')
+                                      ->withAuthItems(['User', 'Institution Admin'])
+                                      ->create();
+
+        $this->setting_institution = Institution::factory()
+                                   ->withUserAsMember($this->installation_admin_user)
+                                   ->withUserAsMember($this->institution_admin_user)
+                                   ->create();
     }
 
     /** @test */
@@ -64,13 +76,119 @@ class AdminSettingsTest extends OEDbTestCase
         $this->assertEquals($checkbox_checked, $setting_checked ? 'checked' : '');
     }
 
+    /** @test */
+    public function installation_admin_can_search_users()
+    {
+        $user_to_find = User::factory()->withLocalAuthForInstitution($this->setting_institution)
+                                       ->withUniquePostfix(microtime())
+                                       ->withDBUniqueAttribute('first_name')
+                                       ->create();
+
+        $other_user = User::factory()->withUniquePostfix(microtime())
+                                     ->withDBUniqueAttribute('first_name')
+                                     ->create();
+
+        $other_institution = Institution::factory()
+                           ->withUserAsMember($this->installation_admin_user)
+                           ->withUserAsMember($other_user)
+                           ->create();
+
+        $response = $this->getUsersPage($this->installation_admin_user, $user_to_find->first_name);
+
+        $this->assertEquals(
+            $user_to_find->id,
+            $response->filter('[data-test="user-id"]')->text(),
+            'The user in the same institution as the institution admin should show up in the search results'
+        );
+
+        $response = $this->getUsersPage($this->installation_admin_user, $this->institution_admin_user->first_name);
+
+        $this->assertEquals(
+            $this->institution_admin_user->id,
+            $response->filter('[data-test="user-id"]')->text(),
+            'The institution admin user should show up in the search results for their own institution'
+        );
+
+        $response = $this->getUsersPage($this->installation_admin_user, $this->installation_admin_user->first_name);
+
+        $this->assertEquals(
+            $this->installation_admin_user->id,
+            $response->filter('[data-test="user-id"]')->text(),
+            'Installation level admins should show up in the search results'
+        );
+
+        $response = $this->getUsersPage($this->installation_admin_user, $other_user->first_name);
+
+        $this->assertEquals(
+            $other_user->id,
+            $response->filter('[data-test="user-id"]')->text(),
+            'Users from other institutions should show up in the search results'
+        );
+    }
+
+    /** @test */
+    public function institution_admin_can_search_users()
+    {
+        $user_to_find = User::factory()->withLocalAuthForInstitution($this->setting_institution)->create();
+
+        $other_user = User::factory()->create();
+
+        $other_institution = Institution::factory()
+                           ->withUserAsMember($this->installation_admin_user)
+                           ->withUserAsMember($other_user)
+                           ->create();
+
+        $response = $this->getUsersPage($this->institution_admin_user, $user_to_find->first_name);
+
+        $this->assertEquals(
+            $user_to_find->id,
+            $response->filter('[data-test="user-id"]')->text(),
+            'The user in the same institution as the institution admin should show up in the search results'
+        );
+
+        $response = $this->getUsersPage($this->institution_admin_user, $this->institution_admin_user->first_name);
+
+        $this->assertEquals(
+            $this->institution_admin_user->id,
+            $response->filter('[data-test="user-id"]')->text(),
+            'The institution admin user should show up in the search results for their own institution'
+        );
+
+        $response = $this->getUsersPage($this->institution_admin_user, $this->installation_admin_user->first_name);
+
+        $this->assertEquals(
+            0,
+            $response->filter('[data-test="user-id"]')->count(),
+            'Installation level admins should not show up in the search results'
+        );
+
+        $response = $this->getUsersPage($this->institution_admin_user, $other_user->first_name);
+
+        $this->assertEquals(
+            0,
+            $response->filter('[data-test="user-id"]')->count(),
+            'Users from other institutions should not show up in the search results'
+        );
+    }
+
     protected function getInstallationSettingPage(string $setting_key)
     {
         $url = '/admin/editSystemSetting?' . http_build_query(['key' => $setting_key, 'class' => 'SettingInstallation']);
 
-        return $this->actingAs($this->admin_user, $this->setting_institution)
+        return $this->actingAs($this->installation_admin_user, $this->setting_institution)
                     ->get($url)
                     ->assertSuccessful()
                     ->crawl();
+    }
+
+    protected function getUsersPage($as, ?string $search_parameter = null)
+    {
+        $url = '/admin/users';
+
+        if (is_string($search_parameter)) {
+            $url .= '?' . http_build_query(['search' => $search_parameter]);
+        }
+
+        return $this->actingAs($as, $this->setting_institution)->get($url)->crawl();
     }
 }
