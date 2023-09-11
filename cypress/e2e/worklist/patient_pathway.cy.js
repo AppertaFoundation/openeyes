@@ -127,4 +127,18 @@ describe('Managing a patient pathway in the worklist screen', () => {
 
         cy.getBySel(`fork-step-${worklistPatient.worklist_id}`).should('not.exist');
     });
+
+    it('can select and deselect all pathway step adders in a worklist', function () {
+        cy.getWorklist(worklistPatient.worklist_id).within(() => {
+            cy.getBySel('add-step-checkbox').should('not.be.checked');
+
+            cy.getBySel('add-step').first().click();
+
+            cy.getBySel('add-step-checkbox').should('be.checked');
+
+            cy.getBySel('add-step').first().click();
+
+            cy.getBySel('add-step-checkbox').should('not.be.checked');
+        });
+    });
 })

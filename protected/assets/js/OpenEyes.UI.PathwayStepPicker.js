@@ -86,12 +86,10 @@
     };
 
     PathwayStepPicker.prototype.onAddButtonClicked = function (e) {
-        if ($(e.target).val() === 'all') {
-            if ($(e.target).is(':checked')) {
-                $(e.target).closest('table').find(this.options.pathway_checkboxes).prop('checked', true);
-            } else {
-                $(e.target).closest('table').find(selectors.pathway_checkboxes).prop('checked', false);
-            }
+        if (e.target.value === 'all') {
+            e.target.closest('table').querySelectorAll(this.options.pathway_checkboxes).forEach((box) => {
+                box.checked = e.target.checked;;
+            });
         }
         this.selected_patients = $(this.options.pathway_checkboxes + '[value!="all"]:checked').length;
 

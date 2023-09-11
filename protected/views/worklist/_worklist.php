@@ -96,7 +96,7 @@ $is_ae_worklist = isset($worklist->id) && Yii::app()->db->cache(1000)->createCom
             <th>
                 <!-- Select all patients in worklist -->
                 <label class="patient-checkbox">
-                    <input class="js-check-patient" value="all" type="checkbox"/>
+                    <input class="js-check-patient" value="all" type="checkbox" data-test="add-step-checkbox" />
                     <div class="checkbox-btn" data-test="add-step"></div>
                 </label>
             </th>
@@ -172,7 +172,7 @@ $is_ae_worklist = isset($worklist->id) && Yii::app()->db->cache(1000)->createCom
                 </td>
                 <td>
                     <label class="patient-checkbox" data-test="patient-checkbox">
-                        <input class="js-check-patient" value="<?= $wl_patient->id ?>" type="checkbox"/>
+                        <input class="js-check-patient" value="<?= $wl_patient->id ?>" type="checkbox" data-test="add-step-checkbox" />
                         <div class="checkbox-btn"></div>
                     </label>
                 </td>
