@@ -36,15 +36,11 @@ class CommonOphthalmicDisorderFactory extends ModelFactory
         ];
     }
 
-    public function withInstitution($institution_id)
+    public function withInstitution($institution)
     {
-        return $this->afterCreating(function (CommonOphthalmicDisorder $disorder) use ($institution_id) {
-            if ($institution_id instanceof \Institution) {
-                $institution_id = $institution_id->id;
-            }
-
-            $disorder->createMapping(ReferenceData::LEVEL_INSTITUTION, $institution_id);
-        });
+        return $this->state([
+            'institution_id' => $institution
+        ]);
     }
 
     public function forSubspecialty($subspecialty): self

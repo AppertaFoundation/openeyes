@@ -29,9 +29,9 @@ use OE\factories\models\traits\HasFactory;
 class CommonSystemicDisorderGroup extends BaseActiveRecordVersioned
 {
     use HasFactory;
-    use MappedReferenceData;
+    use OwnedByReferenceData;
 
-    protected function getSupportedLevels(): int
+    protected function getSupportedLevelMask(): int
     {
         return ReferenceData::LEVEL_INSTALLATION | ReferenceData::LEVEL_INSTITUTION;
     }
@@ -51,7 +51,7 @@ class CommonSystemicDisorderGroup extends BaseActiveRecordVersioned
     {
         return array(
             array('name', 'required'),
-            array('display_order', 'safe'),
+            array('display_order, institution_id', 'safe'),
         );
     }
 
@@ -63,11 +63,7 @@ class CommonSystemicDisorderGroup extends BaseActiveRecordVersioned
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'institutions' => array(
-                self::MANY_MANY,
-                'Institution',
-                $this->tableName() . '_institution(' . $this->tableName() . '_id, institution_id)'
-            ),
+            'institution' => array(self::BELONGS_TO, 'Institution', 'institution_id'),
         );
     }
 
@@ -91,10 +87,8 @@ class CommonSystemicDisorderGroup extends BaseActiveRecordVersioned
     public function getFully_qualified_name()
     {
         $name = $this->name . ' - ';
-        if ($this->institutions) {
-            return $name . implode(", ", array_map(function ($institution) {
-                return $institution->short_name;
-            }, $this->institutions));
+        if ($this->institution) {
+            return $this->institution->short_name;
         }
 
         return $name . 'All';

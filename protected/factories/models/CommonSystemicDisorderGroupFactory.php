@@ -39,11 +39,9 @@ class CommonSystemicDisorderGroupFactory extends ModelFactory
      */
     public function withInstitution($institution): self
     {
-        $institution_id = $institution instanceof \Institution ? $institution->id : $institution;
-
-        return $this->afterCreating(function (CommonSystemicDisorderGroup $disorderGroup) use ($institution_id) {
-            $disorderGroup->createMapping(ReferenceData::LEVEL_INSTITUTION, $institution_id);
-        });
+        return $this->state([
+            'institution_id' => $institution
+        ]);
     }
 
     public function forDisplayOrder($display_order): self

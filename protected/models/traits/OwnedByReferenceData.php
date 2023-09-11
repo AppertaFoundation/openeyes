@@ -46,9 +46,20 @@ trait OwnedByReferenceData
         ?Specialty $specialty = null,
         ?Subspecialty $subspecialty = null,
         ?Firm $firm = null,
-        ?User $user = null
+        ?User $user = null,
+        bool $matchAnyLevels = true
     ): array {
-        $levelCriteria = $this->getCriteriaForLevels($level_mask, $criteria, $institution, $site, $specialty, $subspecialty, $firm, $user);
+        $levelCriteria = $this->getCriteriaForLevels(
+            $level_mask,
+            $criteria,
+            $institution,
+            $site,
+            $specialty,
+            $subspecialty,
+            $firm,
+            $user,
+            $matchAnyLevels
+        );
 
         return static::model()->findAll($levelCriteria);
     }
@@ -74,13 +85,23 @@ trait OwnedByReferenceData
         ?Specialty $specialty = null,
         ?Subspecialty $subspecialty = null,
         ?Firm $firm = null,
-        ?User $user = null
+        ?User $user = null,
+        bool $matchAnyLevels = true
     ): CDbCriteria {
         if ($institution === null) {
             $institution = Institution::model()->getCurrent();
         }
 
-        $levelCriteria = $this->buildCriteriaForFindAllAtLevels($level_mask, $institution, $site, $specialty, $subspecialty, $firm, $user);
+        $levelCriteria = $this->buildCriteriaForFindAllAtLevels(
+            $level_mask,
+            $institution,
+            $site,
+            $specialty,
+            $subspecialty,
+            $firm,
+            $user,
+            $matchAnyLevels
+        );
 
         if (isset($criteria)) {
             $levelCriteria->mergeWith($criteria);
@@ -113,25 +134,28 @@ trait OwnedByReferenceData
         ?Specialty $specialty,
         ?Subspecialty $subspecialty,
         ?Firm $firm,
-        ?User $user
+        ?User $user,
+        bool $matchAnyLevels
     ): CDbCriteria {
         $criteria = new CDbCriteria();
         $conditions = array();
+        $joinOperator = $matchAnyLevels ? 'OR' : 'AND';
 
         $level_ids = $this->getIdForLevels($level_mask, $institution, $site, $specialty, $subspecialty, $firm, $user);
 
         if (count($level_ids) === 0) {
             // No IDs specified
             foreach ($this->getLevelColumnsOnModel() as $column) {
-                $conditions[] = "$column IS NULL";
+                $conditions[$column] = null;
             }
             if (!empty($conditions)) {
-                $criteria->addCondition(implode(' AND ', $conditions));
+                $criteria->addColumnCondition($conditions, 'AND', $joinOperator);
             }
             return $criteria;
         }
+
         foreach ($level_ids as $column => $level_constraint) {
-            $criteria = $this->addLevelQueryToCriteria($column, $level_constraint, $criteria);
+            $criteria = $this->addLevelQueryToCriteria($column, $level_constraint, $criteria, array_keys($level_ids), $matchAnyLevels);
         }
 
         return $criteria;
@@ -202,44 +226,59 @@ trait OwnedByReferenceData
      * Adds level-based criteria to an existing criteria object
      *
      * @param string $column Column name
-     * @param integer $id ID
+     * @param integer|null $id ID
      * @param CDbCriteria|null $criteria Existing criteria to append to.
      * @return CDbCriteria
      */
-    private function addLevelQueryToCriteria(string $column, int $id, ?CDbCriteria $criteria): CDbCriteria
-    {
+    private function addLevelQueryToCriteria(
+        string $column,
+        ?int $id,
+        ?CDbCriteria $criteria,
+        array $selected_levels,
+        bool $matchAnyLevels
+    ): CDbCriteria {
         if (!$criteria) {
             $criteria = new CDbCriteria();
         }
         $supported_columns = $this->getLevelColumnsOnModel();
+        $joinOperator = $matchAnyLevels ? 'OR' : 'AND';
         if ($column === $supported_columns[ReferenceData::LEVEL_INSTALLATION]) {
-            $subconditions = array();
-            foreach ($supported_columns as $subcolumn) {
-                if ($subcolumn === $supported_columns[ReferenceData::LEVEL_INSTALLATION]) {
-                    continue;
+            if ($matchAnyLevels) {
+                // Match on record where every reference data relation column is blank.
+                $subconditions = array();
+                foreach ($supported_columns as $subcolumn) {
+                    // Skip installation level as this is not a column.
+                    if ($subcolumn === $supported_columns[ReferenceData::LEVEL_INSTALLATION]) {
+                        continue;
+                    }
+                    $subconditions[$subcolumn] = null;
                 }
-                $subconditions[] = "$subcolumn IS NULL";
-            }
-            $condition = '(' . implode(' AND ', $subconditions) . ')';
-        } else {
-            $subconditions = array();
-            // Add IS NULL conditions for all lower level ID columns.
-            foreach ($supported_columns as $subcolumn) {
-                // As the supported levels list is in order from lowest to highest level,
-                // we can break the loop once we reach the current column in the parent loop.
-                if ($subcolumn === $column) {
-                    break;
-                }
-                $subconditions[] = $subcolumn . ' IS NULL';
-            }
-            if (!empty($subconditions)) {
-                $condition = "$column = :$column AND " . implode(' AND ', $subconditions) . '';
+                $criteria->addColumnCondition($subconditions, 'AND', $joinOperator);
             } else {
-                $condition = "$column = :$column";
+                // Match on records where every reference data relation column except those selected in the level mask are empty.
+                $subconditions = array();
+                foreach ($supported_columns as $subcolumn) {
+                    // Exclude the columns relating to the selected levels and exclude the installation level as this is not a column.
+                    if (
+                        $subcolumn === $supported_columns[ReferenceData::LEVEL_INSTALLATION]
+                        || in_array($subcolumn, $selected_levels, true)
+                    ) {
+                        continue;
+                    }
+                    $subconditions[$subcolumn] = null;
+                }
+                if (!empty($subconditions)) {
+                    $criteria->addColumnCondition($subconditions, 'AND', $joinOperator);
+                }
             }
-            $criteria->params[":$column"] = $id;
+        } else {
+            if ($id) {
+                $criteria->compare($column, $id, false, $joinOperator);
+            } else {
+                $criteria->addColumnCondition([$column => null], 'AND', $joinOperator);
+            }
         }
-        $criteria->addCondition($condition, 'OR');
+
         return $criteria;
     }
 }

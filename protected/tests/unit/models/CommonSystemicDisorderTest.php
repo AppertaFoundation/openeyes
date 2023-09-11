@@ -25,7 +25,6 @@ class CommonSystemicDisorderTest extends ActiveRecordTestCase
         'Disorder',
         'specialties' => 'Specialty',
         'commonsystemicdisorder' => CommonSystemicDisorder::class,
-        'commonsystemicdisorder_institution' => CommonSystemicDisorder_Institution::class,
     );
 
     private $model;

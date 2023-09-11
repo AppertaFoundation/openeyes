@@ -99,7 +99,7 @@ class CommonSystemicDisorderGroupController extends BaseAdminController
             return $entry['CommonSystemicDisorderGroup'];
         }, $json);
 
-        list($saved_group_ids, $errors) = $this->saveCommonSystemicDisorderGroups($current_institution, $groups, $display_orders);
+        list($saved_group_ids, $errors) = $this->saveCommonSystemicDisorderGroups($groups, $display_orders);
 
         if (!empty($errors)) {
             foreach ($errors as $error) {
@@ -136,33 +136,25 @@ class CommonSystemicDisorderGroupController extends BaseAdminController
         }
 
         $to_delete = CommonSystemicDisorderGroup::model()->findAllAtLevels(
-            $institution ? ReferenceData::LEVEL_INSTITUTION : ReferenceData::LEVEL_ALL,
+            $institution ? ReferenceData::LEVEL_INSTITUTION : ReferenceData::LEVEL_INSTALLATION,
             $criteria,
             $institution
         );
 
         foreach ($to_delete as $item) {
             // unmap deleted
-            if ($institution) {
-                // If an institution was selected, only delete the mapping and not the record itself.
-                $item->deleteMapping(ReferenceData::LEVEL_INSTITUTION, $institution->id);
-            } else {
-                // If no institution selected, delete the entire record as well as the mappings at all applicable levels.
-                $item->deleteMappings(ReferenceData::LEVEL_INSTALLATION);
-                $item->deleteMappings(ReferenceData::LEVEL_INSTITUTION);
-                if (!$item->delete()) {
-                    throw new Exception("Unable to delete CommonSystemicDisorderGroup:{$item->primaryKey}");
-                }
-
-                Audit::add('admin', 'delete', $item->primaryKey, null, array(
-                    'module' => (is_object($this->module)) ? $this->module->id : 'core',
-                    'model' => CommonSystemicDisorderGroup::getShortModelName(),
-                ));
+            if (!$item->delete()) {
+                throw new Exception("Unable to delete CommonSystemicDisorderGroup:{$item->primaryKey}");
             }
+
+            Audit::add('admin', 'delete', $item->primaryKey, null, array(
+                'module' => (is_object($this->module)) ? $this->module->id : 'core',
+                'model' => CommonSystemicDisorderGroup::getShortModelName(),
+            ));
         }
     }
 
-    protected function saveCommonSystemicDisorderGroups($institution, $groups, $display_orders)
+    protected function saveCommonSystemicDisorderGroups($groups, $display_orders)
     {
         $errors = [];
         $saved_group_ids = [];
@@ -182,13 +174,6 @@ class CommonSystemicDisorderGroupController extends BaseAdminController
             }
 
             $saved_group_ids[] = $common_systemic_disorder_group->id;
-
-            // map to institution if not already mapped
-            if ($institution) {
-                if (!$common_systemic_disorder_group->hasMapping(ReferenceData::LEVEL_INSTITUTION, $institution->id)) {
-                    $common_systemic_disorder_group->createMapping(ReferenceData::LEVEL_INSTITUTION, $institution->id);
-                }
-            }
         }
 
         return [$saved_group_ids, $errors];

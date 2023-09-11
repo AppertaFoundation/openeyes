@@ -203,7 +203,7 @@ class Institution extends BaseActiveRecordVersioned
         return array_merge([$this->findByPk($default_to_id)], $this->getTenanted($condition, $params, $user_must_be_member));
     }
 
-    public function getTenantedList($current_institution_only = true, $user_must_be_member = false)
+    public function getTenantedList($current_institution_only = true, $user_must_be_member = false, $return_as_json_array = false)
     {
         $result = array();
 
@@ -221,11 +221,14 @@ class Institution extends BaseActiveRecordVersioned
                 $cmd->where('ua.user_id = :user_id', [':user_id' => \Yii::app()->user->id]);
             }
 
-            foreach ($cmd->queryAll() as $institution) {
-                $result[$institution['id']] = $institution['name'];
+            if ($return_as_json_array) {
+                $result = $cmd->order('i.name')->queryAll();
+            } else {
+                foreach ($cmd->queryAll() as $institution) {
+                    $result[$institution['id']] = $institution['name'];
+                }
+                natcasesort($result);
             }
-
-            natcasesort($result);
         }
 
         return $result;

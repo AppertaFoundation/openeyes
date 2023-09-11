@@ -13,6 +13,8 @@
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+ *
+ * @var CommonSystemicDisorderController $this
  */
 
 $this->renderPartial('//base/_messages');
@@ -95,10 +97,28 @@ $options['data-test'] = 'common-systemic-disorders-institution-select';
             }
         ],
         [
+            'header' => 'Institution',
+            'type' => 'raw',
+            'name' => 'institution.name',
+            'value' => function ($data, $row) {
+                if ($this->checkAccess('admin')) {
+                    $institutions = CHtml::listData(Institution::model()->getTenanted(), 'id', 'name');
+                    return CHtml::dropDownList("CommonSystemicDisorder[$row][institution_id]", $data->institution_id, $institutions, ['style' => 'width:400px', 'empty' => 'All Institutions']);
+                } else {
+                    if ($data->institution_id) {
+                        $institution = Institution::model()->findByPk($data->institution_id);
+                        return $institution->name;
+                    } else {
+                        return 'All institutions';
+                    }
+                }
+            }
+        ],
+        [
             'header' => 'Actions',
             'type' => 'raw',
-            'value' => function ($data) use ($current_institution) {
-                return "<button type='button'><a href='javascript:void(0)' class='delete'>" . ($current_institution ? 'delete mapping' : 'delete') . "</a></button>";
+            'value' => function ($data) {
+                return "<button type='button'><a href='javascript:void(0)' class='delete'>delete</a></button>";
             }
         ],
     ];
@@ -133,6 +153,7 @@ $options['data-test'] = 'common-systemic-disorders-institution-select';
             'CommonSystemicDisorder[ROW_IDENTIFIER][disorder_id]' : '#CommonSystemicDisorder_ROW_IDENTIFIER_disorder_id_actual',
             'CommonSystemicDisorder[ROW_IDENTIFIER][display_order]' : '#CommonSystemicDisorder_ROW_IDENTIFIER_display_order',
             'CommonSystemicDisorder[ROW_IDENTIFIER][group_id]' : '',
+            'CommonSystemicDisorder[ROW_IDENTIFIER][institution_id]' : '',
         }
     };
     const GenericFormJSONConverter = new OpenEyes.GenericFormJSONConverter(formStructure);
@@ -190,10 +211,13 @@ $options['data-test'] = 'common-systemic-disorders-institution-select';
 
         $('#add_new').on('click', function () {
             let $tr = $('table.generic-admin tbody tr');
+            let institution_id = $('#institution_id').val();
             let output = Mustache.render($('#common_systemic_disorder_template').text(), {
                 'group_options' : common_systemic_disorder_group_options,
                 "row_count" : OpenEyes.Util.getNextDataKey($tr, 'row'),
-                'order_value': parseInt($('table.generic-admin tbody tr:last-child').find('input[name$="display_order]"]').val()) + 1
+                'order_value': parseInt($('table.generic-admin tbody tr:last-child').find('input[name$="display_order]"]').val()) + 1,
+                'institution_id': institution_id,
+                'institution_name': $('#institution_id option[value=' + institution_id + ']').text()
             });
 
             $('table.generic-admin tbody').append(output);
@@ -253,6 +277,11 @@ $options['data-test'] = 'common-systemic-disorders-institution-select';
                 <option value="{{id}}">{{name}}</option>
                 {{/group_options}}
             </select>
+        </td>
+        <td>
+            <input type="hidden" name="CommonSystemicDisorder[{{row_count}}][institution_id]"
+                   id="CommonSystemicDisorder_{{row_count}}_institution_id" value="{{institution_id}}">
+            {{institution_name}}
         </td>
         <td>
             <button type='button'><a href='javascript:void(0)' class='delete'>delete</a></button>
