@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
@@ -11,6 +12,8 @@
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (C) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+ *
+ * @var CommonSystemicDisorderGroupController $this
  */
 
 ?>
@@ -85,19 +88,41 @@ if ($this->checkAccess('admin')) {
                 }
             ),
             array(
+                'header' => 'Institution',
+                'type' => 'raw',
+                'name' => 'institution.name',
+                'value' => function ($data, $row) use ($active_group_ids) {
+                    if (in_array($data->id, $active_group_ids)) {
+                        if ($data->institution_id) {
+                            $institution = Institution::model()->findByPk($data->institution_id);
+                            $str = $institution->name;
+                        } else {
+                            $str = 'All institutions';
+                        }
+                        return $str
+                            . '<span data-tooltip-content="This group has disorders assigned to it so can\'t be reassigned." class="oe-i info small js-has-tooltip"></span>';
+                    }
+                    if ($this->checkAccess('admin')) {
+                        $institutions = CHtml::listData(Institution::model()->getTenanted(), 'id', 'name');
+                        return CHtml::dropDownList("CommonSystemicDisorderGroup[$row][institution_id]", $data->institution_id, $institutions, ['style' => 'width:400px', 'empty' => 'All Institutions']);
+                    } else {
+                        if ($data->institution_id) {
+                            $institution = Institution::model()->findByPk($data->institution_id);
+                            return $institution->name;
+                        } else {
+                            return 'All institutions';
+                        }
+                    }
+                }
+            ),
+            array(
                 'header' => 'Actions',
                 'type' => 'raw',
-                'value' => function ($data) use ($active_group_ids, $current_institution_id) {
-                    $is_owner = (Yii::app()->controller->checkAccess('admin'))
-                    || (!Yii::app()->controller->checkAccess('admin') && $current_institution_id);
-                    if ($is_owner) {
-                        if (!in_array($data->id, $active_group_ids)) {
-                            return '<button type="button"><a href="javascript:void(0)" class="delete">' . ($current_institution_id ? 'delete mapping' : 'delete' ) . '</a></button>';
-                        } else {
-                            return '<span data-tooltip-content="This group has disorders assigned to it so can\'t be deleted." class="oe-i info small js-has-tooltip"></span>';
-                        }
+                'value' => function ($data) use ($active_group_ids) {
+                    if (!in_array($data->id, $active_group_ids)) {
+                        return '<button type="button"><a href="javascript:void(0)" class="delete">delete</a></button>';
                     } else {
-                        return '<span data-tooltip-content="The user does not have delete privileges on this group." class="oe-i info small js-has-tooltip"></span>';
+                        return '<span data-tooltip-content="This group has disorders assigned to it so can\'t be deleted." class="oe-i info small js-has-tooltip"></span>';
                     }
                 }
             ),
@@ -131,6 +156,7 @@ if ($this->checkAccess('admin')) {
             'CommonSystemicDisorderGroup[ROW_IDENTIFIER][id]' : '',
             'display_order[ROW_IDENTIFIER]' : '',
             'CommonSystemicDisorderGroup[ROW_IDENTIFIER][name]' : '#CommonSystemicDisorderGroup_ROW_IDENTIFIER_name',
+            'CommonSystemicDisorderGroup[ROW_IDENTIFIER][institution_id]' : '#CommonSystemicDisorderGroup_ROW_IDENTIFIER_institution_id',
             'CommonSystemicDisorderGroup[ROW_IDENTIFIER][active]' : '#CommonSystemicDisorderGroup_ROW_IDENTIFIER_active'
         }
     };
@@ -179,11 +205,14 @@ if ($this->checkAccess('admin')) {
             let $tr = $('table.generic-admin tbody tr');
             const $last_order_input = document.querySelector('table.generic-admin tbody tr:last-child input[name^="display_order"]');
             const order_value = $last_order_input ? +$last_order_input.value + 1 : 0;
+            let institution_id = $('#institution_id').val()
 
             let output = Mustache.render($('#common_systemic_disorder_group_template').text(), {
                 "row_count": OpenEyes.Util.getNextDataKey($tr, 'row'),
                 'even_odd': $tr.length % 2 ? 'odd' : 'even',
-                'order_value': order_value
+                'order_value': order_value,
+                'institution_id': institution_id,
+                'institution_name': $('#institution_id option[value=' + institution_id + ']').text()
             });
 
             $('table.generic-admin tbody').append(output);
@@ -215,6 +244,11 @@ if ($this->checkAccess('admin')) {
         <td width="400px">
             <input type="text" name="CommonSystemicDisorderGroup[{{row_count}}][name]"
                    id="CommonSystemicDisorderGroup_{{row_count}}_name" autocomplete="off" style="width:400px;">
+        </td>
+        <td width="400px">
+            <input type="hidden" name="CommonSystemicDisorderGroup[{{row_count}}][institution_id]"
+                   id="CommonSystemicDisorderGroup_{{row_count}}_institution_id" value="{{institution_id}}">
+            {{institution_name}}
         </td>
         <td>
             <button type="button"><a href="javascript:void(0)" class="delete">delete</a></button>

@@ -34,9 +34,9 @@ use OE\factories\models\traits\HasFactory;
 class CommonSystemicDisorder extends BaseActiveRecordVersioned
 {
     use HasFactory;
-    use MappedReferenceData;
+    use OwnedByReferenceData;
 
-    protected function getSupportedLevels(): int
+    protected function getSupportedLevelMask(): int
     {
         return ReferenceData::LEVEL_INSTITUTION | ReferenceData::LEVEL_INSTALLATION;
     }
@@ -73,7 +73,8 @@ class CommonSystemicDisorder extends BaseActiveRecordVersioned
         return array(
             array('disorder_id', 'required'),
             array('disorder_id', 'length', 'max' => 20),
-            array('id, disorder_id, group_id', 'safe', 'on' => 'search'),
+            array('id, disorder_id, group_id, institution_id', 'safe'),
+            array('id, disorder_id, group_id, institution_id', 'safe', 'on' => 'search'),
         );
     }
 
@@ -84,11 +85,7 @@ class CommonSystemicDisorder extends BaseActiveRecordVersioned
     {
         return array(
             'disorder' => [self::BELONGS_TO, 'Disorder', 'disorder_id', 'on' => 'disorder.active = 1'],
-            'institutions' => array(
-                self::MANY_MANY,
-                'Institution',
-                $this->tableName() . '_institution(' . $this->tableName() . '_id, institution_id)'
-            ),
+            'institution' => array(self::BELONGS_TO, 'Institution', 'institution_id'),
         );
     }
 

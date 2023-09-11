@@ -11,10 +11,10 @@
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+ *
+ * @var AdminController $this
  */
-?>
 
-<?php
 Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/OpenEyes.GenericFormJSONConverter.js'), CClientScript::POS_HEAD);
 foreach (Yii::app()->user->getFlashes() as $key => $message) {
     echo '<div class="flash- alert-box with-icon warning' . $key . '">' . $message . "</div>\n";
@@ -35,11 +35,11 @@ if ($this->checkAccess('admin')) {
         <tbody>
         <tr class="col-gap">
             <td>&nbsp;<br/><?=\CHtml::dropDownList(
-                    'institution_id',
-                    $current_institution_id,
-                    Institution::model()->getTenantedList(!Yii::app()->user->checkAccess('admin')),
-                    $options
-                ) ?>
+                'institution_id',
+                $current_institution_id,
+                Institution::model()->getTenantedList(!Yii::app()->user->checkAccess('admin')),
+                $options
+            ) ?>
             </td>
             <td>
                 <small>Subspeciality</small><br/>
@@ -79,23 +79,36 @@ if ($this->checkAccess('admin')) {
                     return CHtml::textField(
                         "CommonOphthalmicDisorderGroup[$row][name]",
                         $data->name,
-                        array('style' => 'width:400px', 'data-test' => 'group-name'
-                    ));
+                        array('style' => 'width:400px', 'data-test' => 'group-name')
+                    );
                 }
             ),
             array(
                 'header' => 'Institution',
+                'name' => 'institution.name',
                 'type' => 'raw',
                 'htmlOptions' => array('width' => '300px'),
-                'value' => function ($data, $row) use ($current_institution) {
-                    $common_ophthalmic_disorder_group_institution = CommonOphthalmicDisorderGroup_Institution::model()->find('common_ophthalmic_disorder_group_id = :id',
-                        [':id' => $data->id]);
-
-                    if ($common_ophthalmic_disorder_group_institution) {
-                        $institution = Institution::model()->findByPk($common_ophthalmic_disorder_group_institution->institution_id);
-                        return $institution->name;
+                'value' => function ($data, $row) use ($options, $active_group_ids) {
+                    if (in_array($data->id, $active_group_ids)) {
+                        if ($data->institution_id) {
+                            $institution = Institution::model()->findByPk($data->institution_id);
+                            $str = $institution->name;
+                        } else {
+                            $str = 'All institutions';
+                        }
+                        return $str
+                            . '<span data-tooltip-content="This group has disorders assigned to it so can\'t be reassigned." class="oe-i info small js-has-tooltip"></span>';
+                    }
+                    if ($this->checkAccess('admin')) {
+                        $institutions = CHtml::listData(Institution::model()->getTenanted(), 'id', 'name');
+                        return CHtml::activeDropDownList($data, "[$row]institution_id", $institutions, $options);
                     } else {
-                        return '-';
+                        if ($data->institution_id) {
+                            $institution = Institution::model()->findByPk($data->institution_id);
+                            return $institution->name;
+                        } else {
+                            return 'All institutions';
+                        }
                     }
                 }
             ),
@@ -148,7 +161,8 @@ if ($this->checkAccess('admin')) {
         'structure': {
             'CommonOphthalmicDisorderGroup[ROW_IDENTIFIER][id]' : '',
             'display_order[ROW_IDENTIFIER]' : '',
-            'CommonOphthalmicDisorderGroup[ROW_IDENTIFIER][name]' : '#CommonOphthalmicDisorderGroup_ROW_IDENTIFIER_name'
+            'CommonOphthalmicDisorderGroup[ROW_IDENTIFIER][name]' : '#CommonOphthalmicDisorderGroup_ROW_IDENTIFIER_name',
+            'CommonOphthalmicDisorderGroup[ROW_IDENTIFIER][institution_id]' : '#CommonOphthalmicDisorderGroup_ROW_IDENTIFIER_institution_id'
         }
     };
     let GenericFormJSONConverter = new OpenEyes.GenericFormJSONConverter(formStructure);
@@ -200,11 +214,14 @@ if ($this->checkAccess('admin')) {
             let $tr = $('table.generic-admin tbody tr');
             const $last_order_input = document.querySelector('table.generic-admin tbody tr:last-child input[name^="display_order"]');
             const order_value = $last_order_input ? +$last_order_input.value + 1 : 0;
+            let institution_id = $('#institution_id').val()
 
             let output = Mustache.render($('#common_ophthalmic_disorder_group_template').text(), {
                 "row_count": OpenEyes.Util.getNextDataKey($tr, 'row'),
                 'even_odd': $tr.length % 2 ? 'odd' : 'even',
-                'order_value': order_value
+                'order_value': order_value,
+                'institution_id': institution_id,
+                'institution_name': $('#institution_id option[value=' + institution_id + ']').text()
             });
 
             $('table.generic-admin tbody').append(output);
@@ -235,7 +252,10 @@ if ($this->checkAccess('admin')) {
             <input type="text" name="CommonOphthalmicDisorderGroup[{{row_count}}][name]"
                    id="CommonOphthalmicDisorderGroup_{{row_count}}_name" autocomplete="off" style="width:400px;">
         </td>
-        <td width="300px">
+        <td>
+            <input type="hidden" name="CommonOphthalmicDisorderGroup[{{row_count}}][institution_id]"
+                   id="CommonOphthalmicDisorderGroup_{{row_count}}_institution_id" value="{{institution_id}}">
+            {{institution_name}}
         </td>
         <td width="120px">
         </td>

@@ -94,21 +94,22 @@ class CommonSystemicDisorderController extends BaseAdminController
                 $common_systemic_disorder->group_id = $disorder['group_id'] ?? null;
                 $common_systemic_disorder->disorder_id = $disorder['disorder_id'];
                 $common_systemic_disorder->display_order = $disorder['display_order'];
+                $common_systemic_disorder->institution_id = $disorder['institution_id'];
+
+                // Validate that the group is unassigned, belongs to the current institution or is a global group.
+                // If it isn't any of those, raise an error.
+                if ($common_systemic_disorder->group_id) {
+                    $group = CommonOphthalmicDisorderGroup::model()->findByPk($disorder['group_id']);
+                    if ($group->institution_id && (int)$group->institution_id !== (int)$common_systemic_disorder->institution_id) {
+                        $common_systemic_disorder->addError('group_id', 'Group is not available for the selected institution');
+                    }
+                }
 
                 if (!$common_systemic_disorder->save()) {
                     $errors[] = $common_systemic_disorder->getErrors();
                 }
 
                 $ids[$common_systemic_disorder->id] = $common_systemic_disorder->id;
-
-                // map to institution if not already mapped
-                if ($current_institution) {
-                    if (!$common_systemic_disorder->hasMapping(ReferenceData::LEVEL_INSTITUTION, $current_institution->id)) {
-                        $common_systemic_disorder->createMapping(ReferenceData::LEVEL_INSTITUTION, $current_institution->id);
-                    }
-                } else {
-                    $common_systemic_disorder->createMapping(ReferenceData::LEVEL_INSTALLATION, 1);
-                }
             }
 
             if (empty($errors)) {
@@ -121,26 +122,20 @@ class CommonSystemicDisorderController extends BaseAdminController
                 }
 
                 $to_delete = CommonSystemicDisorder::model()->findAllAtLevels(
-                    $current_institution ? ReferenceData::LEVEL_INSTITUTION : ReferenceData::LEVEL_ALL,
+                    $current_institution ? ReferenceData::LEVEL_INSTITUTION : ReferenceData::LEVEL_INSTALLATION,
                     $criteria,
                     $current_institution
                 );
                 foreach ($to_delete as $item) {
                     // unmap deleted
-                    if ($current_institution) {
-                        $item->deleteMapping(ReferenceData::LEVEL_INSTITUTION, $current_institution->id);
-                    } else {
-                        $item->deleteMappings(ReferenceData::LEVEL_INSTALLATION);
-                        $item->deleteMappings(ReferenceData::LEVEL_INSTITUTION);
-                        if (!$item->delete()) {
-                            $errors[] = $item->getErrors();
-                        }
-
-                        Audit::add('admin', 'delete', $item->primaryKey, null, array(
-                            'module' => (is_object($this->module)) ? $this->module->id : 'core',
-                            'model' => CommonSystemicDisorder::getShortModelName(),
-                        ));
+                    if (!$item->delete()) {
+                        $errors[] = $item->getErrors();
                     }
+
+                    Audit::add('admin', 'delete', $item->primaryKey, null, array(
+                        'module' => (is_object($this->module)) ? $this->module->id : 'core',
+                        'model' => CommonSystemicDisorder::getShortModelName(),
+                    ));
                 }
 
                 $transaction->commit();
@@ -152,7 +147,7 @@ class CommonSystemicDisorderController extends BaseAdminController
                 foreach ($errors as $error) {
                     foreach ($error as $attribute => $error_array) {
                         $display_errors = '<strong>'
-                            . (new CommonOphthalmicDisorder())->getAttributeLabel($attribute)
+                            . CommonOphthalmicDisorder::model()->getAttributeLabel($attribute)
                             . ':</strong> '
                             . implode(', ', $error_array);
                         Yii::app()->user->setFlash('warning.failure-' . $attribute, $display_errors);

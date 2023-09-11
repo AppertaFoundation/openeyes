@@ -11,6 +11,8 @@
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+ *
+ * @var AdminController $this
  */
 ?>
 
@@ -30,11 +32,11 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
         <tbody>
         <tr class="col-gap">
             <td>&nbsp;<br/><?=\CHtml::dropDownList(
-                    'institution_id',
-                    $current_institution_id,
-                    Institution::model()->getTenantedList(!Yii::app()->user->checkAccess('admin')),
-                    ['empty' => 'All Institutions']
-                ) ?>
+                'institution_id',
+                $current_institution_id,
+                Institution::model()->getTenantedList(!Yii::app()->user->checkAccess('admin')),
+                ['empty' => 'All Institutions']
+            ) ?>
             </td>
             <td>
                 <small>Subspeciality</small><br/>
@@ -193,16 +195,18 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
         array(
             'header' => 'Institution',
             'type' => 'raw',
-            'htmlOptions' => array('width' => '150px'),
-            'value' => function ($data, $row) use ($current_institution) {
-                $common_ophthalmic_disorder_group_institution = CommonOphthalmicDisorder_Institution::model()->find('common_ophthalmic_disorder_id = :id',
-                    [':id' => $data->id]);
-
-                if ($common_ophthalmic_disorder_group_institution) {
-                    $institution = Institution::model()->findByPk($common_ophthalmic_disorder_group_institution->institution_id);
-                    return $institution->name;
+            'name' => 'institution.name',
+            'value' => function ($data, $row) {
+                if ($this->checkAccess('admin')) {
+                    $institutions = CHtml::listData(Institution::model()->getTenanted(), 'id', 'name');
+                    return CHtml::dropDownList("CommonOphthalmicDisorder[$row]institution_id", $data->institution_id, $institutions, ['empty' => 'All Institutions']);
                 } else {
-                    return '-';
+                    if ($data->institution_id) {
+                        $institution = Institution::model()->findByPk($data->institution_id);
+                        return $institution->name;
+                    } else {
+                        return 'All institutions';
+                    }
                 }
             }
         ),
@@ -250,7 +254,8 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
             'CommonOphthalmicDisorder[ROW_IDENTIFIER][group_id]' : '',
             'CommonOphthalmicDisorder[ROW_IDENTIFIER][finding_id]' : '#CommonOphthalmicDisorder_ROW_IDENTIFIER_finding_id.finding-id',
             'CommonOphthalmicDisorder[ROW_IDENTIFIER][alternate_disorder_id]' : '#CommonOphthalmicDisorder_ROW_IDENTIFIER_alternate_disorder_id.alternate-disorder-id',
-            'CommonOphthalmicDisorder[ROW_IDENTIFIER][alternate_disorder_label]' : ''
+            'CommonOphthalmicDisorder[ROW_IDENTIFIER][alternate_disorder_label]' : '',
+            'CommonOphthalmicDisorder[ROW_IDENTIFIER][institution_id]' : '#CommonOphthalmicDisorder_ROW_IDENTIFIER_institution_id',
         }
     };
     let GenericFormJSONConverter = new OpenEyes.GenericFormJSONConverter(formStructure);
@@ -350,12 +355,15 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
             let $tr = $('table.generic-admin tbody tr');
             const $last_order_input = document.querySelector('table.generic-admin tbody tr:last-child input[name^="display_order"]');
             const order_value = $last_order_input ? +$last_order_input.value + 1 : 0;
+            let institution_id = $('#institution_id').val()
 
             let output = Mustache.render($('#common_ophthalmic_disorder_template').text(), {
                 "row_count": OpenEyes.Util.getNextDataKey($tr, 'row'),
                 "group_options": common_ophthalmic_disorder_group_options,
                 'even_odd': $tr.length % 2 ? 'odd' : 'even',
-                'order_value': order_value
+                'order_value': order_value,
+                'institution_id': institution_id,
+                'institution_name': $('#institution_id option[value=' + institution_id + ']').text()
             });
 
             $('table.generic-admin tbody').append(output);
@@ -485,7 +493,10 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
             <input name="CommonOphthalmicDisorder[{{row_count}}][alternate_disorder_label]"
                    id="CommonOphthalmicDisorder_{{row_count}}_alternate_disorder_label" type="text" value="">
         </td>
-        <td width="150px">
+        <td>
+            <input type="hidden" name="CommonOphthalmicDisorder[{{row_count}}][institution_id]"
+                   id="CommonOphthalmicDisorder_{{row_count}}_institution_id" value="{{institution_id}}">
+            {{institution_name}}
         </td>
         <td>
             <button type="button"><a href="javascript:void(0)" class="delete">delete</a></button>

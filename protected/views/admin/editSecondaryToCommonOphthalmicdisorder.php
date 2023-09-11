@@ -12,6 +12,8 @@
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+ *
+ * @var AdminController $this
  */
 
 ?>
@@ -165,15 +167,17 @@
                 'header' => 'Institution',
                 'type' => 'raw',
                 'htmlOptions' => array('width' => '300px'),
-                'value' => function ($data, $row) use ($current_institution) {
-                    $common_ophthalmic_disorder_group_institution = SecondaryToCommonOphthalmicDisorder_Institution::model()->find('secondaryto_common_oph_disorder_id = :id',
-                        [':id' => $data->id]);
-
-                    if ($common_ophthalmic_disorder_group_institution) {
-                        $institution = Institution::model()->findByPk($common_ophthalmic_disorder_group_institution->institution_id);
-                        return $institution->name;
+                'value' => function ($data, $row) {
+                    if ($this->checkAccess('admin')) {
+                        $institutions = CHtml::listData(Institution::model()->getTenanted(), 'id', 'name');
+                        return CHtml::activeDropDownList($data, "[$row]institution_id", $institutions, ['empty' => 'All Institutions']);
                     } else {
-                        return '-';
+                        if ($data->institution_id) {
+                            $institution = Institution::model()->findByPk($data->institution_id);
+                            return $institution->name;
+                        } else {
+                            return 'All institutions';
+                        }
                     }
                 }
             ),
@@ -246,9 +250,12 @@
 
         $('#add_new').on('click', function(){
             var $tr =  $('table.generic-admin tbody tr');
+            let institution_id = $('#institution_id').val()
             var output = Mustache.render($('#common_ophthalmic_disorder_template').text(),{
                 "row_count": OpenEyes.Util.getNextDataKey($tr, 'row'),
                 'even_odd': $tr.length % 2 ? 'odd' : 'even',
+                'institution_id': institution_id,
+                'institution_name': $('#institution_id option[value=' + institution_id + ']').text(),
                 'order_value': function() {
                     let raw_value = $('table.generic-admin tbody tr:last-child ').find('input[name^="display_order"]').val();
                     if(raw_value === undefined) {
@@ -359,7 +366,10 @@
         <td>
             <input name="SecondaryToCommonOphthalmicDisorder[{{row_count}}][letter_macro_text]" id="SecondaryToCommonOphthalmicDisorder_{{row_count}}_letter_macro_text" type="text" value="">
         </td>
-        <td width="300px">
+        <td>
+            <input type="hidden" name="SecondaryToCommonOphthalmicDisorder[{{row_count}}][institution_id]"
+                   id="SecondaryToCommonOphthalmicDisorder_{{row_count}}_institution_id" value="{{institution_id}}">
+            {{institution_name}}
         </td>
         <td>
             <a href="javascript:void(0)" class="delete button large">delete</a>

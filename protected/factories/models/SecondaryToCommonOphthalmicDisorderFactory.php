@@ -20,6 +20,7 @@ use CommonOphthalmicDisorder;
 use Disorder;
 use Finding;
 use OE\factories\ModelFactory;
+use SecondaryToCommonOphthalmicDisorder;
 
 class SecondaryToCommonOphthalmicDisorderFactory extends ModelFactory
 {
@@ -32,7 +33,15 @@ class SecondaryToCommonOphthalmicDisorderFactory extends ModelFactory
         ];
     }
 
-    public function withFinding(): self {
+    public function withInstitution($institution)
+    {
+        return $this->state([
+            'institution_id' => $institution
+        ]);
+    }
+
+    public function withFinding(): self
+    {
         return $this->state([
             'finding_id' => Finding::factory()->useExisting()
         ]);

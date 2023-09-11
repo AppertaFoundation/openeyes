@@ -100,5 +100,4 @@ class CommonOphthalmicDisorderWidgetBehaviourSeeder extends BaseSeeder
         return \Subspecialty::model()->find('id <> :id', [':id' => $this->app_context->getSelectedFirm()->getSubspecialtyID()])
             ?? \Subspecialty::factory()->create();
     }
-
 }
