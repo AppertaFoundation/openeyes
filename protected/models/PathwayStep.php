@@ -434,4 +434,16 @@ class PathwayStep extends BaseActiveRecordVersioned
         }
         return $this->start_time ? DateTime::createFromFormat('Y-m-d H:i:s', $this->start_time)->format('H:i') : null;
     }
+
+    public function undoStep()
+    {
+        $this->status = PathwayStep::STEP_REQUESTED;
+        $this->start_time = null;
+        $this->end_time = null;
+        $this->started_user_id = null;
+        $this->completed_user_id = null;
+        if (!$this->save()) {
+            throw new Exception('Unable to save PathwayStep: ' . print_r($this->getErrors(), true));
+        }
+    }
 }

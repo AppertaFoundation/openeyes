@@ -1488,8 +1488,19 @@ class WorklistManager extends CComponent
                 $worklist_patient->refresh();
             }
 
-            if (!$worklist_patient->pathway->status || (int)$worklist_patient->pathway->status === Pathway::STATUS_LATER) {
+            $checkin_step = $worklist_patient->pathway->findCheckInStep();
+            $checkin_requested = $checkin_step && (int)$checkin_step->status === PathwayStep::STEP_REQUESTED;
+            if (!$worklist_patient->pathway->status || (int)$worklist_patient->pathway->status === Pathway::STATUS_LATER
+            || ((int)$worklist_patient->pathway->status === Pathway::STATUS_WAITING && $checkin_requested)) {
                 $worklist_patient->pathway->startPathway();
+            }
+        } else if ($worklist_patient->pathway
+            && strtolower($start_status->attribute_value) === "scheduled"
+            && !empty($worklist_patient->pathway->completed_steps)) {
+            $checkin_step = $worklist_patient->pathway->findCheckInStep(true);
+            if ($checkin_step) {
+                $checkin_step->undoStep();
+                $worklist_patient->pathway->updateStatus();
             }
         }
     }

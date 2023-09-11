@@ -646,13 +646,7 @@ class Pathway extends BaseActiveRecordVersioned
         );
 
         if ($checkin_step) {
-            $checkin_step->status = PathwayStep::STEP_COMPLETED;
-            $checkin_step->start_time = date('Y-m-d H:i:s');
-            $checkin_step->started_user_id = Yii::app()->user->id;
-            $checkin_step->end_time = date('Y-m-d H:i:s');
-            $checkin_step->completed_user_id = Yii::app()->user->id;
-            $this->enqueue($checkin_step);
-            $this->refresh();
+            $this->checkIn($checkin_step);
         }
 
         if (count($this->requested_steps) === 0) {
@@ -680,5 +674,40 @@ class Pathway extends BaseActiveRecordVersioned
 
         $this->status = $status;
         $this->save();
+    }
+
+    /**
+     * @return PathwayStep|null
+     */
+    public function findCheckInStep(bool $find_completed_only = false): ?PathwayStep
+    {
+        $steps = $this->steps;
+        if ($find_completed_only) {
+            $steps = $this->completed_steps;
+        }
+
+        foreach ($steps as $step) {
+            if ($step->short_name === 'checkin') {
+                return $step;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param PathwayStep $step
+     * @return void
+     * @throws Exception
+     */
+    public function checkIn(PathwayStep $step)
+    {
+        $step->status = PathwayStep::STEP_COMPLETED;
+        $step->start_time = date('Y-m-d H:i:s');
+        $step->started_user_id = Yii::app()->user->id;
+        $step->end_time = date('Y-m-d H:i:s');
+        $step->completed_user_id = Yii::app()->user->id;
+        $this->enqueue($step);
+        $this->refresh();
     }
 }
