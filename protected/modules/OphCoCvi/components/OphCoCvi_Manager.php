@@ -43,7 +43,7 @@ class OphCoCvi_Manager extends \CComponent
     public static $SIGHT_IMPAIRED = 'SI';
     public static $SEVERELY_SIGHT_IMPAIRED = 'SSI';
     private $input_template_file = 'cviTemplate.odt';
-
+    private $page_size_limit = 10;
     public $outDir;
     private $cviTemplate;
     public $patientSignatureImage;
@@ -959,7 +959,7 @@ class OphCoCvi_Manager extends \CComponent
      */
     public function getListDataProvider($filter = array(), $pagination = true)
     {
-        $model = Element_OphCoCvi_EventInfo::model()->with(
+        $with = [
             'site',
             'user',
             'clinical_element',
@@ -970,7 +970,9 @@ class OphCoCvi_Manager extends \CComponent
             'event.episode.firm.serviceSubspecialtyAssignment.subspecialty',
             'consultantInChargeOfThisCvi',
             'esign_element.signatures'
-        );
+        ];
+
+        $model = Element_OphCoCvi_EventInfo::model()->with($with);
 
         $sort = new \CSort();
 
@@ -1011,12 +1013,23 @@ class OphCoCvi_Manager extends \CComponent
                 'desc' => 'is_draft asc, t.last_modified_date desc',
             ),
         );
-        $criteria = $this->buildFilterCriteria($filter);
-        $criteria->together = true;
 
-        $paginationArr = array();
-        if ($pagination === false) {
-            $paginationArr = array('pagination' => false);
+        $criteria = $this->buildFilterCriteria($filter);
+        if (\Yii::app()->request->getParam('sort')) {
+            $criteria->with = $with;
+        } else {
+            $criteria->together = true;
+        }
+
+        if ($pagination === true) {
+            $paginationConfig = [
+                'pagination' => [
+                    'pageSize' => $this->page_size_limit,
+                ],
+                'totalItemCount' => $model->count($criteria)
+            ];
+        } else {
+            $paginationConfig = array('pagination' => false);
         }
 
         return new \CActiveDataProvider($model, array_merge(
@@ -1024,7 +1037,7 @@ class OphCoCvi_Manager extends \CComponent
                 'sort' => $sort,
                 'criteria' => $criteria,
             ),
-            $paginationArr
+            $paginationConfig
         ));
     }
 
