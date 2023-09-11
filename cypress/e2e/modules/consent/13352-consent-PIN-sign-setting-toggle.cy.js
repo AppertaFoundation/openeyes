@@ -16,7 +16,7 @@ describe('consent esign behaviour', () => {
             cy.setSystemSettingValue(SETTING_NAME, 'no');
         });
 
-        it.skip(`verifies that signature appears`, function () {
+        it(`verifies that signature appears`, function () {
             cy.consentCompleteAndSave(this.createUrl)
                 .then(() => {
                     cy.get('div.js-signature-wrapper').first().scrollIntoView().should('be.visible');
@@ -32,7 +32,7 @@ describe('consent esign behaviour', () => {
             cy.setSystemSettingValue(SETTING_NAME, 'yes');
         });
 
-        it.skip(`shows the PIN sign button, indicating that signature is still required.`, function () {
+        it(`shows the PIN sign button, indicating that signature is still required.`, function () {
             cy.consentCompleteAndSave(this.createUrl)
                 .then(() => {
                     cy.get('button.js-sign-button').first().scrollIntoView().should('be.visible');
