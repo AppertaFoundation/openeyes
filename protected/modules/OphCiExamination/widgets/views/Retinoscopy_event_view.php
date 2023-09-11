@@ -66,7 +66,7 @@
                             </tr>
                             <tr>
                                 <td><?= $element->getAttributeLabel("{$side}_comments") ?></td>
-                                <td><?= CHtml::encode($element->{"{$side}_comments" }) ?></td>
+                                <td data-test="retinoscopy-<?= $side ?>-comment"><?= CHtml::encode($element->{"{$side}_comments" }) ?></td>
                             </tr>
                             </tbody>
                         </table>
