@@ -85,7 +85,7 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) {
       <div>
         <?php if (\Yii::app()->user->checkAccess('Prescribe')) { ?>
             <button id="add-standard-set-btn" class="button hint green" data-test="add-standard-set-button" type="button">Add standard set</button>
-            <button class="button hint green" id="add-prescription-btn" type="button">
+            <button class="button hint green" id="add-prescription-btn" data-test="add-prescription-button" type="button">
               <i class="oe-i plus pro-theme"></i>
             </button>
         <?php } else {?>

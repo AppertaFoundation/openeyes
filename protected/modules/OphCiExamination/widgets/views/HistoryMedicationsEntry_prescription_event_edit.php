@@ -47,7 +47,7 @@ $entry_is_stopped = $entry->originallyStopped || $stopped;
 $to_be_copied = !$entry_is_stopped && $entry->medication->getToBeCopiedIntoMedicationManagement();
 ?>
 
-<tr data-key="<?=$row_count?>"
+<tr data-test="<?= "event-medication-history-row-" . $row_count ?>" data-key="<?=$row_count?>"
     <?php if (!is_null($entry->medication_id)) :
         ?>data-allergy-ids="<?php echo implode(",", array_map(function ($e) {
             return $e->id;
@@ -66,7 +66,7 @@ $to_be_copied = !$entry_is_stopped && $entry->medication->getToBeCopiedIntoMedic
         <input type="hidden" name="previous_stop_reason_details" value="<?= $previous_stop_reason_details ?? '' ?>">
         <input type="hidden" name="<?= $field_prefix ?>[bound_key]" class="js-bound-key" value="<?= $entry->bound_key ?>">
         <input type="hidden" name="<?= $field_prefix ?>[stopped_in_event_id]" value="<?= $entry->stopped_in_event_id ?>" />
-            <span class="js-prepended_markup">
+            <span class="js-prepended_markup" data-test="medication-name">
                             <?= $entry->getMedicationDisplay(true) ?>
             <?php if (!is_null($entry->medication_id)) {
                 if (isset($patient) && $patient->hasDrugAllergy($entry->medication_id)) {
@@ -136,7 +136,7 @@ $to_be_copied = !$entry_is_stopped && $entry->medication->getToBeCopiedIntoMedic
                     <span class="oe-date"><?= $entry->getStartDateDisplay() ?></span>
                 </span>
 
-                <span class="end-date-column" id="<?= $model_name . "_entries_" . $row_count . "_end_date_error" ?>">
+                <span data-test="end-date-column" class="end-date-column" id="<?= $model_name . "_entries_" . $row_count . "_end_date_error" ?>">
                     <div class="alternative-display">
                         <div class="alternative-display-element textual">
                             <a class="js-meds-stop-btn" data-row_count="<?= $row_count ?>" href="javascript:void(0);">
@@ -144,7 +144,7 @@ $to_be_copied = !$entry_is_stopped && $entry->medication->getToBeCopiedIntoMedic
                                                         <i class="oe-i stop small pad"></i>
                                                         <?= Helper::formatFuzzyDate($end_sel_year . '-' . $end_sel_month . '-' . $end_sel_day) ?>
                                 <?php else : ?>
-                                                        <span><button type="button"><i class="oe-i stop small pad-right"></i> Stopped</button></span>
+                                                        <span><button data-test=<?= "stopped-btn-" . $row_count ?> type="button"><i class="oe-i stop small pad-right"></i> Stopped</button></span>
                                 <?php endif; ?>
                             </a>
                         </div>

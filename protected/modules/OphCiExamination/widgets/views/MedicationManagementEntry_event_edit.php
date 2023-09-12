@@ -56,7 +56,7 @@ $entry_allergy_ids = isset($entry->medication_id) ?
         <?php if ($entry->originallyStopped) { ?>
             <i class="oe-i stop small pad"></i>
         <?php } ?>
-        <span class="js-medication-display">
+        <span class="js-medication-display" data-test="medication-name">
             <?= is_null($entry->medication_id) ? "{{medication_name}}" : $entry->getMedicationDisplay(true) ?>
         </span>
         <span class="js-prepended_markup">
@@ -241,7 +241,7 @@ $entry_allergy_ids = isset($entry->medication_id) ?
                                 <i class="oe-i stop small pad"></i>
                                 <?= Helper::formatFuzzyDate($end_sel_year . '-' . $end_sel_month . '-' . $end_sel_day) ?>
                             <?php else : ?>
-                                <span><button type="button"><i class="oe-i stop small pad-right"></i>Click here to stop</button></span>
+                                <span><button type="button" data-test="<?= "meds-stop-btn-" . $row_count ?>"><i class="oe-i stop small pad-right"></i>Click here to stop</button></span>
                             <?php endif; ?>
                         </a>
                     </div>
@@ -252,7 +252,7 @@ $entry_allergy_ids = isset($entry->medication_id) ?
                 </div>
             </span>
             <span id="<?= $model_name . '_entries_' . $row_count . '_stop_reason_id_error' ?>" class="js-stop-reason-select cols-5" style="<?= (($entry->hasErrors() || $is_new) && !($entry->end_date || $entry->stop_reason_id)) || $entry->prescribe || !$entry->hasErrors() ? 'display: none' : '' ?>">
-                <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => 'Reason stopped?', 'class' => ' js-stop-reason')) ?>
+                <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => 'Reason stopped?', 'class' => ' js-stop-reason', 'data-test' => 'meds-stop-reason-' . $row_count)) ?>
             </span>
             <div class="js-stop-reason-text" style="<?= $is_new || (!$entry->hasErrors() && $entry->end_date && $entry->stop_reason_id) ? "" : "display:none" ?>">
                 <?= !is_null($entry->stop_reason_id) ? '&nbsp;<em class="fade">(' . $entry->stopReason->name . ')</em>' : ''; ?>
