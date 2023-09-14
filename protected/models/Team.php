@@ -231,6 +231,13 @@ class Team extends BaseActiveRecordVersioned
         );
     }
 
+    public function behaviors()
+    {
+        return array(
+            'LookupTable' => LookupTable::class,
+        );
+    }
+
     /**
      * Retrieves a list of models based on the current search/filter conditions.
      *

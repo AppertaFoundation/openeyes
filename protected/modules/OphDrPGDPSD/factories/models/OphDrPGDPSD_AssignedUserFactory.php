@@ -12,14 +12,14 @@
  * @copyright Copyright (C) 2022, Apperta Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-
 namespace OEModule\OphDrPGDPSD\factories\models;
 
 use OE\factories\ModelFactory;
-use OE\factories\models\EventFactory;
-use OEModule\OphDrPGDPSD\models\Element_DrugAdministration;
 
-class Element_DrugAdministration_recordFactory extends ModelFactory
+use OEModule\OphDrPGDPSD\models\OphDrPGDPSD_PGDPSD;
+use User;
+
+class OphDrPGDPSD_AssignedUserFactory extends ModelFactory
 {
     /**
      *
@@ -28,26 +28,34 @@ class Element_DrugAdministration_recordFactory extends ModelFactory
     public function definition(): array
     {
         return [
-            'event_id' => EventFactory::forModule('OphDrPGDPSD')
+            'pgdpsd_id' => OphDrPGDPSD_PGDPSD::factory(),
+            'team_id' => Team::factory()
         ];
     }
 
     /**
-     * @param int $assignment_count
-     * @param int $med_count
-     * @return Element_DrugAdministration_recordFactory
+     * @param OphDrPGDPSD_PGDPSD|OphDrPGDPSD_PGDPSDFactory|string|int|null $pgdpsd
+     * @return OphDrPGDPSD_AssignedUserFactory
      */
-    public function withEntries($assignment_count = 1, $med_count = 1): self
+    public function forPGDPSD($pgdpsd = null): self
     {
-        return $this->afterCreating(function (Element_DrugAdministration $element) use ($assignment_count, $med_count) {
-            $element->entries = ModelFactory::factoryFor(OphDrPSDPGD_Assignment::class)
-                ->count($assignment_count)
-                ->withMeds($med_count)
-                ->create([
-                    'element_id' => $element->id
-                ]);
+        $pgdpsd ??= OphDrPGDPSD_PGDPSD::factory();
 
-            $element->save(false);
-        });
+        return $this->state([
+            'pgdpsd_id' => $pgdpsd
+        ]);
+    }
+
+    /**
+     * @param User|UserFactory|string|int|null $user
+     * @return OphDrPGDPSD_AssignedTeamFactory
+     */
+    public function forUser($user = null): self
+    {
+        $user ??= User::factory();
+
+        return $this->state([
+            'user_id' => $user
+        ]);
     }
 }

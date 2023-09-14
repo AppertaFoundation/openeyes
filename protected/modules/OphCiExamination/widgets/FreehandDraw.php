@@ -60,8 +60,8 @@ class FreehandDraw extends \BaseEventElementWidget
                 }
                 $entry->comments = $drawing_entry['comments'];
                 $entry->protected_file_id = $drawing_entry['protected_file_id'];
-                $file_content = $drawing_entry['image']['data'];
-                $name = $drawing_entry['image']['name'];
+                $file_content = $drawing_entry['image']['data'] ?? FreehandDrawElement::SINGLE_PIXEL_IMAGE_DATA_PLACEHOLDER;
+                $name = $drawing_entry['image']['name'] ?? '! file missing !';
                 $is_edited = $drawing_entry['image']['is_edited'] ?? 0;
 
                 // If is_edited is not set but there is no previous file, create one anyway

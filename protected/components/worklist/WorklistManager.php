@@ -870,6 +870,13 @@ class WorklistManager extends CComponent
             $current_attributes = $worklist_patient->getCurrentAttributesById();
             $valid_attributes = $worklist->getMappingAttributeIdsByName();
 
+            //remove attributes related to previous Worklist (Patient has been moved to an other Worklist)
+            foreach ($current_attributes as $currattr) {
+                if ($currattr->worklistattribute && $currattr->worklistattribute->worklist_id != $worklist->id) {
+                        $currattr->delete();
+                }
+            }
+
             foreach ($attributes as $attr => $val) {
                 if (!array_key_exists($attr, $valid_attributes)) {
                     throw new Exception("Unrecognised attribute {$attr} for {$worklist->name}");
@@ -1488,8 +1495,19 @@ class WorklistManager extends CComponent
                 $worklist_patient->refresh();
             }
 
-            if (!$worklist_patient->pathway->status || (int)$worklist_patient->pathway->status === Pathway::STATUS_LATER) {
+            $checkin_step = $worklist_patient->pathway->findCheckInStep();
+            $checkin_requested = $checkin_step && (int)$checkin_step->status === PathwayStep::STEP_REQUESTED;
+            if (!$worklist_patient->pathway->status || (int)$worklist_patient->pathway->status === Pathway::STATUS_LATER
+            || ((int)$worklist_patient->pathway->status === Pathway::STATUS_WAITING && $checkin_requested)) {
                 $worklist_patient->pathway->startPathway();
+            }
+        } else if ($worklist_patient->pathway
+            && strtolower($start_status->attribute_value) === "scheduled"
+            && !empty($worklist_patient->pathway->completed_steps)) {
+            $checkin_step = $worklist_patient->pathway->findCheckInStep(true);
+            if ($checkin_step) {
+                $checkin_step->undoStep();
+                $worklist_patient->pathway->updateStatus();
             }
         }
     }

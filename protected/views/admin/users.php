@@ -67,7 +67,7 @@
             <?php foreach ($users as $i => $user) : ?>
                 <tr class="clickable js-clickable" data-id="<?php echo $user->id ?>"
                     data-uri="admin/editUser/<?php echo $user->id ?>">
-                    <td><?php echo $user->id ?></td>
+                    <td data-test="user-id"><?php echo $user->id ?></td>
                     <td><?php echo $user->title ?></td>
                     <td><?php echo $user->first_name ?></td>
                     <td><?php echo $user->last_name ?></td>

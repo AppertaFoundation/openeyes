@@ -892,7 +892,7 @@ class AdminController extends BaseAdminController
                 ->bindValue(':admin_role', 'admin')
                 ->queryColumn();
             $user_ids = array_diff($institution_user_ids, $admin_user_ids);
-            $criteria->addInCondition('id', $user_ids);
+            $criteria->addInCondition('t.id', $user_ids);
         }
 
         $pagination = $this->initPagination(User::model(), $criteria);

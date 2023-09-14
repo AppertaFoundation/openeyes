@@ -380,15 +380,8 @@ class WorklistController extends BaseController
             }
         }
 
-        $step->status = PathwayStep::STEP_COMPLETED;
-        $step->start_time = date('Y-m-d H:i:s');
-        $step->started_user_id = Yii::app()->user->id;
-        $step->end_time = date('Y-m-d H:i:s');
-        $step->completed_user_id = Yii::app()->user->id;
-
         $pathway = $step->pathway;
-        $pathway->enqueue($step);
-        $pathway->refresh();
+        $pathway->checkIn($step);
 
         if (!$pathway->start_time) {
             $pathway->start_time = date('Y-m-d H:i:s');
@@ -428,13 +421,7 @@ class WorklistController extends BaseController
         }
         $pathway = $step->pathway;
 
-        $step->status = PathwayStep::STEP_REQUESTED;
-        $step->start_time = null;
-        $step->end_time = null;
-        $step->started_user_id = null;
-        $step->completed_user_id = null;
-
-        $pathway->enqueue($step);
+        $step->undoStep();
 
         $pathway->refresh();
         $pathway->updateStatus();
@@ -1859,22 +1846,11 @@ class WorklistController extends BaseController
                         ['visit' => $new_step->pathway->worklist_patient],
                         true
                     ),
-                    'no_wait_timer' => in_array($new_step->type->short_name, PathwayStep::NO_WAIT_TIMER_AFTER_ADD) || ($this->findCheckIn($wl_patient->pathway->completed_steps) === null)
+                    'no_wait_timer' => in_array($new_step->type->short_name, PathwayStep::NO_WAIT_TIMER_AFTER_ADD) || ($wl_patient->pathway->findCheckInStep(true) === null)
                 ]
             );
         }
         throw new CHttpException(500, 'Unable to add step to pathway.');
-    }
-
-    private function findCheckIn($steps)
-    {
-        foreach ($steps as $step) {
-            if ($step->short_name === 'checkin') {
-                return $step;
-            }
-        }
-
-        return null;
     }
 
     /**

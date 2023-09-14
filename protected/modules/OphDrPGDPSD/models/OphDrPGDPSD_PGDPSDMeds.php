@@ -2,6 +2,8 @@
 
 namespace OEModule\OphDrPGDPSD\models;
 
+use OE\factories\models\traits\HasFactory;
+
 use Medication;
 use MedicationDuration;
 use MedicationFrequency;
@@ -35,6 +37,8 @@ use OphDrPrescription_DispenseLocation;
  */
 class OphDrPGDPSD_PGDPSDMeds extends \BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     public $laterality = null;
     /**
      * @return string the associated database table name

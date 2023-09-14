@@ -421,7 +421,7 @@
             var list = '';
             for (var i in self.contextsBySubspecialtyId[subspecialtyId]) {
                 var context = self.contextsBySubspecialtyId[subspecialtyId][i];
-                list += '<li class="step-2" data-context-id="' + context.id + '">' + context.name + '</li>';
+                list += '<li class="step-2" data-context-id="' + context.id + '" data-test="new-event-context">' + context.name + '</li>';
 
                 if (self.options.mode === 'ChangeContext' && parseInt(context.id) === self.options.currentFirm) {
                     contextListIdx = i;
