@@ -92,6 +92,7 @@ $model_name = CHtml::modelName($element);
                     'id' => '',
                     'protected_file_id' => '',
                     'template_url' => '{{template_url}}',
+                    'data_url' => '',
                     'filename' => '{{filename}}',
                     'full_name' => '{{full_name}}',
                     'is_edited' => 1,

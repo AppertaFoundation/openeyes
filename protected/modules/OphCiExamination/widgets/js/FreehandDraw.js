@@ -189,27 +189,22 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             self.setIsEdited(row_count, $wrapper);
 
             // set the actual image-data
-            const inputs = document.getElementsByName(`OEModule_OphCiExamination_models_FreehandDraw[entries][${row_count}][image][data]`);
-            if (inputs.length) {
-                inputs[0].value = data_url;
-            }
+
+            self.setImageData(row_count, data_url);
         })();
     };
 
     FreehandDraw.prototype.initTemplate = function (dateTemplateUrl, row_count = 0, add_event_listeners = true) {
+        const self = this;
         const imageAnnotator = new OpenEyes.UI.ImageAnnotator(dateTemplateUrl, {
             'annotateSelector': `#js-annotate-image-${row_count}`,
             'canvasModifiedCallback': async function () {
-                const $input_data = this.$wrapper.querySelector(`.js-image-data-${row_count}`);
-                $input_data.value = await this.getCanvasDataUrl.call(this);
-
+                self.setImageData(row_count, await this.getCanvasDataUrl.call(this));
             },
             'afterInit': async function () {
-                // unfortunately we need to wait for the canvas
-                setTimeout(async () => {
-                    const $input_data = this.$wrapper.querySelector(`.js-image-data-${row_count}`);
-                    $input_data.value = await this.getCanvasDataUrl.call(this);
-                }, 1500);
+                    self.setImageData(row_count, await this.getCanvasDataUrl.call(this));
+                    // We only show actions after everything is loaded to avoid wrong data being saved
+                    self.showAnnotationActions(row_count);
             },
             'withEventListeners': add_event_listeners
         });
@@ -252,6 +247,26 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
         if ($is_edited.length) {
             $is_edited[0].remove();
+        }
+    };
+
+    FreehandDraw.prototype.setImageData = function (rowIndex, data) {
+        const imageData = this.$wrapper.querySelector(`.js-image-data-${rowIndex}`);
+
+        if(imageData && data !== false) {
+            imageData.value = data;
+        }
+    };
+
+    FreehandDraw.prototype.showAnnotationActions = function (rowIndex) {
+        const annotateWrapper = document.getElementById(`annotate-wrapper-${rowIndex}`);
+
+        if(annotateWrapper !== null) {
+            const annotationActionsContainer = annotateWrapper.querySelector('.js-annotation-actions-container');
+
+            if(annotationActionsContainer !== null) {
+                annotationActionsContainer.style.display = '';
+            }
         }
     };
 

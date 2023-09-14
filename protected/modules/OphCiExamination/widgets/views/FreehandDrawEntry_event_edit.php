@@ -27,6 +27,9 @@ if (!isset($values)) {
         'template_url' => $entry->protected_file ?
             $entry->protected_file->getDownloadURL() :
             'data:' . FreehandDraw::SINGLE_PIXEL_IMAGE_DATA_PLACEHOLDER,
+        'data_url' => $entry->protected_file ?
+            $entry->protected_file->getFileAsDataUrl() :
+            'data:' . FreehandDraw::SINGLE_PIXEL_IMAGE_DATA_PLACEHOLDER,
         'filename' => $entry->protected_file ? $entry->protected_file->name : '! File Missing !',
         'full_name' => $entry->protected_file ? $entry->protected_file->user->fullName : '',
         'date' => \Helper::convertMySQL2NHS($entry->last_modified_date),
@@ -35,10 +38,10 @@ if (!isset($values)) {
 }
 ?>
 
-<div class="freedraw-group" id="annote-template-view-<?= $row_count;?>" data-key="<?= $row_count;?>">
+<div class="freedraw-group" id="annote-template-view-<?= $row_count; ?>" data-key="<?= $row_count; ?>">
     <div class="flex-t col-gap">
         <div class="cols-6">
-            <img id="js-img-preview-<?= $row_count;?>" src="<?= $values['template_url']; ?>" width="100%">
+            <img id="js-img-preview-<?= $row_count; ?>" src="<?= $values['template_url']; ?>" width="100%">
         </div>
         <table class="cols-6">
             <tbody>
@@ -48,29 +51,29 @@ if (!isset($values)) {
             </tr>
             <tr>
                 <td>
-                    <i class="oe-i comments-who user-comment-<?=$row_count;?> small pad-right js-has-tooltip"
+                    <i class="oe-i comments-who user-comment-<?= $row_count; ?> small pad-right js-has-tooltip"
                        data-tooltip-content="User comment"
-                       style="display:<?=(!$values['comments'] ? 'none' : 'inline-flex')?>"
+                       style="display:<?= (!$values['comments'] ? 'none' : 'inline-flex') ?>"
                     ></i>
-                    <span id="user-comment-<?=$row_count;?>" class="user-comment">
-                        <?=\OELinebreakReplacer::replace($values['comments']);?>
+                    <span id="user-comment-<?= $row_count; ?>" class="user-comment">
+                        <?= \OELinebreakReplacer::replace($values['comments']); ?>
                     </span>
                     <div class="js-input-comments-wrapper cols-full" style="display: none;">
                         <div class=" flex-layout flex-left">
                             <textarea
-                                    placeholder="Comments"
-                                    autocomplete="off"
-                                    rows="1"
-                                    class="cols-full js-input-comments autosize"
-                                    name="<?= $field_prefix ?>[comments]"
-                                    id="comments-field-<?=$row_count;?>"><?=\CHtml::encode($values['comments']);?></textarea>
+                                placeholder="Comments"
+                                autocomplete="off"
+                                rows="1"
+                                class="cols-full js-input-comments autosize"
+                                name="<?= $field_prefix ?>[comments]"
+                                id="comments-field-<?= $row_count; ?>"><?= \CHtml::encode($values['comments']); ?></textarea>
                             <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
                         </div>
                     </div>
                 </td>
                 <td>
                     <button class="button js-add-comments"
-                    data-comment-container="#comments-field-<?=$row_count;?>"
+                            data-comment-container="#comments-field-<?= $row_count; ?>"
                     >
                         <i class="oe-i comments small-icon"></i>
                     </button>
@@ -79,7 +82,9 @@ if (!isset($values)) {
             <tr>
                 <td><?= $values['full_name']; ?> <?= $values['date']; ?></td>
                 <td>
-                    <button class="blue hint js-image-annotate" data-annotate-row-index="<?= $row_count;?>" data-test="annotate-freehand-drawing-image-btn">Annotate image</button>
+                    <button class="blue hint js-image-annotate" data-annotate-row-index="<?= $row_count; ?>"
+                            data-test="annotate-freehand-drawing-image-btn">Annotate image
+                    </button>
                 </td>
             </tr>
             </tbody>
@@ -87,7 +92,7 @@ if (!isset($values)) {
     </div>
 </div>
 
-<div class="freedraw-group" style="display:none" id="annotate-wrapper-<?= $row_count;?>">
+<div class="freedraw-group js-annotate-wrapper" style="display:none" id="annotate-wrapper-<?= $row_count; ?>">
     <div class="flex-t">
         <table class="cols-full">
             <tbody>
@@ -100,25 +105,29 @@ if (!isset($values)) {
                 <td>
                     <?php /* textarea value will be copied to the other <textarea> and that one will be POSTed */ ?>
                     <textarea
-                            placeholder="Comments"
-                            autocomplete="off"
-                            rows="1"
-                            class="cols-full js-annotate-input-comments"
-                            id="annote-comments-field-<?=$row_count;?>"
-                            key="<?=$row_count;?>"
+                        placeholder="Comments"
+                        autocomplete="off"
+                        rows="1"
+                        class="cols-full js-annotate-input-comments"
+                        id="annote-comments-field-<?= $row_count; ?>"
+                        key="<?= $row_count; ?>"
                     ></textarea>
                 </td>
             </tr>
             <tr>
                 <td><?= $values['full_name']; ?> <?= $values['date']; ?></td>
-                <td><button
-                            class="green hint js-save-annotation"
-                            data-test="save-freehand-drawing-annotation-btn"
-                            data-annotate-row-index="<?= $row_count;?>">Save annotation</button> <button
-                                                                    data-annotate-row-index="<?= $row_count;?>"
-                                                                    data-template-url="<?= $values['template_url']; ?>"
-                                                                    data-test="cancel-freehand-drawing-annotation-btn"
-                                                                    class="red hint js-cancel-annotation">Clear & cancel annotations</button>
+                <td class="js-annotation-actions-container" style="display: none;">
+                    <button
+                        class="green hint js-save-annotation"
+                        data-test="save-freehand-drawing-annotation-btn"
+                        data-annotate-row-index="<?= $row_count; ?>">Save annotation
+                    </button>
+                    <button
+                        data-annotate-row-index="<?= $row_count; ?>"
+                        data-template-url="<?= $values['template_url']; ?>"
+                        data-test="cancel-freehand-drawing-annotation-btn"
+                        class="red hint js-cancel-annotation">Clear & cancel annotations
+                    </button>
                 </td>
             </tr>
             </tbody>
@@ -127,17 +136,17 @@ if (!isset($values)) {
     <hr class="divider">
 
     <div
-            data-key="<?= $row_count; ?>"
-            data-template-url="<?= $values['template_url']; ?>"
-            class="oe-annotate-image js-key-<?= $row_count; ?>"
-            id="js-annotate-image-<?= $row_count; ?>"
+        data-key="<?= $row_count; ?>"
+        data-template-url="<?= $values['template_url']; ?>"
+        class="oe-annotate-image js-key-<?= $row_count; ?>"
+        id="js-annotate-image-<?= $row_count; ?>"
     >
 
         <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?= $values['id'] ?>"/>
         <input type="hidden" name="<?= $field_prefix ?>[protected_file_id]"
                value="<?= $values['protected_file_id'] ?>"/>
-
-        <input type="hidden" class="js-image-data-<?= $row_count; ?>" name="<?= $field_prefix ?>[image][data]"/>
+        <input type="hidden" class="js-image-data-<?= $row_count; ?>" name="<?= $field_prefix ?>[image][data]"
+               value="<?= $values['data_url']; ?>"/>
         <input type="hidden" class="js-image-name-<?= $row_count; ?>" name="<?= $field_prefix ?>[image][name]"
                value="<?= $values['filename']; ?>"/>
 
@@ -146,19 +155,23 @@ if (!isset($values)) {
                 <svg viewBox="0 0 57 19" class="tool-icon">
                     <use xlink:href="<?= $annotate_tools_icon_url; ?>#manipulate"></use>
                 </svg>
-            </button><button name="freedraw" class="tool-btn js-tool-btn">
+            </button>
+            <button name="freedraw" class="tool-btn js-tool-btn">
                 <svg viewBox="0 0 19 19" class="tool-icon">
                     <use xlink:href="<?= $annotate_tools_icon_url; ?>#freedraw"></use>
                 </svg>
-            </button><button name="circle" class="tool-btn js-tool-btn">
+            </button>
+            <button name="circle" class="tool-btn js-tool-btn">
                 <svg viewBox="0 0 19 19" class="tool-icon">
                     <use xlink:href="<?= $annotate_tools_icon_url; ?>#circle"></use>
                 </svg>
-            </button><button name="pointer" class="tool-btn js-tool-btn">
+            </button>
+            <button name="pointer" class="tool-btn js-tool-btn">
                 <svg viewBox="0 0 19 19" class="tool-icon">
                     <use xlink:href="<?= $annotate_tools_icon_url; ?>#pointer"></use>
                 </svg>
-            </button><div class="line-width">
+            </button>
+            <div class="line-width">
                 <div class="js-line-width"><small>Line width: 3</small></div>
                 <input type="range" min="1" max="5" value="3" class="cols-full js-tool-line-width">
             </div>
