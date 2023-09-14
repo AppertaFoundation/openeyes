@@ -18,6 +18,8 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "ophciexamination_clinicoutcome_status".
  *
@@ -32,6 +34,8 @@ namespace OEModule\OphCiExamination\models;
  */
 class OphCiExamination_ClinicOutcome_Status extends \BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     private $original_attributes;
 
     /**

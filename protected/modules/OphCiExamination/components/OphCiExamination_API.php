@@ -2195,6 +2195,28 @@ class OphCiExamination_API extends \BaseAPI
         }
     }
 
+    private function getOutcomeContent($element, $basic = false): string
+    {
+        $content = '<table><tbody>';
+        foreach ($element->entries as $index => $entry) {
+            if ($index > 0) {
+                $content .= '<tr><td>AND</td>';
+            } else {
+                $content .= '<tr><td></td>';
+            }
+            $content .= '<td style="text-align:left"><b>' . $entry->status->name . '</b>';
+            $infos = $basic ? $entry->getBasicInfos() : $entry->getInfos();
+            if (!empty($infos)) {
+                $infos = ' - ' . $infos . '';
+            }
+            $content .= '<span class="fade" style="font-size: 0.95em;"><em> ' . $infos . ' </em></span>';
+            $content .= "</td></tr>";
+        }
+        $content .= '</tbody></table>';
+
+        return $content;
+    }
+
     /**
      * Get clinic outcome details from the most recent Examination.
      * Limited to the current data context by default.
@@ -2214,28 +2236,28 @@ class OphCiExamination_API extends \BaseAPI
         );
 
         if ($element) {
-            $str .= '<table><tbody>';
-            foreach ($element->entries as $index => $entry) {
-                if ($index > 0) {
-                    $str .= '<tr><td>AND</td>';
-                } else {
-                    $str .= '<tr><td></td>';
-                }
-                $str .= '<td style="text-align:left"><b>' . $entry->status->name . '</b>';
-                $infos = $entry->getInfos();
-                if (!empty($infos)) {
-                    $infos = ' - ' . $infos . '';
-                }
-                $str .= '<span class="fade" style="font-size: 0.95em;"><em> ' . $infos . ' </em></span>';
-                $str .= "</td></tr>";
-            }
-            $str .= '</tbody></table>';
+            $str = $this->getOutcomeContent($element);
 
             if ($element->comments) {
                 $str .= "<strong>Comments:</strong> {$element->comments}";
             }
         }
         return $str;
+    }
+
+    public function getBasicOutcomeDetails(\Patient $patient, $use_context = false): string
+    {
+        $content = '';
+        $element = $this->getElementFromLatestVisibleEvent(
+            'models\Element_OphCiExamination_ClinicOutcome',
+            $patient
+        );
+
+        if ($element) {
+            $content = $this->getOutcomeContent($element, true);
+        }
+
+        return $content;
     }
 
     public function getLatestTriagePriority(\Patient $patient, $worklist, $use_context = false)

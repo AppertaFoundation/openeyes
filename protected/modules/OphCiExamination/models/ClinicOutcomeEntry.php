@@ -18,6 +18,7 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use OE\factories\models\traits\HasFactory;
 use Period;
 
 /**
@@ -54,6 +55,8 @@ use Period;
  */
 class ClinicOutcomeEntry extends \BaseElement
 {
+    use HasFactory;
+
     /**
      * Returns the static model of the specified AR class.
      * @return ClinicOutcomeEntry static model class
@@ -318,6 +321,21 @@ class ClinicOutcomeEntry extends \BaseElement
 
         if ($this->isDischarge()) {
             return $this->getDischargeStatusLabel() . ' // ' . $this->getDischargeDestinationLabel() . ($this->transfer_to ? " // " . $this->getTransferToLabel() : '');
+        }
+
+        return null;
+    }
+
+    public function getBasicInfos()
+    {
+        if ($this->isFollowUp()) {
+            return $this->followup_quantity
+                . ' ' . $this->getPeriodLabel()
+                . ($this->subspecialty ? ' for ' . $this->getSubspecialtylabel() : '');
+        }
+
+        if ($this->isDischarge()) {
+            return $this->getDischargeStatusLabel() . ' // ' . $this->getDischargeDestinationLabel();
         }
 
         return null;

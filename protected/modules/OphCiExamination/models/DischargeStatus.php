@@ -2,6 +2,8 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "ophciexamination_discharge_status".
  *
@@ -21,6 +23,8 @@ namespace OEModule\OphCiExamination\models;
  */
 class DischargeStatus extends \BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     /**
      * @return string the associated database table name
      */

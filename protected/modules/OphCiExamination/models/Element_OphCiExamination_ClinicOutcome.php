@@ -18,6 +18,7 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use OE\factories\models\traits\HasFactory;
 use OEModule\PatientTicketing\models\TicketQueueAssignment;
 use Yii;
 
@@ -35,6 +36,7 @@ use Yii;
 class Element_OphCiExamination_ClinicOutcome extends \BaseEventTypeElement
 {
     use traits\CustomOrdering;
+    use HasFactory;
     protected $auto_update_relations = true;
     protected $auto_validate_relations = true;
 
