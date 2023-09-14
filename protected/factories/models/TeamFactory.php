@@ -17,10 +17,6 @@ namespace OE\factories\models;
 
 use OE\factories\ModelFactory;
 
-/**
- * The definition for this has not been expanded, as it's assumed it will always be used with the "forExisting"
- * behaviour to retrieve an Team from the database.
- */
 class TeamFactory extends ModelFactory
 {
     /**
@@ -37,6 +33,10 @@ class TeamFactory extends ModelFactory
         ];
     }
 
+    /**
+     * @param array $users
+     * @return TeamFactory
+     */
     public function withUsers($users): self
     {
         return $this->afterMaking(function (\Team $team) use ($users) {
@@ -49,6 +49,10 @@ class TeamFactory extends ModelFactory
         });
     }
 
+    /**
+     * @param array $tasks
+     * @return TeamFactory
+     */
     public function withTasks($tasks): self
     {
         return $this->afterCreating(function (\Team $team) use ($tasks) {
@@ -56,6 +60,10 @@ class TeamFactory extends ModelFactory
         });
     }
 
+    /**
+     * @param array $teams
+     * @return TeamFactory
+     */
     public function withTeams($teams): self
     {
         return $this->afterMaking(function (\Team $team) use ($teams) {
@@ -66,5 +74,15 @@ class TeamFactory extends ModelFactory
 
             $team->setAndCacheAssignedTeams($ids);
         });
+    }
+
+    /**
+     * @return TeamFactory
+     */
+    public function inactive(): self
+    {
+        return $this->state([
+            'active' => false
+        ]);
     }
 }

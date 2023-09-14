@@ -396,7 +396,7 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
     {
         $authed_users = array();
         if ($this->pgdpsd) {
-            foreach ($this->pgdpsd->teams as $team) {
+            foreach ($this->pgdpsd->teams(['scopes' => ['active']]) as $team) {
                 $authed_users = array_merge($team->getAllUsers(), $authed_users);
             }
             $authed_users = array_merge($this->pgdpsd->users, $authed_users);

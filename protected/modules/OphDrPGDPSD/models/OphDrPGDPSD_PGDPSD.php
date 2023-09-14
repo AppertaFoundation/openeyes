@@ -15,6 +15,8 @@
 
 namespace OEModule\OphDrPGDPSD\models;
 
+use OE\factories\models\traits\HasFactory;
+
 use MedicationInfoBox;
 use MedicationLaterality;
 use Team;
@@ -41,6 +43,8 @@ use Team;
  */
 class OphDrPGDPSD_PGDPSD extends \BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     public $temp_user_ids = array();
     public $temp_team_ids = array();
     public $temp_meds_info = array();

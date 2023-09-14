@@ -21,7 +21,8 @@ use WorklistPatient;
 
 use OEModule\OphDrPGDPSD\models\{
     OphDrPGDPSD_PGDPSD,
-    OphDrPGDPSD_Assignment
+    OphDrPGDPSD_Assignment,
+    OphDrPGDPSD_AssignmentMeds
 };
 
 class OphDrPGDPSD_AssignmentFactory extends ModelFactory
@@ -101,6 +102,28 @@ class OphDrPGDPSD_AssignmentFactory extends ModelFactory
 
         return $this->state([
             'pgdpsd_id' => $pgdpsd
-        ]);
+        ])->afterCreating(function (OphDrPGDPSD_Assignment $assignment) {
+            $converted = $this->convertPSDMedsToAssignmentMeds($assignment, $assignment->pgdpsd->assigned_meds);
+
+            $assignment->assigned_meds = $converted;
+
+            $assignment->save(false);
+        });
+    }
+
+    protected function convertPSDMedsToAssignmentMeds(OphDrPGDPSD_Assignment $assignment, $psd_meds): array
+    {
+        return array_map(
+            static function ($psd_med) use ($assignment) {
+                return OphDrPGDPSD_AssignmentMeds::factory()->create([
+                    'assignment_id' => $assignment->id,
+                    'medication_id' => $psd_med->medication_id,
+                    'dose' => $psd_med->dose,
+                    'dose_unit_term' => $psd_med->dose_unit_term,
+                    'route_id' => $psd_med->route_id,
+                ]);
+            },
+            $psd_meds
+        );
     }
 }

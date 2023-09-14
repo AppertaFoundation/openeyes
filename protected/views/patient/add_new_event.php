@@ -42,7 +42,7 @@ ksort($eventTypes);
 <?php Yii::app()->assetManager->registerScriptFile('js/OpenEyes.UI.Dialog.NewEvent.js', null, -10) ?>
 
 <script type="text/html" id="subspecialty-template">
-  <li class="oe-specialty-service {{classes}}" data-id="{{id}}" data-subspecialty-id="{{subspecialtyId}}" data-service-id="{{serviceId}}">{{name}}
+  <li class="oe-specialty-service {{classes}}" data-id="{{id}}" data-subspecialty-id="{{subspecialtyId}}" data-service-id="{{serviceId}}" data-test="new-event-subspecialty">{{name}}
     <div class="tag">{{shortName}}</div>
     <span class="service">{{serviceName}}</span>
     {{^id}}
@@ -51,7 +51,7 @@ ksort($eventTypes);
   </li>
 </script>
 <script type="text/html" id="new-subspecialty-template">
-  <div class="oe-specialty-service new-added-subspecialty-service selected {{classes}}" data-subspecialty-id="{{subspecialtyId}}" data-service-id="{{serviceId}}">{{name}}
+  <div class="oe-specialty-service new-added-subspecialty-service selected {{classes}}" data-subspecialty-id="{{subspecialtyId}}" data-service-id="{{serviceId}}" data-test="new-event-subspecialty">{{name}}
     <span class="tag">{{shortName}}</span>
     <span class="service">{{serviceName}}</span>
     <div class="change-new-specialty"></div>
@@ -80,7 +80,7 @@ ksort($eventTypes);
             <select class="select-service cols-10" style="display: none;" data-service-firm-label="<?= Firm::serviceLabel() ?>">
             </select>
 
-            <button class="add-subspecialty-btn button hint green" id="js-add-subspecialty-btn"><i class="oe-i plus"></i></button>
+            <button class="add-subspecialty-btn button hint green" id="js-add-subspecialty-btn" data-test="add-new-event-subspecialty"><i class="oe-i plus"></i></button>
           </div>
         </td>
         <?php if (!empty($drafts)) { ?>
@@ -118,16 +118,16 @@ ksort($eventTypes);
                     if (!is_array($eventType)) {
                         $args = $this->getCreateArgsForEventTypeOprn($eventType, array('episode'));
                         if ($this->checkAccess(...$args)) { ?>
-                    <li id="<?php echo $eventType->class_name ?>-link" class="oe-event-type step-3" data-eventType-id="<?= $eventType->id ?>" data-support-services="<?= $eventType->support_services ?>">
+                    <li id="<?php echo $eventType->class_name ?>-link" class="oe-event-type step-3" data-eventType-id="<?= $eventType->id ?>" data-support-services="<?= $eventType->support_services ?>" data-test="add-new-event-<?= $eventType->class_name ?>">
                               <?= $eventType->getEventIcon() ?><?= $name ?>
                     </li>
                         <?php } else { ?>
-                    <li id="<?php echo $eventType->class_name ?>-link" class="oe-event-type step-3 add_event_disabled" title="<?php echo $eventType->disabled ? $eventType->disabled_title : 'You do not have permission to add ' . $eventType->name ?>">
+                    <li id="<?php echo $eventType->class_name ?>-link" class="oe-event-type step-3 add_event_disabled" title="<?php echo $eventType->disabled ? $eventType->disabled_title : 'You do not have permission to add ' . $eventType->name ?>" data-test="add-new-event-<?= $eventType->class_name ?>">
                             <?= $eventType->getEventIcon() ?><?= $name ?>
                     </li>
                         <?php }
                     } else { ?>
-                  <li id="<?php echo $eventType['eventType']->class_name ?>-link" class="oe-event-type step-3" data-eventType-id="<?= $eventType['eventType']->id; ?>" <?php
+                  <li id="<?php echo $eventType['eventType']->class_name ?>-link" class="oe-event-type step-3" data-eventType-id="<?= $eventType['eventType']->id; ?>" data-test="add-new-event-<?= $eventType['eventType']->class_name ?>" <?php
                     if (array_key_exists('eventSubType', $eventType)) {
                         ?> data-eventSubType="<?= $eventType['eventSubType']['event_subtype']; ?>" <?php
                     }

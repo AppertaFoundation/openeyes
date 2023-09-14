@@ -15,7 +15,8 @@ class DefaultController extends BaseEventTypeController
         $user_teams = Yii::app()->db->createCommand()
             ->select('team_id')
             ->from('team_user_assign')
-            ->where('user_id = :user_id')
+            ->join('team', 'team.id = team_id')
+            ->where('user_id = :user_id AND team.active <> 0')
             ->bindValues([':user_id' => Yii::app()->user->id])
             ->queryColumn();
 

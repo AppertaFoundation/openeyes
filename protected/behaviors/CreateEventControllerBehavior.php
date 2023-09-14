@@ -55,7 +55,8 @@ class CreateEventControllerBehavior extends CBehavior
         $user_teams = Yii::app()->db->createCommand()
             ->select('team_id')
             ->from('team_user_assign')
-            ->where('user_id = :user_id')
+            ->join('team', 'team.id = team_id')
+            ->where('user_id = :user_id AND team.active <> 0')
             ->bindValues([':user_id' => $this->owner->getApp()->user->id])
             ->queryColumn();
         if (count($user_teams) <= 0) {

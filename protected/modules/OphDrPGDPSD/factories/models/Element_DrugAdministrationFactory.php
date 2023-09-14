@@ -54,7 +54,8 @@ class Element_DrugAdministrationFactory extends ModelFactory
      * @param int $med_count
      * @return Element_DrugAdministrationFactory
      */
-    public function withEntries($institution = null, $assignment_count = 1, $med_count = 1): self {
+    public function withEntries($institution = null, $assignment_count = 1, $med_count = 1): self
+    {
         return $this->afterCreating(function (Element_DrugAdministration $element) use ($institution, $assignment_count, $med_count) {
             $element->assignments = OphDrPGDPSD_Assignment::factory()
                 ->count($assignment_count)
@@ -62,6 +63,19 @@ class Element_DrugAdministrationFactory extends ModelFactory
                 ->forPatient($element->event->episode->patient)
                 ->withMeds($med_count)
                 ->create();
+
+            $element->save(false);
+        });
+    }
+
+    /**
+     * @param array $assignments
+     * @return Element_DrugAdministrationFactory
+     */
+    public function forAssignments($assignments): self
+    {
+        return $this->afterCreating(function (Element_DrugAdministration $element) use ($assignments) {
+            $element->assignments = $assignments;
 
             $element->save(false);
         });
