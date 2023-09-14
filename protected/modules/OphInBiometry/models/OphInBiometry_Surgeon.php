@@ -16,6 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "ophinbiometry_imported_events".
  *
@@ -32,6 +34,7 @@
  */
 class OphInBiometry_Surgeon extends BaseActiveRecord
 {
+    use HasFactory;
     /**
      * Returns the static model of the specified AR class.
      *

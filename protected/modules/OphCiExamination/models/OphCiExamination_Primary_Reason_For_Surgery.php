@@ -18,8 +18,11 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use OE\factories\models\traits\HasFactory;
+
 class OphCiExamination_Primary_Reason_For_Surgery extends \BaseEventTypeElement
 {
+    use HasFactory;
     /**
      * Returns the static model of the specified AR class.
      *

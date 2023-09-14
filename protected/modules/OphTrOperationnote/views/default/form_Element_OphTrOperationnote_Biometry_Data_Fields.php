@@ -20,6 +20,7 @@
 ?>
 
 <?php
+$biometry_api = Yii::app()->moduleAPI->get('OphInBiometry');
 $biometry_data = [
     'k1' => $element->{"k1_{$side}"},
     'k2' => $element->{"k2_{$side}"},
@@ -76,6 +77,28 @@ $biometry_data = [
                          id="predicted_refraction_<?php echo $side ?>">
                     <?php echo isset($element->{'predicted_refraction_' . $side}) ? $element->{'predicted_refraction_' . $side} : 'None' ?>
                     </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <?= \CHtml::encode($element->getAttributeLabel("target_refraction_$side")) ?>
+                <td>
+                    <?= $element->{"target_refraction_$side"} ?? 'None' ?>
+                    <?php $refraction_differs_warning = $biometry_api->getPredictedRefractionDiffersFromTargetRefractionWarning(
+                        $element->{"target_refraction_$side"}, $element->{'predicted_refraction_' . $side});
+if ($refraction_differs_warning) { ?>
+                        <i class="oe-i info small pad js-has-tooltip warning"
+                           data-test="<?= $side ?>_target_refraction_warning_tooltip"
+                           data-tooltip-content="Warning: <?= $refraction_differs_warning ?>"></i>
+
+<?php } ?>
+                </td>
+                </td>
+
+                <td>
+
+                </td>
+                <td>
                 </td>
             </tr>
             <tr>

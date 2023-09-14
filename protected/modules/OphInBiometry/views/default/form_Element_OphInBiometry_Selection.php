@@ -40,6 +40,12 @@
                 <?php } ?>
                 <?php $manually_overriden = $element->{'manually_overriden_' . $eye_side}; ?>
 
+                <div id="<?= $eye_side ?>_refractive_target_predicted_warning_container"
+                     data-test="<?= $eye_side ?>-refractive-predicted-target-warning"
+                     class="alert-box issue" style="display: none">
+                    Warning: <?= Element_OphInBiometry_Calculation::$PREDICTED_REFRACTION_DIFFERS_FROM_TARGET_REFRACTION_WARNING ?>
+                </div>
+
                 <?php $this->renderPartial(
                     'form_Element_OphInBiometry_Selection_fields',
                     array('side' => $eye_side, 'element' => $element, 'form' => $form, 'data' => $data,
@@ -52,7 +58,7 @@
                         'form_Element_OphInBiometry_Selection_fields',
                         array('side' => $eye_side, 'element' => $element, 'form' => $form, 'data' => $data,
                             'manual_override' => true,
-                        'disable' => !$manually_overriden)
+                            'disable' => !$manually_overriden)
                     );
                 } ?>
             </div>
@@ -82,10 +88,16 @@
         $manual_override_container.find('[name*="iol_power_"], [name*="predicted_refraction_"]').val(0);
         $auto_values_container.find('input,select').prop("disabled", checked);
         $auto_values_container.toggle(!checked);
+
+        const eyeSide = getDataSideFromElement(this);
+        showOrHidePredictedRefractionWarning(eyeSide);
     });
 
     $(document).ready(function () {
         $('.js-disable-data-group').find('input').prop("disabled", true);
-    });
 
+        ['left', 'right'].forEach(function (eyeSide) {
+            showOrHidePredictedRefractionWarning(eyeSide);
+        });
+    });
 </script>

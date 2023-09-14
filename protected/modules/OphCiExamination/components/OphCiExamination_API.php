@@ -20,9 +20,10 @@ namespace OEModule\OphCiExamination\components;
  */
 
 use OEModule\OphCiExamination\models;
+use OEModule\OphCiExamination\models\Element_OphCiExamination_CataractSurgicalManagement;
+use OEModule\OphCiExamination\widgets\Allergies;
 use OEModule\OphCiExamination\widgets\HistoryMedications;
 use OEModule\OphCiExamination\widgets\HistoryRisks;
-use OEModule\OphCiExamination\widgets\Allergies;
 use Patient;
 
 class OphCiExamination_API extends \BaseAPI
@@ -3548,5 +3549,57 @@ class OphCiExamination_API extends \BaseAPI
         }
 
         return $text;
+    }
+
+    /**
+     * @param Patient $patient
+     * @param false $use_context
+     * @return array
+     */
+    public function getLatestCataractSurgicalManagementSidedTargetRefractionValues(
+        \Patient $patient,
+        $use_context = false
+    ): array {
+        $cataract_surgical_management_outdated_threshold = "-2 year";
+        $latest_cataract_surgical_management = $this->getLatestElement(
+            Element_OphCiExamination_CataractSurgicalManagement::class, $patient);
+
+        $target_refraction_values = [];
+
+        foreach (['right', 'left'] as $eye_side) {
+            $target_refraction_values[$eye_side] = null;
+        }
+
+        if (isset($latest_cataract_surgical_management->event->event_date)) {
+            $time = strtotime($cataract_surgical_management_outdated_threshold, time());
+            $date = date("Y-m-d", $time);
+
+            $event_is_outdated = $date > $latest_cataract_surgical_management->event->event_date;
+
+            if (!$event_is_outdated) {
+                foreach (['right', 'left'] as $eye_side) {
+                    $target_refraction_values[$eye_side] = $latest_cataract_surgical_management->
+                        {$eye_side . '_target_postop_refraction'} ?? null;
+                }
+            }
+        }
+        return $target_refraction_values;
+    }
+
+    /**
+     * @param Patient $patient
+     * @return string
+     */
+    public function getLatestCataractSurgicalManagementEventLink(\Patient $patient): string
+    {
+        $latest_cataract_surgical_management_event_link = '';
+        $latest_cataract_surgical_management = $this->getLatestElement(
+            Element_OphCiExamination_CataractSurgicalManagement::class, $patient);
+
+        if (isset($latest_cataract_surgical_management)) {
+            $latest_cataract_surgical_management_event_link = $latest_cataract_surgical_management->getExaminationLink();
+        }
+
+        return $latest_cataract_surgical_management_event_link;
     }
 }

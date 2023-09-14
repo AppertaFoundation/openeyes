@@ -13,39 +13,31 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-namespace OEModule\OphInBiometry\factories;
-
-use Element_OphInBiometry_IolRefValues;
-use Eye;
+use OE\factories\ModelFactory;
 use OE\factories\models\EventFactory;
-use OEModule\OphCiExamination\models\interfaces\SidedData;
 
-class OphInBiometryFactory extends EventFactory
+class Element_OphInBiometry_CalculationFactory extends ModelFactory
 {
     public function definition(): array
     {
-        return array_merge(
-            parent::definition(),
-            [
-                'event_type_id' => $this->getEventTypeByName('Biometry')
-            ]
-        );
+        return [
+            'event_id' => EventFactory::forModule('OphInBiometry'),
+            'eye_id' =>  ModelFactory::factoryFor(Eye::class)->useExisting(),
+        ];
     }
 
-    public function withIolRefValues($states = []) {
+    public function forEye($eye_id) {
+        return $this->state([
+            'eye_id' => $eye_id,
+        ]);
+    }
 
-        return $this->afterCreating(function (\Event $event)  {
+    public function forSidedTargetRefraction($eye_id, $target_refraction): self
+    {
+        $side = strtolower(Eye::methodPostFix($eye_id));
 
-            foreach ([SidedData::LEFT, SidedData::RIGHT] as $eye_id) {
-                Element_OphInBiometry_IolRefValues::factory()->create([
-                    'event_id' => $event->id,
-                    'eye_id' => $eye_id,
-                    'iol_ref_values_' . strtolower(Eye::methodPostFix($eye_id)) =>
-                    '{"REF":[-2.96,-2.59,-2.23,-1.87,-1.52,-1.17,-0.83],"IOL":[25.0,24.5,24.0,23.5,23.0,22.5,22.0]}'
-                ]);
-            }
-
-
-        });
+        return $this->state([
+            "target_refraction_" . $side  => $target_refraction,
+        ]);
     }
 }

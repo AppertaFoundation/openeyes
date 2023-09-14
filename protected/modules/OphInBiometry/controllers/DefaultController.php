@@ -109,7 +109,7 @@ class DefaultController extends BaseEventTypeController
     /**
      * @param $id
      */
-    private function setFlashMessage($id)
+    private function setFlashMessage($id, $is_view_mode = false)
     {
         if ($this->isAutoBiometryEvent($id)) {
             $this->is_auto = 1;
@@ -188,6 +188,12 @@ class DefaultController extends BaseEventTypeController
                 }
             }
 
+            $issue_flash_message = $this->addCataractSurgicalManagementDiffersFromTargetFlashWarning($id,
+                $is_view_mode, $issue_flash_message);
+
+            $issue_flash_message = $this->addPredictedRefractionDiffersFromTargetRefractionFlashWarning($id,
+                $is_view_mode, $issue_flash_message);
+
             if (empty($lens_left) && empty($lens_right) && $this->getLensCalc(1) && $this->getLensCalc(2)) {
                 $issue_flash_message .= '<li>No lens options are available for either eye. Please recalculate lenses on the IOL Master device and resend</li>';
             } else {
@@ -210,6 +216,62 @@ class DefaultController extends BaseEventTypeController
         } else {
             Yii::app()->user->setFlash('info.formula', $this->flash_message);
         }
+    }
+
+    /**
+     * @param $event_id
+     * @param $is_view_mode
+     * @param $issue_flash_message
+     * @return string
+     */
+    private function addCataractSurgicalManagementDiffersFromTargetFlashWarning($event_id, $is_view_mode, $issue_flash_message)
+    : string
+    {
+        $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
+        $target_refraction_values = $exam_api->getLatestCataractSurgicalManagementSidedTargetRefractionValues($this->patient);
+        $calculation_element = Element_OphInBiometry_Calculation::model()->find('event_id = ?', [$event_id]);
+
+        if ($is_view_mode && isset($calculation_element)) {
+            foreach (['left', 'right'] as $eye_side) {
+                if (isset($target_refraction_values[$eye_side]) && isset($calculation_element->{'target_refraction_' . $eye_side})) {
+                    if ($calculation_element->{'target_refraction_' . $eye_side} !== $target_refraction_values[$eye_side]) {
+                        $issue_flash_message .= '<li>' . ucfirst($eye_side) . ' ' .
+                            Element_OphInBiometry_Calculation::getTargetDiffersFromCataractSurgicalManagementTargetWarning(
+                                $target_refraction_values[$eye_side]) . '</li>';
+                    }
+                }
+            }
+        }
+
+        return $issue_flash_message;
+    }
+
+    /**
+     * @param $event_id
+     * @param $is_view_mode
+     * @param $issue_flash_message
+     * @return string
+     */
+    private function addPredictedRefractionDiffersFromTargetRefractionFlashWarning($event_id, $is_view_mode, $issue_flash_message)
+    : string
+    {
+        $biometry_api = Yii::app()->moduleAPI->get('OphInBiometry');
+        $calculation_element = Element_OphInBiometry_Calculation::model()->find('event_id = ?', [$event_id]);
+        $selection_element = Element_OphInBiometry_Selection::model()->find('event_id = ?', [$event_id]);
+
+        if ($is_view_mode && isset($calculation_element) && isset($selection_element)) {
+            foreach (['left', 'right'] as $eye_side) {
+                $warning = $biometry_api->getPredictedRefractionDiffersFromTargetRefractionWarning(
+                    $selection_element->{'predicted_refraction_' . $eye_side},
+                    $calculation_element->{'target_refraction_' . $eye_side});
+
+                if (!is_null($warning)) {
+                    $issue_flash_message .= '<li>' . ucfirst($eye_side) . ' ' . $warning . '</li>';
+                }
+            }
+        }
+
+        return $issue_flash_message;
     }
 
     /**
@@ -281,7 +343,7 @@ class DefaultController extends BaseEventTypeController
                 )
             );
         }
-        $this->setFlashMessage($id);
+        $this->setFlashMessage($id, true);
 
         parent::actionView($id);
     }

@@ -5,6 +5,13 @@ $(document).ready(function() {
 
 	autosize($('.autosize'));
 
+    document.querySelectorAll('.js-manual-predicted-refraction').forEach(function (manualPredictedRefractionInput) {
+        const eyeSide = getDataSideFromElement(manualPredictedRefractionInput);
+        manualPredictedRefractionInput.addEventListener('change', function (){
+            showOrHidePredictedRefractionWarning(eyeSide);
+        });
+    });
+
 	$("#Element_OphInBiometry_Measurement_k1_right, #Element_OphInBiometry_Measurement_k2_right, #Element_OphInBiometry_Measurement_k2_axis_right").on("keyup", function() {
 		calculateDeltaValues('right');
 	});
@@ -13,31 +20,35 @@ $(document).ready(function() {
 		calculateDeltaValues('left');
 	});
 
-	$("#Element_OphInBiometry_Calculation_target_refraction_right").on("keyup", function() {
-		var tarref = $("#Element_OphInBiometry_Calculation_target_refraction_right" ).val();
-		if(tarref < 0){
-			if (tarref.length > 2) {
-				updateClosest ('right');
-			}
-		}else {
-			if (tarref.length > 1) {
-				updateClosest ('right');
-			}
-		}
-	});
+    $("#Element_OphInBiometry_Calculation_target_refraction_right").on("keyup", function () {
+        var tarref = $("#Element_OphInBiometry_Calculation_target_refraction_right").val();
+        if (!Number.isNaN(parseInt(tarref))) {
+            if (tarref < 0) {
+                if (tarref.length > 1) {
+                    updateClosest('right');
+                }
+            } else {
+                if (tarref.length > 0) {
+                    updateClosest('right');
+                }
+            }
+        }
+    });
 
-	$("#Element_OphInBiometry_Calculation_target_refraction_left").on("keyup", function() {
-		var tarref = $("#Element_OphInBiometry_Calculation_target_refraction_left" ).val();
-		if(tarref < 0){
-			if (tarref.length > 2) {
-				updateClosest ('left');
-			}
-		}else {
-			if (tarref.length > 1) {
-				updateClosest ('left');
-			}
-		}
-	});
+    $("#Element_OphInBiometry_Calculation_target_refraction_left").on("keyup", function () {
+        var tarref = $("#Element_OphInBiometry_Calculation_target_refraction_left").val();
+        if (!Number.isNaN(parseInt(tarref))) {
+            if (tarref < 0) {
+                if (tarref.length > 1) {
+                    updateClosest('left');
+                }
+            } else {
+                if (tarref.length > 0) {
+                    updateClosest('left');
+                }
+            }
+        }
+    });
 
 	if(sdmw ==1 ){
 		$("#event-content").hide();
@@ -229,9 +240,11 @@ $(document).ready(function() {
 
 	$('#Element_OphInBiometry_Selection_formula_id_left').die('change').live('change',function() {
 		updateIolRefTable('left');
+        updateClosest ('left');
 	});
 	$('#Element_OphInBiometry_Selection_formula_id_right').die('change').live('change',function() {
 		updateIolRefTable('right');
+        updateClosest ('right');
 	});
 
 
@@ -240,6 +253,9 @@ $(document).ready(function() {
 
 	updateIolRefRow('left');
 	updateIolRefRow('right');
+
+    updateClosest ('left');
+    updateClosest ('right');
 });
 
 function calculateDeltaValues(side){
@@ -334,7 +350,7 @@ function updateIolRefRow(side) {
 					var iolvalstr = '#iolval-' + side + '_' + lensid + '_' + formulaid + '__';
 					var refvalstr = '#refval-' + side + '_' + lensid + '_' + formulaid + '__';
 
-					$(rowstr + i).click(function () {
+					$(rowstr + i).off('click').click(function () {
 
 						$("#Element_OphInBiometry_Selection_iol_power_"+side).val($(iolvalstr+i).val());
 						$("#Element_OphInBiometry_Selection_predicted_refraction_"+side).val($(refvalstr+i).val());
@@ -347,6 +363,8 @@ function updateIolRefRow(side) {
 								$(rowstr + j).addClass("selected-row");
 								//$('#iolreftr-left_6_1__' + j).css("background-color", "#FFFFE0");
 								$(rowsrad + j).attr('checked', true);
+
+                                showOrHidePredictedRefractionWarning(side);
 							}
 							else
 							{
@@ -377,6 +395,45 @@ function updateIolRefTable(side) {
 		$('#' + swsn).show();
 		$('#' + asn).show();
 	}
+}
+
+function showOrHidePredictedRefractionWarning(eyeSide) {
+    const targetRefractionValue = document.querySelector(`.js-target-refraction[data-side="${eyeSide}"`).value;
+    const selectionContainer = document.getElementById(`${eyeSide}-eye-selection`);
+    const manuallyOverrideCheckbox = selectionContainer.querySelector('.js-manually-override-lens-selection');
+    let predictedRefractionValue = null;
+    let showWarning = false;
+
+    if (manuallyOverrideCheckbox.checked) {
+        const manuallyPredictedRefractionInput = selectionContainer.querySelector('.js-manual-predicted-refraction');
+
+        if (manuallyPredictedRefractionInput) {
+            predictedRefractionValue = manuallyPredictedRefractionInput.value;
+        }
+    } else {
+        const checkedIolRefRow = selectionContainer.querySelector('.selected-row');
+
+        if (checkedIolRefRow) {
+            predictedRefractionValue = checkedIolRefRow.querySelector('.iol-ref-value').textContent;
+        }
+    }
+
+    const warningContainer = document.getElementById(`${eyeSide}_refractive_target_predicted_warning_container`);
+
+    if (predictedRefractionValue !== null && !isNaN(predictedRefractionValue) && !isNaN(targetRefractionValue) &&
+        targetRefractionValue.trim() !== "") {
+        const refractionDifference = Math.abs(predictedRefractionValue - targetRefractionValue);
+
+        if (refractionDifference > 0.5) {
+            showWarning = true;
+        }
+    }
+
+    if (showWarning) {
+        warningContainer.style.display = '';
+    } else {
+        warningContainer.style.display = 'none';
+    }
 }
 
 function updateClosest (side) {
@@ -798,4 +855,8 @@ function SRKT2 (eyeMeasurements, iolConstants)
 		returnPower = top / bottom;
 		return returnPower;
 	}
+}
+
+function getDataSideFromElement(element) {
+    return element.closest('.js-element-eye').dataset.side;
 }

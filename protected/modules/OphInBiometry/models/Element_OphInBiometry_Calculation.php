@@ -16,6 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "et_ophinbiometry_calculation".
  *
@@ -36,7 +38,13 @@
  */
 class Element_OphInBiometry_Calculation extends SplitEventTypeElement
 {
+    use HasFactory;
     public $service;
+
+    public static $TARGET_DIFFERS_FROM_CATARACT_SURGICAL_MANAGEMENT_TARGET_WARNING_TEMPLATE =
+        "Target differs from Cataract Surgical Management target of";
+    public static $PREDICTED_REFRACTION_DIFFERS_FROM_TARGET_REFRACTION_WARNING =
+        "Predicted refraction of the chosen lens is more than 0.5D out from target refraction.";
 
     /**
      * Returns the static model of the specified AR class.
@@ -137,5 +145,10 @@ class Element_OphInBiometry_Calculation extends SplitEventTypeElement
     public function isRequiredInUI()
     {
         return false;
+    }
+
+    public static function getTargetDiffersFromCataractSurgicalManagementTargetWarning($target_refraction): string
+    {
+        return self::$TARGET_DIFFERS_FROM_CATARACT_SURGICAL_MANAGEMENT_TARGET_WARNING_TEMPLATE. " $target_refraction";
     }
 }

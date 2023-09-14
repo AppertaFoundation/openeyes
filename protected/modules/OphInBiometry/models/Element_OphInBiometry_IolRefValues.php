@@ -16,6 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "et_ophinbiometry_iol_ref_values".
  *
@@ -35,6 +37,7 @@
  */
 class Element_OphInBiometry_IolRefValues extends SplitEventTypeElement
 {
+    use HasFactory;
     public $service;
 
     /**
@@ -63,7 +66,7 @@ class Element_OphInBiometry_IolRefValues extends SplitEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('event_id', 'safe'),
+            array('event_id, eye_id, eye', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, event_id ', 'safe', 'on' => 'search'),
@@ -83,6 +86,7 @@ class Element_OphInBiometry_IolRefValues extends SplitEventTypeElement
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
             'lens' => array(self::BELONGS_TO, 'OphInBiometry_LensType_Lens', 'lens_id'),
             'formula' => array(self::BELONGS_TO, 'OphInBiometry_Calculation_Formula', 'formula_id'),
+            'eye' => array(self::BELONGS_TO, 'Eye', 'eye_id'),
         );
     }
 
