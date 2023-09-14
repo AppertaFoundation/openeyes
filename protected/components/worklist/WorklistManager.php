@@ -870,6 +870,13 @@ class WorklistManager extends CComponent
             $current_attributes = $worklist_patient->getCurrentAttributesById();
             $valid_attributes = $worklist->getMappingAttributeIdsByName();
 
+            //remove attributes related to previous Worklist (Patient has been moved to an other Worklist)
+            foreach ($current_attributes as $currattr) {
+                if ($currattr->worklistattribute && $currattr->worklistattribute->worklist_id != $worklist->id) {
+                        $currattr->delete();
+                }
+            }
+
             foreach ($attributes as $attr => $val) {
                 if (!array_key_exists($attr, $valid_attributes)) {
                     throw new Exception("Unrecognised attribute {$attr} for {$worklist->name}");
