@@ -151,6 +151,17 @@
         return template.content.firstChild;
     }
 
+    /**
+     * Utility function to add a zero before a digit.
+     * This is needed for time input as getHours and getMinutes functions returns 1-digit values
+     *
+     * @param n
+     * @returns {string}
+     */
+    Util.addZeroBefore = function (n) {
+        return n < 10 ? '0' + n : n;
+    };
+
     exports.Util = Util;
 
 }(this.OpenEyes));

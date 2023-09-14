@@ -28,6 +28,7 @@ use OEModule\OphCiExamination\models\AdviceLeafletEntry;
 use OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Status;
 use OEModule\OphCiExamination\models\MedicationManagement;
 use OEModule\OphCiExamination\models\OphCiExamination_AE_RedFlags_Options_Assignment;
+use OEModule\OphCiExamination\models\OphCiExamination_Pain_Entry;
 use OEModule\OphGeneric\models\Assessment;
 use OEModule\OphGeneric\models\AssessmentEntry;
 use OEModule\PASAPI\resources\HL7_A03;
@@ -1784,45 +1785,6 @@ class DefaultController extends \BaseEventTypeController
     }
 
     /**
-     * Save pain score.
-     *
-     * @param $element
-     * @param $data
-     * @param $index
-     */
-    protected function saveComplexAttributes_Element_OphCiExamination_Pain($element, $data, $index)
-    {
-        $entries = $data['OEModule_OphCiExamination_models_Element_OphCiExamination_Pain']['entries'] ?? [];
-
-        foreach ($entries as $entry) {
-            if (isset($entry['id'])) {
-                $entry_object = \OEModule\OphCiExamination\models\OphCiExamination_Pain_Entry::model()->findByPk(
-                    $entry['id']
-                );
-            } else {
-                $entry_object = new \OEModule\OphCiExamination\models\OphCiExamination_Pain_Entry();
-            }
-
-            $entry_object->element_id = $element->id;
-            $entry_object->pain_score = $entry['pain_score'];
-            $entry_object->comment = $entry['comment'];
-            $entry_object->datetime = $entry['datetime'];
-
-            $entry_object->save();
-        }
-
-        $ids_to_delete = json_decode($data['pain_ids_to_delete']);
-        foreach ($ids_to_delete as $id) {
-            $object_to_delete = \OEModule\OphCiExamination\models\OphCiExamination_Pain_Entry::model()->findByPk($id);
-            if ($object_to_delete->element_id === $element->id) {
-                $object_to_delete->delete();
-            } else {
-                throw new \Exception("Tried to delete pain entry from another element!");
-            }
-        }
-    }
-
-    /**
      * Save diagnoses.
      *
      * @param $element
@@ -2388,6 +2350,80 @@ class DefaultController extends \BaseEventTypeController
 
         if (isset($data['OEModule_OphCiExamination_models_Element_OphCiExamination_Observations'])) {
             $errors = $this->setAndValidateObservationsFromData($data, $errors);
+        }
+
+        if (isset($data['OEModule_OphCiExamination_models_Element_OphCiExamination_Pain'])) {
+            $errors = $this->setAndValidatePainFromData($data, $errors);
+        }
+
+        return $errors;
+    }
+
+    /**
+     * @param $posted_entries
+     * @param $pain_score
+     * @param $datetime
+     * @param $comment
+     * @return OphCiExamination_Pain_Entry|null
+     */
+    private function createPainEntryFromData($posted_entries, $pain_score, $datetime, $comment): ?OphCiExamination_Pain_Entry
+    {
+        $entry_match = array_filter($posted_entries, function ($entry) use ($pain_score, $datetime) {
+            return $entry['pain_score'] === $pain_score && $entry['datetime'] === $datetime;
+        });
+
+        if (empty($entry_match)) {
+            $entry_object = new OphCiExamination_Pain_Entry();
+            $entry_object->pain_score = $pain_score;
+            $entry_object->datetime = $datetime;
+            $entry_object->comment = $comment;
+            return $entry_object;
+        }
+
+        return null;
+    }
+
+    /**
+     * Helper function to create an entry from the selected values to cover the case where the user forgets to press the adder.
+     * Checks if a pain value is selected, and creates an entry from the data adding that to the current element entries.
+     *
+     * @param array $element_entries
+     * @param array $element_data
+     * @return array
+     */
+    private function createEntryFromNotAddedInput($element_entries, $element_data): array
+    {
+        $posted_entries = $element_data['entries'] ?? [];
+        if (isset($element_data['pain-score'], $element_data['pain-date-field'], $element_data['pain-time-field'])) {
+            $datetime = \Helper::convertNHS2MySQL($element_data['pain-date-field']) . " " . date("H:i:s", strtotime($element_data['pain-time-field']));
+            $pain_entry = $this->createPainEntryFromData($posted_entries, $element_data['pain-score'], $datetime, $element_data['pain-comment-field'] ?? null);
+            if ($pain_entry) {
+                $element_entries[] = $pain_entry;
+            }
+        }
+
+        return $element_entries;
+    }
+
+    protected function setAndValidatePainFromData($data, $errors)
+    {
+        $et_name = 'OEModule_OphCiExamination_models_Element_OphCiExamination_Pain';
+        $element_data = $data[$et_name];
+        $posted_entries = $element_data['entries'] ?? [];
+        $pain_element = $this->getOpenElementByClassName($et_name);
+        $element_entries = [];
+
+        foreach ($posted_entries as $posted_entry) {
+            $entry = OphCiExamination_Pain_Entry::model()->findOrNew($entry['id'] ?? null);
+
+            $entry->attributes = $posted_entry;
+            $element_entries[] = $entry;
+        }
+
+        $pain_element->entries = $this->createEntryFromNotAddedInput($element_entries, $element_data);
+
+        if (empty($pain_element->entries)) {
+            $errors[$pain_element::model()->getElementTypeName()][] = "Entries cannot be blank";
         }
 
         return $errors;

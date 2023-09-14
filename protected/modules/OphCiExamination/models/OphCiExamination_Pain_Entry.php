@@ -2,6 +2,8 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use FindOrNewModel;
+
 /**
  * This is the model class for table "ophciexamination_pain_entry".
  *
@@ -23,6 +25,8 @@ namespace OEModule\OphCiExamination\models;
  */
 class OphCiExamination_Pain_Entry extends \BaseActiveRecordVersioned
 {
+    use FindOrNewModel;
+
     /**
      * @return string the associated database table name
      */
