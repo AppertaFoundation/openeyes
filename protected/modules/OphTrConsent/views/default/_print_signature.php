@@ -53,13 +53,13 @@ if ($signature) {
                     <?php
                     echo $signature->getPrintout() ?>
                 </div>
-                <div class="dotted-area">
+                <div class="dotted-area" data-test="signed-date-time">
                     <div class="label">Date</div>
-                    <?php echo CHtml::encode(date("j M Y, H:i", strtotime($signature->last_modified_date))); ?>
+                    <?= $signature->getSignedDate() . ", " . $signature->getSignedTime(); ?>
                 </div>
             </div>
             <div class="flex">
-                <div class="dotted-area">
+                <div class="dotted-area" data-test="signatory-name">
                     <div class="label"><?= $name_label ?></div>
                     <?= $signature->signatory_name ?>
                 </div>

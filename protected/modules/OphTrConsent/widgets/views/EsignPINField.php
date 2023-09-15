@@ -24,7 +24,7 @@ $el_class = get_class($this->element);
 $widget_class = get_class($this);
 $uid = \CHtml::modelName($el_class) . "_" . \CHtml::modelName($widget_class) . "_" . $row_id;
 ?>
-<tr id="<?= $uid ?>" data-row_id="<?= $row_id ?>">
+<tr id="<?= $uid ?>" data-row_id="<?= $row_id ?>" data-test="sign-row">
     <?php $this->renderHiddenFields(); ?>
     <!-- Row num -->
     <td><span class="highlighter js-row-num"></span></td>
@@ -33,10 +33,10 @@ $uid = \CHtml::modelName($el_class) . "_" . \CHtml::modelName($widget_class) . "
     <td><span class="js-signatory-label"><?= $this->signature->signatory_role ?></span></td>
     <?php endif; ?>
     <!-- Name -->
-    <td><span class="js-signatory-name"><?= $this->signature->signatory_name ?></span></td>
+    <td><span class="js-signatory-name" data-test="signatory-name"><?= $this->signature->signatory_name ?></span></td>
     <!-- Date -->
     <td>
-        <div class="js-signature-date" <?= !$this->isSigned() ? 'style="display:none"' : "" ?>>
+        <div class="js-signature-date" data-test="signature-date" <?= !$this->isSigned() ? 'style="display:none"' : "" ?>>
             <?php $this->displaySignatureDate() ?>
         </div>
         <div class="js-signature-control" <?= $this->isSigned() ? 'style="display:none"' : "" ?>>
@@ -55,8 +55,9 @@ $uid = \CHtml::modelName($el_class) . "_" . \CHtml::modelName($widget_class) . "
     <td>
         <div class="js-signature-wrapper flex-l" <?= !$this->isSigned() ? 'style="display:none"' : ""?>>
             <?php $this->displaySignature() ?>
-            <div class="esigned-at">
-                <i class="oe-i tick-green small pad-right"></i>Signed <small>at</small> <span class="js-signature-time"><?php $this->displaySignatureTime() ?></span>
+            <div class="esigned-at" data-test="signed-at">
+                <i class="oe-i tick-green small pad-right"></i>Signed <small>at</small> <span class="js-signature-time"
+                data-test="signature-time"><?php $this->displaySignatureTime() ?></span>
             </div>
         </div>
     </td>

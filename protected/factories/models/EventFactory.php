@@ -163,6 +163,15 @@ class EventFactory extends ModelFactory
         });
     }
 
+    public function forLastModifiedDate(DateTime $date): self
+    {
+        return $this->state(function () use ($date) {
+            return [
+                'last_modified_date' => $date->format('Y-m-d h:i:s')
+            ];
+        });
+    }
+
     public function forEventTypeWithName($eventTypeName)
     {
         return $this->state(function ($attributes) use ($eventTypeName) {

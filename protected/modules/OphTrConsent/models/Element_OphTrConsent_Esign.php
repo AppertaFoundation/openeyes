@@ -25,12 +25,15 @@
  * @property Event $event
  * @property OphTrConsent_Signature[] $signatures
  */
+
+use OE\factories\models\traits\HasFactory;
 use OEModule\OphTrConsent\models\RequiresSignature;
 use OEModule\OphTrConsent\widgets\EsignElementWidget;
 
 class Element_OphTrConsent_Esign extends \BaseEsignElement implements RequiresSignature
 {
     use AutoSignTrait;
+    use HasFactory;
     private $signature_class = \OphTrConsent_Signature::class;
     private $pin_required_setting_name = 'require_pin_for_consent';
 
@@ -171,11 +174,11 @@ class Element_OphTrConsent_Esign extends \BaseEsignElement implements RequiresSi
         if ($this->healthprof_signature_id) {
             return [OphTrConsent_Signature::model()->findByPk($this->healthprof_signature_id)];
         } else {
-            $user = User::model()->findByPk(Yii::app()->session['user']->id);
+            $user = User::model()->findByPk($this->event->last_modified_user_id);
             $sig = new OphTrConsent_Signature();
 
             if (SettingMetadata::model()->checkSetting('require_pin_for_consent', 'no')) {
-                $sig->proof = \SignatureHelper::getSignatureProof($user->signature->id, new \DateTime(), $user->id);
+                $sig->proof = \SignatureHelper::getSignatureProof($user->signature->id, new \DateTime($this->event->last_modified_date), $user->id);
                 $sig->setDataFromProof();
             }
 
@@ -183,6 +186,7 @@ class Element_OphTrConsent_Esign extends \BaseEsignElement implements RequiresSi
             $sig->signatory_role = $user->role;
             $sig->signatory_name = $user->getFullNameAndTitleAndQualifications();
             $sig->initiator_row_id = 0;
+
             $sig->user_id = $user->id;
 
             return [$sig];
