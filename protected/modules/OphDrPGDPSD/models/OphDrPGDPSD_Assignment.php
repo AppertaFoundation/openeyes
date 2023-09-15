@@ -71,20 +71,6 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
         );
     }
 
-    public function defaultScope()
-    {
-        $selected_institution_id = \Yii::app()->session->get('selected_institution_id');
-        if (!$selected_institution_id) {
-            return array();
-        }
-        $table_alias = $this->getTableAlias(false, false);
-        return array(
-            'condition' => "$table_alias.institution_id = :institution_id",
-            'params' => array(
-                ':institution_id' => $selected_institution_id,
-            )
-        );
-    }
     /**
      * @return array relational rules.
      */
