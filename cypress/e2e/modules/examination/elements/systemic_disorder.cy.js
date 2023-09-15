@@ -47,9 +47,14 @@ describe('systemic disorder widget behaviour', { testIsolation: false }, () => {
             .as('expectedDisorder2');
         cy.getModelByAttributes('Disorder', {term: expectedDisorderTerm3})
             .as('expectedDisorder3');
+        cy.login();
     });
 
     it('only loads common systemic disorders mapped to the current institution', function () {
+
+        cy.removeElements();
+        cy.addExaminationElement('Systemic Diagnoses');
+
         cy.getBySel('add-systemic-diagnoses-button').click();
 
         cy.getBySel('systemic-diagnoses-popup')

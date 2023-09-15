@@ -76,9 +76,14 @@ describe('ophthalmic disorder group behaviour', { testIsolation: false }, () => 
             .as('group2');
         cy.getModelByAttributes('CommonSystemicDisorderGroup', {name: unexectedGroupName})
             .as('unexpectedGroup');
+        cy.login();
     });
 
     it('only loads common systemic disorder groups mapped to the current institution', function () {
+
+        cy.removeElements();
+        cy.addExaminationElement('Systemic Diagnoses');
+
         cy.getBySel('add-systemic-diagnoses-button').click();
         cy.getBySel('systemic-diagnoses-popup')
             .should('be.visible')
