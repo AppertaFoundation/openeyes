@@ -76,6 +76,14 @@ class EventFactory extends ModelFactory
             $event->institution_id = $event->firm
                 ? $event->firm->institution_id
                 : ($event->episode->firm ? $event->episode->firm->institution_id : null);
+
+            // If still null (i.e, the firm was global), generate a new instutution from a factory
+            if (is_null($event->institution_id)) {
+                $institution = \Institution::factory()
+                    ->isTenanted()
+                    ->create();
+                $event->institution_id = $institution->id;
+            }
         })->afterCreating(function (Event $event) {
             // Would be good to set these elements on the event to allow the getElements
             // method to return them directly, rather than needing to go to the db again.
