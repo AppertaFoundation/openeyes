@@ -53,7 +53,7 @@
     </div>
   </div>
   <div class="add-data-actions flex-item-bottom">
-    <button class="button hint green js-add-standard-set" type="button">
+    <button class="button hint green js-add-standard-set" type="button" data-test="add-to-history-template">
         Add template
     </button>
     <button class="button hint green js-add-select-search" type="button" id="show-add-to-history" data-test="add-to-history">
@@ -128,7 +128,7 @@ foreach ($macros as $macro) {
             selectedItems.forEach( function (item) {
                 <?php foreach ($standardSet as $set) : ?>
                 if (<?= $set['id'] ?> === item.id) {
-                    inputText.val(addLineBreakToString(inputText.val()) + "<?= Yii::app()->format->Ntext(rtrim(preg_replace('/[\r\n]+/', '\n', $set['body']))) ?>");
+                    inputText.val(addLineBreakToString(inputText.val()) + "<?= rtrim(preg_replace('/[\r\n]+/', '\n', $set['body'])) ?>");
                 }
                 <?php endforeach; ?>
             });

@@ -44,7 +44,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
                     <?= $form->textField(
                         $model,
                         'name',
-                        ['class' => 'cols-8', 'nowrapper' => true]
+                        ['class' => 'cols-8', 'nowrapper' => true, 'data-test' => 'name']
                     ) ?>
                 </td>
             </tr>
@@ -65,7 +65,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
             <tr>
                 <td>Body</td>
                 <td colspan="4">
-                    <?= \CHtml::activeTextArea($model, 'body', ['class' => 'cols-8 autosize', 'rows' => 21]) ?>
+                    <?= \CHtml::activeTextArea($model, 'body', ['class' => 'cols-8 autosize', 'rows' => 21, 'data-test' => 'body']) ?>
                     <br/>
                     <?= CHtml::button('Insert bullet list', ['class' => 'button large', 'id' => 'et_insert',]) ?>
                 </td>
