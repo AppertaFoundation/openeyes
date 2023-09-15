@@ -6,6 +6,7 @@ use DateTime;
 use Episode;
 use Event;
 use Firm;
+use Institution;
 use OE\factories\exceptions\CannotMakeModelException;
 use OE\factories\exceptions\FactoryNotFoundException;
 use OE\factories\ModelFactory;
@@ -68,22 +69,7 @@ class EventFactory extends ModelFactory
     public function configure()
     {
         return $this->afterMaking(function ($event) {
-            if ($event->institution_id) {
-                return;
-            }
-            // base the institution on the firm or the episode for the event
-            // if the episode doesn't have a firm, this will still fail
-            $event->institution_id = $event->firm
-                ? $event->firm->institution_id
-                : ($event->episode->firm ? $event->episode->firm->institution_id : null);
-
-            // If still null (i.e, the firm was global), generate a new instutution from a factory
-            if (is_null($event->institution_id)) {
-                $institution = \Institution::factory()
-                    ->isTenanted()
-                    ->create();
-                $event->institution_id = $institution->id;
-            }
+            $this->ensureInstitutionSet($event);
         })->afterCreating(function (Event $event) {
             // Would be good to set these elements on the event to allow the getElements
             // method to return them directly, rather than needing to go to the db again.
@@ -203,5 +189,28 @@ class EventFactory extends ModelFactory
     protected function persistInstance($instance): bool
     {
         return $instance->save(false, null, true);
+    }
+
+    /**
+     * Work through the fallback steps to ensure a valid institution is set on the event.
+     *
+     * @param Event $event
+     * @return void
+     */
+    protected function ensureInstitutionSet(Event $event): void
+    {
+        if ($event->institution_id) {
+            return;
+        }
+
+        // base the institution on the firm or the episode for the event
+        $source_firm = $event->firm_id ? $event->firm : $event->episode->firm;
+
+        if ($source_firm->institution_id) {
+            $event->institution_id = $source_firm->institution_id;
+            return;
+        }
+
+        $event->institution_id = InstitutionFactory::resolveDefaultInstitutionId();
     }
 }
