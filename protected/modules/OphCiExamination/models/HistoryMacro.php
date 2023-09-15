@@ -77,7 +77,6 @@ class HistoryMacro extends \BaseActiveRecordVersioned
         return [
             ['id, name, body, display_order, active', 'safe'],
             ['name, body, active', 'required'],
-            ['body', 'filter', 'filter' => array($obj = new \CHtmlPurifier(),'purify')],
         ];
     }
 

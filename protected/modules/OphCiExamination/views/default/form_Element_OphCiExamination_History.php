@@ -20,7 +20,9 @@
 ?>
 
 <?php use OEModule\OphCiExamination\models\HistoryMacro; ?>
-<?php $purifier = new CHtmlPurifier();?>
+<?php
+  $purifier = new CHtmlPurifier();
+?>
 <div class="element-fields flex-layout full-width ">
   <div class="cols-10 flex-layout col-gap">
     <div class="cols-half">
@@ -129,7 +131,7 @@ foreach ($macros as $macro) {
             selectedItems.forEach( function (item) {
                 <?php foreach ($standardSet as $set) : ?>
                 if (<?= $set['id'] ?> === item.id) {
-                    inputText.val(addLineBreakToString(inputText.val()) + "<?= $purifier->purify(rtrim(preg_replace('/[\r\n]+/', '\n', $set['body']))) ?>");
+                  inputText.val(addLineBreakToString(inputText.val()) + "<?= html_entity_decode($purifier->purify(rtrim(preg_replace('/[\r\n]+/', '\n', $set['body'])))) ?>");
                 }
                 <?php endforeach; ?>
             });
