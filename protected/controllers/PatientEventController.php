@@ -227,19 +227,42 @@ class PatientEventController extends BaseController
      * Handles the request to carry out required back end actions before redirecting to the appropriate controller
      * action for the draft to be loaded.
      */
-    public function actionLoadDraft() {
+    public function actionLoadDraft()
+    {
         $app = $this->getApp();
         $request = $app->getRequest();
 
         $draft = $this->resolveDraft($request);
-        $context = $draft->episode->firm;
 
+        if ($draft->event) {
+            $context = $draft->event->firm;
+        } else {
+            $data = json_decode($draft->data, true);
+            $event_firm_id = $data["event-firm-id"] ?? null;
+
+            if (!$event_firm_id) {
+                $event_firm = Firm::model()->find(
+                    "service_subspecialty_assignment_id=:service_subspecialty_assignment_id AND institution_id=:institution_id AND runtime_selectable=1",
+                    [
+                        ":service_subspecialty_assignment_id" => $draft->episode->firm->service_subspecialty_assignment_id,
+                        ":institution_id" => Yii::app()->session['selected_institution_id']
+                    ]
+                );
+                $event_firm_id = $event_firm->id;
+                \Yii::app()->user->setFlash('issue', "Something went wrong while trying to restore the draft. Your context has been reset.");
+            }
+
+            $context = Firm::model()->findByPk($event_firm_id);
+
+            if (!$context) {
+                throw new Exception("Couldn't load draft, context not found.");
+            }
+        }
         $this->setContext($context);
 
         $this->redirect(
             $app->createUrl($draft->originating_url . "&draft_id=" . $draft->id)
         );
-
     }
 
     public function actionHasServiceFirmForSubspecialty()

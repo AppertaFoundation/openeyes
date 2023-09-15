@@ -5,8 +5,8 @@ describe('Testing for the auto save functionality', () => {
         //Use a different user when testing drafts as they can change the context of the user
         // and we don't want the context change to affect other tests
         cy.login(seederData.context_change_user.username, seederData.context_change_user.password);
-    })
-        
+    });
+
     before(() => {
         cy.login()
             .then((body) => {
@@ -35,7 +35,7 @@ describe('Testing for the auto save functionality', () => {
     });
 
     it('Auto save draft events should only be shown for users they belong to', () => {
-        cy.login('nonsurgeonuser', 'password')
+        cy.login('nonsurgeonuser', 'password');
         cy.visit(seederData.patient_url);
         // sidebar
         cy.getBySel('sidebar-draft')

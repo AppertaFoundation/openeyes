@@ -97,6 +97,7 @@
     ?>
 
 <input type="hidden" name="auto-save-enabled" class="js-auto-save-enabled" value=<?= $auto_save_enabled ? "true" : "false" ?>>
+<input type="hidden" name="event-firm-id" value=<?= $this->selectedFirmId ?>>
 
 <?php $this->renderPartial('auto_save_connection_error');?>
 <?php $this->renderPartial('auto_save_discard_draft');?>
@@ -117,7 +118,7 @@
 <?php $this->displayErrors($errors)?>
 <?php $this->renderPartial('//patient/event_elements', array('form' => $form));?>
 <?php $this->displayErrors($errors, true)?>
-        
+
 <?php $this->endWidget()?>
 <?php $this->endContent();?>
 <?php Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/VisualAcuity.js", CClientScript::POS_HEAD); ?>

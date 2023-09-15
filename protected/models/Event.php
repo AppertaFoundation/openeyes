@@ -47,10 +47,18 @@ use OEModule\OESysEvent\events\ClinicalEventSoftDeletedSystemEvent;
  * @property User $user
  * @property User $usermodified
  * @property EventType $eventType
- * @property Institution $institution
+ * @property EventIssue[] $issues
+ * @property EventImage[] $previewImages
  * @property ?Event $parent
+ * @property ?Event[] $children
+ * @property Firm $firm
  * @property EventSubTypeItem[] $eventSubtypeItems
  * @property ?EventSubTypeItem $firstEventSubtypeItem
+ * @property EventAttachmentGroup[] $eventAttachmentGroups
+ * @property Institution $institution
+ * @property Site $site
+ * @property WorklistPatient $worklist_patient
+ * @property PathwayStep $step
  * @property ?EventTemplate $template
  * @property ?EventDraft $draft
  */
