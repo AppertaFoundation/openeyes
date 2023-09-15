@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -14,7 +15,6 @@
  * @copyright Copyright (c) 2020, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-
 
 /**
  * The followings are the available columns in table 'ophciexamination_history_macro':
@@ -77,6 +77,7 @@ class HistoryMacro extends \BaseActiveRecordVersioned
         return [
             ['id, name, body, display_order, active', 'safe'],
             ['name, body, active', 'required'],
+            ['body', 'filter', 'filter' => array($obj = new \CHtmlPurifier(),'purify')],
         ];
     }
 
