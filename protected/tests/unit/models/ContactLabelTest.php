@@ -21,7 +21,6 @@ use ModelTestCase;
 use WithTransactions;
 use WithFaker;
 use MocksSession;
-
 use Institution;
 use Site;
 use ContactLabel;
@@ -80,7 +79,7 @@ class ContactLabelTest extends ModelTestCase
             'is_private' => 'Is Private',
             'max_number_per_patient' => 'Max Number Per Patient'
         );
-        $this->assertEquals($expected, $this->model->attributeLabels());
+        $this->assertEquals($expected, $this->getModel()->attributeLabels());
     }
 
     /**
