@@ -136,5 +136,5 @@ cypress/downloads/**
 db.session.sql
 
 # ignore nxblu in v6.7.x
-protected/modules/NxBlu
-protected/modules/nxblu
+protected/assets/NxBlu
+protected/assets/nxblu
