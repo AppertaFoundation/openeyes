@@ -1,10 +1,15 @@
 <?php
-    $element_model_name = \CHtml::modelName($element);
+use OEModule\OphCiExamination\models\Element_OphCiExamination_Pain;
+/**
+ * @var Element_OphCiExamination_Pain $element
+ */
+
+$model_name = \CHtml::modelName($element);
 ?>
 
 <div class="element-fields full-width">
     <!-- Chronologically sorted pain recordings -->
-    <input type="hidden" name="<?= $element_model_name ?>[present]" value="1" />
+    <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
     <div class="cols-17">
         <table id="pain-entries-table" class="cols-full">
             <colgroup>
@@ -78,20 +83,18 @@
                 <td>
                     <i class="oe-i happy medium no-click"></i>
                 </td>
-                <td><label class="highlight inline"><input id="pain-radio" value="0" name="pain-score" type="radio"> 0</label></td>
-                <td><label class="highlight inline"><input id="pain-radio" value="1" name="pain-score" type="radio"> 1</label></td>
-                <td><label class="highlight inline"><input id="pain-radio" value="2" name="pain-score" type="radio"> 2</label></td>
-                <td><label class="highlight inline"><input id="pain-radio" value="3" name="pain-score" type="radio"> 3</label></td>
-                <td><label class="highlight inline"><input id="pain-radio" value="4" name="pain-score" type="radio"> 4</label></td>
-                <td><label class="highlight inline"><input id="pain-radio" value="5" name="pain-score" type="radio"> 5</label></td>
-                <td><label class="highlight inline"><input id="pain-radio" value="6" name="pain-score" type="radio"> 6</label></td>
-                <td><label class="highlight inline"><input id="pain-radio" value="7" name="pain-score" type="radio"> 7</label></td>
-                <td><label class="highlight inline"><input id="pain-radio" value="8" name="pain-score" type="radio"> 8</label></td>
-                <td><label class="highlight inline"><input id="pain-radio" value="9" name="pain-score" type="radio"> 9</label></td>
-                <td><label class="highlight inline"><input id="pain-radio" value="10" name="pain-score" type="radio"> 10</label></td>
+                <?php for ($pain_score_value = $element::MINIMUM_PAIN_SCORE; $pain_score_value <= $element::MAXIMUM_PAIN_SCORE; $pain_score_value++) { ?>
+                    <td>
+                        <label class="highlight inline">
+                            <input id="pain-radio" value="<?= $pain_score_value ?>" name="<?= $model_name ?>[pain-score]" type="radio"
+                                <?= (isset($_POST['pain-score']) && $_POST['pain-score'] == $pain_score_value) ? "checked" : "" ?>
+                                data-test="pain-value-<?= $pain_score_value ?>"> <?= $pain_score_value ?>
+                        </label>
+                    </td>
+                <?php } ?>
                 <td><i class="oe-i crying medium no-click"></i></td>
-                <td><input id="pain-date-field" class="date"></td>
-                <td><input id="pain-time-field" type="time" class="fixed-width-medium"></td>
+                <td><input id="pain-date-field" name="<?= $model_name ?>[pain-date-field]" class="date"></td>
+                <td><input id="pain-time-field" name="<?= $model_name ?>[pain-time-field]" type="time" class="fixed-width-medium"></td>
                 <td>
                     <div class="cols-full">
                         <button id="pain-show-comment-button" class="button js-add-comments" type="button" data-comment-container="#pain-comment-container">
@@ -100,29 +103,27 @@
                         <div class="cols-full comment-container" style="display: block;">
                             <!-- comment-group, textarea + icon -->
                             <div id="pain-comment-container"  class="flex-layout flex-left js-comment-container" style="display: none;" data-comment-button="#pain-show-comment-button">
-                                <textarea id="pain-comment-field" placeholder="Comments" autocomplete="off" rows="1" cols="10" class="js-comment-field cols-full"></textarea>
+                                <textarea id="pain-comment-field" name="pain-comment-field" placeholder="Comments" autocomplete="off" rows="1" cols="10" class="js-comment-field cols-full"></textarea>
                                 <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
                             </div>
                         </div>
                     </div>
                 </td>
-                <td><button id="add-new-pain-row-btn" type="button" class="adder js-add-select-btn"></button></td>
+                <td><button id="add-new-pain-row-btn" type="button" class="adder js-add-select-btn" data-test="pain-add-entry"></button></td>
             </tr>
             </tbody>
         </table>
     </div>
-    <input id="pain-ids-to-delete" type="hidden" name="pain_ids_to_delete" value="[]">
 </div>
 <script type="x-tmpl-mustache" id="add-new-pain-row-template">
-<?php $model_name = CHtml::modelName(\OEModule\OphCiExamination\models\Element_OphCiExamination_Pain::model());
-        $template_model_name = $model_name . '[entries][{{row_count}}]'; ?>
+<?php $template_model_name = $model_name . '[entries][{{row_count}}]'; ?>
   <tr>
     <td>
         <i class="oe-i happy medium no-click"></i>
     </td>
         <?php
-        for ($i = 0; $i <= 10; $i++) {
-            echo "<td class=\"center\"><span id=\"pain-entry-row-{{row_count}}-score-$i\" class=\"dot-list-divider fade\"></span></td>";
+        for ($pain_score_value = $element::MINIMUM_PAIN_SCORE; $pain_score_value <= $element::MAXIMUM_PAIN_SCORE; $pain_score_value++) {
+            echo "<td class=\"center\"><span id=\"pain-entry-row-{{row_count}}-score-$pain_score_value\" class=\"dot-list-divider fade\"></span></td>";
         }
         ?>
     <td>
@@ -156,22 +157,14 @@
 <script type="text/javascript">
     function attachTrashEvents($object){
         $object.click(function() {
-            let $to_delete_input = $('input#pain-ids-to-delete');
-            let to_delete_array = JSON.parse($to_delete_input.val());
             let $row = $(this).parent().parent();
-            let record_id = $row.children('input.pain-entry-id').val();
-            //Only add ID to remove if the record has one, otherwise don't
-            if (record_id !== undefined){
-                to_delete_array.push(record_id);
-                $to_delete_input.val(JSON.stringify(to_delete_array));
-            }
             $row.remove();
         });
     }
 
     $(document).ready(function () {
-        let currentTime = new Date();
-        $('#pain-time-field').val(`${currentTime.getHours()}:${currentTime.getMinutes()}`);
+        const currentTime = new Date();
+        $('#pain-time-field').val(`${OpenEyes.Util.addZeroBefore(currentTime.getHours())}:${OpenEyes.Util.addZeroBefore(currentTime.getMinutes())}`);
 
         let row_count = <?= $row_count ?>;
 

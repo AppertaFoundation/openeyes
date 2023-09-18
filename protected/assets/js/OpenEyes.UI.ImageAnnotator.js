@@ -32,7 +32,8 @@
         'side': 3,
         'canvasModifiedCallback': () => {},
         'afterInit': () => {},
-        'withEventListeners': true
+        'withEventListeners': true,
+        'toolBoxWidth': 160
     };
 
     ImageAnnotator.prototype.getMeta = function getMeta(url) {
@@ -47,6 +48,7 @@
     ImageAnnotator.prototype.init = async function() {
 
         // needs to be unique but doesn't matter what is the value
+        const self = this;
         const canvas_id = 'c' + Date.now();
         const canvasElem = document.createElement('canvas');
         const canvasJsElem = this.$wrapper.querySelector('.canvas-js');
@@ -121,14 +123,14 @@
             });
         }
 
-        this.resetCanvas(this.imageUrl);
         this.toolChange( document.querySelector('.js-tool-btn[name="freedraw"]'));
 
-        if (typeof this.options.afterInit === 'function') {
-            this.options.afterInit.call(this);
-        }
+        this.resetCanvas(this.imageUrl , function () {
+            if (typeof self.options.afterInit === 'function') {
+                self.options.afterInit.call(self);
+            }
+        });
 
-        this.options.canvasModifiedCallback.bind(this)();
     };
 
     ImageAnnotator.prototype.resetColourSelection = function(selected_rect) {
@@ -149,8 +151,9 @@
      * @param {Number} w - width
      * @param {Number} h - height
      */
-    ImageAnnotator.prototype.resetCanvas = async function(imgUrl) {
+    ImageAnnotator.prototype.resetCanvas = async function(imgUrl, callBack = null) {
 
+        const self = this;
         this.$canvas.clear();
         if (typeof this.imageUrl === "undefined" || this.imageUrl == "") {
             console.error('Image file was missing, the rest of canvas reset has been skipped');
@@ -160,10 +163,8 @@
         let w = img.naturalWidth;
         let h = img.naturalHeight;
 
-        const canvasMaxWidth = this.$wrapper.offsetWidth - 160; // allow for the toolbox
+        const canvasMaxWidth = this.getCanvasWidth() - this.options.toolBoxWidth; // allow for the toolbox
         const imgScale = canvasMaxWidth / w;
-        // multiplier = w / canvasMaxWidth;
-        // update canvas size
         this.$canvas.setHeight( h * imgScale );
         this.$canvas.setWidth( canvasMaxWidth );
 
@@ -171,7 +172,12 @@
         if (imgUrl) {
             fabric.Image.fromURL(imgUrl, oImg => {
                 oImg.scale(imgScale);
-                this.$canvas.setBackgroundImage( oImg, this.$canvas.renderAll.bind(this.$canvas));
+                this.$canvas.setBackgroundImage( oImg, function () {
+                    self.$canvas.renderAll.bind(self.$canvas)();
+                    if(typeof callBack === "function") {
+                        callBack();
+                    }
+                });
             });
         }
     };
@@ -416,19 +422,52 @@
     ImageAnnotator.prototype.getCanvasDataUrl = async function() {
         try {
             const img = await this.getMeta(this.imageUrl);
-            const w = img.naturalWidth;
-            const canvasMaxWidth = this.$wrapper.offsetWidth - 160; // allow for the toolbox
-            const multiplier = w / canvasMaxWidth;
+            const imgNaturalWidth = img.naturalWidth;
+            const canvasWidth = this.getCanvasWidth();
+
+            // If the canvasWidth is 0 that means it was not able to calculate the width and if this is passed
+            // to the multiplier it will have a negative value and dataUrl will return unwanted results
+            if(canvasWidth === 0) {
+                return false;
+            }
+
+            const canvasMaxWidth = canvasWidth - this.options.toolBoxWidth;
+            const multiplier = imgNaturalWidth / canvasMaxWidth;
 
             return this.$canvas.toDataURL({
                 format: this.options.format,
                 multiplier: multiplier
             });
         } catch (e) {
+            console.error(e);
             if (e instanceof TypeError) {
                 return false;
             }
         }
+    };
+
+    ImageAnnotator.prototype.getCanvasWidth = function () {
+        //Show wrapper when calculating width if it's hidden otherwise we will get 0 and it will not save the file correctly
+        const annotateWrapper = this.$wrapper.closest('.js-annotate-wrapper');
+        let hideWrapper = false;
+
+        if(annotateWrapper.style.display === 'none') {
+            annotateWrapper.style.display = '';
+            hideWrapper = true;
+        }
+        const canvasComputedWidth = getComputedStyle(this.$wrapper).width;
+
+        if(hideWrapper) {
+            annotateWrapper.style.display = 'none';
+        }
+
+        const regexResult = canvasComputedWidth.match(/\d+/);
+
+        if(regexResult !== null) {
+            return regexResult[0];
+        }
+
+        return 0;
     };
 
     ImageAnnotator.prototype.clearCanvas = function() {

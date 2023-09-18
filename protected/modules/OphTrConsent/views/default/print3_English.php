@@ -291,17 +291,20 @@ if (isset($elements['OEModule\OphTrConsent\models\Element_OphTrConsent_Additiona
 
     <!-- patient signature -->
 
-    <?= $this->renderPartial(
-        '_print_signature',
-        array(
-            'vi' => ($css_class == 'impaired'),
-            'element' => $elements[Element_OphTrConsent_Esign::class],
-            'signature' => $elements[Element_OphTrConsent_Esign::class]
-                ->getSignatureByInitiatorAttributes($additional_signatures->getElementType()->id, 5),
-            'title_label' => 'Role',
-            'name_label' => 'Patient name',
-        )
-    ); ?>
+    <?php if ($additional_signatures) {
+        echo $this->renderPartial(
+
+            '_print_signature',
+            array(
+                'vi' => ($css_class == 'impaired'),
+                'element' => $elements[Element_OphTrConsent_Esign::class],
+                'signature' => $elements[Element_OphTrConsent_Esign::class]
+                    ->getSignatureByInitiatorAttributes($additional_signatures->getElementType()->id, 5),
+                'title_label' => 'Role',
+                'name_label' => 'Patient name',
+            )
+        );
+    } ?>
 
     <?php if ($additional_signatures && $additional_signatures->witness_required) { ?>
         <p>A <b>witness</b> should sign below <b>if the patient is unable to sign but has indicated their consent.</b>

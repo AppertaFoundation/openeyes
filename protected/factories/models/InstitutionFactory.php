@@ -23,6 +23,39 @@ use UserAuthenticationMethod;
 
 class InstitutionFactory extends ModelFactory
 {
+    protected static ?Institution $cached_default_institution = null;
+    protected static bool $created_default_institution = false;
+
+    public static function resolveDefaultInstitutionId(): int
+    {
+        if (!static::$cached_default_institution) {
+            static::initialiseDefaultInstitution();
+        }
+
+        return (int) static::$cached_default_institution->getPrimaryKey();
+    }
+
+    public static function clearCreatedDefaultInstitution(): void
+    {
+        if (static::$created_default_institution) {
+            static::$cached_default_institution = null;
+        }
+    }
+
+    protected static function initialiseDefaultInstitution(): void
+    {
+        $existing_tenanted = Institution::model()->getTenanted();
+        if (count($existing_tenanted)) {
+            static::$cached_default_institution = $existing_tenanted[0];
+            return;
+        }
+
+        static::$cached_default_institution = Institution::factory()
+            ->isTenanted()
+            ->create();
+        static::$created_default_institution = true;
+    }
+
     /**
      * @return array
      */

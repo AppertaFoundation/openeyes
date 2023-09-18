@@ -47,7 +47,7 @@ describe('freehand drawing element behaviour', () => {
                     cy.getBySel('freehand-drawing-is-edited-input');
 
                     cy.getBySel('annotate-freehand-drawing-image-btn').click().then(() => {
-                        cy.getBySel('cancel-freehand-drawing-annotation-btn').click().then(() => {
+                        cy.getBySel('cancel-freehand-drawing-annotation-btn').should('be.visible').click().then(() => {
                             // Removed on cancel
                             cy.getBySel('freehand-drawing-is-edited-input').should('not.exist');
 
@@ -81,7 +81,7 @@ describe('freehand drawing element behaviour', () => {
                     cy.getBySel('freehand-drawing-is-edited-input');
 
                     cy.getBySel('annotate-freehand-drawing-image-btn').click().then(() => {
-                        cy.getBySel('cancel-freehand-drawing-annotation-btn').click().then(() => {
+                        cy.getBySel('cancel-freehand-drawing-annotation-btn').should('be.visible').click().then(() => {
                             // Removed on cancel
                             cy.getBySel('freehand-drawing-is-edited-input').should('not.exist');
 
@@ -116,7 +116,7 @@ describe('freehand drawing element behaviour', () => {
                     cy.wait('@annotationImage');
 
                     cy.getBySel('annotate-freehand-drawing-image-btn').click().then(() => {
-                        cy.getBySel('save-freehand-drawing-annotation-btn').click()
+                        cy.getBySel('save-freehand-drawing-annotation-btn').should('be.visible').click()
                     });
 
                     cy.saveEvent().then(() => {
@@ -131,7 +131,7 @@ describe('freehand drawing element behaviour', () => {
                             cy.getBySel('button-event-header-tab-edit').click();
 
                             cy.getBySel('annotate-freehand-drawing-image-btn').click().then(() => {
-                                cy.getBySel('save-freehand-drawing-annotation-btn').click()
+                                cy.getBySel('save-freehand-drawing-annotation-btn').should('be.visible').click()
                             });
 
                             cy.wait('@editingDraftSave', {requestTimeout: 60000});

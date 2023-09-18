@@ -14,7 +14,7 @@ class FirmFactory extends ModelFactory
         return [
             'name' => $this->faker->unique()->words(2, true),
             'subspecialty_id' => Subspecialty::factory()->useExisting(),
-            'institution_id' => Institution::factory()->useExisting()
+            'institution_id' => Institution::factory()::resolveDefaultInstitutionId()
         ];
     }
 

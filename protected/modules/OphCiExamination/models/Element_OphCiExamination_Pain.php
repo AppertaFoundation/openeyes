@@ -17,11 +17,16 @@ namespace OEModule\OphCiExamination\models;
  * @property User $createdUser
  * @property Event $event
  * @property User $lastModifiedUser
- * @property OphciexaminationPainEntry[] $ophciexaminationPainEntries
+ * @property OphCiExamination_Pain_Entry[] $entries
  */
 class Element_OphCiExamination_Pain extends \BaseEventTypeElement
 {
     use traits\CustomOrdering;
+
+    public $auto_update_relations = true;
+
+    const MINIMUM_PAIN_SCORE = 0;
+    const MAXIMUM_PAIN_SCORE = 10;
 
     /**
      * @return string the associated database table name

@@ -20,6 +20,9 @@
 ?>
 
 <?php use OEModule\OphCiExamination\models\HistoryMacro; ?>
+<?php
+  $purifier = new CHtmlPurifier();
+?>
 <div class="element-fields flex-layout full-width ">
   <div class="cols-10 flex-layout col-gap">
     <div class="cols-half">
@@ -53,7 +56,7 @@
     </div>
   </div>
   <div class="add-data-actions flex-item-bottom">
-    <button class="button hint green js-add-standard-set" type="button">
+    <button class="button hint green js-add-standard-set" type="button" data-test="add-to-history-template">
         Add template
     </button>
     <button class="button hint green js-add-select-search" type="button" id="show-add-to-history" data-test="add-to-history">
@@ -128,7 +131,7 @@ foreach ($macros as $macro) {
             selectedItems.forEach( function (item) {
                 <?php foreach ($standardSet as $set) : ?>
                 if (<?= $set['id'] ?> === item.id) {
-                    inputText.val(addLineBreakToString(inputText.val()) + "<?= Yii::app()->format->Ntext(rtrim(preg_replace('/[\r\n]+/', '\n', $set['body']))) ?>");
+                  inputText.val(addLineBreakToString(inputText.val()) + "<?= html_entity_decode($purifier->purify(rtrim(preg_replace('/[\r\n]+/', '\n', $set['body'])))) ?>");
                 }
                 <?php endforeach; ?>
             });

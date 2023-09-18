@@ -1,6 +1,8 @@
 <?php
 namespace OEModule\OphCiExamination\models;
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "ophciexamination_clinicoutcome_risk_status".
  *
@@ -11,6 +13,8 @@ namespace OEModule\OphCiExamination\models;
  */
 class OphCiExamination_ClinicOutcome_Risk_Status extends \BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     /**
      * Returns the static model of the specified AR class.
      *

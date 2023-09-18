@@ -1,5 +1,7 @@
 <?php
 
+use OE\factories\models\InstitutionFactory;
+
 /**
  * (C) Copyright Apperta Foundation 2022
  * This file is part of OpenEyes.
@@ -42,6 +44,9 @@ trait WithTransactions
         \Yii::app()->setParams(['enable_transactions' => false]);
 
         $this->tearDownCallbacks(function () use ($transaction) {
+            // don't want to track institution created within transaction
+            InstitutionFactory::clearCreatedDefaultInstitution();
+
             \Yii::app()->setParams(['enable_transactions' => $this->originalEnableTransactionsState]);
             $transaction->rollback();
         });

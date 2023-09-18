@@ -42,10 +42,24 @@ class AutoSaveSeeder extends BaseSeeder
             ->create();
         $context_change_user_auth = $context_change_user->authentications[0];
 
-        $draft_firm_id = $this->getApp()->db->createCommand()
+        $initial_firm_subspecialty_assignment_id = $this->getApp()->db->createCommand()
+            ->select('service_subspecialty_assignment_id')
+            ->from('firm')
+            ->where('id = :firm_id', [':firm_id' => $intial_firm_id])
+            ->queryScalar();
+
+        $draft_episode_firm = $this->getApp()->db->createCommand()
+            ->select('id, service_subspecialty_assignment_id')
+            ->from('firm')
+            ->where('service_subspecialty_assignment_id != :subspecialty_assignment_id', [':subspecialty_assignment_id' => $initial_firm_subspecialty_assignment_id])
+            ->andWhere('can_own_an_episode=1')
+            ->queryRow();
+
+        $draft_event_firm_id = $this->getApp()->db->createCommand()
             ->select('id')
             ->from('firm')
-            ->where('id != :firm_id', [':firm_id' => $intial_firm_id])
+            ->where('service_subspecialty_assignment_id = :subspecialty_assignment_id', [':subspecialty_assignment_id' => $draft_episode_firm['service_subspecialty_assignment_id']])
+            ->andWhere('can_own_an_episode=0')
             ->limit(1)
             ->queryScalar();
 
@@ -54,6 +68,9 @@ class AutoSaveSeeder extends BaseSeeder
         $original = SystemicDiagnoses::factory()->withDiagnoses([$original_diagnosis])->create();
 
         $event = $original->event;
+        $event->firm_id = $draft_event_firm_id;
+        $event->save();
+        $event->refresh();
         $encoded_data = json_encode(SystemicDiagnoses::factory()->withDiagnoses([$draft_diagnosis])->makeAsFormData(['event_id' => null]));
 
         $draft = \EventDraft::factory()
@@ -64,7 +81,7 @@ class AutoSaveSeeder extends BaseSeeder
                     'created_user_id' => $context_change_user->id
                 ]);
 
-        $draft->episode->firm_id = $draft_firm_id;
+        $draft->episode->firm_id = $draft_episode_firm['id'];
         $draft->episode->save();
         $draft->episode->refresh();
 
@@ -79,7 +96,7 @@ class AutoSaveSeeder extends BaseSeeder
             'draft_id' => $draft->id,
             'draft_test_values' => $draft_test_values,
             'draft_update_url' => '/PatientEvent/loadDraft?draft_id=' . $draft->id,
-            'draft_context_name' => $draft->episode->firm->name,
+            'draft_context_name' => $draft->event->firm->name,
             'context_change_user' => ['username' => $context_change_user_auth->username, 'password' => 'password']
         ];
     }

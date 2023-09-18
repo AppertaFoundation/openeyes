@@ -444,4 +444,9 @@ class ProtectedFile extends BaseActiveRecordVersioned
     {
         return file_exists($this->getFilePath());
     }
+
+    public function getFileAsDataUrl(): string
+    {
+        return 'data:image/png;base64,' . base64_encode(file_get_contents($this->getPath()));
+    }
 }

@@ -74,8 +74,8 @@ $(document).ready(() => {
         if (
             // submit the form when one or more of the incomplete elements IS mandatory
             empty_mandatory_element
-            // submit the form when there is no dirty element
-            || dirty_elements.length === 0
+            // submit the form when there is no dirty element and all elements are filled
+            || (dirty_elements.length === 0 && empty_elements.length === 0)
             // submit the form when all elements are filled
             || !empty_elements.length
         ) {

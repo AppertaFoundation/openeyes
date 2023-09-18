@@ -30,21 +30,21 @@ function updateCviAlertState($section) {
 $(document).ready(function () {
   function visualAcuityChange(target, near) {
     var suffix = 'VisualAcuity';
-    if(near === 'near'){
+    if (near === 'near') {
       suffix = 'NearVisualAcuity';
     }
-    var target_element = $(target).closest('.element[data-element-type-class="' + OE_MODEL_PREFIX + 'Element_OphCiExamination_'+suffix+'"]');
-    var el = $('.event-content').find('ul.sub-elements-list li[data-element-type-class="' + OE_MODEL_PREFIX + 'Element_OphCiExamination_'+suffix+'"]');
+    const element_class = OE_MODEL_PREFIX + 'Element_OphCiExamination_' + suffix;
+    var target_element = $(target).closest('.element[data-element-type-class="' + element_class + '"]');
+    var el = $('.event-content').find('ul.sub-elements-list li[data-element-type-class="' + element_class + '"]');
     if (el.length) {
       el.addClass('clicked');
-      addElement(el, true, true, false, {unit_id: $(target).val()});
+      addElement(el, true, null, {unit_id: $(target).val()}, null, true);
     } else {
-      swapElement(target_element, OE_MODEL_PREFIX + 'Element_OphCiExamination_'+suffix, {
+      swapElement(target_element, element_class, {
           'record_mode': $(target).data('recordMode'),
           unit_id: $(target).val()
       });
     }
-
   }
 
   function changeVisualAcuityMode(target) {
@@ -457,5 +457,6 @@ function swapElement(element_to_swap, elementTypeClass, params){
         }
 
         element_to_swap.css('opacity','');
+        document.querySelector((".element." + elementTypeClass + " [name^='[element_dirty]']")).value = 1;
     });
 }

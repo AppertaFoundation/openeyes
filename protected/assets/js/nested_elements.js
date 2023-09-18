@@ -15,14 +15,13 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-function addElement(element, animate, previous_id, params, callback) {
+function addElement(element, animate, previous_id, params, callback, mark_element_as_dirty = false) {
     if (typeof (animate) === 'undefined')
         animate = true;
     if (typeof (previous_id) === 'undefined')
         previous_id = 0;
     if (typeof (params) === 'undefined')
         params = {};
-
 
     const element_type_id = $(element).data('element-type-id');
     var element_type_class = $(element).data('element-type-class');
@@ -109,6 +108,9 @@ function addElement(element, animate, previous_id, params, callback) {
             callback();
         }
 
+        if (mark_element_as_dirty) {
+            document.querySelector((".element." + elClass + " [name^='[element_dirty]']")).value = 1;
+        }
     });
 }
 
@@ -239,7 +241,7 @@ $(document).ready(function () {
             $(element).find('> .element-fields').css('opacity', '0.5');
             $(element).find('> .element-fields').find('input, select, textarea').prop('disabled', true);
             $('.oe-popup-wrap').not('#js-overlay').remove();
-            addElement(element, false, element_id, {}, callback);
+            addElement(element, false, element_id, {}, callback, true);
         }.bind(undefined, dialog, element));
         e.preventDefault();
 
