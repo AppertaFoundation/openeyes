@@ -511,7 +511,11 @@ class AdminController extends BaseAdminController
 
         // end of handling the POST
 
-        $generic_admin = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.widgets.js') . '/GenericAdmin.js', true);
+        // ensure all assets are published bfore attempting to publish a standalone asset (workaround a Yii bug)
+        Yii::app()->assetManager->getPublishedPathOfAlias('application.assets');
+        Yii::app()->assetManager->getPublishedPathOfAlias('application.assets.js');
+        Yii::app()->assetManager->getPublishedPathOfAlias('application.widgets.js');
+        $generic_admin = Yii::app()->assetManager->getPublishedPathOfAlias('application.widgets.js') . '/GenericAdmin.js';
         Yii::app()->getClientScript()->registerScriptFile($generic_admin);
 
         Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/OpenEyes.UI.DiagnosesSearch.js'), ClientScript::POS_END);
@@ -1014,7 +1018,8 @@ class AdminController extends BaseAdminController
                     $user->saveRoles(
                         (!isset($user_attributes['roles']) || (empty($user_attributes['roles'])))
                         ? []
-                        : $user_attributes['roles']);
+                        : $user_attributes['roles']
+                    );
 
                     try {
                         $user->saveFirms($user_attributes['firms']);
@@ -3271,7 +3276,9 @@ class AdminController extends BaseAdminController
             $data = Yii::app()->request->getParam('EthnicGroup');
 
             $ids_to_preserve = array_map(
-                static function ($datum) { return $datum['id']; },
+                static function ($datum) {
+                    return $datum['id'];
+                },
                 $data
             );
 
