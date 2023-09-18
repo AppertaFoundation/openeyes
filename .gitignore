@@ -134,3 +134,7 @@ cypress/screenshots/**
 cypress/downloads/**
 **/.phpunit.result.cache
 db.session.sql
+
+# ignore nxblu in v6.7.x
+protected/modules/NxBlu
+protected/modules/nxblu

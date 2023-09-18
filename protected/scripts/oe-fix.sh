@@ -373,6 +373,12 @@ if [ "$restart" == "1" ]; then
     sudo service apache2 restart &>/dev/null
 fi
 
+# remove any leftover nxblu files when switching to a 6.7.x branch
+if [ -d "$WROOT/protected/assets/nxblu" ]; then
+    echo "Removing nxblu files..."
+    sudo rm -rf "$WROOT/protected/assets/nxblu" 2>/dev/null || :
+fi
+
 echo ""
 echo "...Done"
 echo ""
