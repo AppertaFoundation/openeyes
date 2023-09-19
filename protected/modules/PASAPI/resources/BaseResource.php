@@ -21,6 +21,7 @@ namespace OEModule\PASAPI\resources;
 use OEModule\PASAPI\models\PasApiAssignment;
 use OEModule\PASAPI\models\XpathRemap;
 
+/** @phpstan-consistent-constructor */
 abstract class BaseResource
 {
     protected static $resource_type;
@@ -75,7 +76,7 @@ abstract class BaseResource
      *
      * @throws \Exception
      */
-    final public function __construct($version, $options = array())
+    public function __construct($version, $options = array())
     {
         if (!$version) {
             throw new \Exception('Schema version required to create resource');
