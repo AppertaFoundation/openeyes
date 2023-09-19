@@ -451,19 +451,19 @@
         const annotateWrapper = this.$wrapper.closest('.js-annotate-wrapper');
         let hideWrapper = false;
 
-        if(annotateWrapper.style.display === 'none') {
+        if (annotateWrapper && annotateWrapper.style.display === 'none') {
             annotateWrapper.style.display = '';
             hideWrapper = true;
         }
         const canvasComputedWidth = getComputedStyle(this.$wrapper).width;
 
-        if(hideWrapper) {
+        if (hideWrapper) {
             annotateWrapper.style.display = 'none';
         }
 
         const regexResult = canvasComputedWidth.match(/\d+/);
 
-        if(regexResult !== null) {
+        if (regexResult !== null) {
             return regexResult[0];
         }
 
