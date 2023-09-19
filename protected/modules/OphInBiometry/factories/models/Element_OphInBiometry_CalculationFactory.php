@@ -34,10 +34,7 @@ class Element_OphInBiometry_CalculationFactory extends ModelFactory
 
     public function forSidedTargetRefraction($eye_id, $target_refraction): self
     {
-        $side = strtolower(Eye::methodPostFix($eye_id));
-
-        return $this->state([
-            "target_refraction_" . $side  => $target_refraction,
-        ]);
+        return $this->addSidedData("target_refraction",
+            $eye_id, $target_refraction, true);
     }
 }

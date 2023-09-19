@@ -104,14 +104,7 @@ $cataract_card_list = array(
             )
         )
     ),
-    'Predicted Outcome' => array(
-        'data' => array(
-            'content' => $data->iol_model ? ($data->predicted_refractive_outcome !== 'Unknown' ?
-                $data->predicted_refractive_outcome . ' D' :
-                $data->predicted_refractive_outcome) : '',
-            'extra_data' => $data->iol_model ? $data->formula : 'Lens not selected',
-        )
-    ),
+    'Predicted Outcome' => $this->getPredictedOutcomeCardData($data),
     'Equipment' => array(
         'data' => $data->predicted_additional_equipment ? explode("\n", $data->predicted_additional_equipment) : array('None'),
         'editable' => $data->booking->isEditable(),
@@ -119,7 +112,7 @@ $cataract_card_list = array(
     'Comments' => array(
         'data' => explode("\n", $data->comments),
         'editable' => $data->booking->isEditable(),
-    )
+    ),
 );
 
 $other_card_list = array(
@@ -215,6 +208,7 @@ $other_card_list = array(
 <main class="oe-whiteboard">
     <div class="wb3">
         <?php
+
         if (in_array($cataract_opnote, $data->booking->getAllProcedureOpnotes(), false)) {
             foreach ($cataract_card_list as $title => $card) {
                 $this->widget('WBCard', array(

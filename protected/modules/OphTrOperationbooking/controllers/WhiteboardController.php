@@ -319,4 +319,81 @@ class WhiteboardController extends BaseDashboardController
         $eventImages = EventImage::model()->findAll('event_id = ? AND page IS NOT NULL', [$procedure->event_id]);
         return $eventImages;
     }
+
+    /**
+     * @param $data
+     * @return array
+     */
+    public function getPredictedOutcomeCardData($data): array
+    {
+        $colour = $this->getPredictedOutcomeCardColour($data->target_refraction, $data->predicted_refractive_outcome);
+        $target_refraction_data = $this->constructTargetRefractionData($data);
+        $predicted_refractive_outcome_data = $this->constructPredictedRefractiveOutcomeData($data);
+
+        if (!is_null($target_refraction_data)) {
+            $data = [];
+            array_push($data, $predicted_refractive_outcome_data);
+            array_push($data, $target_refraction_data);
+        } else {
+            $data = $predicted_refractive_outcome_data;
+        }
+
+        return [
+            'data' => $data,
+            'colour' => $colour,
+        ];
+    }
+
+    /**
+     * @param $biometry_api
+     * @param $data
+     * @return string
+     */
+    private function getPredictedOutcomeCardColour($target_refraction, $predicted_refractive_outcome): string
+    {
+        $biometry_api = Yii::app()->moduleAPI->get('OphInBiometry');
+        $predicted_refraction_warning = $biometry_api->getPredictedRefractionDiffersFromTargetRefractionWarning(
+            $target_refraction, $predicted_refractive_outcome);
+
+        $colour = '';
+
+        if (!is_null($predicted_refraction_warning)) {
+            $colour = 'orange';
+        }
+
+        return $colour;
+    }
+
+    /**
+     * @param $data
+     * @return array|null
+     */
+    private function constructTargetRefractionData($data): ?array
+    {
+        $target_refraction_data = null;
+
+        if (!is_null($data->target_refraction)) {
+            $target_refraction_data = [
+                'content' => '',
+                'small_data' => "Target refraction",
+                'extra_data' => $data->target_refraction . " D",
+            ];
+        }
+
+        return $target_refraction_data;
+    }
+
+    /**
+     * @param $data
+     * @return array
+     */
+    private function constructPredictedRefractiveOutcomeData($data): array
+    {
+        return [
+            'content' => ($data->iol_model ? ($data->predicted_refractive_outcome !== 'Unknown' ?
+                    $data->predicted_refractive_outcome . ' D' :
+                    $data->predicted_refractive_outcome) : '') . ' ',
+            'extra_data' => $data->iol_model ? $data->formula : 'Lens not selected',
+        ];
+    }
 }

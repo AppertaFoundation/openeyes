@@ -9,16 +9,13 @@ class Element_OphInBiometry_SelectionFactory extends ModelFactory
     {
         return [
             'event_id' => EventFactory::forModule('OphInBiometry'),
-            'eye_id' =>  ModelFactory::factoryFor(Eye::class)->useExisting(),
+            'eye_id' => ModelFactory::factoryFor(Eye::class)->useExisting(),
         ];
     }
 
     public function forSidedPredictedRefraction($eye_id, $predicted_refraction): self
     {
-        $side = strtolower(Eye::methodPostFix($eye_id));
-
-        return $this->state([
-            "predicted_refraction_" . $side  => $predicted_refraction,
-        ]);
+        return $this->addSidedData("predicted_refraction",
+            $eye_id, $predicted_refraction, true);
     }
 }
