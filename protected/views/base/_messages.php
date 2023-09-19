@@ -17,7 +17,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-$navIconUrl = Yii::app()->getAssetManager()->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue'), true) . '/dist/svg/oe-nav-icons.svg';
+$navIconUrl = Yii::app()->getAssetManager()->getPublishedUrl(Yii::getPathOfAlias('application.assets.nxblu'), true) . '/dist/svg/oe-nav-icons.svg';
 ?>
 
 <?php if ($flash_messages = Yii::app()->user->getFlashes()) { ?>

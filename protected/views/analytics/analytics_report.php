@@ -1,4 +1,4 @@
-<html lang="en">
+<html lang="en" class="theme-<?= \SettingMetadata::model()->getSetting('display_theme'); ?>">
 
 <head>
     <script type="text/javascript">

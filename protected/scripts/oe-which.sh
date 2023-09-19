@@ -59,6 +59,6 @@ for module in "${modules[@]%=*}"; do
     fi
 done
 ## Output newblue tag
-printf "\e[32m%-20s\e[39m  -- newblue\n" "$(git -C "/var/www/openeyes/protected/assets/newblue" tag --points-at HEAD)"
+printf "\e[32m%-20s\e[39m  -- nxblu\n" "$(git -C "/var/www/openeyes/protected/assets/nxblu" tag --points-at HEAD)"
 
 printf "Done\n\n"

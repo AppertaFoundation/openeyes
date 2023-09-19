@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -14,9 +15,10 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="theme-<?= \SettingMetadata::model()->getSetting('display_theme'); ?>">
 <head>
     <?php $this->renderPartial('//base/head/_meta'); ?>
     <?php $this->renderPartial('//base/head/_assets'); ?>

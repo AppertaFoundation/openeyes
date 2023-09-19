@@ -1,7 +1,7 @@
 <meta charset="utf-8" />
 <?php
 $assetManager = Yii::app()->getAssetManager();
-$newblue_path = $assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue'), true);
+$newblue_path = $assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.nxblu'), true);
 
 //Because the wonderful way the namespace is created means if you don't include your file in the assets template
 //the namespace doesn't exist and gets overwritten.

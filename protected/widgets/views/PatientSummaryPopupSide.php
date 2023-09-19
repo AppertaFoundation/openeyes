@@ -1,4 +1,5 @@
 <?php
+
     /**
      * OpenEyes.
      *
@@ -42,7 +43,7 @@
             <?php $this->render('application.widgets.views.PatientSummaryPopupPatientIdentifierStatuses'); ?>
             <?php $this->render('application.widgets.views.PatientSummaryPopupPatientNumbers'); ?>
             <div class="data-group">
-                <table class="patient-demographics" style="position: relative; right: 0;">
+                <table class="demographics">
                     <tbody>
                     <tr>
                         <td>Born</td>
@@ -194,18 +195,19 @@
                                             <div class="nil-recorded">Patient has no known Ophthalmic Diagnoses for this Subspecialty</div>
                                         </td>
                                     </tr>
-                                <?php } else {?>                                <?php foreach ($ophthalmic_diagnoses as $ophthalmic_diagnosis) {
+                                <?php } else {
+                                    ?>                                <?php foreach ($ophthalmic_diagnoses as $ophthalmic_diagnosis) {
                                     list($side, $name, $date) = explode('~', $ophthalmic_diagnosis); ?>
                                     <tr>
                                         <td><?= $name ?></td>
                                         <td>
-                                            <?php $this->widget('EyeLateralityWidget', array('laterality' => $side)) ?>
+                                                                                <?php $this->widget('EyeLateralityWidget', array('laterality' => $side)) ?>
                                         </td>
                                         <td>
                                             <span class="oe-date"><?= $date ?></span>
                                         </td>
                                     </tr>
-                                <?php }
+                                    <?php }
                                 }?>
                                 </tbody>
                             </table>

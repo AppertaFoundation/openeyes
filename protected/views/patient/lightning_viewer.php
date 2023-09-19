@@ -6,7 +6,7 @@
  * @var array $previewsByYear
  */
 
-$navIconUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue'), true) . '/dist/svg/oe-nav-icons.svg';
+$navIconUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.nxblu'), true) . '/dist/svg/oe-nav-icons.svg';
 
 $previewWidth = @Yii::app()->params['lightning_viewer']['image_width'] ?: 800;
 

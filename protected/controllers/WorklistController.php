@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -17,7 +18,6 @@
 
 use Nesk\Puphpeteer\Resources\HTTPResponse;
 use OEModule\OESysEvent\events\PathwayCheckoutSystemEvent;
-
 use OEModule\OphDrPGDPSD\models\{
     OphDrPGDPSD_PGDPSD,
     OphDrPGDPSD_Assignment
@@ -47,8 +47,8 @@ class WorklistController extends BaseController
     {
         Yii::app()->assetManager->registerCssFile('components/font-awesome/css/font-awesome.css', null, 10);
         if ($action->getId() === "print") {
-            $newblue_path = 'application.assets.newblue';
-            Yii::app()->assetManager->registerCssFile('/dist/css/style_oe_print.3.css', $newblue_path, null);
+            $newblue_path = 'application.assets.nxblu';
+            Yii::app()->assetManager->registerCssFile('/dist/css/oe_print.css', $newblue_path, null);
         }
 
         $this->manager = new WorklistManager();
@@ -1154,7 +1154,7 @@ class WorklistController extends BaseController
         if ($cviStatus[0] !== 'Unknown') {
             return [
                 'data' => $cviStatus[0],
-                'date' => ($cviStatus[1] && $cviStatus[1] !== '0000-00-00') ? Helper::convertDate2HTML($cviStatus[1]) : 'N/A',
+                'date' => ($cviStatus[1] && $cviStatus[1] !== '0000-00-00') ? Helper::convertDate2NHS($cviStatus[1]) : 'N/A',
             ];
         }
 

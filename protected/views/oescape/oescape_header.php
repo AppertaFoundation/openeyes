@@ -1,5 +1,5 @@
 <?php
-$navIconUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue'), true) . '/dist/svg/oe-nav-icons.svg';
+$navIconUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.nxblu'), true) . '/dist/svg/oe-nav-icons.svg';
 ?>
 
 <nav class="oescape-header flex-layout">
@@ -55,7 +55,7 @@ $navIconUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('app
     </div>
     <div class="nav-title">
         <div class="title"><?= $subspecialty->name ?></div>
-        <ul class="oescape-icon-btns" style="font-size: 0;">
+        <ul class="oescape-icon-btns">
             <?php
             $subspecialties = Subspecialty::model()->findAllByAttributes(array(
                 'name' => array(

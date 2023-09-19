@@ -1,7 +1,6 @@
 <table id="<?= $id ?>">
     <colgroup>
-        <col class="cols-8">
-        <col>
+        <col class="cols-9"></col>
     </colgroup>
     <thead style="display:none;">
         <!-- These hidden headers are required for Katalon tests to find corect columns -->
@@ -33,24 +32,28 @@
                         <i class="oe-i change small <?= $pro_theme ?> js-has-tooltip pad-right" data-tooltip-content="<?= $tooltip_content ?>"></i>
                     <?php } ?>
                 </td>
-                <td></td>
                 <td>
+                <div class="locus-data">
+                <div class="icons">
                     <?php
-                    $info_box = new MedicationInfoBox();
-                    $info_box->medication_id = $entry->medication->id;
-                    $info_box->init();
+                        $info_box = new MedicationInfoBox();
+                        $info_box->medication_id = $entry->medication->id;
+                        $info_box->init();
 
-                    $tooltip_content = $entry->getTooltipContent() . "<br />" . $info_box->getAppendLabel();
+                        $tooltip_content = $entry->getTooltipContent() . "<br />" . $info_box->getAppendLabel();
                     if (!empty($tooltip_content)) { ?>
-                        <i class="oe-i <?= $info_box->getIcon(); ?> small <?= $pro_theme ?> js-has-tooltip pad-right" data-tooltip-content="<?= $tooltip_content ?>">
-                        </i>
+                            <i class="oe-i <?= $info_box->getIcon(); ?> small <?= $pro_theme ?> js-has-tooltip pad-right" data-tooltip-content="<?= $tooltip_content ?>">
+                            </i>
                     <?php } ?>
-                </td>
-                <td class="nowrap">
+                        
+                </div>
+                <div class="lat-date">
                     <?php $laterality = $entry->getLateralityDisplay();
-                    $this->widget('EyeLateralityWidget', array('laterality' => $laterality, 'pad' => ''));
+                        $this->widget('EyeLateralityWidget', array('laterality' => $laterality, 'pad' => ''));
                     ?>
                     <span class="oe-date"><?= $current ? $entry->getStartDateDisplay() : $entry->getEndDateDisplay() ?></span>
+                </div>
+            </div>
                 </td>
                 <td>
                     <?php if ($show_link) { ?>

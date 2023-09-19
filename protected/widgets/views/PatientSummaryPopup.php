@@ -1,4 +1,5 @@
 <?php
+
     /**
      * OpenEyes.
      *
@@ -29,14 +30,13 @@
 
 use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis; ?>
 <!-- Show full patient Demographics -->
-<div class="oe-patient-popup patient-popup-demographics" style="display:none;">
+<div class="oe-patient-popup" id="patient-popup-demographics" style="display:none;">
     <?php $this->render('application.widgets.views.PatientSummaryPopupPatientIdentifierStatuses'); ?>
     <?php $this->render('application.widgets.views.PatientSummaryPopupPatientNumbers'); ?>
     <div class="flex-layout flex-top">
         <div class="cols-left">
             <div class="popup-overflow">
-                <div class="subtitle">Demographics</div>
-                <table class="patient-demographics" style="position: relative; right: 0;">
+                <table class="demographics">
                     <tbody>
                     <tr>
                         <td>Born</td>
@@ -47,7 +47,7 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis; ?>
                     </tr>
                     <tr>
                         <td>Address</td>
-                        <td><?= $this->patient->getSummaryAddress() ?></td>
+                        <td><?= $this->patient->getSummaryAddress(', ') ?></td>
                     </tr>
                     <tr>
                         <td>Ethnic Group</td>
@@ -81,14 +81,44 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis; ?>
                     <?php } ?>
                     </tbody>
                 </table>
+                <div class="subtitle">Communication Preferences</div>
+                    <table class="demographics">
+                        <tbody>
+                        <?php $examination_communication_preferences = $exam_api->getLatestElement('OEModule\OphCiExamination\models\Element_OphCiExamination_CommunicationPreferences', $patient); ?>
+                        <tr>
+                            <td>Large print</td>
+                            <td>
+                                <span class="large-text"><?= ($examination_communication_preferences && $examination_communication_preferences->correspondence_in_large_letters) ? 'Yes' : 'No' ?></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Email correspondence</td>
+                            <td>
+                                <span class="large-text"><?= ($examination_communication_preferences && $examination_communication_preferences->agrees_to_insecure_email_correspondence) ? 'Yes' : 'No' ?></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Language</td>
+                            <td>
+                                <span class="large-text"><?= ($examination_communication_preferences && !is_null($examination_communication_preferences->language_id)) ? ((int) $examination_communication_preferences->language_id === 0 ? 'Other' : $examination_communication_preferences->language->name) : 'Unknown' ?></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Interpreter required</td>
+                            <td>
+                                <span class="large-text"><?= ($examination_communication_preferences && !is_null($examination_communication_preferences->interpreter_required_id)) ? ((int) $examination_communication_preferences->interpreter_required_id === 0 ? 'Other' : $examination_communication_preferences->interpreter_required->name) : 'N/A' ?></span>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
             </div><!-- .popup-overflow -->
         </div><!-- .cols-left -->
 
         <div class="cols-right">
             <div class="popup-overflow">
-                <div class="subtitle">&nbsp;</div>
+                <div class="subtitle">PAS Contacts</div>
                 <?php if (Yii::app()->params['institution_code'] === 'CERA') { ?>
-                    <table class="patient-demographics" style="position: relative; right: 0; cursor: default;">
+                    <table class="demographics">
                         <tbody>
                         <tr>
                             <td><?php echo \SettingMetadata::model()->getSetting('general_practitioner_label') ?></td>
@@ -178,16 +208,13 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis; ?>
                         </tbody>
                     </table>
                 <?php } ?>
-                <?php if (Yii::app()->params['demographics_content']['pas'] === true ||
-                          Yii::app()->params['institution_code'] === 'CERA') { ?>
-                    <table class="patient-demographics" style="position: relative; right: 0;">
+                <?php if (
+                Yii::app()->params['demographics_content']['pas'] === true ||
+                          Yii::app()->params['institution_code'] === 'CERA'
+) { ?>
+                    <table class="demographics" >
                         <tbody>
                     <?php if (Yii::app()->params['demographics_content']['pas'] === true) { ?>
-                        <tr>
-                            <td>
-                                <h2>PAS Contacts</h2>
-                            </td>
-                        </tr>
                         <tr>
                             <td><?php echo \SettingMetadata::model()->getSetting('general_practitioner_label') ?></td>
                             <td><?= $this->patient->gp ? $this->patient->gp->contact->fullName : 'Unknown'; ?></td>
@@ -233,11 +260,12 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis; ?>
                             </td>
                         </tr>
                     <?php } ?>
-                        <tr>
-                            <td>
-                                <h2>Patient Contacts</h2>
-                            </td>
-                        </tr>
+                        </tbody>
+                    </table>
+                    <div class="subtitle">Patient Contacts</div>
+                    <table class="demographics">
+                        <tbody>
+                        
                         <?php
                             $gp_contact_id = $this->patient->gp ? $this->patient->gp->contact->id : null;
                         foreach ($this->patient->contactAssignments as $contactAssignment) {
@@ -257,39 +285,9 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis; ?>
                                     </tr>
                             <?php }
                         } ?>
-
-                        <?php $examination_communication_preferences = $exam_api->getLatestElement('OEModule\OphCiExamination\models\Element_OphCiExamination_CommunicationPreferences', $patient); ?>
-                        <tr>
-                            <td>
-                                <h2>Preferences</h2>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Large print</td>
-                            <td>
-                                <span class="large-text"><?= ($examination_communication_preferences && $examination_communication_preferences->correspondence_in_large_letters) ? 'Yes' : 'No' ?></span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Email correspondence</td>
-                            <td>
-                                <span class="large-text"><?= ($examination_communication_preferences && $examination_communication_preferences->agrees_to_insecure_email_correspondence) ? 'Yes' : 'No' ?></span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Language</td>
-                            <td>
-                                <span class="large-text"><?= ($examination_communication_preferences && !is_null($examination_communication_preferences->language_id)) ? ((int) $examination_communication_preferences->language_id === 0 ? 'Other' : $examination_communication_preferences->language->name) : 'Unknown' ?></span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Interpreter required</td>
-                            <td>
-                                <span class="large-text"><?= ($examination_communication_preferences && !is_null($examination_communication_preferences->interpreter_required_id)) ? ((int) $examination_communication_preferences->interpreter_required_id === 0 ? 'Other' : $examination_communication_preferences->interpreter_required->name) : 'N/A' ?></span>
-                            </td>
-                        </tr>
                         </tbody>
                     </table>
+                    
                 <?php } ?>
             </div><!-- .popup-overflow -->
         </div><!-- .cols-right -->
@@ -373,8 +371,7 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis; ?>
                 <div class="data">
                     <table>
                         <colgroup>
-                            <col class="cols-8">
-                            <col>
+                            <col class="cols-9"></col>
                         </colgroup>
                         <tbody>
                         <?php
@@ -393,14 +390,19 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis; ?>
                                 </td>
                             </tr>
                         <?php } else {?>
-                        <?php foreach ($ophthalmic_diagnoses as $ophthalmic_diagnosis) {
-                            list($side, $name, $date, $event_id) = explode('~', $ophthalmic_diagnosis); ?>
+                            <?php foreach ($ophthalmic_diagnoses as $ophthalmic_diagnosis) {
+                                list($side, $name, $date, $event_id) = explode('~', $ophthalmic_diagnosis); ?>
                             <tr>
                                 <td><?= $name ?></td>
-                                <td><i class="oe-i"></i></td>
-                                <td class="nowrap">
-                                    <?php $this->widget('EyeLateralityWidget', array('laterality' => $side, 'pad' => '')) ?>
-                                    <span class="oe-date"><?= $date ?></span>
+                                <td>
+                                    <div class="locus-data">
+                                        <div class="icons">
+                                        </div>
+                                        <div class="lat-date">
+                                            <?php $this->widget('EyeLateralityWidget', array('laterality' => $side, 'pad' => '')) ?>
+                                            <span class="oe-date"><?= $date ?></span>
+                                        </div>
+                                    </div>
                                 </td>
                                 <td>
                                     <?php if (isset($event_id) && $event_id) { ?>
@@ -409,7 +411,7 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis; ?>
                                     <?php } ?>
                                 </td>
                             </tr>
-                        <?php }
+                            <?php }
                         }?>
                         </tbody>
                     </table>
@@ -420,8 +422,7 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis; ?>
                 <div class="data">
                     <table>
                         <colgroup>
-                            <col class="cols-8">
-                            <col>
+                            <col class="cols-9"></col>
                         </colgroup>
                         <tbody>
                         <?php if (count($this->patient->systemicDiagnoses) === 0 && !$this->patient->get_no_systemic_diagnoses_date()) { ?>
@@ -439,18 +440,23 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis; ?>
                         <?php } ?>
                         <?php foreach ($this->patient->systemicDiagnoses as $systemic_diagnosis) { ?>
                             <tr>
-                                <td> <?= $systemic_diagnosis->disorder->term ?></td>
-                                <td><i class="oe-i"></i></td>
-                                <td class="nowrap">
-                                    <?php
-                                    if(isset($systemic_diagnosis->eye)){
-                                        $this->widget('EyeLateralityWidget', array('eye' => $systemic_diagnosis->eye, 'pad' => ''));
-                                    } else {
-                                        // The placeholder for the icons
-                                        echo '<span class="oe-eye-lat-icons"><i class="oe-i laterality small"></i><i class="oe-i laterality small"></i></span>';
-                                    }
-                                    ?>
-                                    <div class="oe-date"><?= $systemic_diagnosis->getHTMLformatedDate() ?></div>
+                                <td><?= $systemic_diagnosis->disorder->term ?></td>
+                                <td>
+                                    <div class="locus-data">
+                                        <div class="icons">
+                                        </div>
+                                        <div class="lat-date">
+                                            <?php
+                                            if (isset($systemic_diagnosis->eye)) {
+                                                $this->widget('EyeLateralityWidget', array('eye' => $systemic_diagnosis->eye, 'pad' => ''));
+                                            } else {
+                                                // The placeholder for the icons
+                                                echo '<span class="oe-eye-lat-icons"><i class="oe-i laterality small"></i><i class="oe-i laterality small"></i></span>';
+                                            }
+                                            ?>
+                                            <span class="oe-date"><?= $systemic_diagnosis->getHTMLformatedDate() ?></span>
+                                        </div>
+                                    </div>
                                 </td>
                                 <td>
                                     <?php $diagnosis = SystemicDiagnoses_Diagnosis::model()->find('secondary_diagnosis_id=?', array($systemic_diagnosis->id));
@@ -572,7 +578,7 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis; ?>
                             $this->widget('application.modules.Genetics.widgets.PatientGeneticSummary', array(
                                 'patient' => $this->patient,
                             ));
-                        ?>
+                            ?>
             </div>
 
         </div><!-- left -->

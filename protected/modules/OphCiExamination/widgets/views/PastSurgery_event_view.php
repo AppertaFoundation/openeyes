@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -14,6 +15,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 $widget = $this;
 ?>
 <div class="element-data">
@@ -28,9 +30,7 @@ $widget = $this;
             <?php } else { ?>
             <table>
                 <colgroup>
-                    <col>
-                    <col class="cols-fifth">
-                    <col class="cols-2">
+                    <col class="cols-9">
                 </colgroup>
                 <tbody> <?php foreach ($operations as $operation) { ?>
                     <tr>
@@ -41,21 +41,21 @@ $widget = $this;
                             ) ? $operation['object']->operation : $operation['operation']; ?>
                         </td>
                         <td>
+                            <div class="locus-data">
+                                <div class="icons">
+                                </div>
+                                <div class="lat-date">
+                                    <?php $side = array_key_exists('side', $operation) ? $operation['side'] : (array_key_exists('object', $operation) ? $operation['object']->side : ''); ?>
+                                    <?php $this->widget('EyeLateralityWidget', array('laterality' => $side)) ?>
+                                    <span class="oe-date"> <?= array_key_exists('object', $operation) ?
+                                        $operation['object']->getDisplayDate() : Helper::convertFuzzyDate2HTML($operation['date']); ?></span>
+                                </div>
+                            </div> 
+                        </td>
+                        <td>
                             <?php if (array_key_exists('link', $operation)) { ?>
                                 <a href="<?= $operation['link'] ?>"><i class="oe-i direction-right-circle <?= $this->pro_theme ?> small pad"></i></a>
                             <?php } ?>
-                        </td>
-                        <td class="nowrap">
-                            <?php $side = array_key_exists('side', $operation) ? $operation['side']: (array_key_exists('object', $operation) ? $operation['object']->side : ''); ?>
-                            <?php $this->widget('EyeLateralityWidget', array('laterality' => $side)) ?>
-                        </td>
-                        <td>
-                            <span class="oe-date">
-                                <?= array_key_exists('object', $operation) ?
-                                    $operation['object']->getDisplayDate() : Helper::convertFuzzyDate2HTML($operation['date']); ?>
-                            </span>
-                        </td>
-                        <td>
                             <strong><?= array_key_exists('object', $operation) ? $operation['object']->getDisplayHasOperation() : ''; ?></strong>
                         </td>
                     </tr>

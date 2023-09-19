@@ -20,7 +20,7 @@ class DefaultController extends BaseEventTypeController
             ->bindValues([':user_id' => Yii::app()->user->id])
             ->queryColumn();
 
-        if(!empty($user_teams)) {
+        if (!empty($user_teams)) {
             return OphDrPGDPSD_AssignedTeam::model()->exists('team_id IN (' . implode(', ', $user_teams) . ')');
         } else {
             return false;
@@ -94,8 +94,8 @@ class DefaultController extends BaseEventTypeController
         Yii::app()->clientScript->registerScriptFile("{$asset_path}/js/module.js", CClientScript::POS_END);
         Yii::app()->assetManager->registerCssFile('components/font-awesome/css/font-awesome.css', null, 10);
         if ($action->getId() === "print") {
-            $newblue_path = 'application.assets.newblue';
-            Yii::app()->assetManager->registerCssFile('/dist/css/style_oe_print.3.css', $newblue_path, null);
+            $newblue_path = 'application.assets.nxblu';
+            Yii::app()->assetManager->registerCssFile('/dist/css/oe_print.css', $newblue_path, null);
         }
         return parent::beforeAction($action);
     }

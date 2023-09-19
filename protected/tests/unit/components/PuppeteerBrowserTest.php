@@ -71,7 +71,7 @@ class PuppeteerBrowserTest extends OEDbTestCase
      */
     public function testSavePageToImage()
     {
-        file_put_contents(Yii::app()->getRuntimePath() . DIRECTORY_SEPARATOR . 'input.html', '<html lang="en"><body>Test data</body></html>');
+        file_put_contents(Yii::app()->getRuntimePath() . DIRECTORY_SEPARATOR . 'input.html', '<html lang="en" class="theme-' . \SettingMetadata::model()->getSetting('display_theme') . '<body>Test data</body></html>');
         $html = 'file://' . Yii::app()->getRuntimePath() . DIRECTORY_SEPARATOR . 'input.html';
         $this->instance->savePageToImage(
             Yii::app()->getRuntimePath(),
@@ -105,7 +105,7 @@ class PuppeteerBrowserTest extends OEDbTestCase
         $this->instance->setPatient($this->patients('patient1'));
         $this->instance->setBarcode('');
         $this->instance->setDocRef('');
-        file_put_contents(Yii::app()->getRuntimePath() . DIRECTORY_SEPARATOR . 'input.html', '<html lang="en"><body>Test data</body></html>');
+        file_put_contents(Yii::app()->getRuntimePath() . DIRECTORY_SEPARATOR . 'input.html', '<html lang="en" class="theme-' . \SettingMetadata::model()->getSetting('display_theme') . '<body>Test data</body></html>');
         $this->instance->savePageToPDF(Yii::app()->getRuntimePath(), 'testfile', null, 'file://' . Yii::app()->getRuntimePath() . DIRECTORY_SEPARATOR . 'input.html', false, false, false);
         $this->assertFileExists(Yii::app()->getRuntimePath() . DIRECTORY_SEPARATOR . 'testfile.pdf');
         unlink(Yii::app()->getRuntimePath() . DIRECTORY_SEPARATOR . 'testfile.pdf');

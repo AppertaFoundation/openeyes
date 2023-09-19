@@ -17,7 +17,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-$logoUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue'), true) . '/dist/svg/oe-logo.svg';
+$logoUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.nxblu'), true) . '/dist/svg/oe-logo.svg';
 $settings = new SettingMetadata();
 $tech_support_provider = Yii::App()->params['tech_support_provider'] ? htmlspecialchars(Yii::App()->params['tech_support_provider']) : htmlspecialchars($settings->getSetting('tech_support_provider'));
 $tech_support_url = Yii::App()->params['tech_support_url'] ? htmlspecialchars(Yii::App()->params['tech_support_url']) : htmlspecialchars($settings->getSetting('tech_support_url'));
@@ -33,14 +33,10 @@ $training_hub_url = Yii::App()->params['training_hub_url'] ? htmlspecialchars(Yi
 <div class="oe-product-info" id="js-openeyes-info" style="display: none;">
   <h3>OpenEyes</h3>
 
-  <div class="group">
-    <h4>Theme</h4>
-
-    <p>
-      <a href="#" id="js-theme-dark" class="theme-picker" data-theme="dark" style="display: block; margin-bottom: 4px;">Dark theme (recommended)</a>
-      <a href="#" id="js-theme-light" class="theme-picker" data-theme="light">Light theme (default)</a>
-    </p>
-  </div>
+  <div class="select-oe-theme">
+    <button type="button" id="js-set-theme-light" class="light-theme">Light theme</button>
+    <button type="button" id="js-set-theme-dark" class="dark-theme">Pro theme</button>
+</div>
 
   <div class="group">
     <h4>Feedback</h4>
@@ -101,33 +97,26 @@ $training_hub_url = Yii::App()->params['training_hub_url'] ? htmlspecialchars(Yi
   $(function() {
 
     // swap the stylesheet, when the user picks a different theme,
-    $('.theme-picker').click(function() {
-      var theme = $(this).data('theme');
+    const darkBtn = document.getElementById("js-set-theme-dark");
+    const lightBtn = document.getElementById("js-set-theme-light");
 
-      var $light_theme = $('link[data-theme="light"]');
-      var $dark_theme = $('link[data-theme="dark"]');
+    /** Change the theme class on <html> */
+    const switchTheme = ( theme ) => {
+        document.documentElement.className = `theme-${theme}`;
+        <?php if (!Yii::app()->user->isGuest) : ?>
+          // Change the user's theme setting if they are logged in
+          $.ajax({
+            'type': 'GET',
+            'url': "<?= Yii::app()->createUrl('/profile/changeDisplayTheme') ?>",
+            'data': {
+              'display_theme': theme
+            }
+          });
+        <?php endif; ?>
+    };
 
-      // hide all elements: for a split second, all elements are shown without formatting (no css is used)
-      $('.open-eyes').hide();
-      // change css for current theme
-      $light_theme.prop('media', theme === 'light' ? '' : 'none');
-      $dark_theme.prop('media', theme === 'dark' ? '' : 'none');
-      // show all elements
-      setTimeout(function() {
-        $('.open-eyes').show();
-      }, 100);
-
-      <?php if (!Yii::app()->user->isGuest) : ?>
-        // Change the user's theme setting if they are logged in
-        $.ajax({
-          'type': 'GET',
-          'url': "<?= Yii::app()->createUrl('/profile/changeDisplayTheme') ?>",
-          'data': {
-            'display_theme': theme
-          }
-        });
-      <?php endif; ?>
-    });
+    darkBtn.onclick = () => switchTheme("dark");
+    lightBtn.onclick = () => switchTheme("light");
 
     $('#support-info-link').click(function(e) {
       e.preventDefault();
@@ -140,4 +129,5 @@ $training_hub_url = Yii::App()->params['training_hub_url'] ? htmlspecialchars(Yi
     document.querySelector('.js-execution-time').innerHTML = execution_time;
     document.querySelector('.js-memory-usage').innerHTML = memory_usage;
   });
+
 </script>
