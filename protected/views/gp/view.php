@@ -48,6 +48,14 @@ $to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
                     </tr>
                     <tr>
                         <td>
+                            Email:
+                        </td>
+                        <td>
+                            <?php echo isset($model->contact->email) ? CHtml::encode($model->contact->email) : 'Unknown'; ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
                             National Id:
                         </td>
                         <td>

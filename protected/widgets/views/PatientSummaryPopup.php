@@ -27,7 +27,7 @@
     $co_cvi_api = Yii::app()->moduleAPI->get('OphCoCvi');
     $patient_overview_popup_mode = isset(Yii::app()->controller->jsVars['popupMode']) ? Yii::app()->controller->jsVars['popupMode'] : SettingMetadata::model()->getSetting('patient_overview_popup_mode');
 
-    use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis; ?>
+use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis; ?>
 <!-- Show full patient Demographics -->
 <div class="oe-patient-popup patient-popup-demographics" style="display:none;">
     <?php $this->render('application.widgets.views.PatientSummaryPopupPatientIdentifierStatuses'); ?>
@@ -222,7 +222,7 @@
                         </tr>
                         <tr>
                             <td><?php echo \SettingMetadata::model()->getSetting('gp_label') ?> Email</td>
-                            <td>
+                            <td data-test="pas-contacts-gp-email">
                                 <?php
                                     // Show Email address
                                 if ($this->patient->gp && $this->patient->gp->contact) {

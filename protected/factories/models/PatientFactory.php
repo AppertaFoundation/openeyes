@@ -86,6 +86,15 @@ class PatientFactory extends ModelFactory
         });
     }
 
+    public function localPatient()
+    {
+        return $this->state(function () {
+            return [
+                'is_local' => '1',
+            ];
+        });
+    }
+
     protected function generateDefaultIdentifiersFor(Patient $patient): void
     {
         $patient->identifiers = [

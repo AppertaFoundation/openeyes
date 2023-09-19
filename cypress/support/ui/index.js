@@ -156,3 +156,15 @@ Cypress.Commands.add('assertOptionNotAvailable', (dataTest, value, inputType = '
             break;
     }
 });
+
+Cypress.Commands.add('generateRandomString', (stringLength) => {
+    let randomString = '';
+    let randomAscii;
+
+    for (let index = 0; index < stringLength; index++) {
+        randomAscii = Math.floor((Math.random() * 25) + 97);
+        randomString += String.fromCharCode(randomAscii);
+    }
+
+    return randomString;
+});

@@ -173,6 +173,7 @@ class GpController extends BaseController
                             'firstName' => $contact->first_name,
                             'lastName' => $contact->last_name,
                             'primaryPhone' => $contact->primary_phone,
+                            'email' => $contact->email,
                             'labelId' => isset($contact->label) ? $contact->label->id : '',
                             'providerNo' => isset($contactPracticeAssociate->provider_no) ? $contactPracticeAssociate->provider_no : '',
                         ));

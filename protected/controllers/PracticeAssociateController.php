@@ -63,6 +63,7 @@ class PracticeAssociateController extends BaseController
                 $gp = new Gp();
                 $contact = new Contact('manage_gp');
                 $contact->attributes = $contactFormData;
+                $contact->created_institution_id = \Yii::app()->session['selected_institution_id'];
 
                 // This variable stores the gp details that were entered in the pop-up (in first step)
                 $gpDetails = json_decode($_POST['gp_data_retrieved']);

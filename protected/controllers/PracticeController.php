@@ -189,6 +189,8 @@ class PracticeController extends BaseController
                 $contact->last_name = $_POST['Contact']['contact_last_name'];
                 $contact->primary_phone = $_POST['Contact']['contact_primary_phone'];
                 $contact->contact_label_id = $_POST['Contact']['contact_label_id'];
+                $contact->email = $_POST['Contact']['email'];
+                $contact->created_institution_id = \Yii::app()->session['selected_institution_id'];
 
                 // If there is no validation error, check for the duplicate practice based on practice name, phone, address1, city, postcode and country.
                 $dataProvider = Yii::app()->db->createCommand()

@@ -340,7 +340,7 @@ foreach ($ethnic_list as $key => $item) {
                                         echo $practice_contact_associate->gp->getCorrespondenceName() . $providerNo . $role . $practiceNameAddress;
                                     }
                                 } else {
-                                    echo $patient->gp_id ? $patient->gp->CorrespondenceName : '';
+                                    echo isset($patient->gp) ? $patient->gp->CorrespondenceName : '';
                                 }
                                 ?>
                             </span>
@@ -350,7 +350,7 @@ foreach ($ethnic_list as $key => $item) {
                     <?= CHtml::hiddenField('Patient[gp_id]', $patient->gp_id, array('class' => 'hidden_id')) ?>
                 </div>
                 <?php if (Yii::app()->user->checkAccess('Create GP') && (SettingMetadata::model()->getSetting('default_country') === 'Australia')) { ?>
-                    <a id="js-add-contact-btn1" href="#">Add Referring Practitioner</a>
+                    <a id="js-add-contact-btn1" href="#" data-test="add-referring-practitioner-australia">Add Referring Practitioner</a>
                 <?php } ?>
                 <div id="no_gp_result" style="display: none;">
                     <div>No result</div>
@@ -508,7 +508,7 @@ foreach ($ethnic_list as $key => $item) {
         <?= CHtml::link('Cancel', ( $patient->isNewRecord ? Yii::app()-> createURL('site/index') : ( isset($prevUrl) ? Yii::app()->createUrl($prevUrl) : null ) ), array('class' => 'button blue hint')); ?>
         <?= CHtml::submitButton(
             $patient->isNewRecord ? 'Create new patient' : 'Save patient',
-            array('class' => 'button green hint')
+            array('class' => 'button green hint' , 'data-test' => 'save-patient')
         ); ?>
     </div>
   </div>

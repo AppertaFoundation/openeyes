@@ -23,19 +23,19 @@
 class PatientSummaryPopup extends BaseCWidget
 {
     public $patient;
+    public $cviStatus;
+    public $referredTo;
 
     public static $LIST_SEPARATOR = '<br/>';
 
     protected $warnings;
     protected $ophthalmicDiagnoses;
     protected $systemicDiagnoses;
-    protected $cviStatus;
     protected $medications;
     protected $allergies;
     protected $operations;
     protected $family_history;
     protected $social_history;
-    protected $referredTo;
 
     public function init()
     {

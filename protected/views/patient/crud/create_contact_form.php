@@ -12,18 +12,18 @@
             ));
             ?>
             <?php echo $extra_gp_form->errorSummary($extra_gp_contact); ?>
-            
+
                 <div class="alert-box info" id="extra-gp-message" style="display:none;">
                     <p></p>
                 </div>
                 <div class="alert-box warning" id="extra_gp_practitioner-alert-box" style="display:none;">
-                    <p id="extra_gp_errors"></p>
+                    <p id="extra_gp_errors" data-test="gp-create-form-errors"></p>
                 </div>
                 <table>
                     <tbody>
                     <tr>
                         <th>Title:</th>
-                        <td>
+                        <td >
                             <?php echo $extra_gp_form->textField($extra_gp_contact, 'title', ['size' => 60, 'maxlength' => 20, 'class' => 'cols-full']); ?>
                             <?php echo $extra_gp_form->error($extra_gp_contact, 'title'); ?>
                         </td>
@@ -32,7 +32,7 @@
                         <th>
                             <?php echo $extra_gp_form->labelEx($extra_gp_contact, 'first_name'); ?>
                         </th>
-                        <td>
+                        <td data-test="gp-form-first-name">
                             <?php $this->widget('application.widgets.AutoCompleteSearch', ['field_name' => 'Contact[first_name]', 'hide_no_result_msg' => true]); ?>
                             <?php echo $extra_gp_form->error($extra_gp_contact, 'first_name'); ?>
                         </td>
@@ -41,7 +41,7 @@
                         <th>
                             <?php echo $extra_gp_form->labelEx($extra_gp_contact, 'last_name'); ?>
                         </th>
-                        <td>
+                        <td data-test="gp-form-last-name">
                             <?php $this->widget('application.widgets.AutoCompleteSearch', ['field_name' => 'Contact[last_name]', 'hide_no_result_msg' => true]); ?>
                             <?php echo $extra_gp_form->error($extra_gp_contact, 'last_name'); ?>
                         </td>
@@ -73,6 +73,16 @@
 
                             <?php $this->widget('application.widgets.AutoCompleteSearch', ['field_name' => 'extra_gp_autocomplete_contact_label_id']); ?>
 
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <label><?= $extra_gp_contact->getAttributeLabel('email'); ?></label>
+                        </td>
+                        <td data-test="gp-form-email">
+                            <?= $extra_gp_form->textField($extra_gp_contact, 'email', ['size' => 60, 'autocomplete' => 'off', 'class' => 'cols-full']); ?>
+
+                            <?= $extra_gp_form->error($extra_gp_contact, 'email'); ?>
                         </td>
                     </tr>
                     <tr id="extra_gp_selected_contact_label_wrapper" style="display: <?php echo $extra_gp_contact->label ? '' : 'none' ?>">
@@ -115,6 +125,7 @@
                                             $(".js-contact-last-name").val(response.lastName);
                                             $(".js-contact-primary-phone").val(response.primaryPhone);
                                             $(".js-contact-label-id").val(response.labelId);
+                                            $(".js-contact-email").val(response.email);
                                             $(".js-contact-practice-provider-no").val(response.providerNo);
                                             $("#extra-gp-form")[0].reset();
                                             $("#extra_gp_errors").text("");
@@ -140,6 +151,7 @@
                                             gp.lastName = response.lastName;
                                             gp.phoneno =response.primaryPhone;
                                             gp.role = response.labelId;
+                                            gp.email = response.email;
                                             // Saving the data in the hidden field
                                             $(".gp_data_retrieved").val(gp.toString());
                                         } else {
@@ -152,7 +164,8 @@
                                         $("#extra_gp_practitioner-alert-box").css("display","");
                                     }',
                                 ),
-                                array('class' => 'button hint green')
+                                array('class' => 'button hint green',
+                                'data-test' => 'gp-adding-form-button-next')
                             );
                             ?>
                         </td>
@@ -165,7 +178,7 @@
 </div>
 
 
-<div class="oe-popup-wrap" id="extra_practice_adding_existing_form" style="display: none; z-index:100">
+<div class="oe-popup-wrap" id="extra_practice_adding_existing_form" data-test="extra-practice-form" style="display: none; z-index:100">
     <div class="oe-popup">
         <div class="title">
             Add Existing Practice
@@ -192,6 +205,7 @@
                 <?php echo CHtml::hiddenField('Contact[last_name]', '', array('class' => 'hidden_id js-contact-last-name')); ?>
                 <?php echo CHtml::hiddenField('Contact[primary_phone]', '', array('class' => 'hidden_id js-contact-primary-phone')); ?>
                 <?php echo CHtml::hiddenField('Contact[contact_label_id]', '', array('class' => 'hidden_id js-contact-label-id')); ?>
+                <?php echo CHtml::hiddenField('Contact[email]', '', array('class' => 'hidden_id js-contact-email')); ?>
                 <?php echo CHtml::hiddenField('ContactPracticeAssociate[provider_no]', '', array('class' => 'hidden_id js-contact-practice-provider-no')); ?>
                 <tr>
                     <td>
@@ -211,7 +225,7 @@
                         <div id="no_practice_associate_result" style="display: none;">
                             <div>No result</div>
                         </div>
-                        <a id="js-add-extra-practice-btn" href="#">Add Practice</a>
+                        <a id="js-add-extra-practice-btn" data-test="add-practice" href="#">Add Practice</a>
                     </td>
                 </tr>
                 <tr>
@@ -247,6 +261,7 @@
                                         $(".js-contact-last-name").val("");
                                         $(".js-contact-primary-phone").val("");
                                         $(".js-contact-label-id").val("");
+                                        $(".js-contact-email").val("");
                                         $(".js-contact-practice-provider-no").val("");
 
                                         // Cleaning the contact label id after the contact/gp has been added successfully,
@@ -268,7 +283,7 @@
                                     }
                                 }',
                              ],
-                            array('class' => 'button hint green')
+                            array('class' => 'button hint green', 'data-test' => 'add-practice-form-add')
                         ); ?>
                     </td>
                 </tr>
@@ -311,13 +326,14 @@ $extra_practice_address_type_ids = CHtml::listData(AddressType::model()->findAll
                 <?php echo CHtml::hiddenField('Contact[contact_last_name]', '', array('class' => 'hidden_id js-contact-last-name')); ?>
                 <?php echo CHtml::hiddenField('Contact[contact_primary_phone]', '', array('class' => 'hidden_id js-contact-primary-phone')); ?>
                 <?php echo CHtml::hiddenField('Contact[contact_label_id]', '', array('class' => 'hidden_id js-contact-label-id')); ?>
+                <?php echo CHtml::hiddenField('Contact[email]', '', array('class' => 'hidden_id js-contact-email')); ?>
                 <?php echo CHtml::hiddenField('ContactPracticeAssociate[provider_no]', '', array('class' => 'hidden_id js-contact-practice-provider-no')); ?>
                 <tbody>
                 <tr>
                     <td>
                         <?php echo $extra_practice_form->labelEx($extra_practice_contact, 'first_name'); ?>
                     </td>
-                    <td>
+                    <td data-test="add-practice-name">
                         <?php echo $extra_practice_form->textArea($extra_practice_contact, 'first_name', array('maxlength' => 300, 'cols' => 40, 'class' => 'cols-10')); ?>
                         <?php echo $extra_practice_form->error($extra_practice_contact, 'first_name'); ?>
                     </td>
@@ -332,11 +348,11 @@ $extra_practice_address_type_ids = CHtml::listData(AddressType::model()->findAll
                     </td>
                 </tr>
                 <tr>
-                    <td>
+                    <td >
                         <?php echo $extra_practice_form->labelEx($extra_practice, 'phone'); ?>
                         <?php echo $extra_practice_form->error($extra_practice, 'phone'); ?>
                     </td>
-                    <td>
+                    <td data-test="add-practice-phone">
                         <?php echo $extra_practice_form->telField($extra_practice, 'phone', array('size' => 15, 'maxlength' => 20, 'class' => 'cols-10')); ?>
                     </td>
                 </tr>
@@ -373,6 +389,7 @@ $extra_practice_address_type_ids = CHtml::listData(AddressType::model()->findAll
                                         $(".js-contact-last-name").val("");
                                         $(".js-contact-primary-phone").val("");
                                         $(".js-contact-label-id").val("");
+                                        $(".js-contact-email").val("");
                                         $(".js-contact-practice-provider-no").val("");
 
                                         // Cleaning the contact label id after the contact/gp has been added successfully,
@@ -394,7 +411,7 @@ $extra_practice_address_type_ids = CHtml::listData(AddressType::model()->findAll
                                     }
                                 }',
                              ],
-                            array('class' => 'button hint green')
+                            array('class' => 'button hint green', 'data-test' => 'add-new-practice')
                         ); ?>
                     </td>
                 </tr>
