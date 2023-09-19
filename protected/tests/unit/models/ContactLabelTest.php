@@ -21,7 +21,6 @@ use ModelTestCase;
 use WithTransactions;
 use WithFaker;
 use MocksSession;
-
 use Institution;
 use Site;
 use ContactLabel;
@@ -66,6 +65,21 @@ class ContactLabelTest extends ModelTestCase
         }
 
         $this->assertModelArraysMatch($expected_results, $data);
+    }
+
+    /**
+     * @covers ContactLabel
+     */
+    public function testAttributeLabels()
+    {
+        $expected = array(
+            'id' => 'ID',
+            'name' => 'Name',
+            'letter_template_only' => 'Letter Template Only',
+            'is_private' => 'Is Private',
+            'max_number_per_patient' => 'Max Number Per Patient'
+        );
+        $this->assertEquals($expected, $this->getModel()->attributeLabels());
     }
 
     /**
