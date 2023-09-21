@@ -253,8 +253,13 @@
             return;
         }
 
+        const onbeforeunload = window.onbeforeunload;
         window.onbeforeunload = null;
         this.confirm_redirect = window.confirm("Changes you made may not be saved. Are you sure that you wish to leave the page?");
+
+        if (!this.confirm_redirect) {
+            window.onbeforeunload = onbeforeunload;
+        }
     }
 
     exports.HotList = HotList;
