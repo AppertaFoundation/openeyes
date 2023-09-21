@@ -457,7 +457,7 @@ class Medication extends BaseActiveRecordVersioned
         return $this->listByUsageCode("COMMON_OPH", $subspecialty_id, $raw, $site_id, $prescribable_filter);
     }
 
-    public function listCommonSystemicMedications($raw = false, $subspecialty_id = null, $site_id = null, $prescribable_filter = false)
+    public function listCommonSystemicMedications($subspecialty_id = null, $raw = false, $site_id = null, $prescribable_filter = false)
     {
         return $this->listByUsageCode("COMMON_SYSTEMIC", $subspecialty_id, $raw, $site_id, $prescribable_filter);
     }

@@ -258,7 +258,8 @@
         let $searchInput = $('<input />', {
             class: 'search cols-full js-search-autocomplete',
             placeholder: 'search',
-            type: 'text'
+            type: 'text',
+            'data-test': 'adder-search-input'
         });
 
         this.searchingSpinnerWrapper = $('<div />', {

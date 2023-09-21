@@ -1,5 +1,7 @@
 <?php
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "medication_set_item".
  *
@@ -34,6 +36,7 @@
  */
 class MedicationSetItem extends BaseActiveRecordVersioned
 {
+    use HasFactory;
 
     public $auto_update_relations = true;
     public $auto_validate_relations = true;
