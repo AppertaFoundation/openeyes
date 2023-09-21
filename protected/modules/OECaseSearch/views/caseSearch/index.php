@@ -34,7 +34,7 @@ $user_searches = array_map(
 </div>
 <div class="oe-full-content subgrid wide-side-panel oe-query-search">
     <nav class="oe-full-side-panel">
-        <button id="load-saved-search" class="cols-full">Previous searches</button>
+        <button id="load-saved-search" class="cols-full" data-test="load-saved-search">Previous searches</button>
         <h3>Search criteria</h3>
         <p id="criteria-initial" <?= isset($params) ? 'style="display: none;"' : null ?>>Select criteria for search...</p>
         <?php $form = $this->beginWidget('CActiveForm', array('id' => 'search-form')); ?>
@@ -55,7 +55,7 @@ $user_searches = array_map(
         </table>
         <div class="flex-layout flex-right row">
             <button id="add-to-advanced-search-filters" class="button hint green js-add-select-btn"
-                    data-popup="add-to-search-queries">
+                    data-popup="add-to-search-queries" data-test="add-to-search-queries">
                 Add criteria
             </button>
         </div>
@@ -73,7 +73,7 @@ $user_searches = array_map(
         <hr class="divider"/>
         <div class="button-stack">
             <?= CHtml::htmlButton('Search', array('class' => 'cols-full green hint js-search-btn', 'type' => 'submit')) ?>
-            <button class="js-save-search-dialog-btn cols-full">Save search</button>
+            <button class="js-save-search-dialog-btn cols-full" data-test="save-search">Save search</button>
             <?= CHtml::htmlButton('Clear search', array('id' => 'clear-search', 'class' => 'cols-full')) ?>
             <?= (!$patients || $patients->totalItemCount === 0) ? null : CHtml::htmlButton(
                 'Download CSV BASIC',
@@ -131,14 +131,15 @@ $user_searches = array_map(
         </div>
         <div class="show-query">
             <h3>Save search as</h3>
-            <?= CHtml::textField('search_name', $search_label, array('placeholder' => 'Search name description', 'class' => 'cols-full', 'maxlength' => 50)) ?>
+            <?= CHtml::textField('search_name', $search_label, array('placeholder' => 'Search name description', 'class' => 'cols-full', 'maxlength' => 50, 'data-test' => 'search-name')) ?>
             <div class="row align-right">
                 <?= CHtml::htmlButton(
                     'Save search',
                     array(
                         'class' => 'js-save-search-btn hint green',
                         'type' => 'submit',
-                        'formaction' => $this->createUrl('caseSearch/saveSearch')
+                        'formaction' => $this->createUrl('caseSearch/saveSearch'),
+                        'data-test' => 'save-search-btn'
                     )
                 ) ?>
             </div>
@@ -149,7 +150,7 @@ $user_searches = array_map(
 <script type="text/html" id="load-saved-search-template">
     <div class="flex-layout flex-top">
         <div class="all-searches">
-            <table class="searches">
+            <table class="searches" data-test="searches">
                 <tbody>
                 {{#allSearches}}
                 <tr>
