@@ -38,6 +38,15 @@ $training_hub_url = Yii::App()->params['training_hub_url'] ? htmlspecialchars(Yi
     <button type="button" id="js-set-theme-dark" class="dark-theme">Pro theme</button>
 </div>
 
+<div class="group">
+			<h4>Zoom mode (Keys for Win <small class="fade">or</small> Mac)</h4>
+			<p>
+				<b class="fade">Larger</b>: Ctrl <small class="fade">/</small> ⌘ <small class="fade">and</small> <b>+</b>
+				<br><b class="fade">Smaller</b>: Ctrl <small class="fade">/</small> ⌘ <small class="fade">and</small> <b>-</b>
+				<br><b class="fade">100% reset</b>: Ctrl <small class="fade">/</small> ⌘ <small class="fade">and</small> <b>0</b>
+			</p>
+		</div>
+
   <div class="group">
     <h4>Feedback</h4>
     <p>Send us <a href="<?= Yii::app()->params['feedback_link'] ?>">feedback or suggestions.</a></p>
