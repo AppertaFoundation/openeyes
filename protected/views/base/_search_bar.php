@@ -70,7 +70,7 @@ if ($context == "sidebar") { ?>
         <div class="find-by">
             <a href="#search-help" data-test="home-search-help" onclick="displaySearchPatterns()">Search by ID, or Name<?= $dob_mandatory ? ' and Date of Birth' : '' ?> (click for options)</a>
         </div>
-      <i class="spinner" style="display: none;" title="Loading..."></i>
+      <i class="spinner full-overlay" style="display: none;"></i>
     </div>
 </div>
     <?php
