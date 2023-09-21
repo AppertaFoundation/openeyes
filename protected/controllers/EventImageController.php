@@ -44,14 +44,19 @@ class EventImageController extends BaseController
         );
     }
 
-    public function actionGetImageUrl($event_id, $return_value = false)
+    public function actionGetImageUrl($event_id, $return_value = false, $eye_id = null)
     {
-        $created_image_status_id = EventImageStatus::model()->find('name = "CREATED"')->id;
-        $event_image = EventImage::model()->find(
-            'event_id = ? AND status_id = ?',
-            array($event_id, $created_image_status_id)
-        );
-        $event = Event::model()->findByPk($event_id);
+        $created_image_status_id = EventImageStatus::model()->find('name=?', [EventImageStatus::STATUS_CREATED])->id;
+        $condition = 'event_id = ? AND status_id = ? AND attachment_data_id IS NULL';
+        $params = [$event_id, $created_image_status_id];
+        if ($eye_id) {
+            $condition .= " AND eye_id=?";
+            $params[] = $eye_id;
+        }
+        $event_image = EventImage::model()->find($condition, $params);
+
+        $event = $event_image ? $event_image->event : Event::model()->findByPk($event_id);
+
         // If the event image doesn't already exist
         // OR event is deleted
         // OR event is modified after the image is generated
@@ -64,12 +69,25 @@ class EventImageController extends BaseController
         }
 
         // Check again to see if it exists (an error might have occurred during generation)
-        if (EventImage::model()->exists(
-            'event_id = ? AND status_id = ?',
-            array($event_id, $created_image_status_id)
-        )) {
-            // THen return that url
-            $url = $this->createUrl('view', array('id' => $event_id, 'modified' => !empty($event->last_modified_date) ? strtotime($event->last_modified_date) : ''));
+        $image_exists = EventImage::model()->exists($condition, $params);
+        if ($image_exists) {
+            $url_params = [
+                'id' => $event_id,
+                'modified' => !empty($event->last_modified_date) ? strtotime($event->last_modified_date) : '',
+            ];
+
+            $page = \Yii::app()->request->getParam('page', null);
+            if (isset($page)) {
+                $url_params['page'] = $page;
+            }
+
+            if ($eye_id) {
+                $url_params['eye_id'] = $eye_id;
+            }
+
+            // Then return that url
+            $url = $this->createUrl('view', $url_params);
+
             if ($return_value) {
                 return $url;
             } else {
@@ -80,63 +98,26 @@ class EventImageController extends BaseController
         return '';
     }
 
-    /**
-     * Get all the event image urls that are current and the remaining event ids
-     *
-     * @return string {"done_urs":[], "remaining_event_ids":[]}
-     * @uses $_GET['event_ids']
-     *
-     */
-    public function actionGetImageUrlsBulk()
-    {
-        $event_ids = CJSON::decode($_GET['event_ids']);
-        $remaining_event_ids = null;
-        $generated_image_event_ids = array();
-        $created_image_status_id = EventImageStatus::model()->find('name = "CREATED"')->id;
-
-        $criteria = new CDbCriteria();
-        $criteria->select = 't.event_id, t.last_modified_date';
-        $criteria->compare('status_id', $created_image_status_id);
-        $criteria->addInCondition('event_id', $event_ids);
-        $criteria->addCondition('e.deleted = 0');
-        $criteria->addCondition('(t.page = 0 OR t.page IS NULL)');
-        $criteria->join = 'join event e on t.event_id = e.id AND t.last_modified_date >= e.last_modified_date';
-        $criteria->order = 'event_date DESC';
-
-        /**
-         * @var $event_images CActiveRecord
-         */
-        $event_images = EventImage::model()->findAll($criteria);
-        $generated_image_urls = [];
-
-        if ($event_images) {
-            foreach ($event_images as $event_image) {
-                $generated_image_event_ids[] = array('id' => $event_image->event_id, 'modified' => $event_image->last_modified_date);
-            }
-
-            // Suppress error on when there are no generated image event ids
-            $remaining_event_ids = isset($generated_image_event_ids[0]) ? array_diff($event_ids, $generated_image_event_ids[0]) : $event_ids;
-
-            foreach ($generated_image_event_ids as $image) {
-                $generated_image_urls[$image['id']] = $this->createUrl('view', array('id' => $image['id'], 'modified' => strtotime($image['modified'])));
-            }
-        }
-        echo \CJSON::encode(
-            array(
-                'generated_image_urls' => $generated_image_urls,
-                'remaining_event_ids' => $remaining_event_ids
-            )
-        );
-    }
-
     public function actionGetImageInfo($event_id)
     {
         try {
-            $url = $this->actionGetImageUrl($event_id, true);
-            $page_count = count(EventImage::model()->findAll('event_id = ?', array($event_id)));
-            if ($page_count != 0) {
-                $image_info = ['page_count' => $page_count, 'url' => $url];
+            $is_bilateral_document = EventImage::model()->count('event_id = ? AND eye_id is not null AND attachment_data_id IS NULL', [$event_id]) > 0;
+            if ($is_bilateral_document) {
+                foreach (["left" => Eye::LEFT, "right" => Eye::RIGHT] as $side => $eye_id) {
+                    $url = $this->actionGetImageUrl($event_id, true, $eye_id);
+                    $page_count = EventImage::model()->count('event_id=? AND eye_id=? AND attachment_data_id IS NULL', [$event_id, $eye_id]);
+                    if ($page_count > 0) {
+                        $image_info[$side] = ['page_count' => $page_count, 'url' => $url];
+                    }
+                }
                 $this->renderJSON($image_info);
+            } else {
+                $url = $this->actionGetImageUrl($event_id, true);
+                $page_count = EventImage::model()->count('event_id = ? AND attachment_data_id IS NULL', [$event_id]);
+                if ($page_count != 0) {
+                    $image_info = ['page_count' => $page_count, 'url' => $url];
+                    $this->renderJSON($image_info);
+                }
             }
         } catch (Exception $exception) {
             $this->renderJSON(['error' => $exception->getMessage()]);
@@ -177,9 +158,15 @@ class EventImageController extends BaseController
         $criteria = new CDbCriteria();
         $criteria->addCondition('event_id = :event_id');
         $criteria->params[':event_id'] = $id;
-        if ($page !== null) {
+        if (!$page) {
+            $page = \Yii::app()->request->getParam('page', null);
+        }
+        if (is_numeric($page)) {
             $criteria->addCondition('page = :page');
             $criteria->params[':page'] = $page;
+        }
+        if (!$eye) {
+            $eye = \Yii::app()->request->getParam('eye_id', null);
         }
         if ($eye !== null) {
             $criteria->addCondition('eye_id = :eye');
@@ -192,7 +179,7 @@ class EventImageController extends BaseController
         } else {
             $criteria->addCondition('document_number IS NULL');
         }
-        $criteria->order = 'eye_id = ' . Eye::RIGHT . ' DESC';
+        $criteria->order = 'eye_id DESC';
 
         $model = EventImage::model()->find($criteria);
         if (isset($model)) {

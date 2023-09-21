@@ -91,4 +91,8 @@ ready(() => {
         }
     });
 
+    OpenEyes.UI.DOM.addEventListener(document, 'click', '.js-consent-form', function () {
+        const $spinner = document.querySelector('.spinner');
+        $spinner.style.display = "block";
+    });
 });

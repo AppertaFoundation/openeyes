@@ -1,2 +1,2 @@
 # Every 24 hours, clear all drafts that are more than 24 hours old
-0 0 * * * bash $WROOT/protected/scripts/cronrunner.sh '/usr/bin/php $WROOT/protected/yiic.php clearexpireddrafts'
+0 0 * * * bash $WROOT/protected/scripts/cronrunner.sh '/usr/bin/php $WROOT/protected/yiic.php clearexpireddraftsaves'

@@ -246,18 +246,18 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
             $condition .= " AND t_p.treatment_type_id = :p_t_treatment_type_id_$this->id";
         }
         if ($this->operation === 'IN') {
-            $query = "SELECT p.id 
-                        FROM patient p 
-                        $joinCondition trial_patient t_p 
-                          ON t_p.patient_id = p.id 
+            $query = "SELECT p.id
+                        FROM patient p
+                        $joinCondition trial_patient t_p
+                          ON t_p.patient_id = p.id
                         $joinCondition trial t
                           ON t.id = t_p.trial_id
                         WHERE $condition";
         } else {
-                $query = "SELECT p.id from patient p WHERE p.id NOT IN (SELECT p.id 
-                            FROM patient p 
-                            $joinCondition trial_patient t_p 
-                              ON t_p.patient_id = p.id 
+                $query = "SELECT p.id from patient p WHERE p.id NOT IN (SELECT p.id
+                            FROM patient p
+                            $joinCondition trial_patient t_p
+                              ON t_p.patient_id = p.id
                             $joinCondition trial t
                               ON t.id = t_p.trial_id
                             WHERE $condition)";
@@ -332,8 +332,8 @@ class PreviousTrialParameter extends CaseSearchParameter implements DBProviderIn
         return array_merge(
             parent::saveSearch(),
             array(
-                'interventionTrial' => $this->interventionTrial,
-                'nonInterventionTrial' => $this->nonInterventionTrial,
+                'interventionTrial' => $this->interventionTrial ?? '0',
+                'nonInterventionTrial' => $this->nonInterventionTrial ?? '0',
                 'trialTypeId' => $this->trialTypeId,
                 'status' => $this->status,
                 'treatmentTypeId' => $this->treatmentTypeId,

@@ -64,19 +64,18 @@ class AdminController extends \ModuleAdminController
     {
         $disorder = new OphCoCvi_ClinicalInfo_Disorder();
 
+        // avoid to select the first option - it's value is 0
+        $disorder->patient_type = null;
+
         if (!empty($_POST)) {
             $disorder->attributes = $_POST['OEModule_OphCoCvi_models_OphCoCvi_ClinicalInfo_Disorder'];
-            if ($event_type_version) {
-                $disorder->event_type_version = $event_type_version;
-            } else {
-                $maxVersion = OphCoCvi_ClinicalInfo_Disorder::model()->findBySql('SELECT event_type_version FROM ophcocvi_clinicinfo_disorder_section ORDER BY event_type_version DESC LIMIT 1');
-                $disorder->event_type_version = $maxVersion->event_type_version;
-            }
+
             if ($patient_type != '') {
                 $disorder->patient_type = $patient_type;
             }
-            $maxDisplayOrder = OphCoCvi_ClinicalInfo_Disorder::model()->findBySql('SELECT display_order FROM ophcocvi_clinicinfo_disorder_section ORDER BY display_order DESC LIMIT 1');
-            $disorder->display_order = $maxDisplayOrder->display_order+1;
+
+            $max_display_order = OphCoCvi_ClinicalInfo_Disorder::model()->findBySql('SELECT display_order FROM ophcocvi_clinicinfo_disorder_section ORDER BY display_order DESC LIMIT 1');
+            $disorder->display_order = $max_display_order->display_order + 1;
 
             if (!$disorder->validate()) {
                 $errors = $disorder->getErrors();
@@ -95,37 +94,49 @@ class AdminController extends \ModuleAdminController
         }
 
         $this->render('/default/edit_clinical_disorder', array(
-            'disorder' => $disorder,
+            'clinical_info_disorder' => $disorder,
             'errors' => @$errors,
+            'patient_types' => [
+                OphCoCvi_ClinicalInfo_Disorder::PATIENT_TYPE_ADULT => 'Diagnosis for patients 18 years of age or over',
+                OphCoCvi_ClinicalInfo_Disorder::PATIENT_TYPE_CHILD => 'Diagnosis for patients under the age of 18',
+            ],
+            'sections' => OphCoCvi_ClinicalInfo_Disorder_Section::model()->active()->findAll(),
         ));
     }
 
     public function actionEditClinicalDisorder($id)
     {
-
-        if (!$disorder = OphCoCvi_ClinicalInfo_Disorder::model()->findByPk($id)) {
+        if (!$clinical_info_disorder = OphCoCvi_ClinicalInfo_Disorder::model()->findByPk($id)) {
             throw new Exception("Section not found: $id");
         }
 
         if (!empty($_POST)) {
-            $disorder->attributes = $_POST['OEModule_OphCoCvi_models_OphCoCvi_ClinicalInfo_Disorder'];
-            if (!$disorder->validate()) {
-                $errors = $disorder->getErrors();
+            $clinical_info_disorder->attributes = $_POST['OEModule_OphCoCvi_models_OphCoCvi_ClinicalInfo_Disorder'];
+
+            if (!$clinical_info_disorder->validate()) {
+                $errors = $clinical_info_disorder->getErrors();
             } else {
-                if (!$disorder->save()) {
-                    throw new Exception('Unable to save section: ' . print_r($disorder->getErrors(), true));
+                if (!$clinical_info_disorder->save()) {
+                    throw new Exception('Unable to save section: ' . print_r($clinical_info_disorder->getErrors(), true));
                 }
 
-                Audit::add('admin-OphCoCvi_ClinicalInfo_Disorder', 'edit', $disorder->id);
-                $this->redirect('/OphCoCvi/admin/clinicalDisorders/' . ceil($disorder->id / $this->items_per_page) . '?search[patient_type]='.$disorder->patient_type);
+                Audit::add('admin-OphCoCvi_ClinicalInfo_Disorder', 'edit', $clinical_info_disorder->id);
+                $this->redirect('/OphCoCvi/admin/clinicalDisorders/' . ceil($clinical_info_disorder->id / $this->items_per_page) . '?search[patient_type]='.$clinical_info_disorder->patient_type);
             }
         } else {
             Audit::add('admin-OphCoCvi_ClinicalInfo_Disorder', 'view', $id);
-        }
+        };
 
         $this->render('/default/edit_clinical_disorder', array(
-            'disorder' => $disorder,
+            'clinical_info_disorder' => $clinical_info_disorder,
             'errors' => @$errors,
+            'patient_types' => [
+                OphCoCvi_ClinicalInfo_Disorder::PATIENT_TYPE_ADULT => 'Diagnosis for patients 18 years of age or over',
+                OphCoCvi_ClinicalInfo_Disorder::PATIENT_TYPE_CHILD => 'Diagnosis for patients under the age of 18',
+            ],
+            'sections' => OphCoCvi_ClinicalInfo_Disorder_Section::model()
+                ->active()->findAll(),
+
         ));
     }
 
@@ -134,15 +145,12 @@ class AdminController extends \ModuleAdminController
      */
     public function actionCilinicalDisorderAutocomplete($term)
     {
-        $search = "%{$term}%";
-        $where = '(term like :search or id like :search)';
-        $where .= ' and active = 1';
         $disorders = \Yii::app()->db->createCommand()
             ->select('id, term AS value, term AS label')
             ->from('disorder')
-            ->where($where, array(
-                ':search' => $search,
-            ))
+            ->where('((LOWER(term) LIKE LOWER(:search) OR id LIKE :search) AND active = 1)', [
+                ':search' => "%{$term}%",
+            ])
             ->order('term')
             ->queryAll();
 

@@ -15,54 +15,71 @@
 
 namespace OE\factories\models;
 
-use Medication;
-use MedicationAttributeAssignment;
-use MedicationAttributeOption;
 use OE\factories\ModelFactory;
 
-class MedicationFactory extends ModelFactory
+use MedicationSet;
+
+class MedicationSetFactory extends ModelFactory
 {
     public function definition(): array
     {
         return [
-            'source_type' => $this->faker->randomElement([Medication::SOURCE_TYPE_DMD, Medication::SOURCE_TYPE_LOCAL]),
-            'preferred_term' => $this->faker->words(2, true),
-            // prefixed with 'F' to prevent collision with existing code numerics
-            'preferred_code' => $this->faker->regexify('F\d{5,9}')
+            'name' => $this->faker->word(3)
         ];
     }
 
-    public function local(): self
+    /**
+     * @param string $name
+     * @return MedicationSetFactory
+     */
+    public function name(string $name): self
     {
         return $this->state([
-            'source_type' => Medication::SOURCE_TYPE_LOCAL
+            'name' => $name
         ]);
     }
 
-    public function dmd(): self
+    /**
+     * @param MedicationSet|MedicationSetFactory|string|int|null $antecedent
+     * @return MedicationSetFactory
+     */
+    public function forAntecedent($antecedent = null): self
     {
+        $antecedent ??= MedicationSet::factory();
+
         return $this->state([
-            'source_type' => Medication::SOURCE_TYPE_DMD
+            'antecedent_medication_set_id' => $antecedent
         ]);
     }
 
-
-    public function preservativeFree(): self
-    {
-        return $this->afterCreating(function (Medication $medication) {
-            MedicationAttributeAssignment::factory()->create([
-                'medication_id' => $medication->id,
-                'medication_attribute_option_id' => MedicationAttributeOption::factory()->forAttribute(Medication::ATTR_PRESERVATIVE_FREE)
-            ]);
-            // ensure relation will be loaded in any use of the generated model
-            $medication->refresh();
-        });
-    }
-
-    public function prescribable(): self
+    /**
+     * @param Date|DateTime|string $date
+     * @return MedicationSetFactory
+     */
+    public function deletedAt($date): self
     {
         return $this->state([
-            'is_prescribable' => true
+            'deleted_date' => $date
+        ]);
+    }
+
+    /**
+     * @return MedicationSetFactory
+     */
+    public function hidden(): self
+    {
+        return $this->state([
+            'hidden' => true
+        ]);
+    }
+
+    /**
+     * @return MedicationSetFactory
+     */
+    public function automatic(): self
+    {
+        return $this->state([
+            'automatic' => true
         ]);
     }
 }

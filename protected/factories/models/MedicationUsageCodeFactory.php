@@ -15,54 +15,61 @@
 
 namespace OE\factories\models;
 
-use Medication;
-use MedicationAttributeAssignment;
-use MedicationAttributeOption;
 use OE\factories\ModelFactory;
 
-class MedicationFactory extends ModelFactory
+use MedicationSet;
+use Site;
+use Subspecialty;
+
+class MedicationUsageCodeFactory extends ModelFactory
 {
     public function definition(): array
     {
         return [
-            'source_type' => $this->faker->randomElement([Medication::SOURCE_TYPE_DMD, Medication::SOURCE_TYPE_LOCAL]),
-            'preferred_term' => $this->faker->words(2, true),
-            // prefixed with 'F' to prevent collision with existing code numerics
-            'preferred_code' => $this->faker->regexify('F\d{5,9}')
+            'usage_code' => $this->faker->lexify('?????-?????'),
+            'name' => $this->faker->word(2)
         ];
     }
 
-    public function local(): self
+    /**
+     * @param string $usage_code
+     * @return MedicationUsageCodeFactory
+     */
+    public function usageCode(string $usage_code): self
     {
         return $this->state([
-            'source_type' => Medication::SOURCE_TYPE_LOCAL
+            'usage_code' => $usage_code
         ]);
     }
 
-    public function dmd(): self
+    /**
+     * @param string $name
+     * @return MedicationUsageCodeFactory
+     */
+    public function name(string $name): self
     {
         return $this->state([
-            'source_type' => Medication::SOURCE_TYPE_DMD
+            'name' => $name
         ]);
     }
 
-
-    public function preservativeFree(): self
-    {
-        return $this->afterCreating(function (Medication $medication) {
-            MedicationAttributeAssignment::factory()->create([
-                'medication_id' => $medication->id,
-                'medication_attribute_option_id' => MedicationAttributeOption::factory()->forAttribute(Medication::ATTR_PRESERVATIVE_FREE)
-            ]);
-            // ensure relation will be loaded in any use of the generated model
-            $medication->refresh();
-        });
-    }
-
-    public function prescribable(): self
+    /**
+     * @return MedicationUsageCodeFactory
+     */
+    public function inactive(): self
     {
         return $this->state([
-            'is_prescribable' => true
+            'active' => false
+        ]);
+    }
+
+    /**
+     * @return MedicationUsageCodeFactory
+     */
+    public function hidden(): self
+    {
+        return $this->state([
+            'hidden' => true
         ]);
     }
 }
