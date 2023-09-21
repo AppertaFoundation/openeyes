@@ -15,7 +15,7 @@
     </button>
 <?php endif; ?>
 <?php if (!$consent && $this->getWhiteboard()->consent) : ?>
-    <button class="pro-theme large" formaction="/OphTrOperationbooking/whiteboard/consentForm/<?= $booking_id?>">
+    <button class="pro-theme large js-consent-form" formaction="/OphTrOperationbooking/whiteboard/consentForm/<?= $booking_id?>">
         Consent
     </button>
 <?php endif; ?>

@@ -151,13 +151,13 @@ foreach ($readings as $reading) {
               new OpenEyes.UI.AdderDialog.ItemSet([], {
                   'id': 'reading_value', 'header': 'mm Hg',
                   'splitIntegerNumberColumns': [{'min': 0, 'max': 9}, {'min': 0, 'max': 9}],
-                  'style': 'display: none'
+                  'hideByDefault': true,
               }),
               new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
                   array_map(function ($scale) {
                       return ['label' => $scale->name, 'id' => $scale->id];
                   }, models\OphCiExamination_Qualitative_Scale_Value::model()->findAllByAttributes(['scale_id' => models\OphCiExamination_Qualitative_Scale::model()->findByAttributes(['name' => 'digital'])->id]))
-              ) ?>, {'id': 'scale_value', 'header': 'Scale value', 'style': 'display: none'}),
+              ) ?>, {'id': 'scale_value', 'header': 'Scale value','hideByDefault': true,}),
           ],
           onReturn: function (adderDialog, selectedItems) {
               if (selectedItems.length < 1

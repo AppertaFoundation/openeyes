@@ -15,10 +15,11 @@
 ?>
 
 <?php
+
 use OEModule\OphCiExamination\models\OphCiExamination_Triage;
-use OEModule\OphCiExamination\models\OphCiExamination_Triage_Priority;
 use OEModule\OphCiExamination\models\OphCiExamination_Triage_ChiefComplaint;
 use OEModule\OphCiExamination\models\OphCiExamination_Triage_EyeInjury;
+use OEModule\OphCiExamination\models\OphCiExamination_Triage_Priority;
 
 $triage = $element->triage ?: new OphCiExamination_Triage();
 $original_model_name = CHtml::modelName($element);
@@ -152,7 +153,7 @@ $treat_as_input_type = $display_treat_as_paediatric && $display_treat_as_adult ?
             <button class="button js-add-comments">
                 <i class="oe-i comments small-icon"></i>
             </button>
-            <button class="adder js-add-select-btn" type="button" id="add-chief-complaint"></button>
+            <button class="adder js-add-select-btn" type="button" id="add-chief-complaint" data-test="add-chief-complaint"></button>
         </div>
     </div>
 </div>

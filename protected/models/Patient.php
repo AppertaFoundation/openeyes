@@ -441,8 +441,8 @@ class Patient extends BaseActiveRecordVersioned
             $criteria->compare('t.dob', date('Y-m-d', strtotime($params['dob'])));
         }
 
-        $criteria->join .= ' JOIN patient_identifier pi ON t.id = patient_id AND pi.deleted = 0';
-        $criteria->join .= ' JOIN patient_identifier_type pt ON pt.id = pi.patient_identifier_type_id';
+        $criteria->join .= ' LEFT JOIN patient_identifier pi ON t.id = patient_id AND pi.deleted = 0';
+        $criteria->join .= ' LEFT JOIN patient_identifier_type pt ON pt.id = pi.patient_identifier_type_id';
 
         // default PAS observer event
         $pas_event = 'patient_search_criteria';
@@ -1509,39 +1509,6 @@ class Patient extends BaseActiveRecordVersioned
     }
 
     /*
-     * returns all disorders for the patient.
-     *
-     * FIXME: some of this can be abstracted to a relation when we upgrade from yii 1.1.8, which has some problems with yii relations:
-     *  http://www.yiiframework.com/forum/index.php/topic/26806-relations-through-problem-wrong-on-clause-in-sql-generated/
-     *
-     * @returns array() of disorders
-     */
-
-    /**
-     * marks the patient as having no family history.
-     *
-     * @throws Exception
-     * @deprecated - since 2.0
-     * @deprecated family history now contained within examination module
-     */
-    public function setNoFamilyHistory()
-    {
-        trigger_error("Family History is now part of the Examination Module.", E_USER_DEPRECATED);
-
-        if (!empty($this->familyHistory)) {
-            throw new Exception('Unable to set no family history date as patient still has family history assigned');
-        }
-
-        $this->no_family_history_date = date('Y-m-d H:i:s');
-
-        if (!$this->save()) {
-            throw new Exception('Unable to set no family history:' . print_r($this->getErrors(), true));
-        }
-
-        $this->audit('patient', 'set-nofamilyhistorydate');
-    }
-
-    /*
      * checks if the patient has a disorder that is defined as being within the SNOMED tree specified by the given $snomed id.
      *
      * @returns bool
@@ -1875,61 +1842,6 @@ class Patient extends BaseActiveRecordVersioned
 
         if (!$pa->save()) {
             throw new Exception('Unable to save previous operation: ' . print_r($pa->getErrors(), true));
-        }
-    }
-
-    /**
-     * Adds FamilyHistory entry to the patient if it's not a duplicate.
-     *
-     * @param $relative_id
-     * @param $other_relative
-     * @param $side_id
-     * @param $condition_id
-     * @param $other_condition
-     * @param $comments
-     *
-     * @throws Exception
-     * @deprecated since 2.0.0
-     * @deprecated family history is part of examination module now
-     */
-    public function addFamilyHistory($relative_id, $other_relative, $side_id, $condition_id, $other_condition, $comments)
-    {
-        trigger_error("Family History is now part of the Examination Module.", E_USER_DEPRECATED);
-
-        $check_sql = 'patient_id=? and relative_id=? and side_id=? and condition_id=?';
-        $params = array($this->id, $relative_id, $side_id, $condition_id);
-        if ($other_relative) {
-            $check_sql .= ' and other_relative=?';
-            $params[] = $other_relative;
-        } else {
-            $check_sql .= ' and other_relative is null';
-        }
-        if ($other_condition) {
-            $check_sql .= ' and other_condition=?';
-            $params[] = $other_condition;
-        } else {
-            $check_sql .= ' and other_condition is null';
-        }
-
-        if (!$fh = FamilyHistory::model()->find($check_sql, $params)) {
-            $fh = new FamilyHistory();
-            $fh->patient_id = $this->id;
-            $fh->relative_id = $relative_id;
-            $fh->side_id = $side_id;
-            $fh->condition_id = $condition_id;
-        }
-
-        $fh->comments = $comments;
-
-        if (!$fh->save()) {
-            throw new Exception('Unable to save family history: ' . print_r($fh->getErrors(), true));
-        }
-
-        if ($this->no_family_history_date) {
-            $this->no_family_history_date = null;
-            if (!$this->save()) {
-                throw new Exception('Could not remove no family history flag: ' . print_r($this->getErrors(), true));
-            }
         }
     }
 

@@ -108,14 +108,23 @@ class AdminSidebar extends BaseCWidget
         return $state;
     }
 
-    public function getCurrentTitle()
+    public function getCurrentTitle(): string
     {
-        foreach ($this->menu_items as $box_title => $box_items) {
-            foreach ($box_items as $_name => $data) {
-                if (Yii::app()->getController()->request->requestUri == $data) {
-                    return $_name;
+        $current_path = '/' . Yii::app()->getRequest()->getPathInfo();
+        $current_full_url = Yii::app()->getRequest()->getRequestUri();
+
+        foreach ($this->menu_items as $box_items) {
+            foreach ($box_items as $title => $admin_link) {
+                if ($current_full_url === $admin_link) {
+                    return $title;
+                }
+
+                if ($current_path === $admin_link) {
+                    return $title;
                 }
             }
         }
+
+        return '';
     }
 }

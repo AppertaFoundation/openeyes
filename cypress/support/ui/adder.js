@@ -15,6 +15,10 @@ Cypress.Commands.add('assertAdderDialogDoesNotInclude', (text) => {
 
 Cypress.Commands.add('selectAdderDialogOptionText', (text) => {
     cy.get('[data-test="adder-dialog"]').contains(text).scrollIntoView().click()
+});
+
+Cypress.Commands.add('selectAdderDialogOptionByDataLabel', (text) => {
+    cy.get('[data-test="adder-dialog"]:visible').find(`li[data-label="${text}"]`).scrollIntoView().click()
 })
 
 Cypress.Commands.add('selectAdderDialogOptionVariable', (variable, text) => {
@@ -31,4 +35,45 @@ Cypress.Commands.add('confirmAdderDialog', () => {
 
 Cypress.Commands.add('cancelAdderDialog', () => {
     cy.get('div[data-test="adder-dialog"]:visible > div.close-icon-btn').click({force: true})
+})
+
+
+Cypress.Commands.add('dialogCorrectOptionsShownOnOpenAndAfterOptionsSelected', (elementId,
+                                                                                adderButtonSelector,
+                                                                                visibleColumnIds, hiddenColumnIds,
+                                                                                toSelectOptionsText, visibleColumnIdsAfterSelect,
+                                                                                hiddenColumnIdsAfterSelect, side = null) => {
+
+    cy.getBySel(elementId).scrollIntoView().within(() => {
+        if (side !== null) {
+            cy.get(`.js-element-eye.${side}-eye`).within(() => {
+                cy.getBySel(adderButtonSelector).click();
+            });
+        } else {
+            cy.getBySel(adderButtonSelector).click();
+        }
+    });
+
+    cy.assertVisibleAndHiddenColumnsBasedById(visibleColumnIds, hiddenColumnIds);
+
+    toSelectOptionsText.forEach((toSelectOptionText) => {
+        cy.selectAdderDialogOptionByDataLabel(toSelectOptionText);
+    });
+
+    cy.assertVisibleAndHiddenColumnsBasedById(visibleColumnIdsAfterSelect, hiddenColumnIdsAfterSelect);
+    cy.cancelAdderDialog();
+});
+
+Cypress.Commands.add('assertVisibleAndHiddenColumnsBasedById', (visibleColumnIds, hiddenColumnIds) => {
+    cy.get('[data-test="adder-dialog"]:visible').within(() => {
+        visibleColumnIds.forEach((visibleColumnId) => {
+            cy.get(`[data-id="${visibleColumnId}"]`).should('be.visible');
+            cy.get(`[data-adder-id="${visibleColumnId}"]`).should('be.visible');
+        });
+
+        hiddenColumnIds.forEach((visibleColumnId) => {
+            cy.get(`[data-id="${visibleColumnId}"]`).should('be.not.visible');
+            cy.get(`[data-adder-id="${visibleColumnId}"]`).should('be.not.visible');
+        });
+    });
 })

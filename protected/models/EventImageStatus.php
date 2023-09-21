@@ -12,6 +12,11 @@
  */
 class EventImageStatus extends BaseActiveRecordVersioned
 {
+    public const STATUS_NOT_CREATED = "NOT_CREATED";
+    public const STATUS_CREATED = "CREATED";
+    public const STATUS_FAILED = "FAILED";
+    public const STATUS_GENERATING = "GENERATING";
+
     /**
      * @return string the associated database table name
      */

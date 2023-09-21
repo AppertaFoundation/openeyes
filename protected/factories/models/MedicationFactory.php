@@ -58,4 +58,11 @@ class MedicationFactory extends ModelFactory
             $medication->refresh();
         });
     }
+
+    public function prescribable(): self
+    {
+        return $this->state([
+            'is_prescribable' => true
+        ]);
+    }
 }

@@ -1,5 +1,7 @@
 <?php
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * Created by PhpStorm.
  * User: veta
@@ -9,6 +11,7 @@
 class OphDrPrescription_DispenseCondition extends BaseActiveRecordVersioned
 {
     use MappedReferenceData;
+    use HasFactory;
 
     protected function getSupportedLevels(): int
     {
@@ -49,11 +52,11 @@ class OphDrPrescription_DispenseCondition extends BaseActiveRecordVersioned
         // will receive user inputs.
         return array(
             array('name, display_order', 'required'),
-            array('display_order', 'numerical', 'integerOnly'=>true),
-            array('name', 'length', 'max'=>255),
-            array('created_user_id', 'length', 'max'=>10),
+            array('display_order', 'numerical', 'integerOnly' => true),
+            array('name', 'length', 'max' => 255),
+            array('created_user_id', 'length', 'max' => 10),
             array('created_date, name, display_order, created_user_id, last_modified_user_id, last_modified_date, dispense_condition_institutions', 'safe'),
-            array('id, caption', 'safe', 'on'=>'search'),
+            array('id, caption', 'safe', 'on' => 'search'),
         );
     }
 

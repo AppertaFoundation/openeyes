@@ -20,17 +20,15 @@
 
     <h2>Clinical Disorders</h2>
     <form action="#" method="get">
-        <?=\CHtml::dropDownList('search[version]', $search['version'], [0, 1], [
-            'empty' => '- Version -'
-        ])?>
 
         <?=\CHtml::dropDownList('search[patient_type]', $search['patient_type'], $patient_types, [
-            'empty' => '- Select -'
+            'empty' => '- Select -',
+            'data-test' => 'patient-type-dropdown'
         ])?>
-        <button type="submit">Search</button>
+        <button data-test="patient-type-filter-submit" type="submit">Search</button>
     </form>
 
-    <form id="admin_sections">
+    <form id="admin_sections" data-test="clinical-disorder-result">
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
         <table class="standard">
             <thead>
@@ -48,7 +46,7 @@
             foreach ($disorders as $i => $disorder) {
                 ?>
                 <tr class="clickable" data-id="<?=$disorder->id?>"
-                    data-uri="OphCoCvi/admin/editClinicalDisorder/<?=$disorder->id?>?event_type_version=<?=$search['version'];?>&patient_type=<?=$search['patient_type'];?>">
+                    data-uri="OphCoCvi/admin/editClinicalDisorder/<?=$disorder->id?>?patient_type=<?=$search['patient_type'];?>">
                     <td><?= \CHtml::encode($disorder->name) ?></td>
                     <td><?= \CHtml::encode($disorder->code) ?></td>
                     <td><?= \CHtml::encode($disorder->section->name) ?></td>
@@ -62,7 +60,7 @@
             <tr>
                 <td colspan="6">
                     <?php
-                    $url = "/OphCoCvi/admin/addClinicalDisorder?event_type_version={$search['version']}&patient_type={$search['patient_type']}";
+                    $url = "/OphCoCvi/admin/addClinicalDisorder?patient_type={$search['patient_type']}";
                     echo EventAction::button('Add', 'add', array(), array('class' => 'small','data-type' => 'ClinicalDisorder', 'data-uri' => $url))->toHtml() ?>
                 </td>
             </tr>

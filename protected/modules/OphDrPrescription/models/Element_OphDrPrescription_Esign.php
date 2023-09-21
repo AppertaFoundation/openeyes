@@ -116,8 +116,8 @@ class Element_OphDrPrescription_Esign extends BaseEsignElement
      */
     public function getSignatures(): array
     {
-        if (!empty($this->user->grade)) {
-            $this->auto_sign_user_role = $this->user->grade->grade;
+        if (!empty(\Yii::app()->session['user']->grade->grade)) {
+            $this->auto_sign_user_role = \Yii::app()->session['user']->grade->grade;
         }
 
         if (!$this->attemptAutoSign()) {

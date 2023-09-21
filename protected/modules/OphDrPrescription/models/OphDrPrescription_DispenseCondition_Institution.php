@@ -1,5 +1,6 @@
 <?php
 
+use OE\factories\models\traits\HasFactory;
 
 /**
  * Class OphDrPrescription_DispenseCondition_Institution
@@ -7,6 +8,8 @@
  */
 class OphDrPrescription_DispenseCondition_Institution extends BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     protected $auto_update_relations = true;
     /**
      * @return string the associated database table name

@@ -1155,13 +1155,13 @@ class DefaultController extends BaseEventTypeController
     private function addPDFToOutput($pdf_path)
     {
         if (file_exists($pdf_path)) {
-            $pagecount = $this->pdf_output->setSourceFile($pdf_path);
-            for ($i = 1; $i <= $pagecount; $i++) {
-                $this->pdf_output->AddPage('P');
-                $tplidx = $this->pdf_output->ImportPage($i);
-                $this->pdf_output->useTemplate($tplidx);
+            $page_count = $this->pdf_output->setSourceFile($pdf_path);
+            for ($page_num = 1; $page_num <= $page_count; $page_num++) {
+                $template_id = $this->pdf_output->importPage($page_num);
+                $size = $this->pdf_output->getTemplateSize($template_id);
+                $this->pdf_output->AddPage($size['orientation'], $size);
+                $this->pdf_output->useTemplate($template_id);
             }
-
 
             //if the letter_type is Internal referral than the GP and Patient are mandatory to copy into
             //$internalreferral_letter_type = LetterType::model()->findByAttributes(['name' => 'Internal Referral']);

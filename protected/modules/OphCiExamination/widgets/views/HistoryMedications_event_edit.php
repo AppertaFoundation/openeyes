@@ -412,7 +412,7 @@ if (!Yii::app()->request->isPostRequest && !empty($entries_from_previous_event) 
             /** @var Firm $firm */
             $firm = $firm_id ? Firm::model()->findByPk($firm_id) : null;
             $subspecialty_id = $firm->getSubspecialtyID();
-            $common_systemic = Medication::model()->listCommonSystemicMedications(true, $subspecialty_id, $site_id);
+            $common_systemic = Medication::model()->listCommonSystemicMedications($subspecialty_id, true, $site_id);
             foreach ($common_systemic as &$medication) {
                 $medication['prepended_markup'] = $this->widget('MedicationInfoBox', array('medication_id' => $medication['id']), true);
             }

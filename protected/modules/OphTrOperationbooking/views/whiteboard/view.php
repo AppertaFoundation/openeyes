@@ -255,6 +255,7 @@ $other_card_list = array(
         $this->widget('RiskCard', array(
             'data' => $data,
         )); ?>
+        <i class="spinner" title="Loading..." style="display: none;"></i>
     </div>
     <!--
     Manually specifying a high z-index here as the open/close button and footer
