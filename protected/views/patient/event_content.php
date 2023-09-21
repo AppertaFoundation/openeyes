@@ -21,19 +21,19 @@
 
         <?php if ($this->title !== 'Please select booking') { ?>
             <?php if (isset($this->event->firm)) : ?>
-                <div class="extra-info" style="font-size:105%">
-                    <small class="fade">Institution: </small> <?=$this->event->institution;?>
+                <div class="extra-info">
+                    <small class="fade">Inst. </small> <?=$this->event->institution;?>
                 </div>
-                <div class="extra-info" style="font-size:105%">
-                    <small class="fade">Site: </small> <?=$this->event->site ?? '-';?>
+                <div class="extra-info">
+                    <small class="fade">Site </small> <?=$this->event->site ?? '-';?>
                 </div>
-                <div class="extra-info" style="font-size:105%">
-                    <small class="fade">Subspecialty: </small>
+                <div class="extra-info">
+                    <small class="fade">Sub. </small>
                     <small><?= $this->event->firm->serviceSubspecialtyAssignment->subspecialty->name ?></small>
                 </div>
                 <div class="extra-info">
-                    <small class="fade">&nbsp;Context: </small>
-                    <small><?= $this->event->firm->name ?></small>
+                    <small class="fade">&nbsp;Cxt. </small>
+                    <?= $this->event->firm->name ?>
                 </div>
             <?php endif; ?>
 
