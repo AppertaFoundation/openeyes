@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -14,6 +15,8 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+ $dispense_condition_assignments = OphDrPrescription_DispenseLocation::getDispenseConditionAssignmentsForInstitution(Yii::app()->session['selected_institution_id']);
 ?>
 
 <div class="cols-5" id="generic-admin-list">
@@ -37,7 +40,7 @@
                 <col class="cols-1">
                 <col class="cols-1">
             </colgroup>
-            <tbody class="sortable">
+            <tbody id="dispense_location_table" class="sortable">
             <?php foreach ($dispense_locations as $dispense_location) {
                 $this->renderPartial(
                     '/admin/dispense_location/_dispense_location_entry',
@@ -50,7 +53,8 @@
                         'is_active' => $dispense_location->hasMapping(
                             ReferenceData::LEVEL_INSTITUTION,
                             Yii::app()->session['selected_institution_id']
-                        )
+                        ),
+                        'condition_assignments' => $dispense_condition_assignments[$dispense_location->id] ?? []
                     ]
                 );
             } ?>
@@ -84,6 +88,7 @@
                             'class' => 'generic-admin-save button large',
                             'formaction' => '/OphDrPrescription/admin/DispenseLocation/removeMapping',
                             'formmethod' => 'POST',
+                            'data-test' => 'dispense-location-remove-institution'
                         ]
                     );
                     ?>
@@ -92,3 +97,20 @@
             </tfoot>
         </table>
 </div>
+<script>
+    ready(() => {
+        document.querySelector("#et_admin-map-remove").addEventListener("click", (event) => {
+            const rows = document.querySelectorAll("#dispense_location_table tr[data-can-remove-institution-assignment='false'] input[name='select[]']:checked");
+
+            if (rows.length) {
+                event.preventDefault();
+
+                new OpenEyes.UI.Dialog.Alert({
+                    content: "Some of the selected entries are mapped to a Dispense Condition. Please remove the assignment before removing the selected from the current institution."
+                }).open();
+
+                return;
+            }
+        });
+    });
+</script>
