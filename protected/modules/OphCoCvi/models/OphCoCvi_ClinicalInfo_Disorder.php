@@ -15,6 +15,8 @@
 
 namespace OEModule\OphCoCvi\models;
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "ophcocvi_clinicinfo_disorder".
  *
@@ -39,6 +41,8 @@ namespace OEModule\OphCoCvi\models;
 
 class OphCoCvi_ClinicalInfo_Disorder extends \BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     const PATIENT_TYPE_ADULT = 0;
     const PATIENT_TYPE_CHILD = 1;
 
