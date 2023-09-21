@@ -314,9 +314,15 @@ class WhiteboardController extends BaseDashboardController
     public function getConsentFormImages($booking_id)
     {
         $procedure = Element_OphTrConsent_Procedure::model()->find('booking_event_id = ?', [$booking_id]);
-        // Create event images from action
-        Yii::app()->runController('/OphTrConsent/default/createEventImages/' . $booking_id);
+
         $eventImages = EventImage::model()->findAll('event_id = ? AND page IS NOT NULL', [$procedure->event_id]);
+
+        if (empty($eventImages)) {
+            // Create event images from action
+            Yii::app()->runController('/OphTrConsent/default/createEventImages/' . $booking_id);
+            $eventImages = EventImage::model()->findAll('event_id = ? AND page IS NOT NULL', [$procedure->event_id]);
+        }
+
         return $eventImages;
     }
 }
