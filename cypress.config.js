@@ -1,5 +1,6 @@
 const { defineConfig } = require("cypress");
 const { cloudPlugin } = require("cypress-cloud/plugin");
+const { debuggerPlugin } = require('cypress-debugger');
 
 module.exports = defineConfig({
   e2e: {
@@ -10,7 +11,9 @@ module.exports = defineConfig({
 
       require('cypress-terminal-report/src/installLogsPrinter')(on);
 
-      return cloudPlugin(on, config);
+      cloudPlugin(on, config);
+
+      return config;
     },
     videoUploadOnPasses: false,
     defaultCommandTimeout: 7000,
