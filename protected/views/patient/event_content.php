@@ -29,10 +29,10 @@
                 </div>
                 <div class="extra-info">
                     <small class="fade">Sub. </small>
-                    <small><?= $this->event->firm->serviceSubspecialtyAssignment->subspecialty->name ?></small>
+                    <?= $this->event->firm->serviceSubspecialtyAssignment->subspecialty->name ?>
                 </div>
                 <div class="extra-info">
-                    <small class="fade">&nbsp;Cxt. </small>
+                    <small class="fade">Cxt. </small>
                     <?= $this->event->firm->name ?>
                 </div>
             <?php endif; ?>
