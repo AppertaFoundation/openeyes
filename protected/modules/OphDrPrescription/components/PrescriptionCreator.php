@@ -18,9 +18,11 @@ class PrescriptionCreator extends \EventCreator
 
     private $items = [];
 
-    public function __construct($episode)
+    public function __construct($episode, $signature = null, $save_as_draft = 0)
     {
         $prescription_event_type = \EventType::model()->find('name = "Prescription"');
+        $this->signature = $signature;
+        $this->save_as_draft = $save_as_draft;
         parent::__construct($episode, $prescription_event_type->id);
 
         $this->elements['Element_OphDrPrescription_Details'] = new \Element_OphDrPrescription_Details();
@@ -77,6 +79,7 @@ class PrescriptionCreator extends \EventCreator
         foreach ($this->elements as $element) {
             if ($element instanceof Element_OphDrPrescription_Details) {
                 $element->event_id = $event_id;
+                $element->draft = $this->save_as_draft;
                 if (!$element->save()) {
                     $this->addErrors($element->getErrors());
                     \OELog::log("Element_OphDrPrescription_Details:" . print_r($element->getErrors(), true));
@@ -85,6 +88,9 @@ class PrescriptionCreator extends \EventCreator
                 }
             }
         }
+
+        $include_signature = intval($this->save_as_draft) === 0;
+        $this->saveEsignElement($event_id, Element_OphDrPrescription_Esign::class, $include_signature);
 
         return !$this->hasErrors();
     }

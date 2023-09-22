@@ -66,6 +66,7 @@ $uid = \CHtml::modelName($el_class) . "_" . $widget_class . "_" . $row_id;
                     'maxlength' => 6,
                     'inputmode' => "numeric",
                     'class' => "user-pin-entry js-pin-input",
+                    'data-test' => "event-auto-pin-entry"
                 )); ?>
                 <button type="button" class="try-pin js-sign-button" data-test="pin-sign-button">PIN sign</button>
             </div>

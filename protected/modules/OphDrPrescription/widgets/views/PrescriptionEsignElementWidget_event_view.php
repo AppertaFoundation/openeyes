@@ -23,7 +23,7 @@
             <div class="alert-box info"><?=CHtml::encode($msg)?></div>
         <?php } ?>
         <?php if (!$this->element->isSigned()) { ?>
-            <div class="alert-box issue"><?= $this->element->getUnsignedMessage() ?>
+            <div class="alert-box issue" data-test="unsigned-element-warning"><?= $this->element->getUnsignedMessage() ?>
                 <?php if ($this->element->usesEsignDevice()) {?>
                     <a href="#" onclick="bluejay.demoSignatureDeviceLink();">Connect your e-Sign device</a>
                 <?php } ?>

@@ -85,7 +85,7 @@ abstract class EsignField extends BaseCWidget
                 $thumbnail2_base64 = 'data:' . $file->mimetype . ';base64,' . base64_encode($thumbnail2_source);
                 echo '
                     <div
-                        class="esign-check js-has-tooltip"
+                        class="esign-check js-signature-wrapper js-has-tooltip"
                         data-tooltip-content="<img src=\''.($thumbnail2_base64).'\'>"
                         style="background-image: url('.$thumbnail1_base64.');">
                     </div>

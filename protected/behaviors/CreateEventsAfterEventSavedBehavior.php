@@ -15,6 +15,8 @@
 
 class CreateEventsAfterEventSavedBehavior extends CBehavior
 {
+    public $determine_eye_from_element;
+
     public function events()
     {
         return array_merge(parent::events(), [
@@ -29,32 +31,101 @@ class CreateEventsAfterEventSavedBehavior extends CBehavior
 
         if ($action && ($action->id === 'create') && $is_post) {
             $suffix = strtolower($this->owner->event->eventType->class_name);
-            $prescription_checkbox_name = "auto_generate_prescription_after_{$suffix}";
-            $prescription_checkbox = \Yii::app()->request->getParam($prescription_checkbox_name);
+            $prescription_checkbox = $this->getPrescriptionCheckboxValue($suffix);
             $set_id = \Yii::app()->request->getParam("auto_generate_prescription_after_{$suffix}_set_id");
 
             if ($prescription_checkbox && !$set_id) {
-                /**
-                 * Fronted errors are added like
-                 * $element->addError() and this method populates frontEndErrors array
-                 * (BaseEventTypeElement :: addError)
-                 * Now, here in beforeAction we cannot access the elements (open_elements not populated)
-                 * so somehow we need to scrollToElement and highlight the input field
-                 */
-                $event->sender->external_errors["Generate prescription"][] =
-                    '<a class="errorlink" onclick="scrollToElement($(\'#auto_generate_prescription_after_' . $suffix  . '_set_id\'))">Please select a standard set</a>';
+                $this->addValidationError($event, "Generate prescription",
+                    "Please select a standard set.",
+                    "auto_generate_prescription_after_" . $suffix . "_set_id");
+            }
 
-                \Yii::app()->clientScript->registerScript('standard_set_error', "
-                    const element = document.getElementById('auto_generate_prescription_after_{$suffix}_set_id');
-                    if (element) {
-                        element.classList.add('error');
-                    }
-                    ", \CClientScript::POS_END);
+            $save_as_draft_data = $this->getSaveAsDraftData();
+
+            if (!is_null($save_as_draft_data)) {
+                if ($this->validateCorrespondenceSignatureData($save_as_draft_data, $suffix)) {
+                    $this->addMissingPinOrDraftUncheckedValidationError(
+                        EventAutoGenerateEsign::CORRESPONDENCE, $event);
+                }
+
+                if ($this->validatePrescriptionSignatureData($save_as_draft_data, $suffix)) {
+                    $this->addMissingPinOrDraftUncheckedValidationError(
+                        EventAutoGenerateEsign::PRESCRIPTION, $event);
+                }
             }
         }
     }
 
-    public $determine_eye_from_element;
+    /**
+     * @return mixed
+     */
+    private function getSaveAsDraftData(): mixed
+    {
+        return \Yii::app()->request->getParam(EventAutoGenerateCheckboxesWidget::SAVE_AS_DRAFT_INPUT_NAME);
+    }
+
+    private function getPrescriptionCheckboxValue($suffix)
+    {
+        $prescription_checkbox_name = "auto_generate_prescription_after_{$suffix}";
+        return \Yii::app()->request->getParam($prescription_checkbox_name);
+    }
+
+    private function isMissingSignature($signature_class)
+    {
+        $missing_pin = false;
+
+        $signature = $this->getSignature($signature_class);
+
+        if (is_null($signature)) {
+            $missing_pin = true;
+        } elseif (!$signature->isSigned()) {
+            $missing_pin = true;
+        }
+
+        return $missing_pin;
+    }
+
+
+    /**
+     * Fronted errors are added like
+     * $element->addError() and this method populates frontEndErrors array
+     * (BaseEventTypeElement :: addError)
+     * Now, here in beforeAction we cannot access the elements (open_elements not populated)
+     * so somehow we need to scrollToElement and highlight the input field
+     */
+    private function addValidationError($event, $error_title, $error_text, $field_id)
+    {
+        $event->sender->external_errors[$error_title][] =
+            '<a class="errorlink" onclick="scrollToElement($(\'#' . $field_id . '\'))">' . $error_text . '</a>';
+
+        \Yii::app()->clientScript->registerScript($error_title . $field_id, "
+                    if(typeof element_$field_id  === 'undefined') {
+                        let element_$field_id = document.getElementById('$field_id');
+                        if (element_$field_id) {
+                            element_$field_id.classList.add('error');
+                         }
+                    }
+                    ", \CClientScript::POS_END);
+    }
+
+    private function getSignature($signature_class)
+    {
+        $signature_data = \Yii::app()->request->getParam(EventAutoGenerateCheckboxesWidget::SIGNATURE_INPUT_NAME);
+
+        $signature = null;
+
+        if (isset($signature_data['proof']) && $signature_data['proof'] !== '') {
+            $signature = new $signature_class();
+
+            $signature->attributes = $signature_data;
+
+            $signature->proof = $signature_data['proof'];
+            $signature->setDataFromProof();
+        }
+
+        return $signature;
+    }
+
 
     /**
      * Creates prescription event if required
@@ -131,13 +202,17 @@ class CreateEventsAfterEventSavedBehavior extends CBehavior
      * @param int $set_id
      * @return array
      */
-    public function createPrescriptionEvent(int $set_id) : array
+    public function createPrescriptionEvent(int $set_id): array
     {
         $set = MedicationSet::model()->findByPk($set_id);
         $success = false;
 
         if ($set) {
-            $prescription_creator = new PrescriptionCreator($this->owner->event->episode);
+            $signature = $this->getSignature(OphDrPrescription_Signature::class);
+
+            $save_as_draft = $this->getSaveAsDraftData()[EventAutoGenerateEsign::PRESCRIPTION] ?? 0;
+
+            $prescription_creator = new PrescriptionCreator($this->owner->event->episode, $signature, $save_as_draft);
             $prescription_creator->patient = $this->owner->patient;
 
             $element = $this->determine_eye_from_element::model()->findByAttributes(['event_id' => $this->owner->event->id]);
@@ -181,7 +256,7 @@ class CreateEventsAfterEventSavedBehavior extends CBehavior
      * @param null $macro_name
      * @return array
      */
-    public function createCorrespondenceEvent($macro_name = null) : array
+    public function createCorrespondenceEvent($macro_name = null): array
     {
         $event_type_string = strtolower($this->owner->event->eventType->class_name);
 
@@ -200,13 +275,17 @@ class CreateEventsAfterEventSavedBehavior extends CBehavior
                 $name = addcslashes($this->owner->event->episode->status->name, '%_'); // escape LIKE's special characters
                 $criteria = new CDbCriteria(array(
                     'condition' => "name LIKE :name",
-                    'params'    => array(':name' => "$name%")
+                    'params' => array(':name' => "$name%")
                 ));
 
                 $letter_type = \LetterType::model()->find($criteria);
                 $letter_type_id = $letter_type->id ?? null;
 
-                $correspondence_creator = new CorrespondenceCreator($this->owner->event->episode, $macro, $letter_type_id);
+                $signature = $this->getSignature(OphCoCorrespondence_Signature::class);
+                $save_as_draft = $this->getSaveAsDraftData()[EventAutoGenerateEsign::CORRESPONDENCE] ?? 0;
+
+                $correspondence_creator = new CorrespondenceCreator($this->owner->event->episode, $macro,
+                    $letter_type_id, $signature, $save_as_draft);
                 $correspondence_creator->save();
 
                 $success = !$correspondence_creator->hasErrors();
@@ -239,5 +318,71 @@ class CreateEventsAfterEventSavedBehavior extends CBehavior
             'patient_id' => $this->owner->patient->id,
             'model' => $model
         ]);
+    }
+
+    /**
+     * @param $save_as_draft_data
+     * @param $event_type_string
+     * @return bool
+     */
+    private function validateCorrespondenceSignatureData($save_as_draft_data, $event_type_string): bool
+    {
+        $correspondence_esign = new Element_OphCoCorrespondence_Esign();
+        $pin_is_required_for_correspondence = $correspondence_esign->isPinRequired();
+
+        $missing_pin_or_save_as_draft = false;
+
+
+        if (isset($save_as_draft_data[EventAutoGenerateEsign::CORRESPONDENCE]) &&
+            $save_as_draft_data[EventAutoGenerateEsign::CORRESPONDENCE] !== "1") {
+            foreach (['auto_generate_gp_letter_after_', 'auto_generate_optom_letter_after_']
+                     as $auto_generate_field) {
+                $create_correspondence_checkbox = \Yii::app()->request->getParam($auto_generate_field . $event_type_string);
+
+                if ($create_correspondence_checkbox && $pin_is_required_for_correspondence) {
+                    if ($this->isMissingSignature(OphDrPrescription_Signature::class)) {
+                        // check if missing draft
+                        $missing_pin_or_save_as_draft = true;
+                    }
+                }
+            }
+        }
+
+        return $missing_pin_or_save_as_draft;
+    }
+
+    /**
+     * @param $save_as_draft_data
+     * @param $event_type_string
+     * @return bool
+     */
+    private function validatePrescriptionSignatureData($save_as_draft_data, $event_type_string): bool
+    {
+        $prescription_checkbox = $this->getPrescriptionCheckboxValue($event_type_string);
+        $prescription_esign = new Element_OphDrPrescription_Esign();
+        $pin_is_required_for_prescription = $prescription_esign->isPinRequired();
+        $missing_pin_or_save_as_draft = false;
+
+        if (isset($save_as_draft_data[EventAutoGenerateEsign::PRESCRIPTION]) &&
+            $save_as_draft_data[EventAutoGenerateEsign::PRESCRIPTION] !== "1") {
+            if ($prescription_checkbox && $pin_is_required_for_prescription) {
+                if ($this->isMissingSignature(OphCoCorrespondence_Signature::class)) {
+                    $missing_pin_or_save_as_draft = true;
+                }
+            }
+        }
+
+        return $missing_pin_or_save_as_draft;
+    }
+
+    /**
+     * @param $event_type
+     * @param CEvent $event
+     */
+    private function addMissingPinOrDraftUncheckedValidationError($event_type, CEvent $event): void
+    {
+        $this->addValidationError($event, ucfirst($event_type),
+            "At least one signature must be provided to finalise this event or save draft must be checked.",
+            "pin_EventAutoGenerateSignature");
     }
 }

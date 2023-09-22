@@ -1,0 +1,10 @@
+{
+    "allOptionsChecked": "be.visible",
+    "optomLetterChecked": "not.be.visible",
+    "noOptionsChecked": "not.be.visible",
+    "gpLetterCchecked": "not.be.visible",
+    "gpAndOptomLetterChecked": "not.be.visible",
+    "prescriptionAndOptomLetterChecked": "be.visible",
+    "prescriptionChecked": "be.visible",
+    "prescriptionAndGgpLetterChecked": "be.visible"
+}

@@ -28,7 +28,7 @@
             <div class="alert-box info">The event can be signed once it is saved.</div>
         <?php else : ?>
             <?php if (!$this->element->isSigned()) : ?>
-                <div class="alert-box issue"><?= $this->element->getUnsignedMessage() ?></div>
+                <div class="alert-box issue" data-test="unsigned-element-warning"><?= $this->element->getUnsignedMessage() ?></div>
             <?php endif; ?>
             <table class="last-left">
                 <thead>

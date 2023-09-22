@@ -18,78 +18,106 @@
  */
 
 $is_outpatient_minor_op = isset($data['outpatient_minor_op']) && $data['outpatient_minor_op'];
+$element_name = \CHtml::modelName($element);
 ?>
 
-<div class="element-fields full-width flex-layout" id="OphTrOperationnote_Comments" data-outpatient-minor-op="<?= $is_outpatient_minor_op ? 'yes' : 'no' ?>">
-  <div class="data-group cols-11">
-    <div>
-        <?php echo $form->textArea(
-            $element,
-            'comments',
-            array(),
-            false,
-            [
-                'cols' => 30,
-                'class' => 'autosize cols-full',
-                'data-prefilled-value' => $template_data['comments'] ?? ''
-            ],
-            array('label' => 2, 'field' => 'full')
-        ) ?>
+<div class="element-fields full-width " id="<?= $element_name ?>"
+     data-outpatient-minor-op="<?= $is_outpatient_minor_op ? 'yes' : 'no' ?>">
+    <div class="flex">
+        <div class="cols-11">
+            <table class="cols-full last-left">
+                <colgroup>
+                    <col class="cols-4">
+                </colgroup>
+                <tbody>
+                <tr>
+                    <td>
+                        Post-op instructions
+                    </td>
+                    <td>
+                        <?= $form->textArea(
+                            $element,
+                            'postop_instructions',
+                            ['nowrapper' => true],
+                            false,
+                            [
+                                'cols' => 30,
+                                'class' => 'autosize cols-full',
+                                'data-prefilled-value' => $template_data['postop_instructions'] ?? ''
+                            ],
+                        ) ?>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="add-data-actions flex-item-bottom">
+            <button type="button" class="adder" id="add-postop-instruction-btn"></button>
+        </div>
     </div>
-      <div>
-            <?php echo $form->textArea(
-                $element,
-                'postop_instructions',
-                array(),
-                false,
-                [
-                    'cols' => 30,
-                    'class' => 'autosize cols-full',
-                    'data-prefilled-value' => $template_data['postop_instructions'] ?? ''
-                ],
-                array('label' => 2, 'field' => 'full')
-            ) ?>
-      </div>
-  </div>
-  <div class="add-data-actions flex-item-bottom">
-    <button class="button hint green js-add-select-search" id="add-postop-instruction-btn" type="button">
-      <i class="oe-i plus pro-theme"></i>
-    </button><!-- popup to add data to element -->
-  </div>
+    <hr class="divider soft">
+    <div class="cols-11">
+        <table class="cols-full last-left">
+            <colgroup>
+                <col class="cols-4">
+            </colgroup>
+            <?php $container_id = 'wrapper-auto-generate-events-selector'; ?>
+            <tbody id="<?= $container_id ?>">
+            <tr>
+                <td>Operation comments</td>
+                <td>
+                    <?php echo $form->textArea(
+                        $element,
+                        'comments',
+                        ['nowrapper' => true],
+                        false,
+                        [
+                            'cols' => 30,
+                            'class' => 'autosize cols-full',
+                            'data-prefilled-value' => $template_data['comments'] ?? ''
+                        ]
+                    ) ?>
+                </td>
+            </tr>
+            <?php
+            $is_outpatient_minor_op = isset($data['outpatient_minor_op']) && $data['outpatient_minor_op'];
+
+            if ($this->action->id == 'create') {
+                $this->widget('EventAutoGenerateCheckboxesWidget', [
+                    'container_id' => $container_id,
+                    'suffix' => strtolower($this->event->eventType->class_name),
+                    'disable_auto_generate_for' => $is_outpatient_minor_op ? ['prescription', 'gp_letter', 'optom'] : [],
+                ]);
+            } ?>
+            </tbody>
+        </table>
+    </div>
 </div>
-
 <?php
-$is_outpatient_minor_op = isset($data['outpatient_minor_op']) && $data['outpatient_minor_op'];
 
-if ($this->action->id == 'create') {
-    $this->widget('EventAutoGenerateCheckboxesWidget', [
-        'suffix' => strtolower($this->event->eventType->class_name),
-        'disable_auto_generate_for' => $is_outpatient_minor_op ? ['prescription', 'gp_letter', 'optom'] : [],
-    ]);
-}
 
 $instru_list = $element->postop_instructions_list;
 
 ?>
 <script>
     $(document).ready(function () {
-    var inputText = $('#Element_OphTrOperationnote_Comments_postop_instructions');
+        var inputText = $('#Element_OphTrOperationnote_Comments_postop_instructions');
 
-    new OpenEyes.UI.AdderDialog({
-      openButton: $('#add-postop-instruction-btn'),
-      itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-          array_map(function ($key, $item) {
-              return ['label' => $item, 'id' => $key,];
-          },
-            array_keys($instru_list),
-            $instru_list)
-      ) ?>, {'multiSelect': true})
-      ],
-      onReturn: function (adderDialog, selectedItems) {
+        new OpenEyes.UI.AdderDialog({
+            openButton: $('#add-postop-instruction-btn'),
+            itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+                array_map(function ($key, $item) {
+                    return ['label' => $item, 'id' => $key,];
+                },
+                    array_keys($instru_list),
+                    $instru_list)
+            ) ?>, {'multiSelect': true})
+            ],
+            onReturn: function (adderDialog, selectedItems) {
                 inputText.val(formatStringToEndWithCommaAndWhitespace(inputText.val()) + concatenateArrayItemLabels(selectedItems));
-        inputText.trigger('oninput');
-        return true;
-      }
+                inputText.trigger('oninput');
+                return true;
+            }
+        });
     });
-  });
 </script>

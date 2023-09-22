@@ -1,5 +1,9 @@
 // Covers functionality introduced by OE-13040 - templates for operation notes
 describe('test operation note template functionality', () => {
+
+    const REQUIRE_PIN_CORRESPONDENCE_SIGN_SETTING = 'require_pin_for_correspondence';
+    const REQUIRE_PIN_PRESCRIPTION_SIGN_SETTING = 'require_pin_for_prescription';
+
     before(() => {
         cy.login();
     });
@@ -7,6 +11,8 @@ describe('test operation note template functionality', () => {
     describe('create an operation note template and test its functionality', () => {
         beforeEach(() => {
             cy.login();
+            cy.setSystemSettingValue(REQUIRE_PIN_CORRESPONDENCE_SIGN_SETTING, 'no');
+            cy.setSystemSettingValue(REQUIRE_PIN_PRESCRIPTION_SIGN_SETTING, 'no');
         });
 
         it('creates an operation note from a fixture, then saves it as a template', () => {
@@ -79,12 +85,19 @@ describe('test operation note template functionality', () => {
                 cy.getBySel('template-entry').should('not.exist');
             });
         });
+
+        after(() => {
+            cy.resetSystemSettingValue(REQUIRE_PIN_CORRESPONDENCE_SIGN_SETTING);
+            cy.resetSystemSettingValue(REQUIRE_PIN_PRESCRIPTION_SIGN_SETTING);
+        });
     });
 
     describe('create an operation note template and ensure that complications are included according to the "Allow saving of complications in Op Note templates" system setting', () => {
         const COMPLICATION_SETTING = 'allow_complications_in_pre_fill_templates';
         beforeEach(() => {
             cy.login();
+            cy.setSystemSettingValue(REQUIRE_PIN_CORRESPONDENCE_SIGN_SETTING, 'no');
+            cy.setSystemSettingValue(REQUIRE_PIN_PRESCRIPTION_SIGN_SETTING, 'no');
         });
 
         it('sets the "Allow saving of complications in Op Note templates" system setting to false and ensures no complications are included', () => {
@@ -164,6 +177,8 @@ describe('test operation note template functionality', () => {
 
         after(() => {
             cy.resetSystemSettingValue(COMPLICATION_SETTING);
+            cy.resetSystemSettingValue(REQUIRE_PIN_CORRESPONDENCE_SIGN_SETTING);
+            cy.resetSystemSettingValue(REQUIRE_PIN_PRESCRIPTION_SIGN_SETTING);
         });
     });
 
@@ -174,6 +189,8 @@ describe('test operation note template functionality', () => {
 
             cy.login();
 
+            cy.setSystemSettingValue(REQUIRE_PIN_CORRESPONDENCE_SIGN_SETTING, 'no');
+            cy.setSystemSettingValue(REQUIRE_PIN_PRESCRIPTION_SIGN_SETTING, 'no');
             cy.getBySel("user-profile-link").click();
             cy.contains("Pre-fill templates").click();
         })
@@ -201,5 +218,10 @@ describe('test operation note template functionality', () => {
 
             cy.getBySel("template-row").should("not.exist");
         });
+    });
+
+    after(() => {
+        cy.resetSystemSettingValue(REQUIRE_PIN_CORRESPONDENCE_SIGN_SETTING);
+        cy.resetSystemSettingValue(REQUIRE_PIN_PRESCRIPTION_SIGN_SETTING);
     });
 });

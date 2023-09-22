@@ -26,6 +26,8 @@ class DefaultController extends BaseEventTypeController
         'getTheatreOptions' => self::ACTION_TYPE_FORM,
         'whiteboard' => self::ACTION_TYPE_VIEW,
         'findTemplatesFor' => self::ACTION_TYPE_FORM,
+        'getSignatureByUsernameAndPin' => self::ACTION_TYPE_FORM,
+        'getSignatureByPin' => self::ACTION_TYPE_FORM,
     );
 
     /* @var Element_OphTrOperationbooking_Operation operation that this note is for when creating */
@@ -49,6 +51,19 @@ class DefaultController extends BaseEventTypeController
             ]
         ]);
     }
+
+    public function actions()
+    {
+        return [
+            'getSignatureByPin' => [
+                'class' => \GetSignatureByPinAction::class
+            ],
+            'getSignatureByUsernameAndPin' => [
+                'class' => \GetSignatureByUsernameAndPinAction::class
+            ]
+        ];
+    }
+
 
     /**
      * @inheritDoc
@@ -243,7 +258,9 @@ class DefaultController extends BaseEventTypeController
                         throw new Exception('could not save event');
                     }
                 } catch (Exception $e) {
-                    $transaction->rollback();
+                    if($transaction->getActive()) {
+                        $transaction->rollback();
+                    }
                     throw $e;
                 }
             }

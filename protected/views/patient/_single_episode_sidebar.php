@@ -62,7 +62,7 @@ if (
                     UNION
                         SELECT MAX(ed.last_modified_date) AS date
                         FROM `event_draft` ed
-                            INNER JOIN episode ep ON ep.id = ed.episode_id 
+                            INNER JOIN episode ep ON ep.id = ed.episode_id
                         WHERE ep.patient_id = ' . $this->patient->id . '
                     ) AS cache_dates'
             )
@@ -103,7 +103,7 @@ if (
     </button>
 
         </div>
-        <ul class="events" id="js-events-by-date">
+        <ul class="events" id="js-events-by-date" data-test="sidebar-event-list">
             <?php foreach ($ordered_episodes as $specialty_episodes) {
                 foreach ($specialty_episodes['episodes'] as $i => $episode) {
                     // Episode events

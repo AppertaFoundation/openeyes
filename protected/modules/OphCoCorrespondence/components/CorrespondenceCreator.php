@@ -31,13 +31,16 @@ class CorrespondenceCreator extends \EventCreator
      */
     public $letter_type_id;
 
-    public function __construct($episode, $macro = null, $letter_type_id = null)
+
+    public function __construct($episode, $macro = null, $letter_type_id = null, $signature = null, $save_as_draft = false)
     {
         $event_type = \EventType::model()->find('name = "Correspondence"');
         parent::__construct($episode, $event_type->id);
 
         $this->macro = $macro;
         $this->letter_type_id = $letter_type_id;
+        $this->signature = $signature;
+        $this->save_as_draft = $save_as_draft;
 
         if ($macro) {
             $this->macro = $macro;
@@ -74,7 +77,7 @@ class CorrespondenceCreator extends \EventCreator
 
         if (isset($macro_target_data['to'])) {
             $this->documents['DocumentTarget'][] =
-                 [
+                [
                     'attributes' => [
                         'ToCc' => 'To',
                         'contact_type' => $macro_target_data['to']['contact_type'],
@@ -87,11 +90,11 @@ class CorrespondenceCreator extends \EventCreator
                         [
                             //this gp_label param thing is extremely dodgy, we will have problem here I guess later
                             'output_type' => strtolower($macro_target_data['to']['contact_type']) == strtolower(\SettingMetadata::model()->getSetting('gp_label'))
-                            ? \DocumentOutput::TYPE_DOCMAN
-                            : \DocumentOutput::TYPE_PRINT,
+                                ? \DocumentOutput::TYPE_DOCMAN
+                                : \DocumentOutput::TYPE_PRINT,
                         ]
                     ],
-                 ];
+                ];
         }
 
         $this->documents['macro_id'] = $macro_target_data['macro_id'];
@@ -101,11 +104,9 @@ class CorrespondenceCreator extends \EventCreator
     {
         $element = $this->elements['ElementLetter'];
         $element->event_id = $event_id;
+        $element->draft = $this->save_as_draft;
         $element->date = date("Y-m-d");
         $element->letter_type_id = $this->letter_type_id;
-
-        $esign = new \Element_OphCoCorrespondence_Esign();
-        $esign->event_id = $event_id;
 
         //in $element->setDefaultOptions() there is a check for if action->id == create
         //at the moment it is fine but later we might need to extend
@@ -120,13 +121,8 @@ class CorrespondenceCreator extends \EventCreator
             $this->addErrors($element->getErrors());
         }
 
-        if ($esign->attemptAutoSign()) {
-            $this->completeAutoSignRecord($esign);
-        }
-
-        if (!$esign->save(false)) {
-            $this->addErrors($esign->getErrors());
-        }
+        $include_signature = intval($this->save_as_draft) === 0;
+        $this->saveEsignElement($event_id, Element_OphCoCorrespondence_Esign::class, $include_signature);
 
         if ($this->documents) {
             $document = new Document();
@@ -139,31 +135,16 @@ class CorrespondenceCreator extends \EventCreator
         return !$this->hasErrors();
     }
 
-    /**
-     * AutoSign provides minimal functionality to generate the "proof" of signature as though
-     * PIN has been entered by the user. Saving such an element is usually done with additional
-     * data being passed through from the web front end to create a complete record.
-     *
-     * In the context of creating correspondence without the supplementary data provided through
-     * the form, we must derive the additional information to allow the element to be saved.
-     *
-     * @param Element_OphCoCorrespondence_Esign $esign
-     * @return void
-     */
-    private function completeAutoSignRecord(Element_OphCoCorrespondence_Esign $esign): void
+    protected function addAdditionalSignatureData(BaseSignature $signature, BaseEsignElement $esign, User $user)
     {
-        $signature = $esign->signatures[0] ?? null;
-        if (!$signature) {
-            return;
-        }
-
-        $user = SignatureHelper::getUserForSigning();
-
-        if (!isset($signature->signatory_name)) {
-            $signature->signatory_name = $user->getFullNameAndTitle();
-        }
         if (!isset($signature->secretary)) {
             $signature->secretary = $user->hasRole('Secretary');
         }
+
+        if (!isset($signature->auto_sign_role)) {
+            $signature->signatory_role = $esign->auto_sign_role;
+        }
+
+        parent::addAdditionalSignatureData($signature, $esign, $user);
     }
 }

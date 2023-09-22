@@ -29,14 +29,18 @@ trait AutoSignTrait
     public function attemptAutoSign(): bool
     {
         require_once($this->signature_class . '.php');
-        if (in_array(Yii::app()->controller->getAction()->getId(), array('create', 'update')) && SettingMetadata::model()->checkSetting($this->pin_required_setting_name, 'no')) {
-
+        if (in_array(Yii::app()->controller->getAction()->getId(), array('create', 'update')) &&
+            !$this->isPinRequired()) {
             $this->signatures = [$this->createUserSignature(true)];
 
             return true;
         }
 
         return false;
+    }
+
+    public function isPinRequired(): bool {
+        return SettingMetadata::model()->checkSetting($this->pin_required_setting_name, 'yes');
     }
 
     /**

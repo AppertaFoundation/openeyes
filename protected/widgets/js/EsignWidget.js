@@ -23,6 +23,7 @@ OpenEyes.UI = OpenEyes.UI || {};
         "element_id" : null,
         // One of "edit", "view" or "print"
         "mode" : "edit",
+        "signatureInsertBeforeWrapper" : false
     };
 
     /**
@@ -222,11 +223,21 @@ OpenEyes.UI = OpenEyes.UI || {};
         this.$controlWrapper.hide();
         if(typeof signature_file1 !== "undefined") {
             const $image = $('<div class="esign-check js-has-tooltip" data-tooltip-content="<img src=\''+(signature_file2)+'\'>" style="background-image: url('+signature_file1+');">');
-            $image.prependTo(this.$signatureWrapper);
+
+            if(this.options.signatureInsertBeforeWrapper) {
+                $image.insertBefore(this.$signatureWrapper);
+            } else {
+                $image.prependTo(this.$signatureWrapper);
+            }
         }
         else if(is_secretary) {
             const $txt = $("<span>VERIFIED ELECTRONICALLY, NOT SIGNED TO AVOID DELAYS</span>");
-            $txt.prependTo(this.$signatureWrapper);
+
+            if(this.options.signatureInsertBeforeWrapper) {
+                $txt.insertBefore(this.$signatureWrapper);
+            } else {
+                $txt.prependTo(this.$signatureWrapper);
+            }
         }
         this.$date.text(date).show();
         this.$time.text(time);

@@ -2,22 +2,21 @@
 
 namespace OEModule\CypressHelper\controllers;
 
-use CActiveRecord;
 use CWebLogRoute;
 use Event;
 use EventType;
 use Firm;
 use Institution;
 use OE\concerns\InteractsWithApp;
-use OE\factories\models\EventFactory;
 use OE\factories\ModelFactory;
-use OE\seeders\SeederBuilder;
-use Patient;
-use User;
+use OE\factories\models\EventFactory;
 use OE\seeders\resources\GenericModelResource;
 use OE\seeders\resources\SeededEventResource;
 use OE\seeders\resources\SeededPatientResource;
+use OE\seeders\SeederBuilder;
+use Patient;
 use SettingInstallation;
+use User;
 
 class DefaultController extends \CController
 {
@@ -128,7 +127,7 @@ class DefaultController extends \CController
         $this->sendJsonResponse($this->patientJson($patient));
     }
 
-    public function actionGetEventCreationUrl($patientId, $moduleName)
+    public function actionGetEventCreationUrl($patientId, $moduleName, $firmId)
     {
         $patient = Patient::model()->findByPk($patientId);
         if (!$patient) {
@@ -140,7 +139,11 @@ class DefaultController extends \CController
         ])->id;
 
         /** @var Firm $current_firm */
-        $current_firm = $this->getApp()->session->getSelectedFirm();
+        if($firmId !== "0") {
+            $current_firm = Firm::model()->findByPk($firmId);
+        } else {
+            $current_firm = $this->getApp()->session->getSelectedFirm();
+        }
         $url = "/patientEvent/create?patient_id={$patientId}&event_type_id={$eventTypeId}&context_id={$current_firm->id}";
 
         $episode = $patient->getOpenEpisodeOfSubspecialty($current_firm->getSubspecialtyID());
