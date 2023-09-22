@@ -25,6 +25,7 @@ import "cypress-cloud/support";
 // require('./commands')
 
 require("cypress-cloud/support");
+require('cypress-terminal-report/src/installLogsCollector')();
 
 before(() => {
     // ensure assets are not cached in the browser between test runs
