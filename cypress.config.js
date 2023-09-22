@@ -1,30 +1,20 @@
 const { defineConfig } = require("cypress");
 const { cloudPlugin } = require("cypress-cloud/plugin");
-const del = require('del');
 
 module.exports = defineConfig({
-  reporter: 'dot',
   e2e: {
     baseUrl: 'http://localhost',
     viewportWidth: 1280,
     viewportHeight: 737,
     setupNodeEvents(on, config) {
 
-      on('after:spec', (spec, results) => {
-        if (results && results.video) {
-          // Do we have failures for any retry attempts?
-          const failures = results.tests.some((test) =>
-            test.attempts.some((attempt) => attempt.state === 'failed')
-          )
-          if (!failures) {
-            // delete the video if the spec passed and no tests retried
-            fs.unlinkSync(results.video)
-          }
-        }
-      })
+      require('cypress-terminal-report/src/installLogsPrinter')(on);
 
-      return cloudPlugin(on, config);
+      cloudPlugin(on, config);
+
+      return config;
     },
+    videoUploadOnPasses: false,
     defaultCommandTimeout: 7000,
     retries: {
       // Configure retry attempts for `cypress run`
