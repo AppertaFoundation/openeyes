@@ -104,11 +104,6 @@ class PatientController extends BaseController
             ),
             array(
                 'allow',
-                'actions' => array('addFamilyHistory', 'removeFamilyHistory'),
-                'roles' => array('OprnEditFamilyHistory'),
-            ),
-            array(
-                'allow',
                 'actions' => array('editSocialHistory', 'editSocialHistory'),
                 'roles' => array('OprnEditSocialHistory'),
             ),
@@ -1537,53 +1532,6 @@ class PatientController extends BaseController
         }
     }
 
-    public function actionAddFamilyHistory()
-    {
-        if (!$patient = Patient::model()->findByPk(@$_POST['patient_id'])) {
-            throw new Exception('Patient not found:' . @$_POST['patient_id']);
-        }
-
-        if (@$_POST['no_family_history']) {
-            $patient->setNoFamilyHistory();
-        } else {
-            if (!$relative = FamilyHistoryRelative::model()->findByPk(@$_POST['relative_id'])) {
-                throw new Exception('Unknown relative: ' . @$_POST['relative_id']);
-            }
-
-            if (!$side = FamilyHistorySide::model()->findByPk(@$_POST['side_id'])) {
-                throw new Exception('Unknown side: ' . @$_POST['side_id']);
-            }
-
-            if (!$condition = FamilyHistoryCondition::model()->findByPk(@$_POST['condition_id'])) {
-                throw new Exception('Unknown condition: ' . @$_POST['condition_id']);
-            }
-
-            if (@$_POST['edit_family_history_id']) {
-                if (!$fh = FamilyHistory::model()->findByPk(@$_POST['edit_family_history_id'])) {
-                    throw new Exception('Family history not found: ' . @$_POST['edit_family_history_id']);
-                }
-                $fh->relative_id = $relative->id;
-                if ($relative->is_other) {
-                    $fh->other_relative = @$_POST['other_relative'];
-                }
-                $fh->side_id = $side->id;
-                $fh->condition_id = $condition->id;
-                if ($condition->is_other) {
-                    $fh->other_condition = @$_POST['other_condition'];
-                }
-                $fh->comments = @$_POST['comments'];
-
-                if (!$fh->save()) {
-                    throw new Exception('Unable to save family history: ' . print_r($fh->getErrors(), true));
-                }
-            } else {
-                $patient->addFamilyHistory($relative->id, @$_POST['other_relative'], $side->id, $condition->id, @$_POST['other_condition'], @$_POST['comments']);
-            }
-        }
-
-        $this->redirect(array('patient/view/' . $patient->id));
-    }
-
     public function actionRemovePreviousOperation()
     {
         if (!$patient = Patient::model()->findByPk(@$_GET['patient_id'])) {
@@ -1616,23 +1564,6 @@ class PatientController extends BaseController
         'fuzzy_month' => preg_replace('/^0/', '', $date[1]),
         'fuzzy_day' => preg_replace('/^0/', '', $date[2]),
         ));
-    }
-
-    public function actionRemoveFamilyHistory()
-    {
-        if (!$patient = Patient::model()->findByPk(@$_GET['patient_id'])) {
-            throw new Exception('Patient not found: ' . @$_GET['patient_id']);
-        }
-
-        if (!$m = FamilyHistory::model()->find('patient_id=? and id=?', array($patient->id, @$_GET['family_history_id']))) {
-            throw new Exception('Family history not found: ' . @$_GET['family_history_id']);
-        }
-
-        if (!$m->delete()) {
-            throw new Exception('Failed to remove family history: ' . print_r($m->getErrors(), true));
-        }
-
-        echo 'success';
     }
 
     public function processJsVars()

@@ -191,23 +191,28 @@ OpenEyes.UI = OpenEyes.UI || {};
             $quickview.find('.spinner').show();
             setBoxDetails($li);
             let load_timeout = 0;
-
             let imgs = $quickview.find('img[data-event-id=' + event_id + ']');
 
-            const isDocumentEvent = $li.data('event-icon').toLowerCase().indexOf('document');
-            let pageCount = imgs.length;
-
-            // if no imgs we need to get the info from the server and
-            // generate empty img tags accordingly
+            // if no imgs, generate empty img tags according info from server
             if (!imgs.length) {
                 load_timeout = 500;
                 const response = await fetch(`/eventImage/getImageInfo?event_id=${event_id}`);
                 const json = await response.json();
+                var isBilateral = false;
+                var eye_ids = {"right": 2, "left": 1};
+                let $imgs = [];
 
-                // then generate all the empty img tags
-                const $imgs = generateImgTag(event_id, json.page_count);
+                if (json.hasOwnProperty("right") || json.hasOwnProperty("left")) {
+                    isBilateral = true;
+                    for (const side in eye_ids) {
+                        if (json.hasOwnProperty(side)) {
+                            $imgs = $imgs.concat(generateImgTags(event_id, json[side].page_count, eye_ids[side]));
+                        }
+                    }
+                } else {
+                    $imgs = generateImgTags(event_id, json.page_count);
+                }
 
-                // append to the container
                 const $container = $quickview.find('.quick-view-content');
                 $imgs.forEach(($img) => {
                     $img.appendTo($container);
@@ -219,31 +224,36 @@ OpenEyes.UI = OpenEyes.UI || {};
                 // let's select again all the images (in case if we just generated them)
                 let imgs = $quickview.find('img[data-event-id=' + event_id + ']');
                 if (type === 'first') {
-                    imgs = [imgs[0]];
+                    if (isBilateral) {
+                        imgs = [];
+                        for (const side in eye_ids) {
+                            const eye_id = eye_ids[side];
+                            //get the image with page 0
+                            let img = $quickview.find('img[data-event-id=' + event_id + '][data-src$="page=0&eye_id=' + eye_id + '"]');
+                            if (img.length === 0) { //if not found let's check that there is a single image for that side
+                                img = $quickview.find('img[data-event-id=' + event_id + '][data-src$="eye_id=' + eye_id + '"]');
+                            }
+                            if (img) {
+                                imgs.push(img);
+                            }
+                        }
+                    } else {
+                        imgs = [imgs[0]];
+                    }
                 }
                 $.each(imgs, (index, img) => {
                     if ($(img).attr('src') === undefined) {
                         fetch($(img).data('src')).then(response => response.text())
                             .then(url => {
-                                if (index > 0 && isDocumentEvent === -1) {
-                                    url += '&page=' + (index);
-                                }
-                                else if (isDocumentEvent !== -1 && pageCount > 1) {
-                                    url += index === 0 ? '&eye=2' : '&eye=1';
-                                }
-
                                 $(img).attr('src', url);
                                 $(img).data('loaded', true);
 
                                 // to instantly show new images, like page 2 or 3 ...
                                 showCurrentEventImage();
                             });
-
                     }
                 });
                 showCurrentEventImage();
-
-
             }, load_timeout);
 
         }
@@ -271,6 +281,7 @@ OpenEyes.UI = OpenEyes.UI || {};
             self.element.find('.event-type').trigger('mouseleave');
             $(this.options.close_quicview_selector).hide();
         });
+
         self.element.on('mouseenter', '.event-type', function (e) {
             const $iconHover = $(e.target);
             const $li = $iconHover.closest('li');
@@ -304,7 +315,7 @@ OpenEyes.UI = OpenEyes.UI || {};
             let event_id = quickview.data('current_event');
             if (quickview.is(':visible') && event_id) {
                 loader.show();
-                let img = quickview.find('img[data-event-id=' + event_id + ']');
+                let img = quickview.find('img[data-event-id=' + event_id + '][src]');
                 if (img.data('loaded')) {
                     img.show();
                     loader.hide();
@@ -314,85 +325,16 @@ OpenEyes.UI = OpenEyes.UI || {};
             }
         }
 
-        function setEventImageSrcFromData(li_item, page_num) {
-            let event_id = li_item.data('event-id');
-            let quickview = $('.oe-event-quickview');
-            let imgs = quickview.find('img[data-event-id=' + event_id + '][data-page-num=' + page_num + ']');
-
-            $.each(imgs, (index, img) => {
-                if ($(img).attr('src') === undefined) {
-                    $(img).attr('src', $(img).data('src'));
-                }
-            });
-        }
-
-        function setEventImageSrc(event_id, url, page_num) {
-            let img = $('img[data-event-id=' + event_id + '][data-page-num=' + page_num + ']');
-            img.data('src', url);
-        }
-
-        $(document).ready(function () {
-
-            let events = [];
-            $('.event-type').each(function () {
-                events.push($(this).parents('li:first'));
-            });
-
-            var event_ids = [];
-            events.forEach(function (event) {
-                event_ids.push(event.data('event-id'));
-            });
-
-            let bulkURLFunc = function (response) {
-                let data = JSON.parse(response);
-
-                //Set the event image source urls for events which are already generated
-                if (data.generated_image_urls) {
-                    for (let event_id in data.generated_image_urls) {
-                        if (data.generated_image_urls.hasOwnProperty(event_id)) {
-                            const url = data.generated_image_urls[event_id];
-                            const url_object = new URL(url, window.location.origin);
-                            const page_num = url_object.searchParams.get('page');
-
-                            // we only preload the first page
-                            if (page_num && page_num > 0) {
-                                continue;
-                            }
-
-                            setEventImageSrc(event_id, url, page_num);
-                            setEventImageSrcFromData(self.element.find('.events').find("li[data-event-id=" + event_id + "]"), page_num);
-                        }
-                    }
-                }
-            };
-
-            $.ajax({
-                type: 'GET',
-                url: '/eventImage/getImageUrlsBulk',
-                data: {'event_ids': JSON.stringify(event_ids)},
-            }).success(bulkURLFunc);
-
-            let $screenshots = $('.oe-event-quickview .quick-view-content');
-            let $loader = $('.oe-event-quickview .spinner');
-            $screenshots.find('img').each(function () {
-                $(this).load(function () {
-                    $(this).data('loaded', true);
-                    if ($(this).css('display') !== 'none') {
-                        $loader.hide();
-                    }
-                    showCurrentEventImage();
-                });
-            });
-
-        });
-
-        function generateImgTag(event_id, page_count) {
+        function generateImgTags(event_id, page_count, eye_id = null) {
             let imgs = [];
 
-            for (let i = 1; i <= page_count; i++) {
+            for (let i = 0; i < page_count; i++) {
                 const url = new URL(`/eventImage/getImageUrl?event_id=${event_id}`, window.location.origin);
                 if (page_count > 1) {
                     url.searchParams.set('page', i);
+                }
+                if (eye_id) {
+                    url.searchParams.set('eye_id', eye_id);
                 }
 
                 let img = document.querySelector(`img[data-page-num="${i}"][data-src="${url.href}"]`);
@@ -424,7 +366,7 @@ OpenEyes.UI = OpenEyes.UI || {};
             if (count && Number(count)) {
                 steps = parseInt($(this).data('event-image-page-count'))-1;
             }
-            const $imgs = generateImgTag($(this).data('event-id'), count, index);
+            const $imgs = generateImgTags($(this).data('event-id'), count, index);
 
             $imgs.forEach(($img) => {
                 $img.appendTo($container);

@@ -26,6 +26,14 @@ import "cypress-cloud/support";
 
 require("cypress-cloud/support");
 
+// Options for log collector
+const options = {
+    enableExtendedCollector: true,
+};
+
+// Register the log collector
+require("cypress-terminal-report/src/installLogsCollector")(options);
+
 before(() => {
     // ensure assets are not cached in the browser between test runs
     Cypress.automation('remote:debugger:protocol', {

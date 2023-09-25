@@ -75,7 +75,7 @@ class OphDrPGDPSD_API extends \BaseAPI
         $firm = \Firm::model()->findByPk($firm_id);
         $subspecialty_id = $firm->getSubspecialtyID();
 
-        $common_systemic = \Medication::model()->listCommonSystemicMedications(true, $subspecialty_id, $site_id);
+        $common_systemic = \Medication::model()->listCommonSystemicMedications($subspecialty_id, true, $site_id);
         $common_ophthalmic = \Medication::model()->listBySubspecialtyWithCommonMedications($subspecialty_id, true, $site_id);
         $common_drops = \Medication::model()->listCommonDrops($subspecialty_id, true, $site_id);
         $common_oral = \Medication::model()->listCommonOralMedications($subspecialty_id, true, $site_id);

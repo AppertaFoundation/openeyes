@@ -258,7 +258,8 @@
         let $searchInput = $('<input />', {
             class: 'search cols-full js-search-autocomplete',
             placeholder: 'search',
-            type: 'text'
+            type: 'text',
+            'data-test': 'adder-search-input'
         });
 
         this.searchingSpinnerWrapper = $('<div />', {
@@ -943,7 +944,7 @@
         let popup = this.popup;
         ids.forEach(function(id) {
             popup.find('th[data-id="' + id + '"]').toggle(show);
-            popup.find('[data-id="' + id + '"]').closest('td').toggle(show);
+            popup.find('[data-adder-id="' + id + '"]').toggle(show);
         });
     };
 
