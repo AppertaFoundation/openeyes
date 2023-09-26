@@ -59,6 +59,8 @@ class SignatureHelper {
         $signature_file_id = $user->signature_file_id;
         if(is_null($signature_file_id)) {
             self::bootstrapUserSignature($user_id);
+            // user needs to be refreshed after the signature is created
+            $user = User::model()->findByPk($user_id);
             $signature_file_id = $user->signature_file_id;
             if(is_null($signature_file_id)) {
                 throw new Exception(
