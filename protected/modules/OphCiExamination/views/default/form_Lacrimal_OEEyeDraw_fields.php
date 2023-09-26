@@ -8,7 +8,7 @@
     <?= CHtml::activeTextArea($element, $side . '_comments', array(
         'rows' => '1',
         'cols' => '20',
-        'class' => 'clearWithEyedraw',
+        'class' => 'clearWithEyedraw autosize',
         'placeholder' => $element->getAttributeLabel($side . '_comments'),
     )) ?>
     </div>
