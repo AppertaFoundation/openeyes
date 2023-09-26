@@ -1,7 +1,7 @@
 <?php
 
 use OEModule\OESysEvent\events\SessionSiteChangedSystemEvent;
-use OEModule\OESysEvent\tests\test_traits\MocksSystemEventManager;
+use OEModule\OESysEvent\tests\test_traits\HasSysEventAssertions;
 
 /**
  *
@@ -12,7 +12,7 @@ class OESessionTest extends OEDbTestCase
 {
     use HasModelAssertions;
     use WithTransactions;
-    use MocksSystemEventManager;
+    use HasSysEventAssertions;
 
     protected ?OESession $session = null;
 
@@ -100,56 +100,68 @@ class OESessionTest extends OEDbTestCase
         $this->session->getSelectedSite();
     }
 
-    /** @test */
+    /**
+     * @test
+     * @group sys-events
+     */
     public function system_event_not_dispatched_when_initialising_site_id()
     {
         $site = Site::factory()->create();
-        $manager_mock = $this->mockSystemEventManager();
+        $this->fakeEvents();
         $this->session['selected_site_id'] = $site->id;
 
-        $dispatched = $manager_mock->getDispatched(SessionSiteChangedSystemEvent::class);
-        $this->assertCount(0, $dispatched);
+        $this->assertEventNotDispatched(SessionSiteChangedSystemEvent::class);
     }
 
-    /** @test */
+    /**
+     * @test
+     * @group sys-events
+     */
     public function system_event_dispatched_when_site_id_changed()
     {
         $sites = Site::factory()->count(2)->create();
-        $manager_mock = $this->mockSystemEventManager();
+        $this->fakeEvents();
         $this->session['selected_site_id'] = $sites[0]->id;
         $this->session['selected_site_id'] = $sites[1]->id;
 
-        $dispatched = $manager_mock->getDispatched(SessionSiteChangedSystemEvent::class);
-        $this->assertCount(1, $dispatched);
-        $this->assertEquals($dispatched[0]->old_site_id, (int) $sites[0]->id);
-        $this->assertEquals($dispatched[0]->new_site_id, (int) $sites[1]->id);
+        $this->assertEventDispatched(
+            SessionSiteChangedSystemEvent::class,
+            function (SessionSiteChangedSystemEvent $event) use ($sites) {
+                return $event->old_site_id === (int) $sites[0]->id
+                    && $event->new_site_id === (int) $sites[1]->id;
+            }
+        );
     }
 
-    /** @test */
+    /**
+     * @test
+     * @group sys-events
+     */
     public function system_event_not_dispatched_when_site_id_set_to_current_value()
     {
         $site = Site::factory()->create();
-        $manager_mock = $this->mockSystemEventManager();
+        $this->fakeEvents();
         $this->session['selected_site_id'] = $site->id;
         $this->session['selected_site_id'] = $site->id;
 
-        $dispatched = $manager_mock->getDispatched(SessionSiteChangedSystemEvent::class);
-        $this->assertCount(0, $dispatched);
+        $this->assertEventNotDispatched(SessionSiteChangedSystemEvent::class);
     }
 
-    /** @test */
+    /**
+     * @test
+     * @group sys-events
+     */
     public function can_handle_site_being_unset()
     {
         $site = Site::factory()->create();
-        $manager_mock = $this->mockSystemEventManager();
+        $this->fakeEvents();
         $this->session['selected_site_id'] = $site->id;
         $this->assertModelIs($site, $this->session->getSelectedSite());
         unset($this->session['selected_site_id']);
         $this->assertNull($this->session->getSelectedSite());
 
         // no need to dispatch event when being nulled - will be dispatched when set to new value
-        $dispatched = $manager_mock->getDispatched(SessionSiteChangedSystemEvent::class);
-        $this->assertCount(0, $dispatched);
+        $this->assertEventNotDispatched(SessionSiteChangedSystemEvent::class);
     }
 
 

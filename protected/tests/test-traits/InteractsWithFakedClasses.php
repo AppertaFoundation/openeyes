@@ -13,14 +13,14 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-trait FakesModels
+trait InteractsWithFakedClasses
 {
-    public function setUpFakesModels()
+    public function setUpInteractsWithFakedClasses()
     {
-        ModelFakeTracker::reset();
+        FakedClassesTracker::reset();
 
         $this->tearDownCallbacks(function () {
-            ModelFakeTracker::reset();
+            FakedClassesTracker::reset();
         });
     }
 }

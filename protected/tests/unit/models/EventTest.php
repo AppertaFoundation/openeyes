@@ -14,27 +14,30 @@
  */
 
 use OEModule\OESysEvent\events\ClinicalEventSoftDeletedSystemEvent;
-use OEModule\OESysEvent\tests\test_traits\MocksSystemEventManager;
+use OEModule\OESysEvent\tests\test_traits\HasSysEventAssertions;
 
 /**
  * @group sample-data
- * @group system-events
+ * @group sys-events
  */
 class EventTest extends OEDbTestCase
 {
     use WithTransactions;
-    use MocksSystemEventManager;
+    use HasSysEventAssertions;
 
     /** @test */
     public function soft_delete_triggers_the_appropriate_event()
     {
-        $event = Event::factory()->create();
-        $manager_mock = $this->mockSystemEventManager();
+        $clinical_event = Event::factory()->create();
+        $this->fakeEvents();
 
-        $event->softDelete();
+        $clinical_event->softDelete();
 
-        $dispatched = $manager_mock->getDispatched(ClinicalEventSoftDeletedSystemEvent::class);
-        $this->assertCount(1, $dispatched);
-        $this->assertEquals($event, $dispatched[0]->clinical_event);
+        $this->assertEventDispatched(
+            ClinicalEventSoftDeletedSystemEvent::class,
+            function (ClinicalEventSoftDeletedSystemEvent $event) use ($clinical_event) {
+                return $event->clinical_event->id === $clinical_event->id;
+            }
+        );
     }
 }

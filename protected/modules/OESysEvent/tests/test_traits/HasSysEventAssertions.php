@@ -13,34 +13,35 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-trait FakesSettingMetadata
+namespace OEModule\OESysEvent\tests\test_traits;
+
+use InteractsWithFakedClasses;
+use OEModule\OESysEvent\components\Manager as EventManager;
+
+trait HasSysEventAssertions
 {
     use InteractsWithFakedClasses;
 
-    protected $settingsmetadata_cache = [];
-
-    protected function fakeSettingMetadata($key, $value)
+    protected function fakeEvents(array|string|null $events = null)
     {
-        $this->settingsmetadata_cache[$key] = $value;
-
-        $this->ensureModelFaked();
-    }
-
-    protected function ensureModelFaked()
-    {
-        if (FakedClassesTracker::getFakeForClass(SettingMetadata::class)) {
-            return;
+        if (is_string($events)) {
+            $events = [$events];
         }
 
-        $mock = $this->getMockBuilder(SettingMetadata::class)
-            ->onlyMethods(['getSetting'])
-            ->getMock();
+        EventManager::fake($events);
+    }
 
-        $mock->method('getSetting')
-            ->willReturnCallback(function ($key) {
-                return $this->settingsmetadata_cache[$key] ?? null;
-            });
+    protected function assertEventDispatched(string $event_name, callable $callback = null): self
+    {
+        $this->assertTrue(EventManager::eventDispatched($event_name, $callback));
 
-        SettingMetadata::fakeWith($mock);
+        return $this;
+    }
+
+    protected function assertEventNotDispatched(string $event_name, callable $callback = null): self
+    {
+        $this->assertFalse(EventManager::eventDispatched($event_name, $callback));
+
+        return $this;
     }
 }

@@ -25,7 +25,7 @@ use SecondaryDiagnosis;
 
 /**
  * @group sample-data
- * @group system-events
+ * @group sys-events
  * @group disorder
  * @group diagnoses
  */

@@ -19,6 +19,7 @@ use PHPUnit\Framework\TestCase;
 class OEDbTestCase extends TestCase
 {
     use SupportsFixtures;
+    use InteractsWithFakedClasses;
 
     public $test_tables = [];
     protected $_fixture_manager;

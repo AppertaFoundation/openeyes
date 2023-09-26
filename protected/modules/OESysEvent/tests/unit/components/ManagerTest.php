@@ -96,6 +96,27 @@ class ManagerTest extends OEDbTestCase
 
         $this->assertCount(0, InvokableEventHandler::$received_events);
     }
+
+    /** @test */
+    public function events_can_be_faked()
+    {
+        $manager = new Manager();
+        $manager->observers = [
+            [
+                'system_event' => ExampleEvent::class,
+                'listener' => InvokableEventHandler::class
+            ]
+        ];
+        $manager->init();
+
+        \Yii::app()->setComponent('event', $manager);
+
+        Manager::fake([ExampleEvent::class]);
+        ExampleEvent::dispatch();
+
+        $this->assertCount(0, InvokableEventHandler::$received_events);
+        $this->assertTrue(Manager::eventDispatched(ExampleEvent::class));
+    }
 }
 
 class LegacyEventHandler

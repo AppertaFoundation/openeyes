@@ -15,30 +15,23 @@
 
 namespace OE\concerns;
 
-use ModelFakeTracker;
+use FakedClassesTracker;
 
 trait CanBeFaked
 {
     public static function fakeWith($mock)
     {
-        ModelFakeTracker::setFakeForModel(self::class, $mock);
+        FakedClassesTracker::setFakeForClass(self::class, $mock);
 
         return $mock;
     }
 
-    public static function model($class_name = null)
-    {
-        $fake = ModelFakeTracker::getFakeForModel(self::class);
-
-        return $fake ?? parent::model($class_name);
-    }
-
     public static function fakeExpects()
     {
-        $fake = ModelFakeTracker::getFakeForModel(self::class);
+        $fake = FakedClassesTracker::getFakeForClass(self::class);
 
         if (!$fake) {
-            throw new \RuntimeException('model must be faked before setting expectations');
+            throw new \RuntimeException('class must be faked before setting expectations');
         }
 
         return $fake->expects(...func_get_args());
@@ -46,6 +39,6 @@ trait CanBeFaked
 
     protected static function hasBeenFaked(): bool
     {
-        return ModelFakeTracker::getFakeForModel(self::class) !== null;
+        return FakedClassesTracker::getFakeForClass(self::class) !== null;
     }
 }

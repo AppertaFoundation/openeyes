@@ -14,34 +14,36 @@
  */
 
 /**
- * This static class is used during testing to support the resolution of CModel classes to fakes.
+ * This static class is used during testing to support the resolution of classes to fakes.
  *
- * It should not be invoked directly, instead the trait CanBeFaked should be applied to the Model you wish
+ * It should not be invoked directly, instead the trait CanBeFaked should be applied to the class you wish
  * to fake, and the methods made available through that trait should be used.
+ *
+ * note for CModel classes, you should use the ModelCanBeFaked trait instead.
  *
  * The intent here is to make the cleaning up of any fakes very simple during between tests.
  */
-class ModelFakeTracker
+class FakedClassesTracker
 {
-    public static array $faked_models = [];
+    public static array $faked_classes = [];
 
-    public static function setFakeForModel(string $model_class, $fake = null): void
+    public static function setFakeForClass(string $class, $fake = null): void
     {
-        if (!$fake && array_key_exists($model_class, self::$faked_models)) {
-            unset(static::$faked_models[$model_class]);
+        if (!$fake && array_key_exists($class, self::$faked_classes)) {
+            unset(static::$faked_classes[$class]);
             return;
         }
 
-        static::$faked_models[$model_class] = $fake;
+        static::$faked_classes[$class] = $fake;
     }
 
-    public static function getFakeForModel(string $model_class)
+    public static function getFakeForClass(string $class)
     {
-        return static::$faked_models[$model_class] ?? null;
+        return static::$faked_classes[$class] ?? null;
     }
 
     public static function reset(): void
     {
-        static::$faked_models = [];
+        static::$faked_classes = [];
     }
 }

@@ -16,6 +16,7 @@ use OEModule\OESysEvent\events\ClinicalEventSoftDeletedSystemEvent;
  */
 
 use OE\listeners\RemoveDraftEventAfterSoftDelete;
+use OEModule\OESysEvent\tests\test_traits\HasSysEventListenerAssertions;
 
 /**
  * @group sample-data
@@ -24,31 +25,16 @@ use OE\listeners\RemoveDraftEventAfterSoftDelete;
  */
 class RemoveDraftEventAfterSoftDeleteTest extends OEDbTestCase
 {
-    use FakesModels;
     use HasModelAssertions;
+    use HasSysEventListenerAssertions;
     use WithTransactions;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-        \Yii::app()->event->init();
-    }
-
-    public function tearDown(): void
-    {
-        \Yii::app()->event->forgetAll();
-        parent::tearDown();
-    }
 
     /** @test */
     public function listener_is_triggered_for_event()
     {
         $clinical_event = Event::factory()->create();
-        $mock_listener = $this->createMock(RemoveDraftEventAfterSoftDelete::class);
-        $mock_listener->expects($this->once())
-            ->method('__invoke');
 
-        ListenerBuilder::fakeWith(RemoveDraftEventAfterSoftDelete::class, $mock_listener);
+        $this->expectListenerToBeInvoked(RemoveDraftEventAfterSoftDelete::class);
 
         ClinicalEventSoftDeletedSystemEvent::dispatch($clinical_event);
     }

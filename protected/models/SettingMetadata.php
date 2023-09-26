@@ -1,7 +1,4 @@
 <?php
-
-use OE\concerns\CanBeFaked;
-
 /**
  * OpenEyes.
  *
@@ -20,6 +17,7 @@ use OE\concerns\CanBeFaked;
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OE\concerns\ModelCanBeFaked;
 use OE\factories\models\traits\HasFactory;
 
 /**
@@ -39,7 +37,7 @@ use OE\factories\models\traits\HasFactory;
  */
 class SettingMetadata extends BaseActiveRecordVersioned
 {
-    use CanBeFaked;
+    use ModelCanBeFaked;
     use HasFactory;
 
     public static array $CONTEXT_CLASSES = [

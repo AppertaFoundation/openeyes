@@ -17,7 +17,7 @@
 
 /**
  * @group sample-data
- * @group system-events
+ * @group sys-events
  * @group event-type
  */
 class EventTypeTest extends OEDbTestCase

@@ -16,6 +16,7 @@
 use OE\listeners\ClearSessionFilterDataOnSessionSiteChange;
 use OEModule\OESysEvent\events\SessionSiteChangedSystemEvent;
 use OEModule\OESysEvent\components\ListenerBuilder;
+use OEModule\OESysEvent\tests\test_traits\HasSysEventListenerAssertions;
 
 /**
  * @group sample-data
@@ -23,31 +24,15 @@ use OEModule\OESysEvent\components\ListenerBuilder;
  */
 class ClearSessionFilterDataOnSessionSiteChangeTest extends OEDbTestCase
 {
-    use WithFaker;
-    use FakesModels;
     use HasModelAssertions;
+    use HasSysEventListenerAssertions;
+    use WithFaker;
     use WithTransactions;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-        \Yii::app()->event->init();
-    }
-
-    public function tearDown(): void
-    {
-        \Yii::app()->event->forgetAll();
-        parent::tearDown();
-    }
 
     /** @test */
     public function listener_is_triggered_for_event()
     {
-        $mock_listener = $this->createMock(ClearSessionFilterDataOnSessionSiteChange::class);
-        $mock_listener->expects($this->once())
-            ->method('__invoke');
-
-        ListenerBuilder::fakeWith(ClearSessionFilterDataOnSessionSiteChange::class, $mock_listener);
+        $this->expectListenerToBeInvoked(ClearSessionFilterDataOnSessionSiteChange::class);
 
         SessionSiteChangedSystemEvent::dispatch($this->faker->randomNumber(), $this->faker->randomNumber());
     }
