@@ -13,34 +13,18 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-trait FakesSettingMetadata
+namespace OE\concerns;
+
+use FakedClassesTracker;
+
+trait ModelCanBeFaked
 {
-    use InteractsWithFakedClasses;
+    use CanBeFaked;
 
-    protected $settingsmetadata_cache = [];
-
-    protected function fakeSettingMetadata($key, $value)
+    public static function model($class_name = null)
     {
-        $this->settingsmetadata_cache[$key] = $value;
+        $fake = FakedClassesTracker::getFakeForClass(self::class);
 
-        $this->ensureModelFaked();
-    }
-
-    protected function ensureModelFaked()
-    {
-        if (FakedClassesTracker::getFakeForClass(SettingMetadata::class)) {
-            return;
-        }
-
-        $mock = $this->getMockBuilder(SettingMetadata::class)
-            ->onlyMethods(['getSetting'])
-            ->getMock();
-
-        $mock->method('getSetting')
-            ->willReturnCallback(function ($key) {
-                return $this->settingsmetadata_cache[$key] ?? null;
-            });
-
-        SettingMetadata::fakeWith($mock);
+        return $fake ?? parent::model($class_name);
     }
 }

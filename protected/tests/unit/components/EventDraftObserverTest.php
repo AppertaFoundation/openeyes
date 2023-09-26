@@ -1,5 +1,7 @@
 <?php
 use OEModule\OESysEvent\components\ListenerBuilder;
+use OEModule\OESysEvent\tests\test_traits\HasSysEventListenerAssertions;
+
 /**
  * (C) Apperta Foundation, 2023
  * This file is part of OpenEyes.
@@ -21,32 +23,17 @@ use OEModule\OESysEvent\components\ListenerBuilder;
  */
 class EventDraftObserverTest extends OEDbTestCase
 {
-    use WithTransactions;
     use HasModelAssertions;
-    use FakesModels;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-        \Yii::app()->event->init();
-    }
-
-    public function tearDown(): void
-    {
-        \Yii::app()->event->forgetAll();
-        parent::tearDown();
-    }
+    use HasSysEventListenerAssertions;
+    use WithTransactions;
 
     /** @test */
     public function created_method_is_triggered_for_event_created()
     {
         $clinical_event = Event::factory()->create();
         $this->fakeOtherEventListeners();
-        $mock_listener = $this->createMock(EventDraftObserver::class);
-        $mock_listener->expects($this->once())
-            ->method('removeDraftForCreated');
 
-        ListenerBuilder::fakeWith(EventDraftObserver::class, $mock_listener);
+        $this->expectListenerWithMethod(EventDraftObserver::class, 'removeDraftForCreated');
 
         \Yii::app()->event->dispatch('event_created', ['event' => $clinical_event]);
     }
@@ -56,11 +43,7 @@ class EventDraftObserverTest extends OEDbTestCase
     {
         $clinical_event = Event::factory()->create();
         $this->fakeOtherEventListeners();
-        $mock_listener = $this->createMock(EventDraftObserver::class);
-        $mock_listener->expects($this->once())
-            ->method('removeDraftForUpdated');
-
-        ListenerBuilder::fakeWith(EventDraftObserver::class, $mock_listener);
+        $this->expectListenerWithMethod(EventDraftObserver::class, 'removeDraftForUpdated');
 
         \Yii::app()->event->dispatch('event_updated', ['event' => $clinical_event]);
     }

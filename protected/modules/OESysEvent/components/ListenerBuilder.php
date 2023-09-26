@@ -15,7 +15,7 @@
 
 namespace OEModule\OESysEvent\components;
 
-use ModelFakeTracker;
+use FakedClassesTracker;
 use OE\concerns\InteractsWithApp;
 
 /**
@@ -42,14 +42,14 @@ final class ListenerBuilder
 
     public static function fakeWith($class, $mock = null)
     {
-        ModelFakeTracker::setFakeForModel($class, $mock);
+        FakedClassesTracker::setFakeForClass($class, $mock);
 
         return $mock;
     }
 
     public function build($class, ...$args)
     {
-        $fake = ModelFakeTracker::getFakeForModel($class);
+        $fake = FakedClassesTracker::getFakeForClass($class);
 
         if ($fake) {
             return $fake;

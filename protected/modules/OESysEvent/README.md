@@ -67,6 +67,48 @@ At the moment we leverage standard Yii configuration on the event component:
 
 ### Testing
 
+#### Events
+
+It's possible to prevent events being dispatched, and then assert that they would have been dispatched in the normal run of things. This provides a mechanism to sanity check that events are setup for dispatching correctly when actions take place. For testing convenience, this is wrapped up in a single testing trait that provides some standardised assertions
+
+```
+class ASystemEventTest extends OEDbTestCase
+{
+    use HasSysEventAssertions;
+
+    /** @test */
+    public function check_event_with_properties_dispatched_state()
+    {
+        $this->fakeEvents();
+
+        // carry out some actions
+
+        $this->assertEventDispatched(ExpectedEvent::class);
+        $this->assertEventNotDispatched(UnexpectedEvent::class);
+
+        $this->assertEventDispatched(ConditionalEvent::class, function (ConditionalEvent $event) {
+            return $event->truthyProperty === true;
+        }
+
+        $this->assertEventNotDispatched(ConditionalEvent::class, function (ConditionalEvent $event) {
+            return $event->truthyProperty === false;
+        }
+    }
+
+    /** @test */
+    public function check_specific_event_dispatched()
+    {
+        $this->fakeEvents([EventUnderTest::class]);
+
+        // actions that dispatches several events
+        $this->assertEventDispatched(EventUnderTest::class); // passes
+        $this->assertEventDispatched(EventNotFaked::class); // fails as would not be tracked
+    }
+}
+```
+
+#### Listeners
+
 The Manager uses the `ListenerBuilder` factory class to instantiate and invoke listeners that are triggered by events. In turn, this factory class supports faking of the classes that it is asked to build. This pattern is intended to provide support for ensuring that listeners have been configured for events correctly:
 
 ```
@@ -82,6 +124,36 @@ public function listener_is_triggered_for_event()
     SystemEventThatShouldTriggerListener::dispatch();
 }
 ```
+
+For convenience, this behaviour is wrapped up in a test_trait in this module:
+
+```
+class ListenerTest extends OEDbTestCase
+{
+    use HasSysEventListenerAssertions;
+
+    /** @test */
+    public function ensure_listener_is_invoked()
+    {
+        $this->expectListenerToBeInvoked(ExpectedListener::class);
+
+        EventToTriggerListener::dispatch();
+    }
+
+    /** @test */
+    public function listener_with_custom_method_is_called()
+    {
+        $this->expectListenerWithMethod(
+            CustomExpectedListener::class,
+            'aMethod',
+            function (...$args) {
+                return $args[0] === true;
+            }
+        );
+
+        EventToTriggerCustomListener::dispatch();
+    }
+}
 
 To test the listener behaviour itself, the class should instantitiated and called with the SystemEvent it's expecting to be triggered by.
 
@@ -114,7 +186,3 @@ Providing a mechanism in configuration for one or more webhook to be defined to 
 ### System event broadcasting
 
 Using websockets through something like soketi.io we would be able to use system events to trigger UI updates in OpenEyes.
-
-### Event faking
-
-Infrastructure to help support testing of events being triggered.

@@ -1,7 +1,7 @@
 <?php
 
 use OEModule\OESysEvent\events\UserSavedSystemEvent;
-use OEModule\OESysEvent\tests\test_traits\MocksSystemEventManager;
+use OEModule\OESysEvent\tests\test_traits\HasSysEventAssertions;
 
 /**
  * (C) Apperta Foundation, 2023
@@ -21,27 +21,32 @@ use OEModule\OESysEvent\tests\test_traits\MocksSystemEventManager;
 /**
  * @group sample-data
  * @group user
- * @group system-events
  */
 class UserWithSampleDataTest extends OEDbTestCase
 {
     use WithFaker;
     use WithTransactions;
-    use MocksSystemEventManager;
+    use HasSysEventAssertions;
 
-    /** @test */
+    /**
+     * @test
+     * @group sys-events
+     */
     public function user_saved_event_is_dispatched()
     {
-        $event_manager = $this->mockSystemEventManager();
+        $this->fakeEvents();
 
         $user = User::factory()->make();
         if (!$user->save()) {
             $this->fail(print_r($user->getErrors(), true));
         }
 
-        $dispatched = $event_manager->getDispatched(UserSavedSystemEvent::class);
-        $this->assertCount(1, $dispatched);
-        $this->assertEquals($user, $dispatched[0]->user);
+        $this->assertEventDispatched(
+            UserSavedSystemEvent::class,
+            function (UserSavedSystemEvent $event) use ($user) {
+                return $event->user->id === $user->id;
+            }
+        );
     }
 
     public function initalsBehaviourProvider()

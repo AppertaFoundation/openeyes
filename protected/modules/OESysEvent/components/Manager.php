@@ -16,7 +16,9 @@
 namespace OEModule\OESysEvent\components;
 
 use CApplicationComponent;
+use InvalidArgumentException;
 use OE\concerns\InteractsWithApp;
+use OEModule\OESysEvent\components\traits\CanFakeEvents;
 use OEModule\OESysEvent\contracts\Dispatchable;
 use OEModule\OESysEvent\contracts\Dispatcher;
 use OEModule\OESysEvent\exceptions\UnrecognisedListenerConfigException;
@@ -30,6 +32,7 @@ use OEModule\OESysEvent\exceptions\UnrecognisedListenerConfigException;
  */
 class Manager extends CApplicationComponent implements Dispatcher
 {
+    use CanFakeEvents;
     use InteractsWithApp;
 
     public array $observers = [];
@@ -68,11 +71,18 @@ class Manager extends CApplicationComponent implements Dispatcher
     {
         if (is_string($arguments[0])) {
             // legacy dispatch pattern
-            $listeners = $this->getListenersForEventString($arguments[0]);
+            $event_name = $arguments[0];
             array_shift($arguments);
         } else {
-            $listeners = $this->getListenersFor($arguments[0]);
+            $event_name = get_class($arguments[0]);
         }
+
+        if ($this->shouldFakeEvent($event_name)) {
+            $this->recordEvent($event_name, $arguments);
+            return;
+        }
+
+        $listeners = $this->getListenersForEventString($event_name);
 
         foreach ($listeners as $listener) {
             $listener(...$arguments);
@@ -144,11 +154,6 @@ class Manager extends CApplicationComponent implements Dispatcher
         return function (...$arguments) use ($listener_instance, $method) {
             return $method ? $listener_instance->$method(...$arguments) : $listener_instance(...$arguments);
         };
-    }
-
-    protected function getListenersFor(Dispatchable $dispatchable): array
-    {
-        return $this->getListenersForEventString(get_class($dispatchable));
     }
 
     protected function getListenersForEventString(string $event_name): array
