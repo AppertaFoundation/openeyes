@@ -1518,7 +1518,7 @@ class DefaultController extends \BaseEventTypeController
             "&element_type_id=" . \Yii::app()->request->getParam("element_type_id") .
             "&signature_type=" . \Yii::app()->request->getParam("signature_type") .
             "&signatory_role=" . \Yii::app()->request->getParam("signatory_role") .
-            "&signature_name=" . \Yii::app()->request->getParam("signatory_name") .
+            "&signatory_name=" . \Yii::app()->request->getParam("signatory_name") .
             "&element_id=" . $element->id .
             "&deviceSign=" . \Yii::app()->request->getParam("deviceSign"));
     }
