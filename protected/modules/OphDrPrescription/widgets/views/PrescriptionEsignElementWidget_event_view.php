@@ -16,34 +16,67 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<?php /** @var PrescriptionEsignElementWidget $this */ ?>
+<?php /** @var OEModule\OphDrPrescription\widgets\PrescriptionEsignElementWidget $this */ ?>
+<style>
+    table.js-signature-list tr.secondary:hover {
+        background-color: lightgray;
+    }
+
+    table.js-signature-list tr.secondary .sign-actions button {
+        display: none;
+    }
+
+    table.js-signature-list tr.secondary:hover .sign-actions button {
+        display: block;
+    }
+</style>
 <div class="element-fields">
     <div class="element-data full-width">
+
         <?php foreach ($this->element->getInfoMessages() as $msg) { ?>
             <div class="alert-box info"><?=CHtml::encode($msg)?></div>
         <?php } ?>
+
         <?php if (!$this->element->isSigned()) { ?>
-            <div class="alert-box issue" data-test="unsigned-element-warning"><?= $this->element->getUnsignedMessage() ?>
-                <?php if ($this->element->usesEsignDevice()) {?>
+            <div class="alert-box issue"><?= $this->element->getUnsignedMessage() ?>
+                <?php if ($this->element->usesEsignDevice()) { ?>
                     <a href="#" onclick="bluejay.demoSignatureDeviceLink();">Connect your e-Sign device</a>
                 <?php } ?>
             </div>
-            <form class="js-view-signature-form" action="/OphDrPrescription/default/finalizeWithSignatures" method="post">
-                <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>" />
-                <input type="hidden" name="event" value="<?= $this->element->event->id ?>" />
-                <table class="last-left">
+        <?php } ?>
+
+        <form class="js-view-signature-form" action="/OphDrPrescription/default/finalizeWithSignatures" method="post">
+            <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>" />
+            <input type="hidden" name="event" value="<?= $this->element->event->id ?>" />
+            <table class="last-left js-signature-list" data-test="signatory-list-table">
+                <colgroup>
+                    <col style="width:40px">
+                    <col class="cols-2">
+                    <col class="cols-2">
+                    <col class="cols-2">
+                    <col class="cols-3">
+                </colgroup>
                 <thead>
-                    <tr>
-                        <th></th>
-                        <th>Signatory</th>
-                        <th>Signature</th>
-                    </tr>
+                <tr>
+                    <th></th>
+                    <th>Role</th>
+                    <th>Signatory</th>
+                    <?php if ($this->element->isSigned()) {?>
+                        <th>Date</th>
+                    <?php } ?>
+                    <th>Signature</th>
+                </tr>
                 </thead>
                 <tbody>
                 <?php
-                Yii::app()->user->setFlash('info.info', 'To finalise this prescription, please sign below');
-                $row = 0;
+                    \Yii::app()->user->setFlash('info.info', 'To finalise this prescription, please sign below');
+                    $row = 0;
                 foreach ($this->element->getSignatures() as $signature) {
+                    if ((int)$signature->type === \BaseSignature::TYPE_LOGGEDIN_USER) {
+                        // in Prescription, we always display "Prescriber" as role for user who prescribed
+                        $signature->signatory_role = $this::PRESCRIBER_DISPLAY_ROLE;
+                    }
+
                     $this->widget(
                         static::getWidgetClassByType($signature->type),
                         [
@@ -51,64 +84,27 @@
                             "element" => $this->element,
                             "signature" => $signature,
                             "mode" => "edit",
-                            "hide_role" => true,
-                        ]
-                    );
-                }
-                ?>
-                </tbody>
-                </table>
-            </form>
-            <script>
-                $(document).ready(function() {
-                    $(document).on('signatureAdded', function() {
-                        const proofs = $('.js-proof-field');
-                        const proofsWithValues = $('.js-proof-field[value!=""]');
-
-                        if (proofs.length === proofsWithValues.length) {
-                            $('.js-view-signature-form').submit();
-                        }
-                    });
-                })
-            </script>
-        <?php } else { ?>
-            <table class="last-left">
-                <thead>
-                <tr>
-                    <th></th>
-                    <th>Signatory</th>
-                    <th>Date</th>
-                    <th>Signature</th>
-                </tr>
-                </thead>
-                <tbody>
-                <?php
-                    $row = 0;
-                foreach ($this->element->getViewSignatures() as $signature) {
-                    $this->widget(
-                        static::getWidgetClassByType($signature->type),
-                        [
-                            "row_id" => $row++,
-                            "element" => $this->element,
-                            "signature" => $signature,
-                            "mode" => ($this->mode === $this::$EVENT_EDIT_MODE ? "edit" : "view"),
-                            "hide_role" => true,
+                            "show_date_column" => $this->element->isSigned()
                         ]
                     );
                 }
                 ?>
                 </tbody>
             </table>
-        <?php } ?>
+        </form>
+        <script>
+            $(document).ready(function() {
+                $(document).on('signatureAdded', function() {
+                    $('.js-view-signature-form').submit();
+                });
+            });
+
+            $(function(){
+                const options = {
+                    "mode" : "<?= !$this->element->isSigned() ? 'edit' : 'view' ?>"
+                };
+                new OpenEyes.UI.EsignElementWidget($(".<?= \CHtml::modelName($this->element) ?>"), options);
+            });
+        </script>
     </div>
 </div>
-<script type="text/javascript">
-    $(function(){
-        new OpenEyes.UI.EsignElementWidget(
-            $(".<?= \CHtml::modelName($this->element) ?>"),
-            {
-                mode : "<?= !$this->element->isSigned() ? 'edit' : 'view' ?>"
-            }
-        );
-    });
-</script>

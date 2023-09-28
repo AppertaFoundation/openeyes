@@ -128,6 +128,16 @@ $fpten_dispense_condition_id = OphDrPrescription_DispenseCondition::model()->fin
         <label for="report_type_all">All</label>
       </td>
     </tr>
+    <tr>
+        <td colspan="2">
+            <?php $this->widget('application.modules.OphDrPrescription.widgets.DynamicFiltersWidget', [
+                'title' => 'Secondary Signatories',
+                'prefix' => OphDrPrescription_ReportPrescribedDrugs::class . "[secondary_signatories]",
+                'preselected' => [],
+                'adder_itemset' => $adder_itemset,
+            ]); ?>
+        </td>
+    </tr>
     </tbody>
   </table>
   <table class="standard cols-6" id="report-drug-list">

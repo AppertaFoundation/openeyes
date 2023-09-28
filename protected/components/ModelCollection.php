@@ -86,4 +86,18 @@ class ModelCollection
     {
         return array_map(fn($m) => $m->attributes, $this->data);
     }
+
+    public function groupBy(string $attribute): array
+    {
+        $group = [];
+        foreach ($this->data as $model) {
+            if (!$model->hasAttribute($attribute)) {
+                throw new Exception("The '$attribute' does not exist on '" . get_class($model) . "' model");
+            }
+
+            $group[$model->$attribute][] = $model;
+        }
+
+        return $group;
+    }
 }

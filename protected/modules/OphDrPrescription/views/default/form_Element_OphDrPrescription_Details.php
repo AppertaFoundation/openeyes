@@ -27,7 +27,7 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) {
   <div id="div_Element_OphDrPrescription_Details_prescription_items" class="element-fields full-width">
 
     <div class="data-group">
-      <table id="prescription_items" class="cols-full">
+      <table id="prescription_items" class="cols-full" data-test="prescription-items">
         <colgroup>
           <col>
           <col class="cols-3">

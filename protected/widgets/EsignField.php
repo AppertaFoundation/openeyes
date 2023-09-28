@@ -29,6 +29,8 @@ abstract class EsignField extends BaseCWidget
     /** @var bool */
     public bool $hide_role = false;
 
+    public bool $show_date_column = false;
+
     /**
      * @return string   The action within the module's controller that will be called
      *                  to validate user input and save the signature if passed validation
@@ -42,6 +44,8 @@ abstract class EsignField extends BaseCWidget
         $widgetPath = $assetManager->publish(__DIR__. "/js", true);
         $scriptPath = $widgetPath . '/EsignWidget.js';
         $assetManager->registerScriptFile($scriptPath, "application.widgets.EsignField", $this->scriptPriority, AssetManager::OUTPUT_ALL, true, true);
+
+        $this->show_date_column = $this->show_date_column || $this->isSigned();
     }
 
     /**

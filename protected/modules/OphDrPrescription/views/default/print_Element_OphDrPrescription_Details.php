@@ -202,126 +202,12 @@ if (isset($element->authorisedByUser)) {
         </table>
         <div class="spacer"></div>
     <?php } ?>
-    <?php
-    if ($signatures = $element->isSignedByMedication()) {
-        $readonly_signatures = $signatures->getSignatures(true);
-        foreach ($readonly_signatures as $signature) {
-            ?>
-    <table class="borders done_bys">
-        <tr>
-            <th>Prescribed by</th>
-            <td><?=$prescribed_by->fullname ?><?php if ($prescribed_by->registration_code) {
-                echo ' (' . $prescribed_by->registration_code . ')';
-                } ?>
-            </td>
-            <th>Date</th>
-            <td><?= $prescribed_date ?>
-            </td>
-        </tr>
-        <tr class="handWritten">
-            <th>Signature</th>
-            <td>
-                <?= $signature->getPrintout() ?>
-            </td>
-            <th>Contact Number</th>
-            <td>
-                <div class="dotted-write"></div>
-            </td>
-        </tr>
-    </table>
-            <?php
-        }
-    } else {
-        ?>
-    <table class="borders done_bys">
-        <tr>
-            <th>Prescribed by</th>
-            <td><?=$prescribed_by->fullname ?><?php if ($prescribed_by->registration_code) {
-                echo ' (' . $prescribed_by->registration_code . ')';
-                } ?>
-            </td>
-            <th>Date</th>
-            <td><?= $prescribed_date ?>
-            </td>
-        </tr>
-        <tr class="handWritten">
-            <th>Signature</th>
-            <td>
-                <div class="dotted-write"></div>
-            </td>
-            <th>Contact Number</th>
-            <td>
-                <div class="dotted-write"></div>
-            </td>
-        </tr>
-    </table>    
-        <?php
-    }
-    ?>
-    <table class="borders done_bys"  style="width:48%;float: left">
-        <tr class="handWritten">
-            <th>Screened by</th>
-            <td>
-                <div class="dotted-write"></div>
-            </td>
-        </tr>
-        <tr>
-            <th>Date</th>
-            <td>
-                <div class="dotted-write"></div>
-            </td>
-        </tr>
-    </table>
 
-    <table class="borders done_bys"  style="width:48%;float: right">
-        <tr class="handWritten">
-            <th>Dispensed by</th>
-            <td>
-                <div class="dotted-write"></div>
-            </td>
-        </tr>
-        <tr>
-            <th>Date</th>
-            <td>
-                <div class="dotted-write"></div>
-            </td>
-        </tr>
-    </table>
-
-    <table class="borders done_bys"  style="width:48%;float: left">
-        <tr class="handWritten">
-            <th>Checked by</th>
-            <td>
-                <div class="dotted-write"></div>
-            </td>
-        </tr>
-        <tr>
-            <th>Date</th>
-            <td>
-                <div class="dotted-write"></div>
-            </td>
-        </tr>
-    </table>
-
-    <table class="borders done_bys"  style="width:48%;float: right">
-        <tr class="handWritten">
-            <th>Counselled by</th>
-            <td>
-                <div class="dotted-write"></div>
-            </td>
-        </tr>
-        <tr>
-            <th>Date</th>
-            <td>
-                <div class="dotted-write"></div>
-            </td>
-        </tr>
-    </table>
     <div class="clearfix"></div>
     <?php if ($footer_text !== null) { ?>
         <div><?= $footer_text ?></div>
     <?php } ?>
-<?php } else {
+<?php } else { // end of $data['print_mode'] !== 'WP10' check
     $this->widget('PrescriptionFormPrinter', array(
         'patient' => $this->patient,
         'site' => $this->site,

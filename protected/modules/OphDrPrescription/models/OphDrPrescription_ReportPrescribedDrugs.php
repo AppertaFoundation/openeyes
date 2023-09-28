@@ -25,23 +25,36 @@ class OphDrPrescription_ReportPrescribedDrugs extends BaseReport
     public $user_id;
     public $dispense_condition;
     public $report_type;
+    public array $secondary_signatories = [];
 
     public function attributeLabels()
     {
-        return array(
+        return [
             'drugs' => 'Prescribed drugs',
             'start_date' => 'Date from',
             'start_end' => 'Date end',
             'all_ids' => "Patient's IDs",
-        );
+            'secondary_signatories' => "Secondary signatories",
+        ];
+    }
+
+    public function attributeNames()
+    {
+        return [
+            'drugs',
+            'start_date',
+            'start_end',
+            'all_ids',
+            'secondary_signatories',
+        ];
     }
 
     public function rules()
     {
-        return array(
-            array('start_date, end_date, drugs, user_id, dispense_condition,institution_id, report_type', 'safe'),
-            array('drugs', 'requiredIfNoUser'),
-        );
+        return [
+            ['start_date, end_date, drugs, user_id, dispense_condition,institution_id, report_type, secondary_signatories', 'safe'],
+            ['drugs', 'requiredIfNoUser'],
+        ];
     }
 
     public function requiredIfNoUser($attributes, $params)
@@ -85,6 +98,7 @@ class OphDrPrescription_ReportPrescribedDrugs extends BaseReport
             ->from('episode')
             ->join('event', 'episode.id = event.episode_id AND event.deleted = 0')
             ->join('et_ophdrprescription_details d', 'event.id = d.event_id')
+            ->leftJoin('et_ophdrprescription_esign esign', 'event.id = esign.event_id')
             ->join('event_medication_use emu', 'emu.event_id = d.event_id AND emu.usage_type = \'OphDrPrescription\'')
             ->join('medication m', 'emu.medication_id = m.id')
             ->leftJoin(
@@ -113,18 +127,16 @@ class OphDrPrescription_ReportPrescribedDrugs extends BaseReport
             ->leftJoin('medication_laterality option', 'option.id = emu.laterality');
 
         if ($this->drugs) {
-            $command->andWhere(array('in', 'm.id', $this->drugs));
+            $command->andWhere(['in', 'm.id', $this->drugs]);
         }
 
         if ($this->institution_id) {
-            $command->andWhere('event.institution_id = :institution_id');
-            $params[':institution_id'] = $this->institution_id;
+            $command->andWhere('event.institution_id = :institution_id', [':institution_id' => $this->institution_id]);
         }
 
-        $command->andWhere('event.created_date >= :start_date', array(':start_date' => date('Y-m-d', strtotime($this->start_date)) . ' 00:00:00'))
-            ->andWhere('event.created_date <= :end_date', array(':end_date' => date('Y-m-d', strtotime($this->end_date)) . ' 23:59:59'))
+        $command->andWhere('event.created_date >= :start_date', [':start_date' => date('Y-m-d', strtotime($this->start_date)) . ' 00:00:00'])
+            ->andWhere('event.created_date <= :end_date', [':end_date' => date('Y-m-d', strtotime($this->end_date)) . ' 23:59:59'])
             ->andWhere('episode.deleted = 0')
-            // draft prescription event should not be considered
             ->andWhere('d.draft = 0');
 
         if (!Yii::app()->getAuthManager()->checkAccess('Report', $user_id)) {
@@ -132,12 +144,13 @@ class OphDrPrescription_ReportPrescribedDrugs extends BaseReport
         }
 
         if (is_numeric($this->user_id)) {
-            $command->andWhere('d.created_user_id = :user_id', array(':user_id' => $this->user_id));
+            $command->andWhere('d.created_user_id = :user_id', [':user_id' => $this->user_id]);
         }
 
         if (is_numeric($this->dispense_condition)) {
-            $command->andWhere('emu.dispense_condition_id = :dispense_condition_id', array(':dispense_condition_id' => $this->dispense_condition));
+            $command->andWhere('emu.dispense_condition_id = :dispense_condition_id', [':dispense_condition_id' => $this->dispense_condition]);
         }
+
         switch ($this->report_type) {
             case '0':
                 $command->andWhere('pgd.id IS NULL');
@@ -145,6 +158,38 @@ class OphDrPrescription_ReportPrescribedDrugs extends BaseReport
             case '1':
                 $command->andWhere('pgd.id IS NOT NULL');
                 break;
+        }
+
+        $dynamic_filters = $this->secondary_signatories;
+        $condition_clauses = [];
+        $params = [];
+        if ($this->secondary_signatories) {
+            foreach ($this->secondary_signatories as $index => $filter) {
+                $subquery = Yii::app()->db->createCommand()
+                    ->select('id')
+                    ->from('ophdrprescription_signature sub_sig')
+                    ->where('sub_sig.element_id = esign.id AND sub_sig.signatory_role = :signatory_role_sub_' . $index)
+                    ->getText();
+
+                $params[':signatory_role_sub_' . $index] = $filter['type'];
+
+                if ($filter['value'] === 'SIGNED') {
+                    $condition_clauses[] = "EXISTS ($subquery)";
+                } elseif ($filter['value'] === 'NOT SIGNED') {
+                    $condition_clauses[] = "NOT EXISTS ($subquery)";
+                }
+
+
+                if ($index < count($dynamic_filters) - 1) {
+                    $condition_clauses[] = $filter['operation'] ?: 'AND';
+                }
+            }
+
+            $combined_condition = implode(' ', $condition_clauses);
+            $command->params = array_merge($command->params, $params);
+            $command->andWhere('1=1 AND (' . $combined_condition . ')');
+
+            $command->group('event.id');
         }
 
         $this->items = $command->queryAll();

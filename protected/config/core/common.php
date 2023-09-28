@@ -567,6 +567,12 @@ $config = array(
                 'title' => 'e-Sign device link',
                 'uri' => 'javascript:eSignDevicePopup();',
             ),
+            'pharmacy_worklist' => array(
+                'title' => 'Pharmacy worklist',
+                'uri' => 'OphDrPrescription/OphDrPrescriptionPharmacyWorklist/default/index/',
+                'restricted' => array('OprnViewPharmacyWorklist'),
+            ),
+
         ),
         'admin_menu' => array(),
         'dashboard_items' => array(),

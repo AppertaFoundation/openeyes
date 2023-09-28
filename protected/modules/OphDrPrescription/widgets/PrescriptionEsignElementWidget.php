@@ -18,6 +18,19 @@ namespace OEModule\OphDrPrescription\widgets;
 
 class PrescriptionEsignElementWidget extends \EsignElementWidget
 {
+    public const PRESCRIBER_DISPLAY_ROLE = "Prescriber";
+
+    /**
+     * @return string[]
+     */
+    protected static function getFieldTypes() : array
+    {
+        return [
+            \BaseSignature::TYPE_LOGGEDIN_USER => \EsignPINField::class,
+            \BaseSignature::TYPE_OTHER_USER => PinOnlyWidget::class,
+        ];
+    }
+
     /**
      * @inheritdoc
      */
@@ -28,5 +41,22 @@ class PrescriptionEsignElementWidget extends \EsignElementWidget
             return $short_name . "_event_print";
         }
         return $this->getViewNameForPrefix($short_name);
+    }
+
+    /**
+     * Returns a field widget class by type
+     *
+     * @param int $type
+     * @return string
+     * @throws Exception In case $type is invalid
+     */
+    public static function getWidgetClassByType(int $type) : string
+    {
+        $field_types = static::getFieldTypes();
+        if (array_key_exists($type, $field_types)) {
+            return $field_types[$type];
+        }
+
+        throw new \Exception("Signature type $type not defined");
     }
 }

@@ -165,10 +165,10 @@ $dispense_condition_options = array(
             ),
             array('class' => 'dispenseCondition cols-11', 'empty' => 'Select', 'data-test' => 'drug-dispense-condition', 'options' => $dispense_condition_options)
         ) ?>
-
     </td>
     <td>
         <?php
+
         $locations = $item->dispense_condition ? $item->dispense_condition->getLocationsForCurrentInstitution() : array('');
         $style = $item->dispense_condition ? '' : 'display: none;';
         echo CHtml::dropDownList(

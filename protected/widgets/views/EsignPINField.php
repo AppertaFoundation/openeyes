@@ -33,18 +33,20 @@ $uid = \CHtml::modelName($el_class) . "_" . $widget_class . "_" . $row_id;
     <!-- Name -->
     <td><span class="js-signatory-name" data-test="signatory-name"><?= $this->signature->signatory_name ?></span></td>
     <!-- Date -->
-    <td>
-        <div class="js-signature-date" data-test="signature-date" <?php if(!$this->isSigned()) { echo 'style="display:none"'; }?>>
+    <td <?= 'style="display:' . ($this->show_date_column ? 'block':'none') . '"';?>>
+        <div class="js-signature-date" data-test="signature-date" >
             <?php $this->displaySignatureDate() ?>
         </div>
-        <div class="js-signature-control" <?php if($this->isSigned()) { echo 'style="display:none"'; }?>>
+    </td>
+    <td <?php if($this->isSigned()) { echo 'style="display:none"'; }?>>
+        <div class="js-signature-control" data-test="signature-control-widget">
             <div class="oe-user-pin">
                 <?php echo CHtml::passwordField('pin_'.$uid, '', array(
                     'placeholder' => "******",
                     'maxlength' => 6,
-                    'inputmode' => "numeric",
+                    'inputmode' => 'numeric',
                     'class' => "user-pin-entry js-pin-input",
-                    "autocomplete"=>"off",
+                    "autocomplete" => "off",
                     'data-test' => "event-auto-pin-entry"
                 )); ?>
                 <button type="button" class="try-pin js-sign-button" data-test="pin-sign-button">PIN sign</button>

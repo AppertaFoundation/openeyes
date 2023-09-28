@@ -35,14 +35,16 @@ return [
                 'Routes' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/routesAdmin/list', 'restricted' => array('admin')),
                 'Dispense conditions' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/admin/DispenseCondition/index'),
                 'Dispense locations' => array('module' => 'OphDrPrescription', 'uri' => '/OphDrPrescription/admin/DispenseLocation/index'),
+                'Prescription Signatures' => '/OphDrPrescription/OphDrPrescriptionAdmin/signatures/edit'
             ],
-        ]
 
+        ],
     ],
     'aliases' => [
         'OphDrPrescriptionAdmin' => 'OEModule.OphDrPrescription.modules.OphDrPrescriptionAdmin',
+        'OphDrPrescriptionPharmacyWorklist' => 'OEModule.OphDrPrescription.modules.OphDrPrescriptionPharmacyWorklist',
     ],
-    'modules' => ['OphDrPrescriptionAdmin'],
+    'modules' => ['OphDrPrescriptionAdmin', 'OphDrPrescriptionPharmacyWorklist'],
 
     'import' => ['application.modules.OphDrPrescription.components.*'],
 ];

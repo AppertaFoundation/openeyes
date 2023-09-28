@@ -27,6 +27,7 @@ class GetSignatureByPinAction extends \CAction
     protected string $thumbnail_src2;
     protected ?int $signature_file_id = null;
     protected int $context;
+    protected bool $any_user_allowed = false;
 
     protected bool $is_secretary_signing = false;
 
@@ -87,6 +88,7 @@ class GetSignatureByPinAction extends \CAction
     public function run()
     {
         $this->pin = Yii::app()->request->getPost('pin');
+        $this->any_user_allowed = Yii::app()->request->getPost('get_user_by_pin') === "true";
 
         try {
             $this->checkIsSecretarySigning();
@@ -98,7 +100,25 @@ class GetSignatureByPinAction extends \CAction
                     throw new Exception("An error occurred while trying to fetch your signature. Please contact support.");
                 }
             } else {
-                $this->user_for_signature = SignatureHelper::getUserForSigning($user_id);
+
+                if ($this->any_user_allowed) {
+                    $user = SignatureHelper::getUserByPin($this->pin);
+                    if (!$user) {
+                        throw new Exception("Incorrect PIN");
+                    } else {
+                        $this->user_for_signature = $user;
+                    }
+                } else {
+                    $user = SignatureHelper::getUserForSigning($user_id);
+
+                    if (!$user) {
+                        throw new Exception("User not found");
+                    } else {
+                        $this->user_for_signature = $user;
+                    }
+                }
+
+                $this->user_for_signature = $this->any_user_allowed ? SignatureHelper::getUserByPin($this->pin) : SignatureHelper::getUserForSigning($user_id);
             }
 
             // Check if the user has the necessary permissions to sign this event, if not throw an exception.

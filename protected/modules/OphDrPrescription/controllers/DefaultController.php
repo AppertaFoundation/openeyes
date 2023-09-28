@@ -34,7 +34,9 @@ class DefaultController extends BaseEventTypeController
         'finalize' => self::ACTION_TYPE_FORM,
         'finalizeWithSignatures' => self::ACTION_TYPE_FORM,
         'getSignatureByPin' => self::ACTION_TYPE_FORM,
-        'getSignatureByUsernameAndPin' => self::ACTION_TYPE_FORM
+        'getSignatureByUsernameAndPin' => self::ACTION_TYPE_FORM,
+        'getSignatureForLoggedInUser' => self::ACTION_TYPE_FORM,
+        'removeSignature' => self::ACTION_TYPE_FORM,
     );
 
     public static $required_user_sign_permissions = [
@@ -63,7 +65,13 @@ class DefaultController extends BaseEventTypeController
             ],
             'getSignatureByUsernameAndPin' => [
                 'class' => GetSignatureByUsernameAndPinAction::class
-            ]
+            ],
+            'getSignatureForLoggedInUser' => [
+                'class' => GetSignatureForLoggedInUserAction::class
+            ],
+            'removeSignature' => [
+                'class' => RemoveSignatureAction::class
+            ],
         ];
     }
 
@@ -975,6 +983,10 @@ class DefaultController extends BaseEventTypeController
      *
      * @param       integer     event_id
      */
+    /**
+     * @throws CDbException
+     * @throws Exception
+     */
     public function actionFinalizeWithSignatures()
     {
         if (Yii::app()->request->isPostRequest) {
@@ -1037,34 +1049,40 @@ class DefaultController extends BaseEventTypeController
                         throw new Exception("Failed to save Medication Management prescription Electronic Signatures");
                     }
                 } else {
-                    $prescription_esign = Element_OphDrPrescription_Esign::model()->findByAttributes([
+                    $element = Element_OphDrPrescription_Esign::model()->findByAttributes([
                         'event_id' => $eventID
                     ]);
-
-                    $es_signatures = $prescription_esign->getSignatures();
-                    $index = 0;
 
                     $transaction = Yii::app()->db->beginTransaction();
                     $errors = array();
 
-                    foreach ($es_signatures as $signature) {
-                        $signature->signatory_name = $signatures[$index]['signatory_name'];
-                        $signature->proof = $signatures[$index]['proof'];
-                        $signature->setDataFromProof();
-
-                        $signature->element_id = $prescription_esign->id;
-
-                        if (!$signature->save()) {
-                            $errors[] = $signature->getErrors();
+                    foreach ($signatures as $signature) {
+                        if (empty($signature['proof'])) {
+                            continue;
                         }
 
-                        $index++;
+                        $prescription_signature = OphDrPrescription_Signature::model()->findOrNew($signature['id']);
+
+                        $prescription_signature->signatory_role = $signature['signatory_role'];
+                        $prescription_signature->proof = $signature['proof'];
+                        $prescription_signature->element_id = $element->id;
+                        $prescription_signature->type = $signature['type'];
+                        $prescription_signature->setDataFromProof();
+
+                        if (!$prescription_signature->signatory_name) {
+                            $user = \User::model()->findByPk($prescription_signature->signed_user_id);
+                            $prescription_signature->signatory_name = $user ? $user->getFullNameAndTitle() : null;
+                        }
+
+                        if (!$prescription_signature->save()) {
+                            $errors[] = $prescription_signature->getErrors();
+                        }
                     }
 
-                    if (count($errors) > 0) {
+                    if ($errors) {
                         $transaction->rollback();
 
-                        throw new Exception("Failed to save Prescription Electronic Signatures");
+                        throw new Exception("Failed to save Prescription Electronic Signatures" . print_r($errors, true));
                     } else {
                         $transaction->commit();
                     }
@@ -1076,7 +1094,7 @@ class DefaultController extends BaseEventTypeController
                     Yii::app()->session['user_auth']->username . ' authorises the prescription.'
                 );
 
-                return $this->redirect(array('/OphDrPrescription/default/view/' . $eventID));
+                $this->redirect(array('/OphDrPrescription/default/view/' . $eventID));
             }
 
             throw new Exception("Prescription Details model not found for event " . $eventID);

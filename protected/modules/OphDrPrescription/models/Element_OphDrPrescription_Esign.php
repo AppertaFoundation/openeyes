@@ -36,6 +36,9 @@ class Element_OphDrPrescription_Esign extends BaseEsignElement
     private $auto_sign_role = 'Prescriber';
 
     protected $widgetClass = PrescriptionEsignElementWidget::class;
+
+    private array $required_secondary_signatories = [];
+
     /**
      * Returns the static model of the specified AR class.
      *
@@ -80,6 +83,11 @@ class Element_OphDrPrescription_Esign extends BaseEsignElement
         );
     }
 
+    public function getDetailsElement():? Element_OphDrPrescription_Details
+    {
+        return Element_OphDrPrescription_Details::model()->findByAttributes(['event_id' => $this->event_id]);
+    }
+
     /**
      * @return array customized attribute labels (name=>label)
      */
@@ -111,38 +119,93 @@ class Element_OphDrPrescription_Esign extends BaseEsignElement
         ));
     }
 
-    /**
-     * @return OphDrPrescription_Signature[]
-     */
     public function getSignatures(): array
     {
         if (!empty(\Yii::app()->session['user']->grade->grade)) {
             $this->auto_sign_role = \Yii::app()->session['user']->grade->grade;
         }
 
-        if (!$this->attemptAutoSign()) {
-            $prescriber = new OphDrPrescription_Signature();
-            $prescriber->signatory_role = $this->auto_sign_role;
-            $prescriber->type = BaseSignature::TYPE_LOGGEDIN_USER;
-
-
-            if (!$this->isNewRecord) {
-                return [$prescriber];
-            }
-
-            return !empty($this->signatures) ? $this->signatures : [$prescriber];
+        if (in_array(\Yii::app()->controller->action->id ?? null, ["create", "update"])) {
+            return $this->getCreateSignatures();
         }
 
-        return $this->signatures;
+        return $this->getViewSignatures();
+    }
+
+    private function getPrescriberSignatureObject()
+    {
+        $prescriber = array_filter($this->signatures, fn($sign) => (int)$sign->type === BaseSignature::TYPE_LOGGEDIN_USER)[0] ?? null;
+
+        if (!$prescriber) {
+            $prescriber = new OphDrPrescription_Signature();
+            $prescriber->type = BaseSignature::TYPE_LOGGEDIN_USER;
+        }
+
+        $prescriber->signatory_role = $this->auto_sign_role;
+
+        return $prescriber;
+    }
+
+    public function getSecondarySignatures(Institution $institution = null): array
+    {
+        if ($this->required_secondary_signatories) {
+            return $this->required_secondary_signatories;
+        }
+
+        $required_signatories = [];
+        $current_institution = $institution ?: Institution::model()->getCurrent();
+
+        $secondary_signatories = SecondarySignatory::model()->findAll('institution_id = :institution_id OR institution_id IS NULL', [
+            ':institution_id' => $current_institution->id
+        ]);
+
+        foreach ($secondary_signatories as $secondary_signatory) {
+            $signatory = new OphDrPrescription_Signature();
+            $signatory->signatory_role = $secondary_signatory->name;
+            $signatory->type = \BaseSignature::TYPE_OTHER_USER;
+
+            $required_signatories[] = $signatory;
+        }
+
+        $this->required_secondary_signatories = $required_signatories;
+
+        return $this->required_secondary_signatories;
+    }
+
+    public function getCreateSignatures(): array
+    {
+        return [$this->getPrescriberSignatureObject()];
     }
 
     public function getViewSignatures(): array
     {
-        $prescriber = new OphDrPrescription_Signature();
-        $prescriber->signatory_role = !empty($this->user->grade) ? $this->user->grade->grade : "Prescriber";
-        $prescriber->type = BaseSignature::TYPE_LOGGEDIN_USER;
+        $signatures = $this->getRelated('signatures', true);
+        $secondary_signatories = $this->getSecondarySignatures($this->event->institution);
+        $signature_list = [];
+        if ($this->isNewRecord) {
+            $prescriber = $this->getPrescriberSignatureObject();
+            $signature_list = array_merge([$prescriber], $secondary_signatories);
+        } else {
+            $filtered_signatures = array_filter($signatures, fn($sign) => $sign->signatory_role === $this->auto_sign_role);
+            $prescriber = reset($filtered_signatures);
 
-        return !empty($this->signatures) ? $this->signatures : [$prescriber];
+            // Prescription saved without prescriber's sign
+            if (!$prescriber) {
+                $signature_list[] = $this->getPrescriberSignatureObject();
+            } else {
+                $signature_list[] = $prescriber;
+            }
+
+            foreach ($secondary_signatories as $secondary_signatory) {
+                $saved_signature = array_filter($signatures, function ($sign) use ($secondary_signatory) {
+                    return $sign->signatory_role === $secondary_signatory->signatory_role;
+                });
+
+                $signature_list[] = $saved_signature ? array_shift($saved_signature) : $secondary_signatory;
+            }
+        }
+
+        return $this->signatures = $signature_list;
     }
 
     /**
@@ -153,7 +216,7 @@ class Element_OphDrPrescription_Esign extends BaseEsignElement
     {
         return !empty(
             array_filter(
-                $this->signatures,
+                $this->getSignatures(),
                 function ($signature) {
                     return $signature->isSigned();
                 }
@@ -199,9 +262,6 @@ class Element_OphDrPrescription_Esign extends BaseEsignElement
 
     public function getContainer_print_view()
     {
-        $print_mode = Yii::app()->request->getParam('print_mode');
-        if ($print_mode === 'WP10' || $print_mode === 'FP10') {
-            return false;
-        }
+        return false;
     }
 }

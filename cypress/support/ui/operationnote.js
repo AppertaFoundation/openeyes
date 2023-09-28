@@ -217,7 +217,7 @@ Cypress.Commands.add('checkOperationNoteCreatedEventsPinSign', () => {
     cy.getBySel('sidebar-event-list').find('[data-event-type="Prescription"] a').click();
 
 
-    cy.getBySel('signatory-name').scrollIntoView().contains('Admin Admin');
+    cy.getBySel('signatory-name').first().scrollIntoView().contains('Admin Admin');
     cy.getBySel('esigned-at').contains('Signed at');
     cy.getBySel('event-auto-pin-entry').should('have.length', 1);
 

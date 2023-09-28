@@ -30,7 +30,7 @@
             <?php if (!$this->element->isSigned()) : ?>
                 <div class="alert-box issue" data-test="unsigned-element-warning"><?= $this->element->getUnsignedMessage() ?></div>
             <?php endif; ?>
-            <table class="last-left">
+            <table class="last-left" data-test="signatory-list-table">
                 <thead>
                     <tr>
                         <th></th>
@@ -42,14 +42,17 @@
                 <?php
                 $row = 0;
                 foreach ($this->element->getSignatures() as $signature) {
+                    // in Prescription, we always display "Prescriber" as role
+                    // note: on edit page we expect only 1 signatory who is the Prescriber regardless od the actual role
+                    $signature->signatory_role = $this::PRESCRIBER_DISPLAY_ROLE;
+
                     $this->widget(
                         static::getWidgetClassByType($signature->type),
                         [
                             "row_id" => $row++,
                             "element" => $this->element,
                             "signature" => $signature,
-                            "mode" => ($this->mode === $this::$EVENT_EDIT_MODE ? "edit" : "view"),
-                            "hide_role" => true,
+                            "mode" => ($this->mode === $this::$EVENT_EDIT_MODE ? "edit" : "view")
                         ]
                     );
                 }

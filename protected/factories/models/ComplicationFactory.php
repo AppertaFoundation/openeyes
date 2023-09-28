@@ -25,4 +25,11 @@ class ComplicationFactory extends ModelFactory
             'name' => $this->faker->words(3, true)
         ];
     }
+
+    public function withInstitution($institution)
+    {
+        return $this->state([
+            'institution_id' => $institution
+        ]);
+    }
 }

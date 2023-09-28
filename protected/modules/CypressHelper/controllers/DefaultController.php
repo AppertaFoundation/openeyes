@@ -67,7 +67,8 @@ class DefaultController extends \CController
         $this->sendJsonResponse([
             'firm_id' => $this->getApp()->session['selected_firm_id'],
             'subspecialty_id' => Firm::model()->findByPK($this->getApp()->session['selected_firm_id'])->getSubspecialtyID(),
-            'institution_id' => $this->getApp()->session['selected_institution_id']
+            'institution_id' => $this->getApp()->session['selected_institution_id'],
+            'pincode' => User::model()->findByPk(\Yii::app()->user->id)->getPincode() ?? null,
         ]);
     }
 
@@ -203,8 +204,12 @@ class DefaultController extends \CController
         $system_setting_key = $_POST['system_setting_key'] ?? null;
         $system_setting_value = $_POST['system_setting_value'] ?? null;
 
-        if (!$system_setting_key || !$system_setting_value) {
-            throw new \CHttpException(400, 'system setting key and value must both be provided');
+        if (!$system_setting_key) {
+            throw new \CHttpException(400, 'system setting key must be provided');
+        }
+
+        if (is_null($system_setting_value)) {
+            throw new \CHttpException(400, 'system setting value must be provided');
         }
 
         $setting = SettingInstallation::model()->findByAttributes(['key' => $system_setting_key]);

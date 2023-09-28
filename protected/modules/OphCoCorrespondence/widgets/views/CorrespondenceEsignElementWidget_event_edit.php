@@ -35,7 +35,7 @@
                     <?php endif; ?>
                 </div>
             <?php endif; ?>
-            <table class="last-left">
+            <table class="last-left" data-test="signatory-list-table">
                 <thead>
                 <tr>
                     <th></th>
