@@ -27,6 +27,11 @@
  */
 class BodySiteType extends CActiveRecord
 {
+
+    const LEFT = 8966001;
+    const RIGHT = 18944008;
+    const BOTH = 40638003;
+    const NONE = "None";
     /**
      * Returns the static model of the specified AR class.
      * Please note that you should have this exact method in all your CActiveRecord descendants!
@@ -57,7 +62,6 @@ class BodySiteType extends CActiveRecord
             ['body_site_snomed_type', 'required'],
             ['body_site_snomed_type, title_full, title_short, title_abbreviated', 'length', 'max' => 45],
             // The following rule is used by search().
-            // @todo Please remove those attributes that should not be searched.
             ['body_site_snomed_type, title_full, title_short, title_abbreviated', 'safe', 'on' => 'search'],
         ];
     }
@@ -70,7 +74,6 @@ class BodySiteType extends CActiveRecord
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return [
-            'attachmentDatas' => [self::HAS_MANY, 'AttachmentData', 'body_site_snomed_type'],
         ];
     }
 

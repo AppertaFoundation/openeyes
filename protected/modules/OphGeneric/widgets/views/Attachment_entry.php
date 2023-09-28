@@ -19,6 +19,12 @@
 <?php foreach ($attachments as $group) : ?>
     <div class="group flex-layout flex-center break" style="padding-right: 10px">
         <!-- Display the GROUPED folder thumbnail -->
+        <?php if ($eye_side !== Attachment::NONE) {
+            $short_eye_title = strtoupper($eye_side[0]);
+        } else {
+            $short_eye_title = Attachment::NONE;
+        } ?>
+
         <?php if (count($group) > 1) {
             // set attachments info in the group thumbnail img for JS to create the Dialog
             $group_data = [];
@@ -26,7 +32,7 @@
                 $group_data[] = [
                     'id' => $attachment['attachmentData']->id,
                     'type' => $attachment['attachmentData']->attachment_type,
-                    'title_short' => strtoupper($eye_side[0]) . " - " . $attachment['attachmentType']->title_short,
+                    'title_short' => $short_eye_title . " - " . $attachment['attachmentType']->title_short,
                     'title_full' => $attachment['attachmentType']->title_full,
                     'mime' => $attachment['attachmentData']->mime_type,
                     'group_id' => $attachment['group_id'],
@@ -37,7 +43,7 @@
                  src="http://icons.iconarchive.com/icons/dtafalonso/yosemite-flat/128/Folder-icon.png"
                  width="<?= $image_size ?>px" height="<?= $image_size ?>px"
                  data-group='<?= json_encode($group_data) ?>'
-                 data-group_id='<?= $group_data[0]['group_id']?>'
+                 data-group_id='<?= $group_data[0]['group_id'] ?>'
                  data-full-title="<?= ""/* TODO */ ?>"
             />
             <!-- Display ungrouped attachments -->
@@ -50,17 +56,18 @@
                         <i class="oe-i remove-circle small"></i>
                     </a>
 
-                    <img class="js-small-thumbnail-attachment <?= $attachment['preSelected'] ? $attachment['preSelected'] : '' ?>"
-                         src="/Api/attachmentDisplay/view/id/<?= $attachment['attachmentData']->id ?>?attachment=thumbnail_small_blob&mime=image/png"
-                         width="<?= $image_size ?>px" height="<?= $image_size ?>px"
-                         data-full-title="<?= $attachment['attachmentType']->title_full ?>"
-                         data-mime= <?= $attachment['attachmentData']->mime_type ?>
-                         data-id="<?= $attachment['attachmentData']->id ?>"
+                    <img
+                        class="js-small-thumbnail-attachment <?= $attachment['preSelected'] ? $attachment['preSelected'] : '' ?>"
+                        src="/Api/attachmentDisplay/view/id/<?= $attachment['attachmentData']->id ?>?attachment=thumbnail_small_blob&mime=image/png"
+                        width="<?= $image_size ?>px" height="<?= $image_size ?>px"
+                        data-full-title="<?= $attachment['attachmentType']->title_full ?>"
+                        data-mime= <?= $attachment['attachmentData']->mime_type ?>
+                        data-id="<?= $attachment['attachmentData']->id ?>"
                     />
 
                     <!-- show short title below the image -->
                     <div class="cols-full" style="text-align:center;">
-                        <?= strtoupper($eye_side[0]) . " - " . $attachment['attachmentData']->attachmentType->title_short ?>
+                        <?= $short_eye_title . " - " . $attachment['attachmentData']->attachmentType->title_short ?>
                     </div>
                 </div>
             <?php endforeach; ?>

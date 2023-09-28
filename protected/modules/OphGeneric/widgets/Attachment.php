@@ -19,10 +19,10 @@ class Attachment extends BaseModuleWidget
 {
     public $field_name = 'oe-attachment';
 
-    const LEFT = 8966001;
-    const RIGHT = 18944008;
-    const BOTH = 40638003;
-
+    const LEFT = "LEFT";
+    const RIGHT = "RIGHT";
+    const BOTH = "BOTH";
+    const NONE = "None";
     // required
     public $event_ids;
     public $form;
@@ -67,7 +67,6 @@ class Attachment extends BaseModuleWidget
             'eventAttachmentItems.attachmentData.mimeType',
         ];
 
-
         $criteria->together = true;
         $criteria->addCondition('t.event_id = :event_id');
         $criteria->params[':event_id'] = $event_id;
@@ -107,7 +106,9 @@ class Attachment extends BaseModuleWidget
                 if (!$group_already_present) {
                     $event = Event::model()->findByPk($event_id);
                         $event_subtype = isset($event->firstEventSubtypeItem) ? $event->firstEventSubtypeItem->event_subtype : "";
-                        $this->group_titles[$group_side] = "{$api->getLaterality($event_id)->getAdjective()} {$event_subtype} ({$event->event_date})";
+                        $eye = $api->getLaterality($event_id);
+                        $eye_adjective = isset($eye) ? $eye->getAdjective() : '';
+                        $this->group_titles[$group_side] = "{$eye_adjective} {$event_subtype} ({$event->event_date})";
                     array_push($this->event_attachments[$group_side], $group);
                 }
             }
@@ -130,21 +131,23 @@ class Attachment extends BaseModuleWidget
         $right = 0;
 
         foreach ($group_items->eventAttachmentItems as $event_item) {
-            if ($event_item->attachmentData->body_site_snomed_type == Attachment::BOTH) {
-                return "BOTH";
-            } elseif ($event_item->attachmentData->body_site_snomed_type == Attachment::LEFT) {
+            if ($event_item->attachmentData->body_site_snomed_type == BodySiteType::BOTH) {
+                return self::BOTH;
+            } elseif ($event_item->attachmentData->body_site_snomed_type == BodySiteType::LEFT) {
                 $left++;
-            } elseif ($event_item->attachmentData->body_site_snomed_type == Attachment::RIGHT) {
+            } elseif ($event_item->attachmentData->body_site_snomed_type == BodySiteType::RIGHT) {
                 $right++;
+            } elseif($event_item->attachmentData->body_site_snomed_type == BodySiteType::NONE) {
+                return self::NONE;
             }
         }
 
         if ($left && $right) {
-            return "BOTH";
+            return self::BOTH;
         } elseif ($left) {
-            return "LEFT";
+            return self::LEFT;
         } elseif ($right) {
-            return "RIGHT";
+            return self::RIGHT;
         } else {
             return null;
         }
