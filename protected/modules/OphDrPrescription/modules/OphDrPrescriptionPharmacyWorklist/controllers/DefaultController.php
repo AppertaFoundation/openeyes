@@ -17,7 +17,7 @@ class DefaultController extends BaseController
 {
     public array $filters = [];
 
-    public $layout = '//layouts/worklist';
+    public $layout = '//layouts/main';
 
     public function accessRules()
     {
