@@ -403,7 +403,10 @@ $config = array(
         ),
         'hieIntegration' => array(
             "class" => "HieIntegration"
-        )
+        ),
+        'contentForDeliveryRetriever' => [
+            'class' => DocmanRetriever::class
+        ]
     ),
 
     'params' => array(
@@ -990,7 +993,7 @@ $modules = array(
         'OESysEvent' => ['class' => \OEModule\OESysEvent\OESysEventModule::class],
         'OphCiExamination' => array('class' => '\OEModule\OphCiExamination\OphCiExaminationModule'),
         'OphCoCorrespondence',
-        'OphCiPhasing',
+        'OphCiPhasing' => ['class' => \OEModule\OphCiPhasing\OphCiPhasingModule::class],
         'OphTrIntravitrealinjection',
         'OphCoTherapyapplication',
         'OphDrPrescription',
@@ -1010,7 +1013,7 @@ $modules = array(
         'OphInDnaextraction',
         'OphInGeneticresults',
         'OphCoDocument',
-        'OphCiDidNotAttend',
+        'OphCiDidNotAttend' => ['class' => OEModule\OphCiDidNotAttend\OphCiDidNotAttendModule::class],
         'OphGeneric' => ['class' => OEModule\OphGeneric\OphGenericModule::class],
         'OECaseSearch',
         'OETrial',

@@ -165,4 +165,23 @@ describe('freehand drawing element behaviour', () => {
             });
         });
     });
+
+    it('is possible to delete an entry when annotating', () => {
+        cy.login().then(() => {
+            return cy.createPatient();
+        }).then((patient) => {
+            cy.visitEventCreationUrl(patient.id, 'OphCiExamination').then(() => {
+                cy.removeElements();
+
+                cy.addExaminationElement('Freehand drawing').then((element) => {
+                    cy.getBySel('add-freehand-drawing-template-btn').click();
+                    cy.get('[data-test="add-options"] li').first().click();
+                    cy.getBySel('add-icon-btn').click();
+                    cy.getBySel('annotate-freehand-drawing-image-btn').click();
+                    cy.getBySel('remove-entry').click();
+                    cy.get(".freedraw-group").should('not.exist');
+                });
+            });
+        });
+    });
 });

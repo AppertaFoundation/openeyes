@@ -21,6 +21,8 @@
 namespace OEModule\OphCiExamination\models;
 
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * Class HistoryRisksEntry
  * @package OEModule\OphCiExamination\models
@@ -37,6 +39,8 @@ namespace OEModule\OphCiExamination\models;
  */
 class HistoryRisksEntry extends \BaseElement
 {
+    use HasFactory;
+
     public static $PRESENT = 1;
     public static $NOT_PRESENT = 0;
     public static $NOT_CHECKED = -9;

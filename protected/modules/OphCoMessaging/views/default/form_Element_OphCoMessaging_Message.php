@@ -154,7 +154,7 @@ if ($element->isNewRecord) {
                 </div>
                 <div class="msg-actions js-edit-or-send-actions" style="display: none">
                     <button class="blue hint js-edit-message" type="button" data-test="edit-message">Edit message</button>
-                    <button class="green hint" type="submit" data-test="send-message">Send message</button>
+                    <button class="green hint" type="submit" id="et_save" data-test="send-message">Send message</button>
                 </div>
             <?php } else { ?>
                 <div class="msg-preview"><?= Yii::app()->format->Ntext(preg_replace("/\n/", "", preg_replace('/(\s{4})\s+/', '$1', $element->message_text))) ?></div>

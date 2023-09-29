@@ -108,15 +108,15 @@ class HistoryRisks extends \BaseEventElementWidget
         if (array_key_exists('entries', $data)) {
             $entries = array();
             foreach ($data['entries'] as $entry_data) {
-                $id = $entry_data['id'];
+                $id = $entry_data['id'] ?? null;
                 $entry = ($id && array_key_exists($id, $entries_by_id)) ?
                     $entries_by_id[$id] :
                     new HistoryRisksEntry();
 
                 $entry->risk_id = $entry_data['risk_id'];
                 $entry->has_risk = array_key_exists('has_risk', $entry_data) ? $entry_data['has_risk'] : null;
-                $entry->other = $entry_data['other'];
-                $entry->comments = $entry_data['comments'];
+                $entry->other = $entry_data['other'] ?? null;
+                $entry->comments = $entry_data['comments'] ?? null;
                 $entries[] = $entry;
             }
             $element->entries = $entries;

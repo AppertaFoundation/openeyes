@@ -69,4 +69,22 @@ class RoutesAdminController extends BaseAdminController
 
         $admin->editModel();
     }
+
+    public function actionDelete()
+    {
+
+        $post = Yii::app()->request->getPost('MedicationRoute');
+        $attribute_ids_array = $post['id'];
+
+        $result = 1;
+        foreach ($attribute_ids_array as $key => $id) {
+            if ($route = MedicationRoute::model()->findByPk($id)) {
+                $route->is_active = 0;
+                if (!$route->save()) {
+                    $result = 0;
+                }
+            }
+        }
+        echo $result;
+    }
 }

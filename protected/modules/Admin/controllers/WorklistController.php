@@ -777,7 +777,7 @@ class WorklistController extends BaseAdminController
     /**
      * @throws Exception
      */
-    public function actionDeactivatePathwayPresets()
+    public function actionTogglePathwayPresetsActivationStatus()
     {
         $ids = Yii::app()->request->getPost('pathway');
 
@@ -787,7 +787,7 @@ class WorklistController extends BaseAdminController
 
         try {
             foreach ($pathway_types as $pathway_type) {
-                $pathway_type->active = false;
+                $pathway_type->active = !$pathway_type->active;
                 $pathway_type->save();
             }
             $transaction->commit();

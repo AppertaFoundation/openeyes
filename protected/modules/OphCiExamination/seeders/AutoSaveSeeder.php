@@ -15,8 +15,6 @@
 
 namespace OEModule\OphCiExamination\seeders;
 
-use Firm;
-use OE\factories\models\UserFactory;
 use OE\seeders\BaseSeeder;
 use OEModule\OphCiExamination\models\SystemicDiagnoses;
 use User;
@@ -97,6 +95,7 @@ class AutoSaveSeeder extends BaseSeeder
             'draft_test_values' => $draft_test_values,
             'draft_update_url' => '/PatientEvent/loadDraft?draft_id=' . $draft->id,
             'draft_context_name' => $draft->event->firm->name,
+            'draft_subspecialty_id' => $draft->episode->firm->serviceSubspecialtyAssignment->subspecialty_id,
             'context_change_user' => ['username' => $context_change_user_auth->username, 'password' => 'password']
         ];
     }

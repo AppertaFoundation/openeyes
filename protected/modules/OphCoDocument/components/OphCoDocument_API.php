@@ -75,7 +75,7 @@ class OphCoDocument_API extends BaseAPI
                     if ((float)$this->getPDFVersion($pdf_path) > 1.4) {
                         $pdf_path = $this->convertPDF($pdf_path);
                     }
-                    $document_attachments['application'] = $pdf_path;
+                    $document_attachments['application'][] = $pdf_path;
                 } else {
                     $document_attachments[] = ['other' => null];
                 }

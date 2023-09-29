@@ -23,7 +23,7 @@ use OEModule\OphCiExamination\models\OphCiExamination_ElementSet;
             'show_undo_step' => true,
         )
     ); ?>
-    <form action="/Admin/worklist/deactivatePathwayPresets" method="POST">
+    <form action="/Admin/worklist/togglePathwayPresetsActivationStatus" method="POST">
         <table class="oec-patients">
             <thead>
             <tr>
@@ -43,7 +43,7 @@ use OEModule\OphCiExamination\models\OphCiExamination_ElementSet;
             <tbody>
             <?php foreach ($pathway_types as $i => $pathway_type) { ?>
                 <tr data-pathway-type-id="<?= $pathway_type->id ?>">
-                    <td><input name="pathway[]" value="<?= $pathway_type->id ?>" type="checkbox"/></td>
+                    <td><input name="pathway[]" value="<?= $pathway_type->id ?>" type="checkbox" data-test="checkbox-<?= $pathway_type->id ?>"/></td>
                     <td>
                         <a href="/Admin/worklist/editPathwayPreset/<?= $pathway_type->id ?>"><?= $pathway_type->name ?></a>
                     </td>
@@ -62,7 +62,7 @@ use OEModule\OphCiExamination\models\OphCiExamination_ElementSet;
                         </label>
                     </td>
                     <td>
-                        <?= $pathway_type->active ? '<i class="oe-i tick small"/>' : null ?>
+                        <?= $pathway_type->active ? '<i class="oe-i tick small" data-test="is-active-' .  $pathway_type->id . '"/>' : null ?>
                     </td>
                     <td>
                         <!-- Duplicate action -->
@@ -74,7 +74,7 @@ use OEModule\OphCiExamination\models\OphCiExamination_ElementSet;
         </table>
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
         <button formaction="/Admin/worklist/addPathwayPreset" type="submit" class="button green">Add Pathway Preset</button>
-        <button type="submit" class="button red">Deactivate Selected Presets</button>
+        <button type="submit" class="button red" data-test="toggle-active-btn">Toggle Activation Status</button>
     </form>
 </div>
 <script id="js-step-template" type="text/template">

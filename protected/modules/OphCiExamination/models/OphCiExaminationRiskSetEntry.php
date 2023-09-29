@@ -20,6 +20,7 @@ namespace OEModule\OphCiExamination\models;
 
 use OEModule\OphCiExamination\models\OphCiExaminationRisk;
 use OEModule\OphCiExamination\models\OphCiExaminationRiskEntry;
+use OE\factories\models\traits\HasFactory;
 
 /**
  * This is the model class for table "ophciexamination_risk_set_entry".
@@ -43,6 +44,8 @@ use OEModule\OphCiExamination\models\OphCiExaminationRiskEntry;
  */
 class OphCiExaminationRiskSetEntry extends \BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     /**
      * @return string the associated database table name
      */

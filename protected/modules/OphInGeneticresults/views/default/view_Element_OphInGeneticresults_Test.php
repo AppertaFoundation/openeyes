@@ -1,5 +1,4 @@
 <?php
-
 /**
  * OpenEyes.
  *
@@ -16,223 +15,114 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-
 ?>
 
-<div class="element-fields full-width flex-layout flex-top col-gap">
-    <div class="cols-7 data-group">
-        <table class= "cols-full">
-            <colgroup>
-                <col class="cols-5">
-                <col class="cols-7">
-            </colgroup>
-            <tbody>
-                <tr>
-                    <td>
-                        <div class="data-label">
-                            <?=\CHtml::encode($element->getAttributeLabel('id')) ?>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="data-value">
-                            <?=\CHtml::encode($element->id) ?>
-                        </div>
-                    </td>
-                </tr>
-            <tr>
-                <td>
-                    <div class="data-label">
-                        <?=\CHtml::encode($element->getAttributeLabel('gene_id')) ?>
-                    </div>
-                </td>
-                <td>
-                    <div class="data-value">
-                        <?=\CHtml::encode($element->gene ? $element->gene->name : 'None') ?>
-                    </div>
-                </td>
-            </tr>
-                <tr>
-                    <td>
-                        <div class="data-label">
-                            <?=\CHtml::encode($element->getAttributeLabel('method_id')) ?>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="data-value">
-                            <?=\CHtml::encode($element->method ? $element->method->name : 'None') ?>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="data-label">
-                            <?=\CHtml::encode($element->getAttributeLabel('effect_id')) ?>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="data-value">
-                            <?=\CHtml::encode($element->effect ? $element->effect->name : 'None') ?>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="data-label">
-                            <?=\CHtml::encode($element->getAttributeLabel('exon')) ?>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="data-value">
-                            <?=\CHtml::encode($element->exon) ?>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="data-label">
-                            <?=\CHtml::encode($element->getAttributeLabel('base_change_id')) ?>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="data-value">
-                            <?=\CHtml::encode($element->base_change_type ? $element->base_change_type->change : '') ?>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="data-label">
-                            <?=\CHtml::encode($element->getAttributeLabel('base_change')) ?>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="data-value">
-                            <?=\CHtml::encode($element->base_change) ?>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="data-label">
-                            <?=\CHtml::encode($element->getAttributeLabel('amino_acid_change_id')) ?>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="data-value">
-                            <?=\CHtml::encode($element->amino_acid_change_type ? $element->amino_acid_change_type->change : '') ?>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="data-label">
-                            <?=\CHtml::encode($element->getAttributeLabel('amino_acid_change')) ?>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="data-value">
-                            <?=\CHtml::encode($element->amino_acid_change) ?>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="data-label">
-                            <?=\CHtml::encode($element->getAttributeLabel('genomic_coordinate')) ?>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="data-value">
-                            <?=\CHtml::encode($element->genomic_coordinate) ?>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="data-label">
-                            <?=\CHtml::encode($element->getAttributeLabel('genome_version')) ?>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="data-value">
-                            <?=\CHtml::encode($element->genome_version) ?>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="data-label">
-                            <?=\CHtml::encode($element->getAttributeLabel('gene_transcript')) ?>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="data-value">
-                            <?=\CHtml::encode($element->gene_transcript) ?>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="data-label">
-                            <?=\CHtml::encode($element->getAttributeLabel('assay')) ?>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="data-value">
-                            <?=\CHtml::encode($element->assay) ?>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="data-label">
-                            <?=\CHtml::encode($element->getAttributeLabel('homo')) ?>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="data-value">
-                            <?php echo $element->homo === '1' ? 'Yes' : 'No'; ?>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="data-label">
-                            <?=\CHtml::encode($element->getAttributeLabel('result')) ?>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="data-value">
-                            <?=\CHtml::encode($element->result) ?>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="data-label">
-                            <?=\CHtml::encode($element->getAttributeLabel('result_date')) ?>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="data-value">
-                            <?=\CHtml::encode($element->NHSDate('result_date')) ?>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="data-label">
-                            <?=\CHtml::encode($element->getAttributeLabel('comments')) ?>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="data-value">
-                            <?= \OELinebreakReplacer::replace(\CHtml::encode($element->comments)) ?>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
+<div class="element-data full-width">
+  <div class="cols-10">
+    <table class= "cols-full last-left">
+      <colgroup>
+        <col class="cols-4">
+      </colgroup>
+      <tbody>
+        <tr>
+          <td><?= \CHtml::encode($element->getAttributeLabel('id')) ?></td>
+          <td><?= \CHtml::encode($element->id) ?></td>
+        </tr>
+        <tr>
+          <td><?= \CHtml::encode($element->getAttributeLabel('gene_id')) ?></td>
+          <td><?= \CHtml::encode($element->gene ? $element->gene->name : 'None') ?></td>
+        </tr>
+        <tr>
+          <td><?= \CHtml::encode($element->getAttributeLabel('method_id')) ?></td>
+          <td><?= \CHtml::encode($element->method ? $element->method->name : 'None') ?></td>
+        </tr>
+        <tr>
+          <td><?= \CHtml::encode($element->getAttributeLabel('effect_id')) ?></td>
+          <td><?= \CHtml::encode($element->effect ? $element->effect->name : 'None') ?></td>
+        </tr>
+        <tr>
+          <td <?= empty($element->exon) ? 'class="fade"' : '' ?>>
+            <?= \CHtml::encode($element->getAttributeLabel('exon')) ?>
+          </td>
+          <td><?= \CHtml::encode($element->exon) ?></td>
+        </tr>
+        <tr>
+          <td <?= empty($element->base_change_id) ? 'class="fade"' : '' ?>>
+            <?= \CHtml::encode($element->getAttributeLabel('base_change_id')) ?>
+          </td>
+          <td>
+            <?= \CHtml::encode($element->base_change_type ? $element->base_change_type->change : '') ?>
+          </td>
+        </tr>
+        <tr>
+          <td <?= empty($element->base_change) ? 'class="fade"' : '' ?>>
+            <?= \CHtml::encode($element->getAttributeLabel('base_change')) ?>
+          </td>
+          <td><?= \CHtml::encode($element->base_change) ?></td>
+        </tr>
+        <tr>
+          <td <?= empty($element->amino_acid_change_id) ? 'class="fade"' : '' ?>>
+            <?= \CHtml::encode($element->getAttributeLabel('amino_acid_change_id')) ?>
+          </td>
+          <td>
+            <?= \CHtml::encode($element->amino_acid_change_type ? $element->amino_acid_change_type->change : '') ?>
+          </td>
+        </tr>
+        <tr>
+          <td <?= empty($element->amino_acid_change) ? 'class="fade"' : '' ?>>
+            <?= \CHtml::encode($element->getAttributeLabel('amino_acid_change')) ?>
+          </td>
+          <td><?= \CHtml::encode($element->amino_acid_change) ?></td>
+        </tr>
+        <tr>
+          <td <?= empty($element->genome_coordinate) ? 'class="fade"' : '' ?>>
+            <?= \CHtml::encode($element->getAttributeLabel('genomic_coordinate')) ?>
+          </td>
+          <td><?= \CHtml::encode($element->genomic_coordinate) ?></td>
+        </tr>
+        <tr>
+          <td <?= empty($element->genome_version) ? 'class="fade"' : '' ?>>
+            <?= \CHtml::encode($element->getAttributeLabel('genome_version')) ?>
+          </td>
+          <td><?= \CHtml::encode($element->genome_version) ?></td>
+        </tr>
+        <tr>
+          <td <?= empty($element->gene_transcript) ? 'class="fade"' : '' ?>>
+            <?= \CHtml::encode($element->getAttributeLabel('gene_transcript')) ?>
+          </td>
+          <td><?=\CHtml::encode($element->gene_transcript) ?></td>
+        </tr>
+        <tr>
+          <td <?= empty($element->assay) ? 'class="fade"' : '' ?>>
+            <?= \CHtml::encode($element->getAttributeLabel('assay')) ?>
+          </td>
+          <td><?= \CHtml::encode($element->assay) ?></td>
+        </tr>
+        <tr>
+          <td><?= \CHtml::encode($element->getAttributeLabel('homo')) ?></td>
+          <td><?= $element->homo === '1' ? 'Yes' : 'No' ?></td>
+        </tr>
+        <tr>
+          <td <?= empty($element->result) ? 'class="fade"' : '' ?>>
+            <?= \CHtml::encode($element->getAttributeLabel('result')) ?>
+          </td>
+          <td><?= \CHtml::encode($element->result) ?></td>
+        </tr>
+        <tr>
+          <td <?= empty($element->result_date) ? 'class="fade"' : '' ?>>
+            <?= \CHtml::encode($element->getAttributeLabel('result_date')) ?>
+          </td>
+          <td><?= \CHtml::encode($element->NHSDate('result_date')) ?></td>
+        </tr>
+        <tr>
+          <td <?= empty($element->comments) ? 'class="fade"' : '' ?>>
+            <?= \CHtml::encode($element->getAttributeLabel('comments')) ?>
+          </td>
+          <td>
+            <?= \OELinebreakReplacer::replace(\CHtml::encode($element->comments)) ?>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>

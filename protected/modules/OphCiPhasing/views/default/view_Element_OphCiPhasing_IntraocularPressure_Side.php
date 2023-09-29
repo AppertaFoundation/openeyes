@@ -24,7 +24,7 @@
     </div>
     <ul>
         <?php foreach ($element->{strtolower($side) . '_readings'} as $reading) { ?>
-          <li>
+          <li data-test="timestamped-reading">
               <?php echo date('G:i', strtotime($reading->measurement_timestamp)) . ' - ' . $reading->value ?> mm Hg
           </li>
         <?php } ?>
