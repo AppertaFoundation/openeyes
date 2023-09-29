@@ -83,5 +83,12 @@ declare namespace Cypress {
          * @param settingKey
          */
         resetSystemSettingValue(settingKey: string): Chainable<any>
+
+        /**
+         * Add the elements to the event draft
+         * @param draftId
+         * @param elements
+         */
+        addElementsToDraftExamination(draftId: int, elements: array): Chainable<any>
     }
   }

@@ -16,7 +16,7 @@
  */
 
 namespace OEModule\OphCiExamination\models;
-
+use OE\factories\models\traits\HasFactory;
 
 /**
  * This is the model class for table "ophciexamination_risk".
@@ -36,6 +36,7 @@ class OphCiExaminationRisk extends \BaseActiveRecordVersioned
     protected $auto_update_relations = true;
 
     use \MappedReferenceData;
+    use HasFactory;
 
     protected function getSupportedLevels(): int
     {

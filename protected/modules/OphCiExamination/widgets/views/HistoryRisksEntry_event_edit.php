@@ -24,7 +24,6 @@ use OEModule\OphCiExamination\models\HistoryRisksEntry;
 ?>
 
 <?php
-
 if (!isset($values)) {
     $values = array(
         'id' => $entry->id,
@@ -82,12 +81,12 @@ if (!isset($values)) {
             <label class="inline highlight <?= $hasRiskErrorClass ?>">
                 <?=\CHtml::radioButton(
                     $field_prefix . '[has_risk]',
-                    $posted_not_checked,
-                    array('value' => HistoryRisksEntry::$NOT_CHECKED, 'id' => false,)
+                    $posted_not_checked || ($is_draft_event && $values['has_risk'] === (string)HistoryRisksEntry::$NOT_CHECKED),
+                    array('value' => HistoryRisksEntry::$NOT_CHECKED, 'id' => false, 'data-test' => "not_checked")
                 ); ?>
                 Not checked
             </label>
-            <label class="inline highlight <?= $hasRiskErrorClass ?>">
+            <label class="inline highlight <?= $hasRiskErrorClass ?>" data-test="yes">
                 <?=\CHtml::radioButton(
                     $field_prefix . '[has_risk]',
                     $values['has_risk'] === (string)HistoryRisksEntry::$PRESENT,
@@ -95,7 +94,7 @@ if (!isset($values)) {
                 ); ?>
                 Yes
             </label>
-            <label class="inline highlight <?= $hasRiskErrorClass ?>">
+            <label class="inline highlight <?= $hasRiskErrorClass ?>" data-test="no">
                 <?=\CHtml::radioButton(
                     $field_prefix . '[has_risk]',
                     $values['has_risk'] === (string)HistoryRisksEntry::$NOT_PRESENT,

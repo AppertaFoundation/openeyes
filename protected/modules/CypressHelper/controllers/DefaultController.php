@@ -12,6 +12,7 @@ use OE\concerns\InteractsWithApp;
 use OE\factories\models\EventFactory;
 use OE\factories\ModelFactory;
 use OE\seeders\SeederBuilder;
+use OEModule\OphCiExamination\models\HistoryRisks;
 use Patient;
 use User;
 use OE\seeders\resources\GenericModelResource;
@@ -257,6 +258,42 @@ class DefaultController extends \CController
         );
 
         $this->sendJsonResponse($seeder());
+    }
+
+    public function actionAddElementsToDraftExamination()
+    {
+        $draft_id = $_POST['draft_id'] ?? null;
+        $elements = $_POST['elements'] ?? null;
+
+        if (!empty($elements)) {
+            $draft = \EventDraft::model()->findByPk($draft_id);
+            if (!$draft) {
+                throw new \CHttpException(400, "draft_id not found: $draft_id");
+            }
+
+            foreach ($elements as $element) {
+                $draft_data_array = json_decode($draft->data, true);
+                $element_data = $this->{"add" . $element}($draft);
+                $draft->data = json_encode(array_merge($draft_data_array, $element_data));
+            }
+
+            if (!$draft->save()) {
+                throw new \Exception("EventDraft could not be saved: " . print_r($draft->getErrors(), true));
+            }
+        }
+    }
+
+    protected function addRisks($draft)
+    {
+        $risks = HistoryRisks::factory()
+            ->forEvent($draft->event)
+            ->withRequiredEntries()
+            ->create();
+
+        $risks->refresh();
+
+        return HistoryRisks::factory()
+            ->makeAsFormData(["event_id" => $draft->event->id, "entries" => $risks->entries]);
     }
 
     /**

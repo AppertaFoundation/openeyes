@@ -18,6 +18,7 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use OE\factories\models\traits\HasFactory;
 use OEModule\OphCiExamination\widgets\HistoryRisks as HistoryRisksWidget;
 
 /**
@@ -28,6 +29,7 @@ use OEModule\OphCiExamination\widgets\HistoryRisks as HistoryRisksWidget;
 class HistoryRisks extends \BaseEventTypeElement
 {
     use traits\CustomOrdering;
+    use HasFactory;
     protected $default_view_order = 55;
 
     protected $auto_update_relations = true;

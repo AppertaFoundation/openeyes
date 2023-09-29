@@ -183,3 +183,15 @@ Cypress.Commands.add('resetSystemSettingValue', (settingKey) => {
         }
     });
 });
+
+Cypress.Commands.add('addElementsToDraftExamination', (draftId, elements) =>{
+    return cy.request({
+        method: 'POST',
+        url: '/CypressHelper/Default/addElementsToDraftExamination',
+        form: true,
+        body: {
+            draft_id: draftId,
+            elements: elements
+        }
+    });
+});
