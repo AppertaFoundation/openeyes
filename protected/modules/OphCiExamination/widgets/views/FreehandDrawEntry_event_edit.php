@@ -92,13 +92,13 @@ if (!isset($values)) {
     </div>
 </div>
 
-<div class="freedraw-group js-annotate-wrapper" style="display:none" id="annotate-wrapper-<?= $row_count; ?>">
+<div class="freedraw-group js-annotate-wrapper" style="display:none" id="annotate-wrapper-<?= $row_count; ?>" data-key="<?= $row_count; ?>">
     <div class="flex-t">
         <table class="cols-full">
             <tbody>
             <tr>
                 <td><?= $values['filename']; ?></td>
-                <td><i class="oe-i trash"></i></td>
+                <td><i class="oe-i trash" data-test="remove-entry"></i></td>
             </tr>
             <tr>
                 <td>Comments</td>
