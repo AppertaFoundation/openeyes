@@ -5,6 +5,20 @@ use OEModule\OphCiExamination\models\Element_OphCiExamination_Pain;
  */
 
 $model_name = \CHtml::modelName($element);
+$entries = $element->entries;
+
+$draft_data = [];
+$draft_pain_score = null;
+$draft_comment = null;
+if(isset($this->draft)) {
+    $draft_json = json_decode($this->draft->data);
+    $draft_data = $draft_json->{$model_name};
+    $draft_pain_score = $draft_data->{'pain-score'} ?? null;
+    $draft_date_field = $draft_data->{'pain-date-field'};
+    $draft_time_field = $draft_data->{'pain-time-field'};
+    $entries = $draft_data->entries ?? [];
+    $draft_comment = trim($draft_data->{'pain-comment-field'}) ? $draft_data->{'pain-comment-field'} : null;
+}
 ?>
 
 <div class="element-fields full-width">
@@ -45,21 +59,14 @@ $model_name = \CHtml::modelName($element);
             <tbody>
                 <?php
                 $row_count = 0;
+                foreach ($entries as $entry) {
+                    $entry_editable = isset($entry->element_id) && $element->id === $entry->element_id;
 
-                if (isset($element->id)) {
-                    $entries = \OEModule\OphCiExamination\models\OphCiExamination_Pain_Entry::model()->findAllByAttributes(array('element_id' => $element->id));
-
-                    foreach ($entries as $entry) {
-                        $entry = $entry->attributes;
-
-                        $entry_editable = $entry['element_id'] === $element->id;
-
-                        $this->renderPartial(
-                            'form_Element_OphCiExamination_Pain_Entry',
-                            array('model' => $entry, 'element' => $element, 'row_count' => $row_count, 'editable' => $entry_editable)
-                        );
-                        $row_count++;
-                    }
+                    $this->renderPartial(
+                        'form_Element_OphCiExamination_Pain_Entry',
+                        array('model' => $entry, 'element' => $element, 'row_count' => $row_count, 'editable' => $entry_editable)
+                    );
+                    $row_count++;
                 }
                 ?>
             </tbody>
@@ -87,23 +94,23 @@ $model_name = \CHtml::modelName($element);
                     <td>
                         <label class="highlight inline">
                             <input id="pain-radio" value="<?= $pain_score_value ?>" name="<?= $model_name ?>[pain-score]" type="radio"
-                                <?= (isset($_POST['pain-score']) && $_POST['pain-score'] == $pain_score_value) ? "checked" : "" ?>
+                                <?= (isset($_POST['pain-score']) && $_POST['pain-score'] == $pain_score_value) || $draft_pain_score === "$pain_score_value" ? "checked" : "" ?>
                                 data-test="pain-value-<?= $pain_score_value ?>"> <?= $pain_score_value ?>
                         </label>
                     </td>
                 <?php } ?>
                 <td><i class="oe-i crying medium no-click"></i></td>
-                <td><input id="pain-date-field" name="<?= $model_name ?>[pain-date-field]" class="date"></td>
-                <td><input id="pain-time-field" name="<?= $model_name ?>[pain-time-field]" type="time" class="fixed-width-medium"></td>
+                <td><input id="pain-date-field" name="<?=$model_name ?>[pain-date-field]" <?= isset($draft_date_field) ? "value='{$draft_date_field}'" : ''?> class="date"></td>
+                <td><input id="pain-time-field" name="<?=$model_name ?>[pain-time-field]" <?= isset($draft_time_field) ? "value='{$draft_time_field}'" : ''?> type="time" class="fixed-width-medium"></td>
                 <td>
                     <div class="cols-full">
-                        <button id="pain-show-comment-button" class="button js-add-comments" type="button" data-comment-container="#pain-comment-container">
+                        <button id="pain-show-comment-button" class="button js-add-comments" type="button" style="display: <?= $draft_comment ? 'none' : ''?>;" data-comment-container="#pain-comment-container">
                             <i class="oe-i comments small-icon "></i>
                         </button> <!-- comments wrapper -->
                         <div class="cols-full comment-container" style="display: block;">
                             <!-- comment-group, textarea + icon -->
-                            <div id="pain-comment-container"  class="flex-layout flex-left js-comment-container" style="display: none;" data-comment-button="#pain-show-comment-button">
-                                <textarea id="pain-comment-field" name="pain-comment-field" placeholder="Comments" autocomplete="off" rows="1" cols="10" class="js-comment-field cols-full"></textarea>
+                            <div id="pain-comment-container"  class="flex-layout flex-left js-comment-container" style="display: <?= $draft_comment ? '' : 'none'?>;" data-comment-button="#pain-show-comment-button">
+                                <textarea id="pain-comment-field" name="<?=$model_name ?>[pain-comment-field]" placeholder="Comments" autocomplete="off" rows="1" cols="10" class="js-comment-field cols-full"><?= $draft_comment ?></textarea>
                                 <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
                             </div>
                         </div>
@@ -164,7 +171,10 @@ $model_name = \CHtml::modelName($element);
 
     $(document).ready(function () {
         const currentTime = new Date();
-        $('#pain-time-field').val(`${OpenEyes.Util.addZeroBefore(currentTime.getHours())}:${OpenEyes.Util.addZeroBefore(currentTime.getMinutes())}`);
+        // If this is a draft the then time will already be set and we dont want to change that back to the current time
+        if (!document.getElementById('pain-time-field').value) {
+            $('#pain-time-field').val(`${OpenEyes.Util.addZeroBefore(currentTime.getHours())}:${OpenEyes.Util.addZeroBefore(currentTime.getMinutes())}`);
+        }
 
         let row_count = <?= $row_count ?>;
 
@@ -231,7 +241,7 @@ $model_name = \CHtml::modelName($element);
                     };
 
                     let currentTime = new Date();
-                    $('#pain-time-field').val(`${currentTime.getHours()}:${currentTime.getMinutes()}`);
+                    $('#pain-time-field').val(`${OpenEyes.Util.addZeroBefore(currentTime.getHours())}:${OpenEyes.Util.addZeroBefore(currentTime.getMinutes())}`);
 
                     return Mustache.render($('#add-new-pain-row-template').text(), data);
                 });

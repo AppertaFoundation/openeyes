@@ -42,8 +42,6 @@
                 $row_count = 0;
 
                 foreach ($entries as $entry) {
-                    $entry = $entry->attributes;
-
                     $this->renderPartial(
                         'form_Element_OphCiExamination_Pain_Entry',
                         array('model' => $entry, 'element' => $element, 'row_count' => $row_count, 'editable' => false)

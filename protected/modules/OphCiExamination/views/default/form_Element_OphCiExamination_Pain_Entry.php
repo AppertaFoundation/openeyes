@@ -1,15 +1,15 @@
 <?php
     $model_name = CHtml::modelName($element) . "[entries][$row_count]";
-    $datetime = new DateTime($model['datetime']);
+    $datetime = new DateTime($model->datetime);
 ?>
 
 <tr data-row-number="<?=$row_count?>">
-    <?= CHtml::hiddenField($model_name . '[id]', $model['id'], array('class' => 'pain-entry-id')) ?>
+    <?= isset($model->id) ? CHtml::hiddenField($model_name . '[id]', $model->id, array('class' => 'pain-entry-id')) : '' ?>
     <td>
         <i class="oe-i happy medium no-click"></i>
     </td>
     <?php
-        $pain_score = $model['pain_score'];
+        $pain_score = $model->pain_score;
 
         $pain_color = 'good';
 
@@ -38,7 +38,7 @@
         <i class="oe-i crying medium no-click"></i>
     </td>
     <td>
-        <?= CHtml::hiddenField($model_name . '[datetime]', $model['datetime']) ?>
+        <?= CHtml::hiddenField($model_name . '[datetime]', $model->datetime) ?>
         <span class="oe-date">
             <span class="day"><?=$datetime->format('j')?></span>
             <span class="mth"><?=$datetime->format('M')?></span>
@@ -49,14 +49,14 @@
         <small>at</small> <?=$datetime->format('H:i')?>
     </td>
     <td>
-        <?php if (!empty($model['comment'])) { ?>
+        <?php if (!empty($model->comment)) { ?>
             <i class="oe-i comments-who small pad-right js-has-tooltip"
                data-tt-type="basic"
-               data-tooltip-content="<small>User comment by </small><br/><?=User::model()->findByPk($model['created_user_id'])->getFullName();?>">
+               data-tooltip-content="<small>User comment by </small><br/><?= isset($model->created_user_id) ? User::model()->findByPk($model->created_user_id)->getFullName() : '';?>">
             </i>
         <?php } ?>
-        <?= CHtml::hiddenField($model_name . '[comment]', $model['comment']); ?>
-        <span class="user-comment"><?=$model['comment']?></span>
+        <?= CHtml::hiddenField($model_name . '[comment]', $model->comment); ?>
+        <span class="user-comment"><?=$model->comment?></span>
     </td>
     <td>
         <?php if ($editable) { ?>
