@@ -1582,7 +1582,9 @@ class DefaultController extends BaseEventTypeController
                                     @rmdir($attached_event->imageDirectory);
                                 } else {
                                     // Attach PDFs directly, but do not remove their path
-                                    $this->addPDFToOutput($attachment_path);
+                                    foreach ($attachment_path as $path) {
+                                        $this->addPDFToOutput($path);
+                                    }
                                 }
                             }
                         } else {
