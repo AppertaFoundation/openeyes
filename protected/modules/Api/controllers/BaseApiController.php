@@ -15,6 +15,7 @@
 
 class BaseApiController extends \CController
 {
+    use \RenderJsonTrait;
 
     public function beforeAction($action)
     {
@@ -25,30 +26,5 @@ class BaseApiController extends \CController
     public function onBeforeAction(\CEvent $event)
     {
         $this->raiseEvent('onBeforeAction', $event);
-    }
-
-    public function renderJSON($status, $data)
-    {
-        ob_clean(); // clear output buffer to avoid rendering anything else
-        header('HTTP/1.1 ' . $status . ' ' . $this->_getStatusCodeMessage($status));
-        header('Content-type: application/json'); // set content type header as json
-        if ($status == 401) {
-            header('WWW-Authenticate: Basic realm="OpenEyes"');
-        }
-
-        echo json_encode($data);
-        \Yii::app()->end();
-    }
-
-    private function _getStatusCodeMessage($status)
-    {
-        $codes = [
-            200 => 'OK',
-            401 => 'Unauthorized',
-            401 => 'Forbidden',
-            422 => 'Unprocessable Entity',
-        ];
-
-        return (isset($codes[$status])) ? $codes[$status] : '';
     }
 }

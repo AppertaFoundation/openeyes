@@ -31,22 +31,26 @@ Yii::app()->clientScript->registerCssFile('../../node_modules/cropper/dist/cropp
             <div
                 id="signature_import_log_form_hos_num"
                 class="row field-row"
-                <?php if( $log->event_id > 0 && isset($log_parameters['e_id'] )) { ?>style="display:none;"<?php } ?>
+                <?php if ($log->event_id > 0 && isset($log_parameters['e_id'])) {
+                    ?>style="display:none;"<?php
+                } ?>
             >
                 <div class="large-2 column">
                     <label for="signature_import_log_form_hos_num">Hospital Number:</label>
                 </div>
                 <div class="large-5 column">
                     <?php
-                    $this->widget('application.widgets.AutoCompleteSearch',
+                    $this->widget(
+                        'application.widgets.AutoCompleteSearch',
                         [
-                            'field_name' => 'autocomplete_hos_num',
-                            'htmlOptions' =>
-                                [
-                                    'placeholder' => 'hospital number here',
-                                ],
-                            'layoutColumns' => ['field' => '2']
-                        ]);
+                                                'field_name' => 'autocomplete_hos_num',
+                                                'htmlOptions' =>
+                                                    [
+                                                        'placeholder' => 'hospital number here',
+                                                    ],
+                                                'layoutColumns' => ['field' => '2']
+                                            ]
+                    );
                     ?>
                     <div id="no_result" class="alert-box alert column end error hide">There is no suitable CVI event or the CVI has been issued for this hospital number</div>
                     <div id="cvi_date_box" class="hide">
@@ -71,7 +75,7 @@ Yii::app()->clientScript->registerCssFile('../../node_modules/cropper/dist/cropp
                 type="hidden"
                 id="unique_id"
                 name="signature_import_log_form[unique_id]"
-                value="<?= isset($unique_code) && $unique_code ? $unique_code . '"':''; ?>"
+                value="<?= isset($unique_code) && $unique_code ? $unique_code . '"' : ''; ?>"
             >
 
             <input type="hidden" id="e_t_id" name="signature_import_log_form[e_t_id]" value="<?= $element_type_id ?>">
@@ -80,13 +84,17 @@ Yii::app()->clientScript->registerCssFile('../../node_modules/cropper/dist/cropp
                 type="hidden"
                 id="e_id"
                 name="signature_import_log_form[e_id]"
-                value="<?php if( $log->event_id > 0 && isset($log_parameters['e_id']) ) { echo $log_parameters['e_id']; } ?>"
+                value="<?php if ($log->event_id > 0 && isset($log_parameters['e_id'])) {
+                    echo $log_parameters['e_id'];
+                       } ?>"
             >
             <input
                 type="hidden"
                 id="event_id"
                 name="signature_import_log_form[event_id]"
-                value="<?php if( $log->event_id > 0 ) { echo $log->event_id; } ?>"
+                value="<?php if ($log->event_id > 0) {
+                    echo $log->event_id;
+                       } ?>"
             >
             <input type="hidden" id="log_id" name="signature_import_log_form[log_id]" value="<?=$log->id?>">
         </div>
@@ -141,7 +149,7 @@ Yii::app()->clientScript->registerCssFile('../../node_modules/cropper/dist/cropp
             imgData = croppedImageDataURL.replace('data:image/png;base64,','');
             var unique_identifier = $('#unique_id').val();
             var original_log_id = $('#log_id').val();
-            var signatureUrl = baseUrl+"/Api/sign/add";
+            var signatureUrl = baseUrl+"/Api/v1/sign/add";
             var xhr = new XMLHttpRequest();
             xhr.open('POST', signatureUrl, true);
             xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");

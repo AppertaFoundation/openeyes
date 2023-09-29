@@ -62,7 +62,7 @@ describe('Test Signature Import Log', () => {
                         return blobToBase64(base64Image).then((base64String)=>{
                             base64String = base64String.replace('data:image/jpeg;base64,','');
 
-                            let signatureUrl = "/Api/sign/add";
+                            let signatureUrl = "/Api/v1/sign/add";
                             let sendObj = JSON.stringify({
                                 "unique_identifier": uniqueIdentifier,
                                 "image": base64String,

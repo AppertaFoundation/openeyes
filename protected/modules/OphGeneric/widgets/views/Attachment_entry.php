@@ -58,7 +58,7 @@
 
                     <img
                         class="js-small-thumbnail-attachment <?= $attachment['preSelected'] ? $attachment['preSelected'] : '' ?>"
-                        src="/Api/attachmentDisplay/view/id/<?= $attachment['attachmentData']->id ?>?attachment=thumbnail_small_blob&mime=image/png"
+                        src="/Api/v1/attachmentDisplay/view/id/<?= $attachment['attachmentData']->id ?>?attachment=thumbnail_small_blob&mime=image/png"
                         width="<?= $image_size ?>px" height="<?= $image_size ?>px"
                         data-full-title="<?= $attachment['attachmentType']->title_full ?>"
                         data-mime= <?= $attachment['attachmentData']->mime_type ?>

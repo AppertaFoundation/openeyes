@@ -66,6 +66,11 @@ class RestTestCase extends OEDbTestCase
         return $this->request('GET', $url, null, $headers);
     }
 
+    protected function patch($url, $body, $headers = null)
+    {
+        return $this->request('PATCH', $url, $body, $headers);
+    }
+
     protected function post($url, $body, $headers = null)
     {
         return $this->request('POST', $url, $body, $headers);

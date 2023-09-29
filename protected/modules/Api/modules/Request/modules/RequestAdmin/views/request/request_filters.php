@@ -47,7 +47,7 @@
                     </tr>
                     <tr>
                         <td colspan="2">Order By</td>
-                        <td><?= \CHtml::dropDownList('order_by', $http_request->getParam('order_by'), ['latest' => 'Latest dates', 'earliest' => 'Earliest dates'], ['empty' => '- Order By -', 'class' => 'filter_field']) ?></td>
+                        <td><?= \CHtml::dropDownList('order_by', $http_request->getParam('order_by', 'latest'), ['latest' => 'Latest dates', 'earliest' => 'Earliest dates'], ['empty' => '- Order By -', 'class' => 'filter_field']) ?></td>
                     </tr>
                     <tr>
                         <td colspan="2">Show requests that have routine(s) with try counter higher than 1</td>

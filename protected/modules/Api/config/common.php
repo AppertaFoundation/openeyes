@@ -18,7 +18,8 @@ $config = array(
     'components' => [
         'urlManager' => [
             'rules' => [
-                ['Api/<controller>/<action>', 'pattern' => 'api/v1/<controller>/<action>', 'verb' => 'GET, POST, PUT']
+                ['Api/v1/<controller>/<action>', 'pattern' => 'api/v1/<controller>/<action>', 'verb' => 'GET, POST, PUT'],
+                ['Api/v2/<controller>/<action>', 'pattern' => 'api/v2/<controller>/<action>', 'verb' => 'GET, POST, PUT, PATCH, DELETE']
             ],
         ],
     ],

@@ -22,9 +22,16 @@ trait RenderJsonTrait
      *
      * @param $data
      */
-    protected function renderJSON($data)
+    protected function renderJSON($data, $status = null)
     {
         $this->sendJSONHeader('Content-type: application/json');
+
+        if ($status) {
+            $this->sendJSONHeader('HTTP/1.1 ' . $status . ' ' . $this->_getStatusCodeMessage($status));
+            if ($status == 401) {
+                $this->sendJSONHeader('WWW-Authenticate: Basic realm="OpenEyes"');
+            }
+        }
 
         echo json_encode($data);
 
@@ -55,5 +62,21 @@ trait RenderJsonTrait
         if (!(\Yii::app()->params['header_wrapper_callback'] ?? null)) {
             \Yii::app()->end();
         }
+    }
+
+    private function _getStatusCodeMessage($status)
+    {
+        $codes = [
+            200 => 'OK',
+            201 => 'Created',
+            202 => 'Accepted',
+            400 => 'Bad Request',
+            401 => 'Unauthorized',
+            404 => 'Not Found',
+            422 => 'Unprocessable Entity',
+            500 => 'Internal Server Error',
+        ];
+
+        return (isset($codes[$status])) ? $codes[$status] : '';
     }
 }

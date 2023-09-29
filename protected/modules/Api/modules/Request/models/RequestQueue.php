@@ -75,6 +75,7 @@ class RequestQueue extends CActiveRecord
             ['maximum_active_threads, total_active_thread_count, total_execute_count, busy_yield_ms, idle_yield_ms, last_thread_spawn_request_id', 'numerical', 'integerOnly' => true],
             ['request_queue', 'length', 'max' => 45],
             ['last_poll_date, last_thread_spawn_date', 'safe'],
+            ['last_poll_date, last_thread_spawn_date', 'default', 'value' => null],
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
             ['request_queue, maximum_active_threads, total_active_thread_count, total_execute_count, busy_yield_ms, idle_yield_ms, last_poll_date, last_thread_spawn_date, last_thread_spawn_request_id', 'safe', 'on' => 'search'],
@@ -129,7 +130,7 @@ class RequestQueue extends CActiveRecord
     {
         // @todo Please modify the following code to remove attributes that should not be searched.
 
-        $criteria = new CDbCriteria;
+        $criteria = new CDbCriteria();
 
         $criteria->compare('request_queue', $this->request_queue, true);
         $criteria->compare('maximum_active_threads', $this->maximum_active_threads);
