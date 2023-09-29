@@ -783,10 +783,8 @@ class Event extends BaseActiveRecordVersioned
     public function getEventIcon($type = 'small')
     {
         $api = $this->getApi();
-        if (!$api) {
-            return;
-        }
-        if ($api !== null && method_exists($api, 'getEventIcon')) {
+
+        if (!empty($api) && method_exists($api, 'getEventIcon')) {
                 return $api->getEventIcon($type, $this);
         }
 
