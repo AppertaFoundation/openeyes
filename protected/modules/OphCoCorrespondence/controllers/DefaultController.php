@@ -487,8 +487,6 @@ class DefaultController extends BaseEventTypeController
         $gp_label = \SettingMetadata::model()->getSetting('gp_label');
         $only_print_the_to = Yii::app()->request->getParam('only_print_the_to', false) === 'true';
 
-        $recipients[] = $letter->getToAddress();
-
         if ($this->pdf_print_suffix === 'all' || $all === true) {
             if (SettingMetadata::model()->getSetting('disable_print_notes_copy') === 'off') {
                 $recipients[] = $letter->getToAddress();
@@ -558,6 +556,12 @@ class DefaultController extends BaseEventTypeController
 
                 return $recipients;
             }
+        }
+
+        // This fix is for when there is no "print" recipient the first if block would return nothing
+        // but on the correspondence view page we still need to display
+        if (!$recipients) {
+            $recipients[] = $letter->getToAddress();
         }
 
         return $recipients;
