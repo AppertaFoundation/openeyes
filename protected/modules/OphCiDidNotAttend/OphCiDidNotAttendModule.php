@@ -15,6 +15,10 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+namespace OEModule\OphCiDidNotAttend;
+
+use BaseEventTypeModule;
+
 /**
  * This is the module class for Did Not Attend
  *
@@ -22,11 +26,13 @@
  * @property string $moduleShortSuffix
   */
 
-class OphCiDidNotAttendModule extends \BaseEventTypeModule
+class OphCiDidNotAttendModule extends BaseEventTypeModule
 {
     // this property is really only relevant to gii auto-generation, specifically
     // for updates to the module through gii
     public $moduleShortSuffix;
+
+    public $controllerNamespace = '\OEModule\OphCiDidNotAttend\controllers';
 
     public function init()
     {

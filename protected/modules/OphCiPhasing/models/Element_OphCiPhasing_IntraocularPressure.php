@@ -16,6 +16,11 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+namespace OEModule\OphCiPhasing\models;
+
+use SplitEventTypeElement;
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "et_ophciphasing_intraocularpressure".
  *
@@ -33,15 +38,7 @@
  */
 class Element_OphCiPhasing_IntraocularPressure extends SplitEventTypeElement
 {
-    /**
-     * Returns the static model of the specified AR class.
-     *
-     * @return the static model class
-     */
-    public static function model($className = __CLASS__)
-    {
-        return parent::model($className);
-    }
+    use HasFactory;
 
     /**
      * @return string the associated database table name
@@ -89,11 +86,11 @@ class Element_OphCiPhasing_IntraocularPressure extends SplitEventTypeElement
                 'eye' => array(self::BELONGS_TO, 'Eye', 'eye_id'),
                 'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
                 'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-                'readings' => array(self::HAS_MANY, 'OphCiPhasing_Reading', 'element_id'),
-                'right_readings' => array(self::HAS_MANY, 'OphCiPhasing_Reading', 'element_id', 'on' => 'right_readings.side = '.OphCiPhasing_Reading::RIGHT),
-                'left_readings' => array(self::HAS_MANY, 'OphCiPhasing_Reading', 'element_id', 'on' => 'left_readings.side = '.OphCiPhasing_Reading::LEFT),
-                'right_instrument' => array(self::BELONGS_TO, 'OphCiPhasing_Instrument', 'right_instrument_id'),
-                'left_instrument' => array(self::BELONGS_TO, 'OphCiPhasing_Instrument', 'left_instrument_id'),
+                'readings' => array(self::HAS_MANY, OphCiPhasing_Reading::class, 'element_id'),
+                'right_readings' => array(self::HAS_MANY, OphCiPhasing_Reading::class, 'element_id', 'on' => 'right_readings.side = '.OphCiPhasing_Reading::RIGHT),
+                'left_readings' => array(self::HAS_MANY, OphCiPhasing_Reading::class, 'element_id', 'on' => 'left_readings.side = '.OphCiPhasing_Reading::LEFT),
+                'right_instrument' => array(self::BELONGS_TO, OphCiPhasing_Instrument::class, 'right_instrument_id'),
+                'left_instrument' => array(self::BELONGS_TO, OphCiPhasing_Instrument::class, 'left_instrument_id'),
         );
     }
 
@@ -124,12 +121,12 @@ class Element_OphCiPhasing_IntraocularPressure extends SplitEventTypeElement
         // Warning: Please modify the following code to remove attributes that
         // should not be searched.
 
-        $criteria = new CDbCriteria();
+        $criteria = new \CDbCriteria();
 
         $criteria->compare('id', $this->id, true);
         $criteria->compare('event_id', $this->event_id, true);
 
-        return new CActiveDataProvider(get_class($this), array(
+        return new \CActiveDataProvider(get_class($this), array(
                 'criteria' => $criteria,
         ));
     }
@@ -145,7 +142,7 @@ class Element_OphCiPhasing_IntraocularPressure extends SplitEventTypeElement
     {
         foreach ($this->readings as $reading) {
             if (!$reading->delete()) {
-                throw new Exception('Delete reading failed: '.print_r($reading->getErrors(), true));
+                throw new \Exception('Delete reading failed: '.print_r($reading->getErrors(), true));
             }
         }
 
@@ -185,7 +182,7 @@ class Element_OphCiPhasing_IntraocularPressure extends SplitEventTypeElement
 
         $readings = array();
 
-        $criteria = new CDbCriteria();
+        $criteria = new \CDbCriteria();
         $criteria->addCondition('element_id = :eid');
         $criteria->addCondition('side = :sid');
         $criteria->params = array(':eid' => $this->id, ':sid' => $side);
@@ -201,7 +198,7 @@ class Element_OphCiPhasing_IntraocularPressure extends SplitEventTypeElement
     {
         $side_str = ($side == OphCiPhasing_Reading::RIGHT) ? 'right' : 'left';
         $curr_by_id = array();
-        $criteria = new CDbCriteria();
+        $criteria = new \CDbCriteria();
         $criteria->addCondition('element_id = :eid');
         $criteria->addCondition('side = :sid');
         $criteria->params = array(':eid' => $this->id, ':sid' => $side);

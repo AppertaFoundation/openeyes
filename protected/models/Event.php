@@ -225,10 +225,8 @@ class Event extends BaseActiveRecordVersioned
     public function moduleAllowsEditing()
     {
         $api = $this->getApi();
-        if (!$api) {
-            return;
-        }
-        if ($api !== null && method_exists($api, 'canUpdate')) {
+
+        if (is_object($api) && method_exists($api, 'canUpdate')) {
                 return $api->canUpdate($this->id);
         }
 
@@ -403,10 +401,8 @@ class Event extends BaseActiveRecordVersioned
     public function showDeleteIcon()
     {
         $api = $this->getApi();
-        if (!$api) {
-            return;
-        }
-        if ($api !== null && method_exists($api, 'showDeleteIcon')) {
+
+        if (is_object($api) && method_exists($api, 'showDeleteIcon')) {
                 return $api->showDeleteIcon($this->id);
         }
         return;
@@ -784,7 +780,7 @@ class Event extends BaseActiveRecordVersioned
     {
         $api = $this->getApi();
 
-        if (!empty($api) && method_exists($api, 'getEventIcon')) {
+        if (is_object($api) && method_exists($api, 'getEventIcon')) {
                 return $api->getEventIcon($type, $this);
         }
 
@@ -802,10 +798,8 @@ class Event extends BaseActiveRecordVersioned
     public function getEventName()
     {
         $api = $this->getApi();
-        if (!$api) {
-            return;
-        }
-        if ($api !== null && method_exists($api, 'getEventName')) {
+
+        if (is_object($api) && method_exists($api, 'getEventName')) {
             return $api->getEventName($this);
         }
 

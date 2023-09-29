@@ -27,7 +27,17 @@
         <?=\CHtml::textField('intraocularpressure_reading[' . $key . '][measurement_timestamp]', isset($reading) ? substr($reading->measurement_timestamp, 0, 5) : date('H:i'), array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'), 'class' => 'small'))?>
     </td>
     <td>
-        <?=\CHtml::textField('intraocularpressure_reading[' . $key . '][value]', @$reading->value, array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'), 'class' => 'small'))?>
+        <?=
+         \CHtml::textField(
+             'intraocularpressure_reading[' . $key . '][value]',
+             @$reading->value,
+             [
+                 'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
+                 'class' => 'small',
+                 'data-test' => 'reading-value-input'
+             ]
+         )
+            ?>
     </td>
     <td class="readingActions">
         <?php if (!isset($no_remove) || !$no_remove) {?>

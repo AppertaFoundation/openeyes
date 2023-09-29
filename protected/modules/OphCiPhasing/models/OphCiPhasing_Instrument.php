@@ -16,6 +16,12 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+namespace OEModule\OphCiPhasing\models;
+
+use BaseActiveRecordVersioned;
+use OE\factories\models\traits\HasFactory;
+use LookupTable;
+
 /**
  * This is the model class for table "ophciphasing_instrument".
  *
@@ -25,15 +31,7 @@
  */
 class OphCiPhasing_Instrument extends BaseActiveRecordVersioned
 {
-    /**
-     * Returns the static model of the specified AR class.
-     *
-     * @return OphCiPhasing_Instrument the static model class
-     */
-    public static function model($className = __CLASS__)
-    {
-        return parent::model($className);
-    }
+    use HasFactory;
 
     /**
      * @return string the associated database table name
@@ -70,7 +68,7 @@ class OphCiPhasing_Instrument extends BaseActiveRecordVersioned
     public function behaviors()
     {
         return array(
-            'LookupTable' => 'LookupTable',
+            'LookupTable' => LookupTable::class,
         );
     }
 
@@ -81,11 +79,11 @@ class OphCiPhasing_Instrument extends BaseActiveRecordVersioned
      */
     public function search()
     {
-        $criteria = new CDbCriteria();
+        $criteria = new \CDbCriteria();
         $criteria->compare('id', $this->id, true);
         $criteria->compare('name', $this->name, true);
 
-        return new CActiveDataProvider(get_class($this), array(
+        return new \CActiveDataProvider(get_class($this), array(
                 'criteria' => $criteria,
         ));
     }
