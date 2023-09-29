@@ -1,10 +1,6 @@
 <?php
-
 /**
- * OpenEyes.
- *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2013
+ * (C) Apperta Foundation, 2023
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -13,7 +9,7 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @copyright Copyright (C) 2023, Apperta Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
@@ -1484,16 +1480,12 @@ class DefaultController extends BaseEventTypeController
     private function generatePDF($event, $savefile = false)
     {
         $letter = ElementLetter::model()->find('event_id=?', array($event->id));
-
-        $recipient = Yii::app()->request->getParam('recipient');
         $auto_print = Yii::app()->request->getParam('auto_print', true);
         $is_view = Yii::app()->request->getParam('is_view', false);
         $print_all = Yii::app()->request->getParam('all', false) === "true";
         $inject_autoprint_js = $auto_print === '0' ? false : $auto_print;
         $document_target_id = Yii::app()->request->getParam('document_target_id', false);
-
         $print_outputs = $letter->getOutputByType('Print');
-
         /**
          * In other modules pdf_print_documents used to let WKHtmlToPDF to know how many documents we have
          * like, if we print a document that has 3 pages, 2 times (means 6 pages)
@@ -1525,6 +1517,10 @@ class DefaultController extends BaseEventTypeController
             $recipients = $this->getRecipients($event->id, true, $document_target_id, $print_all);
         } else {
             $recipients = $this->getRecipients($event->id, $is_view, null, $print_all);
+
+            // if no print was requested at all, we still need to generate a pdf for InternalReferralDeliveryCommand
+            // Ofc only if the request comes from the command
+            $recipients = $recipients ?: $this->getRecipientsForDeliveryCommand($letter);
         }
 
         // check if printing is necessary
@@ -1626,6 +1622,22 @@ class DefaultController extends BaseEventTypeController
         }
 
         return $pdf_path;
+    }
+
+    private function getRecipientsForDeliveryCommand(ElementLetter $letter): array
+    {
+        $recipients = [];
+        $referral = Yii::app()->request->getParam('referral');
+
+        if ($referral === InternalReferralDeliveryCommand::class) {
+            $document_output = $letter->getOutputByType('Internalreferral')[0] ?? null;
+
+            if ($document_output) {
+                $recipients = $this->getRecipients($letter->event->id, true, $document_output->document_target->id);
+            }
+        }
+
+        return $recipients;
     }
 
     protected function setElementDefaultOptions_Element_OphCoCorrespondence_Esign(

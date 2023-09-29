@@ -404,7 +404,10 @@ $config = array(
         ),
         'hieIntegration' => array(
             "class" => "HieIntegration"
-        )
+        ),
+        'contentForDeliveryRetriever' => [
+            'class' => DocmanRetriever::class
+        ]
     ),
 
     'params' => array(

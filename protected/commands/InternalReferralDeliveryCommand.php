@@ -18,7 +18,6 @@
  */
 class InternalReferralDeliveryCommand extends CConsoleCommand
 {
-
     private $path;
 
     // integration required to generate xml
@@ -29,6 +28,8 @@ class InternalReferralDeliveryCommand extends CConsoleCommand
     private $generate_csv = false;
 
     private $csv_format = 'OEInternalReferralLetterReport_%s.csv';
+
+    private DocmanRetriever $retriever;
 
     /**
      * InternalReferralDelivery constructor.
@@ -62,6 +63,9 @@ class InternalReferralDeliveryCommand extends CConsoleCommand
             mkdir($this->path, 0777, true);
             echo "ALERT! Directory " . $this->path . " has been created!";
         }
+
+        $this->retriever = Yii::app()->getComponent('contentForDeliveryRetriever');
+        $this->retriever->addQueryParam('referral', self::class);
 
         parent::__construct(null, null);
     }
@@ -113,7 +117,8 @@ class InternalReferralDeliveryCommand extends CConsoleCommand
                 $local_identifier_value = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(
                     'LOCAL',
                     $event->episode->patient->id,
-                    $event->institution_id, $event->site_id
+                    $event->institution_id,
+                    $event->site_id
                 ));
 
                 $this->logData(array(
@@ -153,67 +158,22 @@ class InternalReferralDeliveryCommand extends CConsoleCommand
      */
     private function savePDFFile($event_id, $output_id)
     {
-        $pdf_generated = false;
-        $xml_generated = false;
         $event = Event::model()->findByPk($event_id);
-        $document_output = DocumentOutput::model()->findByPk($output_id);
-
 
         if ($event) {
-            $login_page = Yii::app()->params['docman_login_url'];
-            $username = Yii::app()->params['docman_user'];
-            $password = Yii::app()->params['docman_password'];
-            $print_url = Yii::app()->params['docman_print_url'];
-            $inject_autoprint_js = Yii::app()->params['docman_inject_autoprint_js'];
-
-            $ch = curl_init();
-
-            curl_setopt($ch, CURLOPT_URL, $login_page);
-            // disable SSL certificate check for locally issued certificates
-            if (Yii::app()->params['disable_ssl_certificate_check']) {
-                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-            }
-            curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
-            curl_setopt($ch, CURLOPT_COOKIESESSION, true);
-            curl_setopt($ch, CURLOPT_COOKIEJAR, '/tmp/cookie.txt');
-            curl_setopt($ch, CURLOPT_COOKIEFILE, '/tmp/cookie.txt');
-
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_COOKIE, "institution_id=$event->institution_id;site_id=$event->site_id");
-
-            $response = curl_exec($ch);
-            if (curl_errno($ch)) {
-                die(curl_error($ch));
-            }
-
-            preg_match("/YII_CSRF_TOKEN = '(.*)';/", $response, $token);
-
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, false);
-            curl_setopt($ch, CURLOPT_POST, true);
-
-            $params = array(
-                'LoginForm[username]' => $username,
-                'LoginForm[password]' => $password,
-            );
-            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
-
-            curl_exec($ch);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_POST, false);
-            curl_setopt($ch, CURLOPT_URL, $print_url . $event->id . '?auto_print=' . (int)$inject_autoprint_js . '&print_only_gp=0');
-            $content = curl_exec($ch);
-
-            curl_close($ch);
+            $content = $this->retriever->contentForEvent($event);
 
             if (substr($content, 0, 4) !== "%PDF") {
-                echo 'File is not a PDF for event id: '.$event->id."\n";
+                echo 'File is not a PDF for event id: ' . $event->id . "\n";
                 $this->updateFailedDelivery($output_id);
                 return false;
             }
 
             $filename = BaseDeliveryCommand::getFileName($event, $output_id, 'Internal');
 
-            return $pdf_generated = (file_put_contents($this->path . "/" . $filename . ".pdf", $content) !== false);
+            return (file_put_contents($this->path . "/" . $filename . ".pdf", $content) !== false);
+        } else {
+            return false;
         }
     }
 
