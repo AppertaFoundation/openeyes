@@ -1547,6 +1547,7 @@ class AdminController extends ModuleAdminController
         $this->render('/admin/theatre/edit', array(
             'theatre' => $theatre,
             'errors' => $errors,
+            'sites' => Site::model()->getListForCurrentInstitution()
         ));
     }
 
@@ -1574,6 +1575,7 @@ class AdminController extends ModuleAdminController
         $this->render('/admin/theatre/edit', array(
             'theatre' => $theatre,
             'errors' => $errors,
+            'sites' => Site::model()->getListForCurrentInstitution()
         ));
     }
 
