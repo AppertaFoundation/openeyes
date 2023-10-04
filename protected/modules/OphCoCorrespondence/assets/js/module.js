@@ -422,15 +422,13 @@ $(document).ready(function() {
     //         togglePrintDisabled(this.checked);
     //     });
 
-    $(this).delegate('#ElementLetter_site_id', 'change', function() {
-        if (correspondence_directlines) {
-            $('#ElementLetter_direct_line').val(correspondence_directlines[$('#ElementLetter_site_id').val()]);
-        }
-
-        if (correspondence_fax_numbers) {
-            $('#ElementLetter_fax').val(correspondence_fax_numbers[$('#ElementLetter_site_id').val()]);
-        }
-    });
+    let site_element = document.getElementById('ElementLetter_site_id');
+    if (site_element) {
+        site_element.addEventListener('change', function (e) {
+            updateLineAndFax(site_element);
+        });
+        updateLineAndFax(site_element);
+    }
 
     $('#et_save, #et_save_footer').click(function(e) {
         $('#' + event_form).submit();
@@ -776,6 +774,22 @@ $(document).ready(function() {
         $(this).closest('tr').remove();
     });
 });
+
+function updateLineAndFax(site_element){
+    let direct_line_element = document.getElementById('ElementLetter_direct_line');
+    if (correspondence_directlines[site_element.value]) {
+        direct_line_element.value = correspondence_directlines[site_element.value];
+    } else {
+        direct_line_element.value = '';
+    }
+
+    let fax_numbers_element = document.getElementById('ElementLetter_fax');
+    if (correspondence_directlines[site_element.value]) {
+        fax_numbers_element.value = correspondence_fax_numbers[site_element.value];
+    } else {
+        fax_numbers_element.value = '';
+    }
+}
 
 function savePDFprint(module, event_id, $content, $data_id, title) {
     if (typeof title == 'undefined') {
