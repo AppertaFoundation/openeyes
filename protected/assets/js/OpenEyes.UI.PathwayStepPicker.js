@@ -31,7 +31,7 @@
         closeButton: '.close-btn',
         step: '.js-step',
         pathwayAssignee: '.js-pathway-assignee',
-        addPresetPathway: '#js-clinic-manager #add-preset-pathway',
+        addPresetPathway: '#add-preset-pathway',
         stepTemplate: '#js-step-template',
         undoTodoStepButton: '#undo-add-step',
     };
