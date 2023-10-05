@@ -95,7 +95,9 @@ foreach ($ethnic_list as $key => $item) {
                 'first_name',
                 array('size' => 40, 'maxlength' => 40, 'onblur' => "findDuplicatesByNameAndDOB();",
                 'placeholder' => 'First name',
-                'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'))
+                'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
+                'data-test' => 'first-name'
+                )
             ) ?>
         </td>
       </tr>
@@ -112,7 +114,8 @@ foreach ($ethnic_list as $key => $item) {
                 array(
                     'size' => 40, 'maxlength' => 40, 'onblur' => "findDuplicatesByNameAndDOB();",
                     'placeholder' => 'Last name',
-                    'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete')
+                    'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
+                    'data-test' => 'last-name'
                 )
             ) ?>
         </td>
@@ -148,7 +151,8 @@ foreach ($ethnic_list as $key => $item) {
             }
             ?>
             <?= $form->textField($patient, 'dob', array('onblur' => "findDuplicatesByNameAndDOB();",
-              'placeholder' => 'dd/mm/yyyy', 'class' => 'date', 'autocomplete' => 'off')) ?>
+              'placeholder' => 'dd/mm/yyyy', 'class' => 'date', 'autocomplete' => 'off',
+                'data-test' => 'dob')) ?>
             <?php /*$this->widget('zii.widgets.jui.CJuiDatePicker', array(
                 'name' => 'Patient[dob]',
                 'id' => 'patient_dob',
@@ -226,7 +230,9 @@ foreach ($ethnic_list as $key => $item) {
             <?= $form->error($contact, 'primary_phone') ?>
         </td>
         <td>
-            <?= $form->telField($contact, 'primary_phone', array('size' => 15,'placeholder' => 'Phone number', 'maxlength' => 20, 'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete')
+            <?= $form->telField($contact, 'primary_phone', array('size' => 15,'placeholder' => 'Phone number',
+                'maxlength' => 20, 'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
+                'data-test' => 'phone'
             )) ?>
         </td>
       </tr>
@@ -508,7 +514,7 @@ foreach ($ethnic_list as $key => $item) {
         <?= CHtml::link('Cancel', ( $patient->isNewRecord ? Yii::app()-> createURL('site/index') : ( isset($prevUrl) ? Yii::app()->createUrl($prevUrl) : null ) ), array('class' => 'button blue hint')); ?>
         <?= CHtml::submitButton(
             $patient->isNewRecord ? 'Create new patient' : 'Save patient',
-            array('class' => 'button green hint')
+            array('class' => 'button green hint', 'data-test' => 'save-patient')
         ); ?>
     </div>
   </div>

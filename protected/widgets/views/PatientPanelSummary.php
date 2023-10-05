@@ -129,7 +129,8 @@ $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient($displa
                     <?php $has_trial_user_role = Yii::app()->user->checkAccess('Trial User'); ?>
                     <?php if ($this->patient->isEditable() && !$this->patient->isDeleted()) : ?>
               <div class="patient-local-edit js-patient-local-edit-btn">
-                  <a href="<?php echo $this->controller->createUrl('/patient/update/', array('id' => $this->patient->id, 'prevUrl' => Yii::app()->request->url)); ?>" >
+                  <a href="<?php echo $this->controller->createUrl('/patient/update/', array('id' => $this->patient->id, 'prevUrl' => Yii::app()->request->url)); ?>"
+                  data-test="edit-local-patient-button">
                       <svg viewBox="0 0 30 30" class="icon">
                           <use xlink:href="<?php echo $navIconsUrl; ?>#local-edit-icon"></use>
                       </svg>

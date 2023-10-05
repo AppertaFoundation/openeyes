@@ -11,7 +11,7 @@ if (isset($_POST['GeneticsPatient']['pedigrees']) && empty($_POST['GeneticsPatie
     <div class="cols-7">&nbsp;</div>
     <div class="cols-5">
         <input type="checkbox" id="no_pedigree" name="no_pedigree" />
-        <label for="no_pedigree" style="display: inline">Automatically generate pedigree</label>
+        <label data-test="no-pedigree" for="no_pedigree" style="display: inline">Automatically generate pedigree</label>
     </div>
 </div>
 <script type="text/javascript">
