@@ -171,7 +171,7 @@
                             \CHtml::activeRadioButtonList(
                                 $q_assign,
                                 'active',
-                                [1 => 'Yes', 0 => 'No'],
+                                [1 => 'Yes', '' => 'No'],
                                 ['separator' => ' ']
                             );?>
                     </td>
