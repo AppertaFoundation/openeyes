@@ -121,8 +121,11 @@ class OphDrPrescription_DispenseCondition extends BaseActiveRecordVersioned
                 'dispense_condition_id' => $this->id
             ]
         );
-        foreach ($dc_institution->dispense_location_institutions as $dl_institution) {
-            $locations[] = $dl_institution->dispense_location;
+
+        if (isset($dc_institution->dispense_location_institutions)) {
+            foreach ($dc_institution->dispense_location_institutions as $dl_institution) {
+                $locations[] = $dl_institution->dispense_location;
+            }
         }
         return $locations;
     }
