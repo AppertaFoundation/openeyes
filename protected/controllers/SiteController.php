@@ -17,6 +17,8 @@
  */
 class SiteController extends BaseController
 {
+    private const ESIGN_DEVICE_READY_URL = "/site/deviceready";
+
     public function accessRules()
     {
         return array(
@@ -51,6 +53,10 @@ class SiteController extends BaseController
      */
     public function actionIndex()
     {
+        if (Yii::app()->session['esigndevice']) {
+            $this->redirect(self::ESIGN_DEVICE_READY_URL);
+        }
+
         $search_term = Yii::app()->session['search_term'];
         Yii::app()->session['search_term'] = '';
         $this->pageTitle = 'Home';
@@ -141,6 +147,13 @@ class SiteController extends BaseController
         return Yii::app()->params['auth_source'] === 'SAML' || Yii::app()->params['auth_source'] === 'OIDC';
     }
 
+    private function checkESignDeviceSession(string $type): void
+    {
+        if ($type === BaseEsignElement::ESIGN_DEVICE_PIN_TYPE || $type === BaseEsignElement::ESIGN_DEVICE_TYPE) {
+            Yii::app()->session['esigndevice'] = true;
+        }
+    }
+
     /**
      * Displays the login page.
      */
@@ -176,12 +189,12 @@ class SiteController extends BaseController
         if (!is_null($type)) {
             $this->layout = 'esign';
             $this->pageTitle = 'Login';
-            $return_url = '/site/deviceready';
+            $return_url = self::ESIGN_DEVICE_READY_URL;
 
-            if ($type == 'esigndevice') {
+            if ($type == BaseEsignElement::ESIGN_DEVICE_TYPE) {
                 $view = 'login';
-                $return_url = "/site/deviceready";
-            } elseif ($type == 'esigndevicepin' && !is_null($username)  && !is_null($user_id) && !is_null($institution_id) && !is_null($site_id)) {
+                $return_url = self::ESIGN_DEVICE_READY_URL;
+            } elseif ($type == BaseEsignElement::ESIGN_DEVICE_PIN_TYPE && !is_null($username) && !is_null($user_id) && !is_null($institution_id) && !is_null($site_id)) {
                 $model = new LoginFormMobileDevice();
                 $model->user_id = $user_id;
                 $model->username = $username;
@@ -207,6 +220,7 @@ class SiteController extends BaseController
                     // Flag site for confirmation
                     Yii::app()->session['confirm_site_and_firm'] = true;
                     Yii::app()->session['shown_version_reminder'] = true;
+                    $this->checkESignDeviceSession($type);
                     // Check the user has admin role and auto version check enabled
                     $autoVersionEnabled = SettingMetadata::model()->getSetting('auto_version_check') === 'enable';
                     if (Yii::app()->user->checkAccess('admin') && $autoVersionEnabled === true) {
@@ -218,6 +232,7 @@ class SiteController extends BaseController
         } elseif (isset($_POST['LoginFormMobileDevice'])) {
             $model->attributes = $_POST['LoginFormMobileDevice'];
             if ($model->validate() && $model->login()) {
+                $this->checkESignDeviceSession($type);
                 $this->redirect($return_url);
             };
         }

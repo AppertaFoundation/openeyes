@@ -36,7 +36,7 @@ $display_site = ($institution_required || $has_site_specific_auth) || $instituti
 
 <div class="oe-login">
     <div class="login multisite">
-        <?php if (isset($login_type) && $login_type === "esigndevice") :?>
+        <?php if (isset($login_type) && $login_type === BaseEsignElement::ESIGN_DEVICE_TYPE) :?>
             <h1>OpenEyes e-Sign</h1>
         <?php else : ?>
             <h1>OpenEyes</h1>
@@ -92,7 +92,7 @@ $display_site = ($institution_required || $has_site_specific_auth) || $instituti
 
             <i class="spinner" style="display:none"></i>
 
-            <button type="submit" id="login_button" class="green hint"><?= isset($login_type) && $login_type === "esigndevice" ? "Link device" : "Login" ?></button>
+            <button type="submit" id="login_button" class="green hint"><?= isset($login_type) && $login_type === BaseEsignElement::ESIGN_DEVICE_TYPE ? "Link device" : "Login" ?></button>
 
             <div class="oe-user-banner">
                 <?php $this->renderPartial('//base/_banner_watermark_full'); ?>
@@ -102,7 +102,7 @@ $display_site = ($institution_required || $has_site_specific_auth) || $instituti
             <!-- user -->
         </div>
         <div class="info">
-            <?php if (isset($login_type) && $login_type === "esigndevice") :?>
+            <?php if (isset($login_type) && $login_type === BaseEsignElement::ESIGN_DEVICE_TYPE) :?>
                 Please login using your OpenEyes username to link with this device
             <?php else : ?>
                 <div class="flex-layout">

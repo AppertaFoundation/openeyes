@@ -44,7 +44,7 @@ class EsignDevicePopupAction extends CAction
         return Yii::app()->createAbsoluteUrl(
             "/site/login",
             [
-                "type" => "esigndevicepin",
+                "type" => BaseEsignElement::ESIGN_DEVICE_PIN_TYPE,
                 "user_id" => $user->id,
                 "username" => Yii::app()->session["user_auth"]->username,
                 "institution_id" => Institution::model()->getCurrent()->id,
