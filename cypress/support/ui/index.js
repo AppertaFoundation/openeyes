@@ -14,15 +14,15 @@ Cypress.Commands.add('getElementSideByName', (elementName, side) => {
 });
 
 Cypress.Commands.add('getBySel', (dataTest, additionalSelectors = "", ...args) => {
-    return cy.get(`[data-test=${dataTest}]${additionalSelectors}`, ...args);
+    return cy.get(`[data-test="${dataTest}"]${additionalSelectors}`, ...args);
 });
 
 Cypress.Commands.add('getBySelLike', (dataTest, additionalSelectors = "", ...args) => {
-    return cy.get(`[data-test*=${dataTest}]${additionalSelectors}`, ...args);
+    return cy.get(`[data-test*="${dataTest}"]${additionalSelectors}`, ...args);
 });
 
 Cypress.Commands.add('findBySel', {prevSubject: true}, (subject, selector, ...args) => {
-    return subject.find(`[data-test=${selector}]`, ...args);
+    return subject.find(`[data-test="${selector}"]`, ...args);
 });
 
 Cypress.Commands.add('removeElementSide', (elementName, side) => {

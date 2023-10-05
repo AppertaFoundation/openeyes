@@ -1,4 +1,4 @@
-<li class="oe-nav-btn" id="js-nav-shortcuts">
+<li class="oe-nav-btn" id="js-nav-shortcuts" data-test="oe-menu">
         <a class="nav-js-btn icon-btn" id="js-nav-shortcuts-btn">
             <svg viewBox="0 0 80 40" class="icon shortcuts">
                 <use xlink:href="<?= $navIconUrl . '#shortcuts-icon' ?>"></use>
@@ -12,7 +12,9 @@
                 $has_sub = isset($item['sub']) && is_array($item['sub']);
                 $sub_class = $has_sub ? 'sub-menu-item' : '';
                 $menu_key = 'menu-item-' . str_replace(' ', '-', strtolower($item['title']));
-                $options = array();
+                $options = [
+                    "data-test" => $item["title"]
+                ];
                 if (array_key_exists('options', $item)) {
                     $options = $item['options'];
                 }

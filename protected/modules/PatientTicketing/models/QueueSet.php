@@ -24,11 +24,13 @@ use CActiveDataProvider;
 use CDbCriteria;
 use Institution;
 use MappedReferenceData;
+use OE\factories\models\traits\HasFactory;
 use ReferenceData;
 
 class QueueSet extends BaseActiveRecordVersioned
 {
     use MappedReferenceData;
+    use HasFactory;
 
     protected function getSupportedLevels(): int
     {
