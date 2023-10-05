@@ -764,7 +764,8 @@ class WorklistController extends BaseController
                     $has_permission_to_start = Yii::app()->user->checkAccess('TaskPrescribe');
                 }
                 if ($step) {
-                    $view_file = ($step instanceof PathwayStep ? $step->type->widget_view : $step->step_type->widget_view) ?? 'generic_step';
+                    $view_file = $red_flag ? 'generic_step' :
+                        ($step instanceof PathwayStep ? $step->type->widget_view : $step->step_type->widget_view) ?? 'generic_step';
                     $dom = $this->renderPartial(
                         '//worklist/steps/' . $view_file,
                         array(
