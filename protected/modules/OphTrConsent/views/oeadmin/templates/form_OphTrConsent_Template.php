@@ -18,7 +18,7 @@
 
 ?>
 
-<dic class="cols-full">
+<div class="cols-full">
     <div class="row divider">
         <h2><?php echo $title ?></h2>
     </div>
