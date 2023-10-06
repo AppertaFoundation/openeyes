@@ -882,10 +882,10 @@ $config = array(
             'pw_expired_whitelist' => array( //List of URL's accecible when user's status is expired (these are required for OE to allow a user to change thier password)
                 '/profile/password',
                 '/site/logout',
-                '/User/testAuthenticated',
+                '/User/getSessionExpireTimestamp',
                 '/Site/loginFromOverlay',
-                '/User/getSecondsUntilSessionExpire',
-                '/site/changesiteandfirm'
+                '/Site/getOverlayPrepopulationData',
+                '/site/changesiteandfirm',
             ),
         ),
         'training_mode_enabled' => getenv('OE_TRAINING_MODE') ? ( strtolower(getenv('OE_TRAINING_MODE')) == "true" ? "on" : null ) : null,

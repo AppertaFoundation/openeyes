@@ -152,11 +152,12 @@ class ProfileController extends BaseController
 
     public function actionPassword()
     {
-        if (!Yii::app()->params['profile_user_can_change_password']) {
+        $errors = [];
+        $user_auth = Yii::app()->session['user_auth'];
+
+        if (!Yii::app()->params['profile_user_can_change_password'] && !PasswordUtils::testStatus($user_auth, "expired")) {
             $this->redirect(array('/profile/sites'));
         }
-        $errors = array();
-        $user_auth = Yii::app()->session['user_auth'];
         if (!empty($_POST)) {
             if (Yii::app()->params['profile_user_can_change_password']) {
                 if (empty($_POST['UserAuthentication']['password_old'])) {

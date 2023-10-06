@@ -147,9 +147,9 @@ class SiteController extends BaseController
         return Yii::app()->params['auth_source'] === 'SAML' || Yii::app()->params['auth_source'] === 'OIDC';
     }
 
-    private function checkESignDeviceSession(string $type): void
+    private function checkESignDeviceSession(?string $type): void
     {
-        if ($type === BaseEsignElement::ESIGN_DEVICE_PIN_TYPE || $type === BaseEsignElement::ESIGN_DEVICE_TYPE) {
+        if ($type && ($type === BaseEsignElement::ESIGN_DEVICE_PIN_TYPE || $type === BaseEsignElement::ESIGN_DEVICE_TYPE)) {
             Yii::app()->session['esigndevice'] = true;
         }
     }

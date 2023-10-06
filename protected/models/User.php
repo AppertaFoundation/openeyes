@@ -1070,7 +1070,7 @@ class User extends BaseActiveRecordVersioned
      */
     public function CheckRequestOnExpiryWhitelist($request)
     {
-        $whitelist = !empty(Yii::app()->params['pw_status_checks']['pw_expired_whitelist']) ? Yii::app()->params['pw_status_checks']['pw_expired_whitelist'] : ['/profile/password', '/site/logout', '/User/testAuthenticated', '/Site/loginFromOverlay', 'User/getSecondsUntilSessionExpire', '/site/changesiteandfirm'];
+        $whitelist = !empty(Yii::app()->params['pw_status_checks']['pw_expired_whitelist']) ? Yii::app()->params['pw_status_checks']['pw_expired_whitelist'] : ['/profile/password', '/site/logout', '/User/actionGetSessionExpireTimestamp', '/Site/loginFromOverlay', '/Site/getOverlayPrepopulationData', '/site/changesiteandfirm'];
 
         foreach ($whitelist as $URL) {
             // check to see if the request starts with this whitelisted url
