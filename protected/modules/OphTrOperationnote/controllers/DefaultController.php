@@ -164,11 +164,14 @@ class DefaultController extends BaseEventTypeController
             }
 
             $this->open_elements = $this->buildEventElements($template_data, $this->getEventElements(), $eye);
+
+            if (!$this->template) {
+                parent::setOpenElementsFromCurrentEvent($action);
+            }
         } else {
             if (!empty($_POST) && $this->template && $this->template->id !== $this->event->template_id) {
                 $this->event->template_id = $this->template->id;
             }
-
             parent::setOpenElementsFromCurrentEvent($action);
         }
     }
