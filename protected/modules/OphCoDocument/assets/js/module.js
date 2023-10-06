@@ -676,7 +676,7 @@ OpenEyes.OphCoDocument = OpenEyes.OphCoDocument || {};
         let canvas = document.createElement("canvas");
         canvas.id = 'page' + currPage;
         let context = canvas.getContext('2d');
-        let viewport = page.getViewport({ scale: 1 });
+        let viewport = page.getViewport({ scale: 3 });
         canvas.height = viewport.height;
         canvas.width = viewport.width;
 
