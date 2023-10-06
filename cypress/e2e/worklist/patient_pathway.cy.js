@@ -8,8 +8,9 @@ describe('Managing a patient pathway in the worklist screen', () => {
     });
 
     beforeEach(() => {
-        cy.login()
+        cy.login().as('loggedInUser')
             .then(() => {
+                cy.clock(new Date().getTime(), ["Date"]);
                 cy.visitWorklist();
 
                 // Close the navbar if it is open
@@ -93,8 +94,8 @@ describe('Managing a patient pathway in the worklist screen', () => {
         cy.getBySel('new-task').click();
         cy.getBySel('next-generic-step').click();
 
-        //Waiting for one minute to check the timer is not increasing after the check-out
-        cy.wait(62000);
+        // Travel ~1 minute to the future without waiting
+        cy.tick(62000);
 
         //Without reloading it shows that pathway is complete; with reloading it shows pathway not completed
         cy.reload();
@@ -141,4 +142,66 @@ describe('Managing a patient pathway in the worklist screen', () => {
             cy.getBySel('add-step-checkbox').should('not.be.checked');
         });
     });
-})
+
+    it('can add Drug Administration Preset Order', function () {
+        cy.intercept('*worklist/addStepToPathway*').as('addStepToPathway');
+        cy.intercept('*worklist/getPathStep*').as('getPathStep');
+        cy.intercept('*OphDrPGDPSD/PSD/unlockPSD*').as('unlockPSD');
+
+        cy.getBySel('close-worklist-adder-btn');
+
+        // make it 'static' so we preserve TR we work with, otherwise cy.get('@tr') would re-run our cy.get()
+        cy.get('table.oec-patients tbody tr:not(:has(.i-drug-admin))').first().as('tr', { type: 'static' });
+
+        cy.get('@tr').then(tr => {
+                cy.addPathStep(`#${tr.attr('id')}`, 'path-step-drug-administration-preset-order');
+            });
+
+        cy.get('div.popup-path-step-options').should('be.visible').within(popup => {
+            cy.contains('Todo: Next').click();
+            cy.get('button.js-add-pathway').click();
+        });
+        cy.wait('@addStepToPathway');
+
+        cy.get('@tr').invoke('attr', 'id').then(trId => {
+
+            // fire a new get() as the DOM of our TR has changed
+            cy.get(`#${trId}`).find('td.js-pathway-container div.pathway').within(pathway => {
+                cy.getBySel('drug-administration-step')
+                    .should('exist')
+                    .click({force: true});
+            });
+        });
+
+        cy.wait('@getPathStep');
+
+        cy.get(`#worklist-administration-form`).should('be.visible')
+            .within(form => {
+                cy.get(`input.user-pin-entry`).type(this.loggedInUser.body.pincode);
+                cy.get(`button.try-pin.js-unlock`).should('be.visible').click();
+            });
+        cy.wait('@unlockPSD');
+
+        // query again as the content of the DOM has changed
+        cy.get(`#worklist-administration-form`).within(form => {
+
+            cy.get('[type="checkbox"]').check();
+            cy.contains(`Confirm Administration`).click();
+        });
+
+        cy.get(`div.oe-pathstep-popup`).should('be.visible').within(popup => {
+            cy.get(`div.step-status.done`).should('be.visible').and('have.text', 'Completed');
+        });
+
+        cy.get('@tr').invoke('attr', 'id').then(trId => {
+            // fire a new get() as the DOM of our TR has changed
+            cy.get(`#${trId}`).find('td.js-pathway-container div.pathway').within(pathway => {
+                cy.get(`span`).first()
+                    .should('be.visible')
+                    .and('have.class', 'oe-pathstep-btn')
+                    .and('have.class', 'done')
+                    .and('have.class', 'process');
+            });
+        });
+    });
+});

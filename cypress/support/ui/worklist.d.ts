@@ -33,5 +33,7 @@ declare namespace Cypress {
          *
          */
         hideWorklistNavBar(): void;
+
+        addPathStep(trSelector: string, stepDataAttribute: string): void;
     }
 }

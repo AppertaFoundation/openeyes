@@ -5,6 +5,9 @@ use OEModule\OphDrPGDPSD\models\{
     OphDrPGDPSD_AssignedTeam
 };
 
+/**
+ * @extends BaseEventTypeController
+ */
 class DefaultController extends BaseEventTypeController
 {
     protected function checkUserPGDPSDAssignments()

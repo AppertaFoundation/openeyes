@@ -68,7 +68,8 @@ class DefaultController extends \CController
         $this->sendJsonResponse([
             'firm_id' => $this->getApp()->session['selected_firm_id'],
             'subspecialty_id' => Firm::model()->findByPK($this->getApp()->session['selected_firm_id'])->getSubspecialtyID(),
-            'institution_id' => $this->getApp()->session['selected_institution_id']
+            'institution_id' => $this->getApp()->session['selected_institution_id'],
+            'pincode' => User::model()->findByPk(\Yii::app()->user->id)->pincode->value ?? 'No Pincode'
         ]);
     }
 

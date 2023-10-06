@@ -1,9 +1,6 @@
 <?php
 
-use OEModule\OphDrPGDPSD\models\{
-    OphDrPGDPSD_Assignment,
-    OphDrPGDPSD_PGDPSD
-};
+use OEModule\OphDrPGDPSD\models\{Element_DrugAdministration, OphDrPGDPSD_Assignment, OphDrPGDPSD_PGDPSD};
 
 class PSDObserver
 {
@@ -179,7 +176,7 @@ class PSDObserver
                             $failed_saving = true;
                             $errors = array_merge($errors, $da_creator->getErrors());
                         } else {
-                            $latest_element = $da_creator->elements['Element_DrugAdministration'];
+                            $latest_element = $da_creator->elements[Element_DrugAdministration::class];
                             Audit::add('PSD Assignment', 'created automated event', "Event: $latest_element->event_id");
                         }
                     }
