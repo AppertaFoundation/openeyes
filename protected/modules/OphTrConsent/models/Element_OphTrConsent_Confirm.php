@@ -134,7 +134,7 @@ class Element_OphTrConsent_Confirm extends BaseEventTypeElement implements Requi
         if ($this->signature_id) {
             $result[] = OphTrConsent_Signature::model()->findByPk($this->signature_id);
         } else {
-            $user = User::model()->findByPk(Yii::app()->session['user']->id);
+            $user = User::model()->findByPk($this->event->last_modified_user_id);
 
             $sig = new OphTrConsent_Signature();
             $sig->setAttributes([
@@ -147,7 +147,7 @@ class Element_OphTrConsent_Confirm extends BaseEventTypeElement implements Requi
             $sig->signed_user_id = $user->id;
 
             if (SettingMetadata::model()->checkSetting('require_pin_for_consent', 'no')) {
-                $sig->proof = \SignatureHelper::getSignatureProof($user->signature->id, new \DateTime(), $user->id);
+                $sig->proof = \SignatureHelper::getSignatureProof($user->signature->id, new \DateTime($this->event->last_modified_date), $user->id);
                 $sig->setDataFromProof();
             }
 
