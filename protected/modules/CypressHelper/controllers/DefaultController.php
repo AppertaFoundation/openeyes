@@ -2,7 +2,6 @@
 
 namespace OEModule\CypressHelper\controllers;
 
-use CActiveRecord;
 use CWebLogRoute;
 use Event;
 use EventType;
@@ -129,19 +128,22 @@ class DefaultController extends \CController
         $this->sendJsonResponse($this->patientJson($patient));
     }
 
-    public function actionGetEventCreationUrl($patientId, $moduleName)
+    public function actionGetEventCreationUrl($patientId, $moduleName, $firmId)
     {
         $patient = Patient::model()->findByPk($patientId);
         if (!$patient) {
             throw new \CHttpException(404, 'Patient must exist to generate event creation url.');
         }
-
         $eventTypeId = EventType::model()->findByAttributes([
             'class_name' => $moduleName
         ])->id;
 
         /** @var Firm $current_firm */
-        $current_firm = $this->getApp()->session->getSelectedFirm();
+        if($firmId !== "0") {
+            $current_firm = Firm::model()->findByPk($firmId);
+        } else {
+            $current_firm = $this->getApp()->session->getSelectedFirm();
+        }
         $url = "/patientEvent/create?patient_id={$patientId}&event_type_id={$eventTypeId}&context_id={$current_firm->id}";
 
         $episode = $patient->getOpenEpisodeOfSubspecialty($current_firm->getSubspecialtyID());

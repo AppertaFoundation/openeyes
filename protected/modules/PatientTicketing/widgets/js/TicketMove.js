@@ -274,7 +274,7 @@
     // getting ticket_id from hidden input
     var form = this.options.formClass;
     var ticket_id = $(form).find('input[name="ticket_id"]').val();
-    
+
     return 'sratchpad_' + '_' + user_id + '_' + ticket_id;
   };
 
@@ -299,6 +299,9 @@
                 return null;
             }
             if (initialContentHash !== getContentHash()) {
+                //This console log is used in warning-dialog-test.cy.js as I couldn't find another way to test
+                //onbeforeunload behavior on cypress as cypress is doing user inputs and doesn't show the dialog then
+                console.log("Show Changes you made may not be saved message.");
                 return true;
             } else {
                 return null;
@@ -320,6 +323,12 @@
     ticketMoveController.loadScratchpadData();
 
     initialContentHash = getContentHash();
+
+    document.querySelectorAll('button[type="submit"]').forEach(function (submitButton) {
+        submitButton.addEventListener('click', function () {
+            window.onbeforeunload = null;
+        });
+    });
 
     $(document).on('click', ticketMoveController.options.formClass + ' .ok', function (e) {
       e.preventDefault();

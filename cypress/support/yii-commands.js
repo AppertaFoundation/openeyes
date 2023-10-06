@@ -66,10 +66,10 @@ Cypress.Commands.add('createPatient', (states, attributes) => {
     .its('body');
 });
 
-Cypress.Commands.add('getEventCreationUrl', (patientId, moduleName) => {
+Cypress.Commands.add('getEventCreationUrl', (patientId, moduleName, firmId = 0) => {
     return cy.request({
         method: 'GET',
-        url: `/CypressHelper/Default/getEventCreationUrl/${patientId}/${moduleName}`
+        url: `/CypressHelper/Default/getEventCreationUrl/${patientId}/${moduleName}/${firmId}`
     })
     .its('body.url');
 });

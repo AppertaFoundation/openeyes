@@ -35,7 +35,8 @@ $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient($display_
 $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient($display_secondary_number_usage_code, $ticket->patient->id, $institution->id, $selected_site_id);
 ?>
 
-<tr class="divider" data-ticket-id="<?= $ticket->id ?>" data-ticket-info="<?= CHtml::encode($ticket->getInfoData()) ?>">
+<tr class="divider" data-ticket-id="<?= $ticket->id ?>" data-ticket-info="<?= CHtml::encode($ticket->getInfoData()) ?>"
+data-patient-id="<?=$ticket->patient->id?>" data-test="virtual-clinic-row">
     <td>
         <i class="oe-i circle-<?php echo $ticket->priority ? $ticket->priority->colour : '' ?> small pad selected"></i>
     </td>

@@ -24,8 +24,9 @@ declare namespace Cypress {
          *
          * @param patientId
          * @param moduleName
+         * @param firmId
          */
-        getEventCreationUrl(patientId: Number, moduleName: string): Chainable<any>
+        getEventCreationUrl(patientId: Number, moduleName: string, firmId: Number): Chainable<any>
         /**
          * Convenience wrapper to go straight to the event creation page for the given patient and module
          *
