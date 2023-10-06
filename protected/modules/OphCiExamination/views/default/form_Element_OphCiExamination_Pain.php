@@ -25,7 +25,7 @@ if(isset($this->draft)) {
     <!-- Chronologically sorted pain recordings -->
     <input type="hidden" name="<?= $model_name ?>[present]" value="1" />
     <div class="cols-17">
-        <table id="pain-entries-table" class="cols-full">
+        <table id="pain-entries-table" class="cols-full" data-test="pain-entries-table">
             <colgroup>
                 <col class="cols-icon">
                 <col class="cols-icon" span="11">

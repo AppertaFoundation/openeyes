@@ -27,7 +27,8 @@
         //needs type coercion as pain_score may be a string at this point
         if ($pain_score == $i) {
             echo CHtml::hiddenField($model_name . '[pain_score]', $pain_score);
-            echo "<span class=\"highlighter $pain_color\">$i</span>";
+            $id = "id='pain-entry-row-$row_count-score-$pain_score'";
+            echo "<span $id class=\"highlighter $pain_color\">$i</span>";
         } else {
             echo '<span class="dot-list-divider fade"></span>';
         }

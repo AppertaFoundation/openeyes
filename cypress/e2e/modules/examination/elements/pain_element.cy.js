@@ -82,6 +82,33 @@ describe('pain element tests', () => {
                 cy.getBySel("validation-errors").should("contain", "Pain: Entries cannot be blank");
             });
         });
+
+        it('Retains the recorded pain scores on validation error', () => {
+            cy.login()
+                .then(() => {
+                    return cy.createPatient();
+                })
+                .then((patient) => {
+                    return cy.getEventCreationUrl(patient.id, 'OphCiExamination')
+                        .then((url) => {
+                            return [url, patient];
+                        });
+                })
+                .then(([url, patient]) => {
+                    cy.visit(url);
+                    cy.removeElements();
+                    return cy.addExaminationElement(['Pain', 'Risks']);
+                });
+
+            cy.getBySel("pain-value-5").click();
+            cy.getBySel("pain-add-entry").click();
+            cy.get('input[type="radio"][name^="OEModule_OphCiExamination_models_HistoryRisks"]').first().click();
+            cy.saveEvent();
+            cy.getBySel('pain-entries-table').should('be.visible');
+            cy.getBySel(`pain-entries-table`, ' span[id$="score-5"]').then(span => {
+                expect(span.text()).to.eq("5");
+            });
+        });
     });
 
     after(() => {
