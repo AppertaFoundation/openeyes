@@ -52,13 +52,17 @@ class ContextController extends BaseAdminController
             }
         }
 
+        $pagination_criteria = Firm::model()->getCriteriaForLevels($reference_level, $criteria, $institution);
+        $pagination = $this->initPagination(
+            Firm::model(),
+            $pagination_criteria
+        );
+
         $this->render('index', array(
-            'pagination' => $this->initPagination(
-                Firm::model(),
-                Firm::model()->getCriteriaForLevels($reference_level, $criteria, $institution)
-            ),
-            'firms' => Firm::model()->findAllAtLevels($reference_level, $criteria, $institution),
-            'search' => $search
+            'pagination' => $pagination,
+            'firms' => Firm::model()->findAllAtLevels($reference_level, $pagination_criteria, $institution),
+            'search' => $search,
+            'pagination_criteria' => $pagination_criteria
         ));
     }
 
