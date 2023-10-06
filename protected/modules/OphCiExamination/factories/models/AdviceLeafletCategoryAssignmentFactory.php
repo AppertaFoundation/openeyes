@@ -16,53 +16,33 @@
 namespace OEModule\OphCiExamination\factories\models;
 
 use OE\factories\ModelFactory;
-use Institution;
-use Subspecialty;
-use OE\factories\models\{InstitutionFactory, SubspecialtyFactory};
-use OEModule\OphCiExamination\models\AdviceLeafletCategorySubspecialty;
 
-class AdviceLeafletCategoryFactory extends ModelFactory
+use OEModule\OphCiExamination\models\{
+    AdviceLeaflet,
+    AdviceLeafletCategory
+};
+
+class AdviceLeafletCategoryAssignmentFactory extends ModelFactory
 {
     public function definition(): array
     {
         return [
-            'name' => $this->faker->words(10, true),
-            'institution_id' => Institution::factory()->create(),
-            'active' => $this->faker->boolean()
+            'category_id' => AdviceLeafletCategory::factory(),
+            'leaflet_id' => AdviceLeaflet::factory()
         ];
     }
 
-    public function active()
+    public function forCategory($category): self
     {
         return $this->state([
-            'active' => true
+            'category_id' => $category
         ]);
     }
 
-    public function inactive()
+    public function forLeaflet($leaflet): self
     {
         return $this->state([
-            'active' => false
+            'leaflet_id' => $leaflet
         ]);
-    }
-
-    public function forInstitution(Institution|InstitutionFactory|string|int $institution): self
-    {
-        return $this->state([
-            'institution_id' => $institution
-        ]);
-    }
-
-    public function forSubspecialty(Subspecialty|SubspecialtyFactory|null $subspecialty = null): self
-    {
-        return $this->afterCreating(function ($category) use ($subspecialty) {
-            if ($subspecialty === null) {
-                $subspecialty  = Subspecialty::factory()->useExisting()->create();
-            }
-            AdviceLeafletCategorySubspecialty::factory()->create([
-                'category_id' => $category,
-                'subspecialty_id' => $subspecialty
-            ]);
-        });
     }
 }

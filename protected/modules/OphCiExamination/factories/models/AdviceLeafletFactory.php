@@ -18,6 +18,11 @@ namespace OEModule\OphCiExamination\factories\models;
 use Institution;
 use OE\factories\ModelFactory;
 
+use OEModule\OphCiExamination\models\{
+    AdviceLeaflet,
+    AdviceLeafletCategoryAssignment
+};
+
 class AdviceLeafletFactory extends ModelFactory
 {
     public function definition(): array
@@ -29,17 +34,55 @@ class AdviceLeafletFactory extends ModelFactory
         ];
     }
 
-    public function active()
+    /**
+     * @param Institution|InstitutionFactory|string|int $institution
+     * @return AdviceLeafletFactory
+     */
+    public function forInstitution($institution): self
+    {
+        return $this->state([
+            'institution_id' => $institution
+        ]);
+    }
+
+    /**
+     * @return AdviceLeafletFactory
+     */
+    public function active(): self
     {
         return $this->state([
             'active' => true
         ]);
     }
 
-    public function inactive()
+    /**
+     * @return AdviceLeafletFactory
+     */
+    public function inactive(): self
     {
         return $this->state([
             'active' => false
         ]);
+    }
+
+    /**
+     * @param AdviceLeafletCategory|array $categories
+     * @return AdviceLeafletFactory
+     */
+    public function assignedToCategories($categories): self
+    {
+        $categories = is_array($categories) ? $categories : [$categories];
+
+        return $this->afterCreating(static function (AdviceLeaflet $leaflet) use ($categories) {
+            array_map(
+                static function ($category) use ($leaflet) {
+                    return AdviceLeafletCategoryAssignment::factory()
+                        ->forCategory($category)
+                        ->forLeaflet($leaflet)
+                        ->create();
+                },
+                $categories
+            );
+        });
     }
 }
