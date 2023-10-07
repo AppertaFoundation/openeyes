@@ -17,6 +17,7 @@ namespace OE\factories\models;
 
 use InstitutionAuthentication;
 use OE\factories\ModelFactory;
+use \User;
 
 class UserAuthenticationFactory extends ModelFactory
 {
@@ -27,13 +28,18 @@ class UserAuthenticationFactory extends ModelFactory
     public function definition(): array
     {
         return [
-            'institution_authentication_id' => ModelFactory::factoryFor(InstitutionAuthentication::class),
-            'user_id' => ModelFactory::factoryFor(User::class),
+            'institution_authentication_id' => InstitutionAuthentication::factory(),
+            'user_id' => User::factory(),
             'username' => $this->faker->userName(),
             // because we validate when saving with this factory, we must provide password
             'password' => 'password',
             'password_repeat' => 'password'
         ];
+    }
+
+    public function configure()
+    {
+        return $this->withDBUniqueAttribute('username');
     }
 
     public function forUser($user)
@@ -45,6 +51,17 @@ class UserAuthenticationFactory extends ModelFactory
         });
     }
 
+    /**
+     * The UserAuthentication model manipulates password values during validation
+     * to ensure it is stored correctly, as a result, we must call save with
+     * validation enabled, which is not the typical behaviour for ModelFactories.
+     *
+     * We also disable password restrictions to allow simplified password values to
+     * be used in model generation.
+     *
+     * @param [type] $instance
+     * @return boolean
+     */
     public function persistInstance($instance): bool
     {
         return self::disablePasswordRestrictionsFor(
@@ -56,6 +73,15 @@ class UserAuthenticationFactory extends ModelFactory
         );
     }
 
+    /**
+     * Wraps the given function to disable the password restrictions
+     * that are used for validation in the UserAuthentication model
+     *
+     * @param callable $callback
+     * @param array $args
+     * @param [type] $app
+     * @return mixed
+     */
     public static function disablePasswordRestrictionsFor(callable $callback, $args = [], $app = null)
     {
         if ($app === null) {
