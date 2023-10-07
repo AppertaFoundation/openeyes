@@ -21,7 +21,7 @@ describe('verifies the desired behaviour of shared mailboxes for messaging', () 
             });
     });
 
-    it('ensures that shared mailboxes exhibit the required behaviour from the home page', function () {     
+    it('ensures that shared mailboxes exhibit the required behaviour from the home page', function () {
 
         let data = seederData;
 
@@ -200,4 +200,37 @@ describe('verifies the desired behaviour of shared mailboxes for messaging', () 
             .should('have.attr', 'href')
             .and('include', data.messageEvent1.urls.view.substr(33))
     });
+
+    it('ensures that inactive shared mailboxes are not displayed on home page)', function () {
+        let data = seederData;
+
+        cy.login();
+        cy.visit('/');
+
+        // assert that the test team shared mailbox is visible on the home page (of admin user)
+        cy.getBySel('home-mailbox-name').contains(data.teamMailbox.name).should('be.visible');
+
+        cy.visit(`/OphCoMessaging/SharedMailboxSettings/edit/${data.teamMailbox.id}`);
+
+        cy.getBySel('mailbox-active-checkbox').uncheck();
+
+        cy.getBySel('mailbox-save-button').click();
+
+        cy.visit('/');
+
+        // assert that the test team shared mailbox is not visible on the home page (of admin user)
+        cy.getBySel('home-mailbox-name').contains(data.teamMailbox.name).should('not.exist');
+
+        cy.visit(`/OphCoMessaging/SharedMailboxSettings/edit/${data.teamMailbox.id}`);
+
+        cy.getBySel('mailbox-active-checkbox').check();
+
+        cy.getBySel('mailbox-save-button').click();
+
+        cy.visit('/');
+
+        // assert that the test team shared mailbox is visible on the home page (of admin user)
+        cy.getBySel('home-mailbox-name').contains(data.teamMailbox.name).should('be.visible');
+    });
+
 });

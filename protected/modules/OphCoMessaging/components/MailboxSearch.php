@@ -241,14 +241,15 @@ class MailboxSearch
         )
         ((SELECT m.id, m.name, m.is_personal FROM mailbox m
             JOIN mailbox_team mt ON mailbox_id = m.id
-            JOIN user_teams ut ON ut.team_id = mt.team_id)
+            JOIN user_teams ut ON ut.team_id = mt.team_id
+            WHERE m.active = :active_mailbox)
         UNION
         (SELECT m.id, m.name, m.is_personal FROM mailbox m
             JOIN mailbox_user mu ON mu.mailbox_id = m.id
             WHERE mu.user_id = :target_user_id)) ORDER BY is_personal DESC, `name` ASC";
 
         $user_mailbox_command = \Yii::app()->db->createCommand($user_mailbox_sql);
-        $user_mailbox_command->params = [':target_user_id' => $user_id];
+        $user_mailbox_command->params = [':target_user_id' => $user_id, 'active_mailbox' => 1];
 
         return $user_mailbox_command->queryAll();
     }
@@ -261,67 +262,67 @@ class MailboxSearch
             COUNT(DISTINCT contextualised_messages.element_id) :folder_all,
 
             SUM(
-                (contextualised_messages.sent = 0 OR 
-                    (contextualised_messages.to_self AND contextualised_messages.element_fetched_as_original_sender = 0)) AND 
+                (contextualised_messages.sent = 0 OR
+                    (contextualised_messages.to_self AND contextualised_messages.element_fetched_as_original_sender = 0)) AND
                 contextualised_messages.unreplied_started_thread = 0 AND
                 contextualised_messages.marked_as_read_by_user = 0
             ) :folder_unread_all,
             SUM(
-                (contextualised_messages.sent = 0 OR 
+                (contextualised_messages.sent = 0 OR
                     (contextualised_messages.to_self AND contextualised_messages.element_fetched_as_original_sender = 0)) AND
                 contextualised_messages.unreplied_started_thread = 0 AND
-                contextualised_messages.marked_as_read_by_user = 0 AND 
+                contextualised_messages.marked_as_read_by_user = 0 AND
                 contextualised_messages.urgent = 1
             ) :folder_unread_urgent,
             SUM(
-                (contextualised_messages.sent = 0 OR 
+                (contextualised_messages.sent = 0 OR
                     (contextualised_messages.to_self AND contextualised_messages.element_fetched_as_original_sender = 0)) AND
                 contextualised_messages.unreplied_started_thread = 0 AND
-                contextualised_messages.marked_as_read_by_user = 0 AND 
+                contextualised_messages.marked_as_read_by_user = 0 AND
                 contextualised_messages.reply_required = 1
             ) :folder_unread_query,
             SUM(
-                (contextualised_messages.sent = 0 OR 
+                (contextualised_messages.sent = 0 OR
                     (contextualised_messages.to_self AND contextualised_messages.element_fetched_as_original_sender = 0)) AND
                 contextualised_messages.unreplied_started_thread = 0 AND
-                contextualised_messages.marked_as_read_by_user = 0 AND 
+                contextualised_messages.marked_as_read_by_user = 0 AND
                 contextualised_messages.has_reply = 1
             ) :folder_unread_replies,
             SUM(
-                (contextualised_messages.sent = 0 OR 
+                (contextualised_messages.sent = 0 OR
                     (contextualised_messages.to_self AND contextualised_messages.element_fetched_as_original_sender = 0)) AND
                 contextualised_messages.unreplied_started_thread = 0 AND
-                contextualised_messages.marked_as_read_by_user = 0 AND 
+                contextualised_messages.marked_as_read_by_user = 0 AND
                 contextualised_messages.to_me = 1
             ) :folder_unread_to_me,
             SUM(
-                (contextualised_messages.sent = 0 OR 
+                (contextualised_messages.sent = 0 OR
                     (contextualised_messages.to_self AND contextualised_messages.element_fetched_as_original_sender = 0)) AND
                 contextualised_messages.unreplied_started_thread = 0 AND
-                contextualised_messages.marked_as_read_by_user = 0 AND 
+                contextualised_messages.marked_as_read_by_user = 0 AND
                 contextualised_messages.cc = 1
             ) :folder_unread_cc,
 
             SUM(
-                (contextualised_messages.to_self = 0 OR contextualised_messages.element_fetched_as_original_sender = 0) AND 
+                (contextualised_messages.to_self = 0 OR contextualised_messages.element_fetched_as_original_sender = 0) AND
                 contextualised_messages.marked_as_read_by_user = 1 AND
                 contextualised_messages.unreplied_started_thread = 0
             ) :folder_read_all,
             SUM(
-                (contextualised_messages.to_self = 0 OR contextualised_messages.element_fetched_as_original_sender = 0) AND 
-                contextualised_messages.marked_as_read_by_user = 1 AND 
+                (contextualised_messages.to_self = 0 OR contextualised_messages.element_fetched_as_original_sender = 0) AND
+                contextualised_messages.marked_as_read_by_user = 1 AND
                 contextualised_messages.unreplied_started_thread = 0 AND
                 contextualised_messages.urgent = 1
             ) :folder_read_urgent,
             SUM(
-                (contextualised_messages.to_self = 0 OR contextualised_messages.element_fetched_as_original_sender = 0) AND 
-                contextualised_messages.marked_as_read_by_user = 1 AND 
+                (contextualised_messages.to_self = 0 OR contextualised_messages.element_fetched_as_original_sender = 0) AND
+                contextualised_messages.marked_as_read_by_user = 1 AND
                 contextualised_messages.unreplied_started_thread = 0 AND
                 contextualised_messages.to_me = 1
             ) :folder_read_to_me,
             SUM(
-                (contextualised_messages.to_self = 0 OR contextualised_messages.element_fetched_as_original_sender = 0) AND 
-                contextualised_messages.marked_as_read_by_user = 1 AND 
+                (contextualised_messages.to_self = 0 OR contextualised_messages.element_fetched_as_original_sender = 0) AND
+                contextualised_messages.marked_as_read_by_user = 1 AND
                 contextualised_messages.unreplied_started_thread = 0 AND
                 contextualised_messages.cc = 1
             ) :folder_read_cc,
@@ -329,7 +330,7 @@ class MailboxSearch
             SUM(
                 contextualised_messages.sent = 1 AND
                 (
-                    contextualised_messages.to_self = 0 OR 
+                    contextualised_messages.to_self = 0 OR
                     contextualised_messages.element_fetched_as_original_sender = 1
                 )
             ) :folder_sent_all,
@@ -338,39 +339,39 @@ class MailboxSearch
                 (
                     contextualised_messages.sent = 1 AND
                     (
-                        contextualised_messages.to_self = 0 OR 
+                        contextualised_messages.to_self = 0 OR
                         contextualised_messages.element_fetched_as_original_sender = 1
                     )
-                ) AND 
+                ) AND
                 contextualised_messages.has_reply = 1
             ) :folder_sent_replies,
 
             SUM(
-                contextualised_messages.user_original_sender = 1 AND 
+                contextualised_messages.user_original_sender = 1 AND
                 (
-                    contextualised_messages.to_self = 0 OR 
+                    contextualised_messages.to_self = 0 OR
                     contextualised_messages.element_fetched_as_original_sender = 1
                 )
             ) :folder_started_threads,
-            
+
             SUM(
-                contextualised_messages.user_original_sender = 1 AND 
+                contextualised_messages.user_original_sender = 1 AND
                 (
-                    contextualised_messages.to_self = 0 OR 
+                    contextualised_messages.to_self = 0 OR
                     contextualised_messages.element_fetched_as_original_sender = 1
                 ) AND
-                contextualised_messages.reply_required = 1 AND 
+                contextualised_messages.reply_required = 1 AND
                 contextualised_messages.has_reply = 0
             ) :folder_waiting_for_reply,
-            
+
             SUM(
                 (
-                    contextualised_messages.sent = 1 AND 
+                    contextualised_messages.sent = 1 AND
                     (
-                        contextualised_messages.to_self = 0 OR 
+                        contextualised_messages.to_self = 0 OR
                         contextualised_messages.element_fetched_as_original_sender = 1
                     )
-                ) AND 
+                ) AND
                 contextualised_messages.marked_as_read_by_recipient = 0
             ) :folder_unread_by_recipient
 
@@ -418,7 +419,7 @@ class MailboxSearch
                             um.id user_mailbox_id,
                             primary_recipient.mailbox_id recipient_mailbox_id,
 
-                            1 element_fetched_as_original_sender 
+                            1 element_fetched_as_original_sender
 
                         FROM et_ophcomessaging_message eom
                         JOIN mailbox um ON um.id = eom.sender_mailbox_id AND um.id IN ({$mailbox_id_params['binding_string']})
@@ -443,7 +444,7 @@ class MailboxSearch
                             um.id user_mailbox_id,
                             um.id recipient_mailbox_id,
 
-                            0 element_fetched_as_original_sender 
+                            0 element_fetched_as_original_sender
 
                         FROM et_ophcomessaging_message eom
                         JOIN ophcomessaging_message_recipient omr ON omr.element_id = eom.id
@@ -459,7 +460,7 @@ class MailboxSearch
                         FROM et_ophcomessaging_message eom
                         JOIN ophcomessaging_message_comment omc ON omc.element_id = eom.id
                         GROUP BY eom.id
-                    ) latest_comment 
+                    ) latest_comment
                 ON latest_comment.element_id = messages.element_id
                 LEFT OUTER JOIN ophcomessaging_message_comment omc ON omc.id = latest_comment.latest_comment_id AND messages.element_id = omc.element_id
                 JOIN ophcomessaging_message_message_type ommt ON ommt.id = messages.message_type_id
@@ -618,7 +619,7 @@ class MailboxSearch
                                 primary_recipient.mailbox_id recipient_mailbox_id,
                                 primary_recipient_mailbox.name recipient_mailbox_name,
 
-                                1 element_fetched_as_original_sender 
+                                1 element_fetched_as_original_sender
 
                             FROM et_ophcomessaging_message eom
                             JOIN mailbox um ON um.id = eom.sender_mailbox_id AND um.id IN ({$mailbox_id_params['binding_string']}) -- It's necessary here to perform string substitution to bind the mailbox ids
@@ -705,7 +706,7 @@ class MailboxSearch
                 (:message_sent IS NULL OR
                   ((contextualised_messages.sender_mailbox_id = contextualised_messages.recipient_mailbox_id) OR
                     ((contextualised_messages.sender_mailbox_id = contextualised_messages.user_mailbox_id) = :message_sent))) AND
-                (:dedupe_to_self_side IS NULL OR 
+                (:dedupe_to_self_side IS NULL OR
                     ((contextualised_messages.sender_mailbox_id <> contextualised_messages.recipient_mailbox_id) OR
                     contextualised_messages.element_fetched_as_original_sender = :dedupe_to_self_side)) AND
                 (:search_date_from IS NULL OR DATE(contextualised_messages.send_date) >= :search_date_from) AND

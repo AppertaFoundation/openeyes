@@ -94,7 +94,7 @@ $mailbox_html_name = CHtml::modelName($mailbox);
                 <tr>
                     <td>Active</td>
                     <td>
-                        <?= \CHtml::activeCheckBox($mailbox, 'active') ?>
+                        <?= \CHtml::activeCheckBox($mailbox, 'active', ['data-test' => 'mailbox-active-checkbox']) ?>
                     </td>
                 </tr>
             </tbody>
