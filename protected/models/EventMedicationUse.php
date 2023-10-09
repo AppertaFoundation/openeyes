@@ -655,13 +655,13 @@ class EventMedicationUse extends BaseElement
     public function getMedicationChangeHistory(array $change_history = []): array
     {
         $id = $this->hasLinkedPrescribedEntry() ? $this->prescription_item_id : $this->id;
-        if (!$id) {
+        if (!$id || array_key_exists($id, $change_history)) {
             return $change_history;
         }
         $previous_changed_medication = \EventMedicationUse::model()->findByAttributes(['latest_med_use_id' => $id]);
         if ($previous_changed_medication) {
             if (isset($previous_changed_medication->event) && $previous_changed_medication->isChangedMedication()) {
-                $change_history[] = [
+                $change_history[$id] = [
                     'change_date' => Helper::formatFuzzyDate($previous_changed_medication->event->event_date),
                     'dosage' => $previous_changed_medication->getDoseAndFrequency(false),
                     'frequency' => $previous_changed_medication->frequency ? $previous_changed_medication->frequency->code : '',
@@ -1086,7 +1086,7 @@ class EventMedicationUse extends BaseElement
         $criteria->params['latest_med_use_id'] = $this->hasLinkedPrescribedEntry() ? $this->prescription_item_id : $this->id;
         $previous_medication = EventMedicationUse::model()->find($criteria);
 
-        if ($previous_medication && isset($previous_medication->event)) {
+        if ($previous_medication && isset($previous_medication->event) && (strtotime($previous_medication->created_date) < strtotime($this->created_date))) {
             if ($this->isContinuedMedication($previous_medication)) {
                 return $previous_medication;
             } else {
