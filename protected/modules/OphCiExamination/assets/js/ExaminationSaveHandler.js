@@ -58,7 +58,7 @@ $(document).ready(() => {
         let $all_elements = $('section.element');
         let empty_elements = [];
         let empty_element_names = [];
-        let dirty_elements = $('input[name^="[element_dirty]"][value="1"]').map(function() { return $(this).parent().data('element-type-class'); }).get();
+        let dirty_elements = $('input[name*="element_dirty"][value="1"]').map(function() { return $(this).parent().data('element-type-class'); }).get();
         let empty_mandatory_element = false;
         $all_elements.each(function() {
             if (!dirty_elements.find((element) => element == $(this).data('element-type-class')) && !$(this).data('exclude-element-from-empty-discard-check')) {
@@ -71,17 +71,7 @@ $(document).ready(() => {
             }
         });
 
-        if (
-            // submit the form when one or more of the incomplete elements IS mandatory
-            empty_mandatory_element
-            // submit the form when there is no dirty element and all elements are filled
-            || (dirty_elements.length === 0 && empty_elements.length === 0)
-            // submit the form when all elements are filled
-            || !empty_elements.length
-        ) {
-            // There should be at least one dirtied element in an examination event, and there must be no empty mandatory elements.
-            $form.submit();
-        } else if (empty_elements.length > 0) {
+        if (empty_elements.length > 0) {
             // Need to stop propagation to ensure the OK button is enabled in the confirmation dialog (this handler fires before the base handler that disables all buttons on the screen).
             e.stopPropagation();
 
@@ -114,6 +104,16 @@ $(document).ready(() => {
                 $form.submit();
             }.bind(this));
             dialog.open();
+        } else if (
+            // submit the form when one or more of the incomplete elements IS mandatory
+            empty_mandatory_element
+            // submit the form when there is no dirty element
+            || dirty_elements.length === 0
+            // submit the form when all elements are filled
+            || !empty_elements.length
+        ) {
+            // There should be at least one dirtied element in an examination event, and there must be no empty mandatory elements.
+            $form.submit();
         }
     }
     let $save_button = document.getElementById('et_save');

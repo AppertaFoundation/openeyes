@@ -205,7 +205,9 @@ class BaseController extends Controller
 
                 // if user is expired, force them to change their password
                 if (PasswordUtils::testStatus($user_authentication, 'expired') && !$whitelistedRequestCheck) {
-                    Yii::app()->user->setFlash('alert', 'Your password has expired, please reset it now.');
+                    if (Yii::app()->params['profile_user_can_change_password']) {
+                        Yii::app()->user->setFlash('alert', 'Your password has expired, please reset it now.');
+                    }
                     $this->redirect(array('/profile/password'));
                 }
             }

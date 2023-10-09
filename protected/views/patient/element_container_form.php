@@ -51,16 +51,17 @@ $set_id = isset($this->set) ? $this->set->id : null;
             data-exclude-element-from-empty-discard-check="<?= json_encode($element->exclude_element_from_empty_discard_check) ?>"
   >
         <?php
+
         if (isset($_POST['element_dirty'][$model_name])) {
             $element_dirty = $_POST['element_dirty'][$model_name];
         } elseif ($element->isNewRecord) {
             $element_dirty = $element->isDirtyWhenNewRecord() ? 1 : 0;
         } else {
             $element_dirty = 1;
-        } ?>
+        }
+        ?>
 
-        <input type="hidden" name="[element_dirty]<?=$model_name?>"
-               value=<?=$element_dirty ?>>
+        <input type="hidden" name="element_dirty[<?=$model_name?>]" value=<?=$element_dirty ?>>
 
         <?php if (!property_exists($element, 'hide_form_header') || !$element->hide_form_header) { ?>
             <header class="element-header">

@@ -18,6 +18,7 @@
 
 namespace OEModule\PatientTicketing\services;
 
+use OEModule\PatientTicketing\models\QueueSetCategory;
 use Yii;
 
 class PatientTicketing_QueueSetCategoryService extends \services\ModelService
@@ -44,7 +45,7 @@ class PatientTicketing_QueueSetCategoryService extends \services\ModelService
     /**
      * Pass through wrapper to generate Queue Resource.
      *
-     * @param OEModule\PatientTicketing\models\QueueSetCategory $queue
+     * @param QueueSetCategory $queuesetcategory
      *
      * @return resource
      */
@@ -70,6 +71,14 @@ class PatientTicketing_QueueSetCategoryService extends \services\ModelService
         return $this->modelToResource($this->model->findByPk($id));
     }
 
+    public function getCategoriesForInstitution($institution_id): array
+    {
+        return $this->model->with("institutions")->findAll(
+            "institutions.id = :institution_id",
+            [":institution_id" => $institution_id]
+        );
+    }
+
     /**
      * Get the categories that the user has permission to process.
      *
@@ -79,8 +88,10 @@ class PatientTicketing_QueueSetCategoryService extends \services\ModelService
      */
     public function getCategoriesForUser($user_id)
     {
-        $permissioned = array();
-        foreach ($this->model->findAll() as $qsc) {
+        $permissioned = [];
+        $categories = $this->getCategoriesForInstitution(Yii::app()->session['selected_institution_id']);
+
+        foreach ($categories as $qsc) {
             $qscr = $this->modelToResource($qsc);
             if ($this->isCategoryPermissionedForUser($qscr, $user_id)) {
                 $permissioned[] = $qscr;
@@ -98,7 +109,7 @@ class PatientTicketing_QueueSetCategoryService extends \services\ModelService
      */
     public function isCategoryPermissionedForUser(PatientTicketing_QueueSetCategory $qscr, $user_id)
     {
-        $ct = count($this->getCategoryQueueSetsForUser($qscr, $user_id));
+        $ct = count($this->getCategoryQueueSetsForUser($qscr, $user_id, false));
         if ($ct) {
             return true;
         }
@@ -112,11 +123,11 @@ class PatientTicketing_QueueSetCategoryService extends \services\ModelService
      *
      * @return PatientTicketing_QueueSet[]
      */
-    public function getCategoryQueueSetsForUser(PatientTicketing_QueueSetCategory $qscr, $user_id)
+    public function getCategoryQueueSetsForUser(PatientTicketing_QueueSetCategory $qscr, $user_id, $filter_institution = true)
     {
         $res = array();
         $qs_svc = Yii::app()->service->getService('PatientTicketing_QueueSet');
-        foreach ($qs_svc->getQueueSetsForCategory($qscr) as $qsr) {
+        foreach ($qs_svc->getQueueSetsForCategory($qscr, $filter_institution) as $qsr) {
             if ($qs_svc->isQueueSetPermissionedForUser($qsr, $user_id)) {
                 $res[] = $qsr;
             }

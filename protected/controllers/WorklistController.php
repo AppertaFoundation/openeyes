@@ -420,7 +420,8 @@ class WorklistController extends BaseController
             throw new CHttpException(404, 'Unable to retrieve step for processing or step is not a undo checkin step.');
         }
         $pathway = $step->pathway;
-
+        $pathway->did_not_attend = false;
+        $pathway->save();
         $step->undoStep();
 
         $pathway->refresh();
@@ -764,7 +765,8 @@ class WorklistController extends BaseController
                     $has_permission_to_start = Yii::app()->user->checkAccess('TaskPrescribe');
                 }
                 if ($step) {
-                    $view_file = ($step instanceof PathwayStep ? $step->type->widget_view : $step->step_type->widget_view) ?? 'generic_step';
+                    $view_file = $red_flag ? 'generic_step' :
+                        ($step instanceof PathwayStep ? $step->type->widget_view : $step->step_type->widget_view) ?? 'generic_step';
                     $dom = $this->renderPartial(
                         '//worklist/steps/' . $view_file,
                         array(

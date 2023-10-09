@@ -42,7 +42,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
 		<button class="secondary small" type="button" id="yes">
 			Yes
 		</button>
-		<button class="warning small" type="button" id="later">
+		<button class="warning small" type="button" id="later" data-test="set-site-and-firm-later-button">
 			Later
 		</button>
 	</div>

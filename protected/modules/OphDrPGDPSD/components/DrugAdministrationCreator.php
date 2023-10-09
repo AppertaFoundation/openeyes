@@ -15,7 +15,7 @@ class DrugAdministrationCreator extends \EventCreator
 
     public function setEntriesAndWorklistPatient($assignment, $worklist_patient_id, $firm_id)
     {
-        $element = $this->elements['Element_DrugAdministration'];
+        $element = $this->elements[Element_DrugAdministration::class];
         $element->assignments = array($assignment);
         $this->event->worklist_patient_id = $worklist_patient_id;
         $this->event->firm_id = $firm_id;

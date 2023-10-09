@@ -35,3 +35,14 @@ Cypress.Commands.add('hideWorklistNavBar', () => {
         }
     });
 });
+
+Cypress.Commands.add('addPathStep', (trSelector, stepDataAttribute) => {
+
+    cy.get(trSelector).within(tr => {
+        cy.getBySel(`patient-checkbox`).click();
+    });
+
+    cy.getBySel(`worklist-adder`).should('be.visible').within(adder => {
+        cy.getBySel(stepDataAttribute).click();
+    });
+});

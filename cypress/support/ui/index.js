@@ -16,15 +16,15 @@ Cypress.Commands.add('getElementSideByName', (elementName, side) => {
 });
 
 Cypress.Commands.add('getBySel', (dataTest, additionalSelectors = "", ...args) => {
-    return cy.get(`[data-test=${dataTest}]${additionalSelectors}`, ...args);
+    return cy.get(`[data-test="${dataTest}"]${additionalSelectors}`, ...args);
 });
 
 Cypress.Commands.add('getBySelLike', (dataTest, additionalSelectors = "", ...args) => {
-    return cy.get(`[data-test*=${dataTest}]${additionalSelectors}`, ...args);
+    return cy.get(`[data-test*="${dataTest}"]${additionalSelectors}`, ...args);
 });
 
 Cypress.Commands.add('findBySel', {prevSubject: true}, (subject, selector, ...args) => {
-    return subject.find(`[data-test=${selector}]`, ...args);
+    return subject.find(`[data-test="${selector}"]`, ...args);
 });
 
 Cypress.Commands.add('removeElementSide', (elementName, side) => {
@@ -46,7 +46,7 @@ Cypress.Commands.add('removeElements', (exceptElementNames) => {
         .join('');
 
     cy.get(`section.element${filterSelector}`).each(($section) => {
-        if ($section.find('input[name^="\\[element_dirty\\]"]').val() == '1') {
+        if ($section.find('input[name*="element_dirty"]').val() == '1') {
             cy.wrap($section).within(() => {
                 cy.get('.js-remove-element').click();
             });
@@ -162,7 +162,7 @@ Cypress.Commands.add('generateRandomString', (stringLength) => {
     let randomAscii;
 
     for (let index = 0; index < stringLength; index++) {
-        randomAscii = Math.floor((Math.random() * 25) + 97);
+        randomAscii = Cypress._.random(97, 122);
         randomString += String.fromCharCode(randomAscii);
     }
 

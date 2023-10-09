@@ -22,6 +22,7 @@ use OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message;
 use OEModule\OphCoMessaging\models\Mailbox;
 use OEModule\OphCoMessaging\models\OphCoMessaging_Message_MessageType;
 use OEModule\OphCoMessaging\models\OphCoMessaging_Message_Recipient;
+use OEModule\OphCoMessaging\models\OphCoMessaging_Message_Comment;
 
 class Element_OphCoMessaging_MessageFactory extends ModelFactory
 {
@@ -179,6 +180,30 @@ class Element_OphCoMessaging_MessageFactory extends ModelFactory
             // which cause cc_enabled to always be false when the element is created by a factory
                 $message_element->cc_enabled = true;
                 $message_element->save();
+            });
+    }
+
+    /**
+     * Sends a reply to the sender
+     *
+     * @param string $reply_message
+     * @param int|string $user_id
+     * @param Mailbox|MailboxFactory|int|string $mailbox
+     * @param bool $mark_as_read
+     * @return Element_OphCoMessaging_MessageFactory
+     */
+    public function WithReply($reply_message, $user_id, $mailbox, $mark_as_read = false): self
+    {
+        return $this
+            ->afterCreating(function ($message_element) use ($reply_message, $user_id, $mailbox, $mark_as_read) {
+
+                OphCoMessaging_Message_Comment::factory()
+                ->withElement($message_element)
+                ->withCommentText($reply_message)
+                ->withUser($user_id)
+                ->withMailbox($mailbox)
+                ->withMarkedAsRead($mark_as_read)
+                ->create();
             });
     }
 

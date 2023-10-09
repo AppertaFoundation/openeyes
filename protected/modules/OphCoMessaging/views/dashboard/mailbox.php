@@ -32,7 +32,7 @@ use OEModule\OphCoMessaging\components\MailboxSearch;
         </ul>
         <?php if ($mailbox_with_counts['is_personal'] !== '0') { ?>
         <ul class="filter-messages">
-            <li><a href="#" class="js-folder-counter" data-filter="<?= MailboxSearch::FOLDER_STARTED_THREADS ?>" data-test="home-mailbox-sent-all">Started threads<span class="count">(<?= $mailbox_with_counts[MailboxSearch::FOLDER_STARTED_THREADS] ?? 0 ?>)</span></a></li>
+            <li><a href="#" class="js-folder-counter" data-filter="<?= MailboxSearch::FOLDER_STARTED_THREADS ?>" data-test="home-mailbox-sent-all-started-threads">Started threads<span class="count">(<?= $mailbox_with_counts[MailboxSearch::FOLDER_STARTED_THREADS] ?? 0 ?>)</span></a></li>
             <li><a href="#" class="js-folder-counter" data-filter="<?= MailboxSearch::FOLDER_WAITING_FOR_REPLY ?>" data-test="home-mailbox-sent-unreplied">Waiting for query reply<span class="count">(<?= $mailbox_with_counts[MailboxSearch::FOLDER_WAITING_FOR_REPLY] ?? 0 ?>)</span></a></li>
             <li><a href="#" class="js-folder-counter" data-filter="<?= MailboxSearch::FOLDER_UNREAD_BY_RECIPIENT ?>" data-test="home-mailbox-sent-unread">Unread by recipient<span class="count">(<?= $mailbox_with_counts[MailboxSearch::FOLDER_UNREAD_BY_RECIPIENT] ?? 0 ?>)</span></a></li>
         </ul>

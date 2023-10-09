@@ -457,6 +457,6 @@ function swapElement(element_to_swap, elementTypeClass, params){
         }
 
         element_to_swap.css('opacity','');
-        document.querySelector((".element." + elementTypeClass + " [name^='[element_dirty]']")).value = 1;
+        document.querySelector((".element." + elementTypeClass + " [name*='element_dirty']")).value = 1;
     });
 }

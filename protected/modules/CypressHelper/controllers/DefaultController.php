@@ -69,7 +69,7 @@ class DefaultController extends \CController
             'firm_id' => $this->getApp()->session['selected_firm_id'],
             'subspecialty_id' => Firm::model()->findByPK($this->getApp()->session['selected_firm_id'])->getSubspecialtyID(),
             'institution_id' => $this->getApp()->session['selected_institution_id'],
-            'pincode' => User::model()->findByPk(\Yii::app()->user->id)->getPincode() ?? null,
+            'pincode' => User::model()->findByPk(\Yii::app()->user->id)->pincode->value ?? 'No Pincode'
         ]);
     }
 
@@ -135,7 +135,6 @@ class DefaultController extends \CController
         if (!$patient) {
             throw new \CHttpException(404, 'Patient must exist to generate event creation url.');
         }
-
         $eventTypeId = EventType::model()->findByAttributes([
             'class_name' => $moduleName
         ])->id;

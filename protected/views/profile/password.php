@@ -28,7 +28,10 @@
 <?php if (!Yii::app()->params['profile_user_can_change_password']) { ?>
   <div class="alert-box alert">
     User changing of passwords is administratively disabled.
-  </div>
+    <?php if (PasswordUtils::testStatus($user_auth, "expired")) { ?>
+      Your password has expired, please contact your administrator.
+      <?php } ?>
+    </div>
 <?php } ?>
 <?php $this->renderPartial('//base/_messages') ?>
 <?php $this->renderPartial('//elements/form_errors', array('errors' => $errors)) ?>

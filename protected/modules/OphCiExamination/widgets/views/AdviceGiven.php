@@ -30,25 +30,17 @@ $leaflet_categories = AdviceLeafletCategory::model()
     ->with(['leaflets:active'])
     ->findAll();
 
-$leaflets_by_category = array_reduce(
-    $leaflet_categories,
-    function ($by_category, $category) {
-        $by_category[$category->id] = array_map(
-            function ($leaflet) {
-                return ['id' => $leaflet->id, 'label' => $leaflet->name];
-            },
-            $category->leaflets
-        );
-        return $by_category;
-    }
-);
+$categories = [];
+$categorised_leaflets = [];
+$leaflets = [];
 
-$categories = array_map(
-    static function ($item) {
-        return array('id' => $item->id, 'label' => $item->name);
-    },
-    $leaflet_categories
-);
+foreach ($leaflet_categories as $category) {
+    $mapped_leaflets = \CHtml::listData($category->leaflets, 'id', 'name');
+
+    $categories[] = ['id' => $category->id, 'label' => $category->name];
+    $categorised_leaflets[$category->id] = array_keys($mapped_leaflets);
+    $leaflets = $leaflets + $mapped_leaflets;
+}
 
 $itemSets = [];
 
@@ -78,9 +70,9 @@ foreach ($this->controller->getAttributes($element, $current_firm->getSubspecial
                 ) ?>
         </div>
         <div class="cols-5">
-            <ul class="oe-multi-select inline" id="js-leaflet-entries">
+            <ul class="oe-multi-select inline" id="js-leaflet-entries" data-test="leaflet-entries">
                 <?php foreach ($element->leaflet_entries as $i => $entry) { ?>
-                    <li data-id="<?= $entry->leaflet_id ?>" data-label="<?= $entry->leaflet->name ?>">
+                    <li data-id="<?= $entry->leaflet_id ?>" data-label="<?= $entry->leaflet->name ?>" data-test="leaflet-entry">
                         <input name="<?= CHtml::modelName($element) ?>[leaflet_entries][<?= $i ?>]" type="hidden" value="<?= $entry->leaflet_id ?>"/>
                         <?= $entry->leaflet->name ?><i class="oe-i remove-circle small-icon pad-left"></i>
                     </li>
@@ -90,7 +82,7 @@ foreach ($this->controller->getAttributes($element, $current_firm->getSubspecial
     </div>
     <div class="add-data-actions flex-item-bottom">
         <button class="button hint green js-add-select-search"
-                id="add-leaflet-btn" type="button">
+                id="add-leaflet-btn" type="button" data-test="add-leaflet-btn">
             Leaflets
         </button>
         <button id="advice-comment-btn"
@@ -102,7 +94,7 @@ foreach ($this->controller->getAttributes($element, $current_firm->getSubspecial
 </div>
 
 <script type="text/template" id="AdviceGiven_entry_template" style="display:none">
-    <li data-id="{{id}}" data-label="{{name}}">
+    <li data-id="{{id}}" data-label="{{name}}" data-test="leaflet-entry">
         <input name="<?= CHtml::modelName($element) ?>[leaflet_entries][{{row_count}}]" type="hidden" value="{{id}}"/>
         {{name}}<i class="oe-i remove-circle small-icon pad-left"></i>
     </li>
@@ -110,23 +102,53 @@ foreach ($this->controller->getAttributes($element, $current_firm->getSubspecial
 
 <script type="text/javascript">
     $(function () {
-        let leaflets = <?= json_encode($leaflets_by_category) ?>;
+        const categorised_leaflets = <?= json_encode($categorised_leaflets) ?>;
+        const leaflets = <?= json_encode($leaflets) ?>;
+
+        function createLeafletAdderItems(leafletsIds) {
+            return leafletsIds.map((id) => {
+                    const label = leaflets[id];
+                    let item = document.createElement('li');
+
+                    item.innerHTML = `<span class="auto-width">${label}</span>`;
+                    item.dataset.id = id;
+                    item.dataset.label = label;
+
+                    return item;
+                });
+        }
+
+        // Pass null for all
+        function setLeafletsForCategory(categoryId) {
+            let replacements = [];
+
+            if (categoryId === null) {
+                replacements = createLeafletAdderItems(Object.keys(leaflets));
+            } else {
+                replacements = createLeafletAdderItems(categorised_leaflets[categoryId]);
+            }
+
+            document.querySelector('#leaflet ul').replaceChildren(...replacements);
+        }
+
         $('#js-leaflet-entries').on('click', '.remove-circle', function() {
             $(this).parent().remove();
         });
+
         new OpenEyes.UI.AdderDialog({
             openButton: $('#add-leaflet-btn'),
             itemSets: [
                 new OpenEyes.UI.AdderDialog.ItemSet(<?= json_encode($categories) ?>, {'id': 'leaflet-category', 'multiSelect': false}),
-                new OpenEyes.UI.AdderDialog.ItemSet(<?= json_encode( (isset($categories[0]) ? $leaflets_by_category[$categories[0]['id']] : [])) ?>, {'id': 'leaflet', 'multiSelect': true})
+                // Use a dummy entry to ensure the leaflet column is set up correctly
+                new OpenEyes.UI.AdderDialog.ItemSet([{id: '', label: ''}], {'id': 'leaflet', 'multiSelect': true})
             ],
             onSelect: function() {
                 if ($(this).closest('td').data('adder-id') === 'leaflet-category') {
-                    let leaflet_list = leaflets[$(this).data('id')];
-                    $('#leaflet').find('ul').html('');
-                    leaflet_list.forEach((leaflet) => {
-                        $('#leaflet').find('ul').append(`<li data-label="${leaflet.label}" data-id="${leaflet.id}"><span class="auto-width">${leaflet.label}</span></li>`)
-                    });
+                    if (!$(this).hasClass('selected')) {
+                        setLeafletsForCategory($(this).data('id'));
+                    } else {
+                        setLeafletsForCategory(null);
+                    }
                 }
             },
             onReturn: function (adderDialog, selectedItems) {
@@ -166,6 +188,8 @@ foreach ($this->controller->getAttributes($element, $current_firm->getSubspecial
                 return true;
             }
         });
+
+        setLeafletsForCategory(null); // Replaces the dummy entry (mentioned above) with all the available leaflets
 
         new OpenEyes.UI.AdderDialog({
             openButton: $('#advice-comment-btn'),

@@ -46,7 +46,7 @@ trait MakesElementFormRequests
 
     public function extractElementDirtyValue($model, $response)
     {
-        $element_dirty_field = $response->filter('input[name="[element_dirty]' . \CHtml::modelName($model) . '"]');
+        $element_dirty_field = $response->filter('input[name="element_dirty[' . \CHtml::modelName($model) . ']"]');
 
         $this->assertEquals($element_dirty_field->count(), 1);
 

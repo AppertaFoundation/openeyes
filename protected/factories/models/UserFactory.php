@@ -18,6 +18,7 @@ namespace OE\factories\models;
 use InstitutionAuthentication;
 use OE\factories\ModelFactory;
 use UserAuthentication;
+use FirmUserAssignment;
 
 use WorklistRecentFilter;
 
@@ -93,6 +94,20 @@ class UserFactory extends ModelFactory
     {
         return $this->afterCreating(function (\User $user) {
             WorklistRecentFilter::factory()->forUser($user)->create();
+        });
+    }
+
+    public function forSpecificFirms($firms): self
+    {
+        return $this->state([
+            'global_firm_rights' => false
+        ])->afterCreating(static function (\User $user) use ($firms) {
+            foreach ($firms as $firm) {
+                FirmUserAssignment::factory()
+                    ->forUser($user)
+                    ->forFirm($firm)
+                    ->create();
+            }
         });
     }
 }

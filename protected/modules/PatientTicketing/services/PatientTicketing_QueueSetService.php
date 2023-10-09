@@ -89,13 +89,18 @@ class PatientTicketing_QueueSetService  extends \services\ModelService
      *
      * @return array
      */
-    public function getQueueSetsForCategory(PatientTicketing_QueueSetCategory $qscr)
+    public function getQueueSetsForCategory(PatientTicketing_QueueSetCategory $qscr, bool $filter_institutions = true)
     {
         $class = self::$primary_model;
         $criteria = new \CDbCriteria();
-        $criteria->addColumnCondition(array('category_id' => $qscr->getId()));
-        $res = array();
-        foreach ($class::model()->with('permissioned_users')->findAll($criteria) as $qs) {
+        $criteria->addColumnCondition(['category_id' => $qscr->getId()]);
+
+        if ($filter_institutions) {
+            $criteria->addColumnCondition(['institutions.id' => Yii::app()->session['selected_institution_id']]);
+        }
+
+        $res = [];
+        foreach ($class::model()->with('permissioned_users', 'institutions')->findAll($criteria) as $qs) {
             $res[] = $this->modelToResource($qs);
         }
 

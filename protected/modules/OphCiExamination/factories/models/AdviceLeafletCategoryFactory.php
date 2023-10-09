@@ -15,10 +15,10 @@
 
 namespace OEModule\OphCiExamination\factories\models;
 
-use Institution;
 use OE\factories\ModelFactory;
+use Institution;
 use Subspecialty;
-use OE\factories\models\SubspecialtyFactory;
+use OE\factories\models\{InstitutionFactory, SubspecialtyFactory};
 use OEModule\OphCiExamination\models\AdviceLeafletCategorySubspecialty;
 
 class AdviceLeafletCategoryFactory extends ModelFactory
@@ -43,6 +43,13 @@ class AdviceLeafletCategoryFactory extends ModelFactory
     {
         return $this->state([
             'active' => false
+        ]);
+    }
+
+    public function forInstitution(Institution|InstitutionFactory|string|int $institution): self
+    {
+        return $this->state([
+            'institution_id' => $institution
         ]);
     }
 

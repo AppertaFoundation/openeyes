@@ -24,11 +24,13 @@ use CActiveDataProvider;
 use CDbCriteria;
 use Institution;
 use MappedReferenceData;
+use OE\factories\models\traits\HasFactory;
 use ReferenceData;
 
 class QueueSetCategory extends BaseActiveRecordVersioned
 {
     use MappedReferenceData;
+    use HasFactory;
 
     protected function getSupportedLevels(): int
     {
@@ -59,7 +61,7 @@ class QueueSetCategory extends BaseActiveRecordVersioned
 
     public function defaultScope()
     {
-        return array('order' => $this->getTableAlias(true, false).'.display_order');
+        return array('order' => $this->getTableAlias(true, false) . '.display_order');
     }
 
     /**

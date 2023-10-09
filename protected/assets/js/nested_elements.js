@@ -51,6 +51,10 @@ function addElement(element, animate, previous_id, params, callback, mark_elemen
         const container = $('.js-active-elements');
         $(element).remove();
 
+        if (previous_id) {
+            $(new_element).find('input[name*="element_dirty"]').val(1);
+        }
+
         // If there aren't any elements, then insert the new element at the end (after the event date)
         if (container.find('section[data-element-type-name]').length === 0) {
             container.append(new_element);
@@ -109,7 +113,7 @@ function addElement(element, animate, previous_id, params, callback, mark_elemen
         }
 
         if (mark_element_as_dirty) {
-            document.querySelector((".element." + elClass + " [name^='[element_dirty]']")).value = 1;
+            document.querySelector((".element." + elClass + " [name*='element_dirty']")).value = 1;
         }
     });
 }

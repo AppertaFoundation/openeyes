@@ -2,6 +2,9 @@
 
 use OEModule\OphDrPGDPSD\models\OphDrPGDPSD_Assignment;
 
+/**
+ * @extends DefaultController
+ */
 class PSDController extends DefaultController
 {
     protected static $action_types = array(
@@ -100,6 +103,7 @@ class PSDController extends DefaultController
                 'is_prescriber' => Yii::app()->user->checkAccess('Prescribe'),
                 'can_remove_psd' => $can_remove_psd,
                 'interactive' => (int)$interactive,
+                'allow_unlock' => $assignment->getAppointmentDetails()['date'] === 'Today'
             ),
             true
         );

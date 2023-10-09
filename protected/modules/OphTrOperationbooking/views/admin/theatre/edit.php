@@ -15,14 +15,6 @@
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-if ($this->checkAccess('admin')) {
-    $sites = Site::model()->getListForAllInstitutions();
-    // getListForAllInstitutions returns an array which uses 'list', 'options' as keys,
-    // the 'list' key stores id => site_name
-    $sites = $sites['list'];
-} else {
-    $sites = Site::model()->getListForCurrentInstitution();
-}
 ?>
 <div class="row divider">
     <h2><?php echo $theatre->id ? 'Edit' : 'Add' ?> theatre</h2>

@@ -508,7 +508,7 @@ $default_urls = $logo_helper->getLogoURLs();
         CHtml::listData(Site::model()->findAll('institution_id=:institution_id', [':institution_id' => $institution->id]), 'id', 'name'),
         ['empty' => 'NOT SITE SPECIFIC','class' => 'cols-4']
     ); ?>
-    <table class="standard sortable" id="patient_identifiers_entry_table">
+    <table class="standard sortable" id="patient_identifiers_entry_table" data-test="patient-identifiers-entry-table">
         <thead>
             <tr>
                 <th>&uarr;&darr;</th>
@@ -542,7 +542,7 @@ $default_urls = $logo_helper->getLogoURLs();
                         </td>
                         <td><?= $identifier_rule->patientIdentifierType->usage_type ?: '-' ?></td>
                         <td><?= $identifier_rule->patientIdentifierType->long_title ?: '-' ?></td>
-                        <td><?= $identifier_rule->patientIdentifierType->short_title ?: '-' ?></td>
+                        <td data-test="identifier-short-title"><?= $identifier_rule->patientIdentifierType->short_title ?: '-' ?></td>
                         <td><?= $identifier_rule->institution->name ?: '-' ?></td>
                         <td><?= $identifier_rule->patientIdentifierType->site ? $identifier_rule->patientIdentifierType->site->name : '-'; ?></td>
                         <td><?= $identifier_rule->patientIdentifierType->value_display_prefix ?: '-' ?></td>
@@ -555,6 +555,7 @@ $default_urls = $logo_helper->getLogoURLs();
                             $identifier_rule,
                             "[{$row_count}]necessity",
                             $necessity_options_with_labels,
+                                ['data-test' => 'necessity-dropdown']
                             ) ?>
                         </td>
                         <td><?= \CHtml::activeDropDownList(
@@ -581,7 +582,7 @@ $default_urls = $logo_helper->getLogoURLs();
     </table>
     <div class="flex-layout flex-right">
         <div id="patient_identifier_popup" class="add-data-actions flex-item-bottom">
-            <button class="button hint green" id="add-new-rule" type="button">
+            <button class="button hint green" id="add-new-rule" data-test="add-new-display-preference" type="button">
                 <i class="oe-i plus pro-theme"></i>
             </button>
         </div>
@@ -658,6 +659,7 @@ $default_urls = $logo_helper->getLogoURLs();
             ></td>
         <td>
             <select id = "PatientIdentifierTypeDisplayOrder_{{row_count}}_necessity"
+                    data-test="necessity-dropdown"
                     name = "PatientIdentifierTypeDisplayOrder[{{row_count}}][necessity]" >
                 {{#necessity_options}} <option value="{{option}}" >{{label}}</option>{{/necessity_options}}
             </select>

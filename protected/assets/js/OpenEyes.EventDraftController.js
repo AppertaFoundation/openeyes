@@ -73,26 +73,28 @@ var OpenEyes = OpenEyes || {};
                 this.showDraftCancelButton();
             }
 
-            $(this.options.discardDraftConfirmButtonSelector).on('click', () => {
-                this.disableAutosave = true;
-                this.deleteExistingDrafts(false);
-                $(window).on('beforeunload', function () {
-                    return null;
-                });
-                $(this.options.cancelButtonSelector)[0].click();
-            });
-
-            $(this.options.discardDraftDeclineButtonSelector).on('click', () => {
-                $(window).on('beforeunload', function () {
-                    return null;
-                });
-                this.attemptDraftSave(false);
-                $(this.options.cancelButtonSelector)[0].click();
-            });
-
             this.draftDiscardDialog = new OpenEyes.UI.Dialog({
                 title: "Discard draft",
                 content: $(this.options.discardDraftContentsSelector),
+            });
+
+            this.draftDiscardDialog.on('open', () => {
+                $(this.options.discardDraftConfirmButtonSelector).on('click', () => {
+                    this.disableAutosave = true;
+                    this.deleteExistingDrafts(false);
+                    $(window).on('beforeunload', function () {
+                        return null;
+                    });
+                    $(this.options.cancelButtonSelector)[0].click();
+                });
+    
+                $(this.options.discardDraftDeclineButtonSelector).on('click', () => {
+                    $(window).on('beforeunload', function () {
+                        return null;
+                    });
+                    this.attemptDraftSave(false);
+                    $(this.options.cancelButtonSelector)[0].click();
+                });
             });
 
             $(this.options.draftCancelButtonSelector).on('click', () => {

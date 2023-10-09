@@ -27,6 +27,9 @@ abstract class BaseEsignElement extends BaseEventTypeElement
 
     protected $widgetClass = EsignElementWidget::class;
 
+    public const ESIGN_DEVICE_TYPE = "esigndevice";
+    public const ESIGN_DEVICE_PIN_TYPE = "esigndevicepin";
+
     /**
      * This method must be implemented in child classes and must
      * return an array of signatures. If there are no saved signatures

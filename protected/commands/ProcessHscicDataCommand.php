@@ -83,24 +83,24 @@ class ProcessHscicDataCommand extends CConsoleCommand
     private static $file_config_england = array(
         'full' => array(
             'gp' => array(
-                    'url' => 'egpcur',
-                    'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode', '', '', 'status', '', '', '', '', 'phone'),
-             ),
+                'url' => 'egpcur',
+                'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode', '', '', 'status', '', '', '', '', 'phone'),
+            ),
             'practice' => array(
-                    'url' => 'epraccur',
-                    'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode', '', '', 'status', '', '', '', '', 'phone'),
+                'url' => 'epraccur',
+                'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode', '', '', 'status', '', '', '', '', 'phone'),
             ),
             'ccg' => array(
-                    'url' => 'eccg',
-                    'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode'),
+                'url' => 'eccg',
+                'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode'),
             ),
             'ccgAssignment' => array(
-                    'url' => 'epcmem',
-                    'fields' => array('practice_code', 'ccg_code'),
+                'url' => 'epcmem',
+                'fields' => array('practice_code', 'ccg_code'),
             ),
             'optom' => array(
                 'url' => 'eoptsite',
-                'fields' => array('code','name','','','addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode'),
+                'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode'),
             ),
         ),
         'monthly' => array(
@@ -125,16 +125,16 @@ class ProcessHscicDataCommand extends CConsoleCommand
     private static $file_config_scotland = array(
         'full' => array(
             'gp' => array(
-                    'url' => 'scotgp',
-                    'fields' => array('code', 'first_name', 'last_name', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode', '', '', 'status', '', '', '', '', 'phone'),
-             ),
+                'url' => 'scotgp',
+                'fields' => array('code', 'first_name', 'last_name', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode', '', '', 'status', '', '', '', '', 'phone'),
+            ),
             'practice' => array(
-                    'url' => 'scotprac',
-                    'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode', '', '', 'status', '', '', '', '', 'phone'),
+                'url' => 'scotprac',
+                'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode', '', '', 'status', '', '', '', '', 'phone'),
             ),
             'optom' => array(
                 'url' => 'eoptsite',
-                'fields' => array('code','name','','','addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode'),
+                'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode'),
             ),
         ),
     );
@@ -147,16 +147,16 @@ class ProcessHscicDataCommand extends CConsoleCommand
     private static $file_config_ni = array(
         'full' => array(
             'gp' => array(
-                    'url' => 'ngpcur',
-                    'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode', '', '', 'status', '', '', '', '', 'phone'),
-             ),
+                'url' => 'ngpcur',
+                'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode', '', '', 'status', '', '', '', '', 'phone'),
+            ),
             'practice' => array(
-                    'url' => 'npraccur',
-                    'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode', '', '', 'status', '', '', '', '', 'phone'),
+                'url' => 'npraccur',
+                'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode', '', '', 'status', '', '', '', '', 'phone'),
             ),
             'optom' => array(
                 'url' => 'eoptsite',
-                'fields' => array('code','name','','','addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode'),
+                'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode'),
             ),
         ),
     );
@@ -319,7 +319,7 @@ class ProcessHscicDataCommand extends CConsoleCommand
             if (is_array($v)) {
                 $struct[$k] = $this->mapFileConfig($v, $output);
             } else {
-                switch ((string) $k) {
+                switch ((string)$k) {
                     case 'url':
                         if (preg_match('~href="(.*?/' . $v . '\.zip)"~', $output, $match)) {
                             echo "Found match for $v: $match[1]\n";
@@ -355,31 +355,31 @@ class ProcessHscicDataCommand extends CConsoleCommand
     }
 
     /**
-     * Help.
+     * @return void
      */
     public function getHelp()
     {
         echo <<<EOH
 
-        
+
 HSCIC data downloader and importer
-        
+
 The command downloads (from HSCIC website) and processes zipped CSV files
 http://systems.hscic.gov.uk/data/ods/datadownloads/gppractice
 
 USAGE
   yiic.php processhscicdata [action] [parameter]
-        
+
 Following actions are available:
 
  - download     [--type --interval] : downloads a specific file based on the given type (e.g.: GP) and interval (e.g.: full)
-        
+
  - downloadall                      : downloads all the full files, GP, Optom, Practice, CCG, CCG Assignment
-        
+
  - import       [--type --interval] : Importing a specific file based on the given type and iterval
- 
+
  - importall                        : imports all the full files, GP, Optom, Practice, CCG, CCG Assignment
-        
+
  - checkremovedfromfile  [--type]   : Checking if a database row no longer exists in the file, and if it's the case, we set the status inactive
                                       Supported types : GP and Practice
 
@@ -389,9 +389,9 @@ Available intervals by type :
     practice        : full
     ccg             : full
     ccgAssignment   : full
-        
+
 Following parameters are available:
-        
+
  - force  : Force import for the give file, even if it was already processed before
  - audit  : Do not generate audit message (can be useful for the first run, we do not need 78000 'GP imported' audit message)
             Usage: --audit=false
@@ -409,7 +409,7 @@ EXAMPLES
 
  * yiic.php processhscicdata download --type=gp --interval=monthly
    Downloads the monthly Gp file
-     
+
  * yiic.php processhscicdata import --type=gp --interval=full --force
    Importing the full GP file, forcing it as it was already processed
 
@@ -426,9 +426,9 @@ EOH;
     /**
      * Downloads data file from url and imports it.
      *
-     * @param string $url      Url to the data file
-     * @param string $type     gp|optom|Practice|Ccg|CcgAssignment
-     * @param string $region   scotland|england|ni
+     * @param string $url Url to the data file
+     * @param string $type gp|optom|Practice|Ccg|CcgAssignment
+     * @param string $region scotland|england|ni
      * @param string $interval full|monthly|quarterly
      */
 
@@ -462,7 +462,7 @@ EOH;
      * imports a specific file based on the given type and interval
      * eg.: ProcessHscicData import --type=Gp --interval=monthly.
      *
-     * @param string $type     gp|optom|Practice|Ccg|CcgAssignment
+     * @param string $type gp|optom|Practice|Ccg|CcgAssignment
      * @param string $interval full|monthly|quarterly
      */
     public function actionImport($type, $interval = 'full', $region = 'england')
@@ -518,7 +518,7 @@ EOH;
      * Checks if the newly downloaded file is already processed or not
      * by comparing to the previously downloaded one.
      *
-     * @param type $tempFile      freshly downloaded in the /tmp directory
+     * @param type $tempFile freshly downloaded in the /tmp directory
      * @param type $permanentFile already processed one {$permanentFile}/{$permanentFile}.zip
      *
      * @return bool true if no already processed file found or the new file differ from the previous one in md5 hash
@@ -545,6 +545,7 @@ EOH;
 
     /**
      * Opens the zip file and gets the CSV file pointer and returns it.
+     * Using this function for some reasons causes the stream to be closed
      *
      * @param string $file path and filename
      *
@@ -623,9 +624,9 @@ EOH;
     /**
      * Processing the given file.
      *
-     * @param string $type     like 'Gp'
+     * @param string $type like 'Gp'
      * @param string $interval full|monthly|quarterly
-     * @param array  $file     (based on self::files['full']['Gp'])
+     * @param array $file (based on self::files['full']['Gp'])
      */
     private function processFile($type, $interval, $file)
     {
@@ -651,15 +652,31 @@ EOH;
     /**
      * Gets the zip file, extracts the CSV file (from the zip) and processes it.
      *
-     * @param string $type     like 'Gp'
+     * @param string $type like 'Gp'
      * @param string $interval full|monthly|quarterly
-     * @param array  $fields
-     * @param string $file     the zip file
+     * @param array $fields
+     * @param string $file the zip file
      */
     private function processCSV($type, $interval, $fields, $file)
     {
         $lineCount = $this->getLineCountFromZip($file);
-        $fileHandler = $this->getFilePointer($file);
+
+        $pathInfo = pathinfo($file);
+        $zip = new ZipArchive();
+        $res = $zip->open($file);
+
+        if ($res !== true) {
+            throw new Exception("Failed to open zip file '{$file}': " . $res, static::$UNEXPECTED_FILE_PROBLEM);
+        }
+
+        $fileName = preg_replace('/\d+/', '', str_replace('.zip', '.csv', $pathInfo['basename']));
+
+        //Stream needs to be opened at the same function where it's otherwise it will cause an error
+        $stream = $zip->getStream($fileName);
+
+        if (!$stream) {
+            throw new Exception("Failed to extract '{$fileName}' from zip file at '{$file}'", static::$UNEXPECTED_FILE_PROBLEM);
+        }
 
         $this->pcu = new PostCodeUtility();
         $this->countryId = Country::model()->findByAttributes(array('code' => 'GB'))->id;
@@ -671,7 +688,7 @@ EOH;
         echo 'Progress :          ';
 
         $i = 1;
-        while (($row = fgetcsv($fileHandler))) {
+        while (($row = fgetcsv($stream))) {
             $percent = round((($i / $lineCount) * 100), 1);
 
             echo "\033[7D"; // 7 char back
@@ -998,7 +1015,7 @@ EOH;
      * Imports the Address.
      *
      * @param Address $address
-     * @param array   $lines
+     * @param array $lines
      */
     private function importAddress(Address $address, array $lines)
     {
@@ -1138,19 +1155,35 @@ EOH;
      * Fill temp table for CheckRemovedFromFile() method.
      *
      * @param string $type GP
-     * @param type   $file
+     * @param type $file
      */
     private function fillTempTable($type, $file)
     {
         $dbTable = $this->getTableNameByType($type);
 
-        $fileHandler = $this->getFilePointer($this->tempPath . '/' . $file);
+        $pathInfo = pathinfo($file);
+
+        $zip = new ZipArchive();
+        $res = $zip->open($file);
+
+        if ($res !== true) {
+            throw new Exception("Failed to open zip file '{$file}': " . $res, static::$UNEXPECTED_FILE_PROBLEM);
+        }
+
+        $fileName = preg_replace('/\d+/', '', str_replace('.zip', '.csv', $pathInfo['basename']));
+
+        $stream = $zip->getStream($fileName);
+
+        if (!$stream) {
+            throw new Exception("Failed to extract '{$fileName}' from zip file at '{$file}'", static::$UNEXPECTED_FILE_PROBLEM);
+        }
+
 
         echo 'Inserting rows into temp table... ';
 
         $i = 0;
         $insertBulkData = array();
-        while (($row = fgetcsv($fileHandler))) {
+        while (($row = fgetcsv($stream))) {
             $data = array_combine(array_pad($this->files['full'][$type]['fields'], count($row), ''), $row);
 
             if ($dbTable == 'gp') {
@@ -1223,7 +1256,7 @@ EOH;
     /**
      * Allows to download a specified file based on the type and interval.
      *
-     * @param string $type     like 'Gp'
+     * @param string $type like 'Gp'
      * @param string $interval like 'monthly'
      */
     public function actionDownload($type, $interval = 'full', $region = 'england')

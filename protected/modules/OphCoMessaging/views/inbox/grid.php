@@ -72,7 +72,7 @@ if (!$recipient_messages->totalItemCount) {
 ?>
 
 
-<table class="standard messages highlight-rows">
+<table class="standard messages highlight-rows" data-test="messages-table">
     <colgroup>
         <col class="cols-4">
         <col class="cols-icon">
@@ -154,9 +154,9 @@ if (!$recipient_messages->totalItemCount) {
                 ?>
             </td>
             <td><?= Helper::convertMySQL2NHS($message_date) ?></td>
-            <td>
+            <td data-test="message-sender">
                 <?= $message_sender ?>
-                <div class="sent-to-mailbox">
+                <div class="sent-to-mailbox" data-test="message-recipient">
                     <?= $message_recipient ?>
                 </div>
             </td>

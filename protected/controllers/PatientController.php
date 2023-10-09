@@ -15,10 +15,6 @@
  */
 
 use OEModule\BreakGlass\BreakGlass;
-use OEModule\OphCiExamination\models\FamilyHistory;
-use OEModule\OphCiExamination\models\FamilyHistoryCondition;
-use OEModule\OphCiExamination\models\FamilyHistoryRelative;
-use OEModule\OphCiExamination\models\FamilyHistorySide;
 use OEModule\OphCiExamination\models\SocialHistory;
 
 Yii::import('application.controllers.*');
@@ -2101,11 +2097,7 @@ class PatientController extends BaseController
         $patient_identifiers = [];
         // array that contains the identifier type values have been auto incremented
         $auto_incremented_identifier_type_ids = [];
-        // fetch existing patient identifiers
-        $existing_patient_identifiers = PatientIdentifier::model()->findAllByAttributes(['patient_id' => $patient->id, 'deleted' => 0]);
-        foreach ($existing_patient_identifiers as $existing_patient_identifier) {
-            $patient_identifiers[$existing_patient_identifier->patient_identifier_type_id] = $existing_patient_identifier;
-        }
+
 
         // remove hidden patient identifiers
         $patient_identifiers = array_filter($patient_identifiers, function ($type_id) use ($pid_type_necessity_values) {
@@ -2125,6 +2117,15 @@ class PatientController extends BaseController
                 $patient_identifiers[$type_id] = $patient_identifier;
             }
         }
+
+        // fetch existing patient identifiers
+        $existing_patient_identifiers = PatientIdentifier::model()->findAllByAttributes(['patient_id' => $patient->id, 'deleted' => 0]);
+        foreach ($existing_patient_identifiers as $existing_patient_identifier) {
+            if(isset($patient_identifiers[$existing_patient_identifier->patient_identifier_type_id])) {
+                $patient_identifiers[$existing_patient_identifier->patient_identifier_type_id] = $existing_patient_identifier;
+            }
+        }
+
         // overwrite values if they are set in $_POST
         if (isset($_POST['PatientIdentifier'])) {
             foreach ($_POST['PatientIdentifier'] as $post_info) {

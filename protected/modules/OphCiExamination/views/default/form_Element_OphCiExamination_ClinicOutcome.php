@@ -21,9 +21,10 @@
 <?php
 
 use OEModule\OphCiExamination\models\DischargeDestination;
+use OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Risk_Status;
 use OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Role;
 use OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Status;
-use OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Risk_Status;
+
 $current_institution_id = Yii::app()->session['selected_institution_id'];
 
 Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/ClinicOutcome.js", CClientScript::POS_HEAD);
@@ -109,7 +110,8 @@ $subspecialty_contexts = $this->getContextFromSubspecialty($contexts, $default_s
             <i class="oe-i comments small-icon"></i>
         </button>
 
-        <button class="button hint green js-add-select-search" id="show-follow-up-popup-btn" type="button">
+        <button class="button hint green js-add-select-search" id="show-follow-up-popup-btn"
+                data-test="show-follow-up-adder" type="button">
             <i class="oe-i plus pro-theme"></i>
         </button>
 

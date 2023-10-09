@@ -6,8 +6,8 @@
  * @var $custom_steps PathwayStepType[]
  */
 ?>
-<div class="oec-adder">
-    <div class="close-btn"></div>
+<div class="oec-adder" data-test="worklist-adder">
+    <div class="close-btn" data-test="close-worklist-adder-btn"></div>
     <?php if ($show_pathway_selected) { ?>
     <div class="add-to">
         <span class="num"></span> selected

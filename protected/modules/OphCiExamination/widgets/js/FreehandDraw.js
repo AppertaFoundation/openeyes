@@ -67,16 +67,21 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             document.getElementById(`annote-comments-field-${index}`).value = comment;
         });
 
-        OpenEyes.UI.DOM.addEventListener(this.$wrapper, 'click', '.js-save-annotation', (e) => {
+        OpenEyes.UI.DOM.addEventListener(this.$wrapper, 'click', '.js-save-annotation', async (e) => {
             e.preventDefault();
             const $button = e.target;
             const index = $button.dataset.annotateRowIndex;
             document.getElementById(`annote-template-view-${index}`).style.display = 'block';
             document.getElementById(`annotate-wrapper-${index}`).style.display = 'none';
-            document.getElementById(`js-img-preview-${index}`).src = this.$wrapper.querySelector(`.js-image-data-${index}`).value;
 
             const $row = document.getElementById(`js-annotate-image-${index}`);
             this.setIsEdited(index, $row);
+
+            const data = await this.imageAnnotators[index].getCanvasDataUrl();
+            this.setImageData(index, data);
+
+            const img_data_value = this.$wrapper.querySelector(`.js-image-data-${index}`).value;
+            document.getElementById(`js-img-preview-${index}`).src = img_data_value;
 
             this.enableButtonIfNoAnnotation();
         });
@@ -196,11 +201,11 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
     FreehandDraw.prototype.initTemplate = function (dateTemplateUrl, row_count = 0, add_event_listeners = true) {
         const self = this;
+        const $annotate = document.getElementById(`js-annotate-image-${row_count}`);
+        $annotate.dataset.imageAnnotatorId = row_count;
+
         const imageAnnotator = new OpenEyes.UI.ImageAnnotator(dateTemplateUrl, {
             'annotateSelector': `#js-annotate-image-${row_count}`,
-            'canvasModifiedCallback': async function () {
-                self.setImageData(row_count, await this.getCanvasDataUrl.call(this));
-            },
             'afterInit': async function () {
                     self.setImageData(row_count, await this.getCanvasDataUrl.call(this));
                     // We only show actions after everything is loaded to avoid wrong data being saved
@@ -209,10 +214,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             'withEventListeners': add_event_listeners
         });
 
-        const $annotate = document.getElementById(`js-annotate-image-${row_count}`);
-        const index = '' + this.imageAnnotators.length;
-        this.imageAnnotators.push(imageAnnotator);
-        $annotate.dataset.imageAnnotatorId = index;
+        this.imageAnnotators[row_count] = imageAnnotator;
 
         const $textarea = document.getElementById(`annote-comments-field-${row_count}`);
 

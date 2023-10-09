@@ -18,6 +18,8 @@
 
 namespace OEModule\PatientTicketing\models;
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "patientticketing_queue".
  *
@@ -47,6 +49,8 @@ namespace OEModule\PatientTicketing\models;
  */
 class Queue extends \BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     // used to prevent form field name conflicts
     public static $FIELD_PREFIX = 'patientticketing_';
 
