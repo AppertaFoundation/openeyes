@@ -57,7 +57,8 @@ $form = $this->beginWidget(
                             $field,
                             [
                                 'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
-                                'class' => 'cols-full'
+                                'class' => 'cols-full',
+                                'data-test' => $field . '_field'
                             ]
                         ); ?>
                     </td>
@@ -231,7 +232,8 @@ $form = $this->beginWidget(
             [
                 'class' => 'button large',
                 'name' => 'save',
-                'id' => 'et_save'
+                'id' => 'et_save',
+                'data-test' => 'et_save'
             ]
         ); ?>
         <?= \CHtml::submitButton(

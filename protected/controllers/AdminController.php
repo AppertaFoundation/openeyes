@@ -1015,6 +1015,14 @@ class AdminController extends BaseAdminController
                         $user_attributes['firms'] = [];
                     }
 
+                    if (!is_null($user->personalMailbox)) {
+                        $user->personalMailbox->name = $user->getFullNameAndTitle();
+
+                        if (!$user->personalMailbox->save()) {
+                            throw new CHttpException(422, 'Unable to save user mailbox: ' . print_r($user->personalMailbox->getErrors(), true));
+                        }
+                    }
+
                     $user->saveRoles(
                         (!isset($user_attributes['roles']) || (empty($user_attributes['roles'])))
                         ? []

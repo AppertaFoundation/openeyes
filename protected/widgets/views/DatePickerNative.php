@@ -50,6 +50,9 @@
         <?php if ($this->getHtmlOption('form')) {
             ?> form="<?= $this->getHtmlOption('form') ?>" <?php
         } ?>
+        <?php if ($this->getHtmlOption('data-test')) {
+            ?> data-test="<?= $this->getHtmlOption('data-test') ?>" <?php
+        } ?>
         autocomplete="off" />
 
       <?php if (!$this->getHtmlOption('nowrapper')) { ?>

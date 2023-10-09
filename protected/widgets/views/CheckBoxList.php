@@ -34,6 +34,9 @@ $label_class = isset($htmlOptions['label-class']) ? $htmlOptions['label-class'] 
                 $options[$k] = $v;
             }
         }
+        if (array_key_exists('test', $htmlOptions) && $htmlOptions['test'] !== null) {
+            $options['data-test'] = $htmlOptions['test'];
+        }
         ?>
     <label class="inline highlight <?= $label_class ?>">
         <?php
@@ -105,6 +108,9 @@ $label_class = isset($htmlOptions['label-class']) ? $htmlOptions['label-class'] 
                     foreach ($htmlOptions['options'][$id] as $k => $v) {
                         $options[$k] = $v;
                     }
+                }
+                if (array_key_exists('test', $htmlOptions) && $htmlOptions['test'] !== null) {
+                    $options['data-test'] = $htmlOptions['test'];
                 }
                 $class = isset($options['class']) ? ($options['class'] . " ") : '';
 

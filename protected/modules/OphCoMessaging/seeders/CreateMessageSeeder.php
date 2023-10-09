@@ -41,12 +41,14 @@ class CreateMessageSeeder extends BaseSeeder
             ->create();
         $user_authentication = $user->authentications[0];
         $user_fullname = $user->getFullNameAndTitle();
+        $user_id = $user->id;
 
         return [
             'user' =>  ['username' => $user_authentication->username,
                         'password' => $user_password,
                         'fullName' => $user_fullname,
                         'messageText' => 'Hello ' . $user_fullname,
+                        'id' => $user_id,
             ]
         ];
     }

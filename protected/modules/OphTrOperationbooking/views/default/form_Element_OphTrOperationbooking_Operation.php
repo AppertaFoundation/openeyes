@@ -106,7 +106,7 @@ $procedure_readonly = $this->procedure_readonly;
                                 false,
                                 array(
                                     'nowrapper' => true,
-                                    'data-test' => 'op-complexity'
+                                    'test' => 'op-complexity'
                                 )
                             ) ?>
                         </td>
@@ -284,7 +284,7 @@ $procedure_readonly = $this->procedure_readonly;
                                 array(
                                     'fieldset-class' => $element->getError('anaesthetic_type') ? 'highlighted-error error' : '',
                                     'field' => 'AnaestheticType',
-                                    'data-test' => 'op-anaesthetic-type'
+                                    'test' => 'op-anaesthetic-type'
                                 )
                             ); ?>
                         </td>
@@ -318,7 +318,7 @@ $procedure_readonly = $this->procedure_readonly;
                                 false,
                                 array(
                                     'nowrapper' => true,
-                                    'data-test' => 'op-anaesthetic-choice'
+                                    'test' => 'op-anaesthetic-choice'
                                 )
                             ) ?>
                         </td>
@@ -328,7 +328,7 @@ $procedure_readonly = $this->procedure_readonly;
                             Patient needs to stop medication
                         </td>
                         <td>
-                            <?php $form->radioBoolean($element, 'stop_medication', array('nowrapper' => true, 'data-test' => 'op-stop-medication')) ?>
+                            <?php $form->radioBoolean($element, 'stop_medication', array('nowrapper' => true, 'test' => 'op-stop-medication')) ?>
                             <?php $form->textArea(
                                 $element,
                                 'stop_medication_details',

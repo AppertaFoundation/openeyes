@@ -45,7 +45,7 @@ if (!isset($this->patient->contact->mobile_phone) || $this->patient->contact->mo
                     array(
                         'nowrapper' => true,
                         'options' => $element->getPreassessmentTypes(),
-                        'data-test' => 'op-pre-assessment-type'
+                        'test' => 'op-pre-assessment-type'
                     )
                 ); ?>
             </td>
