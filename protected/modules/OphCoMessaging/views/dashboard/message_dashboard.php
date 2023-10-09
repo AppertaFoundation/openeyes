@@ -42,7 +42,7 @@ $coreapi = new CoreAPI();
                       'OphCoMessaging_Search_Mailbox',
                       \Yii::app()->request->getQuery('OphCoMessaging_Search_Mailbox', '') ? \Yii::app()->request->getQuery('OphCoMessaging_Search_Mailbox', '') : '',
                       CHtml::listData($mailboxes_with_counts, 'id', 'name'),
-                      array('class' => 'cols-full', 'empty' => 'All mailboxes')
+                      array('class' => 'cols-full', 'empty' => 'All mailboxes', 'data-test' => 'search-mailbox-dropdown-filter')
                   ); ?>
                 </td>
               </tr>
@@ -53,7 +53,7 @@ $coreapi = new CoreAPI();
                       'OphCoMessaging_Search_Sender',
                       \Yii::app()->request->getQuery('OphCoMessaging_Search_Sender', '') ? \Yii::app()->request->getQuery('OphCoMessaging_Search_Sender', '') : '',
                       !(strpos($message_type, 'sent') !== false) ? \OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message::model()->getSenders() : array(),
-                      array('class' => 'cols-full', 'empty' => 'All senders')
+                      array('class' => 'cols-full', 'empty' => 'All senders', 'data-test' => 'search-sender-dropdown-filter')
                   ); ?>
                 </td>
               </tr>
@@ -68,7 +68,7 @@ $coreapi = new CoreAPI();
                           'id',
                           'name'
                       ),
-                      array('class' => 'cols-full', 'empty' => 'All types')
+                      array('class' => 'cols-full', 'empty' => 'All types', 'data-test' => 'search-message-type-dropdown-filter' )
                   ); ?>
                 </td>
               </tr>
@@ -119,7 +119,7 @@ $coreapi = new CoreAPI();
             </fieldset>
           </div>
           <div class="row">
-              <button type="submit" class="cols-full green hint" id="OphCoMessaging_Submit">Search</button>
+              <button type="submit" class="cols-full green hint" id="OphCoMessaging_Submit" data-test="search-button-filter-submit">Search</button>
           </div>
       </nav>
   </div>

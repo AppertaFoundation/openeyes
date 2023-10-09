@@ -64,6 +64,24 @@ class OphCoMessaging_Message_CommentFactory extends ModelFactory
         ]);
     }
 
+    public function withMarkedAsRead(bool $marked_as_read): self
+    {
+        return $this->state([
+            'marked_as_read' => $marked_as_read
+        ]);
+    }
+
+    /**
+     * @param OEModule\OphCoMessaging\models\Mailbox|int|string $mailbox
+     * @return OphCoMessaging_Message_CommentFactory
+     */
+    public function withMailbox($mailbox): self
+    {
+        return $this->state([
+            'mailbox_id' => $mailbox
+        ]);
+    }
+
     /**
      * @param Mailbox $user
      * @return OphCoMessaging_Message_CommentFactory
