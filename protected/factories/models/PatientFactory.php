@@ -86,6 +86,15 @@ class PatientFactory extends ModelFactory
         });
     }
 
+    public function adult()
+    {
+        return $this->state(function ($attributes = []) {
+            return [
+                'dob' => $this->faker->dateTimeBetween('-100 years', '-80 years')->format('Y-m-d'),
+            ];
+        });
+    }
+
     protected function generateDefaultIdentifiersFor(Patient $patient): void
     {
         $patient->identifiers = [

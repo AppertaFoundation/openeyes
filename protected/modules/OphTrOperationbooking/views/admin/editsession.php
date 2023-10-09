@@ -74,7 +74,7 @@ if ($this->checkAccess('admin')) {
                     <td><?= $session->NHSDate('date')?></td>
                 <?php } else {?>
                     <td><?= $form->labelEx($session, 'date') ?></td>
-                    <td><?= $form->datePickerNative($session, 'date', [], ['nowrapper' => true])?></td>
+                    <td><?= $form->datePickerNative($session, 'date', [], ['nowrapper' => true, 'data-test' => 'session-date'])?></td>
                 <?php }?>
             </tr>
             <tr>
@@ -114,7 +114,7 @@ if ($this->checkAccess('admin')) {
             foreach ($boolean_fields as $field) : ?>
                 <tr>
                     <td><?= $form->labelEx($session, $field) ?></td>
-                    <td><?= $form->radioBoolean($session, $field, ['nowrapper' => true, 'data-test' => 'session-requirements'])?></td>
+                    <td><?= $form->radioBoolean($session, $field, ['nowrapper' => true, 'test' => 'session-booleans'])?></td>
                 </tr>
             <?php endforeach; ?>
 

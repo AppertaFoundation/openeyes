@@ -47,10 +47,10 @@
 <script type="text/html" id="dialog-confirm-template">
     <p>{{{content}}}</p>
     <div class="buttons">
-        <button class="{{okButtonClassList}}" type="button">
+        <button class="{{okButtonClassList}}" type="button" data-test="dialog-ok-button">
             {{{okButton}}}
         </button>
-        <button class="{{cancelButtonClassList}}" type="button">
+        <button class="{{cancelButtonClassList}}" type="button" data-test="dialog-cancel-button">
             {{{cancelButton}}}
         </button>
     </div>

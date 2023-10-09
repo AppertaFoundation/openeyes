@@ -70,6 +70,8 @@
      * @property {string|null} [iframe=null] - A URL string to load the dialog content
      * in via an iFrame.
      * @property {string|null} [title=null] - The dialog title.
+     * @property {string|null} [dataTest=popup-content] - A data test attribute used to locate the 
+     * element during testing.
      * @property {string|null} [dialogClass=dialog] - A CSS class string to be added to
      * the main dialog container.
      * @property {boolean} [constrainToViewport=false] - Constrain the dialog dimensions
@@ -89,6 +91,7 @@
         title: null,
         popupClass: 'oe-popup',
         popupContentClass: 'oe-popup-content',
+        dataTest: 'popup-content',
         modal: true,
         dialogClass: 'dialog',
         resizable: false,
@@ -116,7 +119,7 @@
             popup.css('width', this.options.width);
         }
         
-        $('<div class="title">' + this.options.title + '</div>' + closeButton + '<div class="' + this.options.popupContentClass + '"></div>').appendTo(popup);
+        $('<div class="title">' + this.options.title + '</div>' + closeButton + '<div class="' + this.options.popupContentClass + '" data-test="' + this.options.dataTest + '"></div>').appendTo(popup);
 
         this.content.append(popup);
         // Add default content (if any exists)
@@ -137,6 +140,7 @@
             content = this.getContent(options);
         }
         $(this.content).find('.oe-popup-content').append(content);
+
         if ($(':input[type="submit"]', this.content).length) {
             $(':input[type="submit"]', this.content).get(0).focus();
         }

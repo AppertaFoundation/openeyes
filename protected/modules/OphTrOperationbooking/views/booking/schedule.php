@@ -116,7 +116,7 @@ $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(
                             <div class="edit" id="firmSelect">
                                 <div class="element-fields">
                                     <div class="data-group">
-                                        <select id="firm_id" class="inline firm-switcher">
+                                        <select id="firm_id" class="inline firm-switcher" data-test="firm-switcher">
                                             <option value="">Select a different <?php echo Firm::model()->contextLabel()?></option>
                                             <option value="EMG">Emergency List</option>
                                             <?php foreach ($firm_list as $_firm) { ?>
