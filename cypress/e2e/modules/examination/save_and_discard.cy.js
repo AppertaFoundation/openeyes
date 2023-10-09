@@ -14,7 +14,7 @@ describe('the save and discard functionality is controlled by a setting and allo
     describe('check the behaviour works when the setting is enabled', () => {
 
         // select "on" for setting "Offer to automatically close incomplete examination elements"
-        beforeEach(() => {
+        before(() => {
             cy.setSystemSettingValue(SAVE_AND_DISCARD_SETTING, 'on');
         });
 
@@ -137,6 +137,10 @@ describe('the save and discard functionality is controlled by a setting and allo
                 // assert that the untouched elements are listed for save & discard
                 .then(() => assertElementsAreInDiscardList(['DR Grading']));
 
+        });
+
+        after(() => {
+            cy.setSystemSettingValue(SAVE_AND_DISCARD_SETTING, 'off');
         });
 
     });

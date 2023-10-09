@@ -44,7 +44,7 @@ Cypress.Commands.add('removeElements', (exceptElementNames) => {
         .join('');
 
     cy.get(`section.element${filterSelector}`).each(($section) => {
-        if ($section.find('input[name^="\\[element_dirty\\]"]').val() == '1') {
+        if ($section.find('input[name*="element_dirty"]').val() == '1') {
             cy.wrap($section).within(() => {
                 cy.get('.js-remove-element').click();
             });
