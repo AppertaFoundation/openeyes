@@ -420,7 +420,8 @@ class WorklistController extends BaseController
             throw new CHttpException(404, 'Unable to retrieve step for processing or step is not a undo checkin step.');
         }
         $pathway = $step->pathway;
-
+        $pathway->did_not_attend = false;
+        $pathway->save();
         $step->undoStep();
 
         $pathway->refresh();
