@@ -36,7 +36,7 @@ describe('verifies prescription secondary e-sign signatories behaviour', () => {
         .each((element, index) => {
             cy.get(`#Element_OphDrPrescription_Details_items_${index}_dose`).type(1);
             cy.get(`#Element_OphDrPrescription_Details_items_${index}_dose_unit_term`).select(1);
-            cy.get(`#Element_OphDrPrescription_Details_items_${index}_route_id`).select(1);
+            cy.get(`#Element_OphDrPrescription_Details_items_${index}_route_id`).select('Eye');
             cy.get(`#Element_OphDrPrescription_Details_items_${index}_laterality`).select(1);
             cy.get(`#Element_OphDrPrescription_Details_items_${index}_frequency_id`).select(1);
             cy.get(`#Element_OphDrPrescription_Details_items_${index}_duration_id`).select(1);

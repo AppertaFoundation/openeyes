@@ -12,7 +12,7 @@ describe('behaviour of the admin screen for medication routes', () => {
         cy.get('tr[class="clickable"]').first().within(() => {
             cy.get('input[type="checkbox"]').as('routeCheckbox');
 
-            cy.get('@routeCheckbox').invoke('val').as('routeId');
+            cy.get('@routeCheckbox').invoke('val').as('routeId', { type: 'static' });
 
             cy.get('@routeCheckbox').click();
         });
