@@ -99,7 +99,7 @@ fi
 if [ $founderrors = 1 ]; then
 	printf "\n\e[5;41;1m\n\nMIGRATE ENCOUNTERED ERRORS - PLEASE SEE LOG - $WROOT/protected/runtime/migrate.log\n\n\n \e[0m\n"
 	echo "The following migration errors were encountered:"
-	grep -B 2 -A 7 -in 'error\|exception.[^al]\|warning\*' $WROOT/protected/runtime/migrate.log
+	grep -B 2 -A 7 -in 'error[^_]\|exception.[^al]\|warning\*' $WROOT/protected/runtime/migrate.log
 	printf "\n\nTo continue with the reset of the script, select option 1"
 	echo "To exit, select option 2"
 
