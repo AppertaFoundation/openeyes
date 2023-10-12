@@ -6,7 +6,7 @@
  * @var ArchivePatientIdentifier[] $patient_identifiers
  */
 ?>
-<div class="oe-full-header flex-layout">
+<div class="oe-full-header">
   <div class="title wordcaps">Add&nbsp;<b>New Patient</b></div>
 </div>
 <?php $this->renderPartial('crud/_form', array(

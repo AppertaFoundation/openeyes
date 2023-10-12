@@ -34,10 +34,7 @@ Yii::app()->getAssetManager()->registerScriptFile('js/AdminSidebar.js', 'applica
 <div id="oe-minimum-width-warning">Device width not supported</div>
 <?php (YII_DEBUG) ? $this->renderPartial('//base/_debug') : null; ?>
 
-<!-- Branding (logo) -->
-<div class="openeyes-brand">
-    <?php $this->renderPartial('//base/_brand'); ?>
-</div>
+<?php $this->renderPartial('//base/_brand'); ?>
 
 <?php $this->renderPartial('//base/_header'); ?>
 

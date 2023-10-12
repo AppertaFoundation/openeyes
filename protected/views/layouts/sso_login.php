@@ -27,9 +27,9 @@
     <?php $this->renderPartial('//base/head/_assets'); ?>
 </head>
 <body class="open-eyes oe-grid">
-<div class="openeyes-brand">
-    <?php $this->renderPartial('//base/_brand'); ?>
-</div>
+
+<?php $this->renderPartial('//base/_brand'); ?>
+
 <main class="oe-home">
     <div class="oe-login">
         <div class="login">
