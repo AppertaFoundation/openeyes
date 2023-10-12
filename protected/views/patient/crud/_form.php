@@ -62,7 +62,7 @@ foreach ($ethnic_list as $key => $item) {
 
 )); ?>
 
-<div class="oe-full-content oe-new-patient flex-layout flex-top">
+<div class="oe-full-content oe-new-patient flex-t">
   <div class="patient-inputs-column" >
     <!--<?php if ($patient->hasErrors() || $address->hasErrors() || $contact->hasErrors()) { ?>
         <div class="alert-box error">

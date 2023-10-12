@@ -473,9 +473,7 @@ function createLoginOverlay() {
     let overlay = document.createElement('div');
     overlay.id = 'js-overlay';
     overlay.classList.add('oe-popup-wrap');
-    overlay.classList.add('dark');
-    //Make overlay opaque to hide patient information in the background
-    overlay.style.background = "rgb(37, 35, 35)";
+    overlay.classList.add('block-out'); // hide all patient data in the background
 
     let timeoutDiv = document.createElement('div');
     timeoutDiv.classList.add('oe-login');
