@@ -24,7 +24,7 @@ jobs:
           event-type: "cypress_run_pr_tests_${{ env.GITHUB_REF_SLUG }}_${{ env.GITHUB_EVENT_PULL_REQUEST_HEAD_SHA_SHORT }}_${{ github.run_attempt}}"
           client-payload: |
             {
-              "GITHUB_REF_NAME": "${{ github.ref_name }}",
+              "GITHUB_BASE_REF": "${{ github.base_ref }}",
               "GITHUB_REF": "${{ github.ref }}",
               "GITHUB_SHA": "${{ github.sha }}",
               "GITHUB_HEAD_REF": "${{ github.head_ref }}",

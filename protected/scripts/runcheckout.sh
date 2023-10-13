@@ -119,6 +119,11 @@ while [[ $# -gt 0 ]]; do
         defaultbranch=master
         ## will use master baranches when the named branch does not exist for a module
         ;;
+    --default-branch)
+        defaultbranch=$2
+        shift
+        shift
+        ;;
     --merge) #merge an upstream branch after checkout
         mergebranch=$2
         shift
@@ -221,6 +226,11 @@ if [ $showhelp = 1 ]; then
     echo "  --develop "
     echo "           |-d   : If specified branch is not found, fallback to develop branch"
     echo "                   - default woud fallback to master"
+    echo "  --master "
+    echo "           |-m   : If specified branch is not found, fallback to master branch"
+    echo " --default-branch : Specify a default branch to fallback to if the specified branch"
+    echo "                   does not exist. Default is develop for live and test, master for"
+    echo "                   all other modes"
     echo "  --no-summary   : Do not display a summary of the checked-out modules after "
     echo "                   completion"
     echo "  --depth <int>  : Only clone/fetch to the given depth"
