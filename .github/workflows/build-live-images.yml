@@ -25,13 +25,12 @@ jobs:
 
       - name: Emit repository_dispatch
         uses: mvasigh/dispatch-action@main
-
         with:
           # Requires a personal access token (PAT) stored in the repository
           token: ${{ secrets.TKLACCESS_TOKEN }}
           repo: external-action-runner
           owner: toukanlabs
-          event_type: "build-oe-image_${{ env.GITHUB_REF_SLUG }}"
+          event_type: "build-oe-image_php8.0_${{ env.GITHUB_REF_SLUG }}"
           message: | 
             { 
               "GITHUB_REF_NAME": "${{ env.GITHUB_REF_NAME }}",
