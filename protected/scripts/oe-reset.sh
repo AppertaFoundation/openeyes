@@ -416,7 +416,7 @@ if [ $cleanbase = "0" ]; then
 
     # grant user rights to openeyes user - this is left untl the end to prevent other systems from connecting in and modifying data before the restore has completed
     echo "Granting user rights to $dbuser"
-    grantsql="GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, REFERENCES, INDEX, ALTER, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE, CREATE VIEW, SHOW VIEW, CREATE ROUTINE, ALTER ROUTINE, EVENT, TRIGGER on ${DATABASE_NAME:-openeyes}.* to '$dbuser'@'%';
+    grantsql="GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, REFERENCES, INDEX, ALTER, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE, CREATE VIEW, SHOW VIEW, CREATE ROUTINE, ALTER ROUTINE, EVENT, TRIGGER, USAGE on ${DATABASE_NAME:-openeyes}.* to '$dbuser'@'%';
     FLUSH PRIVILEGES;"
     eval "$dbconnectionstring -e \"$grantsql\""
 

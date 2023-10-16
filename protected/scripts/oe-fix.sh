@@ -48,6 +48,14 @@ gpasswd -a "$curuser" www-data
 # disable log to browser during fix, otherwise it causes extraneous trace output on the CLI
 export LOG_TO_BROWSER=""
 
+# check if git is installed - it won't be for production images, so we can skip some steps
+if ! command -v git &>/dev/null; then
+    echo "Git is not installed (This must be a production image). Some steps will be skipped..."
+    gitinstalled=0
+else
+    gitinstalled=1
+fi
+
 # process commandline parameters
 clearcahes=1
 buildassests=1
@@ -203,7 +211,10 @@ if [ "$composer" == "1" ]; then
     cd - >/dev/null 2>&1
 
     # Refresh git submodules
-    git -C $WROOT submodule update --init
+    if [ "$gitinstalled" == "1" ]; then
+        echo -e "\n** Refreshing git submodules **"
+        git -C $WROOT submodule update --init
+    fi
 
 fi
 
@@ -360,7 +371,9 @@ if [ $noperms = 0 ]; then
 
         # A hack to stop the newblue submodule as being changed...
         # Will fail silently if git is not installed or the folder does not exist
-        git -C $WROOT/protected/assets/newblue reset --hard >/dev/null 2>&1 || :
+        if [ "$gitinstalled" == "1" ]; then
+            git -C $WROOT/protected/assets/newblue reset --hard >/dev/null 2>&1 || :
+        fi
 
     fi
 
@@ -379,11 +392,13 @@ if [ $buildassests = 1 ]; then
     curl -s http://localhost >/dev/null || :
 fi
 
-# Set some git properties
-
-git -C $WROOT config core.fileMode false 2>/dev/null
-# Set to cache password in memory (should only ask once per day or each reboot)
-git config --global credential.helper 'cache --timeout=86400' 2>/dev/null
+# Set some git properties - fail silently if git is not installed
+if [ "$gitinstalled" == "1" ]; then
+    # Set git to ignore file permissions
+    git -C $WROOT config core.fileMode false 2>/dev/null
+    # Set to cache password in memory (should only ask once per day or each reboot)
+    git config --global credential.helper 'cache --timeout=86400' 2>/dev/null
+fi
 
 # restart apache
 if [ "$restart" == "1" ]; then
