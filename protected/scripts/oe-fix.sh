@@ -49,7 +49,7 @@ gpasswd -a "$curuser" www-data
 export LOG_TO_BROWSER=""
 
 # check if git is installed - it won't be for production images, so we can skip some steps
-if ! command -v git &>/dev/null; then
+if ! command -v git &>/dev/null || [ ! -d "$WROOT/.git" ]; then
     echo "Git is not installed (This must be a production image). Some steps will be skipped..."
     gitinstalled=0
 else
