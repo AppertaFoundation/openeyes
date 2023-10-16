@@ -3,6 +3,24 @@
 
 ## NOTE: This script assumes it is in protected/scripts. If you move it then relative paths will not work!
 
+abort() {
+    echo >&2 "
+****************************
+*** ABORTED DUE TO ERROR ***
+****************************
+
+The last return code was: $?
+
+"
+    date
+    echo "An error occurred. Exiting..." >&2
+    exit 1
+}
+
+trap 'abort' 0
+
+set -e
+
 # Find fuill folder path where this script is located, then find root folder
 SOURCE="${BASH_SOURCE[0]}"
 while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
@@ -175,7 +193,7 @@ if [ "$composer" == "1" ]; then
     # If we've switched from dev to live, remove dev dependencies, else, just prune
     [ "${OE_MODE^^}" == "LIVE" ] && sudo -E npm prune --production || sudo -E npm prune
 
-    rm package-lock.json >/dev/null 2>&1
+    rm package-lock.json >/dev/null 2>&1 || :
     sudo -E npm update --no-save $npmextra
 
     # List current modules (will show any issues if above commands have been blocked by firewall).
@@ -311,13 +329,13 @@ if [ $noperms = 0 ]; then
             eval "find -L \"$1\" -maxdepth 1 -mindepth 1 -type d ${exclude}" | while read -r folder; do
 
                 if [ "$(stat -c '%U' $folder/)" != $user ] || [ "$(stat -c '%G' $folder)" != "$group" ]; then
-                    sudo chown -RL "$user":"$group" "$folder"
+                    sudo chown -RL "$user":"$group" "$folder" || :
                     echo "Modified ownership on $folder to; OWNER: $user, GROUP: $group"
                 fi
                 if [ "$(stat -c "%a" $folder/)" != "$octal" ]; then
                     [ ${#octal} -le 3 ] && choctal="00$octal" || choctal=$octal
 
-                    sudo chmod -R $choctal "$folder"
+                    sudo chmod -R $choctal "$folder" || :
                     echo "Modified permissions on $folder to $choctal"
                 fi
             done
@@ -351,14 +369,14 @@ if [ $noperms = 0 ]; then
     sudo chown -RL $curuser ~/.composer 2>/dev/null || :
 
     #  update ImageMagick policy to allow PDFs
-    sudo sed -i 's%<policy domain="coder" rights="none" pattern="PDF" />%<policy domain="coder" rights="read|write" pattern="PDF" />%' /etc/ImageMagick-6/policy.xml &>/dev/null
-    sudo sed -i 's%<policy domain="coder" rights="none" pattern="PDF" />%<policy domain="coder" rights="read|write" pattern="PDF" />%' /etc/ImageMagick/policy.xml &>/dev/null
+    sudo sed -i 's%<policy domain="coder" rights="none" pattern="PDF" />%<policy domain="coder" rights="read|write" pattern="PDF" />%' /etc/ImageMagick-6/policy.xml &>/dev/null || :
+    sudo sed -i 's%<policy domain="coder" rights="none" pattern="PDF" />%<policy domain="coder" rights="read|write" pattern="PDF" />%' /etc/ImageMagick/policy.xml &>/dev/null || :
 fi
 
 if [ $buildassests = 1 ]; then
     echo "(re)building assets..."
     # use curl to ping the login page - forces php/apache to rebuild the assets directory
-    curl -s http://localhost >/dev/null
+    curl -s http://localhost >/dev/null || :
 fi
 
 # Set some git properties
@@ -382,3 +400,5 @@ fi
 echo ""
 echo "...Done"
 echo ""
+
+trap : 0
