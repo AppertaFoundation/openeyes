@@ -41,6 +41,13 @@ class WorklistDefinitionFactory extends ModelFactory
         ];
     }
 
+    public function configure()
+    {
+        return $this->afterMaking(function ($instance) {
+            $instance->display_order = $instance->getNextHighestDisplayOrder(1);
+        });
+    }
+
     /**
      * A state to specify the step types that should be part of the default pathway
      * for the PathwayType of the generated WorklistDefinition.

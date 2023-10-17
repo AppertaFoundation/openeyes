@@ -18,6 +18,7 @@
 import './yii-commands'
 import './ui/index'
 import './ui/worklist'
+import './ui/admin'
 import chaiString from 'chai-string'
 import "cypress-cloud/support";
 

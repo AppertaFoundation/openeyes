@@ -28,6 +28,17 @@ class WorklistController extends BaseAdminController
      */
     public $manager;
 
+    public function actions()
+    {
+        return [
+            'sortDefinitions' => [
+                'class' => 'SaveDisplayOrderAction',
+                'model' => WorklistDefinition::model(),
+                'modelName' => 'WorklistDefinition',
+            ],
+        ];
+    }
+
     /**
      * @param $action
      *
@@ -61,6 +72,8 @@ class WorklistController extends BaseAdminController
      */
     public function actionDefinitions()
     {
+        Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/oeadmin/list.js'), ClientScript::POS_END);
+        Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/oeadmin/OpenEyes.admin.js'), ClientScript::POS_END);
         $definitions = $this->manager->getWorklistDefinitions();
 
         $this->render('definitions', array(
@@ -105,6 +118,7 @@ class WorklistController extends BaseAdminController
 
         if (isset($_POST['WorklistDefinition'])) {
             $definition->attributes = $_POST['WorklistDefinition'];
+            $definition->display_order = isset($definition->id) ? $definition->display_order : $definition->getNextHighestDisplayOrder(1);
             if (!$this->manager->saveWorklistDefinition($definition)) {
                 $errors = $definition->getErrors();
             } else {
@@ -177,25 +191,6 @@ class WorklistController extends BaseAdminController
         $this->render('definition_worklists', array(
             'definition' => $definition,
         ));
-    }
-
-    /**
-     * Update the Worklist Definition Mapping Attribute order.
-     */
-    public function actionDefinitionSort()
-    {
-        $definition_ids = @$_POST['item_ids'] ?: array();
-
-        if (count($definition_ids)) {
-            if (!$this->manager->setWorklistDefinitionDisplayOrder($definition_ids)) {
-                OELog::log(print_r($this->manager->getErrors(), true));
-                $this->flashMessage('error', 'Could not reorder definitions');
-            } else {
-                $this->flashMessage('success', 'Definitions re-ordered');
-            }
-        }
-
-        $this->redirect('/Admin/worklist/definitions/');
     }
 
     /**
