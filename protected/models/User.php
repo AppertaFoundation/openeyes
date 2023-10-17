@@ -504,6 +504,7 @@ class User extends BaseActiveRecordVersioned
         $criteria->compare('institution_id', Institution::model()->getCurrent()->id);
         $criteria->addNotInCondition('id', $site_ids);
         $criteria->order = 'name asc';
+        $criteria->compare('active', 1);
 
         return Site::model()->findAll($criteria);
     }

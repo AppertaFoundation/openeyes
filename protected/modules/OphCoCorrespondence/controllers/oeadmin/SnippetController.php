@@ -40,7 +40,7 @@ class SnippetController extends ModuleAdminController
      */
     public function actionList()
     {
-        $search = \Yii::app()->request->getPost('search');
+        $search = \Yii::app()->request->getQuery('search');
 
         if (isset($search['institution_relations.institution_id'])) {
             $institutions_id = $search['institution_relations.institution_id'];

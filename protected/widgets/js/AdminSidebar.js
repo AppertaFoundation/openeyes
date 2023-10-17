@@ -16,7 +16,7 @@
 
 var OpenEyes = OpenEyes || {};
 
-OpenEyes.Admin = OpenEyes.Admin || {};
+OpenEyes.AdminSidebar = OpenEyes.AdminSidebar || {};
 
 (function(exports) {
 
@@ -85,8 +85,8 @@ OpenEyes.Admin = OpenEyes.Admin || {};
     };
 
     exports.Sidebar = Sidebar;
-})(OpenEyes.Admin, OpenEyes.Util);
+})(OpenEyes.AdminSidebar, OpenEyes.Util);
 
 $(document).ready(function(){
-    window.adminSidebar = new OpenEyes.Admin.Sidebar();
+    window.adminSidebar = new OpenEyes.AdminSidebar.Sidebar();
 });
