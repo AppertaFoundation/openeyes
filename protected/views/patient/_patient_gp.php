@@ -47,7 +47,7 @@
             </tr>
             <tr class="data-group">
                 <td class="data-label">Practice Telephone:</td>
-                <td class="data-value"><?= ($this->patient->practice && $this->patient->practice->phone) ? $this->patient->practice->phone : 'Unknown' ?></td>
+                <td class="data-value"><?=$this->patient->practice->contact->primary_phone ?? 'Unknown' ?></td>
             </tr>
             </tbody>
         </table>

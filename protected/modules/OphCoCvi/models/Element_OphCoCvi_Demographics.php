@@ -262,7 +262,7 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
             $this->gp_postcode = array_key_exists(0, $gpPostcode) ? $gpPostcode[0] : null;
             $this->gp_postcode_2nd = array_key_exists(1, $gpPostcode) ? $gpPostcode[1] : null;
             if ($practice = $patient->practice) {
-                $this->gp_telephone = $practice->phone;
+                $this->gp_telephone = $practice->contact->primary_phone;
             }
         }
     }

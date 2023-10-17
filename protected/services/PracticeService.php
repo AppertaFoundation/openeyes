@@ -30,7 +30,7 @@ class PracticeService extends ModelService
     {
         $model = $this->getSearchModel();
         if (isset($params['id'])) {
-            $model->id = $id;
+            $model->id = $params['id'];
         }
         if (isset($params['identifier'])) {
             $model->code = $params['identifier'];
@@ -43,7 +43,7 @@ class PracticeService extends ModelService
     {
         $res = parent::modelToResource($practice);
         $res->code = $practice->code;
-        $res->primary_phone = $practice->phone;
+        $res->primary_phone = $practice->contact->primary_phone ?? null;
         if ($practice->contact->address) {
             $res->address = Address::fromModel($practice->contact->address);
         }

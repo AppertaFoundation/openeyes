@@ -142,7 +142,7 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis; ?>
                         </tr>
                         <tr>
                             <td>Referring Practice Telephone</td>
-                            <td><?= isset($practice->phone) ? $practice->phone : 'Unknown'; ?></td>
+                            <td><?= $practice->contact->primary_phone ?? 'Unknown'; ?></td>
                         </tr>
                         <?php if (isset($this->referredTo)) { ?>
                             <tr>

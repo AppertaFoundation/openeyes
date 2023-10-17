@@ -52,7 +52,7 @@ $to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
                         <td><?php echo CHtml::encode($practice->getAddressLines()); ?></td>
                         <td><?php echo CHtml::encode($practice->code); ?></td>
                         <td><?php echo CHtml::encode($practice->id); ?></td>
-                        <td><?php echo CHtml::encode($practice->phone); ?></td>
+                        <td><?php echo CHtml::encode($practice->contact->primary_phone); ?></td>
                     </tr>
                 <?php endforeach; ?>
                 </tbody>

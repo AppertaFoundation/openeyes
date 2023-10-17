@@ -96,6 +96,7 @@ class Practice extends BaseResource
         $model->code = $this->getAssignedProperty('Code');
         if (isset($this->Contact)) {
             $model->phone = $this->Contact->getAssignedProperty('TelephoneNumber');
+            $model->contact->primary_phone = $model->phone;
         }
 
         if (!$model->validate()) {
