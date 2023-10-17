@@ -166,7 +166,8 @@ if ($search->getSearchItems() && is_array($search->getSearchItems())) :
         endforeach;
         ?>
         <td class="submit-row">
-            <button class="button small primary event-action blue hint" name="save" formmethod="get" type="submit">Search</button>
+            <button class="button small primary event-action blue hint" name="save" formmethod="get" type="submit"
+            data-test="search-button">Search</button>
         </td>
         </tr>
     </table>
