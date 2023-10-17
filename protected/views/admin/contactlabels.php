@@ -19,7 +19,6 @@
             <thead>
             <tr>
                 <th>ID</th>
-                <th>PAS Key</th>
                 <th>Name</th>
             </tr>
             </thead>
@@ -31,7 +30,6 @@
                     data-id="<?php echo $contactlabel->id ?>"
                     data-uri="admin/editContactLabel/<?php echo $contactlabel->id ?>">
                     <td><?php echo $contactlabel->id ?></td>
-                    <td><?php echo $contactlabel->pas_key ?></td>
                     <td><?php echo $contactlabel->name ?>&nbsp;</td>
                 </tr>
             <?php } ?>

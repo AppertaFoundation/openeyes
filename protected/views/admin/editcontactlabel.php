@@ -41,16 +41,6 @@
         </colgroup>
         <tbody>
         <tr>
-            <td>PAS Key</td>
-            <td>
-                <?= \CHtml::activeTextField(
-                    $contactlabel,
-                    'pas_key',
-                    ['class' => 'cols-full']
-                ); ?>
-            </td>
-        </tr>
-        <tr>
             <td>Name</td>
             <td>
                 <?= \CHtml::activeTextField(
