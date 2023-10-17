@@ -33,6 +33,14 @@ while [[ $# -gt 0 ]]; do
     groupOrExclude=1
     testtorun="$testtorun $p"
     ;;
+  --fixture-only | --fixture | -fixture)
+    groupOrExclude=1
+    testtorun="--exclude=sample-data,functional,undefined"
+    ;;
+  --sample-data-only | --sample-data | -sample-data | --sample | -sample)
+    groupOrExclude=1
+    testtorun="--group=sample-data"
+    ;;
   --xdebug-ide)
     xdebugide="$2"
     shift
