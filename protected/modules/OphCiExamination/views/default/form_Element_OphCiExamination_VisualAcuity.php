@@ -17,11 +17,9 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-use OEModule\OphCiExamination\models\{
-  OphCiExamination_VisualAcuity_Method,
-  OphCiExamination_VisualAcuityUnit,
-  OphCiExamination_VisualAcuityUnitValue
-};
+use OEModule\OphCiExamination\models\{OphCiExamination_VisualAcuity_Method,
+    OphCiExamination_VisualAcuityUnit,
+    OphCiExamination_VisualAcuityUnitValue};
 
 /**
  * @var \OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity $element
@@ -175,6 +173,7 @@ if ($cvi_api) {
                   <i class="oe-i comments small-icon"></i>
               </button>
             <button class="button hint green addReading" id="add-VisualAcuity-reading-btn-<?= $eye_side?>"
+                    data-test="add-visual-acuity-reading-btn"
                     style="<?= !$element->eyeCanHaveReadings($eye_side) ? 'display: none;' : '' ?>"
                     type="button">
               <i class="oe-i plus pro-theme"></i>

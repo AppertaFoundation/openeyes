@@ -19,16 +19,13 @@ namespace OEModule\OphCiExamination\seeders;
 use OE\factories\models\EventFactory;
 use OE\seeders\BaseSeeder;
 use OE\seeders\resources\SeededEventResource;
-use Patient;
-
-use OEModule\OphCiExamination\models\{
+use OEModule\OphCiExamination\models\{Element_OphCiExamination_NearVisualAcuity,
     Element_OphCiExamination_VisualAcuity,
-    Element_OphCiExamination_NearVisualAcuity,
-    OphCiExamination_VisualAcuity_Reading,
     OphCiExamination_NearVisualAcuity_Reading,
+    OphCiExamination_VisualAcuity_Reading,
     OphCiExamination_VisualAcuityUnit,
-    OphCiExamination_VisualAcuityUnitValue
-};
+    OphCiExamination_VisualAcuityUnitValue};
+use Patient;
 
 class VisualAcuityCopyingSeeder extends BaseSeeder
 {
@@ -167,10 +164,6 @@ class VisualAcuityCopyingSeeder extends BaseSeeder
         $chosen_unit = OphCiExamination_VisualAcuityUnit::factory()->withUniquePostfix((string) microtime())->withDBUniqueAttribute('name')->forVA()->forNear()->notComplexOnly()->create();
         $alternative_unit = OphCiExamination_VisualAcuityUnit::factory()->withUniquePostfix((string) microtime())->withDBUniqueAttribute('name')->forVA()->forNear()->notComplexOnly()->create();
 
-        // The alternative unit values are unselectable in order to test what happens when the readings are changed from the chosen
-        // to the alternative unit in the unit selector on the form. Being unselectable should only affect the adders for readings.
-        // At the creation of this seeder the existing behaviour was for readings to disappear if the target value was not selectable,
-        // which is not correct.
         $chosen_unit_value = OphCiExamination_VisualAcuityUnitValue::factory()
                            ->withUniquePostfix((string) microtime())
                            ->withDBUniqueAttribute('value')
@@ -183,7 +176,7 @@ class VisualAcuityCopyingSeeder extends BaseSeeder
                                 ->withUniquePostfix((string) microtime())
                                 ->withDBUniqueAttribute('value')
                                 ->forUnit($alternative_unit)
-                                ->unselectable()
+                                ->selectable()
                                 ->count(4)
                                 ->create();
 

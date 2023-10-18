@@ -18,9 +18,9 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use OE\factories\models\traits\HasFactory;
 use OEModule\OphCiExamination\models\traits\HasRelationOptions;
 use OEModule\OphCiExamination\models\traits\HasWithHeadPosture;
-use OE\factories\models\traits\HasFactory;
 
 /**
  * This is the model class for table "ophciexamination_visualacuity_reading".
@@ -183,7 +183,7 @@ class OphCiExamination_VisualAcuity_Reading extends \BaseActiveRecordVersioned
         }
         $criteria = new \CDbCriteria();
         $criteria->select = array('*', 'ABS(CAST(base_value AS SIGNED) - :base_value) AS delta');
-        $criteria->condition = 'unit_id = :unit_id';
+        $criteria->condition = 'unit_id = :unit_id AND selectable = 1';
         $criteria->params = array(':unit_id' => $unit_id, ':base_value' => $base_value);
         $criteria->order = 'delta';
         $value = OphCiExamination_VisualAcuityUnitValue::model()->find($criteria);

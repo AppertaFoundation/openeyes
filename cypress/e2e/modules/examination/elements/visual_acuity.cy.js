@@ -1,9 +1,57 @@
 describe('visual acuity behaviour', () => {
+    context('creating and editing visual acuity', () => {
+        beforeEach(() => {
+            cy.login()
+                .then(() => {
+                    return cy.createPatient();
+                })
+                .then((patient) => {
+                    return cy.getEventCreationUrl(patient.id, 'OphCiExamination')
+                        .then((url) => {
+                            cy.visit(url);
+                        });
+                });
+        });
+
+        it('1/60 Snellen value when unit is changed does not cause a crash', function () {
+            cy.removeElements();
+            cy.addExaminationElement('Visual Acuity');
+
+            cy.getBySel('visual-acuity-unit-selector').select('Snellen Metre');
+
+            cy.getBySel('visual-acuity-eye-column').each(function (visualAcuityEyeColumn) {
+                cy.wrap(visualAcuityEyeColumn).within(() => {
+                    cy.getBySel('add-visual-acuity-reading-btn').click();
+                    cy.selectAdderDialogOptionText('1/60');
+                    cy.selectAdderDialogOptionText('Unaided');
+                    cy.confirmAdderDialog();
+                });
+            });
+
+            cy.intercept({
+                method: 'GET',
+                url: '/OphCiExamination/Default/ElementForm*'
+            }).as('ElementForm');
+
+            cy.getBySel('visual-acuity-unit-selector').select('ETDRS Letters');
+
+            cy.wait('@ElementForm');
+
+            cy.saveEvent();
+            cy.assertEventSaved();
+
+            cy.getBySel('button-event-header-tab-edit').click();
+
+            cy.get('[data-test="visual-acuity-eye-column"][data-side="left"]').find('[data-test="visual-acuity-reading"]').should('have.length', 1);
+            cy.get('[data-test="visual-acuity-eye-column"][data-side="right"]').find('[data-test="visual-acuity-reading"]').should('have.length', 1);
+        });
+    });
+
     context('copying or editing previous element data', () => {
         beforeEach(() => {
             cy.login();
 
-            cy.runSeeder('OphCiExamination', 'VisualAcuityCopyingSeeder', { type: 'visual-acuity' })
+            cy.runSeeder('OphCiExamination', 'VisualAcuityCopyingSeeder', {type: 'visual-acuity'})
                 .as('seederData');
         });
 
@@ -27,6 +75,7 @@ describe('visual acuity behaviour', () => {
         });
 
         it('copies a previous visual acuity entry into a new examination event', function () {
+
             cy.visit(this.seederData.previousEvent.urls.view);
 
             cy.getBySel('visual-acuity-left-eye').find('[data-test="combined-visual-acuity-data"]').contains(this.seederData.leftEyeCombined);
@@ -116,11 +165,12 @@ describe('visual acuity behaviour', () => {
                 });
             });
         });
+
     });
 
+
     context('copying previous complex element data', () => {
-        function checkComplexViewData(seederData)
-        {
+        function checkComplexViewData(seederData) {
             cy.getBySel('visual-acuity-left-eye').find('[data-test="visual-acuity-reading-method"]').contains(seederData.lhsDetails.method);
             cy.getBySel('visual-acuity-left-eye').find('[data-test="visual-acuity-reading-unit"]').contains(seederData.lhsDetails.unit);
             cy.getBySel('visual-acuity-left-eye').find('[data-test="visual-acuity-reading-value"]').contains(seederData.lhsDetails.value);
@@ -137,7 +187,10 @@ describe('visual acuity behaviour', () => {
         it('copies a previous complex visual acuity entry into a new examination event', () => {
             cy.login();
 
-            cy.runSeeder('OphCiExamination', 'VisualAcuityCopyingSeeder', { type: 'visual-acuity', complex: true }).then((seederData) => {
+            cy.runSeeder('OphCiExamination', 'VisualAcuityCopyingSeeder', {
+                type: 'visual-acuity',
+                complex: true
+            }).then((seederData) => {
                 cy.visit(seederData.previousEvent.urls.view);
                 checkComplexViewData(seederData);
 
@@ -190,4 +243,6 @@ describe('visual acuity behaviour', () => {
             });
         });
     });
+
+
 });
