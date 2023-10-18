@@ -194,14 +194,27 @@ class Element_OphCiExamination_Investigation extends \BaseEventTypeElement
     public function getLetter_string()
     {
         $res = '';
-        if ($this->description) {
-            $res .= "Investigation: $this->description\n";
-        }
 
-        foreach ($this->getSiblings() as $el) {
-            if (method_exists($el, 'getLetter_string')) {
-                $res .= $el->getLetter_string() . "\n";
+        $has_element_comments = trim($this->description) !== "";
+
+        if (count($this->entries) > 0 || $has_element_comments) {
+            $res = '<table class="standard borders"><tbody>';
+
+            foreach ($this->entries as $entry) {
+                $comment_text = '';
+
+                if (!is_null($entry->comments) && trim($entry->comments) !== "") {
+                    $comment_text = " ({$entry->comments})";
+                }
+
+                $res .= "<tr><td>{$entry->investigationCode->name}$comment_text</td></tr>";
             }
+
+            if ($has_element_comments) {
+                $res .= "<tr><td>Comments:$this->description</td></tr>";
+            }
+
+            $res .= '</tbody></table>';
         }
 
         return $res;

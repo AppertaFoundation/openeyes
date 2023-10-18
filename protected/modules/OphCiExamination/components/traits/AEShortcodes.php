@@ -348,14 +348,12 @@ trait AEShortcodes
     public function getLastAEInvestigation(\Patient $patient, $use_context = false): string
     {
         $element = $this->getLatestElementBySubspecialty($patient, 'models\Element_OphCiExamination_Investigation', 'AE');
-        if (!isset($element->entries)) {
+
+        if (!$element) {
             return '';
         }
 
-        $collection = new \ModelCollection($element->entries);
-        $investigations = $collection->pluck('investigationCode');
-
-        return $investigations ? implode(', ', $investigations) : '';
+        return $element->getLetter_string();
     }
 
     private function getAEDiganoses(\Patient $patient, $use_context = false, $is_principal = false): string

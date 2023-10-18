@@ -20,9 +20,9 @@ namespace OEModule\OphCiExamination\components;
  */
 
 use OEModule\OphCiExamination\models;
+use OEModule\OphCiExamination\widgets\Allergies;
 use OEModule\OphCiExamination\widgets\HistoryMedications;
 use OEModule\OphCiExamination\widgets\HistoryRisks;
-use OEModule\OphCiExamination\widgets\Allergies;
 use Patient;
 
 class OphCiExamination_API extends \BaseAPI
@@ -1497,15 +1497,13 @@ class OphCiExamination_API extends \BaseAPI
     public function getLetterInvestigationDescription($patient, $use_context = false)
     {
 
-        $el = $this->getElementFromLatestVisibleEvent(
-            'models\Element_OphCiExamination_Investigation',
-            $patient,
-            $use_context
-        );
+        $element = $this->getLatestElement('models\Element_OphCiExamination_Investigation', $patient);
 
-        if ($el) {
-            return $el->description;
+        if (!$element) {
+            return '';
         }
+
+        return $element->getLetter_string();
     }
 
     /**

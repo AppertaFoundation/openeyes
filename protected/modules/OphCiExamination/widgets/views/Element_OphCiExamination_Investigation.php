@@ -84,7 +84,7 @@ $model_name = CHtml::modelName($element);
             style="<?= $element->description ? 'display: none;' : '' ?>">
             <i class="oe-i comments small-icon "></i>
         </button>
-        <button class="button hint green js-add-select-search" data-adder-trigger="true" id="add-investigation-btn" type="button">
+        <button class="button hint green js-add-select-search" data-adder-trigger="true" id="add-investigation-btn" type="button" data-test="add-investigation-btn">
             <i class="oe-i plus pro-theme"></i>
         </button>
     </div>
