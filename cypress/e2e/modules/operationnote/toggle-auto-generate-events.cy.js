@@ -8,7 +8,7 @@ describe('verifies the behaviour of the operation note drug sets drop-down list'
         // create a patient then create an operation note for said patient
         cy.createPatient()
             .then((patient) => {
-                return cy.getEventCreationUrl(patient.id, 'OphTrOperationnote')
+                return cy.getEventCreationUrl(patient.id, 'OphTrOperationnote', 301)
                     .then((url) => {
                         cy.visit(url)
                     })
