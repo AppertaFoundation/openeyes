@@ -14,5 +14,5 @@
  */
 ?>
 <div class="element-data" data-test="comments-view">
-    <div class="data-value"><?= $element->comment ?></div>
+    <div class="data-value"><?= nl2br($element->comment) ?></div>
 </div>
