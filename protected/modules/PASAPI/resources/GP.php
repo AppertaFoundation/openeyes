@@ -51,7 +51,7 @@ class GP extends BaseResource
     public function save()
     {
         $assignment = $this->getAssignment();
-        $model = $assignment->getInternal();
+        $model = $assignment->getInternal(false, 'nat_id');
         $this->isNewResource = $model->isNewRecord;
 
         if (!$this->validate()) {

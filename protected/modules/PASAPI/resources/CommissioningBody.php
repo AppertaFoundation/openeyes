@@ -53,7 +53,7 @@ class CommissioningBody extends BaseResource
     public function save()
     {
         $assignment = $this->getAssignment();
-        $model = $assignment->getInternal();
+        $model = $assignment->getInternal(false, 'code');
         $this->isNewResource = $model->isNewRecord;
 
         if (!$this->validate()) {
