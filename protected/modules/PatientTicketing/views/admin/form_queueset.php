@@ -54,14 +54,14 @@ $this->renderPartial('//elements/form_errors', array('errors' => $errors, 'botto
             </tr>
             <tr>
                 <td><?= $queueset->getAttributeLabel('name') ?></td>
-                <td><?=\CHtml::activeTextField($queueset, 'name', ['class' => 'cols-full']); ?></td>
+                <td><?=\CHtml::activeTextField($queueset, 'name', ['class' => 'cols-full', 'data-test' => 'queueset-form-name',]); ?></td>
             </tr>
             <tr>
                 <td><?= $queueset->getAttributeLabel('description') ?></td>
                 <td><?= \CHtml::activeTextArea(
                         $queueset,
                         'description',
-                        ['class' => 'cols-full']); ?>
+                        ['class' => 'cols-full', 'data-test' => 'queueset-form-description']); ?>
                 </td>
             </tr>
             <?php foreach (['allow_null_priority', 'summary_link'] as $field) {
@@ -100,7 +100,7 @@ $this->renderPartial('//elements/form_errors', array('errors' => $errors, 'botto
         <tbody>
         <tr>
             <td><?= $queue->getAttributeLabel('name') ?></td>
-            <td><?=\CHtml::activeTextField($queue, 'name', ['class' => 'cols-full']); ?></td>
+            <td><?=\CHtml::activeTextField($queue, 'name', ['class' => 'cols-full', "data-test" => "initial-queue-name"]); ?></td>
         </tr>
         <?php foreach (['description', 'report_definition', 'assignment_fields'] as $field) { ?>
             <tr>
@@ -108,7 +108,7 @@ $this->renderPartial('//elements/form_errors', array('errors' => $errors, 'botto
                 <td><?= \CHtml::activeTextArea(
                         $queue,
                         $field,
-                        ['class' => 'cols-full']); ?>
+                        ['class' => 'cols-full', "data-test" => "initial-queue-$field"]); ?>
                 </td>
             </tr>
         <?php } ?>

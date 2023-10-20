@@ -104,7 +104,7 @@ if (!empty($values['infos']) && !$template_mode) {
                     ></i>
                 <?php } ?>
             </span>
-        <?php } elseif ($patient_ticket && $ticket_api) { ?>
+        <?php } elseif ($patient_ticket && $ticket_api) {?>
             <div data-queue-assignment-form-uri="<?= $ticket_api->getQueueAssignmentFormURI() ?>"
                  id="div_<?= $model_name ?>_patientticket">
                 <!-- TODO, this should be pulled from the ticketing module somehow -->
