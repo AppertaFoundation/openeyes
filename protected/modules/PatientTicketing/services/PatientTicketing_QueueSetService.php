@@ -19,6 +19,8 @@
 namespace OEModule\PatientTicketing\services;
 
 use OEModule\PatientTicketing\models;
+use OEModule\PatientTicketing\models\QueueSet;
+use ReferenceData;
 use Yii;
 
 class PatientTicketing_QueueSetService  extends \services\ModelService
@@ -251,10 +253,14 @@ class PatientTicketing_QueueSetService  extends \services\ModelService
      *
      * @return array
      */
-    public function getQueueSetsForFirm(\Firm $firm = null)
+    public function getQueueSetsForFirm(\Firm $firm = null, \Institution $institution = null): array
     {
-        $res = array();
-        foreach (models\QueueSet::model()->findAll() as $qs) {
+        $res = [];
+        $queue_sets = $institution
+            ? QueueSet::model()->findAllAtLevels(ReferenceData::LEVEL_ALL, null, $institution)
+            : QueueSet::model()->findAll();
+
+        foreach ($queue_sets as $qs) {
             $res[] = $this->modelToResource($qs);
         }
 

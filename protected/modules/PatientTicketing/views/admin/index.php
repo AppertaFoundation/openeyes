@@ -26,7 +26,7 @@ Yii::app()->clientScript->registerScriptFile($widgetPath . '/MultiSelectList.js'
 ?>
 <h2><?= $title ?></h2>
 <div class="cols-half">
-<form id="admin_patient_ticketing">
+<form id="admin_patient_ticketing" data-test="patient-ticketing-list">
     <?= CHtml::hiddenField('mapping_level', ReferenceData::LEVEL_INSTITUTION) ?>
     <?= CHtml::hiddenField('model', OEModule\PatientTicketing\models\QueueSet::class) ?>
     <?= CHtml::hiddenField('return_url', '/PatientTicketing/admin') ?>
@@ -49,12 +49,13 @@ Yii::app()->clientScript->registerScriptFile($widgetPath . '/MultiSelectList.js'
         </table>
     </div>
     <hr class="divider">
-    <button id="add-queueset" type="button" class="hint green cols-half">Add Queue Set</button>
+    <button id="add-queueset" type="button" class="hint green cols-half" data-test="add-queueset">Add Queue Set</button>
     <?php
     echo CHtml::submitButton(
         'Add selected to current Institution',
         [
             'name' => 'admin-map-add',
+            'data-test' => 'admin-map-add',
             'id' => 'et_admin-map-add',
             'class' => 'generic-admin-save button large',
             'formaction' => '/admin/addMapping',
@@ -65,6 +66,7 @@ Yii::app()->clientScript->registerScriptFile($widgetPath . '/MultiSelectList.js'
         'Remove selected from current Institution',
         [
             'name' => 'admin-map-remove',
+            'data-test' => 'admin-map-remove',
             'id' => 'et_admin-map-remove',
             'class' => 'generic-admin-save button large',
             'formaction' => '/admin/removeMapping',

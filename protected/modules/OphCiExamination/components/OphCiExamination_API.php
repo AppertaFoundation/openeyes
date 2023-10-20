@@ -1498,15 +1498,13 @@ class OphCiExamination_API extends \BaseAPI
     public function getLetterInvestigationDescription($patient, $use_context = false)
     {
 
-        $el = $this->getElementFromLatestVisibleEvent(
-            'models\Element_OphCiExamination_Investigation',
-            $patient,
-            $use_context
-        );
+        $element = $this->getLatestElement('models\Element_OphCiExamination_Investigation', $patient);
 
-        if ($el) {
-            return $el->description;
+        if (!$element) {
+            return '';
         }
+
+        return $element->getLetter_string();
     }
 
     /**

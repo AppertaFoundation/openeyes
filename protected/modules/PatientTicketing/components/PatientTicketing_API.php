@@ -316,11 +316,11 @@ class PatientTicketing_API extends \BaseAPI
      *
      * @return mixed
      */
-    public function getQueueSetList(\Firm $firm, \Patient $patient = null)
+    public function getQueueSetList(\Firm $firm, \Patient $patient = null, \Institution $institution = null)
     {
         $qs_svc = Yii::app()->service->getService('PatientTicketing_QueueSet');
-        $res = array();
-        foreach ($qs_svc->getQueueSetsForFirm($firm) as $qs_r) {
+        $res = [];
+        foreach ($qs_svc->getQueueSetsForFirm($firm, $institution) as $qs_r) {
             if ($patient && $qs_svc->canAddPatientToQueueSet($patient, $qs_r->getId())) {
                 $res[$qs_r->initial_queue->getId()] = $qs_r->name;
             }

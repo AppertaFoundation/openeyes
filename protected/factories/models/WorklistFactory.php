@@ -63,6 +63,13 @@ class WorklistFactory extends ModelFactory
         });
     }
 
+    public function forDefinition($definition): self
+    {
+        return $this->state([
+            'worklist_definition_id' => $definition
+        ]);
+    }
+
     protected function institutionWithPatientIdentifierType(): Institution
     {
         $criteria = new \CDbCriteria();

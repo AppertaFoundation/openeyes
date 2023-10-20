@@ -1,6 +1,9 @@
 <?php
+
 /**
- * (C) Copyright Apperta Foundation 2022
+ * OpenEyes.
+ *
+ * (C) OpenEyes Foundation, 2023
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -9,37 +12,33 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (C) 2022, Apperta Foundation
+ * @copyright Copyright (c) 2023, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-namespace OE\factories\models;
-
-use OE\factories\ModelFactory;
-
-class SiteFactory extends ModelFactory
-{
-
-    /**
-     * @return array
-     */
-
-    public function definition(): array
-    {
-        return [
-            'name' => $this->faker->company(),
-            'remote_id' => $this->faker->regexify('\w\w\w\d'),
-            'short_name' => $this->faker->word(),
-            'fax' => $this->faker->phoneNumber(),
-            'telephone' => $this->faker->phoneNumber(),
-            'active' => 1
-        ];
-    }
-
-    public function forInstitution($institution): self
-    {
-        return $this->state([
-            'institution_id' => $institution
-        ]);
-    }
-}
+return [
+    'entry1' => [
+        'id' => 1,
+        'element_id' => 1,
+        'investigation_code' => 1,
+        'comments' => 'Some comment',
+        'time' => '11:19:00',
+        'date' => '2023-01-12',
+    ],
+    'entry2' => [
+        'id' => 2,
+        'element_id' => 2,
+        'investigation_code' => 1,
+        'comments' => '',
+        'time' => '11:19:00',
+        'date' => '2023-01-12',
+    ],
+    'entry3' => [
+        'id' => 3,
+        'element_id' => 3,
+        'investigation_code' => 1,
+        'comments' => null,
+        'time' => '11:19:00',
+        'date' => '2023-01-12',
+    ],
+];

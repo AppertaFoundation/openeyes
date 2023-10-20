@@ -116,9 +116,9 @@ $subspecialty_contexts = $this->getContextFromSubspecialty($contexts, $default_s
         </button>
 
         <!-- FOLLOW UP ADDER DIALOG -->
-        <div id="add-to-follow-up" class="oe-add-select-search auto-width" style="display: none; z-index: 101;">
+        <div id="add-to-follow-up" class="oe-add-select-search auto-width" data-test="adder-dialog" style="display: none; z-index: 101;">
             <div class="close-icon-btn"><i class="oe-i remove-circle medium"></i></div>
-            <button class="button hint green add-icon-btn" id="add-followup-btn" type="button">
+            <button class="button hint green add-icon-btn" id="add-followup-btn" type="button" data-test="add-followup-btn">
                 <i class="oe-i plus pro-theme"></i>
             </button>
             <table class="select-options">

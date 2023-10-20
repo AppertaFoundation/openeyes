@@ -74,7 +74,7 @@ $is_ae_worklist = isset($worklist->id) && Yii::app()->db->cache(1000)->createCom
         <h3><?= 'Combined worklists' ?></h3>
     </header>
 <?php else : ?>
-<section class="<?= $section_classes ?>" id="js-worklist-<?= $worklist->id ?>" data-id="<?= $worklist->id ?>" data-title="<?= $worklist->name ?>" data-test="js-worklist-<?= $worklist->id ?>">
+<section class="<?= $section_classes ?>" id="js-worklist-<?= $worklist->id ?>" data-id="<?= $worklist->id ?>" data-title="<?= $worklist->name ?>" data-definition-id="<?= $worklist->worklist_definition_id ?? '' ?>" data-test="js-worklist-<?= $worklist->id ?>">
     <header>
         <h3><?= $worklist->name . ' : ' . $worklist->getDisplayDate() ?></h3>
     </header>

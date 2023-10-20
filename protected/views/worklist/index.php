@@ -1245,7 +1245,7 @@ $initial_filter = $session_filter_info['filter'];
 
                 if (worklistFiltersController) {
                     worklistFiltersController.updateCounts(resp['quick_details'], resp['waiting_for_details'], resp['assigned_to_details']);
-                    worklistFiltersController.setAvailableLists(resp['all_worklists_in_context'], resp['filtered_worklist_ids']);
+                    worklistFiltersController.setAvailableLists(resp['all_worklists_in_context'], resp['filtered_worklist_ids'], resp['worklist_definitions']);
                     worklistFiltersController.resetShownLists();
                 }
 
@@ -1320,6 +1320,8 @@ $initial_filter = $session_filter_info['filter'];
             return $worklist->id;
                                   }, $worklists)) ?>;
 
+        const worklistDefinitions = <?= json_encode($worklist_definitions) ?>;
+
         const usersList = <?= json_encode(array_map(static function ($user) {
             return ['id' => $user->id, 'label' => $user->getFullName() . ' (' . $user->getInitials() . ')'];
                           }, User::model()->findAll())) ?>;
@@ -1339,6 +1341,7 @@ $initial_filter = $session_filter_info['filter'];
 
             worklists: extantWorklists,
             filteredWorklists: filteredWorklists,
+            worklistDefinitions: worklistDefinitions,
             users: usersList,
             steps: stepsList,
 
@@ -1356,7 +1359,7 @@ $initial_filter = $session_filter_info['filter'];
                     $('#js-clinic-manager section').hide();
 
                     for (id of lists) {
-                        $(`#js-clinic-manager section[data-id="${id}"]`).show();
+                        $(`#js-clinic-manager section[data-definition-id="${id}"]`).show();
                     }
                 }
             },

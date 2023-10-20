@@ -109,7 +109,7 @@
                     </label>
                     <label>
                         <input type="radio" value="next-7-days" name="quick-selector">
-                        <div class="btn">+ 7 days</div>
+                        <div class="btn" data-period="next-7-days" data-test="worklist-filter-period-quick-selector-button">+ 7 days</div>
                     </label>
                 </div>
             </fieldset>
@@ -270,7 +270,7 @@
 <script type="text/template" id="js-worklist-filter-panel-template-worklist-entry">
     <label>
         <input type="checkbox" value="{{id}}">
-        <span class="btn">{{title}}</span>
+        <span class="btn" data-test="worklist-filter-worklist-quick-selector-button">{{title}}</span>
     </label>
 </script>
 

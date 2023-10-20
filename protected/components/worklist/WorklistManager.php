@@ -647,6 +647,7 @@ class WorklistManager extends CComponent
     public function getAllCurrentUniqueAutomaticWorklistsForUser($user, $start_date = null, $end_date = null, $filter = null)
     {
         $worklists = [];
+        $definitions = [];
 
         if (!$user) {
             $user = $this->getCurrentUser();
@@ -668,7 +669,11 @@ class WorklistManager extends CComponent
         $days = $this->getDashboardRenderDates($start_date ? $start_date : new DateTime(), $end_date);
 
         foreach ($days as $when) {
-            foreach ($this->getCurrentAutomaticWorklistsForUserContext($institution, $site, $firm, $when) as $worklist) {
+            list($new_worklists, $new_definitions) = $this->getCurrentAutomaticWorklistsForUserContext($institution, $site, $firm, $when, $filter);
+
+            $definitions = $definitions + $new_definitions;
+
+            foreach ($new_worklists as $worklist) {
                 $worklist_patients = $this->getPatientsForWorklist($worklist);
                 if ($this->shouldRenderEmptyWorklist() || $worklist_patients->getTotalItemCount() > 0) {
                     $worklists[] = $worklist;
@@ -686,7 +691,7 @@ class WorklistManager extends CComponent
             }
         }
 
-        return $unique_worklists;
+        return [$unique_worklists, $definitions];
     }
 
     public function filterWorklistsBySelected($worklists, $filter)
@@ -707,7 +712,7 @@ class WorklistManager extends CComponent
 
     public function getCurrentAutomaticWorklistsForUser($user, $start_date = null, $end_date = null, $filter = null)
     {
-        $unique_worklists = $this->getAllCurrentUniqueAutomaticWorklistsForUser($user, $start_date, $end_date, $filter);
+        list($unique_worklists) = $this->getAllCurrentUniqueAutomaticWorklistsForUser($user, $start_date, $end_date, $filter);
 
         return $this->filterWorklistsBySelected($unique_worklists, $filter);
     }
@@ -749,22 +754,33 @@ class WorklistManager extends CComponent
      * @param Site      $site
      * @param Firm|null $firm  - If null, treat as being all firms
      * @param DateTime  $when
+     * @param WorklistFilterQuery|null $filter
      *
      * @return array
      */
-    public function getCurrentAutomaticWorklistsForUserContext(Institution $institution, Site $site, $firm, DateTime $when)
+    public function getCurrentAutomaticWorklistsForUserContext(Institution $institution, Site $site, $firm, DateTime $when, $filter = null)
     {
         $worklists = array();
         $model = $this->getModelForClass('Worklist');
         $model->automatic = true;
         $model->on = $when;
-        foreach ($model->with(['worklist_definition', 'worklist_definition.patient_identifier_type', 'worklist_definition.display_contexts', 'worklist_patients'])->search(false)->getData() as $wl) {
+
+        $all_worklists = $model->with(['worklist_definition', 'worklist_definition.patient_identifier_type', 'worklist_definition.display_contexts', 'worklist_patients'])->search(false)->getData();
+        $definitions = [];
+
+        foreach ($all_worklists as $wl) {
             if ($this->shouldDisplayWorklistForContext($wl, $institution, $site, $firm)) {
-                $worklists[] = $wl;
+                if (!empty($wl->worklist_definition)) {
+                    $definitions[$wl->worklist_definition->id] = $wl->worklist_definition->name;
+                }
+
+                if (is_null($filter) || $filter->coversAllWorklistDefinitions() || in_array($wl->worklist_definition_id, $filter->getWorklistDefinitions())) {
+                    $worklists[] = $wl;
+                }
             }
         }
 
-        return $worklists;
+        return [$worklists, $definitions];
     }
 
     /**
@@ -1045,7 +1061,9 @@ class WorklistManager extends CComponent
         $content = '';
         $days = $this->getDashboardRenderDates(new DateTime());
         foreach ($days as $when) {
-            foreach ($this->getCurrentAutomaticWorklistsForUserContext($institution, $site, $firm, $when) as $worklist) {
+            list($worklists) = $this->getCurrentAutomaticWorklistsForUserContext($institution, $site, $firm, $when);
+
+            foreach ($worklists as $worklist) {
                 $content .= $this->renderWorklistForDashboard($worklist);
             }
         }

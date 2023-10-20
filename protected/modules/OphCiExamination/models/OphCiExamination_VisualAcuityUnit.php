@@ -181,7 +181,7 @@ class OphCiExamination_VisualAcuityUnit extends \BaseActiveRecordVersioned
                 $list[$unit->id]['isNear'] = (bool)$unit->is_near;
                 $list[$unit->id]['isVA'] = (bool)$unit->is_va;
                 $list[$unit->id]['complexOnly'] = (bool)$unit->complex_only;
-                $list[$unit->id]['values'] = \CHtml::listData($unit->values, 'base_value', 'value');
+                $list[$unit->id]['values'] = \CHtml::listData($unit->selectableValues, 'base_value', 'value');
 
                 return $list;
             },

@@ -92,6 +92,7 @@ var OpenEyes = OpenEyes || {};
         contexts: [],
         worklists: [],
         filteredWorklists: [],
+        worklistDefinitions: [],
 
         users: [],
 
@@ -198,6 +199,7 @@ var OpenEyes = OpenEyes || {};
             sites: new Map(this.options.sites),
             contexts: new Map(this.options.contexts),
             periods: new Map(this.options.periodOptions),
+            worklistDefinitions: new Map(this.options.worklistDefinitions)
         };
 
         this.mappings.worklists = new Map();
@@ -504,12 +506,19 @@ var OpenEyes = OpenEyes || {};
         }
     });
 
+    Object.defineProperty(WorklistFiltersController.prototype, 'worklistDefinitions', {
+        set: function (newWorklistDefinitions) {
+            this.filter.worklistsArray = newWorklistDefinitions;
+            this.filterIsAltered = true;
+
+            this.panelView.setListsRow(this.mappings.worklistDefinitions, newWorklistDefinitions);
+        }
+    });
+
     Object.defineProperty(WorklistFiltersController.prototype, 'worklists', {
         set: function (newWorklists) {
             this.filter.worklistsArray = newWorklists;
             this.filterIsAltered = true;
-
-            this.panelView.setListsRow(this.mappings.worklists, newWorklists);
         }
     });
 
@@ -593,7 +602,7 @@ var OpenEyes = OpenEyes || {};
         }
     };
 
-    WorklistFiltersController.prototype.setAvailableLists = function (lists, filteredIdsList) {
+    WorklistFiltersController.prototype.setAvailableLists = function (lists, filteredIdsList, worklistDefinitions) {
         const filteredIds = new Set(filteredIdsList);
         const replacementMappings = new Map();
         const replacementFilteredMappings = new Map();
@@ -626,11 +635,12 @@ var OpenEyes = OpenEyes || {};
         replacementMappings.set('all', `All (${lists.length})`);
         replacementFilteredMappings.set('all', `All (${filteredIdsList.length})`);
 
+        this.mappings.worklistDefinitions = new Map(worklistDefinitions);
         this.mappings.worklists = replacementMappings;
         this.mappings.filteredWorklists = replacementFilteredMappings;
 
         this.panelView.updateAvailableWorklists(this.mappings, newIds, newFilteredIds);
-        this.panelView.setListsRow(this.mappings.worklists, this.filter.worklistsArray);
+        this.panelView.setListsRow(this.mappings.worklistDefinitions, this.filter.worklistDefinitionsArray);
     };
 
     // Convenience method for lists view, which shows/hides lists when they are uncombined

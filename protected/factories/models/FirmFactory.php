@@ -19,6 +19,17 @@ class FirmFactory extends ModelFactory
     }
 
     /**
+     * @param Institution|InstitutionFactory|string|int $institution
+     * @return FirmFactory
+     */
+    public function forInstitution($institution): self
+    {
+        return $this->state([
+            'institution_id' => $institution
+        ]);
+    }
+
+    /**
      * @param User|UserFactory|int|string|null $user
      * @return self
      */
