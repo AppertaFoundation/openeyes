@@ -29,8 +29,10 @@ OpenEyes.UI = OpenEyes.UI || {};
     }
 
     function makeListsTemplateData(listNames, lists) {
-        if (typeof lists === 'string') {
-            lists = [lists];
+        if (lists === 'all') {
+            return [{title: 'All'}];
+        } else if (typeof lists === 'string' || typeof lists === 'number') {
+            lists = [`${lists}`];
         }
 
         return lists.map(function (list) {
@@ -123,7 +125,7 @@ OpenEyes.UI = OpenEyes.UI || {};
         });
 
         this.setupDateControls();
-        this.setupListViewControls(idMappings.filteredWorklists);
+        this.setupListViewControls(idMappings.worklistDefinitions);
         this.setupFiltersAdder(idMappings);
 
         this.panel.find('.js-combine-lists-option').change(function () {
@@ -199,7 +201,6 @@ OpenEyes.UI = OpenEyes.UI || {};
         const into = this.panel.find('.js-worklist-lists-view .js-list-set');
         const allButton = this.panel.find('.js-worklist-lists-view button.js-all-lists-btn');
 
-        allButton.text(idMappings.get('all'));
         allButton.click(function () {
             into.find('input:checked').prop('checked', false);
             allButton.addClass('selected');
@@ -241,9 +242,9 @@ OpenEyes.UI = OpenEyes.UI || {};
             {id: 'sortBy', label: 'Sort by'},
         ];
 
-        const lists = [];
+        const lists = [{id: 'all', label: 'All'}];
 
-        for ([id, title] of idMappings.worklists.entries()) {
+        for ([id, title] of idMappings.worklistDefinitions.entries()) {
             lists.push({id: id, label: title});
         }
 
@@ -351,7 +352,7 @@ OpenEyes.UI = OpenEyes.UI || {};
                     }
                 }
 
-                controller.worklists = lists;
+                controller.worklistDefinitions = lists;
                 controller.optional = groupedItems;
 
                 return true;
@@ -401,46 +402,30 @@ OpenEyes.UI = OpenEyes.UI || {};
         const intoListView = this.panel.find('.js-worklist-lists-view .js-list-set');
         const intoMenu = this.adder.$tr.find('#js-wfp-lists ul');
 
-        for (const [id, order] of newFilteredIds) {
-            const newEntry = Mustache.render(template, {id: id, title: mappings.filteredWorklists.get(id)});
+        for (const [id, name] of mappings.worklistDefinitions) {
+            if (intoListView.find(`input[value="${id}"]`).length === 0) {
+                const newEntry = Mustache.render(template, {id: id, title: name});
 
-            // Order is one indexed to fit with nth-of-type being one indexed
-            if (order >= intoListView.find('label').length) {
                 intoListView.append(newEntry);
-            } else {
-                intoListView.find(`label:nth-of-type(${order})`).before(newEntry);
             }
         }
 
-        intoListView.find('input:checkbox').filter(function () { return !mappings.filteredWorklists.has(this.value); }).parent().remove();
+        intoListView.find('input:checkbox').filter(function () { return !mappings.worklistDefinitions.has(this.value); }).parent().remove();
 
-        $('.js-worklist-lists-view button[name="all"]').text(mappings.filteredWorklists.get('all'));
+        for (const [id, name] of mappings.worklistDefinitions) {
+            if (intoMenu.find(`li[data-id="${id}"]`).length === 0){
+                // TODO Make changes to the adder dialogue so that adding & removing items does not require
+                // altering the internals
+                const newEntryData = this.adder.constructDataset({id: id, label: name});
+                const newEntry = $("<li />", newEntryData);
 
-        for (const [id, order] of newIds) {
-            // TODO Make changes to the adder dialogue so that adding & removing items does not require
-            // altering the internals
-            const newEntryData = this.adder.constructDataset({id: id, label: mappings.worklists.get(id)});
-            const newEntry = $("<li />", newEntryData);
+                $('<span />', { class: 'auto-width' }).text(newEntryData['data-label']).appendTo(newEntry);
 
-            $('<span />', { class: 'auto-width' }).text(newEntryData['data-label']).appendTo(newEntry);
-
-            // Order is one indexed to fit with nth-of-type being one indexed
-            // and has one added to it to skip the All entry
-            const finalOrder = order + 1;
-
-            if (finalOrder >= intoMenu.find('li').length) {
                 intoMenu.append(newEntry);
-            } else {
-                intoMenu.find(`li:nth-of-type(${finalOrder})`).before(newEntry);
             }
         }
 
-        this.adder.$tr.find('#js-wfp-lists li').filter(function () { return !mappings.worklists.has(this.dataset.id) }).remove();
-
-        const allMenuItem = this.adder.$tr.find('#js-wfp-lists li[data-id="all"]');
-
-        allMenuItem.prop('data-label', mappings.worklists.get('all'));
-        allMenuItem.find('span').text(mappings.worklists.get('all'));
+        this.adder.$tr.find('#js-wfp-lists li').filter(function () { return this.dataset.id === 'all' || !mappings.worklistDefinitions.has(this.dataset.id) }).remove();
 
         this.refreshShownLists();
     }
@@ -593,7 +578,7 @@ OpenEyes.UI = OpenEyes.UI || {};
     }
 
     WorklistFilterPanel.prototype.setFiltersTableRows = function (idMappings, filter) {
-        this.setListsRow(idMappings.worklists, filter.worklistsArray);
+        this.setListsRow(idMappings.worklistDefinitions, filter.worklistDefinitionsArray);
         this.setSortByRow(idMappings.sortBy, filter.sortBy);
         this.setOptionalFiltersRows(idMappings.optional, filter.optional);
     }
@@ -607,6 +592,13 @@ OpenEyes.UI = OpenEyes.UI || {};
      */
     WorklistFilterPanel.prototype.makeFilterEntryData = function (idMappings, filter, index) {
         let formattedPeriod = formatPeriod(idMappings.periods, filter.period);
+        let lists = [];
+
+        if (filter.worklistDefinitionsArray !== 'all' || filter.worklistsArray === 'all') {
+            lists = makeListsTemplateData(idMappings.worklistDefinitions, filter.worklistDefinitionsArray);
+        } else {
+            lists = makeListsTemplateData(idMappings.worklists, filter.worklistsArray);
+        }
 
         return {
             index: index,
@@ -615,7 +607,7 @@ OpenEyes.UI = OpenEyes.UI || {};
             period: formattedPeriod.title,
             periodIncludes: formattedPeriod.includes,
             optional: makeOptionalFiltersTemplateData(idMappings.optional, filter.optional),
-            lists: makeListsTemplateData(idMappings.worklists, filter.worklistsArray),
+            lists: lists,
         }
     }
 

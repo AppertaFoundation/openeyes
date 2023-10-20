@@ -1085,7 +1085,8 @@ class WorklistManagerTest extends PHPUnit_Framework_TestCase
         $manager->method('shouldDisplayWorklistForContext')
             ->will($this->returnValueMap($return_value_map));
 
-        $this->assertEquals(array($wls[0]), $manager->getCurrentAutomaticWorklistsForUserContext($institution, $site, $firm, new DateTime()));
+        list($result) = $manager->getCurrentAutomaticWorklistsForUserContext($institution, $site, $firm, new DateTime());
+        $this->assertEquals(array($wls[0]), $result);
     }
 
     public function shouldDisplayWorklistForContextProvider()

@@ -84,6 +84,9 @@ var OpenEyes = OpenEyes || {};
             case 'type':
                 return undefined;
 
+            case 'worklistDefinitions':
+                return encodeWorklists(value);
+
             case 'worklists':
                 return encodeWorklists(value);
 
@@ -109,6 +112,7 @@ var OpenEyes = OpenEyes || {};
 
         this.period = 'today';
 
+        this.worklistDefinitions = 'all';
         this.worklists = 'all';
         this.sortBy = 0; // Time
         this.optional = new Map();
@@ -120,12 +124,14 @@ var OpenEyes = OpenEyes || {};
 
     WorklistFilter.prototype.compare = function (other) {
         const timePeriodsEqual = compareTimePeriods(this.period, other.period);
+        const worklistDefinitionsEqual = compareWorklists(this.worklistDefinitions, other.worklistDefinitions);
         const worklistsEqual = compareWorklists(this.worklists, other.worklists);
         const optionalEqual = compareOptional(this.optional, other.optional);
 
         return this.site === other.site
             && this.context === other.context
             && timePeriodsEqual
+            && worklistDefinitionsEqual
             && worklistsEqual
             && this.sortBy === other.sortBy
             && optionalEqual
@@ -156,7 +162,8 @@ var OpenEyes = OpenEyes || {};
 
         result.period = data.period;
 
-        result.worklists = decodeWorklists(data.worklists);
+        result.worklistDefinitions = decodeWorklists(data.worklistDefinitions ?? 'all');
+        result.worklists = decodeWorklists(data.worklists ?? 'all');
         result.sortBy = data.sortBy;
         result.optional = new Map(data.optional);
 
@@ -168,6 +175,15 @@ var OpenEyes = OpenEyes || {};
     WorklistFilter.prototype.asJSON = function () {
         return JSON.stringify(this, filterToJSONReplacer);
     };
+
+    Object.defineProperty(WorklistFilter.prototype, 'worklistDefinitionsArray', {
+        get: function () {
+            return encodeWorklists(this.worklistDefinitions);
+        },
+        set: function (newLists) {
+            this.worklistDefinitions = decodeWorklists(newLists);
+        }
+    });
 
     Object.defineProperty(WorklistFilter.prototype, 'worklistsArray', {
         get: function () {

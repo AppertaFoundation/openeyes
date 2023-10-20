@@ -34,6 +34,17 @@ class WorklistPatientFactory extends ModelFactory
     }
 
     /**
+     * @param Patient|PatientFactory|string|int $worklist
+     * @return WorklistPatientFactory
+     */
+    public function forPatient($patient): self
+    {
+        return $this->state([
+            'patient_id' => $patient
+        ]);
+    }
+
+    /**
      * @param Worklist|WorklistFactory|string|int $worklist
      * @return WorklistPatientFactory
      */

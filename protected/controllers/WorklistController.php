@@ -122,7 +122,13 @@ class WorklistController extends BaseController
         // This has been split into two here to that all the unique worklists can be passed back to the client to refresh the set of worklists.
         // Passing back the (filtered set of) worklists instead would clobber the set to be only those so filtered,
         // and the user would not be able to select those filtered out when trying to change what lists they're filtering.
-        $unfiltered_worklists = $this->manager->getAllCurrentUniqueAutomaticWorklistsForUser(null, $date_from ? new DateTime($date_from) : null, $date_to ? new DateTime($date_to) : null, $filter);
+        list($unfiltered_worklists, $all_definitions) = $this->manager->getAllCurrentUniqueAutomaticWorklistsForUser(
+            null,
+            $date_from ? new DateTime($date_from) : null,
+            $date_to ? new DateTime($date_to) : null,
+            $filter
+        );
+
         $worklists = $this->manager->filterWorklistsBySelected($unfiltered_worklists, $filter);
 
         if (WorklistFilter::model()->countForCurrentUser() !== 0 || WorklistRecentFilter::model()->countForCurrentUser() !== 0) {
@@ -146,11 +152,14 @@ class WorklistController extends BaseController
 
             $path_step_type_ids = json_encode($this->getPathwayStepTypesRequirePicker());
 
+            $all_definitions = array_map(null, array_keys($all_definitions), array_values($all_definitions));
+
             $this->render(
                 'index',
                 array(
                     'worklists' => $worklists,
                     'unfiltered_worklists' => $unfiltered_worklists,
+                    'worklist_definitions' => $all_definitions,
                     'picker_setup' => $picker_setup,
                     'path_step_type_ids' => $path_step_type_ids,
                     'path_steps' => PathwayStepType::getPathTypes(),
@@ -1747,7 +1756,13 @@ class WorklistController extends BaseController
         // This has been split into two here to that all the unique worklists can be passed back to the client to refresh the set of worklists.
         // Passing back the (filtered set of) worklists instead would clobber the set to be only those so filtered,
         // and the user would not be able to select those filtered out when trying to change what lists they're filtering.
-        $unfiltered_worklists = $this->manager->getAllCurrentUniqueAutomaticWorklistsForUser(null, $date_from ? new DateTime($date_from) : null, $date_to ? new DateTime($date_to) : null, $filter);
+        list($unfiltered_worklists, $all_definitions) = $this->manager->getAllCurrentUniqueAutomaticWorklistsForUser(
+            null,
+            $date_from ? new DateTime($date_from) : null,
+            $date_to ? new DateTime($date_to) : null,
+            $filter
+        );
+
         $worklists = $this->manager->filterWorklistsBySelected($unfiltered_worklists, $filter);
 
         $prescriber_dom_data = $this->prescriberDomData();
@@ -1782,6 +1797,10 @@ class WorklistController extends BaseController
         $dom['filtered_worklist_ids'] = array_map(static function ($worklist) {
             return $worklist->id;
         }, $worklists);
+
+        $all_definitions = array_map(null, array_keys($all_definitions), array_values($all_definitions));
+
+        $dom['worklist_definitions'] = array_values($all_definitions);
 
         $this->renderJSON($dom);
     }

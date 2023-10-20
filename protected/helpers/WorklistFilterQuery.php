@@ -22,6 +22,7 @@ use OEModule\OphCiExamination\models\OphCiExamination_Triage_Priority;
 class WorklistFilterQuery
 {
     public const ALL_WORKLISTS = 'all';
+    public const ALL_WORKLIST_DEFINITIONS = 'all';
     public const ALL_CONTEXTS = 'all';
 
     private const SORT_BY_TIME = 0;
@@ -53,6 +54,7 @@ class WorklistFilterQuery
     private $context;
     private $firm;
 
+    private $worklistDefinitions;
     private $worklists;
     private $from;
     private $to;
@@ -81,15 +83,25 @@ class WorklistFilterQuery
     // absolute dates after the conversion in the constructor below.
     private $relative_period_name = null;
 
+    /**
+     * @param WorklistFilter|WorklistRecentFilter|null $filter
+     * @param stdclass|string|null $quick
+     * @return WorklistFilterQuery*/
     public function __construct($filter = null, $quick = null)
     {
         if ($filter) {
-            $filter = json_decode($filter);
+            $filter = $this->decodeAndUpdateFilter($filter);
 
             $this->site = $filter->site;
             $this->context = $filter->context;
 
-            $this->worklists = $filter->worklists;
+            if (isset($filter->worklistDefinitions)) {
+                $this->worklistDefinitions = $filter->worklistDefinitions;
+                $this->worklists = self::ALL_WORKLISTS;
+            } else {
+                $this->worklistDefinitions = self::ALL_WORKLIST_DEFINITIONS;
+                $this->worklists = $filter->worklists;
+            }
 
             if (isset($filter->period)) {
                 if (getType($filter->period) === 'string') {
@@ -122,6 +134,7 @@ class WorklistFilterQuery
             $this->site = Yii::app()->session['selected_site_id'];
             $this->context = self::ALL_CONTEXTS;
 
+            $this->worklistDefinitions = self::ALL_WORKLIST_DEFINITIONS;
             $this->worklists = self::ALL_WORKLISTS;
             $this->relative_period_name = 'today'; // Default
             $this->from = null;
@@ -249,6 +262,16 @@ class WorklistFilterQuery
     public function getContextId()
     {
         return $this->context;
+    }
+
+    public function coversAllWorklistDefinitions()
+    {
+        return $this->worklistDefinitions === self::ALL_WORKLISTS;
+    }
+
+    public function getWorklistDefinitions()
+    {
+        return $this->worklistDefinitions;
     }
 
     public function coversAllWorklists()
@@ -754,8 +777,6 @@ class WorklistFilterQuery
             }
         }
 
-        $filter = $filter ? $filter->filter : null;
-
         return array('filter' => new WorklistFilterQuery($filter, $quick), 'quick' => $quick, 'type' => $type, 'id' => $id);
     }
 
@@ -776,5 +797,31 @@ class WorklistFilterQuery
         unset(Yii::app()->session['current_worklist_filter_type']);
         unset(Yii::app()->session['current_worklist_filter_id']);
         unset(Yii::app()->session['current_worklist_filter_quick']);
+    }
+
+    protected function decodeAndUpdateFilter($filter)
+    {
+        $data = json_decode($filter->filter);
+
+        if (isset($data->worklists)) {
+            if (is_array($data->worklists)) {
+                $data->worklistDefinitions = array_map(
+                    static function ($worklist) {
+                        return $worklist->worklist_definition_id;
+                    },
+                    Worklist::model()->findAllByPk($data->worklists)
+                );
+            } elseif ($data->worklists === self::ALL_WORKLISTS) {
+                $data->worklistDefinitions = self::ALL_WORKLIST_DEFINITIONS;
+            } else {
+                $data->worklistDefinitions = Worklist::model()->findByPk($data->worklists)->worklist_definition_id ?? '';
+            }
+
+            $filter->filter = json_encode($data);
+
+            $filter->save();
+        }
+
+        return $data;
     }
 }
