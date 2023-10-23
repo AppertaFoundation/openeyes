@@ -14,7 +14,7 @@ describe('visual acuity behaviour', () => {
         });
 
         it('1/60 Snellen value when unit is changed does not cause a crash', function () {
-            cy.removeElements();
+            cy.removeElements('Visual Acuity', true);
             cy.addExaminationElement('Visual Acuity');
 
             cy.getBySel('visual-acuity-unit-selector').select('Snellen Metre');
@@ -37,6 +37,12 @@ describe('visual acuity behaviour', () => {
 
             cy.wait('@ElementForm');
 
+            // wait for 2 seconds in case driving safety is added
+            cy.wait(2000);
+
+            // remove any other elements that may have been forced open by a poor vision result (e.g, driving safety, CVI, etc)
+            cy.removeElements('Visual Acuity', true);
+
             cy.saveEvent();
             cy.assertEventSaved();
 
@@ -58,7 +64,7 @@ describe('visual acuity behaviour', () => {
         it('permits changing the VA Scale when editing', function () {
             cy.visit(this.seederData.previousEvent.urls.edit);
 
-            cy.removeElements('Visual Acuity');
+            cy.removeElements('Visual Acuity', true);
 
             cy.intercept({
                 method: 'GET',
@@ -68,6 +74,12 @@ describe('visual acuity behaviour', () => {
             cy.getBySel('visual-acuity-unit-selector').select(this.seederData.alternativeUnitName);
 
             cy.wait('@ElementForm');
+
+            // wait for 2 seconds in case driving safety is added
+            cy.wait(2000);
+
+            // remove any other elements that may have been forced open by a poor vision result (e.g, driving safety, CVI, etc)
+            cy.removeElements('Visual Acuity', true);
 
             cy.saveEvent().then(() => {
                 cy.location('pathname').should('contain', '/view');
@@ -83,7 +95,7 @@ describe('visual acuity behaviour', () => {
 
             cy.visitEventCreationUrl(this.seederData.previousEvent.patient.id, 'OphCiExamination');
 
-            cy.removeElements();
+            cy.removeElements('', true);
             cy.addExaminationElement('Visual Acuity');
 
             cy.intercept({
@@ -111,6 +123,12 @@ describe('visual acuity behaviour', () => {
                             cy.getBySel('eye_missing-input').should('not.be.visible');
                             cy.getBySel('eye_missing-input').should('not.be.checked');
 
+                            // wait for 2 seconds in case driving safety is added
+                            cy.wait(2000);
+
+                            // remove any other elements that may have been forced open by a poor vision result (e.g, driving safety, CVI, etc)
+                            cy.removeElements('Visual Acuity', true);
+
                             cy.saveEvent().then(() => {
                                 // New examination event view should contain copied data
                                 cy.location('pathname').should('contain', '/view');
@@ -132,7 +150,7 @@ describe('visual acuity behaviour', () => {
         it('does not produce duplicates or eliminate entries when changing the VA Scale after copying previous entries', function () {
             cy.visitEventCreationUrl(this.seederData.previousEvent.patient.id, 'OphCiExamination');
 
-            cy.removeElements();
+            cy.removeElements('', true);
             cy.addExaminationElement('Visual Acuity');
 
             cy.intercept({
@@ -196,7 +214,7 @@ describe('visual acuity behaviour', () => {
 
                 cy.visitEventCreationUrl(seederData.previousEvent.patient.id, 'OphCiExamination');
 
-                cy.removeElements();
+                cy.removeElements('', true);
                 cy.addExaminationElement('Visual Acuity');
 
                 cy.intercept({
@@ -225,6 +243,12 @@ describe('visual acuity behaviour', () => {
                                 cy.getBySel('behaviour_assessed-input').should('not.be.checked');
 
                                 cy.getBySel('visual-acuity-add-beo').should('not.be.visible');
+
+                                // wait for 2 seconds in case driving safety is added
+                                cy.wait(2000);
+
+                                // remove any other elements that may have been forced open by a poor vision result (e.g, driving safety, CVI, etc)
+                                cy.removeElements('Visual Acuity', true);
 
                                 cy.saveEvent().then(() => {
                                     // New examination event view should contain copied data
