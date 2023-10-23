@@ -30,7 +30,8 @@ Cypress.Commands.add('removeElementSide', (elementName, side) => {
     return cy.getElementSideByName(elementName, side).find('.remove-side').click();
 });
 
-Cypress.Commands.add('removeElements', (exceptElementNames) => {
+Cypress.Commands.add('removeElements', (exceptElementNames, force = false) => {
+
     if (exceptElementNames === undefined) {
         exceptElementNames = [];
     }
@@ -38,20 +39,50 @@ Cypress.Commands.add('removeElements', (exceptElementNames) => {
         exceptElementNames = [exceptElementNames];
     }
 
-    const filterSelector = exceptElementNames
-        .map((elementName) => {
-            return `[data-element-type-name!="${elementName}"]`;
-        })
-        .join('');
+    cy.get(`section.element`).each(($section) => {
+        const elementTypeName = $section.attr('data-element-type-name');
+        if (exceptElementNames.includes(elementTypeName)) {
+            cy.log(`Skip removing element ${elementTypeName}`);
+            return; // Skip this element
+        }
 
-    cy.get(`section.element${filterSelector}`).each(($section) => {
+        cy.removeElement(elementTypeName, force);
+    });
+});
+
+Cypress.Commands.add('removeElement', (elementName, force = false) => {
+
+    cy.get(`section.element[data-element-type-name="${elementName}"]`).each(($section) => {
+        const $elementActions = $section.find('.element-actions');
+
+        // If force is set, remove elements even if they are set to mandatory or the user does not have permission to remove
+        // This is done by adding the missing js-remove-element class to the trash icon
+        if (force) {
+            // Remove elements with class "no-permissions" set on the trash icon
+            $elementActions.find('.no-permissions')
+                .removeClass('no-permissions')
+                .addClass('js-remove-element');
+
+            // Remove mandatory elements
+            $elementActions.find('span.disabled.js-has-tooltip')
+                .removeClass('disabled')
+                .removeClass('js-has-tooltip')
+                .addClass('js-remove-element');
+        }
+
         if ($section.find('input[name*="element_dirty"]').val() == '1') {
-            cy.wrap($section).within(() => {
-                cy.get('.js-remove-element').click();
-            });
-            cy.get('button.confirm.ok').click();
+            const removeElement = $section.find('.js-remove-element');
+            if (removeElement.length > 0) {
+                cy.wrap($section).within(() => {
+                    cy.wrap(removeElement).click();
+                });
+                cy.get('button.confirm.ok').click();
+            }
         } else {
-            cy.wrap($section).within(() => { cy.get('.js-remove-element').click(); });
+            const removeElement = $section.find('.js-remove-element');
+            if (removeElement.length) {
+                cy.wrap($section).within(() => { cy.get('.js-remove-element').click(); });
+            }
         }
     });
 });
