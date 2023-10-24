@@ -39,4 +39,4 @@ jobs:
       # Output actions path for toukanlabs/external-action-runner
       - name: Link to external action
         run: |
-          echo "To see progress go to https://github.com/toukanlabs/external-action-runner/actions and look for the run named "Cypress - PR ${{ github.event.pull_request.number }} - Attempt ${{ github.run_attempt }} - Run id ${{ github.run_id }}"
+          echo "To see progress go to https://github.com/toukanlabs/external-action-runner/actions and look for the run named 'Cypress - PR ${{ github.event.pull_request.number }} - Attempt ${{ github.run_attempt }} - Run id ${{ github.run_id }}'"
