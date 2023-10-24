@@ -27,6 +27,19 @@ describe('Add queue set', function () {
             }).as('createUrl');
     });
 
+    // Make sure that there is at least 1 queue set left assigned to the institution, otherwise it causes some other tests to fail
+    // that expect a patient ticket list to exist. This would not be necessary if the other tests used a factory / seeder...
+    after(() => {
+        cy.login()
+            .then(() => {
+                cy.visit('/PatientTicketing/admin/');
+                cy.getBySel(`patient-ticketing-list`).within(table => {
+                    cy.get('input[type="checkbox"]').check({ force: true });
+                });
+                cy.getBySel(`admin-map-add`).click();
+            });
+    });
+
     context('Only one queue set assigned to the institution', () => {
 
         beforeEach(function() {
@@ -34,8 +47,7 @@ describe('Add queue set', function () {
             cy.visit(this.createUrl);
         });
 
-        it('should load the only available Queue Set in the institution', function() {
-            cy.removeElements();
+        it('should load the only available Queue Set in the institution', function () {
             cy.addExaminationElement('Follow-up');
             cy.getBySel('show-follow-up-adder').click();
             cy.selectAdderDialogOptionText('Virtual Review');
@@ -57,8 +69,6 @@ describe('Add queue set', function () {
 
         it('should list the available Queue Sets to the institution', function() {
             cy.visit(this.createUrl);
-
-            cy.removeElements();
             cy.addExaminationElement('Follow-up');
             cy.getBySel('show-follow-up-adder').click();
             cy.selectAdderDialogOptionText('Virtual Review');
@@ -86,8 +96,6 @@ describe('Add queue set', function () {
 
         it('should display a message that there is no queue set', function()  {
             cy.visit(this.createUrl);
-
-            cy.removeElements();
             cy.addExaminationElement('Follow-up');
             cy.getBySel('show-follow-up-adder').click();
             cy.selectAdderDialogOptionText('Virtual Review');
