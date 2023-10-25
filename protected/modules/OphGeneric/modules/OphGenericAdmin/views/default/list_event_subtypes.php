@@ -18,7 +18,6 @@
     <table class="standard">
         <thead>
             <tr>
-                <th>Order</th>
                 <th>Name</th>
             </tr>
         </thead>
@@ -34,10 +33,23 @@
                 data-id="<?= $subtype->event_subtype ?>"
                 data-uri="OphGeneric/admin/Default/editEventSubType/<?= $subtype->event_subtype ?>"
             >
-                <td></td>
-                <td><?= $subtype->display_name ?></td>
+                <td class="cols-full"><?= $subtype->display_name ?></td>
             </tr>
             <?php } ?>
         </tbody>
+        <tfoot>
+        <tr>
+            <td colspan="5">
+                <?=\CHtml::button(
+                    'Add',
+                    [
+                        'data-uri' => '/OphGeneric/admin/Default/addEventSubType',
+                        'class' => 'button large',
+                        'name' => 'add',
+                        'id' => 'et_add']
+                ); ?>
+            </td>
+        </tr>
+        </tfoot>
     </table>
 </div>

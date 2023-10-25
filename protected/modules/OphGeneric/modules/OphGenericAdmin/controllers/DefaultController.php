@@ -15,9 +15,10 @@
 
 namespace OEModule\OphGeneric\modules\OphGenericAdmin\controllers;
 
-use OEModule\OphGeneric\models\HFA;
+use EventSubtype;
 use OEModule\OphGeneric\models\Comments;
 use OEModule\OphGeneric\models\DeviceInformation;
+use OEModule\OphGeneric\models\HFA;
 
 class DefaultController extends \ModuleAdminController
 {
@@ -55,13 +56,44 @@ class DefaultController extends \ModuleAdminController
             'event_subtype' => $event_subtype,
             'elements' => $elements,
             'element_types' => $this->getManualElementTypes(),
-            'errors' => $errors
+            'errors' => $errors,
+            'is_new' => false,
         ]);
     }
 
-    private function updateEventSubType($event_subtype, $data) {
+    public function actionAddEventSubType()
+    {
+        $event_subtype = new EventSubtype();
+        $errors = [];
+
+        if (\Yii::app()->request->isPostRequest) {
+            $errors = $this->updateEventSubType($event_subtype, \Yii::app()->request->getPost('EventSubtype'), true);
+
+            if (empty($errors)) {
+                $this->redirect('/OphGeneric/admin/Default/listEventSubTypes');
+            }
+        }
+
+
+        $this->render('edit_event_subtype', [
+            'event_subtype' => $event_subtype,
+            'element_types' => $this->getManualElementTypes(),
+            'errors' => $errors,
+            'is_new' => true,
+
+        ]);
+    }
+
+    private function updateEventSubType($event_subtype, $data, $is_new = false)
+    {
         $icon = !empty($data['icon_id']) ? \EventIcon::model()->findByPk($data['icon_id']) : null;
 
+        if ($is_new) {
+            $event_subtype->display_name = $data['display_name'];
+            $event_subtype->event_subtype = $data['display_name'];
+        }
+
+        $event_subtype->dicom_modality_code = $data['dicom_modality_code'] ?? '';
         $event_subtype->icon_name = $icon->name ?? null;
         $event_subtype->manual_entry = $data['manual_entry'];
         $event_subtype->element_type_entries = $data['element_type_entries'] ?? [];

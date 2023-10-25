@@ -15,11 +15,11 @@
 
 use OE\factories\models\traits\HasFactory;
 
- /**
-  * @property string $event_subtype - string identifier (Note, different from usual model pattern)
-  * @property string $display_name
-  * @property ElementType[] $element_types
-  */
+/**
+ * @property string $event_subtype - string identifier (Note, different from usual model pattern)
+ * @property string $display_name
+ * @property ElementType[] $element_types
+ */
 class EventSubtype extends BaseActiveRecordVersioned
 {
     use HasFactory;
@@ -30,6 +30,7 @@ class EventSubtype extends BaseActiveRecordVersioned
     {
         return parent::model($className);
     }
+
     /**
      * @return string the associated database table name
      */
@@ -46,6 +47,9 @@ class EventSubtype extends BaseActiveRecordVersioned
         // Only define rules for those attributes with user inputs.
         return [
             ['event_subtype, dicom_modality_code, icon_name, display_name, element_type_entries', 'safe'],
+            ['event_subtype', 'unique', 'message' => 'Duplicate event subtype.'],
+            ['icon_name', 'required', 'message' => 'Sub type icon is required.'],
+            ['event_subtype, display_name', 'required'],
             // Remove attributes that should not be searched.
             ['event_subtype, dicom_modality_code, icon_name, display_name', 'safe', 'on' => 'search'],
         ];
