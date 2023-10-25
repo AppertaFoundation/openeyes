@@ -536,6 +536,17 @@ class MedicationManagement extends BaseMedicationElement
         }
     }
 
+    private function deletePrescriptionEvent()
+    {
+        if ($this->prescription) {
+            foreach ($this->prescription->items as $prescription_item) {
+                $prescription_item->delete();
+            }
+            $this->prescription->delete();
+            $this->prescription->event->softDelete("Deleted via examination clinical management");
+        }
+    }
+
     /**
      * Get Draft status by access and checkbox value to Prescription event
      * @return int
@@ -663,7 +674,7 @@ class MedicationManagement extends BaseMedicationElement
             $signature->deletePrevSignature();
         }
 
-        parent::beforeDelete();
+        return parent::beforeDelete();
     }
 
     public function afterDelete()
@@ -671,6 +682,7 @@ class MedicationManagement extends BaseMedicationElement
         foreach ($this->entries as $entry) {
             $entry->delete();
         }
+        $this->deletePrescriptionEvent();
 
         parent::afterDelete();
     }
