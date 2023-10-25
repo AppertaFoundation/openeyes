@@ -60,13 +60,14 @@ class OphCoTherapyapplication_DecisionTree extends BaseActiveRecordVersioned
      */
     public function rules()
     {
-        return array(
-                array('name, institution_id', 'safe'),
-                array('name, institution_id', 'required'),
+        return [
+                ['name, institution_id', 'safe'],
+                ['name, institution_id', 'required'],
+                ['name', 'length', 'max' => 128],
                 // The following rule is used by search().
                 // Please remove those attributes that should not be searched.
                 array('id, name, institution_id', 'safe', 'on' => 'search'),
-        );
+        ];
     }
 
     public function getRootNode()

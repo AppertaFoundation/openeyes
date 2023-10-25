@@ -17,8 +17,5 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-?>
-
-<?php
-echo $form->dropDownList($model, 'institution_id', Institution::model()->getTenantedList(true), ['class' => 'cols-full']);
-echo $form->textField($model, 'name', array('size' => 40, 'maxlength' => 40));
+$form->dropDownList($model, 'institution_id', Institution::model()->getTenantedList(true), ['class' => 'cols-full']);
+$form->textField($model, 'name', ['class' => 'cols-full', 'maxlength' => 128, 'data-test' => 'decision-tree-name']);

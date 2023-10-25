@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -14,6 +15,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 $this->renderPartial('_menu_main');
 ?>
 
@@ -21,19 +23,19 @@ $this->renderPartial('_menu_main');
 
 <div class="row divider">
     <h2>
-        <?php echo $title ? $title : 'Therapy Application Admin' ?>
+        <?= $title ? $title : 'Therapy Application Admin' ?>
     </h2>
 </div>
 
-    <?php $this->widget('zii.widgets.CListView', array(
+    <?php $this->widget('zii.widgets.CListView', [
         'dataProvider' => $dataProvider,
-        'itemView' => 'list_'.$dataProvider->modelClass,
+        'itemView' => 'list_' . $dataProvider->modelClass,
         'itemsCssClass' => 'standard',
         'itemsTagName' => 'table',
-    )); ?>
+    ]); ?>
 
 <div class="box-actions">
-    <a href="<?php echo Yii::app()->createUrl('OphCoTherapyapplication/admin/create'.$dataProvider->modelClass); ?>" class="button small">Add New</a>
+    <a href="<?= Yii::app()->createUrl('OphCoTherapyapplication/admin/create' . $dataProvider->modelClass); ?>" class="button small" data-test="add-new-btn">Add New</a>
 </div>
 
 </div>
