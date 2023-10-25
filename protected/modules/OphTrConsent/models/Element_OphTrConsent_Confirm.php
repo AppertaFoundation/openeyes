@@ -134,7 +134,13 @@ class Element_OphTrConsent_Confirm extends BaseEventTypeElement implements Requi
         if ($this->signature_id) {
             $result[] = OphTrConsent_Signature::model()->findByPk($this->signature_id);
         } else {
-            $user = User::model()->findByPk($this->event->last_modified_user_id);
+            $pin_is_not_required = SettingMetadata::model()->checkSetting('require_pin_for_consent', 'no');
+
+            if ($pin_is_not_required) {
+                $user = User::model()->findByPk($this->last_modified_user_id);
+            } else {
+                $user = Yii::app()->session->getSelectedUser();
+            }
 
             $sig = new OphTrConsent_Signature();
             $sig->setAttributes([
@@ -159,7 +165,7 @@ class Element_OphTrConsent_Confirm extends BaseEventTypeElement implements Requi
     public function afterSignedCallback(int $row_id, int $signature_id): void
     {
         $this->signature_id = $signature_id;
-        if(!$this->save(false, ["signature_id"])) {
+        if (!$this->save(false, ["signature_id"])) {
             throw new Exception('Unable to save Confirm: ' . print_r($this->getErrors(), true));
         };
     }
