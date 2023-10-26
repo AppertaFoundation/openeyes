@@ -28,18 +28,23 @@ describe('create examination event', () => {
         cy.getBySel('Medication-Management-element-section').within(() => {
             cy.getBySel('add-options').children().first().click();
             //Click on add button
-            cy.getBySel('add-icon-btn').first().click();
+            cy.getBySel('add-icon-btn').first().click().then((element) => {
+                cy.intercept({
+                    method: 'GET',
+                    url: '/medicationManagement/getDrugSetForm*'
+                }).as('drugSetForm');
+            });
         });
 
-        cy.wait(1000);
+        cy.wait('@drugSetForm');
+
         cy.getBySel('event-medication-management-row').each(($el) => {
             cy.get($el).within(() => {
-                cy.getBySel('eye-lat-input').first().click();
+                cy.getBySel('eye-lat-input').first().scrollIntoView().click();
                 cy.getBySel('dispense-condition').select(1);
             })
         });
 
-        cy.wait(1000);
         cy.getBySel('event-action-confirm-and-save', ':visible').first().click();
         /*
             If any uncaught exception is thrown at this stage, test will fail.

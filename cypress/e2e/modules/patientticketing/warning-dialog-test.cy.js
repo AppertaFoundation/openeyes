@@ -70,8 +70,10 @@ describe('able to save events without popup when virtual review is open ', () =>
 
                     cy.getBySel('letter-type').select('Clinic discharge letter');
                     cy.intercept('/docman/ajaxGetMacroTargets*').as('getMacroTargets');
+                    cy.intercept('/OphCoCorrespondence/Default/getMacroData*').as('getMacroData');
                     cy.getBySel('letter-template').select('Community Optom');
                     cy.wait('@getMacroTargets');
+                    cy.wait('@getMacroData');
                     cy.getBySel('event-action-save-draft').first().click();
                     cy.get('@consoleLog').should('be.not.calledWith', 'Show Changes you made may not be saved message.');
 
