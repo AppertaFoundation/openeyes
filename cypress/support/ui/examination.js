@@ -7,8 +7,14 @@ Cypress.Commands.add('addExaminationElement', (elementNames) => {
     elementNames.forEach((elementName) => {
         const kebabCaseElementName = elementName.replace(/ /g, '-');
         cy.get(`#manage-elements-${kebabCaseElementName}`).within((button) => {
-            if (!button.hasClass('added')) {
+            if (!button.hasClass('added') && !button.hasClass('mandatory')) {
                 button.click();
+                // Wait for the element to be added to the page
+                cy.intercept({
+                    method: 'GET',
+                    url: '/OphCiExamination/Default/ElementForm*'
+                }).as('ElementForm');
+                cy.wait('@ElementForm');
             }
         });
     });
