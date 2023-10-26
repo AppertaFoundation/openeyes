@@ -42,7 +42,10 @@ class GP extends BaseResource
     public function validate()
     {
         if (!$this->id) {
-            $this->addError('Resource ID required');
+            $this->id = $this->getAssignedProperty('Code');
+            if (!$this->id) {
+                $this->addError('Resource ID required');
+            }
         }
 
         return parent::validate();

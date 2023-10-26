@@ -552,11 +552,6 @@ class V2Controller extends \CController
 
     private function validatePatientResource($resource, $id, $identifier_type)
     {
-        if ($resource instanceof Patient) {
-            // Set the assignment IDs for the GP and Practice to the GP and Practice HSCIC codes respectively.
-            $resource->GP->id = $resource->GP->getAssignedProperty('Code');
-            $resource->Practice->id = $resource->Practice->getAssignedProperty('Code');
-        }
         $patient_identifier_type = \PatientIdentifierType::model()->findByAttributes(['unique_row_string' => $identifier_type]);
 
         if (!$patient_identifier_type) {
