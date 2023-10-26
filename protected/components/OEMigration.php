@@ -444,7 +444,7 @@ class OEMigration extends CDbMigration
 
         if ($existing_count > 1) {
             throw new \Exception('Element class ' . $existing_name . ' for event type id ' . $event_type_id . ' has duplicates');
-        } else if ($existing_count < 1) {
+        } elseif ($existing_count < 1) {
             throw new \Exception('Element class ' . $existing_name . ' for event type id ' . $event_type_id . ' does not exist');
         }
 
@@ -1367,7 +1367,7 @@ class OEMigration extends CDbMigration
         string $warning_note = null
     ) {
         // Search index
-        $event_type_id = $this->dbConnection->createCommand("SELECT id FROM event_type WHERE `class_name` = :event_class")->queryScalar([':event_class' => $event_class]);     
+        $event_type_id = $this->dbConnection->createCommand("SELECT id FROM event_type WHERE `class_name` = :event_class")->queryScalar([':event_class' => $event_class]);
         $parent_id = $this->dbConnection->createCommand("SELECT id FROM index_search WHERE primary_term = :parent_term")->queryScalar([ ':parent_term' => $parent_name ]);
 
         $this->execute(
@@ -1418,5 +1418,58 @@ class OEMigration extends CDbMigration
                 ':warning_note'             => $warning_note
             ]
         );
+    }
+
+    /**
+     * Gets the name of a foreign key constraint
+     *
+     * @param string $table_name
+     * @param string $column_name
+     * @return string if a foreign key constraint exists
+     * @return false if no foreign key constraint exists
+     */
+    protected function getForeignKeyName($table, $column)
+    {
+        return $this->dbConnection->createCommand("SELECT CONSTRAINT_NAME FROM information_schema.KEY_COLUMN_USAGE WHERE REFERENCED_TABLE_NAME IS NOT NULL AND TABLE_NAME = :table_name AND COLUMN_NAME = :column_name;")->queryScalar([':table_name' => $table, ':column_name' => $column]);
+    }
+
+    /**
+     * Drops a foreign key constraint if it exists
+     *
+     * @param string $table
+     * @param string $column
+     * @return void
+     */
+    protected function dropForeignKeyIfExists($table, $column)
+    {
+        $index_name = $this->getForeignKeyName($table, $column);
+        if ($index_name) {
+            // Foreign key exists, so delete it
+            $this->dropForeignKey($index_name, $table);
+        }
+    }
+
+    /**
+     * Adds or Updates a foreign key constraint
+     *
+     * @param string $name
+     * @param string $table
+     * @param string $column
+     * @param string $refTable
+     * @param string $refColumn
+     * @param string $delete
+     * @param string $update
+     * @return void
+     */
+    protected function addOrUpdateForeignKey($name, $table, $column, $refTable, $refColumn, $delete=null, $update=null)
+    {
+        $index_name = $this->getForeignKeyName($table, $column);
+        if ($index_name) {
+            // Drop the foreign key first
+            $this->dropForeignKey($index_name, $table);
+        }
+        // Foreign key does not exist, so create it
+        $this->addForeignKey($name, $table, $column, $refTable, $refColumn, $delete, $update);
+
     }
 }
