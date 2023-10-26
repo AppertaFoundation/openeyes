@@ -10,7 +10,7 @@ describe('near visual acuity behaviour', () => {
         it('permits changing the Near VA Scale when editing', function () {
             cy.visit(this.seederData.previousEvent.urls.edit);
 
-            cy.removeElements('Near Visual Acuity');
+            cy.removeElements('Near Visual Acuity', true);
 
             cy.intercept({
                 method: 'GET',
@@ -34,7 +34,7 @@ describe('near visual acuity behaviour', () => {
 
             cy.visitEventCreationUrl(this.seederData.previousEvent.patient.id, 'OphCiExamination');
 
-            cy.removeElements();
+            cy.removeElements('Near Visual Acuity', true);
             cy.addExaminationElement('Near Visual Acuity');
 
             cy.intercept({
@@ -83,7 +83,7 @@ describe('near visual acuity behaviour', () => {
         it('does not produce duplicates or eliminate entries when changing the VA Scale after copying previous entries', function () {
             cy.visitEventCreationUrl(this.seederData.previousEvent.patient.id, 'OphCiExamination');
 
-            cy.removeElements();
+            cy.removeElements('Near Visual Acuity', true);
             cy.addExaminationElement('Near Visual Acuity');
 
             cy.intercept({
@@ -143,7 +143,7 @@ describe('near visual acuity behaviour', () => {
 
                 cy.visitEventCreationUrl(seederData.previousEvent.patient.id, 'OphCiExamination');
 
-                cy.removeElements();
+                cy.removeElements('Near Visual Acuity', true);
                 cy.addExaminationElement('Near Visual Acuity');
 
                 cy.intercept({
