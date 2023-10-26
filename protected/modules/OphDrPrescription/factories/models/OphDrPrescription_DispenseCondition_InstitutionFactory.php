@@ -16,9 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-use Institution;
+
 use OE\factories\ModelFactory;
-use OphDrPrescription_DispenseCondition;
 
 class OphDrPrescription_DispenseCondition_InstitutionFactory extends ModelFactory
 {

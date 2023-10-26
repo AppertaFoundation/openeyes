@@ -283,7 +283,7 @@ describe('verifies prescription secondary e-sign signatories behaviour', () => {
             cy.login(undefined, undefined, 4, this.seederData.institution_id);
         });
 
-        it('displays the correct list of signatories for institution', function() {
+        it('displays the correct list of signatories for institution', function () {
             cy.visit(this.eventCreateUrl);
             fillPrescriptionEventForm();
 
