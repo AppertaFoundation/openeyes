@@ -193,7 +193,7 @@ class OphCoCorrespondence_Signature extends BaseSignature
         /** @var OphCoCorrespondence_API $api */
         $api = Yii::app()->moduleAPI->get("OphCoCorrespondence");
 
-        return $api->getFooterText($this->signedUser, $this->element->event->firm ?? null);
+        return $api->getFooterText($this->signedUser, $this->element->event->firm ?? null, null, $this->signatory_name);
     }
 
     /**
