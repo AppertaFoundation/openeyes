@@ -536,17 +536,6 @@ class MedicationManagement extends BaseMedicationElement
         }
     }
 
-    private function deletePrescriptionEvent()
-    {
-        if ($this->prescription) {
-            foreach ($this->prescription->items as $prescription_item) {
-                $prescription_item->delete();
-            }
-            $this->prescription->delete();
-            $this->prescription->event->softDelete("Deleted via examination clinical management");
-        }
-    }
-
     /**
      * Get Draft status by access and checkbox value to Prescription event
      * @return int
@@ -677,12 +666,16 @@ class MedicationManagement extends BaseMedicationElement
         return parent::beforeDelete();
     }
 
+    /**
+     * It is clinically unsafe to delete the linked prescription when the element is deleted.
+     *
+     * @return void
+     */
     public function afterDelete()
     {
         foreach ($this->entries as $entry) {
             $entry->delete();
         }
-        $this->deletePrescriptionEvent();
 
         parent::afterDelete();
     }
