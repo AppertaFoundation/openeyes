@@ -358,7 +358,7 @@ class SystemicDiagnoses extends \BaseEventTypeElement
     protected function afterValidate()
     {
         if (!$this->no_systemic_diagnoses_date && !$this->diagnoses) {
-            $this->addError('no_systemic_diagnoses_date', 'Please confirm patient has no systemic diagnoses.');
+            $this->addError('no_systemic_diagnoses', 'Please confirm patient has no systemic diagnoses.');
         }
 
         foreach ($this->diagnoses as $i => $diagnosis) {

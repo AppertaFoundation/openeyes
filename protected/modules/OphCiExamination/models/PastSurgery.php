@@ -121,7 +121,7 @@ class PastSurgery extends \BaseEventTypeElement
     public function afterValidate()
     {
         if (!$this->no_pastsurgery_date && !$this->operations && !$this->found_previous_op_notes && !$this->comments) {
-            $this->addError('no_pastsurgery_date', 'Please confirm patient has had no previous eye surgery or laser treatment');
+            $this->addError('no_pastsurgery', 'Please confirm patient has had no previous eye surgery or laser treatment');
         }
 
         foreach ($this->operations as $i => $operation) {

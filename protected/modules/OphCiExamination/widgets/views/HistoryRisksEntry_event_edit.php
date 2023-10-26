@@ -37,7 +37,7 @@ if (!isset($values)) {
 ?>
 <tr data-key="<?= $row_count ?>">
     <td>
-        <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?= $values['id'] ?>"/>
+        <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?= $values['id'] ?>" id="<?= $model_name ?>_entries_<?= $row_count ?>_risk_id"/>
         <?php
         echo CHtml::hiddenField($field_prefix . '[risk_id]', $values['risk_id'], ['id' => false]);
         echo CHtml::hiddenField($field_prefix . '[other]', $values['other'], ['id' => false]); ?>

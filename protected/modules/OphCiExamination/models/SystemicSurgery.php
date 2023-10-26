@@ -136,7 +136,7 @@ class SystemicSurgery extends \BaseEventTypeElement
     public function afterValidate()
     {
         if (!$this->no_systemicsurgery_date && !$this->operations && !$this->comments) {
-            $this->addError('no_systemicsurgery_date', 'Please confirm patient has had no previous systemic surgery');
+            $this->addError('no_systemicsurgery', 'Please confirm patient has had no previous systemic surgery');
         }
 
         parent::afterValidate();
