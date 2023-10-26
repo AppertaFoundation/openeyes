@@ -20,12 +20,6 @@ describe('able to save events without popup when virtual review is open ', () =>
                 cy.get('#add-to-follow-up').find('#followup-outcome-options').contains('Virtual Review').scrollIntoView().click()
                 cy.get('#add-followup-btn').click();
 
-                cy.getBySel("queue-details").then(($queueDetails) => {
-                    if ($queueDetails.hasClass("multi-queue")) {
-                        cy.get("#patientticket_queue").select("Glaucoma Virtual Clinic")
-                    }
-                });
-                
                 cy.get('#patientticketing__priority').select('HIGH');
                 cy.get('#patientticketing_eye_problems').select('No');
                 cy.get('#patientticketing_drop_application').select('No');
