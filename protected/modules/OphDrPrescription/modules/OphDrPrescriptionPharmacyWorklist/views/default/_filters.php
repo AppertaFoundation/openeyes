@@ -50,7 +50,7 @@
     <?=\CHtml::dropDownList(
             'filters[dispense_condition_id]',
             $filters['dispense_condition_id'],
-            \CHtml::listData($dispense_condition, 'id', 'name'),
+            \CHtml::listData($dispense_condition, 'id', 'displayName'),
             ['empty' => 'All', 'class' => 'cols-full', 'data-test' => 'filter-dispense-condition-id'])?>
 
     <h4>Dispense location</h4>

@@ -32,7 +32,7 @@
             <div class="active-form"
                  style="<?= !$element->hasEye($eye_side) ? 'display: none;' : '' ?>">
                 <div class="remove-side"><i class="oe-i remove-circle small"></i></div>
-                <table class="cols-full">
+                <table class="cols-full" id="<?= $model_name ?>_<?= $eye_side ?>_readings">
                     <colgroup>
                         <col class="cols-2">
                         <col class="cols-2">

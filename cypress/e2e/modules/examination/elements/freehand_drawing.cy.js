@@ -174,12 +174,17 @@ describe('freehand drawing element behaviour', () => {
                 cy.removeElements();
 
                 cy.addExaminationElement('Freehand drawing').then((element) => {
+                    cy.intercept({
+                        method: 'GET',
+                        url: '/ProtectedFile/Download/*'
+                    }).as('annotationImage');
                     cy.getBySel('add-freehand-drawing-template-btn').click();
                     cy.get('[data-test="add-options"] li').first().click();
                     cy.getBySel('add-icon-btn').click();
+                    cy.wait('@annotationImage');
                     cy.getBySel('annotate-freehand-drawing-image-btn').click();
                     cy.getBySel('remove-entry').click();
-                    cy.get(".freedraw-group").should('not.exist');
+                    cy.get('.freedraw-group', { timeout: 2000 }).should('not.exist');
                 });
             });
         });

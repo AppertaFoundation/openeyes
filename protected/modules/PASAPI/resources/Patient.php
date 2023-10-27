@@ -229,12 +229,16 @@ class Patient extends BaseResource
             $gp = $this->GP;
             $gp->id = $gp->getAssignedProperty('Code');
 
-            if ($model_id = $gp->save()) {
-                $patient->gp_id = $model_id;
+            if ($gp->id) {
+                if ($model_id = $gp->save()) {
+                    $patient->gp_id = $model_id;
+                } else {
+                    $this->addWarning(
+                        'Could not save ' . \SettingMetadata::model()->getSetting('gp_label') . ' for code ' . $gp->getAssignedProperty('Code')
+                    );
+                }
             } else {
-                $this->addWarning(
-                    'Could not save ' . \SettingMetadata::model()->getSetting('gp_label') . ' for code ' . $gp->getAssignedProperty('Code')
-                );
+                $patient->gp_id = null;
             }
         } elseif (property_exists($this, 'GpCode')) {
             $code = $this->getAssignedProperty('GpCode');
@@ -387,10 +391,14 @@ class Patient extends BaseResource
         if (property_exists($this, 'Practice')) {
             $practice = $this->Practice;
             $practice->id = $practice->getAssignedProperty('Code');
-            $practicemodel = $patient->practice;
-            if ($model_id = $practice->save()) {
-                $patient->practice_id = $model_id;
-                $patient->save();
+            if ($practice->id) {
+                if ($model_id = $practice->save()) {
+                    $patient->practice_id = $model_id;
+                } else {
+                    $this->addWarning('Could not save Practice for code ' . $practice->id);
+                }
+            } else {
+                $patient->practice_id = null;
             }
         } elseif (property_exists($this, 'PracticeCode')) {
             if ($code = $this->getAssignedProperty('PracticeCode')) {
@@ -497,7 +505,9 @@ class Patient extends BaseResource
                 }
 
                 if ($contact_resource->saveModel($contact_model)) {
-                    $matched_contact_ids[] = $contact_model->id;
+                    if ($contact_model->id) {
+                        $matched_contact_ids[] = $contact_model->id;
+                    }
                     foreach ($contact_resource->warnings as $warn) {
                         $this->addWarning("Contact {$idx}: {$warn}");
                     }

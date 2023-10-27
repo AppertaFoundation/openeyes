@@ -17,8 +17,7 @@
  */
 
 use OE\factories\ModelFactory;
-use OphDrPrescription_DispenseLocation;
-use OphDrPrescription_DispenseLocation_Institution;
+
 
 class OphDrPrescription_DispenseLocationFactory extends ModelFactory
 {

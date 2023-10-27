@@ -101,14 +101,17 @@ class OphDrPrescription_DispenseCondition extends BaseActiveRecordVersioned
         );
     }
 
-    protected function afterFind()
+    public function getDisplayName()
     {
-        parent::afterFind();
+
         $replace['{form_type}'] = SettingMetadata::model()->getSetting('prescription_form_format');
+        $name = $this->name;
 
         foreach ($replace as $from => $to) {
-            $this->name = str_replace($from, $to, $this->name);
+            $name = str_replace($from, $to, $name);
         }
+
+        return $name;
     }
 
     /**
