@@ -57,7 +57,7 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
 ?>
 <div class="group" name="group-systemic-medications">
     <div class="label">Systemic Medications</div>
-    <div class="data">
+    <div class="data" data-test="systemic-medications-popup-summary">
         <?php if (!$current_systemic_meds && !$stopped_systemic_meds && !$element->no_systemic_medications_date) { ?>
             <div class="nil-recorded">Nil recorded</div>
         <?php } elseif (!$current_systemic_meds && !$stopped_systemic_meds && $element->no_systemic_medications_date) { ?>
@@ -104,7 +104,7 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
 <div class="oe-popup-overflow quicklook-data-groups">
     <div class="group" name="group-eye-medications">
         <div class="label">Eye Medications</div>
-        <div class="data">
+        <div class="data"  data-test="eye-medications-popup-summary">
             <?php if (!$current_eye_meds && !$stopped_eye_meds && !$element->no_ophthalmic_medications_date) { ?>
                 <div class="nil-recorded">Nil recorded</div>
             <?php } elseif (!$current_eye_meds && !$stopped_eye_meds && $element->no_ophthalmic_medications_date) { ?>

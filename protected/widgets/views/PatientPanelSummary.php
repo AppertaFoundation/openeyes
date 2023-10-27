@@ -33,7 +33,7 @@ $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient($displa
 >
     <div class="patient-name">
         <?php if (!$this->patient->isDeleted()) : ?>
-        <a href="<?= (new CoreAPI())->generatePatientLandingPageLink($this->patient); ?>">
+        <a data-test="patient-landing-page-link" href="<?= (new CoreAPI())->generatePatientLandingPageLink($this->patient); ?>">
         <?php else : ?>
             <a>
         <?php endif; ?>

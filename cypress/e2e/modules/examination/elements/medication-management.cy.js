@@ -10,13 +10,26 @@ describe('test suite to verify medication management functionality', () => {
     const MEDS_STOP_REASON         = 'No longer required'
 
     before(() => {
-
         // set Require PIN for Prescription signing to NO
         cy.setSystemSettingValue(REQUIRE_PIN_SIGN_SETTING, 'no')
 
         // set Offer to automatically close incomplete examination elements to OFF
         cy.setSystemSettingValue(SAVE_AND_DISCARD_SETTING, 'off')
+    })
 
+    function checkPatientMedications()
+    {
+        cy.getBySel("eye-medications-summary").should("have.text", "Nil recorded this examination");
+        cy.getBySel("systemic-medication-summary").should("have.text", "Nil recorded this examination");
+        cy.get(".OEModule_OphCiExamination_models_MedicationManagement").should("not.exist");
+
+        cy.getBySel("patient-landing-page-link").click();
+        cy.getBySel("eye-medications-summary").should("have.text", "Nil recorded");
+        cy.getBySel("eye-medications-popup-summary").should("have.text", "Nil recorded");
+        cy.getBySel("systemic-medications-popup-summary").should("have.text", "Nil recorded");
+    }
+
+    it('ensures that the same drug stopped in Medication Management is stopped and disabled in Medication History', () => {
         // Seed:
         // - a single non-admin user - return user (with atttributes username and password)
         // - a first common ophthalmic drug with route 'Eye' - return drug1 array
@@ -25,10 +38,6 @@ describe('test suite to verify medication management functionality', () => {
             .then(() => {
                 return cy.runSeeder('OphCiExamination', 'MedicationManagementSeeder')
             }).as('seederData')
-
-    })
-
-    it('ensures that the same drug stopped in Medication Management is stopped and disabled in Medication History', () => {
 
         cy.get('@seederData').then((data) => {    
 
@@ -143,4 +152,36 @@ describe('test suite to verify medication management functionality', () => {
 
     })
 
+    it("Ensure that Medication Management element is removed on delete", function () {
+        cy.createEvent("OphCiExamination", [["forFirmWithName", "Follow-up"]])
+            .then(function (event) {
+                return cy.createModels(
+                    "OEModule\\OphCiExamination\\models\\MedicationManagement",
+                    [
+                        ["forEvent", event.id],
+                        "withEntries"
+                    ]
+                    ).then(function (medicationManagement) {
+                        cy.login()
+                        cy.visit("OphCiExamination/Default/update/" + medicationManagement.event_id)
+                        cy.removeElement('Refraction');
+                        cy.removeElement('Medication Management');
+
+                        cy.getBySel("Visual-Acuity-element-section").within((section) => {
+                            cy.get(".right-eye").within((rEye) => {
+                                cy.getBySel('unable_to_assess-input').click();
+                            });
+                            cy.get(".left-eye").within((rEye) => {
+                                cy.getBySel('unable_to_assess-input').click();
+                            });
+                        })
+                        
+                        cy.saveEvent();
+                        checkPatientMedications();
+                    });
+            })
+    });
+
+    it("Ensure that Medication Management element that contains prescribed medications is removed on delete", function () {
+    });
 })

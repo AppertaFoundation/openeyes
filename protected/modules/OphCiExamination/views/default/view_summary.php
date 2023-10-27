@@ -57,7 +57,7 @@ if ($historyElement) {
         <header class=" element-header">
             <h3 class="element-title">Eye Medications</h3>
         </header>
-        <div class="element-data">
+        <div class="element-data" data-test="eye-medications-summary">
             <?php
             $filter_eye_medication = function ($med) {
                 return $med->laterality !== null;
@@ -202,7 +202,7 @@ if ($historyElement) {
         <header class=" element-header">
             <h3 class="element-title">Systemic Medications</h3>
         </header>
-        <div class="element-data">
+        <div class="element-data" data-test="systemic-medication-summary">
             <div class="element-data">
                 <?php
 

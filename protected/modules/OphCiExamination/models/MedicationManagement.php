@@ -26,7 +26,7 @@ use Element_OphDrPrescription_Details;
 use Event;
 use EventMedicationUse;
 use Exception;
-use OELog;
+use OE\factories\models\traits\HasFactory;
 use OphCiExamination_Signature;
 use OphDrPrescription_Item;
 use OphDrPrescription_ItemTaper;
@@ -58,17 +58,18 @@ use Yii;
 class MedicationManagement extends BaseMedicationElement
 {
     use AutoSignTrait;
+    use traits\CustomOrdering;
+    use HasFactory;
+
     private $signature_class = \OphCiExamination_Signature::class;
     private $pin_required_setting_name = 'require_pin_for_prescription';
     private $auto_sign_role = 'Consultant';
 
-    use traits\CustomOrdering;
     public $do_not_save_entries = false;
     public bool $save_draft_prescription = false;
     public bool $no_entries_prescribed = false;
 
     protected $widgetClass = MedicationManagementWidget::class;
-
     public static $entry_class = MedicationManagementEntry::class;
 
     /**
