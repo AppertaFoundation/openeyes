@@ -18,6 +18,7 @@ namespace OE\factories\models;
 use Medication;
 use MedicationAttributeAssignment;
 use MedicationAttributeOption;
+use MedicationRoute;
 use OE\factories\ModelFactory;
 
 class MedicationFactory extends ModelFactory
@@ -63,6 +64,13 @@ class MedicationFactory extends ModelFactory
     {
         return $this->state([
             'is_prescribable' => true
+        ]);
+    }
+
+    public function withDefaultRoute(): self
+    {
+        return $this->state([
+            'default_route_id' => MedicationRoute::factory()->useExisting()
         ]);
     }
 }

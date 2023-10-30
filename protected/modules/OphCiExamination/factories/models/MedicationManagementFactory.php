@@ -18,6 +18,8 @@
 
 use Event;
 use EventMedicationUse;
+use OphDrPrescription_Item;
+use Element_OphDrPrescription_Details;
 use OE\factories\ModelFactory;
 use OEModule\OphCiExamination\models\MedicationManagement;
 use OEModule\OphCiExamination\models\MedicationManagementEntry;
@@ -68,17 +70,15 @@ class MedicationManagementFactory extends ModelFactory
         return $this->afterCreating(function (MedicationManagement $mm) {
             $prescription_event = Event::factory()
                 ->forModule("OphDrPrescription")
+                ->forPatient($mm->event->episode->patient)
                 ->create();
             $mm->prescription_id = $prescription_event->id;
+            Element_OphDrPrescription_Details::factory()
+                ->forEvent($prescription_event->id)
+                ->create();
 
             foreach ($mm->entries as $entry) {
-                $prescription_item = clone $entry;
-                $prescription_item->usage_type = "OphDrPrescription";
-                $prescription_item->usage_subtype = "";
-                $prescription_item->bound_key = substr(bin2hex(openssl_random_pseudo_bytes(10)), 0, 10);
-                $prescription_item->prescribe = 0;
-                $prescription_item->save();
-                $entry->prescription_item_id = $prescription_item->id;
+                OphDrPrescription_Item::createItemFromManagementEntry($prescription_event->id, $entry);
             }
         });
     }

@@ -17,16 +17,29 @@ describe('test suite to verify medication management functionality', () => {
         cy.setSystemSettingValue(SAVE_AND_DISCARD_SETTING, 'off')
     })
 
-    function checkPatientMedications()
+    function assertExaminationHasNoMedications()
     {
-        cy.getBySel("eye-medications-summary").should("have.text", "Nil recorded this examination");
-        cy.getBySel("systemic-medication-summary").should("have.text", "Nil recorded this examination");
+        cy.getBySel("eye-medications-summary").within(() => {
+            cy.get("div").should("have.class", "not-recorded");
+        });
+        cy.getBySel("systemic-medication-summary").within(() => {
+            cy.get("div").should("have.class", "not-recorded");
+        });
         cy.get(".OEModule_OphCiExamination_models_MedicationManagement").should("not.exist");
+    }
 
+    function assertPatientHasNoMedications()
+    {
         cy.getBySel("patient-landing-page-link").click();
-        cy.getBySel("eye-medications-summary").should("have.text", "Nil recorded");
-        cy.getBySel("eye-medications-popup-summary").should("have.text", "Nil recorded");
-        cy.getBySel("systemic-medications-popup-summary").should("have.text", "Nil recorded");
+        cy.getBySel("eye-medications-summary").within(() => {
+            cy.get("div").should("have.class", "nil-recorded");
+        });
+        cy.getBySel("eye-medications-popup-summary").within(() => {
+            cy.get("div").should("have.class", "nil-recorded");
+        });
+        cy.getBySel("systemic-medications-popup-summary").within(() => {
+            cy.get("div").should("have.class", "nil-recorded");
+        });
     }
 
     it('ensures that the same drug stopped in Medication Management is stopped and disabled in Medication History', () => {
@@ -177,11 +190,43 @@ describe('test suite to verify medication management functionality', () => {
                         })
                         
                         cy.saveEvent();
-                        checkPatientMedications();
+                        assertExaminationHasNoMedications();
+                        assertPatientHasNoMedications();
                     });
             })
     });
 
-    it("Ensure that Medication Management element that contains prescribed medications is removed on delete", function () {
+    it("Ensure that Medication Management element that contains prescribed medications is removed on delete, but the prescription is not deleted", function () {
+        cy.createEvent("OphCiExamination", [["forFirmWithName", "Follow-up"]])
+        .then(function (event) {
+            return cy.createModels(
+                "OEModule\\OphCiExamination\\models\\MedicationManagement",
+                [
+                    ["forEvent", event.id],
+                    "withPrescribedEntries",
+                    "withPrescription"
+                ]
+                ).then(function (medicationManagement) {
+                    cy.login()
+                    cy.visit("OphCiExamination/Default/update/" + medicationManagement.event_id)
+                    cy.removeElement('Refraction');
+                    cy.removeElement('Medication Management');
+
+                    cy.getBySel("Visual-Acuity-element-section").within((section) => {
+                        cy.get(".right-eye").within((rEye) => {
+                            cy.getBySel('unable_to_assess-input').click();
+                        });
+                        cy.get(".left-eye").within((rEye) => {
+                            cy.getBySel('unable_to_assess-input').click();
+                        });
+                    })
+                    
+                    cy.saveEvent();
+                    assertExaminationHasNoMedications();
+                    cy.getBySel("sidebar-event-list").within(() => {
+                        cy.get("li[data-event-id='"+ medicationManagement.prescription_id +"']").should("exist");
+                    });
+                });
+        })
     });
 })

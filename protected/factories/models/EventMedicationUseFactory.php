@@ -62,7 +62,7 @@ class EventMedicationUseFactory extends ModelFactory
         return $this->state([
             'medication_id' => Medication::factory()->prescribable()->withDefaultRoute(),
             'prescribe' => 1,
-            'duration_id' => MedicationDuration::factory(),
+            'duration_id' => MedicationDuration::factory()->useExisting(),
             'dispense_condition_id' => OphDrPrescription_DispenseCondition::factory(),
             'dispense_location_id' => OphDrPrescription_DispenseLocation::factory()
         ]);
