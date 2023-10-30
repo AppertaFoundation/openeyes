@@ -536,6 +536,7 @@ class PracticeController extends BaseController
         }
         $dataProvider = new CActiveDataProvider('Practice', array(
             'criteria' => $criteria,
+            'pagination' => ['pageSize' => 20],
         ));
         $this->render('index', array(
             'dataProvider' => $dataProvider,

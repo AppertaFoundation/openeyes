@@ -30,7 +30,7 @@ $to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
                     <tbody>
                     <tr>
                         <td>
-                            <?php echo CHtml::label('Practice Contact', null); ?>
+                            <?php echo CHtml::label('Practice Name', null); ?>
                         </td>
                         <td>
                             <?php echo CHtml::encode($model->contact->getFullName()); ?>

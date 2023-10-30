@@ -290,11 +290,23 @@ $assetManager = Yii::app()->getAssetManager();
                 }
 
                 $extra_buttons = [];
-                if (isset($this->admin) && method_exists($this->admin, 'getExtraButton')) {
-                    $extra_buttons = $this->admin->getExtraButton();
+                if (isset($this->admin) && method_exists($this->admin, 'getExtraButtons')) {
+                    $extra_buttons = $this->admin->getExtraButtons();
                 }
+
                 $form_actions = array_merge($extra_buttons, $form_actions);
-                echo $form->formActions($form_actions);
+                $flat_form_actions = [];
+                foreach ($form_actions as $key => $value) {
+                    if (is_array($value)) {
+                        foreach ($value as $sub_key => $sub_value) {
+                            $flat_form_actions[$sub_key] = $sub_value;
+                        }
+                    } else {
+                        $flat_form_actions[$key] = $value;
+                    }
+                }
+
+                echo $form->formActions($flat_form_actions);
 
                 ?>
             </td>

@@ -526,20 +526,19 @@ class Admin
 
     /**
      * Add extra button (next to 'save' and 'cancel'...)
-     * e.g.: array('cancel-uri' => 'url' )
-     * @param array $button
+     * @param string $name name of the button
+     * @param $button the \CHtml::button instance
+     * @return void
      */
-    public function addExtraButton(array $button)
+    public function addExtraButton(string $name, $button)
     {
-        $this->extraButtons = $button;
+        $this->extraButtons[$name] = $button;
     }
 
-    public function getExtraButton()
+    public function getExtraButtons()
     {
         return $this->extraButtons;
     }
-
-
 
     /**
      * @param BaseActiveRecord    $model

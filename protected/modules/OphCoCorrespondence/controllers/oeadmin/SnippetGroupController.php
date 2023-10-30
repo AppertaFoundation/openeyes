@@ -98,7 +98,7 @@ class SnippetGroupController extends ModuleAdminController
             $group_id = '?group_id=' . $id;
         }
 
-        $this->admin->addExtraButton([
+        $this->admin->addExtraButton('delete', [
             'delete' => 'Delete',
             'delete-uri' => '/' . $this->module->id . '/oeadmin/snippet/delete']);
 
