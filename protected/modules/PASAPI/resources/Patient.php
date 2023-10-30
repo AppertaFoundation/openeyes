@@ -23,12 +23,10 @@
 
 namespace OEModule\PASAPI\resources;
 
-use CActiveRecord;
 use Contact;
 use EthnicGroup;
 use Exception;
 use NhsNumberVerificationStatus;
-use Yii;
 use OEModule\OphCiExamination\models\Element_OphCiExamination_CommunicationPreferences;
 
 class Patient extends BaseResource
@@ -546,15 +544,23 @@ class Patient extends BaseResource
     {
         // delete any patient contacts that are no longer relevant
         $matched_string = implode(',', $except_ids);
-        $condition_str = 'patient_id = :patient_id';
+        $criteria = new \CDbCriteria();
         if ($matched_string) {
-            $condition_str .= " AND contact_id NOT IN($matched_string)";
+            $criteria->addNotInCondition('t.contact_id', $except_ids);
         }
 
-        \PatientContactAssignment::model()->deleteAll(array(
-            'condition' => $condition_str,
-            'params' => array(':patient_id' => $patient->id),
-        ));
+        $criteria->join = 'JOIN contact cont ON cont.id = t.contact_id';
+
+        $criteria->addCondition('t.patient_id = :patient_id  ');
+        $criteria->addCondition('cont.pas_id IS NOT NULL');
+
+        $criteria->params[':patient_id'] = $patient->id;
+
+        $contacts_assignment_to_delete = \PatientContactAssignment::model()->findAll($criteria);
+
+        foreach ($contacts_assignment_to_delete as $contact_assignment_to_delete) {
+            $contact_assignment_to_delete->delete();
+        }
     }
 
 

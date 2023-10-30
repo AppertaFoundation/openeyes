@@ -18,8 +18,9 @@
 
 namespace OEModule\PASAPI\tests\feature;
 
-use Patient;
 use OEModule\OphCiExamination\models\Element_OphCiExamination_CommunicationPreferences;
+use Patient;
+use PatientContactAssignment;
 
 /**
  * @group sample-data
@@ -609,5 +610,128 @@ EOF;
         $patient = Patient::model()->findByPk($id);
 
         $this->assertExpectedValuesMatch($expected_values, $patient);
+    }
+
+
+    public function testUpdateLocalContactsDontGetDeletedWithContactList()
+    {
+        $xml = <<<EOF
+<Patient>
+	<NHSNumber>9999423328</NHSNumber>
+	<HospitalNumber>010101117</HospitalNumber>
+	<IdentifierTypeCode>LOCAL-1-0</IdentifierTypeCode>
+	<Title>Miss</Title>
+	<FirstName>Test</FirstName>
+	<Surname>Tester</Surname>
+	<DateOfBirth>1988-06-07</DateOfBirth>
+	<Gender>F</Gender>
+	<ContactList>
+		<PatientContact>
+			<PasId>TEST456</PasId>
+			<Contact>
+				<Title>Mr</Title>
+				<FirstName>TEST</FirstName>
+				<Surname>Santa Claus</Surname>
+				<ContactType>Next of Kin</ContactType>
+				<AddressList>
+					<Address>
+						<Line1/>
+						<Line2/>
+						<City/>
+						<County/>
+						<Postcode/>
+						<Country>GB</Country>
+						<Type>HOME</Type>
+					</Address>
+				</AddressList>
+				<TelephoneNumber>01252333666</TelephoneNumber>
+				<MobilePhoneNumber/>
+				<Email>santa@claus.com</Email>
+			</Contact>
+		</PatientContact>
+	</ContactList>
+	<TelephoneNumber>01583236161</TelephoneNumber>
+	<MobilePhoneNumber>07077140920</MobilePhoneNumber>
+	<Email>test.test@optegra.com</Email>
+	<EthnicGroup>1</EthnicGroup>
+	<IsDeceased>0</IsDeceased>
+	<DateOfDeath/>
+	<GP>
+		<Code>G9999981</Code>
+	</GP>
+	<LanguageCode/>
+	<InterpreterRequired/>
+	<Risks>AIMAI</Risks>
+</Patient>
+EOF;
+
+        $this->expected_response_code = 201;
+        $this->put('010101117', $xml);
+        $id = $this->xPathQuery('/Success//Id')->item(0)->nodeValue;
+
+        $patient = Patient::model()->findByPk($id);
+
+        PatientContactAssignment::factory()->create(['patient_id' => $patient->id]);
+
+        $patient->refresh();
+
+        $this->assertEquals(2, count($patient->contactAssignments));
+
+        $this->expected_response_code = 200;
+
+        $this->put('010101117', $xml);
+
+        $patient->refresh();
+
+        $this->assertEquals(2, count($patient->contactAssignments));
+
+    }
+
+    public function testUpdateLocalContactsDontGetDeletedWithoutContactList()
+    {
+
+        $xml = <<<EOF
+<Patient>
+	<NHSNumber>9999423225</NHSNumber>
+	<HospitalNumber>011101010</HospitalNumber>
+	<IdentifierTypeCode>LOCAL-1-0</IdentifierTypeCode>
+	<Title>Miss</Title>
+	<FirstName>Test</FirstName>
+	<Surname>Tester</Surname>
+	<DateOfBirth>1988-06-07</DateOfBirth>
+	<Gender>F</Gender>
+	<TelephoneNumber>01583236161</TelephoneNumber>
+	<MobilePhoneNumber>07077140920</MobilePhoneNumber>
+	<Email>test.test@optegra.com</Email>
+	<EthnicGroup>1</EthnicGroup>
+	<IsDeceased>0</IsDeceased>
+	<DateOfDeath/>
+	<GP>
+		<Code>G9999981</Code>
+	</GP>
+	<LanguageCode/>
+	<InterpreterRequired/>
+	<Risks>AIMAI</Risks>
+</Patient>
+EOF;
+
+        $this->expected_response_code = 201;
+        $this->put('011101010', $xml);
+        $id = $this->xPathQuery('/Success//Id')->item(0)->nodeValue;
+
+        $patient = Patient::model()->findByPk($id);
+
+        PatientContactAssignment::factory()->create(['patient_id' => $patient->id]);
+
+        $patient->refresh();
+
+        $this->assertEquals(1, count($patient->contactAssignments));
+
+        $this->expected_response_code = 200;
+        $this->put('011101010', $xml);
+
+        $patient->refresh();
+
+        $this->assertEquals(1, count($patient->contactAssignments));
     }
 }
