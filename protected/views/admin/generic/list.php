@@ -161,8 +161,13 @@ if (!isset($uniqueid)) {
                                     'data-object' => $admin->getModelName(),
                                     'id' => 'et_delete'
                                 ]
-                            ); ?>
+                            );
+                            ?>
+
                         <?php } ?>
+                            <?php foreach ($admin->getExtraButtons() as $button) : ?>
+                                <?=$button ?>
+                            <?php endforeach; ?>
                         <?php echo EventAction::button(
                             'Sort',
                             'sort',

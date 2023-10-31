@@ -38,7 +38,7 @@ $to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
             <table id="practice-grid" class="standard">
                 <thead>
                 <tr>
-                    <th>Practice Contact</th>
+                    <th>Practice Name</th>
                     <th>Practice Address</th>
                     <th>Code</th>
                     <th>Practice ID</th>

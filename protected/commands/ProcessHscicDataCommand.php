@@ -885,6 +885,7 @@ EOH;
 
         $contact = $practice->contact;
         $contact->primary_phone = $practice->phone;
+        $contact->first_name = $data['name'];
 
         $is_new_record = $contact->isNewRecord;
         // setup the scenario to skip some of the validation to ensure all the data is imported
