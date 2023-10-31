@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Apperta Foundation, 2023
  * This file is part of OpenEyes.
@@ -64,13 +65,6 @@ class MedicationFactory extends ModelFactory
     {
         return $this->state([
             'is_prescribable' => true
-        ]);
-    }
-
-    public function withDefaultRoute(): self
-    {
-        return $this->state([
-            'default_route_id' => MedicationRoute::factory()->useExisting()
         ]);
     }
 }

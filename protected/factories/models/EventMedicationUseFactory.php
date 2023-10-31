@@ -43,8 +43,8 @@ class EventMedicationUseFactory extends ModelFactory
 
     public function configure()
     {
-        return $this->afterCreating(function ($instance) {
-            if ($instance->medication->defaultRoute && $instance->medication->defaultRoute->isEyeRoute()) {
+        return $this->afterMaking(function ($instance) {
+            if ($instance->route && $instance->route->isEyeRoute()) {
                 $instance->laterality = $this->faker->randomElement([Eye::LEFT, Eye::RIGHT, Eye::BOTH]);
             }
         });
@@ -60,7 +60,7 @@ class EventMedicationUseFactory extends ModelFactory
     public function prescribed(): self
     {
         return $this->state([
-            'medication_id' => Medication::factory()->prescribable()->withDefaultRoute(),
+            'medication_id' => Medication::factory()->prescribable(),
             'prescribe' => 1,
             'duration_id' => MedicationDuration::factory()->useExisting(),
             'dispense_condition_id' => OphDrPrescription_DispenseCondition::factory(),
