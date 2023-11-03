@@ -69,8 +69,7 @@
                 </thead>
                 <tbody>
                 <?php
-                    \Yii::app()->user->setFlash('info.info', 'To finalise this prescription, please sign below');
-                    $row = 0;
+                $row = 0;
                 foreach ($this->element->getSignatures() as $signature) {
                     if ((int)$signature->type === \BaseSignature::TYPE_LOGGEDIN_USER) {
                         // in Prescription, we always display "Prescriber" as role for user who prescribed

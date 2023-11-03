@@ -33,7 +33,7 @@ class Element_OphDrPrescription_Esign extends BaseEsignElement
     use AutoSignTrait;
     private $signature_class = \OphDrPrescription_Signature::class;
     private $pin_required_setting_name = 'require_pin_for_prescription';
-    private $auto_sign_role = 'Prescriber';
+    public $auto_sign_role = 'Prescriber';
 
     protected $widgetClass = PrescriptionEsignElementWidget::class;
 

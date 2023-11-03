@@ -216,9 +216,11 @@ echo '<script type="text/javascript" src="' . $asset_folder . '/EsignElementWidg
                     </strong>
                 </div>
                 <br>
-                <?= CHtml::dropDownList($model_name . '[prescription_reason]', '', CHtml::listData(OphDrPrescriptionEditReasons::model()->findAll(['order' => 'display_order', 'condition' => 'active = 1']), 'id', 'caption'), array('empty' => '- Reason -', 'class' => 'cols-4')) ?>
+                <?= CHtml::dropDownList($model_name . '[prescription_reason]', '',
+                    CHtml::listData(OphDrPrescriptionEditReasons::model()->findAll(['order' => 'display_order', 'condition' => 'active = 1']), 'id', 'caption'),
+                    ['empty' => '- Reason -', 'class' => 'cols-4', 'data-test' => 'prescription-edit-reasons']); ?>
                 <input type="text" id="reason_other_text" name="<?= $model_name ?>[reason_other]" style="display: none" />
-                <button id="submit_reason">
+                <button id="submit_reason" data-test="submit-prescription-reason">
                     <i class="oe-i tick large"></i>
                 </button>
                 <button id="cancel_reason">
@@ -471,7 +473,7 @@ echo '<script type="text/javascript" src="' . $asset_folder . '/EsignElementWidg
                     if (medication_history_bound_key && !medication_history_bound_keys.includes(medication_history_bound_key)) {
                         medication_history_bound_keys.push(medication_history_bound_key);
                     }
-                    
+
                     medication_management_bound_keys = [];
 
                     $.each(window.MMController.$table.children("tbody").children("tr.js-first-row"), function(index, medicationManagementRow) {
