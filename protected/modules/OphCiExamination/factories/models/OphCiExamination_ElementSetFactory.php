@@ -60,6 +60,21 @@ class OphCiExamination_ElementSetFactory extends ModelFactory
         });
     }
 
+    public function forElementTypes(ElementType|array $element_types): self
+    {
+        return $this->afterCreating(function (OphCiExamination_ElementSet $element_set) use ($element_types) {
+            if (!is_array($element_types)) {
+                $element_types = [$element_types];
+            }
+            foreach ($element_types as $element_type) {
+                OphCiExamination_ElementSetItem::factory()
+                    ->forElementType($element_type)
+                    ->forElementSet($element_set)
+                    ->create();
+            }
+        });
+    }
+
     public function forMandatoryElementClasses(string|array $element_classes): self
     {
         return $this->afterCreating(function (OphCiExamination_ElementSet $element_set) use ($element_classes) {

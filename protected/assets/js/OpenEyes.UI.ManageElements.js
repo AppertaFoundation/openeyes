@@ -301,7 +301,7 @@
         let sublist = $("<ul>").addClass('element-list');
 
         $.each(childItems, function() {
-            let id = this.name.replace(/\s/g, '-');
+            let id = this.name.replace(/[() /&]/g, '-');
             let subListItem = $(`<li id=manage-elements-${id} data-test=manage-elements-${id}>${this.name}</li>`)
                 .data('element-type-class', this.class_name)
                 .data('element-display-order', this.display_order)

@@ -1,11 +1,11 @@
-Cypress.Commands.add('addExaminationElement', (elementNames) => {
+Cypress.Commands.add('addExaminationElement', (elementNames, validateElementsAdded=true) => {
     if (!Array.isArray(elementNames)) {
         elementNames = [elementNames];
     }
 
     cy.get('#js-manage-elements-btn').click();
     elementNames.forEach((elementName) => {
-        const kebabCaseElementName = elementName.replace(/ /g, '-');
+        const kebabCaseElementName = elementName.replace(/[() /&]/g, '-');
         cy.get(`#manage-elements-${kebabCaseElementName}`).within((button) => {
             if (!button.hasClass('added') && !button.hasClass('mandatory')) {
                 button.click();
@@ -20,9 +20,12 @@ Cypress.Commands.add('addExaminationElement', (elementNames) => {
     });
 
     cy.get('#manage-elements-nav .close-icon-btn button').click();
-    elementNames.forEach((elementName) => {
-        cy.getElementByName(elementName).scrollIntoView().should('be.visible');
-    });
+
+    if (validateElementsAdded) {
+        elementNames.forEach((elementName) => {
+            cy.getElementByName(elementName).scrollIntoView().should('be.visible');
+        });
+    }
 });
 
 Cypress.Commands.add('addPrescriptionFromMMThenSaveAsDraftAndSignAgain', (pinSigningRequired = true) => {
