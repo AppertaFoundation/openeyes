@@ -57,6 +57,11 @@ class Element_OphCiExamination_Specular_Microscopy extends \SplitEventTypeElemen
         return 'et_ophciexamination_specular_microscopy';
     }
 
+    public function sidedFields()
+    {
+        return ['coefficient_variation_value', 'endothelial_cell_density_value'];
+    }
+
     /**
      * @return array validation rules for model attributes.
      */
