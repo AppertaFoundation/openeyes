@@ -540,7 +540,7 @@ class DefaultController extends BaseEventTypeController
             if (SettingMetadata::model()->getSetting('disable_print_notes_copy') === 'off') {
                 $this->render('print', array('copy' => 'notes'));
             }
-            if (Yii::app()->params['disable_prescription_patient_copy'] === 'off') {
+            if (\SettingMetadata::model()->getSetting('disable_prescription_patient_copy') === 'off') {
                 $this->render('print', array('copy' => 'patient'));
             }
         }
@@ -578,14 +578,7 @@ class DefaultController extends BaseEventTypeController
         $event = \Event::model()->findByPk($id);
         $this->pdf_print_suffix = $event->site_id ?? \Yii::app()->session['selected_site_id'];
 
-        $document_count = 1;
-        if (SettingMetadata::model()->getSetting('disable_print_notes_copy') === 'off') {
-            $document_count++;
-        }
-
-        if (Yii::app()->params['disable_prescription_patient_copy'] === 'off') {
-            $document_count++;
-        }
+        $document_count = PrescriptionPrintPageCountCalculator::calculatePageCountWithSettings();
 
         $this->pdf_print_documents = $document_count;
 
