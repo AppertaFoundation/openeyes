@@ -18,14 +18,17 @@ use OEModule\OESysEvent\tests\test_traits\HasSysEventAssertions;
 
 /**
  * @group sample-data
- * @group sys-events
  */
 class EventTest extends OEDbTestCase
 {
-    use WithTransactions;
+    use HasModelAssertions;
     use HasSysEventAssertions;
+    use WithTransactions;
 
-    /** @test */
+    /**
+     * @test
+     * @group sys-events
+     */
     public function soft_delete_triggers_the_appropriate_event()
     {
         $clinical_event = Event::factory()->create();
@@ -39,5 +42,22 @@ class EventTest extends OEDbTestCase
                 return $event->clinical_event->id === $clinical_event->id;
             }
         );
+    }
+
+    /**
+     * @test
+     * @group workflow
+     */
+    public function event_cannot_be_saved_with_mismatched_worklist_patient()
+    {
+        $episode = Episode::factory()->create();
+        $worklist_patient = WorklistPatient::factory()->create();
+
+        $clinical_event = Event::factory()->make([
+            'episode_id' => $episode->id,
+            'worklist_patient_id' => $worklist_patient->id
+        ]);
+
+        $this->assertAttributeInvalid($clinical_event, 'worklist_patient_id', 'Mismatch');
     }
 }

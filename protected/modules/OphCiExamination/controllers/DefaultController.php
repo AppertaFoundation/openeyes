@@ -36,6 +36,7 @@ use OEModule\PASAPI\resources\HL7_A08;
 use OEModule\PatientTicketing\models\TicketQueueAssignment;
 use services\DateTime;
 use OEModule\PatientTicketing\models\QueueOutcome;
+use WorklistPatient;
 use Yii;
 
 /*
@@ -965,6 +966,7 @@ class DefaultController extends \BaseEventTypeController
      */
     public function actionStep($id)
     {
+        $this->validateWorklistPatientRequest();
         $context = $this->event->firm ?? $this->event->episode->firm;
 
         $this->setContext($context);
@@ -3110,5 +3112,21 @@ class DefaultController extends \BaseEventTypeController
         }
 
         return [];
+    }
+
+    // Temporary mitigation fix for OE-15094 ensure consistency between the event episode patient and the worklist patient
+    protected function validateWorklistPatientRequest(): void
+    {
+        if (!Yii::app()->request->getParam('worklist_patient_id')) {
+            return;
+        }
+        $worklist_patient = WorklistPatient::model()->findByPk(Yii::app()->request->getParam('worklist_patient_id'));
+        if (!$worklist_patient) {
+            throw new \CHttpException(404, 'Unrecognised worklist patient');
+        }
+
+        if ($worklist_patient->id !== $this->patient->id) {
+            throw new \CHttpException(400, 'Worklist patient and event patient do not match');
+        }
     }
 }
