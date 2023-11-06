@@ -137,6 +137,7 @@ class Event extends BaseActiveRecordVersioned
             array('parent_id, worklist_patient_id, institution_id, firm_id, site_id, step_id', 'safe'),
             array('episode_id, event_type_id', 'length', 'max' => 10),
             array('worklist_patient_id', 'length', 'max' => 40),
+            array('worklist_patient_id', 'validateWorklistPatient'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, episode_id, event_type_id, created_date, event_date, parent_id, worklist_patient_id, template_id', 'safe', 'on' => 'search'),
@@ -173,6 +174,30 @@ class Event extends BaseActiveRecordVersioned
             'draft' => [self::HAS_ONE, EventDraft::class, 'event_id']
         );
     }
+
+    public function validateWorklistPatient()
+    {
+        if (empty($this->episode_id) || empty($this->worklist_patient_id)) {
+            return;
+        }
+
+        $episode = Episode::model()->findByPk($this->episode_id);
+        if (!$episode) {
+            $this->addError('episode_id', 'Invalid episode for event');
+            return;
+        }
+
+        $worklist_patient = WorklistPatient::model()->findByPk($this->worklist_patient_id);
+        if (!$worklist_patient) {
+            $this->addError('worklist_patient_id', 'Invalid worklist patient for event');
+            return;
+        }
+
+        if ($episode->patient_id !== $worklist_patient->patient_id) {
+            $this->addError('worklist_patient_id', 'Mismatched worklist and episode patients');
+        }
+    }
+
 
     /**
      * Make sure event date is set.

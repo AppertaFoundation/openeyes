@@ -97,17 +97,20 @@ describe('pain element tests', () => {
                 .then(([url, patient]) => {
                     cy.visit(url);
                     cy.removeElements();
-                    return cy.addExaminationElement(['Pain', 'Risks']);
+                    return cy.addExaminationElement(['Pain', 'History']);
                 });
 
             cy.getBySel("pain-value-5").click();
-            cy.getBySel("pain-add-entry").click();
-            cy.get('input[type="radio"][name^="OEModule_OphCiExamination_models_HistoryRisks"]').first().click();
-            cy.saveEvent();
-            cy.getBySel('pain-entries-table').should('be.visible');
-            cy.getBySel(`pain-entries-table`, ' span[id$="score-5"]').then(span => {
-                expect(span.text()).to.eq("5");
-            });
+            cy.getBySel("pain-add-entry")
+                .click()
+                .then(() => {
+                    cy.saveEvent();
+
+                    cy.getBySel('pain-entries-table').should('be.visible');
+                    cy.getBySel(`pain-entries-table`, ' span[id$="score-5"]').then(span => {
+                        expect(span.text()).to.eq("5");
+                    });
+                });            
         });
     });
 
