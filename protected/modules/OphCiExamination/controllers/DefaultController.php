@@ -3125,7 +3125,7 @@ class DefaultController extends \BaseEventTypeController
             throw new \CHttpException(404, 'Unrecognised worklist patient');
         }
 
-        if ($worklist_patient->id !== $this->patient->id) {
+        if ($worklist_patient->patient_id !== $this->patient->id) {
             throw new \CHttpException(400, 'Worklist patient and event patient do not match');
         }
     }

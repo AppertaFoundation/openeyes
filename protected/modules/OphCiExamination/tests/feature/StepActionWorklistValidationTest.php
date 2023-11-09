@@ -50,9 +50,13 @@ class StepActionWorklistValidationTest extends OEDbTestCase
             ])
             ->create();
 
-        $event = OphCiExamination_Event_ElementSet_Assignment::factory()
+        $event = \Event::factory()
+            ->forModule('OphCiExamination')
+            ->create(['institution_id' => $institution->id]);
+
+        OphCiExamination_Event_ElementSet_Assignment::factory()
             ->forElementSet($workflow->steps[0])
-            ->create()->event;
+            ->create(['event_id' => $event->id]);
 
         $worklist_patient = WorklistPatient::factory()->create();
 
@@ -62,5 +66,35 @@ class StepActionWorklistValidationTest extends OEDbTestCase
             ->get('/OphCiExamination/default/step/?id=' . $event->id . '&worklist_patient_id='  . $worklist_patient->id);
 
         $response->assertException(CHttpException::class, ['statusCode' => 400]);
+    }
+
+    /** @test */
+    public function exception_is_not_thrown_when_worklist_patient_and_event_patient_do_match()
+    {
+        list($user, $institution) = $this->createUserWithInstitution();
+
+        $workflow = OphCiExamination_Workflow::factory()
+            ->withElementSets([
+                OphCiExamination_ElementSet::factory()->forElementClasses(Element_OphCiExamination_History::class),
+                OphCiExamination_ElementSet::factory()->forMandatoryElementClasses(Allergies::class)
+            ])
+            ->create();
+
+        $event = \Event::factory()
+            ->forModule('OphCiExamination')
+            ->create(['institution_id' => $institution->id]);
+
+        OphCiExamination_Event_ElementSet_Assignment::factory()
+            ->forElementSet($workflow->steps[0])
+            ->create(['event_id' => $event->id]);
+
+        $worklist_patient = WorklistPatient::factory()->create(['patient_id' => $event->episode->patient_id]);
+
+        $this->mockCurrentContext($event->episode->firm, null, $institution);
+
+        $response = $this->actingAs($user)
+            ->get('/OphCiExamination/default/step/?id=' . $event->id . '&worklist_patient_id='  . $worklist_patient->id);
+
+        $response->assertSuccessful();
     }
 }
