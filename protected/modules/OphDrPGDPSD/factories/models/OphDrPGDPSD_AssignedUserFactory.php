@@ -29,7 +29,7 @@ class OphDrPGDPSD_AssignedUserFactory extends ModelFactory
     {
         return [
             'pgdpsd_id' => OphDrPGDPSD_PGDPSD::factory(),
-            'team_id' => Team::factory()
+            'user_id' => User::factory()
         ];
     }
 
