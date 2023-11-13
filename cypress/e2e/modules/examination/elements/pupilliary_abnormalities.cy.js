@@ -12,7 +12,7 @@ describe('pupilliary abnormalities behaviour', () => {
             })
             .then(([url, patient]) => {
                 cy.visit(url);
-                cy.removeElements();
+                cy.removeElements([], true);
                 return cy.addExaminationElement('Pupils');
             });
     });

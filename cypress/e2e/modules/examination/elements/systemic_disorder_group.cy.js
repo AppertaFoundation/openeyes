@@ -81,7 +81,7 @@ describe('ophthalmic disorder group behaviour', { testIsolation: false }, () => 
 
     it('only loads common systemic disorder groups mapped to the current institution', function () {
 
-        cy.removeElements();
+        cy.removeElements([], true);
         cy.addExaminationElement('Systemic Diagnoses');
 
         cy.getBySel('add-systemic-diagnoses-button').click();

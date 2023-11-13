@@ -45,7 +45,7 @@ describe('the save and discard functionality is controlled by a setting and allo
             cy.visitEventCreationUrl(this.patient.id, 'OphCiExamination')
                 .then(() => {
                     elementsForTesting.forEach(([elementsToTouch, elementsToDiscard]) => {
-                        cy.removeElements();
+                        cy.removeElements([], true);
                         cy.addExaminationElement(elementsToTouch.concat(elementsToDiscard));
 
                         elementsToTouch.forEach((elementToTouch) => {
@@ -66,7 +66,7 @@ describe('the save and discard functionality is controlled by a setting and allo
             cy.visitEventCreationUrl(this.patient.id, 'OphCiExamination')
                 .then(() => {
                     // remove all elements
-                    cy.removeElements();
+                    cy.removeElements([], true);
                     // enter only history notes
                     cy.addExaminationElement('History');
                     elementFillers['History']();
@@ -88,7 +88,7 @@ describe('the save and discard functionality is controlled by a setting and allo
             // add an examination event for our patient
             cy.visitEventCreationUrl(this.patient.id, 'OphCiExamination')
                 .then(() => {
-                    cy.removeElements();
+                    cy.removeElements([], true);
 
                     cy.addExaminationElement('History');
                     cy.addExaminationElement('Optic Disc');
@@ -123,7 +123,7 @@ describe('the save and discard functionality is controlled by a setting and allo
             // add an examination event for our patient
             cy.visitEventCreationUrl(this.patient.id, 'OphCiExamination')
                 .then(() => {
-                    cy.removeElements();
+                    cy.removeElements([], true);
 
                     cy.addExaminationElement('History');
                     cy.addExaminationElement('Macula');

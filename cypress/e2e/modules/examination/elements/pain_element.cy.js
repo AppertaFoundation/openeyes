@@ -13,7 +13,7 @@ describe('pain element tests', () => {
                 })
                 .then(([url, patient]) => {
                     cy.visit(url);
-                    cy.removeElements();
+                    cy.removeElements([], true);
                     return cy.addExaminationElement('Pain');
                 });
         });
@@ -52,7 +52,7 @@ describe('pain element tests', () => {
                 })
                 .then(([url, patient]) => {
                     cy.visit(url);
-                    cy.removeElements();
+                    cy.removeElements([], true);
                     return cy.addExaminationElement('Pain');
                 });
             cy.saveEvent().then(() => {
@@ -74,7 +74,7 @@ describe('pain element tests', () => {
                 })
                 .then(([url, patient]) => {
                     cy.visit(url);
-                    cy.removeElements();
+                    cy.removeElements([], true);
                     return cy.addExaminationElement('Pain');
                 });
             cy.saveEvent()
@@ -89,16 +89,10 @@ describe('pain element tests', () => {
                     return cy.createPatient();
                 })
                 .then((patient) => {
-                    return cy.getEventCreationUrl(patient.id, 'OphCiExamination')
-                        .then((url) => {
-                            return [url, patient];
-                        });
-                })
-                .then(([url, patient]) => {
-                    cy.visit(url);
-                    cy.removeElements();
+                    cy.visitEventCreationUrl(patient.id, 'OphCiExamination');
+                    cy.removeElements(['History'], true);
                     return cy.addExaminationElement(['Pain', 'History']);
-                });
+                })
 
             cy.getBySel("pain-value-5").click();
             cy.getBySel("pain-add-entry")

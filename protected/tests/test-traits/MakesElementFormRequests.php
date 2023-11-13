@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Apperta Foundation, 2023
  * This file is part of OpenEyes.
@@ -13,9 +14,6 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-use ElementType;
-use User;
-use Patient;
 use Symfony\Component\DomCrawler\Crawler;
 
 trait MakesElementFormRequests

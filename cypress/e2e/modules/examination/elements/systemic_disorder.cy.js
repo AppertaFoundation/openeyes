@@ -52,7 +52,7 @@ describe('systemic disorder widget behaviour', { testIsolation: false }, () => {
 
     it('only loads common systemic disorders mapped to the current institution', function () {
 
-        cy.removeElements();
+        cy.removeElements([], true);
         cy.addExaminationElement('Systemic Diagnoses');
 
         cy.getBySel('add-systemic-diagnoses-button').click();

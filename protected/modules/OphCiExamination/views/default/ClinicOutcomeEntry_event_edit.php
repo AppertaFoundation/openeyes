@@ -104,7 +104,9 @@ if (!empty($values['infos']) && !$template_mode) {
                     ></i>
                 <?php } ?>
             </span>
-        <?php } elseif ($patient_ticket && $ticket_api) {?>
+        <?php } elseif ($patient_ticket && $ticket_api) {
+            $queue_count = count($queues);
+            ?>
             <div data-queue-assignment-form-uri="<?= $ticket_api->getQueueAssignmentFormURI() ?>"
                  id="div_<?= $model_name ?>_patientticket">
                 <!-- TODO, this should be pulled from the ticketing module somehow -->
@@ -120,10 +122,10 @@ if (!empty($values['infos']) && !$template_mode) {
                 <?php } else { ?>
                     <fieldset class="flex-layout">
                         Virtual Clinic:
-                        <div class="cols-3">
-                            <?php if (count($queues) === 0) { ?>
+                        <div class="cols-3<?= $queue_count > 1 ? ' multi-queue' : ''?>" data-test="queue-details">
+                            <?php if ($queue_count === 0) { ?>
                                 <span>No valid Virtual Clinics available</span>
-                            <?php } elseif (count($queues) === 1) {
+                            <?php } elseif ($queue_count === 1) {
                                 echo reset($queues);
                                 $qid = key($queues);
                                 $_POST['patientticket_queue'] = $qid;
