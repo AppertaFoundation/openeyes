@@ -94,7 +94,7 @@ describe('test suite to verify medication management functionality', () => {
             })
 
         // remove all elements and add only Medication History and Medication Management elements
-        cy.removeElements()
+        cy.removeElements([], true)
         cy.addExaminationElement('Medication History')
         cy.addExaminationElement('Medication Management')
 
@@ -152,7 +152,7 @@ describe('test suite to verify medication management functionality', () => {
                 })
         })
 
-        cy.removeElements(true)
+        cy.removeElements([], true)
         cy.addExaminationElement('Medication Management')
 
         cy.getBySel('Medication-Management-element-section').within(() => {
@@ -167,7 +167,7 @@ describe('test suite to verify medication management functionality', () => {
         cy.getBySel('validation-errors').should("contain", "You do not have permission to prescribe this medication");
     });
 
-    it('ensures that a user can always prescribe drugs from a PGD that they are a member of, regardless of prescribe rights', function() {
+    it('ensures that a user can always prescribe drugs from a PGD that they are a member of, regardless of prescribe rights', function () {
         cy.login(seederData.nonPrescriberUser.username, seederData.nonPrescriberUser.password)
 
         cy.createPatient()
@@ -178,8 +178,8 @@ describe('test suite to verify medication management functionality', () => {
                 })
         })
 
-        cy.removeElements(true)
-        cy.addExaminationElement('Medication Management')
+        cy.removeElements([], true)
+        cy.addExaminationElement(['Medication Management', 'History']); // history is added to force a validation failure. This would not be needed if PR #9894 is merged (or similar approach to being able to test if an element exists before checking its contents)
 
         cy.getBySel('Medication-Management-element-section').within(() => {
             cy.getBySel('mm-add-pgd-btn').click();

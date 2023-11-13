@@ -13,7 +13,7 @@ describe('Correspondence quick text findings', () => {
         cy.get('@patient')
             .then((patient) => {
                 cy.visitEventCreationUrl(patient.id, 'OphCiExamination');
-                cy.removeElements();
+                cy.removeElements([], true);
                 cy.addExaminationElement('Investigation');
 
                 cy.getBySel('add-investigation-btn').click();
