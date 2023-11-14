@@ -22,7 +22,8 @@ use OEModule\OphDrPGDPSD\models\{
     OphDrPGDPSD_PGDPSD,
     OphDrPGDPSD_PGDPSDMeds,
     OphDrPGDPSD_Assignment,
-    OphDrPGDPSD_AssignedTeam
+    OphDrPGDPSD_AssignedTeam,
+    OphDrPGDPSD_AssignedUser
 };
 use Patient;
 use WorklistPatient;

@@ -9,7 +9,10 @@ describe('test suite to verify medication management functionality', () => {
     const DRUG_DISPENSE_CONDITION  = 'Hospital to supply'
     const MEDS_STOP_REASON         = 'No longer required'
 
-    before(() => {
+    let seederData;
+
+    before(function() {
+
         // set Require PIN for Prescription signing to NO
         cy.setSystemSettingValue(REQUIRE_PIN_SIGN_SETTING, 'no')
 
@@ -48,113 +51,113 @@ describe('test suite to verify medication management functionality', () => {
         // - a first common ophthalmic drug with route 'Eye' - return drug1 array
         // - a second ophthalmic drug with route 'Eye' - return drug2 array
         cy.login()
+            .then(() => {return cy.runSeeder('OphCiExamination', 'MedicationManagementSeeder')})
+            .then(function (data) {
+                seederData = data;
+            });
+    })
+
+    it('ensures that the same drug stopped in Medication Management is stopped and disabled in Medication History', function() {
+
+        // log in as our seeded user and change context to 'Follow-up (Cataract)'
+        cy.login(seederData.user.username, seederData.user.password)
+        cy.visit('/')
+        cy.getBySel('change-firm').click()
+        cy.getBySel('change-firm-site-context-popup').select(CONTEXT)
+        cy.getBySel('confirm-change-site-context-popup').click()
+    
+        // create a patient, then add a prescription event for said patient
+        cy.createPatient()
+            .then((patient) => {
+                return cy.getEventCreationUrl(patient.id, 'OphDrPrescription')
+                    .then((url) => {                   
+                        cy.visit(url)   
+                        // store the patient id (to create a subsequent examination event for the same patient)
+                        cy.wrap(patient.id).as('patientId')                       
+                    })
+            })
+
+        // select our 2 (different) ophthalmic drugs ...
+        cy.getBySel('add-prescription-button').click()
+        cy.selectAdderDialogOptionText(seederData.drug1.name)
+        cy.selectAdderDialogOptionText(seederData.drug2.name)
+        cy.confirmAdderDialog()
+
+        // both eyes ...
+        cy.getBySel('route-option').each(($el) => {
+            cy.wrap($el).select(DRUG_OPTIONS)
+        })
+
+        // when needed ...
+        cy.getBySel('drug-frequency').each(($el) => {
+            cy.wrap($el).select(DRUG_FREQUENCY)
+        })
+
+        // ongoing duration ...
+        cy.getBySel('drug-duration').each(($el) => {
+            cy.wrap($el).select(DRUG_DURATION)
+        })
+
+        // hospital to supply ...
+        cy.getBySel('drug-dispense-condition').each(($el) => {
+            cy.wrap($el).select(DRUG_DISPENSE_CONDITION)
+        })
+
+        // *** ASSUMPTION: all other prescription values are pre-populated
+
+        // save the prescription event and assert that it is so
+        cy.saveEvent()
             .then(() => {
-                return cy.runSeeder('OphCiExamination', 'MedicationManagementSeeder')
-            }).as('seederData')
+                cy.assertEventSaved()
+            })
 
-        cy.get('@seederData').then((data) => {    
+        // create an examination event for the same patient
+        cy.get('@patientId')
+            .then((patientid) => {
+                return cy.getEventCreationUrl(patientid, 'OphCiExamination')
+                    .then((url) => {
+                        cy.visit(url)
+                    })
+            })
 
-            // log in as our seeded user and change context to 'Follow-up (Cataract)'
-            cy.login(data.user.username, data.user.password)
-            cy.visit('/')
-            cy.getBySel('change-firm').click()
-            cy.getBySel('change-firm-site-context-popup').select(CONTEXT)
-            cy.getBySel('confirm-change-site-context-popup').click()
+        // remove all elements and add only Medication History and Medication Management elements
+        cy.removeElements([], true)
+        cy.addExaminationElement('Medication History')
+        cy.addExaminationElement('Medication Management')
+
+        // in Medication Management ...
+        cy.getBySel('Medication-Management-element-section').within(() => {
+
+            // get the data key of our first medication, stop the med and select a reason for stopping
+            cy.getBySel('medication-name').contains(seederData.drug1.name).parents('tr').invoke('attr', 'data-key')
+                .then((datakey) => {
+                    cy.getBySel('meds-stop-btn-' + datakey).click()
+                    cy.getBySel('meds-stop-reason-' + datakey).select(MEDS_STOP_REASON)
+                })
+
+        })
+
+        // in Medication History ...
+        cy.getBySel('Medication-History-element-section').within(() => {
+
+            // get the data key of our first medication ...
+            cy.getBySel('medication-name').contains(seederData.drug1.name).parents('tr').invoke('attr', 'data-key')
+                .then((datakey) => {
+                
+                    // assert that the first of the meds is stopped and disabled
+                    cy.getBySel('stopped-btn-' + datakey).should('not.be.visible')
+                    cy.getBySel('event-medication-history-row-' + datakey).should('have.class', 'fade').and('have.class', 'disabled')
+                })
+
+            // get the data key of our second medication ...
+            cy.getBySel('medication-name').contains(seederData.drug2.name).parents('tr').invoke('attr', 'data-key')
+                .then((datakey) => {
+                
+                    // assert that the second of the meds is NOT stopped and disabled; i.e., it remains active
+                    cy.getBySel('stopped-btn-' + datakey).should('be.visible')
+                    cy.getBySel('event-medication-history-row-' + datakey).should('not.have.class', 'fade').and('not.have.class', 'disabled')
+                })
         
-            // create a patient, then add a prescription event for said patient
-            cy.createPatient()
-                .then((patient) => {
-                    return cy.getEventCreationUrl(patient.id, 'OphDrPrescription')
-                        .then((url) => {                   
-                            cy.visit(url)   
-                            // store the patient id (to create a subsequent examination event for the same patient)
-                            cy.wrap(patient.id).as('patientId')                       
-                        })
-                })
-
-            // select our 2 (different) ophthalmic drugs ...
-            cy.getBySel('add-prescription-button').click()
-            cy.selectAdderDialogOptionText(data.drug1.name)
-            cy.selectAdderDialogOptionText(data.drug2.name)
-            cy.confirmAdderDialog()
-
-            // both eyes ...
-            cy.getBySel('route-option').each(($el) => {
-                cy.wrap($el).select(DRUG_OPTIONS)
-            })
-
-            // when needed ...
-            cy.getBySel('drug-frequency').each(($el) => {
-                cy.wrap($el).select(DRUG_FREQUENCY)
-            })
-
-            // ongoing duration ...
-            cy.getBySel('drug-duration').each(($el) => {
-                cy.wrap($el).select(DRUG_DURATION)
-            })
-
-            // hospital to supply ...
-            cy.getBySel('drug-dispense-condition').each(($el) => {
-                cy.wrap($el).select(DRUG_DISPENSE_CONDITION)
-            })
-
-            // *** ASSUMPTION: all other prescription values are pre-populated
-
-            // save the prescription event and assert that it is so
-            cy.saveEvent()
-                .then(() => {
-                    cy.assertEventSaved()
-                })
-
-            // create an examination event for the same patient
-            cy.get('@patientId')
-                .then((patientid) => {
-                    return cy.getEventCreationUrl(patientid, 'OphCiExamination')
-                        .then((url) => {
-                            cy.visit(url)
-                        })
-                })
-
-            // remove all elements and add only Medication History and Medication Management elements
-            cy.removeElements()
-            cy.addExaminationElement('Medication History')
-            cy.addExaminationElement('Medication Management')
-
-            // in Medication Management ...
-            cy.getBySel('Medication-Management-element-section').within(() => {
-
-                // get the data key of our first medication, stop the med and select a reason for stopping
-                cy.getBySel('medication-name').contains(data.drug1.name).parents('tr').invoke('attr', 'data-key')
-                    .then((datakey) => {
-                        cy.getBySel('meds-stop-btn-' + datakey).click()
-                        cy.getBySel('meds-stop-reason-' + datakey).select(MEDS_STOP_REASON)
-                    })
-
-            })
-
-            // in Medication History ...
-            cy.getBySel('Medication-History-element-section').within(() => {
-
-                // get the data key of our first medication ...
-                cy.getBySel('medication-name').contains(data.drug1.name).parents('tr').invoke('attr', 'data-key')
-                    .then((datakey) => {
-                    
-                        // assert that the first of the meds is stopped and disabled
-                        cy.getBySel('stopped-btn-' + datakey).should('not.be.visible')
-                        cy.getBySel('event-medication-history-row-' + datakey).should('have.class', 'fade').and('have.class', 'disabled')
-                    })
-
-                // get the data key of our second medication ...
-                cy.getBySel('medication-name').contains(data.drug2.name).parents('tr').invoke('attr', 'data-key')
-                    .then((datakey) => {
-                    
-                        // assert that the second of the meds is NOT stopped and disabled; i.e., it remains active
-                        cy.getBySel('stopped-btn-' + datakey).should('be.visible')
-                        cy.getBySel('event-medication-history-row-' + datakey).should('not.have.class', 'fade').and('not.have.class', 'disabled')
-                    })
-           
-            })
-
         })
 
         // confirm & save and assert
@@ -164,6 +167,58 @@ describe('test suite to verify medication management functionality', () => {
             })
 
     })
+
+    it('ensures that a user without prescribe rights cannot prescribe medications', function() {
+        cy.login(seederData.nonPrescriberUser.username, seederData.nonPrescriberUser.password)
+
+        cy.createPatient()
+        .then((patient) => {
+            return cy.getEventCreationUrl(patient.id, 'OphCiExamination')
+                .then((url) => {                   
+                    cy.visit(url)
+                })
+        })
+
+        cy.removeElements([], true)
+        cy.addExaminationElement('Medication Management')
+
+        cy.getBySel('Medication-Management-element-section').within(() => {
+            cy.getBySel('mm-add-medication-btn').click();
+            cy.selectAdderDialogOptionText(seederData.drug1.name);
+            cy.confirmAdderDialog();
+            cy.getBySel('mm-prescribe-toggle').click();
+        })
+
+        cy.saveEvent();
+
+        cy.getBySel('validation-errors').should("contain", "You do not have permission to prescribe this medication");
+    });
+
+    it('ensures that a user can always prescribe drugs from a PGD that they are a member of, regardless of prescribe rights', function () {
+        cy.login(seederData.nonPrescriberUser.username, seederData.nonPrescriberUser.password)
+
+        cy.createPatient()
+        .then((patient) => {
+            return cy.getEventCreationUrl(patient.id, 'OphCiExamination')
+                .then((url) => {                   
+                    cy.visit(url)
+                })
+        })
+
+        cy.removeElements([], true)
+        cy.addExaminationElement(['Medication Management', 'History']); // history is added to force a validation failure. This would not be needed if PR #9894 is merged (or similar approach to being able to test if an element exists before checking its contents)
+
+        cy.getBySel('Medication-Management-element-section').within(() => {
+            cy.getBySel('mm-add-pgd-btn').click();
+            cy.selectAdderDialogOptionText(seederData.pgdName);
+            cy.confirmAdderDialog();
+            cy.getBySel('mm-prescribe-toggle').click();
+        })
+
+        cy.saveEvent();
+
+        cy.getBySel('validation-errors').should("not.contain", "You do not have permission to prescribe this medication");
+    });
 
     it("Ensure that Medication Management element is removed on delete", function () {
         cy.createEvent("OphCiExamination", [["forFirmWithName", "Follow-up"]])

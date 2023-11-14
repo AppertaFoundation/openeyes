@@ -20,16 +20,18 @@ namespace OEModule\OphCiExamination\models;
 
 use AutoSignTrait;
 use BaseSignature;
-use OEModule\OphCiExamination\widgets\MedicationManagement as MedicationManagementWidget;
 use CDbCriteria;
 use Element_OphDrPrescription_Details;
+use Element_OphDrPrescription_Esign;
 use Event;
 use EventMedicationUse;
 use Exception;
+use OEModule\OphCiExamination\widgets\MedicationManagement as MedicationManagementWidget;
 use OE\factories\models\traits\HasFactory;
 use OphCiExamination_Signature;
 use OphDrPrescription_Item;
 use OphDrPrescription_ItemTaper;
+use OphDrPrescription_Signature;
 use PrescriptionCreator;
 use User;
 use Yii;
@@ -411,17 +413,82 @@ class MedicationManagement extends BaseMedicationElement
     private function updateSignatures()
     {
         if ($this->signatures) {
+            $delete_signature_from_prescription = false;
+            $signature_to_add = null;
             foreach ($this->signatures as $signature) {
                 if ($this->save_draft_prescription === true) {
                     $signature->deletePrevSignature($this->id);
+
+                    $delete_signature_from_prescription = true;
                 } else {
                     if (strlen($signature->proof) > 0) {
                         $signature->element_id = $this->id;
                         $signature->save(false);
+
+                        $signature_to_add = $signature;
                     }
                 }
             }
+
+            $this->updatePrescriptionSignatures($delete_signature_from_prescription, $signature_to_add);
         }
+    }
+
+    private function updatePrescriptionSignatures($delete_signature_from_prescription, ?OphCiExamination_Signature $signature_to_add)
+    {
+        if (!is_null($this->prescription_id)) {
+            $prescription = $this->prescription;
+
+            $prescription_esign_element = Element_OphDrPrescription_Esign::model()->findByAttributes(
+                ['event_id' => $prescription->event_id]);
+
+            if (isset($prescription_esign_element)) {
+                if ($delete_signature_from_prescription) {
+                    foreach ($prescription_esign_element->signatures as $prescription_signature) {
+                        $prescription_signature->delete();
+                    }
+                } elseif (!is_null($signature_to_add)) {
+                    $this->updateOrAddSignatureToPrescription($prescription_esign_element, $signature_to_add);
+                }
+            }
+        }
+    }
+
+    /**
+     * @param Element_OphDrPrescription_Esign $prescription_esign_element
+     * @param OphCiExamination_Signature|null $signature_to_add
+     * @throws Exception
+     */
+    private function updateOrAddSignatureToPrescription(
+        Element_OphDrPrescription_Esign $prescription_esign_element,
+        ?OphCiExamination_Signature $signature_to_add
+    ): void {
+        $prescriber_signature = null;
+
+        foreach ($prescription_esign_element->signatures as $prescription_signature) {
+            if ($prescription_signature->type === \BaseSignature::TYPE_LOGGEDIN_USER) {
+                $prescriber_signature = $prescription_signature;
+            }
+        }
+
+
+        if (is_null($prescriber_signature)) {
+            $prescription_signature = new OphDrPrescription_Signature();
+            $prescription_signature->signatory_role = $prescription_esign_element->auto_sign_role;
+            $prescription_signature->type = BaseSignature::TYPE_LOGGEDIN_USER;
+            $prescription_signature->element_id = $prescription_esign_element->id;
+        }
+
+
+
+        $prescription_signature->proof = $signature_to_add->proof;
+        $prescription_signature->setDataFromProof();
+
+        if (is_null($prescriber_signature)) {
+            $prescription_signature->signatory_name = $prescription_signature->signedUser->getFullNameAndTitle();
+        }
+
+        $prescription_signature->save();
     }
 
     private function createOrUpdatePrescriptionEvent()

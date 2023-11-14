@@ -1137,6 +1137,19 @@ class EventMedicationUse extends BaseElement
 
     public function beforeValidate()
     {
+        if($this->prescribe) {
+            $user = Yii::app()->user;
+            $user_can_prescribe = $user->checkAccess('Prescribe');
+
+            if(!$user_can_prescribe && !empty($this->pgdpsd_id)) {
+                $user_can_prescribe = $this->pgd->getIsUserAuthed($user->id);
+            }
+
+            if(!$user_can_prescribe) {
+                $this->addError("prescribe", "You do not have permission to prescribe this medication");
+            }
+        }
+
         if ($this->medication_id == self::USER_MEDICATION_ID) {
             $medication = new Medication();
             $medication->preferred_term = $this->medication_name;

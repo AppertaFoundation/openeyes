@@ -40,7 +40,7 @@ if (!$element->isSigned()) {
     <?php $this->renderHiddenFields(); ?>
 
     <div class="js-signature-control flex-r" <?php if ($this->isSigned()) { echo 'style="display:none"'; } ?>>
-        <label class="highlight inline">
+        <label class="highlight inline" data-test="save-as-draft-prescription">
             <?php echo \CHtml::checkBox(
                 $el_class . "[save_draft_prescription]",
                 $element->save_draft_prescription,

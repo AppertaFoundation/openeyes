@@ -68,7 +68,7 @@ $set_id = isset($this->set) ? $this->set->id : null;
                 <!-- Add a element remove flag which is used when saving data -->
                 <input type="hidden" name="[element_removed]<?php echo $model_name?>" value="0">
                 <!-- Element title -->
-                <h3 class="element-title"><?php echo $element->getFormTitle() ?></h3>
+                <h3 class="element-title" data-test="element-title"><?php echo $element->getFormTitle() ?></h3>
                 <?php if (isset($this->clips['element-header-additional'])) { ?>
                     <?php
                     $this->renderClip('element-header-additional');

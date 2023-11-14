@@ -56,6 +56,8 @@ Cypress.Commands.add('removeElement', (elementName, force = false) => {
 
     cy.get(`section.element[data-element-type-name="${elementName}"]`).each(($section) => {
         const $elementActions = $section.find('.element-actions');
+        const kebabCaseElementName = elementName.replace(/[() /&]/g, '-');
+
 
         // If force is set, remove elements even if they are set to mandatory or the user does not have permission to remove
         // This is done by adding the missing js-remove-element class to the trash icon
@@ -70,6 +72,11 @@ Cypress.Commands.add('removeElement', (elementName, force = false) => {
                 .removeClass('disabled')
                 .removeClass('js-has-tooltip')
                 .addClass('js-remove-element');
+
+            // Mark the element as non-mandatory in the element adder so that it can be re-added if needed
+            cy.get(`#manage-elements-${kebabCaseElementName}`).within((button) => {
+                button.removeClass('mandatory');
+            });
         }
 
         if ($section.find('input[name*="element_dirty"]').val() == '1') {

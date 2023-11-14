@@ -14,7 +14,7 @@ describe('behaviour of the advice given element', () => {
         // a popup comes up. The following dismisses it.
         cy.getBySel('set-site-and-firm-later-button').click();
 
-        cy.removeElements();
+        cy.removeElements([], true);
         cy.addExaminationElement('Advice Given');
 
         cy.getBySel('add-leaflet-btn').click();
@@ -84,7 +84,7 @@ describe('behaviour of the advice given element', () => {
         // a popup comes up. The following dismisses it.
         cy.getBySel('set-site-and-firm-later-button').click();
 
-        cy.removeElements();
+        cy.removeElements([], true);
         cy.addExaminationElement('Advice Given');
 
         cy.getBySel('add-leaflet-btn').click();

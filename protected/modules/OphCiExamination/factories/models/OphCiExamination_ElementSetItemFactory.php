@@ -61,6 +61,19 @@ class OphCiExamination_ElementSetItemFactory extends ModelFactory
     }
 
     /**
+     * Create item for specific element type object
+     *
+     * @param ElementType $element_class
+     * @return self
+     */
+    public function forElementType(ElementType $element_type): self
+    {
+        return $this->state([
+            'element_type_id' => $element_type
+        ]);
+    }
+
+    /**
      * Create item for specific element class
      *
      * @param string $element_class
@@ -68,9 +81,7 @@ class OphCiExamination_ElementSetItemFactory extends ModelFactory
      */
     public function forElementClass(string $element_class): self
     {
-        return $this->state([
-            'element_type_id' => $this->getElementTypeForClass($element_class)
-        ]);
+        return $this->forElementType($this->getElementTypeForClass($element_class));
     }
 
     protected function getElementTypeForClass(string $element_class): ElementType

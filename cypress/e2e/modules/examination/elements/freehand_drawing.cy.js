@@ -4,7 +4,7 @@ describe('freehand drawing element behaviour', () => {
             return cy.createPatient();
         }).then((patient) => {
             cy.visitEventCreationUrl(patient.id, 'OphCiExamination').then(() => {
-                cy.removeElements();
+                cy.removeElements([], true);
 
                 cy.addExaminationElement('Freehand drawing').then((element) => {
                     cy.getBySel('add-freehand-drawing-template-btn').click();
@@ -35,7 +35,7 @@ describe('freehand drawing element behaviour', () => {
             return cy.createPatient();
         }).then((patient) => {
             cy.visitEventCreationUrl(patient.id, 'OphCiExamination').then(() => {
-                cy.removeElements();
+                cy.removeElements([], true);
 
                 cy.addExaminationElement('Freehand drawing').then((element) => {
                     cy.getBySel('add-freehand-drawing-template-btn').click();
@@ -69,7 +69,7 @@ describe('freehand drawing element behaviour', () => {
             return cy.createPatient();
         }).then((patient) => {
             cy.visitEventCreationUrl(patient.id, 'OphCiExamination').then(() => {
-                cy.removeElements();
+                cy.removeElements([], true);
 
                 cy.addExaminationElement('Freehand drawing').then((element) => {
                     cy.getBySel('add-freehand-drawing-template-btn').click();
@@ -100,7 +100,7 @@ describe('freehand drawing element behaviour', () => {
             return cy.createPatient();
         }).then((patient) => {
             cy.visitEventCreationUrl(patient.id, 'OphCiExamination').then(() => {
-                cy.removeElements();
+                cy.removeElements([], true);
 
                 cy.addExaminationElement('Freehand drawing').then((element) => {
                     cy.getBySel('add-freehand-drawing-template-btn').click();
@@ -158,7 +158,7 @@ describe('freehand drawing element behaviour', () => {
 
             cy.visit(seederData.event.urls.edit);
 
-            cy.removeElements('Freehand drawing');
+            cy.removeElements('Freehand drawing', true);
 
             cy.saveEvent().then(() => {
                 cy.getBySel('freedraw-entry-file-name', ':visible').contains('File Missing');
@@ -171,7 +171,7 @@ describe('freehand drawing element behaviour', () => {
             return cy.createPatient();
         }).then((patient) => {
             cy.visitEventCreationUrl(patient.id, 'OphCiExamination').then(() => {
-                cy.removeElements();
+                cy.removeElements([], true);
 
                 cy.addExaminationElement('Freehand drawing').then((element) => {
                     cy.intercept({

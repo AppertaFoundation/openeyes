@@ -33,10 +33,17 @@ declare namespace Cypress {
          */
         removeElementSide(elementName: string, side: string): Chainable<any>
         /**
-         * Remove all OE Event elements from the form except any named in the given exception list
-         * @param exceptElementNames
+         * Removes all elements from an event. Useful for resetting an event to a known state
+         * @param exceptElementNames name(s) of any elements to KEEP
+         * @param force if true will remove the elements even if they are mandatory, dirty or disabled
          */
-        removeElements(exceptElementNames: ?array<string>): Chainable<any>
+        removeElements(exceptElementNames: string | string[], force: boolean): Chainable<any>
+        /**
+         * Removes a single element with the given name
+         * @param elementName name of the element to remove
+         * @param force if true will remove the element even if it is mandatory, dirty or disabled
+         */
+        removeElement(elementName: string, force: boolean): Chainable<any>
         /**
          * click the save button on the current OE Event form
          */

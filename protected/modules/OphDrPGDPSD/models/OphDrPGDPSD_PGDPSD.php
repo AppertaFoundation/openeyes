@@ -308,6 +308,11 @@ class OphDrPGDPSD_PGDPSD extends \BaseActiveRecordVersioned
         }, $authed_users);
     }
 
+    public function getIsUserAuthed($user_id)
+    {
+        return in_array($user_id, $this->getAuthedUserIDs());
+    }
+
     public function serialiseMedicationAssignments($laterality)
     {
         $meds = array();
