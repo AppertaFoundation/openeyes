@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c0169c296ae89d551ab97ca660ed6355",
+    "content-hash": "f21ff0765bc99002dbf3aed79d540e2e",
     "packages": [
         {
             "name": "clue/socket-raw",
@@ -2312,16 +2312,16 @@
         },
         {
             "name": "yiisoft/yii",
-            "version": "1.1.23",
+            "version": "1.1.29",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yiisoft/yii.git",
-                "reference": "445827fe625a392451e9839787bd513112b23b1b"
+                "reference": "f89b76ecca1d342e346ebb9bfc1e2c589f696345"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yiisoft/yii/zipball/445827fe625a392451e9839787bd513112b23b1b",
-                "reference": "445827fe625a392451e9839787bd513112b23b1b",
+                "url": "https://api.github.com/repos/yiisoft/yii/zipball/f89b76ecca1d342e346ebb9bfc1e2c589f696345",
+                "reference": "f89b76ecca1d342e346ebb9bfc1e2c589f696345",
                 "shasum": ""
             },
             "require": {
@@ -2333,7 +2333,7 @@
                 "phing/phing": "2.*",
                 "phpseclib/mcrypt_compat": "^1.0",
                 "phpunit/phpunit": "4.8.34",
-                "phpunit/phpunit-selenium": "~2.0.0"
+                "phpunit/phpunit-selenium": "~1.4.0"
             },
             "suggest": {
                 "ext-mcrypt": "Required by encrypt and decrypt methods of CSecurityManager",
@@ -2352,9 +2352,13 @@
                     "phpunit/phpunit-mock-objects": {
                         "Fix PHP 7 and 8 compatibility": "https://yiisoft.github.io/phpunit-patches/phpunit_mock_objects.patch"
                     },
+                    "phpunit/php-file-iterator": {
+                        "Fix PHP 8.1 compatibility": "https://yiisoft.github.io/phpunit-patches/phpunit_path_file_iterator.patch"
+                    },
                     "phpunit/phpunit": {
                         "Fix PHP 7 compatibility": "https://yiisoft.github.io/phpunit-patches/phpunit_php7.patch",
-                        "Fix PHP 8 compatibility": "https://yiisoft.github.io/phpunit-patches/phpunit_php8.patch"
+                        "Fix PHP 8 compatibility": "https://yiisoft.github.io/phpunit-patches/phpunit_php8.patch",
+                        "Fix PHP 8.1 compatibility": "https://yiisoft.github.io/phpunit-patches/phpunit_php81.patch"
                     }
                 }
             },
@@ -2372,13 +2376,13 @@
                 {
                     "name": "Qiang Xue",
                     "email": "qiang.xue@gmail.com",
-                    "homepage": "http://www.yiiframework.com/",
+                    "homepage": "https://www.yiiframework.com/",
                     "role": "Founder and project lead"
                 },
                 {
                     "name": "Alexander Makarov",
                     "email": "sam@rmcreative.ru",
-                    "homepage": "http://rmcreative.ru/",
+                    "homepage": "https://rmcreative.ru/",
                     "role": "Core framework development"
                 },
                 {
@@ -2389,7 +2393,7 @@
                 {
                     "name": "Carsten Brandt",
                     "email": "mail@cebe.cc",
-                    "homepage": "http://cebe.cc/",
+                    "homepage": "https://cebe.cc/",
                     "role": "Core framework development"
                 },
                 {
@@ -2420,17 +2424,17 @@
                 }
             ],
             "description": "Yii Web Programming Framework",
-            "homepage": "http://www.yiiframework.com/",
+            "homepage": "https://www.yiiframework.com/",
             "keywords": [
                 "framework",
                 "yii"
             ],
             "support": {
-                "forum": "http://www.yiiframework.com/forum/",
-                "irc": "irc://irc.freenode.net/yii",
+                "forum": "https://www.yiiframework.com/forum/",
+                "irc": "ircs://irc.libera.chat:6697/yii",
                 "issues": "https://github.com/yiisoft/yii/issues?state=open",
                 "source": "https://github.com/yiisoft/yii",
-                "wiki": "http://www.yiiframework.com/wiki/"
+                "wiki": "https://www.yiiframework.com/wiki/"
             },
             "funding": [
                 {
@@ -2446,7 +2450,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-12-02T16:53:51+00:00"
+            "time": "2023-11-14T09:26:00+00:00"
         }
     ],
     "packages-dev": [
@@ -6064,5 +6068,5 @@
         "ext-soap": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.0.0"
+    "plugin-api-version": "2.6.0"
 }
