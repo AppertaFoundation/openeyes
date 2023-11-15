@@ -178,7 +178,7 @@ class AllergyEntry extends \BaseActiveRecordVersioned
     public function isOther()
     {
         if (!$this->isNewRecord) {
-            return $this->allergy_id == AllergyEntry::$OTHER_VAL;
+            return $this->allergy->name == "Other";
         } else {
             throw new Exception('Cannot check if new allergy entry is other without proposed allergy id,
             new records do not have allergy_id set, please use staticIsOther($allergy_id)');
@@ -187,7 +187,7 @@ class AllergyEntry extends \BaseActiveRecordVersioned
 
     public function validateOtherAllergies($attribute)
     {
-        if ($this->allergy_id == AllergyEntry::$OTHER_VAL && $this->$attribute == "" ) {
+        if ($this->allergy->name == "Other" && $this->$attribute == "" ) {
             $this->addError($attribute, 'Allergy cannot be blank');
         }
     }
