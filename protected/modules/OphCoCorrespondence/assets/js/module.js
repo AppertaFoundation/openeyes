@@ -784,7 +784,7 @@ function updateLineAndFax(site_element){
     }
 
     let fax_numbers_element = document.getElementById('ElementLetter_fax');
-    if (correspondence_directlines[site_element.value]) {
+    if (correspondence_fax_numbers[site_element.value]) {
         fax_numbers_element.value = correspondence_fax_numbers[site_element.value];
     } else {
         fax_numbers_element.value = '';
