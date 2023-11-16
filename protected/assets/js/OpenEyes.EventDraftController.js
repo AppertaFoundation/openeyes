@@ -33,7 +33,7 @@ var OpenEyes = OpenEyes || {};
         discardDraftContentsSelector: '.js-discard-draft-popup-content > div',
         discardDraftConfirmButtonSelector: 'button.js-popup-discard-draft-button',
         discardDraftDeclineButtonSelector: 'button.js-popup-retain-draft-button',
-        
+
         //auto save warnings popup
         autoSaveWarningListSelector: 'ul.auto-save-warnings-list',
         draftSaveWarningContentsSelector: '.js-auto-save-warnings-popup-content',
@@ -87,7 +87,7 @@ var OpenEyes = OpenEyes || {};
                     });
                     $(this.options.cancelButtonSelector)[0].click();
                 });
-    
+
                 $(this.options.discardDraftDeclineButtonSelector).on('click', () => {
                     $(window).on('beforeunload', function () {
                         return null;
@@ -313,6 +313,7 @@ var OpenEyes = OpenEyes || {};
             handle_event = document.createEvent('CustomEvent');
             handle_event.initCustomEvent('handle_event', true, true);
         }
+        handle_event.draft = true;
         let $handler_functions = document.querySelectorAll('.js-save-handler-function');
         for (let handler of $handler_functions) {
             handler.dispatchEvent(handle_event);

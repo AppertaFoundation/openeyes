@@ -1,5 +1,5 @@
-EpisodeId,Eye,IsAbleToLieFlat,IsInabilityToCooperate
-3686565,R,1,0
-3686582,R,1,0
-3686591,L,1,0
-3686606,L,1,0
+EpisodeId,Eye,IsAbleToLieFlat,IsInabilityToCooperate,Alphablockers,Anticoagulants
+3686565,R,0,0,1,1
+3686582,R,0,0,1,1
+3686591,L,0,0,1,1
+3686606,L,0,0,1,1
