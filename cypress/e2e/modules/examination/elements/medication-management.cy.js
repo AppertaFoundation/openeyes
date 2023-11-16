@@ -220,8 +220,8 @@ describe('test suite to verify medication management functionality', () => {
         cy.getBySel('validation-errors').should("not.contain", "You do not have permission to prescribe this medication");
     });
 
-    it("Ensure that Medication Management element is removed on delete", function () {
-        cy.createEvent("OphCiExamination", [["forFirmWithName", "Follow-up"]])
+    it("ensures that Medication Management element is removed on delete", function () {
+        cy.createEvent("OphCiExamination")
             .then(function (event) {
                 return cy.createModels(
                     "OEModule\\OphCiExamination\\models\\MedicationManagement",
@@ -230,20 +230,11 @@ describe('test suite to verify medication management functionality', () => {
                         "withEntries"
                     ]
                     ).then(function (medicationManagement) {
-                        cy.login()
-                        cy.visit("OphCiExamination/Default/update/" + medicationManagement.event_id)
-                        cy.removeElement('Refraction');
-                        cy.removeElement('Medication Management');
-
-                        cy.getBySel("Visual-Acuity-element-section").within((section) => {
-                            cy.get(".right-eye").within((rEye) => {
-                                cy.getBySel('unable_to_assess-input').click();
-                            });
-                            cy.get(".left-eye").within((rEye) => {
-                                cy.getBySel('unable_to_assess-input').click();
-                            });
-                        })
-                        
+                        cy.login();
+                        cy.visit("OphCiExamination/Default/update/" + medicationManagement.event_id);
+                        cy.removeElements([], true);
+                        cy.addExaminationElement("History");
+                        cy.getBySel("history-description").type("Test");
                         cy.saveEvent();
                         assertExaminationHasNoMedications();
                         assertPatientHasNoMedications();
@@ -251,8 +242,8 @@ describe('test suite to verify medication management functionality', () => {
             })
     });
 
-    it("Ensure that Medication Management element that contains prescribed medications is removed on delete, but the prescription is not deleted", function () {
-        cy.createEvent("OphCiExamination", [["forFirmWithName", "Follow-up"]])
+    it("ensures that Medication Management element that contains prescribed medications is removed on delete, but the prescription is not deleted", function () {
+        cy.createEvent("OphCiExamination")
         .then(function (event) {
             return cy.createModels(
                 "OEModule\\OphCiExamination\\models\\MedicationManagement",
@@ -264,18 +255,9 @@ describe('test suite to verify medication management functionality', () => {
                 ).then(function (medicationManagement) {
                     cy.login()
                     cy.visit("OphCiExamination/Default/update/" + medicationManagement.event_id)
-                    cy.removeElement('Refraction');
-                    cy.removeElement('Medication Management');
-
-                    cy.getBySel("Visual-Acuity-element-section").within((section) => {
-                        cy.get(".right-eye").within((rEye) => {
-                            cy.getBySel('unable_to_assess-input').click();
-                        });
-                        cy.get(".left-eye").within((rEye) => {
-                            cy.getBySel('unable_to_assess-input').click();
-                        });
-                    })
-                    
+                    cy.removeElements([], true);
+                    cy.addExaminationElement("History");
+                    cy.getBySel("history-description").type("Test");
                     cy.saveEvent();
                     assertExaminationHasNoMedications();
                     cy.getBySel("sidebar-event-list").within(() => {
