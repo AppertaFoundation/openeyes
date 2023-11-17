@@ -39,6 +39,7 @@ class Element_OphCiExamination_Refraction extends \BaseEventTypeElement implemen
 {
     use traits\CustomOrdering;
     use HasSidedData;
+    use \LoadFromExistingWithRelation;
 
     protected $auto_update_relations = true;
     protected $auto_validate_relations = true;

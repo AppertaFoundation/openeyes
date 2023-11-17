@@ -88,4 +88,17 @@ class NinePositions_MovementForGazeTest extends \ModelTestCase
         $instance->eye_id = \Eye::RIGHT;
         $this->assertTrue(!$instance->isForSide('left'));
     }
+
+    /** @test */
+    public function clone_should_unset_id_and_reading_id_attributes()
+    {
+        $instance = $this->getElementInstance();
+        $instance->id = 123;
+        $instance->reading_id = 456;
+
+        $clone = clone $instance;
+
+        $this->assertNull($clone->id);
+        $this->assertNull($clone->reading_id);
+    }
 }

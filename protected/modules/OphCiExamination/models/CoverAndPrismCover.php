@@ -22,6 +22,7 @@ class CoverAndPrismCover extends \BaseEventTypeElement
 {
     use traits\CustomOrdering;
     use HasChildrenWithEventScopeValidation;
+    use \LoadFromExistingWithRelation;
 
     public $widgetClass = CoverAndPrismCoverWidget::class;
     protected $auto_update_relations = true;
