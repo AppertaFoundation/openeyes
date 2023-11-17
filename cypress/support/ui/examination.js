@@ -50,7 +50,7 @@ Cypress.Commands.add('addPrescriptionFromMMThenSaveAsDraftAndSignAgain', (pinSig
             if (pinSigningRequired) {
                 cy.intercept('/OphCiExamination/default/getSignatureByPin*').as('getSignature');
                 cy.get('@loggedInUser').then((loggedInUser) => {
-                    cy.get('input.js-pin-input ').type(loggedInUser.body.pincode);
+                    cy.get('input.js-pin-input').type(loggedInUser.body.pincode);
                 });
                 cy.get('button.js-sign-button').click();
 
@@ -66,7 +66,26 @@ Cypress.Commands.add('addPrescriptionFromMMThenSaveAsDraftAndSignAgain', (pinSig
     cy.get('#Element_OphDrPrescription_Esign_EsignPINField_0').within(() => {
         cy.get('.js-signatory-label').contains('Prescriber');
         cy.get('.esigned-at').should('be.visible').contains('Signed at');
-    })
+    });
+
+    cy.intercept('/OphDrPrescription/default/finalizeWithSignatures*').as('finalizeWithSignatures');
+
+    cy.get('#Element_OphDrPrescription_Esign_PinOnlyWidget_1').within(() => {
+        if (pinSigningRequired) {
+            cy.get('@loggedInUser').then((loggedInUser) => {
+                cy.get('input.js-pin-input').type(loggedInUser.body.pincode);
+            });
+            cy.get('button.js-sign-button').click();
+        } else {
+            cy.getBySel('complete-sign-btn').click();
+        }
+
+        cy.wait('@finalizeWithSignatures');
+    });
+
+    cy.get('#Element_OphDrPrescription_Esign_PinOnlyWidget_1').within(() => {
+        cy.get('.esigned-at').should('be.visible').contains('Signed at');
+    });
 
     //If pin is not required we cannot get draft prescription
     if (pinSigningRequired) {
