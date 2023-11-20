@@ -14,17 +14,22 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-namespace OE\factories\models;
-
 use OE\factories\ModelFactory;
 
-class MedicationFrequencyFactory extends ModelFactory
+class Element_OphDrPrescription_DetailsFactory extends ModelFactory
 {
     public function definition(): array
     {
         return [
-            'term' => $this->faker->word(),
-            'code' => $this->faker->word(),
-        ];
+                'event_id' => Event::factory(),
+                'draft' => 0
+            ];
+    }
+
+    public function forEvent($event)
+    {
+        return $this->state([
+            'event_id' => $event
+        ]);
     }
 }
