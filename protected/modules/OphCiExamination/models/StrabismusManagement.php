@@ -29,6 +29,7 @@ use OEModule\OphCiExamination\widgets\StrabismusManagement as StrabismusManageme
 class StrabismusManagement extends \BaseEventTypeElement
 {
     use traits\CustomOrdering;
+    use \LoadFromExistingWithRelation;
 
     protected $auto_update_relations = true;
     protected $auto_validate_relations = true;
