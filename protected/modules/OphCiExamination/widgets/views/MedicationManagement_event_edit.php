@@ -190,14 +190,10 @@ echo '<script type="text/javascript" src="' . $asset_folder . '/EsignElementWidg
     <div class="flex-layout flex-right">
         <div class="add-data-actions flex-item-bottom" id="medication-management-popup">
             <?php if (!\Yii::app()->user->checkAccess('Prescribe')) { ?>
-                <button id="mm-add-pgd-btn" class="button hint green <?=$read_only ? 'disabled' : ''?>" type="button">Add PGD Set</button>
+                <button id="mm-add-pgd-btn" data-test="mm-add-pgd-btn" class="button hint green <?=$read_only ? 'disabled' : ''?>" type="button">Add PGD Set</button>
             <?php } ?>
-            <button id="mm-add-standard-set-btn" data-test="mm-add-standard-set-btn" class="button hint green <?php if ($read_only) {
-                ?>disabled<?php
-                                                                                                              } ?>" type="button">Add standard set</button>
-            <button class="button hint green js-add-select-search <?php if ($read_only) {
-                ?>disabled<?php
-                                                                  } ?>" id="mm-add-medication-btn" type="button">
+            <button id="mm-add-standard-set-btn" data-test="mm-add-standard-set-btn" class="button hint green <?= $read_only ? "disabled" : "" ?>" type="button">Add standard set</button>
+            <button class="button hint green js-add-select-search <?= $read_only ? "disabled" : "" ?>" id="mm-add-medication-btn" data-test="mm-add-medication-btn" type="button">
                 <i class="oe-i plus pro-theme"></i>
             </button>
         </div>
@@ -328,7 +324,7 @@ echo '<script type="text/javascript" src="' . $asset_folder . '/EsignElementWidg
             prescription_modified = true;
         });
 
-        $('#mm-handler-1').on('handle', function() {
+        $('#mm-handler-1').on('handle', function(e) {
             if (!prescription_is_final) {
                 return;
             }
@@ -388,7 +384,7 @@ echo '<script type="text/javascript" src="' . $asset_folder . '/EsignElementWidg
                 prescription_modified = true;
             }
 
-            if (prescription_modified) {
+            if (prescription_modified && !e.originalEvent.draft) {
                 $('#js-save-mm-event').show();
                 setTimeout(() => enableButtonsWithin('#js-save-mm-event'), 100);
                 $(this).attr('status', 'stop');

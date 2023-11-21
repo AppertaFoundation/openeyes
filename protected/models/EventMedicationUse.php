@@ -16,6 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OE\factories\models\traits\HasFactory;
 use OEModule\OphCiExamination\models\HistoryMedicationsStopReason;
 use OEModule\OphDrPGDPSD\models\OphDrPGDPSD_PGDPSD;
 
@@ -69,6 +70,8 @@ use OEModule\OphDrPGDPSD\models\OphDrPGDPSD_PGDPSD;
  */
 class EventMedicationUse extends BaseElement
 {
+    use HasFactory;
+
     /** This ID is used as medication_id when the user is adding a new medication using the adder dialog */
     const USER_MEDICATION_ID = -1;
 
@@ -682,7 +685,7 @@ class EventMedicationUse extends BaseElement
      */
     public function getTaperChangeHistory(): array
     {
-        if(is_null($this->id)) {
+        if (is_null($this->id)) {
             return [];
         }
 
@@ -1134,6 +1137,19 @@ class EventMedicationUse extends BaseElement
 
     public function beforeValidate()
     {
+        if($this->prescribe) {
+            $user = Yii::app()->user;
+            $user_can_prescribe = $user->checkAccess('Prescribe');
+
+            if(!$user_can_prescribe && !empty($this->pgdpsd_id)) {
+                $user_can_prescribe = $this->pgd->getIsUserAuthed($user->id);
+            }
+
+            if(!$user_can_prescribe) {
+                $this->addError("prescribe", "You do not have permission to prescribe this medication");
+            }
+        }
+
         if ($this->medication_id == self::USER_MEDICATION_ID) {
             $medication = new Medication();
             $medication->preferred_term = $this->medication_name;

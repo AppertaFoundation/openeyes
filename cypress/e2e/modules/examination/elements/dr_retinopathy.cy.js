@@ -4,7 +4,7 @@ describe('DR Retinopathy element behaviour', () => {
 
         cy.createPatient().then((patient) => {
             cy.visitEventCreationUrl(patient.id, 'OphCiExamination').then(() => {
-                cy.removeElements();
+                cy.removeElements([], true);
                 cy.addExaminationElement('DR Retinopathy');
 
                 for (const side of ['left', 'right']) {

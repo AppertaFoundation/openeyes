@@ -158,4 +158,38 @@ class StrabismusManagementTest extends \ModelTestCase
 
         $this->assertEquals($expected, $instance->letter_string);
     }
+
+    /** @test  */
+    public function test_load_from_existing()
+    {
+        $original_element = new StrabismusManagement();
+        $original_element->setAttributes($this->generateStrabismusManagementData(2));
+        $this->saveElement($original_element);
+
+        $new_element = new StrabismusManagement();
+        $new_element->loadFromExisting($original_element);
+        $this->saveElement($new_element);
+
+        $original_element->refresh();
+        $new_element->refresh();
+
+        $this->assertCount(2, $original_element->entries);
+        $this->assertCount(2, $new_element->entries);
+
+        $this->assertEntries($original_element, $new_element);
+    }
+
+    private function assertEntries(StrabismusManagement $source, StrabismusManagement $copy): void
+    {
+
+        foreach ($source->entries as $index => $source_entry) {
+            $copy_entry = $copy->entries[$index];
+            $this->assertNotEquals($source_entry->id, $copy_entry->id);
+            $this->assertNotEquals($source_entry->element_id, $copy_entry->element_id);
+
+            foreach(['eye_id', 'treatment', 'treatment_options', 'treatment_reason'] as $attr) {
+                $this->assertEquals($source_entry->$attr, $copy_entry->$attr);
+            }
+        }
+    }
 }

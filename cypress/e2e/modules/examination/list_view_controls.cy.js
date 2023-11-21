@@ -23,7 +23,7 @@ describe('the behaviour of the list view control in create/update screens', () =
     it('operates on elements added after the initial create event page load', function () {
         cy.visitEventCreationUrl(this.seederData.existingEvent.patient.id, 'OphCiExamination');
 
-        cy.removeElements();
+        cy.removeElements([], true);
         cy.addExaminationElement('IOP History');
 
         for (let side of ['left', 'right']) {

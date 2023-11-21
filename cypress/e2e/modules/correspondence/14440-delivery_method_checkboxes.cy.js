@@ -17,7 +17,7 @@ describe('Appropriate checkboxes should get checked for delivery methods', () =>
                         .then((url) => {
                             cy.visit(url);
                             // Remove all examination event elements
-                            cy.removeElements();             
+                            cy.removeElements([], true);             
                             // Add a communication preferences element
                             cy.addExaminationElement('Communication Preferences');
                             //Click on checkbox "agrees to insecure email correspondence"
@@ -60,7 +60,7 @@ describe('Appropriate checkboxes should get checked for delivery methods', () =>
                         .then((url) => {
                             cy.visit(url);
                             // Remove all examination event elements
-                            cy.removeElements();             
+                            cy.removeElements([], true);             
                             // Add a communication preferences element
                             cy.addExaminationElement('Communication Preferences');
                             //Click on checkbox "agrees to insecure email correspondence in examination event"
@@ -101,7 +101,7 @@ describe('Appropriate checkboxes should get checked for delivery methods', () =>
                         .then((url) => {
                             cy.visit(url);
                             // Remove all examination event elements
-                            cy.removeElements();             
+                            cy.removeElements([], true);             
                             // Add a communication preferences element
                             cy.addExaminationElement('Communication Preferences');
                             //Click on checkbox "agrees to insecure email correspondence in examination event"

@@ -22,7 +22,7 @@ describe('create examination event', () => {
 
     it(`add the medication management element`, function () {
         cy.setSystemSettingValue(SETTING_NAME, 'no');
-        cy.removeElements();
+        cy.removeElements([], true);
         cy.addExaminationElement('Medication Management');
         cy.addExaminationElement('Anterior Segment');
 

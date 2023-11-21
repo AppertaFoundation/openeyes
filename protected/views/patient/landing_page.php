@@ -306,7 +306,7 @@ $allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical');
             <section class="element view full view-xxx" id="idg-ele-view-eye-medications">
                 <header class="element-header"><h3 class="element-title">Eye Medications</h3></header>
                 <div class="element-data full-width">
-                    <div class="data-value">
+                    <div class="data-value" data-test="eye-medications-summary">
                         <?php $this->widget(HistoryMedications::class, array(
                             'patient' => $this->patient,
                             'mode' => BaseEventElementWidget::$PATIENT_LANDING_PAGE_MODE,

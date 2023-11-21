@@ -23,7 +23,7 @@ describe('history element behavior', () => {
         cy.get('@patient')
             .then((data) => {
                 cy.visitEventCreationUrl(data.id, 'OphCiExamination');
-                cy.removeElements();
+                cy.removeElements([], true);
                 cy.addExaminationElement('History');
 
                 cy.getBySel('add-to-history-template').click();

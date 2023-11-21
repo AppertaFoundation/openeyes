@@ -1024,61 +1024,42 @@ class DefaultController extends BaseEventTypeController
                 $model->authorised_date = date('Y-m-d H:i:s');
                 $model->update();
 
-                if ($medication_management = $model->isSignedByMedication()) {
-                    $mm_signatures = $medication_management->getSignatures();
-                    $index = 0;
+                $element = Element_OphDrPrescription_Esign::model()->findByAttributes([
+                    'event_id' => $eventID
+                ]);
 
-                    foreach ($mm_signatures as $signature) {
-                        $signature->signatory_name = $signatures[$index]['signatory_name'];
-                        $signature->proof = $signatures[$index]['proof'];
-                        $signature->setDataFromProof();
+                $transaction = Yii::app()->db->beginTransaction();
+                $errors = array();
 
-                        $index++;
+                foreach ($signatures as $signature) {
+                    if (empty($signature['proof'])) {
+                        continue;
                     }
 
-                    $medication_management->signatures = $mm_signatures;
+                    $prescription_signature = OphDrPrescription_Signature::model()->findOrNew($signature['id']);
 
-                    if (!$medication_management->save()) {
-                        throw new Exception("Failed to save Medication Management prescription Electronic Signatures");
+                    $prescription_signature->signatory_role = $signature['signatory_role'];
+                    $prescription_signature->proof = $signature['proof'];
+                    $prescription_signature->element_id = $element->id;
+                    $prescription_signature->type = $signature['type'];
+                    $prescription_signature->setDataFromProof();
+
+                    if (!$prescription_signature->signatory_name) {
+                        $user = \User::model()->findByPk($prescription_signature->signed_user_id);
+                        $prescription_signature->signatory_name = $user ? $user->getFullNameAndTitle() : null;
                     }
+
+                    if (!$prescription_signature->save()) {
+                        $errors[] = $prescription_signature->getErrors();
+                    }
+                }
+
+                if ($errors) {
+                    $transaction->rollback();
+
+                    throw new Exception("Failed to save Prescription Electronic Signatures" . print_r($errors, true));
                 } else {
-                    $element = Element_OphDrPrescription_Esign::model()->findByAttributes([
-                        'event_id' => $eventID
-                    ]);
-
-                    $transaction = Yii::app()->db->beginTransaction();
-                    $errors = array();
-
-                    foreach ($signatures as $signature) {
-                        if (empty($signature['proof'])) {
-                            continue;
-                        }
-
-                        $prescription_signature = OphDrPrescription_Signature::model()->findOrNew($signature['id']);
-
-                        $prescription_signature->signatory_role = $signature['signatory_role'];
-                        $prescription_signature->proof = $signature['proof'];
-                        $prescription_signature->element_id = $element->id;
-                        $prescription_signature->type = $signature['type'];
-                        $prescription_signature->setDataFromProof();
-
-                        if (!$prescription_signature->signatory_name) {
-                            $user = \User::model()->findByPk($prescription_signature->signed_user_id);
-                            $prescription_signature->signatory_name = $user ? $user->getFullNameAndTitle() : null;
-                        }
-
-                        if (!$prescription_signature->save()) {
-                            $errors[] = $prescription_signature->getErrors();
-                        }
-                    }
-
-                    if ($errors) {
-                        $transaction->rollback();
-
-                        throw new Exception("Failed to save Prescription Electronic Signatures" . print_r($errors, true));
-                    } else {
-                        $transaction->commit();
-                    }
+                    $transaction->commit();
                 }
 
                 Audit::add(

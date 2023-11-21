@@ -81,6 +81,46 @@ class OphDrPrescription_Item extends EventMedicationUse
         ));
     }
 
+    public static function createItemFromManagementEntry($prescription_event_id, $management_entry): OphDrPrescription_Item
+    {
+        $prescription_item = new self();
+        $prescription_item->event_id = $prescription_event_id;
+        $prescription_item->bound_key = substr(bin2hex(openssl_random_pseudo_bytes(10)), 0, 10);
+
+        $prescription_item->setAttributes(array(
+            'usage_type' => self::getUsageType(),
+            'usage_subtype' => self::getUsageSubtype(),
+            'medication_id' => $management_entry->medication_id,
+            'pgdpsd_id' => $management_entry->pgdpsd_id,
+            'form_id' => $management_entry->form_id,
+            'laterality' => $management_entry->laterality,
+            'route_id' => $management_entry->route_id,
+            'frequency_id' => $management_entry->frequency_id,
+            'duration_id' => $management_entry->duration_id,
+            'dose' => $management_entry->dose,
+            'dose_unit_term' => $management_entry->dose_unit_term,
+            'start_date' => $management_entry->start_date,
+            'dispense_location_id' => $management_entry->dispense_location_id,
+            'dispense_condition_id' => $management_entry->dispense_condition_id,
+            'comments' => $management_entry->comments,
+        ));
+        $p_tapers = [];
+        foreach ($management_entry->tapers as $taper) {
+            $new_taper = new OphDrPrescription_ItemTaper();
+            $new_taper->item_id = null;
+            $new_taper->frequency_id = $taper->frequency_id;
+            $new_taper->duration_id = $taper->duration_id;
+            $new_taper->dose = $taper->dose;
+            $p_tapers[] = $new_taper;
+        }
+        $prescription_item->tapers = $p_tapers;
+        if (!$prescription_item->save()) {
+            throw new Exception("Error while saving prescription item: " . print_r($prescription_item->errors, true));
+        }
+        $prescription_item->saveTapers();
+        return $prescription_item;
+    }
+
     /**
      * @return string
      * Method to ensure backwards compatibility
