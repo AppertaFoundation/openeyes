@@ -15,6 +15,9 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+use OEModule\OphDrPrescription\widgets\PrescriptionEsignElementWidget;
+
 ?>
 
 <?php
@@ -56,7 +59,7 @@
         foreach ($readonly_signatures as $signature) :?>
             <table class="borders done_bys">
             <tr>
-                <th><?=$signature->signatory_role?></th>
+                <th><?= PrescriptionEsignElementWidget::PRESCRIBER_DISPLAY_ROLE ?></th>
                 <td><?=$signature->signatory_name ?><?php if (isset($signature->signedUser->registration_code)) {
                         echo ' (' . $signature->signedUser->registration_code . ')';
                     } ?>
