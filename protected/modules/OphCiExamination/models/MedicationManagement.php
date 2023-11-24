@@ -27,6 +27,7 @@ use Event;
 use EventMedicationUse;
 use Exception;
 use OEModule\OphCiExamination\widgets\MedicationManagement as MedicationManagementWidget;
+use OE\factories\models\traits\HasFactory;
 use OphCiExamination_Signature;
 use OphDrPrescription_Item;
 use OphDrPrescription_ItemTaper;
@@ -59,17 +60,18 @@ use Yii;
 class MedicationManagement extends BaseMedicationElement
 {
     use AutoSignTrait;
+    use traits\CustomOrdering;
+    use HasFactory;
+
     private $signature_class = \OphCiExamination_Signature::class;
     private $pin_required_setting_name = 'require_pin_for_prescription';
     private $auto_sign_role = 'Consultant';
 
-    use traits\CustomOrdering;
     public $do_not_save_entries = false;
     public bool $save_draft_prescription = false;
     public bool $no_entries_prescribed = false;
 
     protected $widgetClass = MedicationManagementWidget::class;
-
     public static $entry_class = MedicationManagementEntry::class;
 
     /**
@@ -533,41 +535,7 @@ class MedicationManagement extends BaseMedicationElement
             /* items to add */
             foreach ($this->entries_to_prescribe as $entry) {
                 if (!in_array($entry->id, $existing_mgment_items)) {
-                    $prescription_item = new OphDrPrescription_Item();
-                    $prescription_item->event_id = $prescription->event_id;
-                    $prescription_item->bound_key = substr(bin2hex(openssl_random_pseudo_bytes(10)), 0, 10);
-
-                    $prescription_item->setAttributes(array(
-                        'usage_type' => OphDrPrescription_Item::getUsageType(),
-                        'usage_subtype' => OphDrPrescription_Item::getUsageSubtype(),
-                        'medication_id' => $entry->medication_id,
-                        'pgdpsd_id' => $entry->pgdpsd_id,
-                        'form_id' => $entry->form_id,
-                        'laterality' => $entry->laterality,
-                        'route_id' => $entry->route_id,
-                        'frequency_id' => $entry->frequency_id,
-                        'duration_id' => $entry->duration_id,
-                        'dose' => $entry->dose,
-                        'dose_unit_term' => $entry->dose_unit_term,
-                        'start_date' => $entry->start_date,
-                        'dispense_location_id' => $entry->dispense_location_id,
-                        'dispense_condition_id' => $entry->dispense_condition_id,
-                        'comments' => $entry->comments,
-                    ));
-                    $p_tapers = array();
-                    foreach ($entry->tapers as $taper) {
-                        $new_taper = new OphDrPrescription_ItemTaper();
-                        $new_taper->item_id = null;
-                        $new_taper->frequency_id = $taper->frequency_id;
-                        $new_taper->duration_id = $taper->duration_id;
-                        $new_taper->dose = $taper->dose;
-                        $p_tapers[] = $new_taper;
-                    }
-                    $prescription_item->tapers = $p_tapers;
-                    if (!$prescription_item->save()) {
-                        throw new Exception("Error while saving prescription item: " . print_r($prescription_item->errors, true));
-                    }
-                    $prescription_item->saveTapers();
+                    $prescription_item = OphDrPrescription_Item::createItemFromManagementEntry($prescription->id, $entry);
                     $entry->refresh();
                     $entry->prescription_item_id = $prescription_item->id;
                     $entry->save();
@@ -732,6 +700,11 @@ class MedicationManagement extends BaseMedicationElement
         return parent::beforeDelete();
     }
 
+    /**
+     * It is clinically unsafe to delete the linked prescription when the element is deleted.
+     *
+     * @return void
+     */
     public function afterDelete()
     {
         foreach ($this->entries as $entry) {

@@ -42,6 +42,15 @@ class NinePositions_Reading extends \BaseElement
         getDisplay_with_head_posture as baseDisplay_with_head_posture;
     }
 
+    public function defaultScope()
+    {
+        if ($this->getDefaultScopeDisabled()) {
+            return [];
+        }
+
+        return [ 'with' => ['alignments', 'movements', 'right_movements', 'left_movements']];
+    }
+
     protected $auto_update_relations = true;
     protected $auto_validate_relations = true;
 
@@ -193,4 +202,14 @@ class NinePositions_Reading extends \BaseElement
         }
     }
 
+    public function __clone()
+    {
+        $this->unsetAttributes(['id', 'element_id']);
+
+        foreach (['alignments', 'movements'] as $relation) {
+            $this->$relation = array_map(fn($entry) => clone $entry, $this->$relation);
+        }
+
+        $this->setIsNewRecord(true);
+    }
 }

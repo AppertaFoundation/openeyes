@@ -51,7 +51,7 @@ describe('verifies prescription secondary e-sign signatories behaviour', () => {
         cy.wrap("Administered by").as("test_sign_role");
         cy.login()
             .then(() => {
-                cy.setSystemSettingValue(REQUIRE_PIN_SIGN_SETTING, '0');
+                cy.setSystemSettingValue(REQUIRE_PIN_SIGN_SETTING, 'no');
                 return cy.runSeeder('OphDrPrescription', 'PrescriptionPINSecondarySignSeeder', {
                     "secondary_signatories": this.signatory_names.slice(1), //skip Prescriber
                     "delete_existing": true,
@@ -133,7 +133,7 @@ describe('verifies prescription secondary e-sign signatories behaviour', () => {
 
             cy.login()
                 .then(() => {
-                    cy.setSystemSettingValue(REQUIRE_PIN_SIGN_SETTING, '1');
+                    cy.setSystemSettingValue(REQUIRE_PIN_SIGN_SETTING, 'yes');
                     cy.createPatient()
                         .then(patient => {
                             cy.getEventCreationUrl(patient.id, 'OphDrPrescription')
@@ -214,7 +214,7 @@ describe('verifies prescription secondary e-sign signatories behaviour', () => {
 
             cy.login()
                 .then(() => {
-                    cy.setSystemSettingValue(REQUIRE_PIN_SIGN_SETTING, '0');
+                    cy.setSystemSettingValue(REQUIRE_PIN_SIGN_SETTING, 'no');
 
                     return cy.runSeeder('OphDrPrescription', 'PrescriptionPINSecondarySignSeeder', {
                         "secondary_signatories": this.signatory_names_DEM4.slice(1), //skip Prescriber

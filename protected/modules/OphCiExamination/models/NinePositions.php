@@ -28,6 +28,7 @@ class NinePositions extends \BaseEventTypeElement
 {
     use traits\CustomOrdering;
     use traits\HasChildrenWithEventScopeValidation;
+    use \LoadFromExistingWithRelation;
 
     protected $widgetClass = NinePositionsWidget::class;
     protected $auto_update_relations = true;

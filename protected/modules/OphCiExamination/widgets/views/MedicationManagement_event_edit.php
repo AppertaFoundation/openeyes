@@ -324,7 +324,7 @@ echo '<script type="text/javascript" src="' . $asset_folder . '/EsignElementWidg
             prescription_modified = true;
         });
 
-        $('#mm-handler-1').on('handle', function() {
+        $('#mm-handler-1').on('handle', function(e) {
             if (!prescription_is_final) {
                 return;
             }
@@ -384,7 +384,7 @@ echo '<script type="text/javascript" src="' . $asset_folder . '/EsignElementWidg
                 prescription_modified = true;
             }
 
-            if (prescription_modified) {
+            if (prescription_modified && !e.originalEvent.draft) {
                 $('#js-save-mm-event').show();
                 setTimeout(() => enableButtonsWithin('#js-save-mm-event'), 100);
                 $(this).attr('status', 'stop');

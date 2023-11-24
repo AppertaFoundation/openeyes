@@ -18,7 +18,34 @@ describe('test suite to verify medication management functionality', () => {
 
         // set Offer to automatically close incomplete examination elements to OFF
         cy.setSystemSettingValue(SAVE_AND_DISCARD_SETTING, 'off')
+    })
 
+    function assertExaminationHasNoMedications()
+    {
+        cy.getBySel("eye-medications-summary").within(() => {
+            cy.get("div").should("have.class", "not-recorded");
+        });
+        cy.getBySel("systemic-medication-summary").within(() => {
+            cy.get("div").should("have.class", "not-recorded");
+        });
+        cy.get(".OEModule_OphCiExamination_models_MedicationManagement").should("not.exist");
+    }
+
+    function assertPatientHasNoMedications()
+    {
+        cy.getBySel("patient-landing-page-link").click();
+        cy.getBySel("eye-medications-summary").within(() => {
+            cy.get("div").should("have.class", "nil-recorded");
+        });
+        cy.getBySel("eye-medications-popup-summary").within(() => {
+            cy.get("div").should("have.class", "nil-recorded");
+        });
+        cy.getBySel("systemic-medications-popup-summary").within(() => {
+            cy.get("div").should("have.class", "nil-recorded");
+        });
+    }
+
+    it('ensures that the same drug stopped in Medication Management is stopped and disabled in Medication History', () => {
         // Seed:
         // - a single non-admin user - return user (with atttributes username and password)
         // - a first common ophthalmic drug with route 'Eye' - return drug1 array
@@ -191,5 +218,52 @@ describe('test suite to verify medication management functionality', () => {
         cy.saveEvent();
 
         cy.getBySel('validation-errors').should("not.contain", "You do not have permission to prescribe this medication");
+    });
+
+    it("ensures that Medication Management element is removed on delete", function () {
+        cy.createEvent("OphCiExamination")
+            .then(function (event) {
+                return cy.createModels(
+                    "OEModule\\OphCiExamination\\models\\MedicationManagement",
+                    [
+                        ["forEvent", event.id],
+                        "withEntries"
+                    ]
+                    ).then(function (medicationManagement) {
+                        cy.login();
+                        cy.visit("OphCiExamination/Default/update/" + medicationManagement.event_id);
+                        cy.removeElements([], true);
+                        cy.addExaminationElement("History");
+                        cy.getBySel("history-description").type("Test");
+                        cy.saveEvent();
+                        assertExaminationHasNoMedications();
+                        assertPatientHasNoMedications();
+                    });
+            })
+    });
+
+    it("ensures that Medication Management element that contains prescribed medications is removed on delete, but the prescription is not deleted", function () {
+        cy.createEvent("OphCiExamination")
+        .then(function (event) {
+            return cy.createModels(
+                "OEModule\\OphCiExamination\\models\\MedicationManagement",
+                [
+                    ["forEvent", event.id],
+                    "withPrescribedEntries",
+                    "withPrescription"
+                ]
+                ).then(function (medicationManagement) {
+                    cy.login()
+                    cy.visit("OphCiExamination/Default/update/" + medicationManagement.event_id)
+                    cy.removeElements([], true);
+                    cy.addExaminationElement("History");
+                    cy.getBySel("history-description").type("Test");
+                    cy.saveEvent();
+                    assertExaminationHasNoMedications();
+                    cy.getBySel("sidebar-event-list").within(() => {
+                        cy.get("li[data-event-id='"+ medicationManagement.prescription_id +"']").should("exist");
+                    });
+                });
+        })
     });
 })

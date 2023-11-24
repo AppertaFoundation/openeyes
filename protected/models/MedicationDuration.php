@@ -41,20 +41,20 @@ class MedicationDuration extends BaseActiveRecordVersioned
         // will receive user inputs.
         return array(
             array('name', 'required'),
-            array('display_order', 'numerical', 'integerOnly'=>true),
-            array('name', 'length', 'max'=>40),
-            array('last_modified_user_id, created_user_id', 'length', 'max'=>10),
+            array('display_order', 'numerical', 'integerOnly' => true),
+            array('name', 'length', 'max' => 40),
+            array('last_modified_user_id, created_user_id', 'length', 'max' => 10),
             array('deleted_date, last_modified_date, created_date', 'safe'),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
-            array('id, name, display_order, deleted_date, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
+            array('id, name, display_order, deleted_date, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on' => 'search'),
         );
     }
 
     public function defaultScope()
     {
         return array(
-            'order' => $this->getTableAlias(true, false).'.display_order',
+            'order' => $this->getTableAlias(true, false) . '.display_order',
         );
     }
 
@@ -105,7 +105,7 @@ class MedicationDuration extends BaseActiveRecordVersioned
     {
         // @todo Please modify the following code to remove attributes that should not be searched.
 
-        $criteria=new CDbCriteria;
+        $criteria = new CDbCriteria();
 
         $criteria->compare('id', $this->id);
         $criteria->compare('name', $this->name, true);
@@ -117,7 +117,7 @@ class MedicationDuration extends BaseActiveRecordVersioned
         $criteria->compare('created_date', $this->created_date, true);
 
         return new CActiveDataProvider($this, array(
-            'criteria'=>$criteria,
+            'criteria' => $criteria,
         ));
     }
 
