@@ -180,7 +180,7 @@ class AllergyEntry extends \BaseActiveRecordVersioned
         if (!$this->isNewRecord) {
             return $this->allergy->name == "Other";
         } else {
-            throw new Exception('Cannot check if new allergy entry is other without proposed allergy id,
+            throw new \Exception('Cannot check if new allergy entry is other without proposed allergy id,
             new records do not have allergy_id set, please use staticIsOther($allergy_id)');
         }
     }
