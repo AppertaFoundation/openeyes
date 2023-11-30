@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -37,6 +38,7 @@ class Element_OphCiExamination_ClinicOutcome extends \BaseEventTypeElement
 {
     use traits\CustomOrdering;
     use HasFactory;
+
     protected $auto_update_relations = true;
     protected $auto_validate_relations = true;
 
@@ -229,7 +231,7 @@ class Element_OphCiExamination_ClinicOutcome extends \BaseEventTypeElement
             });
         }
         usort($temp, function ($e1, $e2) {
-            return $e2->created_date > $e1->created_date;
+            return ($e2->created_date <=> $e1->created_date);
         });
 
         return $temp[0];
