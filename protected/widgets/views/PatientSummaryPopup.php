@@ -67,12 +67,6 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis; ?>
                         <td>Email</td>
                         <td><?= $this->patient->contact->email ?? 'Unknown' ?></td>
                     </tr>
-                    <?php if (Yii::app()->params['institution_code'] !== 'CERA') : ?>
-                        <tr>
-                            <td>Next of kin</td>
-                            <td>Unknown</td>
-                        </tr>
-                    <?php endif; ?>
                     <?php if ($this->patient->primary_institution) { ?>
                         <tr>
                             <td><?= \SettingMetadata::model()->getSetting('primary_institution_label') ?></td>
@@ -265,7 +259,7 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis; ?>
                     <div class="subtitle">Patient Contacts</div>
                     <table class="demographics">
                         <tbody>
-                        
+
                         <?php
                             $gp_contact_id = $this->patient->gp ? $this->patient->gp->contact->id : null;
                         foreach ($this->patient->contactAssignments as $contactAssignment) {
@@ -287,7 +281,7 @@ use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis; ?>
                         } ?>
                         </tbody>
                     </table>
-                    
+
                 <?php } ?>
             </div><!-- .popup-overflow -->
         </div><!-- .cols-right -->
