@@ -469,6 +469,7 @@ $initial_filter = $session_filter_info['filter'];
 
             <div class="group">
                 {{#cct}}
+                    <span class="data">CCT: </span>
                     <span class="data">R {{#has_right}}{{right}}{{/has_right}}{{^has_right}}NA{{/has_right}} </span>
                     <span class="data">L {{#has_left}}{{left}}{{/has_left}}{{^has_left}}NA{{/has_left}} </span>
                     <span class="oe-date" style="text-align: left">{{event_date}}</span>
@@ -477,7 +478,7 @@ $initial_filter = $session_filter_info['filter'];
                     <span class="data">CCT: NA</span>
                 {{/cct}}
             </div>
-    
+
             <div class="group">
                 {{#cviData}}
                     <span class="data">CVI Status: {{data}}</span>

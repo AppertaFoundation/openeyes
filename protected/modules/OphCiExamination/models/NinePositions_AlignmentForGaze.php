@@ -261,4 +261,10 @@ class NinePositions_AlignmentForGaze extends \BaseElement
             )
         ) > 0;
     }
+
+    public function __clone()
+    {
+        $this->unsetAttributes(['id', 'reading_id']);
+        $this->setIsNewRecord(true);
+    }
 }

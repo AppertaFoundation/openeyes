@@ -2501,9 +2501,10 @@ class AdminController extends BaseAdminController
                         $contact->first_name = '';
                         $contact->last_name = '';
                         $contact->created_institution_id = Yii::app()->session['selected_institution_id'];
-                        if (!$contact->save(false)) {
-                            $errors = array_merge($errors, $contact->getErrors());
-                        }
+                    }
+                    $contact->email = $_POST['Contact']['email'];
+                    if (!$contact->save(false)) {
+                        $errors = array_merge($errors, $contact->getErrors());
                     }
 
                     $cb->contact_id = $contact->id;

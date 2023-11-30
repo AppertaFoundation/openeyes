@@ -27,7 +27,7 @@ class PinOnlyWidget extends \EsignField
 
     public function init()
     {
-        $this->is_pin_required = \SettingMetadata::model()->getSetting('require_pin_for_prescription') === "1";
+        $this->is_pin_required = \SettingMetadata::model()->getSetting('require_pin_for_prescription') === "yes";
     }
 
     public function run()

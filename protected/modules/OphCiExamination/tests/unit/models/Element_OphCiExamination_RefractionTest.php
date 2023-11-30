@@ -347,6 +347,47 @@ class Element_OphCiExamination_RefractionTest extends \ModelTestCase
         $this->assertEquals($expected, $instance->letter_string);
     }
 
+    public function test_load_from_existing()
+    {
+        $original_element = $this->getElementInstance();
+        $original_element->event_id = $this->getEventToSaveWith()->getPrimaryKey();
+
+        $reading_data = ['right' => [], 'left' => []];
+
+        foreach (['right', 'left'] as $side) {
+            $reading_data[$side] = $this->generateRefractionReadingData();
+            $original_element->{"{$side}_readings"} = [$reading_data[$side]];
+
+            $original_element->eye_id = \Eye::getIdFromName($side);
+        }
+        $this->assertTrue($original_element->save(), "element should save successfully.");
+
+        $new_element = $this->getElementInstance();
+        $new_element->event_id = $this->getEventToSaveWith()->getPrimaryKey();
+
+        $new_element->loadFromExisting($original_element);
+        $this->assertTrue($new_element->save(), "element should save successfully.");
+
+        $original_element->refresh();
+        $new_element->refresh();
+
+        foreach (['right_readings', 'left_readings'] as $relation) {
+            $this->assertCount(1, $original_element->$relation);
+            $this->assertCount(1, $new_element->$relation);
+
+            foreach ($original_element->$relation as $key => $original_entry) {
+                $new_entry = $new_element->$relation[$key];
+
+                $this->assertNotEquals($original_entry->id, $new_entry->id);
+                $this->assertNotEquals($original_entry->element_id, $new_entry->element_id);
+
+                foreach (['sphere', 'cylinder', 'axis', 'type_id'] as $attr) {
+                    $this->assertEquals($original_entry->$attr, $new_entry->$attr);
+                }
+            }
+        }
+    }
+
     protected function mockStringifiedReading($strings)
     {
         return array_map(function ($str) {

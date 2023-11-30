@@ -938,7 +938,7 @@ class WorklistController extends BaseController
 
             $patientCCTData = $this->structurePatientCCTData($patient, $exam_api);
             if (isset($patientCCTData)) {
-                $patientData['cctData'] = $patientCCTData;
+                $patientData['cct'] = $patientCCTData;
             }
 
             $patientCVIData = $this->structurePatientCVIData($patient, $exam_api);

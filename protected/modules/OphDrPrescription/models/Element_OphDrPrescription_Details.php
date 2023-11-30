@@ -15,6 +15,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OE\factories\models\traits\HasFactory;
 use \OEModule\OphCiExamination\models\MedicationManagement;
 use OEModule\OphDrPGDPSD\models\OphDrPGDPSD_PGDPSD;
 
@@ -39,6 +40,8 @@ use OEModule\OphDrPGDPSD\models\OphDrPGDPSD_PGDPSD;
  */
 class Element_OphDrPrescription_Details extends BaseEventTypeElement
 {
+    use HasFactory;
+
     public $check_for_duplicate_entries = false;
 
     /**
