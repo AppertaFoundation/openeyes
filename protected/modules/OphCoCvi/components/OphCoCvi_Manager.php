@@ -44,7 +44,7 @@ class OphCoCvi_Manager extends \CComponent
     public static $SIGHT_IMPAIRED = 'SI';
     public static $SEVERELY_SIGHT_IMPAIRED = 'SSI';
     private $input_template_file = 'cviTemplate.odt';
-    private $page_size_limit = 10;
+    private $page_size_limit = 15;
     public $outDir;
     private $cviTemplate;
     public $patientSignatureImage;
@@ -925,6 +925,8 @@ class OphCoCvi_Manager extends \CComponent
             $criteria->addCondition(
                 "event.info LIKE '%Consultant signature%'"
             );
+
+            $criteria->with[] = 'esign_element.signatures';
         }
 
         if (isset($filter['missing_clerical_part']) && $filter['missing_clerical_part'] == "1") {
@@ -970,7 +972,6 @@ class OphCoCvi_Manager extends \CComponent
             'event.episode.patient.contact',
             'event.episode.firm.serviceSubspecialtyAssignment.subspecialty',
             'consultantInChargeOfThisCvi',
-            'esign_element.signatures'
         ];
 
         $model = Element_OphCoCvi_EventInfo::model()->with($with);
