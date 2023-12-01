@@ -41,6 +41,7 @@ class AllergyEntry extends \BaseActiveRecordVersioned
     public static $PRESENT = 1;
     public static $NOT_PRESENT = 0;
     public static $NOT_CHECKED = -9;
+    public static $OTHER = 'Other';
 
     protected $auto_update_relations = true;
     protected $auto_validate_relations = true;
@@ -170,7 +171,7 @@ class AllergyEntry extends \BaseActiveRecordVersioned
 
     public function validateOtherAllergies($attribute)
     {
-        if ($this->allergy->name == "Other" && $this->$attribute == "" ) {
+        if ($this->allergy->name == static::$OTHER && $this->$attribute == "" ) {
             $this->addError($attribute, 'Allergy cannot be blank');
         }
     }
