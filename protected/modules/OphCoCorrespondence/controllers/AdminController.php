@@ -547,6 +547,7 @@ class AdminController extends \ModuleAdminController
         $errors = array();
 
         if (!empty($_POST)) {
+            $senderEmailAddressesHash = $senderEmailAddresses->password;
             $senderEmailAddresses->attributes = $_POST['SenderEmailAddresses'];
 
             if (!$senderEmailAddresses->validate()) {
@@ -555,7 +556,9 @@ class AdminController extends \ModuleAdminController
                 if (isset($senderEmailAddresses->password)) {
                     $encryptionDecryptionHelper = new EncryptionDecryptionHelper();
                     try {
-                        $senderEmailAddresses->password = $encryptionDecryptionHelper->encryptData($senderEmailAddresses->password);
+                        if($senderEmailAddresses->password !== $senderEmailAddressesHash) {
+                            $senderEmailAddresses->password = $encryptionDecryptionHelper->encryptData($senderEmailAddresses->password);
+                        }
                     } catch (Exception $e) {
                         throw new \Exception($e);
                     }
