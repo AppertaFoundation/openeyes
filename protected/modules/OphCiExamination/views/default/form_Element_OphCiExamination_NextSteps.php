@@ -1,5 +1,7 @@
 <?php
 $active_pathway = $this->patient->getClinicPathwayInProgress();
+$acceptable_wait_time = Pathway::getAcceptableWaitTime();
+
 ?>
 <!-- we need to provide a value for the controller to pick up the element, and this element has no data in it -->
 <input name="OEModule_OphCiExamination_models_Element_OphCiExamination_NextSteps[id]" type="hidden" value="<?= $element->id ?>">
@@ -14,6 +16,7 @@ $active_pathway = $this->patient->getClinicPathwayInProgress();
                 'display_wait_duration' => false,
                 'editable' => true,
                 'quick_preset_adder' => ['display' => true, 'label' => 'Next presets'],
+                'acceptable_wait_time' => $acceptable_wait_time,
                 'check_patient_button_type' => 'button'
             ]
         );

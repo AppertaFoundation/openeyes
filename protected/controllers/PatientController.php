@@ -2999,9 +2999,12 @@ class PatientController extends BaseController
     public function actionShowCurrentPathway()
     {
         $pathway = Pathway::model()->findByPk($_POST['pathway_id']);
+        $acceptable_wait_time = Pathway::getAcceptableWaitTime();
+
         $this->renderJSON($this->renderPartial('//patient/_patient_clinic_pathway', [
             'pathway' => $pathway,
             'display_wait_duration' => true,
+            'acceptable_wait_time' => $acceptable_wait_time,
             'editable' => true,
         ], true));
     }

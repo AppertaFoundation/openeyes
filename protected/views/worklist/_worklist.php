@@ -126,8 +126,30 @@ $is_ae_worklist = isset($worklist->id) && Yii::app()->db->cache(1000)->createCom
         </tr>
         </thead>
         <tbody>
-        <?php foreach ($data_provider->getData() as $wl_patient_data) :
-            $wl_patient = WorklistPatient::model()->with('worklist_attributes', 'worklist.worklist_definition.pathway_type.default_steps.step_type', 'pathway', 'patient.contact', 'patient.episodes')->findByPk($wl_patient_data['id']);
+        <?php
+        $wl_data = $data_provider->getData();
+
+        $wl_patient_ids = array_map(function ($item) {
+            return $item['id'];
+        }, $wl_data);
+
+        $wl_patient_records = WorklistPatient::model()->with(
+            'worklist',
+            'worklist_attributes',
+            'worklist.worklist_definition.pathway_type.default_steps.step_type',
+            'pathway',
+            'pathway.owner',
+            'patient.contact',
+            'patient.episodes')->findAllByPk($wl_patient_ids);
+
+        $wl_patients = [];
+
+        foreach ($wl_patient_records as $wl_patient_record) {
+            $wl_patients[$wl_patient_record->id] = $wl_patient_record;
+        }
+
+        foreach ($wl_data as $wl_patient_data) :
+            $wl_patient = $wl_patients[$wl_patient_data['id']];
 
             $num_ae_visits = (int)Yii::app()->db->cache(300)->createCommand()
                 ->select('COUNT(*)')
@@ -167,7 +189,7 @@ $is_ae_worklist = isset($worklist->id) && Yii::app()->db->cache(1000)->createCom
                     <!--Render full pathway in a separate view. -->
                     <?php $this->renderPartial(
                         '//worklist/_clinical_pathway',
-                        ['visit' => $wl_patient]
+                        ['visit' => $wl_patient, 'acceptable_wait_time' => $acceptable_wait_time]
                     ); ?>
                 </td>
                 <td>

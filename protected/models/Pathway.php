@@ -431,7 +431,7 @@ class Pathway extends BaseActiveRecordVersioned
     /**
      * @return int
      */
-    public function getAcceptableWaitTime()
+    public static function getAcceptableWaitTime()
     {
         $wait_times = WorklistWaitTime::model();
         $levels = $wait_times->enumerateSupportedLevels();
@@ -451,14 +451,16 @@ class Pathway extends BaseActiveRecordVersioned
      *
      * @return array
      */
-    public function getWaitTimeSinceLastAction(): array
+    public function getWaitTimeSinceLastAction($acceptable_wait_time = null): array
     {
         $start_time = DateTime::createFromFormat(
             'Y-m-d H:i:s',
             $this->start_time
         );
 
-        $acceptable_wait_time = $this->getAcceptableWaitTime();
+        if(!$acceptable_wait_time) {
+            $acceptable_wait_time = Pathway::getAcceptableWaitTime();
+        }
         if ($this->completed_steps) {
             $completed_steps = $this->completed_steps;
             if (count($completed_steps) > 0) {
