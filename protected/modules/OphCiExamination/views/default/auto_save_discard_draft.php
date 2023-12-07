@@ -4,7 +4,7 @@
 
         <div class="popup-actions">
             <button type="button" class="cols-5 js-popup-discard-draft-button" data-test="cancel-event-and-discard-draft-btn">Cancel and discard</button>
-            <button type="button" class="cols-5 js-popup-retain-draft-button" data-test="cancel-event-without-discarding-draft-btn">Cancel without discarding</button>
+            <button type="button" class="cols-5 js-popup-retain-draft-button" data-test="cancel-event-without-discarding-draft-btn">Cancel and keep restore point</button>
         </div>
     </div>
 </div>
