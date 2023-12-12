@@ -711,6 +711,7 @@ class BaseEventTypeController extends BaseModuleController
         $this->moduleStateCssClass = 'edit';
 
         $this->setPatient($_REQUEST['patient_id']);
+        $this->validateOrResetActiveWorklistSessionState();
 
         if (!$this->episode = $this->getEpisode()) {
             $this->redirectToPatientLandingPage();
@@ -804,6 +805,7 @@ class BaseEventTypeController extends BaseModuleController
         $this->moduleStateCssClass = 'edit';
 
         $this->initWithEventId(@$_GET['id']);
+        $this->validateOrResetActiveWorklistSessionState();
 
         $this->draft = $this->event->draft;
 
@@ -976,11 +978,7 @@ class BaseEventTypeController extends BaseModuleController
                          */
                         $this->afterCreateEvent($this->event);
 
-                        unset(
-                            Yii::app()->session['active_worklist_patient_id'],
-                            Yii::app()->session['active_step_id'],
-                            Yii::app()->session['active_step_state_data']
-                        );
+                        $this->resetActiveWorklistSessionState();
 
                         if ($this->event->parent_id) {
                             $this->redirect(
@@ -1152,11 +1150,8 @@ class BaseEventTypeController extends BaseModuleController
     public function actionView($id)
     {
         // Clean up any worklist session data that might be lingering around.
-        unset(
-            Yii::app()->session['active_worklist_patient_id'],
-            Yii::app()->session['active_step_id'],
-            Yii::app()->session['active_step_state_data']
-        );
+        $this->resetActiveWorklistSessionState();
+
         $this->setOpenElementsFromCurrentEvent('view');
         // Decide whether to display the 'edit' button in the template
         if ($this->editable) {
@@ -1325,11 +1320,7 @@ class BaseEventTypeController extends BaseModuleController
 
                             $this->afterUpdateEvent($this->event);
 
-                            unset(
-                                Yii::app()->session['active_worklist_patient_id'],
-                                Yii::app()->session['active_step_id'],
-                                Yii::app()->session['active_step_state_data']
-                            );
+                            $this->resetActiveWorklistSessionState();
 
                             if ($this->event->parent_id) {
                                 $this->redirect(
@@ -3675,6 +3666,30 @@ class BaseEventTypeController extends BaseModuleController
         } else {
             throw new Exception("Could not update template: event not found");
         }
+    }
+
+    protected function resetActiveWorklistSessionState()
+    {
+        unset(
+            Yii::app()->session['active_worklist_patient_id'],
+            Yii::app()->session['active_step_id'],
+            Yii::app()->session['active_step_state_data']
+        );
+    }
+
+    protected function validateOrResetActiveWorklistSessionState()
+    {
+        if (empty(Yii::app()->session['active_worklist_patient_id'])) {
+            return;
+        }
+
+        $worklist_patient = WorklistPatient::model()->findByPk(Yii::app()->session['active_worklist_patient_id']);
+
+        if ($worklist_patient->patient_id === $this->patient->id) {
+            return;
+        }
+
+        $this->resetActiveWorklistSessionState();
     }
 
     private function updateFollowUpAggregate()

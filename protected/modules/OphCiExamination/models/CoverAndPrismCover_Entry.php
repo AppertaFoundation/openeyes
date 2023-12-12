@@ -161,4 +161,10 @@ class CoverAndPrismCover_Entry extends \BaseElement
 
         return implode(", ", $result);
     }
+
+    public function __clone()
+    {
+        $this->unsetAttributes(['id', 'element_id']);
+        $this->setIsNewRecord(true);
+    }
 }

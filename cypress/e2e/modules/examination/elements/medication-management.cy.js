@@ -94,7 +94,7 @@ describe('test suite to verify medication management functionality', () => {
                 })
 
             // remove all elements and add only Medication History and Medication Management elements
-            cy.removeElements()
+            cy.removeElements([], true)
             cy.addExaminationElement('Medication History')
             cy.addExaminationElement('Medication Management')
 

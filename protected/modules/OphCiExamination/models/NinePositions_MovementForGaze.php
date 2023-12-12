@@ -99,4 +99,10 @@ class NinePositions_MovementForGaze extends \BaseElement
         ][$sideString] ?? null;
         return $side_id  === (int) $this->eye_id;
     }
+
+    public function __clone()
+    {
+        $this->unsetAttributes(['id', 'reading_id']);
+        $this->setIsNewRecord(true);
+    }
 }

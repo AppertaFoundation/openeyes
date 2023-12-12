@@ -12,7 +12,7 @@ describe('Tests for retinoscopy element', () => {
         })
         .then(([url, patient]) => {
             cy.visit(url);
-            cy.removeElements();
+            cy.removeElements([], true);
             return cy.addExaminationElement('Retinoscopy');
         });
 });
