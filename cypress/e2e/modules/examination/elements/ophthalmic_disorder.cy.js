@@ -75,7 +75,7 @@ describe('ophthalmic disorder widget behaviour', () => {
 
         cy.get(checkboxClass).should('be.visible');
 
-        cy.removeElements('Ophthalmic Diagnoses');
+        cy.removeElements('Ophthalmic Diagnoses', true);
         cy.getBySel('add-ophthalmic-diagnoses-button').click();
 
         cy.getBySel('ophthalmic-diagnoses-popup')
