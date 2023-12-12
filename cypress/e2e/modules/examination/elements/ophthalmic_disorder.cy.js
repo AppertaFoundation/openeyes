@@ -5,7 +5,7 @@ describe('ophthalmic disorder widget behaviour', () => {
     let expectedDisorderTerm2 = 'Expected Two ' + Date.now();
     let expectedDisorderTerm3 = 'Expected Three ' + Date.now();
 
-    before(() => {
+    beforeEach(() => {
         cy.login()
             .then((context) => {
                 return cy.runSeeder('OphCiExamination', 'CommonOphthalmicDisorderWidgetBehaviourSeeder');
@@ -32,7 +32,7 @@ describe('ophthalmic disorder widget behaviour', () => {
             })
             .as('seederData');
     });
-/*
+
     it('only loads common ophthalmic disorders mapped to the current institution, and displays them in the correct order', function () {
         cy.getBySel('add-ophthalmic-diagnoses-button').click();
 
@@ -69,7 +69,7 @@ describe('ophthalmic disorder widget behaviour', () => {
             });
 
     });
-*/
+
     it('No Ophthalmic Diagnoses checkbox shows on edit', function () {
         let checkboxClass = '.OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses_no_ophthalmic_diagnoses_wrapper';
 
@@ -81,7 +81,7 @@ describe('ophthalmic disorder widget behaviour', () => {
         cy.getBySel('ophthalmic-diagnoses-popup')
             .should('be.visible')
             .within(() => {
-               cy.get('li').first().click();
+               cy.get('li[data-type="disorder"]').first().click();
                 cy.getBySel('add-icon-btn').click();
             });
 
