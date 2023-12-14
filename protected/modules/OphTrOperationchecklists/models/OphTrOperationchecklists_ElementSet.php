@@ -214,7 +214,7 @@ class OphTrOperationchecklists_ElementSet extends CActiveRecord
         return $mandatoryElementTypes;
     }
 
-    public function getNextStep()
+    public function getNextStep():? OphTrOperationchecklists_ElementSet
     {
         $criteria = new \CDbCriteria(array(
             'condition' => 'position >= :position AND id <> :id',

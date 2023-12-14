@@ -23,7 +23,7 @@ $pathway_json = json_encode(
     ),
     JSON_THROW_ON_ERROR
 );
-
+$acceptable_wait_time = Pathway::getAcceptableWaitTime();
 
 $session_filter_info = WorklistFilterQuery::getLastUsedFilterFromSession();
 $initial_filter = $session_filter_info['filter'];
@@ -228,10 +228,10 @@ $initial_filter = $session_filter_info['filter'];
         )
     );
     if ($initial_filter->getCombineWorklistsStatus()) {
-        $this->renderPartial('//worklist/_worklist', array('worklist' => $worklists, 'coreapi' => $coreapi, 'filter' => $initial_filter));
+        $this->renderPartial('//worklist/_worklist', array('worklist' => $worklists, 'acceptable_wait_time' => $acceptable_wait_time, 'coreapi' => $coreapi, 'filter' => $initial_filter));
     } else {
         foreach ($worklists as $worklist) {
-            $this->renderPartial('//worklist/_worklist', array('worklist' => $worklist, 'coreapi' => $coreapi, 'filter' => $initial_filter));
+            $this->renderPartial('//worklist/_worklist', array('worklist' => $worklist, 'acceptable_wait_time' => $acceptable_wait_time, 'coreapi' => $coreapi, 'filter' => $initial_filter));
         }
     }
     ?>

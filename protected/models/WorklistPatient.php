@@ -153,6 +153,7 @@ class WorklistPatient extends BaseActiveRecordVersioned
                 return $wa->attribute_value;
             }
         }
+
         return null;
     }
 

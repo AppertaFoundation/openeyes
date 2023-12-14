@@ -270,15 +270,14 @@ class BaseAPI
     }
 
     /**
-     * Returns the most recent instances of the given element type for the Patient.
+     * Returns the CDbCriteria used by the getElements function.
      *
-     * @param $element
      * @param Patient $patient
      * @param bool $use_context
      * @param string $before - date formatted string
      * @return BaseEventTypeElement[]
      */
-    public function getElements($element, Patient $patient, $use_context = false, $before = null, $criteria = null): array
+    public function getElementCriteria(Patient $patient, $use_context = false, $before = null, $criteria = null): CDbCriteria
     {
         if ($criteria === null) {
             $criteria = new CDbCriteria();
@@ -294,25 +293,50 @@ class BaseAPI
             $this->current_context->addEventConstraints($criteria);
         }
 
-        return $element::model()
-            ->with(array(
-                'event' => array('with' => array(
-                    'episode' =>
-                        array('with' =>
-                            array(
-                                'firm' => array(
-                                    'with' => array(
-                                        'serviceSubspecialtyAssignment' => array(
+        return $criteria;
+    }
+
+    /**
+     * Returns the joins required by the getElements function.
+     *
+     * @return array
+     */
+    public function getElementJoins(): array {
+        return [
+            'event' => [
+                'with' => [
+                    'episode' => [
+                        'with' => [
+                                'firm' => [
+                                    'with' => [
+                                        'serviceSubspecialtyAssignment' => [
                                             'with' => 'subspecialty'
-                                        )
-                                    )
-                                ),
+                                        ]
+                                    ]
+                                ],
                                 'patient'
-                            )
-                        )
-                    )
-                )
-            ))
+                            ]
+                        ]
+                    ]
+                ]
+            ];
+    }
+
+    /**
+     * Returns the most recent instances of the given element type for the Patient.
+     *
+     * @param $element
+     * @param Patient $patient
+     * @param bool $use_context
+     * @param string $before - date formatted string
+     * @return BaseEventTypeElement[]
+     */
+    public function getElements($element, Patient $patient, $use_context = false, $before = null, $criteria = null): array
+    {
+        $criteria = $this->getElementCriteria($patient, $use_context, $before, $criteria);
+
+        return $element::model()
+            ->with($this->getElementJoins())
             ->findAll($criteria);
     }
 
@@ -492,6 +516,8 @@ class BaseAPI
         if ($eye && $postfix = Eye::methodPostFix($eye->id)) {
             return $prefix . $postfix;
         }
+
+        return null;
     }
 
     /**

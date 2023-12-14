@@ -74,7 +74,7 @@ var OpenEyes = OpenEyes || {};
             }
 
             this.draftDiscardDialog = new OpenEyes.UI.Dialog({
-                title: "Discard draft",
+                title: "Discard auto-saved restore point?",
                 content: $(this.options.discardDraftContentsSelector),
             });
 

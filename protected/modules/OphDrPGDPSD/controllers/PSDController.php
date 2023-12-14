@@ -8,12 +8,12 @@ use OEModule\OphDrPGDPSD\models\OphDrPGDPSD_Assignment;
 class PSDController extends DefaultController
 {
     protected static $action_types = array(
-        'getSetMedications' => self::ACTION_TYPE_FORM,
-        'getMedication' => self::ACTION_TYPE_FORM,
-        'getPathStep' => self::ACTION_TYPE_FORM,
-        'unlockPSD' => self::ACTION_TYPE_FORM,
-        'confirmAdministration' => self::ACTION_TYPE_FORM,
-        'checkPincode' => self::ACTION_TYPE_FORM,
+        'getSetMedications' => BaseEventTypeController::ACTION_TYPE_FORM,
+        'getMedication' => BaseEventTypeController::ACTION_TYPE_FORM,
+        'getPathStep' => BaseEventTypeController::ACTION_TYPE_FORM,
+        'unlockPSD' => BaseEventTypeController::ACTION_TYPE_FORM,
+        'confirmAdministration' => BaseEventTypeController::ACTION_TYPE_FORM,
+        'checkPincode' => BaseEventTypeController::ACTION_TYPE_FORM,
     );
 
     protected $api;
@@ -60,6 +60,7 @@ class PSDController extends DefaultController
     {
         $step = PathwayStep::model()->findByPk($pathstep_id);
         $wl_patient = WorklistPatient::model()->findByPk($visit_id);
+        $acceptable_wait_time = Pathway::getAcceptableWaitTime();
 
         if (!$step) {
             $step = PathwayTypeStep::model()->findByPk($pathstep_type_id);
@@ -112,9 +113,9 @@ class PSDController extends DefaultController
             'step' => $step->toJSON(),
             'pathway_status' => $pathway->getStatusString(),
             'status_html' => $pathway->getPathwayStatusHTML(),
-            'step_html' => $this->renderPartial('//worklist/_clinical_pathway', ['visit' => $wl_patient], true),
+            'step_html' => $this->renderPartial('//worklist/_clinical_pathway', ['visit' => $wl_patient, 'acceptable_wait_time' => $acceptable_wait_time], true),
             'waiting_time_html' => $pathway->getTotalDurationHTML(true),
-            'wait_time_details' => $pathway->getWaitTimeSinceLastAction(),
+            'wait_time_details' => $pathway->getWaitTimeSinceLastAction($acceptable_wait_time),
         );
         $this->renderJSON($ret);
     }

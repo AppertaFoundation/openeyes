@@ -14,7 +14,7 @@
  */
 ?>
 <div class="cols-5">
-    <form id="admin_contactlabels">
+    <form id="admin_contactlabels" data-test="admin_contactlabels">
         <table class="standard">
             <thead>
             <tr>
