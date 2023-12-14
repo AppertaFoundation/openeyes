@@ -224,17 +224,15 @@ class Element_OphCiExamination_ClinicOutcome extends \BaseEventTypeElement
 
     public function getLatestEntry($status = null)
     {
-        $temp = $this->entries;
-        if ($status) {
-            $temp = array_filter($this->entries, function ($entry) use ($status) {
-                return strtolower($entry->status) === strtolower($status);
-            });
-        }
-        usort($temp, function ($e1, $e2) {
-            return ($e2->created_date <=> $e1->created_date);
-        });
+        $latest = ClinicOutcomeEntry::model()->findBySql(
+           "SELECT * FROM ophciexamination_clinicoutcome_entry en
+            JOIN et_ophciexamination_clinicoutcome el ON en.element_id = el.id
+            JOIN ophciexamination_clinicoutcome_status st ON en.status_id = st.id
+            WHERE (:status_name IS NULL OR LOWER(st.name) = LOWER(:status_name)) AND el.id = :element_id
+            ORDER BY en.created_date LIMIT 1",
+            [":status_name" => $status, ":element_id" => $this->id]);
 
-        return $temp[0];
+        return $latest;
     }
 
     public function checkIfTicketEntryExists($status_id)

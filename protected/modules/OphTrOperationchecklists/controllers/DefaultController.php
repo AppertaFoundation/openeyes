@@ -432,7 +432,7 @@ class DefaultController extends BaseEventTypeController
             // get the results from the saved event.
             $documentation = Element_OphTrOperationchecklists_Documentation::model()->with('checklistResults')->find(
                 'event_id = :event_id AND checklistResults.set_id = :set_id',
-                array(':event_id' => $this->event->id, ':set_id' => $this->getNextStep()->id)
+                array(':event_id' => $this->event->id, ':set_id' => $this->getNextStep()->id ?? null)
             );
             if (isset($documentation)) {
                 $checklist_result_records = array();
@@ -447,7 +447,8 @@ class DefaultController extends BaseEventTypeController
                     'condition' => 'element_type_id = :element_type_id',
                     'params' => array(':element_type_id' => $element->getElementType()->id)
                 ));
-                for ($i = 0; $i < count($questions); $i++) {
+                $question_count = count($questions);
+                for ($i = 0; $i < $question_count; $i++) {
                     $checklistResults[] = new OphTrOperationchecklists_DocumentationResults();
                 }
             }
@@ -477,7 +478,7 @@ class DefaultController extends BaseEventTypeController
                 $checklist_result->answer_id = $checklist_results['answer_id'] ?? null;
                 $checklist_result->answer = $checklist_results['answer'] ?? null;
                 $checklist_result->comment = $checklist_results['comment'] ?? null;
-                $checklist_result->set_id = $this->getNextStep()->id;
+                $checklist_result->set_id = $this->getNextStep()->id ?? null;
                 $checklist_result_records[$checklist_result->question_id] = $checklist_result;
             }
         }
@@ -506,7 +507,7 @@ class DefaultController extends BaseEventTypeController
             // get the results from the saved event.
             $clinicalAssessment = Element_OphTrOperationchecklists_ClinicalAssessment::model()->with('checklistResults')->find(
                 'event_id = :event_id AND checklistResults.set_id = :set_id',
-                array(':event_id' => $this->event->id, ':set_id' => $this->getNextStep()->id)
+                array(':event_id' => $this->event->id, ':set_id' => $this->getNextStep()->id ?? null)
             );
             if (isset($clinicalAssessment)) {
                 $checklist_result_records = array();
@@ -551,7 +552,7 @@ class DefaultController extends BaseEventTypeController
                 $checklist_result->answer_id = $checklist_results['answer_id'] ?? null;
                 $checklist_result->answer = $checklist_results['answer'] ?? null;
                 $checklist_result->comment = $checklist_results['comment'] ?? null;
-                $checklist_result->set_id = $this->getNextStep()->id;
+                $checklist_result->set_id = $this->getNextStep()->id ?? null;
                 $checklist_result_records[$checklist_result->question_id] = $checklist_result;
             }
         }
@@ -580,7 +581,7 @@ class DefaultController extends BaseEventTypeController
             // get the results from the saved event.
             $nursingAssessment = Element_OphTrOperationchecklists_NursingAssessment::model()->with('checklistResults')->find(
                 'event_id = :event_id AND checklistResults.set_id = :set_id',
-                array(':event_id' => $this->event->id, ':set_id' => $this->getNextStep()->id)
+                array(':event_id' => $this->event->id, ':set_id' => $this->getNextStep()->id ?? null)
             );
             if (isset($nursingAssessment)) {
                 $checklist_result_records = array();
@@ -625,7 +626,7 @@ class DefaultController extends BaseEventTypeController
                 $checklist_result->answer_id = $checklist_results['answer_id'] ?? null;
                 $checklist_result->answer = $checklist_results['answer'] ?? null;
                 $checklist_result->comment = $checklist_results['comment'] ?? null;
-                $checklist_result->set_id = $this->getNextStep()->id;
+                $checklist_result->set_id = $this->getNextStep()->id ?? null;
                 $checklist_result_records[$checklist_result->question_id] = $checklist_result;
             }
         }
@@ -654,7 +655,7 @@ class DefaultController extends BaseEventTypeController
             // get the results from the saved event.
             $patientSupport = Element_OphTrOperationchecklists_PatientSupport::model()->with('checklistResults')->find(
                 'event_id = :event_id AND checklistResults.set_id = :set_id',
-                array(':event_id' => $this->event->id, ':set_id' => $this->getNextStep()->id)
+                array(':event_id' => $this->event->id, ':set_id' => $this->getNextStep()->id ?? null)
             );
             if (isset($patientSupport)) {
                 $checklist_result_records = array();
@@ -699,7 +700,7 @@ class DefaultController extends BaseEventTypeController
                 $checklist_result->answer_id = $checklist_results['answer_id'] ?? null;
                 $checklist_result->answer = $checklist_results['answer'] ?? null;
                 $checklist_result->comment = $checklist_results['comment'] ?? null;
-                $checklist_result->set_id = $this->getNextStep()->id;
+                $checklist_result->set_id = $this->getNextStep()->id ?? null;
                 $checklist_result_records[$checklist_result->question_id] = $checklist_result;
             }
         }

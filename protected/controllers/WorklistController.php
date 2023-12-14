@@ -219,6 +219,7 @@ class WorklistController extends BaseController
         $new_status = Yii::app()->request->getPost('new_status');
         $step_action = Yii::app()->request->getPost('step_action');
         $pathway = Pathway::model()->findByPk($pathway_id);
+        $acceptable_wait_time = Pathway::getAcceptableWaitTime();
 
         if ($pathway) {
             switch ($step_action) {
@@ -277,7 +278,13 @@ class WorklistController extends BaseController
                 $this->renderJSON(
                     [
                         'status' => $pathway->getStatusString(),
-                        'step_html' => $this->renderPartial('_clinical_pathway', ['visit' => $pathway->worklist_patient], true),
+                        'step_html' => $this->renderPartial(
+                            '_clinical_pathway',
+                            [
+                                'visit' => $pathway->worklist_patient,
+                                'acceptable_wait_time' => $acceptable_wait_time
+                            ],
+                            true),
                         'status_html' => $pathway->getPathwayStatusHTML(),
                         'waiting_time_html' => $pathway->getTotalDurationHTML(true),
                     ]
@@ -301,6 +308,8 @@ class WorklistController extends BaseController
         $direction = Yii::app()->request->getPost('direction');
         $pathway_id = Yii::app()->request->getPost('pathway_id');
         $step = PathwayStep::model()->find('id = :id AND pathway_id = :pathway_id', [':id' => $step_id, ':pathway_id' => $pathway_id]);
+
+        $acceptable_wait_time = Pathway::getAcceptableWaitTime();
 
         if (!$step) {
             $visit = WorklistPatient::model()->findByPk($visit_id);
@@ -352,7 +361,8 @@ class WorklistController extends BaseController
                         'step_html' => $this->renderPartial('_clinical_pathway', ['visit' => $step->pathway->worklist_patient], true),
                         'pathway_status' => $pathway->getStatusString(),
                         'pathway_status_html' => $pathway->getPathwayStatusHTML(),
-                        'wait_time_details' => $pathway->getWaitTimeSinceLastAction(),
+                        'acceptable_wait_time' => $acceptable_wait_time,
+                        'wait_time_details' => $pathway->getWaitTimeSinceLastAction($acceptable_wait_time),
                     ]
                 );
                 Yii::app()->end();
@@ -372,6 +382,8 @@ class WorklistController extends BaseController
         $step_id = Yii::app()->request->getPost('step_id');
         $type_step_id = Yii::app()->request->getPost('step_type_id');
         $visit_id = Yii::app()->request->getPost('visit_id');
+
+        $acceptable_wait_time = Pathway::getAcceptableWaitTime();
 
         $step = PathwayStep::model()->find('id = :id', [':id' => $step_id]);
 
@@ -404,7 +416,10 @@ class WorklistController extends BaseController
                 'pathway_id' => $pathway->id,
                 'step_html' => $this->renderPartial(
                     '_clinical_pathway',
-                    ['visit' => $pathway->worklist_patient],
+                    [
+                        'visit' => $pathway->worklist_patient,
+                        'acceptable_wait_time' => $acceptable_wait_time
+                    ],
                     true
                 ),
                 'end_time' => DateTime::createFromFormat('Y-m-d H:i:s', $step->start_time)->format('H:i'),
@@ -422,8 +437,9 @@ class WorklistController extends BaseController
     public function actionUndoCheckIn()
     {
         $step_id = Yii::app()->request->getPost('step_id');
-
         $step = PathwayStep::model()->findByPk($step_id);
+
+        $acceptable_wait_time = Pathway::getAcceptableWaitTime();
 
         if (!$step) {
             throw new CHttpException(404, 'Unable to retrieve step for processing or step is not a undo checkin step.');
@@ -441,7 +457,7 @@ class WorklistController extends BaseController
                 'pathway_id' => $pathway->id,
                 'step_html' => $this->renderPartial(
                     '_clinical_pathway',
-                    ['visit' => $pathway->worklist_patient],
+                    ['visit' => $pathway->worklist_patient, 'acceptable_wait_time' => $acceptable_wait_time],
                     true
                 ),
                 'status_html' => $pathway->getPathwayStatusHTML(),
@@ -460,6 +476,8 @@ class WorklistController extends BaseController
         $visit_id = Yii::app()->request->getPost('visit_id');
 
         $step = PathwayStep::model()->find('id = :id', [':id' => $step_id]);
+
+        $acceptable_wait_time = Pathway::getAcceptableWaitTime();
 
         if (!$step) {
             $visit = WorklistPatient::model()->findByPk($visit_id);
@@ -518,7 +536,7 @@ class WorklistController extends BaseController
             [
                 'redirect_url' => '/patientEvent/create?' . http_build_query($params),
                 'pathway_status_html' => $step->pathway->getPathwayStatusHTML(),
-                'step_html' => $this->renderPartial('_clinical_pathway', ['visit' => $pathway->worklist_patient], true),
+                'step_html' => $this->renderPartial('_clinical_pathway', ['visit' => $pathway->worklist_patient, 'acceptable_wait_time' => $acceptable_wait_time], true),
                 'status' => $pathway->getStatusString(),
             ]
         );
@@ -537,6 +555,9 @@ class WorklistController extends BaseController
         $pathway_id = Yii::app()->request->getPost('pathway_id');
         $visit_id = Yii::app()->request->getPost('visit_id');
         $step = PathwayStep::model()->find('id = :id AND pathway_id = :pathway_id', [':id' => $step_id, ':pathway_id' => $pathway_id]);
+
+        $acceptable_wait_time = Pathway::getAcceptableWaitTime();
+
         if (!$step) {
             $wl_patient = WorklistPatient::model()->findByPk($visit_id);
             $type_step = PathwayTypeStep::model()->findByPk($type_step_id);
@@ -567,7 +588,7 @@ class WorklistController extends BaseController
             }
 
             $this->renderJSON(
-                array('step_html' => $this->renderPartial('_clinical_pathway', ['visit' => $step->pathway->worklist_patient], true))
+                array('step_html' => $this->renderPartial('_clinical_pathway', ['visit' => $step->pathway->worklist_patient, 'acceptable_wait_time' => $acceptable_wait_time], true))
             );
         }
     }
@@ -584,6 +605,8 @@ class WorklistController extends BaseController
         $direction = Yii::app()->request->getPost('direction');
         $step = PathwayStep::model()->find('id = :id', [':id' => $step_id]);
         $visit_id = Yii::app()->request->getPost('visit_id');
+
+        $acceptable_wait_time = Pathway::getAcceptableWaitTime();
 
         if (!$step) {
             $wl_patient = WorklistPatient::model()->findByPk($visit_id);
@@ -629,7 +652,7 @@ class WorklistController extends BaseController
         $this->renderJSON(
             array(
                 'step' => $step->toJSON(),
-                'step_html' => $this->renderPartial('_clinical_pathway', ['visit' => $step->pathway->worklist_patient], true)
+                'step_html' => $this->renderPartial('_clinical_pathway', ['visit' => $step->pathway->worklist_patient, 'acceptable_wait_time' => $acceptable_wait_time], true)
             )
         );
     }
@@ -1753,6 +1776,8 @@ class WorklistController extends BaseController
         $date_from = $filter->getFrom() ?? $date_from;
         $date_to = $filter->getTo() ?? $date_to;
 
+        $acceptable_wait_time = Pathway::getAcceptableWaitTime();
+
         // This has been split into two here to that all the unique worklists can be passed back to the client to refresh the set of worklists.
         // Passing back the (filtered set of) worklists instead would clobber the set to be only those so filtered,
         // and the user would not be able to select those filtered out when trying to change what lists they're filtering.
@@ -1772,10 +1797,10 @@ class WorklistController extends BaseController
         $dom['popup'] = $prescriber_dom_data['popup'];
 
         if ($filter->getCombineWorklistsStatus()) {
-            $dom['main'] = $this->renderPartial('_worklist', array('worklist' => $worklists, 'is_prescriber' => $prescriber_dom_data['is_prescriber'], 'filter' => $filter), true);
+            $dom['main'] = $this->renderPartial('_worklist', array('worklist' => $worklists, 'acceptable_wait_time' => $acceptable_wait_time, 'is_prescriber' => $prescriber_dom_data['is_prescriber'], 'filter' => $filter), true);
         } else {
             foreach ($worklists as $worklist) {
-                $dom['main'] .= $this->renderPartial('_worklist', array('worklist' => $worklist, 'is_prescriber' => $prescriber_dom_data['is_prescriber'], 'filter' => $filter), true);
+                $dom['main'] .= $this->renderPartial('_worklist', array('worklist' => $worklist, 'acceptable_wait_time' => $acceptable_wait_time, 'is_prescriber' => $prescriber_dom_data['is_prescriber'], 'filter' => $filter), true);
                 $dom['filter'] .= "<li><a href='#' class='js-worklist-filter' data-worklist='js-worklist-{$worklist->id}'>{$worklist->name} : {$worklist->getDisplayShortDate()}</a></li>";
             }
         }
@@ -1815,6 +1840,8 @@ class WorklistController extends BaseController
         $step_data = Yii::app()->request->getPost('step_data') ?: array();
         $visit_id = Yii::app()->request->getPost('visit_id');
         $wl_patient = WorklistPatient::model()->findByPk($visit_id);
+
+        $acceptable_wait_time = Pathway::getAcceptableWaitTime();
 
         if (!$wl_patient->pathway) {
             $wl_patient->worklist->worklist_definition->pathway_type->instancePathway($wl_patient);
@@ -1864,7 +1891,7 @@ class WorklistController extends BaseController
                 [
                     'step_html' => $this->renderPartial(
                         '_clinical_pathway',
-                        ['visit' => $new_step->pathway->worklist_patient],
+                        ['visit' => $new_step->pathway->worklist_patient, 'acceptable_wait_time' => $acceptable_wait_time],
                         true
                     ),
                     'no_wait_timer' => in_array($new_step->type->short_name, PathwayStep::NO_WAIT_TIMER_AFTER_ADD) || ($wl_patient->pathway->findCheckInStep(true) === null)
@@ -1885,6 +1912,8 @@ class WorklistController extends BaseController
         $visit_id = Yii::app()->request->getPost('target_pathway_id');
         $wl_patient = WorklistPatient::model()->findByPk($visit_id);
 
+        $acceptable_wait_time = Pathway::getAcceptableWaitTime();
+
         if (!$wl_patient->pathway) {
             $wl_patient->worklist->worklist_definition->pathway_type->instancePathway($wl_patient);
             $wl_patient->refresh();
@@ -1892,7 +1921,7 @@ class WorklistController extends BaseController
 
         if ($pathway_type) {
             $pathway_type->duplicateStepsForPathway($wl_patient->pathway->id, $position);
-            $this->renderJSON(['step_html' => $this->renderPartial('_clinical_pathway', ['visit' => $wl_patient], true)]);
+            $this->renderJSON(['step_html' => $this->renderPartial('_clinical_pathway', ['visit' => $wl_patient, 'acceptable_wait_time' => $acceptable_wait_time], true)]);
         }
         throw new CHttpException(404, 'Unable to retrieve pathway type for duplication.');
     }
@@ -1945,6 +1974,9 @@ class WorklistController extends BaseController
         $wl_patient = WorklistPatient::model()->findByPk($post['visit_id']);
         $step_id = $post['pathstep_id'];
         $pathway_instanced = false;
+
+        $acceptable_wait_time = Pathway::getAcceptableWaitTime();
+
         if ($post['pathstep_id'] === 'comment') {
             $pathway_id = $post['pathway_id'];
             if (!$wl_patient->pathway) {
@@ -1990,7 +2022,7 @@ class WorklistController extends BaseController
          */
         $this->renderJSON(
             array(
-                'step_html' => $pathway_instanced ? $this->renderPartial('_clinical_pathway', ['visit' => $wl_patient], true) : null,
+                'step_html' => $pathway_instanced ? $this->renderPartial('_clinical_pathway', ['visit' => $wl_patient, 'acceptable_wait_time' => $acceptable_wait_time], true) : null,
                 'step_id' => $step_id,
                 'comment' => $comment->comment ?? null
             )
@@ -2127,6 +2159,8 @@ class WorklistController extends BaseController
         $type_step_id = Yii::app()->request->getPost('step_type_id');
         $visit_id = Yii::app()->request->getPost('visit_id');
 
+        $acceptable_wait_time = Pathway::getAcceptableWaitTime();
+
         extract($this->getStepAndPathway($pathstep_id, $visit_id, $type_step_id));
 
         // push the step to completed status
@@ -2149,7 +2183,7 @@ class WorklistController extends BaseController
         $this->renderJSON(
             [
                 'status' => $pathway->getStatusString(),
-                'step_html' => $this->renderPartial('_clinical_pathway', ['visit' => $pathway->worklist_patient], true),
+                'step_html' => $this->renderPartial('_clinical_pathway', ['visit' => $pathway->worklist_patient, 'acceptable_wait_time' => $acceptable_wait_time], true),
                 'status_html' => $pathway->getPathwayStatusHTML(),
                 'pathway_id' => $pathway->id,
             ]
@@ -2168,6 +2202,9 @@ class WorklistController extends BaseController
         $step->end_time = null;
         $step->started_user_id = null;
         $step->completed_user_id = null;
+
+        $acceptable_wait_time = Pathway::getAcceptableWaitTime();
+
         if (!$step->save()) {
             throw new CHttpException(500, 'Unable to update the step status');
         }
@@ -2195,7 +2232,7 @@ class WorklistController extends BaseController
         $this->renderJSON(
             [
                 'status' => $pathway->getStatusString(),
-                'step_html' => $this->renderPartial('_clinical_pathway', ['visit' => $pathway->worklist_patient], true),
+                'step_html' => $this->renderPartial('_clinical_pathway', ['visit' => $pathway->worklist_patient, 'acceptable_wait_time' => $acceptable_wait_time], true),
                 'status_html' => $pathway->getPathwayStatusHTML(),
                 'pathway_id' => $pathway->id,
                 'waiting_time_html' => $pathway->getTotalDurationHTML(true),

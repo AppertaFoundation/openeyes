@@ -263,22 +263,24 @@ class ClinicOutcomeEntry extends \BaseElement
             'icon' => '',
         );
 
-        if ($this->status->followup && $this->risk_status) {
+        if ($this->status->followup && $this->risk_status_id) {
+            $risk_status = $this->risk_status;
+
             $size_css = "";
             $position_css = "";
             $content = "";
             if (!$for_worklist) {
                 $size_css = "small";
                 $position_css = "pad-right";
-                $content = "{$this->risk_status->name}. {$this->risk_status->alias}";
+                $content = "{$risk_status->name}. {$risk_status->alias}";
             } else {
                 $subspecialty = $this->element->event->episode->getSubspecialtyText();
                 $due_date = "$subspecialty due: {$this->getDueDate()}";
-                $risk_status_details = "{$this->risk_status->alias} ({$this->risk_status->name}):";
-                $riskt_status_desc = $this->risk_status->description;
-                $content = "{$due_date}<br/><br/>${risk_status_details}<br/>{$riskt_status_desc}";
+                $risk_status_details = "{$risk_status->alias} ({$risk_status->name}):";
+                $risk_status_desc = $risk_status->description;
+                $content = "{$due_date}<br/><br/>{$risk_status_details}<br/>{$risk_status_desc}";
             }
-            $risk_status_icon_color = $this->risk_status->getIndicatorColor();
+            $risk_status_icon_color = $risk_status->getIndicatorColor();
             $ret['class'] = "oe-i triangle-{$risk_status_icon_color} $size_css $position_css js-has-tooltip";
             $ret['content'] = $content;
             $ret['icon'] = "<i class='{$ret['class']}' data-tooltip-content='{$ret['content']}'></i>";

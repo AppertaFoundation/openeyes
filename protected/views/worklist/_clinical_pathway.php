@@ -5,7 +5,6 @@
 
 use OEModule\OphDrPGDPSD\models\OphDrPGDPSD_Assignment;
 
-$acceptable_wait_time = Pathway::model()->getAcceptableWaitTime();
 $pathway = $visit->pathway;
 ?>
 
@@ -103,7 +102,7 @@ $pathway = $visit->pathway;
             && !$pathway->end_time
             && count($pathway->started_steps) === 0
         ) {
-            $wait_time_since_last_action = $pathway->getWaitTimeSinceLastAction();
+            $wait_time_since_last_action = $pathway->getWaitTimeSinceLastAction($acceptable_wait_time);
             extract($wait_time_since_last_action, EXTR_OVERWRITE);
             ?>
         <span class="oe-pathstep-btn buff <?= $status_class ?>" data-pathstep-id="wait"

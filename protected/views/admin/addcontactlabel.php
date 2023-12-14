@@ -39,7 +39,27 @@
         <tbody>
         <tr>
             <td>Name</td>
-            <td> <?= \CHtml::activeTextField($contactlabel, 'name', ['class' => 'cols-full']); ?> </td>
+            <td> <?= \CHtml::activeTextField($contactlabel, 'name', ['class' => 'cols-full', 'data-test' => 'name']); ?> </td>
+        </tr>
+        <tr>
+            <td>Is Private</td>
+            <td><?= \CHtml::activeCheckBox(
+                    $contactlabel,
+                    'is_private',
+                    ['data-test' => 'is_private']
+                );
+                    ?>
+            </td>
+        </tr>
+        <tr>
+            <td>Max Number Per Patient</td>
+            <td>
+                <?= \CHtml::activeNumberField(
+                    $contactlabel,
+                    'max_number_per_patient',
+                    ['data-test' => 'max_number_per_patient']
+                ); ?>
+            </td>
         </tr>
         </tbody>
 
@@ -47,7 +67,7 @@
         <tr>
             <td colspan="5">
                 <?= \CHtml::submitButton('Save', ['class' => 'button large',
-                    'name' => 'save', 'id' => 'et_save']); ?>
+                    'name' => 'save', 'id' => 'et_save', 'data-test' => 'et_save']); ?>
                 <?= \CHtml::submitButton('Cancel', ['class' => 'button large',
                     'data-uri' => '/admin/contactlabels', 'name' => 'cancel', 'id' => 'et_cancel']); ?>
             </td>
