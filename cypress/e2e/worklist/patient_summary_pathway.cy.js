@@ -1,29 +1,36 @@
 describe('the behaviour of a patient pathway in a patient summary screen', () => {
-    before(() => {
-        cy.login();
+    beforeEach(() => {
+        cy.login().then(() => {
+            cy.runSeeder('', 'PatientSummaryPathwaySeeder').as('seederData');
 
-        cy.runSeeder('', 'PatientSummaryPathwaySeeder').as('seederData');
-
-        cy.createModels('Worklist', [['withStepsOfType', ['checkin', 'discharge']]]).then((worklist) => {
-            return cy.createModels('WorklistPatient', [], { 'worklist_id': worklist.id });
+            cy.createModels('Worklist', [['withStepsOfType', ['checkin', 'discharge']]]).then((worklist) => {
+                return cy.createModels('WorklistPatient', [], { 'worklist_id': worklist.id });
+            });
         });
     });
 
     it('refreshes the comment popup correctly after setting a comment', function () {
-        const seederData = this.seederData;
 
         cy.visitWorklist();
 
-        cy.getWorklist(seederData.worklistId);
+        cy.getWorklist(this.seederData.worklistId);
 
         cy.intercept({
             method: 'GET',
-            url: '/worklist/getPathStep*'
-        }).as('getPathStepCheckIn')
+            url: '/worklist/getPathStep?partial=1*'
+        }).as('getPathStepCheckInPartial');
+        cy.intercept({
+            method: 'GET',
+            url: '/worklist/getPathStep?partial=0*'
+        }).as('getPathStepCheckInFull');
 
-        cy.getBySel(`arr-step-${seederData.worklistId}`).click();
+        // because two requests are triggered, we separate out the events here to avoid collision
+        cy.getBySel(`arr-step-${this.seederData.worklistId}`).trigger('mouseover');
+        cy.wait('@getPathStepCheckInPartial');
 
-        cy.wait('@getPathStepCheckIn');
+        cy.getBySel(`arr-step-${this.seederData.worklistId}`).click();
+
+        cy.wait('@getPathStepCheckInFull');
 
         cy.intercept({
             'method': 'POST',
@@ -34,16 +41,16 @@ describe('the behaviour of a patient pathway in a patient summary screen', () =>
 
         cy.wait('@checkIn');
 
-        cy.visit(`/patient/summary/${seederData.patientId}`);
+        cy.visit(`/patient/summary/${this.seederData.patientId}`);
 
         cy.getBySel('clinic-pathway-btn').click();
 
         cy.intercept({
             method: 'GET',
             url: '/worklist/getPathStep*'
-        }).as('getPathStepComment')
+        }).as('getPathStepComment');
 
-        cy.getBySel('pathway-comment-btn', `[data-patient-id="${seederData.patientId}"]`).click();
+        cy.getBySel('pathway-comment-btn', `[data-patient-id="${this.seederData.patientId}"]`).click();
 
         cy.wait('@getPathStepComment');
 
@@ -52,7 +59,7 @@ describe('the behaviour of a patient pathway in a patient summary screen', () =>
         cy.intercept({
             method: 'GET',
             url: '/worklist/getPathStep*'
-        }).as('getPathStepSavedComment')
+        }).as('getPathStepSavedComment');
 
         cy.getBySel('save-pathway-comment-btn').click();
 
