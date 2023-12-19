@@ -35,6 +35,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
         this.registerController();
         this.initialiseTriggers();
+        this.initAllergyOtherValue();
         this.dedupeAllergySelectors();
         this.showEditableIfOther();
 
@@ -103,6 +104,10 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
 
             controller.notifyMedicationManagementController();
         });
+    };
+
+    AllergiesController.prototype.initAllergyOtherValue = function () {
+        this.options.allergyOtherValue = Object.keys(this.options.allAllergies).find(key => this.options.allAllergies[key] === "Other");
     };
 
     AllergiesController.prototype.registerController = function () {
@@ -180,7 +185,7 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             let other_allergy_value = row_other_allergy.find('input').val();
 
             if (other_allergy_value === '') {
-                let show_other_input = (parseInt(this.value) === controller.options.allergyOtherValue);
+                let show_other_input = (this.value === controller.options.allergyOtherValue);
                 $tr.find('.js-not-other-allergy').toggle(!show_other_input);
                 row_other_allergy.toggle(show_other_input);
             }
