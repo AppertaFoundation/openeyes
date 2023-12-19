@@ -16,10 +16,8 @@
 namespace OEModule\OESysEvent\components;
 
 use CApplicationComponent;
-use InvalidArgumentException;
 use OE\concerns\InteractsWithApp;
 use OEModule\OESysEvent\components\traits\CanFakeEvents;
-use OEModule\OESysEvent\contracts\Dispatchable;
 use OEModule\OESysEvent\contracts\Dispatcher;
 use OEModule\OESysEvent\exceptions\UnrecognisedListenerConfigException;
 
@@ -37,6 +35,7 @@ class Manager extends CApplicationComponent implements Dispatcher
 
     public array $observers = [];
     protected array $listeners = [];
+    protected array $events_to_ignore = [];
 
     public function init()
     {
@@ -67,6 +66,37 @@ class Manager extends CApplicationComponent implements Dispatcher
         }
     }
 
+    /**
+     * Execute the given callback, ignoring any of the given $events that
+     * are dispatched by that execution.
+     *
+     * Supports wildcard matching of '*', which will mean all events are
+     * ignored.
+     *
+     * N.B. Does not support class inheritance class based events.
+     *
+     * @param array|string $events
+     * @param callable $callback
+     * @return void
+     */
+    public function ignore(array|string $events, callable $callback)
+    {
+        if (is_string($events)) {
+            $events = [$events];
+        }
+
+        $this->events_to_ignore = $events;
+
+        try {
+            $callback();
+        } catch (\Exception $e) {
+            $this->events_to_ignore = [];
+            throw $e;
+        }
+
+        $this->events_to_ignore = [];
+    }
+
     public function dispatch(...$arguments): void
     {
         if (is_string($arguments[0])) {
@@ -75,6 +105,10 @@ class Manager extends CApplicationComponent implements Dispatcher
             array_shift($arguments);
         } else {
             $event_name = get_class($arguments[0]);
+        }
+
+        if ($this->shouldIgnoreEvent($event_name)) {
+            return;
         }
 
         if ($this->shouldFakeEvent($event_name)) {
@@ -154,6 +188,18 @@ class Manager extends CApplicationComponent implements Dispatcher
         return function (...$arguments) use ($listener_instance, $method) {
             return $method ? $listener_instance->$method(...$arguments) : $listener_instance(...$arguments);
         };
+    }
+
+    /**
+     * Simple check against the contents of the events_to_ignore property
+     *
+     * @param string $event_name
+     * @return boolean
+     */
+    protected function shouldIgnoreEvent(string $event_name): bool
+    {
+        return in_array($event_name, $this->events_to_ignore)
+            || in_array('*', $this->events_to_ignore);
     }
 
     protected function getListenersForEventString(string $event_name): array

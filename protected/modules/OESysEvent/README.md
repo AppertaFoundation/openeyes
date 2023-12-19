@@ -65,6 +65,21 @@ At the moment we leverage standard Yii configuration on the event component:
     ]
 ```
 
+### Ignoring an event
+
+It's possible to temporarily ignore events that might be triggered through an action:
+
+```
+    Yii::app()->event->ignore(
+        [ExampleEvent::class],
+        function () {
+            // do something that would trigger the ExampleEvent
+        }
+    );
+```
+
+Any listeners configured for the event will not be triggered within the scope of the passed callback. You can also pass in `'*'` as a wildcard to ignore all events.
+
 ### Testing
 
 #### Events

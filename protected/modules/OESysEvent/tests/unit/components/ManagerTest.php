@@ -73,6 +73,84 @@ class ManagerTest extends OEDbTestCase
         $this->assertEquals($test_event, InvokableEventHandler::$received_events[0]);
     }
 
+    public function ignoreEventsProvider()
+    {
+        return [
+            'specific event can be ignored' => [ExampleEvent::class, [SecondExampleEvent::class]],
+            'all events can be ignored' => ['*', []]
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider ignoreEventsProvider
+     */
+    public function events_can_be_ignored($to_ignore, $expected_to_be_triggered)
+    {
+        $manager = new Manager();
+        $manager->observers = [
+            [
+                'system_event' => ExampleEvent::class,
+                'listener' => InvokableEventHandler::class
+            ],
+            [
+                'system_event' => SecondExampleEvent::class,
+                'listener' => InvokableEventHandler::class
+            ]
+        ];
+
+        $manager->init();
+
+        $manager->ignore(
+            $to_ignore,
+            function () use ($manager) {
+                $manager->dispatch(new ExampleEvent());
+                $manager->dispatch(new SecondExampleEvent());
+            }
+        );
+
+        $this->assertCount(count($expected_to_be_triggered), InvokableEventHandler::$received_events);
+        $manager->dispatch(new ExampleEvent());
+        $manager->dispatch(new SecondExampleEvent());
+        $this->assertCount(
+            2 + count($expected_to_be_triggered),
+            InvokableEventHandler::$received_events,
+            'all event should trigger handler after ignore call.'
+        );
+    }
+
+    /** @test */
+    public function scope_of_events_being_ignored_is_constrained_to_the_callback_even_when_an_exception_is_thrown()
+    {
+        $manager = new Manager();
+        $manager->observers = [
+            [
+                'system_event' => ExampleEvent::class,
+                'listener' => InvokableEventHandler::class
+            ]
+        ];
+
+        $manager->init();
+
+        try {
+            $manager->ignore(
+                ExampleEvent::class,
+                function () use ($manager) {
+                    $manager->dispatch(new ExampleEvent());
+                    throw new \Exception('a thrown exception should not prevent manager state being reset');
+                }
+            );
+        } catch (\Exception $e) {
+            if ($e->getMessage() !== 'a thrown exception should not prevent manager state being reset') {
+                throw $e;
+            }
+        }
+
+        $this->assertCount(0, InvokableEventHandler::$received_events);
+        $manager->dispatch(new ExampleEvent());
+        $this->assertCount(1, InvokableEventHandler::$received_events);
+    }
+
     /** @test */
     public function listeners_can_be_faked()
     {
@@ -130,6 +208,10 @@ class LegacyEventHandler
 }
 
 class ExampleEvent extends SystemEvent
+{
+}
+
+class SecondExampleEvent extends SystemEvent
 {
 }
 
