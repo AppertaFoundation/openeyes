@@ -120,6 +120,38 @@ class ManagerTest extends OEDbTestCase
     }
 
     /** @test */
+    public function scope_of_events_being_ignored_is_constrained_to_the_callback_even_when_an_exception_is_thrown()
+    {
+        $manager = new Manager();
+        $manager->observers = [
+            [
+                'system_event' => ExampleEvent::class,
+                'listener' => InvokableEventHandler::class
+            ]
+        ];
+
+        $manager->init();
+
+        try {
+            $manager->ignore(
+                ExampleEvent::class,
+                function () use ($manager) {
+                    $manager->dispatch(new ExampleEvent());
+                    throw new \Exception('a thrown exception should not prevent manager state being reset');
+                }
+            );
+        } catch (\Exception $e) {
+            if ($e->getMessage() !== 'a thrown exception should not prevent manager state being reset') {
+                throw $e;
+            }
+        }
+
+        $this->assertCount(0, InvokableEventHandler::$received_events);
+        $manager->dispatch(new ExampleEvent());
+        $this->assertCount(1, InvokableEventHandler::$received_events);
+    }
+
+    /** @test */
     public function listeners_can_be_faked()
     {
         $manager = new Manager();

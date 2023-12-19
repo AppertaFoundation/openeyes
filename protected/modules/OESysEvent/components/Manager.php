@@ -87,7 +87,12 @@ class Manager extends CApplicationComponent implements Dispatcher
 
         $this->events_to_ignore = $events;
 
-        $callback();
+        try {
+            $callback();
+        } catch (\Exception $e) {
+            $this->events_to_ignore = [];
+            throw $e;
+        }
 
         $this->events_to_ignore = [];
     }
