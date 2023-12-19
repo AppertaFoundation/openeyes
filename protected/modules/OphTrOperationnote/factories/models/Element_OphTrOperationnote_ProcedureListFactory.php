@@ -17,8 +17,11 @@ class Element_OphTrOperationnote_ProcedureListFactory extends FactoryForOperatio
 {
     public function definition(): array
     {
+        $definition = parent::definition();
+        // ensure event factory doesn't also create this element for itself
+        $definition['event_id']->withoutElement(Element_OphTrOperationnote_ProcedureList::class);
         return array_merge(
-            parent::definition(),
+            $definition,
             [
                 'eye_id' => $this->faker->randomElement([Eye::RIGHT, Eye::LEFT])
             ]
@@ -69,11 +72,11 @@ class Element_OphTrOperationnote_ProcedureListFactory extends FactoryForOperatio
                     return OphTrOperationnote_ProcedureListProcedureAssignment::factory()
                         ->make([
                             'procedurelist_id' => null,
-                            'proc_id' => is_string($procedure)
-                                ? Procedure::factory()->useExisting([
+                            'proc_id' => is_numeric($procedure)
+                                ? $procedure
+                                : Procedure::factory()->useExisting([
                                     'term' => $procedure
                                 ])
-                                : $procedure
                         ]);
                 },
                 $procedures
