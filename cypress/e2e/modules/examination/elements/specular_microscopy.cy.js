@@ -5,7 +5,7 @@ describe('behaviour of the specular microscopy element', () => {
             cy.getEventCreationUrl(patient.id, 'OphCiExamination').as('createUrl')
                 .then(url => {
                     cy.visit(url);
-                    cy.removeElements();
+                    cy.removeElements('Specular Microscopy', true);
                 });
         });
     });
