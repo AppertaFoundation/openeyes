@@ -1,29 +1,30 @@
 describe('behaviour of the admin screen for medication routes', () => {
 
-
     beforeEach(() => {
         cy.login();
     });
 
-    it('delete medication routes', function () {
+    it('deactivates medication routes', function () {
         cy.visit('OphDrPrescription/routesAdmin/list');
+        cy.intercept('/OphDrPrescription/routesAdmin/deactivate').as('deactivate');
 
-        // Alias the routeId
-        cy.get('tr[class="clickable"]').first().within(() => {
-            cy.get('input[type="checkbox"]').as('routeCheckbox');
+        cy.get('input[name="delete"]').as("deactivateButton");
+        cy.get('tr[class="clickable"] td[data-test="getIsActiveIcon"] i.tick')
+            .first()
+            .closest('tr')
+            .find('input[type="checkbox"]')
+            .as("checkbox", { static: true })
+            .click();
 
-            cy.get('@routeCheckbox').invoke('val').as('routeId');
+        cy.get("@checkbox").invoke('attr', 'value').then(routeId => {
+            cy.get("@deactivateButton").click();
+            cy.wait("@deactivate");
 
-            cy.get('@routeCheckbox').click();
-        });
+            cy.visit('OphDrPrescription/routesAdmin/list');
 
-        cy.get('input[name="delete"]').click();
-
-        // Use the alias to check if the row with the routeId doesn't exist
-        cy.get('@routeId').then((routeId) => {
-            cy.get(`tr[data-id="${routeId}"]`).should('not.exist');
+            cy.get(`input[type="checkbox"][value=${routeId}]`).closest('tr').within(tr => {
+                cy.getBySel('getIsActiveIcon', ' i').should('have.class', 'remove');
+            });
         });
     });
-
-
 });

@@ -60,6 +60,9 @@ class SettingMetadata extends BaseActiveRecordVersioned
     protected static ?Firm $sessionFirm = null;
     protected static array $metadataCacheStore = [];
 
+    public static $OFF_SETTING_VALUE = 'off';
+    public static $ON_SETTING_VALUE = 'on';
+
     public static function resetCache()
     {
         static::$sessionSiteValidated = null;

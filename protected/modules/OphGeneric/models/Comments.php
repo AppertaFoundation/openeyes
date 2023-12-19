@@ -63,7 +63,7 @@ class Comments extends \BaseEventTypeElement
     {
         // Only define rules for those attributes with user inputs.
         return array(
-            array('comment', 'length', 'max' => 255),
+            array('comment', 'safe'),
             // Remove attributes that should not be searched.
             array('comment', 'safe', 'on' => 'search'),
         );

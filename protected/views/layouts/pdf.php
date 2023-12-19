@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -20,7 +21,7 @@
 Yii::app()->assetManager->reset();
 ?>
 <!doctype html>
-<html lang="en">
+<html lang="en" class="theme-<?= \SettingMetadata::model()->getSetting('display_theme'); ?>">
 <head>
 <meta charset="utf-8">
 <title><?=\CHtml::encode($this->pageTitle); ?></title>

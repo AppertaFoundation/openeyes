@@ -11,19 +11,19 @@ use OEModule\OphCiExamination\models\FamilyHistorySide;
 class FamilyHistoryParameter extends CaseSearchParameter implements DBProviderInterface
 {
     /**
-     * @var int|null $relative
+     * @var null $relative
      */
-    public ?int $relative = null;
+    public $relative = null;
 
     /**
-     * @var int|null $side
+     * @var null $side
      */
-    public ?int $side = null;
+    public $side = null;
 
     /**
-     * @var int|null $condition
+     * @var null $condition
      */
-    public ?int $condition = null;
+    public $condition = null;
 
     protected string $label_ = 'Family History';
 
@@ -177,15 +177,16 @@ WHERE 1=1 {$query_side} {$query_relative} {$query_condition}";
         // Construct your list of bind values here. Use the format "bind" => "value".
         // Matched bind parameter numbers to those on the query - CERA-538
         $binds = array();
-        if ($this->relative !== '' || $this->relative !== null) {
+        if ($this->relative !== '') {
             $binds["f_h_relative_$this->id"] = $this->relative;
         }
-        if ($this->side !== '' || $this->side !== null) {
+        if ($this->side !== '') {
             $binds["f_h_side_$this->id"] = $this->side;
         }
-        if ($this->condition !== '' || $this->condition !== null) {
+        if ($this->condition !== '') {
             $binds["f_h_condition_$this->id"] = $this->condition;
         }
+
         return $binds;
     }
 

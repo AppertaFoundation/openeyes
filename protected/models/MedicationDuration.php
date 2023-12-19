@@ -1,5 +1,7 @@
 <?php
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "medication_duration".
  *
@@ -20,6 +22,8 @@
  */
 class MedicationDuration extends BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     /**
      * @return string the associated database table name
      */
@@ -37,20 +41,20 @@ class MedicationDuration extends BaseActiveRecordVersioned
         // will receive user inputs.
         return array(
             array('name', 'required'),
-            array('display_order', 'numerical', 'integerOnly'=>true),
-            array('name', 'length', 'max'=>40),
-            array('last_modified_user_id, created_user_id', 'length', 'max'=>10),
+            array('display_order', 'numerical', 'integerOnly' => true),
+            array('name', 'length', 'max' => 40),
+            array('last_modified_user_id, created_user_id', 'length', 'max' => 10),
             array('deleted_date, last_modified_date, created_date', 'safe'),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
-            array('id, name, display_order, deleted_date, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
+            array('id, name, display_order, deleted_date, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on' => 'search'),
         );
     }
 
     public function defaultScope()
     {
         return array(
-            'order' => $this->getTableAlias(true, false).'.display_order',
+            'order' => $this->getTableAlias(true, false) . '.display_order',
         );
     }
 
@@ -101,19 +105,19 @@ class MedicationDuration extends BaseActiveRecordVersioned
     {
         // @todo Please modify the following code to remove attributes that should not be searched.
 
-        $criteria=new CDbCriteria;
+        $criteria = new CDbCriteria();
 
-        $criteria->compare('id',$this->id);
-        $criteria->compare('name',$this->name,true);
-        $criteria->compare('display_order',$this->display_order);
-        $criteria->compare('deleted_date',$this->deleted_date,true);
-        $criteria->compare('last_modified_user_id',$this->last_modified_user_id,true);
-        $criteria->compare('last_modified_date',$this->last_modified_date,true);
-        $criteria->compare('created_user_id',$this->created_user_id,true);
-        $criteria->compare('created_date',$this->created_date,true);
+        $criteria->compare('id', $this->id);
+        $criteria->compare('name', $this->name, true);
+        $criteria->compare('display_order', $this->display_order);
+        $criteria->compare('deleted_date', $this->deleted_date, true);
+        $criteria->compare('last_modified_user_id', $this->last_modified_user_id, true);
+        $criteria->compare('last_modified_date', $this->last_modified_date, true);
+        $criteria->compare('created_user_id', $this->created_user_id, true);
+        $criteria->compare('created_date', $this->created_date, true);
 
         return new CActiveDataProvider($this, array(
-            'criteria'=>$criteria,
+            'criteria' => $criteria,
         ));
     }
 
@@ -141,7 +145,7 @@ class MedicationDuration extends BaseActiveRecordVersioned
      * @param string $className active record class name.
      * @return MedicationDuration the static model class
      */
-    public static function model($className=__CLASS__)
+    public static function model($className = __CLASS__)
     {
         return parent::model($className);
     }

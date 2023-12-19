@@ -80,7 +80,7 @@ class PasApiAssignment extends \BaseActiveRecord
      *
      * @return \CActiveRecord
      */
-    public function getInternal($force_create = false)
+    public function getInternal($force_create = false, $fallback_resource_column = null)
     {
         if ($this->internal_id) {
             $internal = self::model($this->internal_type)->findByPk($this->internal_id);
@@ -90,9 +90,21 @@ class PasApiAssignment extends \BaseActiveRecord
             }
 
             return $internal;
-        } else {
-            return new $this->internal_type();
         }
+
+        // If there is no internal ID, first we should ensure that the record doesn't already exist through other means
+        // e.g. HSCIC import
+        if ($fallback_resource_column) {
+            $internal = self::model($this->internal_type)->find(
+                "$fallback_resource_column = :resource_id",
+                [':resource_id' => $this->resource_id]
+            );
+            if (!$internal) {
+                $internal = new $this->internal_type();
+            }
+            return $internal;
+        }
+        return new $this->internal_type();
     }
 
     /**
@@ -127,7 +139,7 @@ class PasApiAssignment extends \BaseActiveRecord
      */
     public function getNewAssignment($resource_type, $resource_id, $internal_type = null)
     {
-        $record = new static();
+        $record = new PasApiAssignment();
         $record->resource_type = $resource_type;
         $record->resource_id = $resource_id;
         // assuming all models are in the root namespace at this point

@@ -1,0 +1,10 @@
+{
+    "allOptionsChecked": "not.exist",
+    "optomLetterChecked": "not.exist",
+    "noOptionsChecked": "not.exist",
+    "gpLetterCchecked": "not.exist",
+    "gpAndOptomLetterChecked": "not.exist",
+    "prescriptionAndOptomLetterChecked": "not.exist",
+    "prescriptionChecked": "not.exist",
+    "prescriptionAndGgpLetterChecked": "not.exist"
+}

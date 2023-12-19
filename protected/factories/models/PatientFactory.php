@@ -95,6 +95,15 @@ class PatientFactory extends ModelFactory
         });
     }
 
+    public function localPatient()
+    {
+        return $this->state(function () {
+            return [
+                'is_local' => '1',
+            ];
+        });
+    }
+
     protected function generateDefaultIdentifiersFor(Patient $patient): void
     {
         $patient->identifiers = [
@@ -109,5 +118,24 @@ class PatientFactory extends ModelFactory
                     'patient_id' => $patient
                 ])
         ];
+    }
+
+    public function withGp()
+    {
+        return $this->state(function ()  {
+            return [
+                'gp_id' => ModelFactory::factoryFor(\Gp::class)->useExisting(),
+            ];
+        });
+    }
+
+
+    public function withPractice()
+    {
+        return $this->state(function ()  {
+            return [
+                'practice_id' => ModelFactory::factoryFor(\Practice::class)->useExisting(),
+            ];
+        });
     }
 }

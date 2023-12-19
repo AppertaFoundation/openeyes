@@ -126,8 +126,8 @@ class BaseController extends Controller
         $assetManager->isPrintRequest = $this->isPrintAction($this->action->id);
         $assetManager->isAjaxRequest = Yii::app()->getRequest()->getIsAjaxRequest();
         if (!isset(Yii::app()->params['tinymce_default_options']['content_css'])) {
-            $newblue_path = Yii::getPathOfAlias('application.assets.newblue');
-            $print_css_path = $assetManager->getPublishedUrl($newblue_path, true) . '/dist/css/style_oe_print.3.css';
+            $newblue_path = Yii::getPathOfAlias('application.assets.nxblu');
+            $print_css_path = $assetManager->getPublishedUrl($newblue_path, true) . '/dist/css/oe_print.css';
             $newparams =
                 array_merge_recursive(
                     Yii::app()->getParams()->toArray(),

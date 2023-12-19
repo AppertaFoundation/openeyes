@@ -1,6 +1,10 @@
 describe('create examination event', () => {
     const SETTING_NAME = 'require_pin_for_prescription';
     beforeEach(() => {
+        cy.intercept('OphCiExamination/Default/checkPrescriptionAutoSignEnabled').as('checkAutoSignEnabledRequest');
+        cy.intercept('medication/retrieveDrugRouteOptions*').as('routeOptions');
+        cy.intercept('medicationManagement/getDrugSetForm*').as('mmGetDrugSetForm');
+
         cy.login()
             .then(() => {
                 return cy.createPatient();
@@ -16,7 +20,7 @@ describe('create examination event', () => {
             });
     });
 
-    it(`add the medication management element`, function() {
+    it(`add the medication management element`, function () {
         cy.setSystemSettingValue(SETTING_NAME, 'no');
         cy.removeElements([], true);
         cy.addExaminationElement('Medication Management');
@@ -24,19 +28,16 @@ describe('create examination event', () => {
 
         cy.getBySel('mm-add-standard-set-btn').scrollIntoView();
         cy.getBySel('mm-add-standard-set-btn').click();
-        
+
         cy.getBySel('Medication-Management-element-section').within(() => {
             cy.getBySel('add-options').children().first().click();
             //Click on add button
-            cy.getBySel('add-icon-btn').first().click().then((element) => {
-                cy.intercept({
-                    method: 'GET',
-                    url: '/medicationManagement/getDrugSetForm*'
-                }).as('drugSetForm');
-            });
+            cy.getBySel('add-icon-btn').first().click();
         });
 
-        cy.wait('@drugSetForm');
+        cy.wait('@mmGetDrugSetForm');
+        cy.wait('@checkAutoSignEnabledRequest');
+        cy.wait('@routeOptions');
 
         cy.getBySel('event-medication-management-row').each(($el) => {
             cy.get($el).within(() => {

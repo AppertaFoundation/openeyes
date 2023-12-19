@@ -1,0 +1,18 @@
+{
+  "HospitalNumber": {
+    "type": "string",
+    "required": true
+  },
+  "IdentifierType": {
+    "type": "string",
+    "required": true
+  },
+  "Date": {
+    "type": "date",
+    "required": true
+  },
+  "Comments": {
+    "type": "string",
+    "required": true
+  }
+}

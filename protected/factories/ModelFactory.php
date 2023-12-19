@@ -19,12 +19,14 @@ namespace OE\factories;
 use CActiveRecord;
 use CApplication;
 use CDbCriteria;
+use Eye;
 use Faker\Generator;
+use OE\factories\exceptions\CannotMakeModelException;
 use OE\factories\exceptions\CannotSaveModelException;
 use OE\factories\exceptions\FactoryNotFoundException;
-use OE\factories\exceptions\CannotMakeModelException;
 use OE\factories\traits\MapsModelsToFormData;
 use OE\factories\traits\SupportsDBUniqueAttributes;
+use OEModule\OphCiExamination\models\interfaces\SidedData;
 use Yii;
 
 abstract class ModelFactory
@@ -429,9 +431,42 @@ abstract class ModelFactory
                 if (is_bool($value)) {
                     $instance->$attr = $value ? '1' : '0';
                 } elseif (is_integer($value) || is_float($value)) {
-                    $instance->$attr = (string) $value;
+                    $instance->$attr = (string)$value;
                 }
             }
         }
+    }
+
+    /**
+     * Tries to return a state where the attribute is set with the specified and value and eye_id
+     * If the side label is not suffixed then it assumes it is prefixed
+     * @param $attribute_label_without_side
+     * @param $eye_id
+     * @param $value
+     * @param bool $side_is_suffixed
+     * @return $this
+     */
+    protected function addSidedData($attribute_label_without_side, $eye_id, $value, bool $side_is_suffixed = false): self
+    {
+        if (intval($eye_id) !== SidedData::BOTH) {
+            $eye_side = strtolower(Eye::methodPostFix($eye_id));
+            $eye_sides_to_add = [$eye_side];
+        } else {
+            $eye_sides_to_add = ['left', 'right'];
+        }
+
+        $data = [];
+
+        foreach ($eye_sides_to_add as $eye_side_to_add) {
+            if ($side_is_suffixed) {
+                $attribute_label = $attribute_label_without_side . "_" . $eye_side_to_add;
+            } else {
+                $attribute_label = $eye_side_to_add . "_" . $attribute_label_without_side;
+            }
+
+            $data[$attribute_label] = $value;
+        }
+
+        return $this->state($data);
     }
 }

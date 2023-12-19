@@ -17,7 +17,7 @@ describe('pain element tests', () => {
                     return cy.addExaminationElement('Pain');
                 });
         });
-    
+
         it('saves pain element and is shown on view mode', () => {
             cy.getBySel("pain-value-5").click();
             cy.getBySel("pain-add-entry").click();
@@ -26,7 +26,7 @@ describe('pain element tests', () => {
                 cy.getElementByName('Pain').should('have.length', 1);
             });
         });
-    
+
         it('saves pain element when pain is selected, but not added and is shown on view mode', () => {
             cy.getBySel("pain-value-5").click();
             cy.saveEvent().then(() => {
@@ -59,7 +59,7 @@ describe('pain element tests', () => {
                 cy.get(".oe-popup .title").should("contain", "Discard empty elements?");
             });
         });
-    
+
         it('Validation error occurs when saving empty pain element and close_incomplete_exam_elements=off', () => {
             cy.setSystemSettingValue("close_incomplete_exam_elements", "off");
             cy.login()
@@ -78,14 +78,20 @@ describe('pain element tests', () => {
                     return cy.addExaminationElement('Pain');
                 });
             cy.saveEvent()
-            .then(() => {
-                cy.getBySel("validation-errors").should("contain", "Pain: Entries cannot be blank");
-            });
+                .then(() => {
+                    cy.getBySel("validation-errors").should("contain", "Pain: Entries cannot be blank");
+                });
         });
 
         it('Retains the recorded pain scores on validation error', () => {
             cy.login()
-                .then(() => {
+                .then((context) => {
+                    cy.runSeeder(
+                        'OphCiExamination',
+                        'RiskSetSeeder',
+                        {
+                            'subspecialty_id': context.body.subspecialty_id
+                        });
                     return cy.createPatient();
                 })
                 .then((patient) => {

@@ -20,8 +20,11 @@ use OE\factories\ModelFactory;
 use Medication;
 use MedicationRoute;
 use MedicationAttributeOption;
-
+use MedicationDuration;
+use MedicationFrequency;
 use OEModule\OphDrPGDPSD\models\OphDrPGDPSD_PGDPSD;
+use OphDrPrescription_DispenseCondition;
+use OphDrPrescription_DispenseLocation;
 
 class OphDrPGDPSD_PGDPSDMedsFactory extends ModelFactory
 {
@@ -34,7 +37,11 @@ class OphDrPGDPSD_PGDPSDMedsFactory extends ModelFactory
             'medication_id' => Medication::factory(),
             'dose' => $this->faker->numberBetween(1, 100),
             'dose_unit_term' => $this->faker->randomElement($this->getDoseUnitTerms()),
-            'route_id' => MedicationRoute::factory()->useExisting()
+            'route_id' => MedicationRoute::factory()->useExisting(),
+            'frequency_id' => MedicationFrequency::factory()->useExisting(),
+            'duration_id' => MedicationDuration::factory()->useExisting(),
+            'dispense_condition_id' => OphDrPrescription_DispenseCondition::factory()->useExisting(),
+            'dispense_location_id' => OphDrPrescription_DispenseLocation::factory()->useExisting(),
         ];
     }
 

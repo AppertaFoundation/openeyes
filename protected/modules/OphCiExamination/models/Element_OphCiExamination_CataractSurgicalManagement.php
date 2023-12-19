@@ -17,6 +17,8 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "et_ophciexamination_cataractsurgicalmanagement".
  *
@@ -58,6 +60,7 @@ namespace OEModule\OphCiExamination\models;
  */
 class Element_OphCiExamination_CataractSurgicalManagement extends \SplitEventTypeElement
 {
+    use HasFactory;
     use traits\CustomOrdering;
     public $service;
 
@@ -162,20 +165,6 @@ class Element_OphCiExamination_CataractSurgicalManagement extends \SplitEventTyp
         ];
     }
 
-    public static function getLatestTargetRefraction($patient, $side)
-    {
-        $criteria = new \CDbCriteria();
-        $criteria->join = 'JOIN event ev ON t.event_id = ev.id';
-        $criteria->join .= ' JOIN episode ep ON ev.episode_id = ep.id';
-        $criteria->addCondition('ep.patient_id = ' . $patient->id);
-        $criteria->order = 'last_modified_date DESC';
-
-        $cataract_surgical_managements = self::model()->findAll($criteria);
-        return (count($cataract_surgical_managements) > 0) ?
-            $cataract_surgical_managements[0]->{$side . '_target_postop_refraction'} :
-            null;
-    }
-
     public function getFormattedTargetRefraction($side)
     {
         $raw_target_refraction = (string)$this->{$side . '_target_postop_refraction'};
@@ -270,5 +259,10 @@ class Element_OphCiExamination_CataractSurgicalManagement extends \SplitEventTyp
         $right_description = ($this->eye_id !== (string)self::LEFT) ? $this->rightEye->name . ' target post-op: ' . $this->right_target_postop_refraction . ' ' : '';
         $left_description = ($this->eye_id !== (string)self::RIGHT) ? $this->leftEye->name . ' target post-op: ' . $this->left_target_postop_refraction : '';
         return $right_description . $left_description;
+    }
+
+    public function getExaminationLink()
+    {
+        return '/OphCiExamination/Default/view/' . $this->event->id;
     }
 }

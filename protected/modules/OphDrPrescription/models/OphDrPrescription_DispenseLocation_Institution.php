@@ -28,7 +28,7 @@ class OphDrPrescription_DispenseLocation_Institution extends BaseActiveRecordVer
         return array(
             array('dispense_location_id', 'numerical', 'integerOnly' => true),
             array('institution_id, last_modified_user_id, created_user_id', 'length', 'max'=>10),
-            array('last_modified_date, created_date', 'safe'),
+            array('dispense_location_id, institution_id, last_modified_date, created_date', 'safe'),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
             array('id, dispense_location_id, institution_id, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),

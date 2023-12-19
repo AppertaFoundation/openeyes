@@ -1930,6 +1930,7 @@ class PatientController extends BaseController
         $this->renderPatientPanel = false;
         $this->fixedHotlist = true;
         $this->pageTitle = 'Add New Patient';
+        $this->layout = '//layouts/nx_basegrid';
 
         $patient_source = (null !== SettingMetadata::model()->getSetting('default_patient_source')) ? SettingMetadata::model()->getSetting('default_patient_source') : 'Referral';
         $patient = new Patient($patient_source);
@@ -2030,6 +2031,7 @@ class PatientController extends BaseController
                 $patient->beforeValidate();
             }
         }
+
 
         $this->render('crud/create', array(
         'patient' => $patient,
@@ -2997,9 +2999,12 @@ class PatientController extends BaseController
     public function actionShowCurrentPathway()
     {
         $pathway = Pathway::model()->findByPk($_POST['pathway_id']);
+        $acceptable_wait_time = Pathway::getAcceptableWaitTime();
+
         $this->renderJSON($this->renderPartial('//patient/_patient_clinic_pathway', [
             'pathway' => $pathway,
             'display_wait_duration' => true,
+            'acceptable_wait_time' => $acceptable_wait_time,
             'editable' => true,
         ], true));
     }

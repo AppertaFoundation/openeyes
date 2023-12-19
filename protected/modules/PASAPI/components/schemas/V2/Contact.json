@@ -1,0 +1,29 @@
+{
+  "Title": {
+    "type": "string"
+  },
+  "FirstName": {
+    "type": "string",
+    "required": true
+  },
+  "Surname": {
+    "type": "string",
+    "required": true
+  },
+  "ContactType": {
+    "type": "string"
+  },
+  "AddressList": {
+    "type": "list",
+    "resource": "Address"
+  },
+  "TelephoneNumber": {
+    "type": "string"
+  },
+  "MobilePhoneNumber": {
+    "type": "string"
+  },
+  "Email": {
+    "type": "string"
+  }
+}

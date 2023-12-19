@@ -19,14 +19,14 @@ class ProtectedFileController extends BaseController
     public function accessRules()
     {
         return array(
-                array('allow',
-                    'actions' => array('download', 'view', 'thumbnail'),
-                    'roles' => array('OprnViewProtectedFile'),
-                ),
-                array('allow',
-                    'actions' => array('import'),
-                    'roles' => array('admin'),
-                ),
+            array('allow',
+                'actions' => array('download', 'view', 'thumbnail'),
+                'roles' => array('OprnViewProtectedFile'),
+            ),
+            array('allow',
+                'actions' => array('import'),
+                'roles' => array('admin'),
+            ),
         );
     }
 
@@ -36,14 +36,14 @@ class ProtectedFileController extends BaseController
             throw new CHttpException(404, 'File not found');
         }
         if (!file_exists($file->getPath())) {
-            throw new CException('File not found on filesystem: '.$file->getPath());
+            throw new CException('File not found on filesystem: ' . $file->getPath());
         }
         header('Content-Description: File Transfer');
-        header('Content-Type: '.$file->mimetype);
-        header('Content-Disposition: attachment; filename="'.$file->name.'"');
+        header('Content-Type: ' . $file->mimetype);
+        header('Content-Disposition: attachment; filename="' . $file->name . '"');
         header('Expires: 0');
         header('Cache-Control: must-revalidate');
-        header('Content-Length: '.$file->size);
+        header('Content-Length: ' . $file->size);
         ob_clean();
         flush();
         readfile($file->getPath());
@@ -57,27 +57,18 @@ class ProtectedFileController extends BaseController
         $filepath = $file->getPath();
 
         if (!file_exists($file->getPath())) {
-            throw new CException('File not found on filesystem: '.$file->getPath());
-        }
-        header('Content-Type: '.$file->mimetype);
-
-        $image_size = getimagesize($filepath);
-        $mime = isset($image_size['mime']) ? $image_size['mime'] : null;
-        if ($mime && ($mime === 'image/jpeg' || $mime === 'image/png')) {
-            if ($rotate) {
-                $original = $this->getImageFrom($filepath, $mime);
-                $rotated = imagerotate($original, $rotate, imageColorAllocateAlpha($original, 255, 255, 255, 127));
-                ob_start();
-                $this->dumpImageAs($rotated, $mime);
-                $size = ob_get_length();
-                header("Content-length: " . $size);
-                ob_flush();
-            }
+            throw new CException('File not found on filesystem: ' . $file->getPath());
         }
 
-        ob_clean();
-        flush();
-        readfile($filepath);
+
+        header('Content-Type: ' . $file->mimetype);
+
+        $file = FileReader::readFileFromPath($filepath, $rotate);
+
+        if (is_string($file)) {
+            header("Content-length: " . strlen($file));
+            echo $file;
+        }
     }
 
     public function actionThumbnail($id, $dimensions, $name)

@@ -14,7 +14,7 @@ class AnalyticsController extends BaseController
 
     private $current_user;
 
-    public $layout = '//layouts/events_and_episodes'; // Not adding strict typing here as this is overriding a Yii property which isn't strictly typed.
+    public $layout = '//layouts/main'; // Not adding strict typing here as this is overriding a Yii property which isn't strictly typed.
     protected array $filters;
     protected ?int $surgeon;
     public bool $fixedHotlist = false;
@@ -59,7 +59,7 @@ class AnalyticsController extends BaseController
         $ret = null;
         $params = Yii::app()->request->getParam('params');
 
-        if (array_key_exists('report_type',$params) && $params['report_type'] === 'vf') {
+        if (array_key_exists('report_type', $params) && $params['report_type'] === 'vf') {
             $ret = $this->getVfPatientList($params);
         } else {
             $ret = $this->getPatientList($params);

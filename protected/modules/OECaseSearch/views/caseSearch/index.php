@@ -72,7 +72,8 @@ $user_searches = array_map(
         </div>
         <hr class="divider"/>
         <div class="button-stack">
-            <?= CHtml::htmlButton('Search', array('class' => 'cols-full green hint js-search-btn', 'type' => 'submit')) ?>
+            <?= CHtml::htmlButton('Search', ['class' => 'cols-full green hint js-search-btn', 'type' => 'submit',
+                'data-test' => 'search']) ?>
             <button class="js-save-search-dialog-btn cols-full" data-test="save-search">Save search</button>
             <?= CHtml::htmlButton('Clear search', array('id' => 'clear-search', 'class' => 'cols-full')) ?>
             <?= (!$patients || $patients->totalItemCount === 0) ? null : CHtml::htmlButton(

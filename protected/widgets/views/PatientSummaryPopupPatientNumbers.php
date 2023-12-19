@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -14,6 +15,7 @@
  * @copyright Copyright (c) 2020, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <?php
 /**
@@ -21,15 +23,15 @@
  */
 ?>
 <?php if (count($this->patient->identifiers) > 0) { ?>
-    <div class="patient-numbers flex-layout">
+    <div class="patient-numbers flex">
         <div class="local-numbers">
             <?php foreach ($this->patient->localIdentifiers as $local_identifier) { ?>
                 <?php if ($local_identifier->hasValue()) { ?>
                     <div class="num nowrap">
                         <?= $local_identifier->patientIdentifierType->short_title ?>
-                        <label class="inline highlight">
+                        <span class="num-id">
                             <?= $local_identifier->getDisplayValue() ?>
-                        </label>
+                        </span>
                     </div>
                 <?php } ?>
             <?php } ?>
@@ -37,7 +39,7 @@
         <?php if ($this->patient->globalIdentifier) { ?>
             <div class="nhs-number">
                 <span><?= PatientIdentifierHelper::getIdentifierPrompt($this->patient->globalIdentifier); ?></span>
-                <?= PatientIdentifierHelper::getIdentifierValue($this->patient->globalIdentifier); ?>
+                <span class="num-id"><?= PatientIdentifierHelper::getIdentifierValue($this->patient->globalIdentifier); ?></span>
             </div>
         <?php } ?>
     </div>

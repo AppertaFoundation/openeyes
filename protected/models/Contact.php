@@ -24,6 +24,7 @@ use OE\factories\models\traits\HasFactory;
  * The following are the available columns in table 'contact':
  *
  * @property int $id
+ * @property string $pas_id
  * @property string $nick_name
  * @property string $primary_phone
  * @property string $mobile_phone
@@ -80,7 +81,7 @@ class Contact extends BaseActiveRecordVersioned
     {
         return array(
             array('nick_name', 'length', 'max' => 80),
-            array('title, first_name, last_name, nick_name, primary_phone, mobile_phone, qualifications, maiden_name,
+            array('pas_id, title, first_name, last_name, nick_name, primary_phone, mobile_phone, qualifications, maiden_name,
              contact_label_id, active, comment, national_code, fax',
                 'safe'),
             array('first_name, last_name, created_institution_id', 'required', 'on' => array('manualAddPatient', 'referral', 'self_register', 'other_register', 'manage_gp')),
@@ -172,6 +173,7 @@ class Contact extends BaseActiveRecordVersioned
             ),
             'label' => array(self::BELONGS_TO, 'ContactLabel', 'contact_label_id'),
             'locations' => array(self::HAS_MANY, 'ContactLocation', 'contact_id'),
+            'patients' => array(self::MANY_MANY, 'Patient', 'patient_contact_assignment(contact_id, patient_id)')
         );
     }
 
@@ -182,6 +184,7 @@ class Contact extends BaseActiveRecordVersioned
     {
         return array(
             'id' => 'ID',
+            'pas_id' => 'PAS ID',
             'nick_name' => 'Nickname',
             'primary_phone' => 'Phone number',
             'mobile_phone' => 'Mobile number',

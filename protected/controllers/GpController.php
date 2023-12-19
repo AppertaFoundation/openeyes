@@ -173,6 +173,7 @@ class GpController extends BaseController
                             'firstName' => $contact->first_name,
                             'lastName' => $contact->last_name,
                             'primaryPhone' => $contact->primary_phone,
+                            'email' => $contact->email,
                             'labelId' => isset($contact->label) ? $contact->label->id : '',
                             'providerNo' => isset($contactPracticeAssociate->provider_no) ? $contactPracticeAssociate->provider_no : '',
                         ));
@@ -331,7 +332,7 @@ class GpController extends BaseController
             ->select('g.id, c.first_name, c.last_name, cl.name as role')
             ->from('gp g')
             ->join('contact c', 'c.id = g.contact_id')
-            ->join('contact_label cl', 'cl.id = c.contact_label_id')
+            ->leftJoin('contact_label cl', 'cl.id = c.contact_label_id')
             ->where(
                 '(LOWER(c.first_name) LIKE LOWER(:first_name)) OR (LOWER(c.last_name) LIKE LOWER(:last_name))',
                 array(':first_name' => "%{$term}%", ':last_name' => "%{$term}%")

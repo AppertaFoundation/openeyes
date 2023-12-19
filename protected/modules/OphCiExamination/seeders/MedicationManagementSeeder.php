@@ -16,6 +16,8 @@
 namespace OEModule\OphCiExamination\seeders;
 
 use OE\seeders\BaseSeeder;
+use OEModule\OphDrPGDPSD\factories\OphDrPGDPSDFactory;
+use OEModule\OphDrPGDPSD\models\OphDrPGDPSD_PGDPSD;
 
 /**
 * MedicationManagementSeeder is a seeder for generating data used solely in the Medication Management test suite (examination\elements\medication-management.cy.js)
@@ -46,6 +48,16 @@ class MedicationManagementSeeder extends BaseSeeder
             ->create();
         $user_authentication = $user->authentications[0];
 
+        // seed a user with prescribe privilege
+        $non_prescriber_user_password = $this->getApp()->dataGenerator->faker()->word() . '_password';
+        $non_prescriber_user = \User::factory()
+            ->withLocalAuthForInstitution($current_institution, $non_prescriber_user_password)
+            ->withAuthItems(['Edit', 'User', 'View clinical'])
+            ->create();
+        $non_prescriber_user_authentication = $non_prescriber_user->authentications[0];
+
+        $pgd = OphDrPGDPSD_PGDPSD::factory()->pgd()->withMeds()->forInstitution($this->app_context->getSelectedInstitution())->forUsers([$non_prescriber_user])->create();
+
         // retrieve common ophthalmic drugs with route 'Eye' (use the same method to fetch the medications as the adder dialog within the Prescription event)
         $common_ophthalmic = \Medication::model()->listBySubspecialtyWithCommonMedications($current_subspeciality->id, true, $current_site->id, true);
         $common_eye_ophthalmic = array_values(array_filter($common_ophthalmic, function ($medication) {
@@ -56,6 +68,10 @@ class MedicationManagementSeeder extends BaseSeeder
             'user' => ['username' => $user_authentication->username,
                        'password' => $user_password
             ],
+            'nonPrescriberUser' => ['username' => $non_prescriber_user_authentication->username,
+                       'password' => $non_prescriber_user_password
+            ],
+            'pgdName' => $pgd->name,
             'drug1' => $common_eye_ophthalmic[0],
             'drug2' => $common_eye_ophthalmic[1]
         ];

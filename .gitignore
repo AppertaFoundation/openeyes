@@ -135,6 +135,5 @@ cypress/downloads/**
 **/.phpunit.result.cache
 db.session.sql
 
-# ignore nxblu in v6.7.x
-protected/assets/NxBlu
-protected/assets/nxblu
+# ignore newblue in v7+
+protected/assets/newblue

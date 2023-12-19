@@ -25,7 +25,7 @@ class OphCoCorrespondence_SignatureFactory extends ModelFactory
     {
         return [
             'element_id' => ModelFactory::factoryFor(Element_OphCoCorrespondence_Esign::class),
-            'signatory_name' => $this->faker->name(),
+            'signatory_name' => $this->faker->name() . ' ' .  $this->faker->lastName(),
             'timestamp' => time(),
             'signed_user_id' => null,
             'secretary' => 0

@@ -21,43 +21,45 @@
 
 <div class="attachment" data-is-examination="<?= $this->is_examination ?>">
     <?php
-    if ($this->element) :
+    if ($this->element) {
         echo \CHtml::activeHiddenField($this->element, "id");
-    endif; ?>
+    }
 
-    <!-- BOTH sides -->
-    <?php if (isset($this->event_attachments['BOTH'])) { ?>
-        <div class="element-both-eyes">
-            <!-- Add attachment icon -->
-            <?php if ($this->allow_attach) : ?>
-                <?php if ($this->element && $this->element->getFormTitle() !== 'Attachment') : ?>
-                    <div class="flex-layout flex-left">Attachments</div>
-                <?php endif ?>
-                <a class="add-attachment flex-layout flex-right">
-                    <i class="oe-i plus-circle small disabled"></i>
-                </a>
-            <?php endif; ?>
-            <div class="flex-layout flex-center">
-
-                <?php $this->render(
-                    'Attachment_entry',
-                    ['attachments' => $this->event_attachments['BOTH'], 'image_size' => $this->image_size, 'size' => 'small', 'eye_side' => 'Both']
-                ); ?>
-            </div>
-            <?php if ($this->show_titles) { ?>
+    foreach ([Attachment::BOTH, Attachment::NONE] as $group_side) { ?>
+        <!-- BOTH sides -->
+        <?php if (isset($this->event_attachments[$group_side])) { ?>
+            <div class="element-both-eyes">
+                <!-- Add attachment icon -->
+                <?php if ($this->allow_attach) : ?>
+                    <?php if ($this->element && $this->element->getFormTitle() !== 'Attachment') : ?>
+                        <div class="flex-layout flex-left">Attachments</div>
+                    <?php endif ?>
+                    <a class="add-attachment flex-layout flex-right">
+                        <i class="oe-i plus-circle small disabled"></i>
+                    </a>
+                <?php endif; ?>
                 <div class="flex-layout flex-center">
-                    <h1 class="priority-text"><?= $this->group_titles['BOTH'] ?></h1>
-                </div>
-            <?php } ?>
-        </div>
-    <?php } ?>
 
+                    <?php $this->render(
+                        'Attachment_entry',
+                        ['attachments' => $this->event_attachments[$group_side],
+                            'image_size' => $this->image_size, 'size' => 'small', 'eye_side' => $group_side]
+                    ); ?>
+                </div>
+                <?php if ($this->show_titles) { ?>
+                    <div class="flex-layout flex-center">
+                        <h1 class="priority-text"><?= $this->group_titles[$group_side] ?></h1>
+                    </div>
+                <?php } ?>
+            </div>
+        <?php } ?>
+    <?php } ?>
     <!-- EACH side -->
-    <?php if (isset($this->event_attachments['LEFT']) || isset($this->event_attachments['RIGHT'])) { ?>
+    <?php if (isset($this->event_attachments[Attachment::LEFT]) || isset($this->event_attachments[Attachment::RIGHT])) { ?>
         <div class="element-fields element-eyes">
-            <?php foreach (array('left' => 'right', 'right' => 'left') as $page_side => $eye_side) : ?>
+            <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) : ?>
                 <div class="js-element-eye <?= $eye_side ?>-eye column <?= $page_side ?> side"
-                    data-side="<?= $eye_side ?>">
+                     data-side="<?= $eye_side ?>">
 
                     <?php $attachment_exists = isset($this->event_attachments[strtoupper($eye_side)]); ?>
                     <div class="flex-layout flex-center">

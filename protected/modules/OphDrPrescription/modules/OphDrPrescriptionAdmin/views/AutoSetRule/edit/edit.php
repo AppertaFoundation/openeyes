@@ -18,7 +18,7 @@
 
 ?>
 
-<h2>Add/Edit Drug Set</h2>
+<h2>Edit Signatures of secondary signatories</h2>
 
 <form id="medication-autoset-form" method="post">
 

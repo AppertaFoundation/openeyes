@@ -2,6 +2,8 @@
 
 /**
  * Class PrescriptionFormPrinterTest
+ *
+ *
  * @method patients($fixtureId)
  * @method prescription_items($fixtureId)
  * @method prescription_item_tapers($fixtureId)

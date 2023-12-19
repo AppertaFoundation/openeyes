@@ -41,7 +41,7 @@ $required_diagnoses_ids = array_map(function ($r) {
             <?= \CHtml::checkBox(
                 $model_name . '[no_systemic_diagnoses]',
                 $element->no_systemic_diagnoses_date ? true : false,
-                array('class' => $model_name . '_no_systemic_diagnoses')
+                array('id' => "$model_name"."_no_systemic_diagnoses", 'class' => $model_name . '_no_systemic_diagnoses')
             ); ?>
             No systemic diagnoses
         </label>

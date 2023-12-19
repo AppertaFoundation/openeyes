@@ -59,6 +59,8 @@ class SignatureHelper {
         $signature_file_id = $user->signature_file_id;
         if(is_null($signature_file_id)) {
             self::bootstrapUserSignature($user_id);
+            // user needs to be refreshed after the signature is created
+            $user = User::model()->findByPk($user_id);
             $signature_file_id = $user->signature_file_id;
             if(is_null($signature_file_id)) {
                 throw new Exception(
@@ -171,5 +173,22 @@ class SignatureHelper {
 
         //Return the encoded image data
         return base64_encode($image_string);
+    }
+
+    public static function getUserByPin(int $pincode):? \User
+    {
+        $current_institution_id = Yii::app()->session->get('selected_institution_id');
+        $criteria = new CDbCriteria();
+        $criteria->with = [
+            'pincode',
+            'authentications',
+            'authentications.institutionAuthentication',
+        ];
+        // make sure the pincode is targetting active users who are in the current institution
+        $criteria->compare('authentications.active', true);
+        $criteria->compare('institutionAuthentication.institution_id', $current_institution_id);
+        $criteria->compare('pincode.pincode', $pincode);
+
+        return User::model()->find($criteria);
     }
 }

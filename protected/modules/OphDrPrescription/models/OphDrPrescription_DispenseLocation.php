@@ -10,6 +10,7 @@ use OE\factories\models\traits\HasFactory;
  */
 class OphDrPrescription_DispenseLocation extends BaseActiveRecordVersioned
 {
+    use HasFactory;
     use MappedReferenceData;
     use HasFactory;
 

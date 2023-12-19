@@ -936,6 +936,7 @@ class BaseEventTypeController extends BaseModuleController
 
             // set and validate
             $errors = $this->setAndValidateElementsFromData($_POST);
+
             if ($this->external_errors) {
                 $errors = array_merge($errors, $this->external_errors);
             }

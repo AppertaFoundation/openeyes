@@ -1,12 +1,14 @@
-
 $(document).ready(function() {
     const $wrapper = document.getElementById('wrapper-auto-generate-events-selector');
 
     if ($wrapper) {
-        const suffix = $wrapper.dataset.suffix;
+
+        const suffix_container = $wrapper.querySelector('.suffix-container');
+        const suffix = suffix_container.dataset.suffix;
         const $generate_prescription = document.getElementById(`auto_generate_prescription_after_${suffix}`);
 
         if ($generate_prescription) {
+
             const $generate_prescription_label = $generate_prescription.closest('label');
 
             const $dropdown = document.getElementById(`auto_generate_prescription_after_${suffix}_set_id`);
@@ -29,6 +31,10 @@ $(document).ready(function() {
                 // sync generate gp checkbox attribute 'checked' and value with generate prescription checkbox
                 generate_gp.checked = generate_px.checked;
                 generate_gp.value = generate_px.value;
+
+                const event = new Event("change");
+
+                generate_gp.dispatchEvent(event);
                 // display the drug sets dropdown if the generate prescription checkbox is checked
                 $dropdown.style.display = generate_px.checked ? 'inline-block' : 'none';
             });

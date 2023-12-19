@@ -23,6 +23,9 @@ OpenEyes.UI = OpenEyes.UI || {};
         "element_id" : null,
         // One of "edit", "view" or "print"
         "mode" : "edit",
+        "get_user_by_pin": false,
+        "completeButtonSelector": null,
+        "signatureInsertBeforeWrapper" : false
     };
 
     /**
@@ -35,9 +38,12 @@ OpenEyes.UI = OpenEyes.UI || {};
         if(this.$userIdInput.length === 0) {
             this.$userIdInput = this.$element.find(".js-user_id-field");
         }
+
         this.$signButton = this.$element.find(".js-sign-button");
         this.$popupSignButton = this.$element.find(".js-popup-sign-btn");
         this.$deviceSignButton = this.$element.find(".js-device-sign-btn");
+        this.$completeSignButton = this.$element.find(`${this.options.completeButtonSelector}`);
+        this.$removeSignButton = this.$element.find(`${this.options.removeButtonSelector}`);
         this.$controlWrapper = this.$element.find(".js-signature-control");
         this.$date = this.$element.find(".js-signature-date");
         this.$time = this.$element.find(".js-signature-time");
@@ -105,7 +111,8 @@ OpenEyes.UI = OpenEyes.UI || {};
                 "event_id" : OE_event_id,
                 "signatory_role" : encodeURIComponent(widget.$signatoryRole.val()),
                 "signatory_name" : encodeURIComponent(widget.$signatoryName.val()),
-                "mode" : widget.options.mode
+                "mode" : widget.options.mode,
+                "get_user_by_pin": widget.options.get_user_by_pin
             };
             if(widget.$initiatorElementTypeId.length > 0) {
                 params["initiator_element_type_id"] = widget.$initiatorElementTypeId.val();
@@ -204,7 +211,76 @@ OpenEyes.UI = OpenEyes.UI || {};
                     }
                 );
             });
+
             confirm_dlg.open();
+        });
+
+        this.$completeSignButton.click(function() {
+
+            disableButtons();
+            let params = {
+                "user_id": user_id, //global
+                "YII_CSRF_TOKEN": YII_CSRF_TOKEN,
+                "signature_type" : widget.options.signature_type,
+                "element_id" : widget.options.element_id,
+                "element_type_id" : widget.$element.closest("section.element").attr("data-element-type-id"),
+                "event_id" : OE_event_id,
+                "signatory_role" : encodeURIComponent(widget.$signatoryRole.val()),
+                "signatory_name" : encodeURIComponent(widget.$signatoryName.val()),
+                "mode" : widget.options.mode
+            };
+
+            widget.$completeSignButton.hide();
+
+            $.post(
+                `${baseUrl}/${moduleName}/default/${widget.options.submitAction}`,
+                params,
+                function (response) {
+                    if (response.code === 0) {
+                        widget.displaySignature(
+                            response.signature_image1_base64,
+                            response.signature_image2_base64,
+                            response.date,
+                            response.time,
+                            response.signatory_name || null,
+                            !!response.signed_by_secretary
+                        );
+                        if(typeof response.signed_by_secretary !== "undefined") {
+                            widget.$element.find(".js-secretary-field").val(response.signed_by_secretary ? "1" :"0");
+                        }
+                        widget.setDataInput(response.signature_proof);
+                        widget.$element.closest("section.element").trigger(widget.events.onSignatureAdded);
+                    } else {
+                        let dialog = new OpenEyes.UI.Dialog.Alert({
+                            content: response.error
+                        });
+                        dialog.open();
+                    }
+                    setTimeout(enableButtons, 500);
+                }
+            );
+        });
+
+        this.$removeSignButton.click(function() {
+            let params = {
+                "YII_CSRF_TOKEN" : YII_CSRF_TOKEN,
+                "signature_id" : widget.options.signatureId,
+            };
+
+            $.post("/" + moduleName + "/default/removeSignature",
+                params,
+                function (response) {
+                    if (response.code === 1) {
+                        let dlg = new OpenEyes.UI.Dialog.Alert({
+                            content: response.error
+                        });
+                        dlg.open();
+                    } else {
+                        window.location.reload();
+                    }
+                }
+            );
+
         });
     };
 
@@ -222,11 +298,21 @@ OpenEyes.UI = OpenEyes.UI || {};
         this.$controlWrapper.hide();
         if(typeof signature_file1 !== "undefined") {
             const $image = $('<div class="esign-check js-has-tooltip" data-tooltip-content="<img src=\''+(signature_file2)+'\'>" style="background-image: url('+signature_file1+');">');
-            $image.prependTo(this.$signatureWrapper);
+
+            if(this.options.signatureInsertBeforeWrapper) {
+                $image.insertBefore(this.$signatureWrapper);
+            } else {
+                $image.prependTo(this.$signatureWrapper);
+            }
         }
         else if(is_secretary) {
             const $txt = $("<span>VERIFIED ELECTRONICALLY, NOT SIGNED TO AVOID DELAYS</span>");
-            $txt.prependTo(this.$signatureWrapper);
+
+            if(this.options.signatureInsertBeforeWrapper) {
+                $txt.insertBefore(this.$signatureWrapper);
+            } else {
+                $txt.prependTo(this.$signatureWrapper);
+            }
         }
         this.$date.text(date).show();
         this.$time.text(time);

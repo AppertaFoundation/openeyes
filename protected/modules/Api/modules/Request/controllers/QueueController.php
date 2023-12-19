@@ -47,6 +47,6 @@ class QueueController extends BaseRequestController
             $response = ['request_id' => $request_id];
         }
 
-        $this->renderJSON($status, $response);
+        $this->renderJSON($response, $status);
     }
 }

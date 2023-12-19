@@ -7,7 +7,7 @@
  * @var Episode[] $specialty_episodes
  **/
 
-$navIconUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue'), true) . '/dist/svg/oe-nav-icons.svg';
+$navIconUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.nxblu'), true) . '/dist/svg/oe-nav-icons.svg';
 
 // Note, we are ignoring the possibility of additional specialties here and only supporting the first,
 // which is expected to be opthalmology.
@@ -43,7 +43,7 @@ $current_subspecialty = null;
 $episodes_list = array();
 
 if (is_array($ordered_episodes)) { ?>
-    <ul class="oescape-icon-btns" style="font-size: 0;">
+    <ul class="oescape-icon-btns">
         <?php foreach ($ordered_episodes as $specialty_episodes) {
             foreach ($specialty_episodes['episodes'] as $i => $episode) {
                 $id = $episode->getSubspecialtyID();

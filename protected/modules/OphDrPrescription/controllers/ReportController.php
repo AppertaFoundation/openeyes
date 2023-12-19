@@ -58,8 +58,51 @@ class ReportController extends BaseReportController
 
         Audit::add('Reports', 'view', print_r(['report-name' => 'Prescribed Drugs'], true));
         $this->pageTitle = 'Prescribed Drugs report';
-        $this->render('prescribedDrugs', array('drugs' => $drugs, 'users' => $users, 'dispense_conditions' => $dispense_conditions));
+        $this->render('prescribedDrugs', array(
+            'drugs' => $drugs,
+            'users' => $users,
+            'dispense_conditions' => $dispense_conditions,
+            'adder_itemset' => $this->getAdderItemSet()
+            )
+        );
     }
+
+    private function getAdderItemSet(): array
+    {
+        $institution_id = $_POST['institution_id'] ?? Institution::model()->getCurrent()->id;
+        $institution = Institution::model()->findByPk($institution_id);
+        $signatories = Element_OphDrPrescription_Esign::model()->getSecondarySignatures($institution);
+
+        $itemset = [];
+        foreach ($signatories as $signatory) {
+            $type = str_replace(" ", "", strtolower($signatory->signatory_role));
+            $itemset[] = [
+                "id" => "{$type}Parameter",
+                "type" => "{$type}Parameter",
+                "label" => $signatory->signatory_role,
+            ];
+        }
+
+        return [
+            [
+                "options" => ["header" => "Signatory"],
+                "itemset" => $itemset,
+            ],
+            [
+                "itemset" => [
+                    ["label" => "signed"],
+                    ["label" => "not signed"],
+                ]
+            ],
+            [
+                "itemset" => [
+                    ["label" => "AND"],
+                    ["label" => "OR"],
+                ]
+            ],
+        ];
+    }
+
 
     public function actionGetDrugs()
     {

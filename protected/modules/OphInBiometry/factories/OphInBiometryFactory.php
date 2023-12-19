@@ -15,7 +15,10 @@
 
 namespace OEModule\OphInBiometry\factories;
 
+use Element_OphInBiometry_IolRefValues;
+use Eye;
 use OE\factories\models\EventFactory;
+use OEModule\OphCiExamination\models\interfaces\SidedData;
 
 class OphInBiometryFactory extends EventFactory
 {
@@ -27,5 +30,22 @@ class OphInBiometryFactory extends EventFactory
                 'event_type_id' => $this->getEventTypeByName('Biometry')
             ]
         );
+    }
+
+    public function withIolRefValues($states = []) {
+
+        return $this->afterCreating(function (\Event $event)  {
+
+            foreach ([SidedData::LEFT, SidedData::RIGHT] as $eye_id) {
+                Element_OphInBiometry_IolRefValues::factory()->create([
+                    'event_id' => $event->id,
+                    'eye_id' => $eye_id,
+                    'iol_ref_values_' . strtolower(Eye::methodPostFix($eye_id)) =>
+                    '{"REF":[-2.96,-2.59,-2.23,-1.87,-1.52,-1.17,-0.83],"IOL":[25.0,24.5,24.0,23.5,23.0,22.5,22.0]}'
+                ]);
+            }
+
+
+        });
     }
 }

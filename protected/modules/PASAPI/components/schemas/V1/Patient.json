@@ -37,9 +37,9 @@
   "TelephoneNumber": {
     "type": "string"
   },
- "MobilePhoneNumber": {
+  "MobilePhoneNumber": {
     "type": "string"
- },
+  },
   "EthnicGroup": {
     "type": "string"
   },

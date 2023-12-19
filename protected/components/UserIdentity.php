@@ -113,71 +113,6 @@ class UserIdentity extends CUserIdentity
         return null;
     }
 
-    private function authenticateZendLDAP($user_authentication)
-    {
-        $ldap_config = $user_authentication->institutionAuthentication->LDAPConfig;
-        $user = $user_authentication->user;
-
-        Yii::import('application.vendors.*');
-        require_once 'Zend/Ldap.php';
-
-        /*
-         * Check with LDAP for authentication
-         */
-        $options = array(
-            'host' => $ldap_config->ldap_server,
-            'port' => $ldap_config->ldap_port,
-            'username' => $ldap_config->ldap_admin_dn,
-            'password' => $ldap_config->ldap_admin_password,
-            'baseDn' => $ldap_config->ldap_admin_dn,
-            'useStartTls' => false,
-        );
-
-        OELog::log('Establishing LDAP connection at ' . (new DateTime())->format('H:i:s'));
-        $ldap = $this->getLdap($options);
-        OELog::log('LDAP connection established at ' . (new DateTime())->format('H:i:s'));
-
-        /*
-         * Try and bind to the login details provided. This indicates if
-         * the user is in LDAP.
-         */
-
-        try {
-            OELog::log('Attempting LDAP bind at ' . (new DateTime())->format('H:i:s'));
-            $ldap->bind(
-                'cn='.$this->username.','.$ldap_config->ldap_dn,
-                $this->password
-            );
-            OELog::log('LDAP bind complete at ' . (new DateTime())->format('H:i:s'));
-        } catch (Exception $e) {
-            /*
-             * User not authenticated via LDAP
-             */
-            OELog::log('LDAP login failed at ' . (new DateTime())->format('H:i:s'));
-            $audit = new Audit();
-            $audit->action = 'login-failed';
-            $audit->target_type = 'login';
-            $audit->user_id = $user->id;
-            $audit->data = "Login failed for user {$this->username}: LDAP authentication failed: ".$e->getMessage().': '.$this->username;
-            $audit->save();
-            OELog::log("Login failed for user {$this->username}: LDAP authentication failed: ".$e->getMessage(), $this->username);
-
-            $this->errorCode = self::ERROR_USERNAME_INVALID;
-
-            return [false, "Invalid login."];
-        }
-
-        /*
-         * User is in LDAP, get their details.
-         */
-        return [true,
-            $ldap->getEntry(
-                'cn='.$this->username.','.$ldap_config->ldap_dn,
-                array('givenname', 'sn', 'mail')
-            )
-        ];
-    }
-
     private function authenticateNativeLDAP($user_authentication)
     {
         $ldap_config = $user_authentication->institutionAuthentication->LDAPConfig;
@@ -343,10 +278,6 @@ class UserIdentity extends CUserIdentity
      */
     public function authenticateUser($user_authentication, $force = false)
     {
-       // if (!in_array(Yii::app()->params['ldap_method'], array('native', 'zend', 'native-search'))) {
-       //     throw new Exception('Unsupported LDAP authentication method: '.Yii::app()->params['ldap_method'].', please use native or zend.');
-        // }
-
         $inst_auth = $user_authentication->institutionAuthentication;
         $user = $user_authentication->user;
 
@@ -371,9 +302,6 @@ class UserIdentity extends CUserIdentity
 
             $auth_result = [false, "Invalid login."];
             switch ($ldap_config->ldap_method) {
-            case 'zend':
-                $auth_result = $this->authenticateZendLDAP($user_authentication);
-                break;
             case 'native-search':
                 $auth_result = $this->authenticateNativeLDAP($user_authentication);
                 break;
@@ -465,11 +393,6 @@ class UserIdentity extends CUserIdentity
     public function getId()
     {
         return $this->_id;
-    }
-
-    public function getLdap($options)
-    {
-        return new Zend_Ldap($options);
     }
 
     /**
@@ -625,9 +548,6 @@ class UserIdentity extends CUserIdentity
         }
         $auth_result = [false, "Invalid login."];
         switch ($ldap_config->ldap_method) {
-            case 'zend':
-                $auth_result = $this->authenticateZendLDAP($user_authentication);
-                break;
             case 'native-search':
                 $auth_result = $this->authenticateNativeLDAP($user_authentication);
                 break;

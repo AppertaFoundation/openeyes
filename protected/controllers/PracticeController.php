@@ -110,13 +110,16 @@ class PracticeController extends BaseController
         }
 
         $this->performAjaxValidation(array($practice, $contact, $address, $gp));
+
         if (isset($_POST['Contact'])) {
             $contact->first_name = $_POST['Contact']['first_name'];
+            $contact->primary_phone = $_POST['Practice']['phone'] ?? null;
+
             $contact->created_institution_id = Yii::app()->session['selected_institution_id'];
             $address->attributes = $_POST['Address'];
             $practice->attributes = $_POST['Practice'];
 
-            if ($contact->validate(array('first_name')) and $practice->validate(array('phone')) and $address->validate(array('address1', 'city', 'postcode', 'country'))) {
+            if ($contact->validate(array('first_name', 'primary_phone')) && $practice->validate(array('phone')) && $address->validate(array('address1', 'city', 'postcode', 'country'))) {
                 // If there is no validation error, check for the duplicate practice based on practice name, phone, address1, city, postcode and country.
                 $duplicateCheckOutput = Yii::app()->db->createCommand()
                     ->select('c1.first_name, p.phone, a.address1, a.city, a.postcode, a.country_id')
@@ -124,13 +127,15 @@ class PracticeController extends BaseController
                     ->join('contact c1', 'c1.id = p.contact_id')
                     ->join('address a', 'a.contact_id = c1.id')
                     ->where(
-                        'LOWER(c1.first_name) = LOWER(:first_name) and LOWER(p.phone) = LOWER(:phone) and LOWER(a.address1) = LOWER(:address1) and LOWER(a.city) = LOWER(:city) and a.postcode = :postcode and a.country_id = :country_id',
-                        array(':first_name'=> $contact->first_name, ':phone'=> $practice->phone,':address1'=>$address->address1,
-                        ':city'=>$address->city,
-                        ':postcode'=>$address->postcode,
-                        ':country_id'=>$address->country_id)
-                    )
-                    ->queryAll();
+                        'LOWER(c1.first_name) = LOWER(:first_name) and LOWER(c1.primary_phone) = LOWER(:primary_phone) and LOWER(a.address1) = LOWER(:address1) and LOWER(a.city) = LOWER(:city) and a.postcode = :postcode and a.country_id = :country_id',
+                        [
+                            ':first_name'=> $contact->first_name,
+                            ':primary_phone'=> $contact->primary_phone,
+                            ':address1'=>$address->address1,
+                            ':city'=>$address->city,
+                            ':postcode'=>$address->postcode,
+                            ':country_id'=>$address->country_id
+                        ])->queryAll();
 
                 $isDuplicate = count($duplicateCheckOutput);
 
@@ -144,7 +149,7 @@ class PracticeController extends BaseController
                     );
                 }
             } else {
-                $contact->validate(array('first_name'));
+                $contact->validate(array('first_name', 'primary_phone'));
                 $practice->validate(array('phone'));
                 $address->validate(array('address1', 'city', 'postcode', 'country'));
             }
@@ -174,10 +179,11 @@ class PracticeController extends BaseController
             $practice = new Practice('manage_practice');
 
             $contactPractice->first_name = $_POST['Contact']['first_name'];
+            $contactPractice->primary_phone = $_POST['Practice']['phone'];
             $address->attributes = $_POST['Address'];
             $practice->attributes = $_POST['Practice'];
 
-            if ($contactPractice->validate(array('first_name')) and $practice->validate(array('phone')) and $address->validate(array('address1', 'city', 'postcode', 'country'))) {
+            if ($contactPractice->validate(array('first_name', 'primary_phone')) and $practice->validate(array('phone')) and $address->validate(array('address1', 'city', 'postcode', 'country'))) {
                 $practice_contact_associate = new ContactPracticeAssociate();
                 $practice_contact_associate->provider_no = !empty($_POST['ContactPracticeAssociate']['provider_no']) ? $_POST['ContactPracticeAssociate']['provider_no'] : null;
 
@@ -189,6 +195,8 @@ class PracticeController extends BaseController
                 $contact->last_name = $_POST['Contact']['contact_last_name'];
                 $contact->primary_phone = $_POST['Contact']['contact_primary_phone'];
                 $contact->contact_label_id = $_POST['Contact']['contact_label_id'];
+                $contact->email = $_POST['Contact']['email'];
+                $contact->created_institution_id = \Yii::app()->session['selected_institution_id'];
 
                 // If there is no validation error, check for the duplicate practice based on practice name, phone, address1, city, postcode and country.
                 $dataProvider = Yii::app()->db->createCommand()
@@ -197,11 +205,15 @@ class PracticeController extends BaseController
                     ->join('contact c1', 'c1.id = p.contact_id')
                     ->join('address a', 'a.contact_id = c1.id')
                     ->where(
-                        'LOWER(c1.first_name) = LOWER(:first_name) and LOWER(p.phone) = LOWER(:phone) and LOWER(a.address1) = LOWER(:address1) and LOWER(a.city) = LOWER(:city) and LOWER(a.postcode) = LOWER(:postcode) and LOWER(a.country_id) = LOWER(:country_id)',
-                        array(':first_name'=> $contactPractice->first_name, ':phone'=> $practice->phone,':address1'=>$address->address1,
-                            ':city'=>$address->city, ':postcode'=>$address->postcode, ':country_id'=>$address->country_id)
-                    )
-                    ->queryAll();
+                        'LOWER(c1.first_name) = LOWER(:first_name) and LOWER(c1.primary_phone) = LOWER(:primary_phone) and LOWER(a.address1) = LOWER(:address1) and LOWER(a.city) = LOWER(:city) and LOWER(a.postcode) = LOWER(:postcode) and LOWER(a.country_id) = LOWER(:country_id)',
+                        [
+                            ':first_name'=> $contactPractice->first_name,
+                            ':primary_phone'=> $contactPractice->primary_phone,
+                            ':address1'=>$address->address1,
+                            ':city'=>$address->city,
+                            ':postcode'=>$address->postcode,
+                            ':country_id'=>$address->country_id
+                        ])->queryAll();
 
                 $isDuplicate = count($dataProvider);
 
@@ -385,12 +397,12 @@ class PracticeController extends BaseController
     {
         $duplicateCheckOutput = null;
 
-        $model = $this->loadModel($id);
-        $contact = $model->contact;
+        $practice = $this->loadModel($id);
+        $contact = $practice->contact;
         $address = isset($contact->address) ? $contact->address : new Address();
         $contact->setScenario('manage_practice');
         $address->setScenario('manage_practice');
-        $model->setScenario('manage_practice');
+        $practice->setScenario('manage_practice');
 
         $gp = new Gp('manage_practice');
         // this array contains the arrays of gp id, provider_no and count of
@@ -404,14 +416,16 @@ class PracticeController extends BaseController
             $gpIdProviderNoList[] = array($gpId, $providerNo);
         }
 
-        $this->performAjaxValidation(array($model, $contact, $address, $gp));
+        $this->performAjaxValidation(array($practice, $contact, $address, $gp));
 
         if (isset($_POST['Address']) || isset($_POST['Contact'])) {
             $isDuplicateProviderNo = false;
 
             $contact->attributes = $_POST['Contact'];
             $address->attributes = $_POST['Address'];
-            $model->attributes = $_POST['Practice'];
+            $practice->attributes = $_POST['Practice'];
+
+            $contact->primary_phone = $practice->phone;
 
             // this array contains the arrays of gp id, provider_no and count of
             // the rows in the contact_practice_associate table with that provider no
@@ -445,7 +459,7 @@ class PracticeController extends BaseController
                 }
             }
 
-            if ($contact->validate(array('first_name')) and $model->validate(array('phone')) and $address->validate(array('address1', 'city', 'postcode', 'country'))) {
+            if ($contact->validate(array('first_name', 'primary_phone')) && $practice->validate(array('phone')) && $address->validate(array('address1', 'city', 'postcode', 'country'))) {
                 // If there is no validation error, check for the duplicate practice based on practice name, phone, address1, city, postcode and country.
                 $duplicateCheckOutput = Yii::app()->db->createCommand()
                     ->select('c1.first_name, p.phone, a.address1, a.city, a.postcode, a.country_id')
@@ -453,14 +467,17 @@ class PracticeController extends BaseController
                     ->join('contact c1', 'c1.id = p.contact_id')
                     ->join('address a', 'a.contact_id = c1.id')
                     ->where(
-                        'LOWER(c1.first_name) = LOWER(:first_name) and LOWER(p.phone) = LOWER(:phone) and LOWER(a.address1) = LOWER(:address1) and LOWER(a.city) = LOWER(:city) and a.postcode = :postcode and a.country_id = :country_id and p.id != :id',
-                        array(':first_name'=> $contact->first_name, ':phone'=> $model->phone, ':address1'=>$address->address1,
-                        ':city'=>$address->city,
-                        ':postcode'=>$address->postcode,
-                        ':country_id'=>$address->country_id,
-                        ':id'=>$id)
-                    )
-                    ->queryAll();
+                        'LOWER(c1.first_name) = LOWER(:first_name) and LOWER(c1.primary_phone) = LOWER(:primary_phone) and LOWER(a.address1) = LOWER(:address1) and LOWER(a.city) = LOWER(:city) and a.postcode = :postcode and a.country_id = :country_id and p.id != :id',
+                        [
+                            ':first_name'=> $contact->first_name,
+                            ':primary_phone'=> $contact->primary_phone,
+                            ':address1'=>$address->address1,
+                            ':city'=>$address->city,
+                            ':postcode'=>$address->postcode,
+                            ':country_id'=>$address->country_id,
+                            ':id'=>$id
+                        ]
+                    )->queryAll();
 
                 $isDuplicate = count($duplicateCheckOutput);
 
@@ -469,9 +486,9 @@ class PracticeController extends BaseController
                     // delete all the records from the contact_practice_associate table before populating.
                     ContactPracticeAssociate::model()->deleteAllByAttributes(array('practice_id'=>$id));
 
-                    list($contact, $model, $address) = $this->performPracticeSave(
+                    list($contact, $practice, $address) = $this->performPracticeSave(
                         $contact,
-                        $model,
+                        $practice,
                         $address,
                         $gpIdProviderNoList,
                         false
@@ -479,13 +496,13 @@ class PracticeController extends BaseController
                 }
             } else {
                 $contact->validate(array('first_name'));
-                $model->validate(array('phone'));
+                $practice->validate(array('phone'));
                 $address->validate(array('address1', 'city', 'postcode', 'country'));
             }
         }
 
         $this->render('update', array(
-            'model' => $model,
+            'model' => $practice,
             'address' => $address,
             'contact' => $contact,
             'gp' => $gp,
@@ -519,6 +536,7 @@ class PracticeController extends BaseController
         }
         $dataProvider = new CActiveDataProvider('Practice', array(
             'criteria' => $criteria,
+            'pagination' => ['pageSize' => 20],
         ));
         $this->render('index', array(
             'dataProvider' => $dataProvider,

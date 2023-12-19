@@ -79,7 +79,7 @@ $edit_signature_role = Yii::app()->request->getParam('edit_signature_role');
                     <?php $this->displaySignatureTime() ?></span>
             </div>
         </div>
-        <div class="js-signature-control" <?php if($this->isSigned()) { echo 'style="display:none"'; }?>>
+        <div class="js-signature-control" <?php if($this->isSigned()) { echo 'style="display:none"'; }?> data-test="signature-control-widget">
             <button type="button" class="js-popup-sign-btn">e-Sign</button>
             <?php  if($this->controller->module->id === 'OphCoCvi'): ?>
                 <button type="button" class="js-device-sign-btn">e-Sign on tablet</button>

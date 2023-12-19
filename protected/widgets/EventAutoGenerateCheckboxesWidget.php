@@ -42,6 +42,7 @@ class EventAutoGenerateCheckboxesWidget extends BaseCWidget
      */
     public ?array $disable_auto_generate_for;
 
+
     // settings
     public $drug_set_name;
     public $gp_letter_setting;
@@ -51,6 +52,9 @@ class EventAutoGenerateCheckboxesWidget extends BaseCWidget
     public $optom_letter_name;
     public $sets;
     public $default_set_id = null;
+    public $container_id;
+    public const SIGNATURE_INPUT_NAME = 'EventAutoGenerateSignature';
+    public const SAVE_AS_DRAFT_INPUT_NAME = 'EventAutoGenerateSaveAsDraft';
 
     public function init()
     {

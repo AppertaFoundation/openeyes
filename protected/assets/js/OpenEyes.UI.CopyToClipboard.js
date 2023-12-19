@@ -16,11 +16,8 @@ OpenEyes.UI = OpenEyes.UI || {};
     CopyToClipboardController._defaultOptions = {
         'selector': '.js-copy-to-clipboard',
         'wrapper': '.patient-details',
-        'callback': function($element){
-            if (!$('.js-copy-to-clipboard-copied').length) {
-                $("<span>",{"class":"js-copy-to-clipboard-copied", "style":"color:lightgreen;margin-left:5px;"}).text("copied").insertAfter($element);
-            }
-            $(".js-copy-to-clipboard-copied").fadeOut(2000, function(){ $(".js-copy-to-clipboard-copied").remove(); });
+        'callback': function ($element) {
+            $("<div>", { "class": "js-copy-to-clipboard-copied oe-tooltip fade-out copied" }).text("copied").insertAfter($element);
         },
         'copyContentSelector': 'copy-content-selector',
     };

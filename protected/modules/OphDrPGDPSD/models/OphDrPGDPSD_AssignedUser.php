@@ -26,7 +26,6 @@ use User;
 class OphDrPGDPSD_AssignedUser extends \BaseActiveRecordVersioned
 {
     use HasFactory;
-
     /**
      * @return string the associated database table name
      */

@@ -29,6 +29,10 @@ class EventCreator extends \CModel
 
     public $patient;
 
+    public $signature;
+
+    public $save_as_draft;
+
     /**
      * @inheritDoc
      */
@@ -75,5 +79,55 @@ class EventCreator extends \CModel
         }
 
         return false;
+    }
+
+    public function saveEsignElement($event_id, $esign_class_name, $include_signature)
+    {
+        $esign = new $esign_class_name();
+        $esign->event_id = $event_id;
+
+        if ($include_signature) {
+            if ($esign->isPinRequired() && !is_null($this->signature)) {
+                $user = SignatureHelper::getUserForSigning();
+                $this->addAdditionalSignatureData($this->signature, $esign, $user);
+                $esign->signatures = [$this->signature];
+            } else if ($esign->attemptAutoSign()) {
+                $this->completeAutoSignRecord($esign);
+            }
+        }
+
+        if (!$esign->save(false)) {
+            $this->addErrors($esign->getErrors());
+        }
+    }
+
+    /**
+     * AutoSign provides minimal functionality to generate the "proof" of signature as though
+     * PIN has been entered by the user. Saving such an element is usually done with additional
+     * data being passed through from the web front end to create a complete record.
+     *
+     * In the context of creating correspondence without the supplementary data provided through
+     * the form, we must derive the additional information to allow the element to be saved.
+     *
+     * @param BaseEsignElement $esign
+     * @return void
+     */
+    private function completeAutoSignRecord(BaseEsignElement $esign): void
+    {
+        $signature = $esign->signatures[0] ?? null;
+        if (!$signature) {
+            return;
+        }
+
+        $user = SignatureHelper::getUserForSigning();
+
+        $this->addAdditionalSignatureData($signature, $esign, $user);
+    }
+
+    protected function addAdditionalSignatureData(BaseSignature $signature, BaseEsignElement $esign, User $user)
+    {
+        if (!isset($signature->signatory_name)) {
+            $signature->signatory_name = $user->getFullNameAndTitle();
+        }
     }
 }

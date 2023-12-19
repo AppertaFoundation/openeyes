@@ -206,10 +206,8 @@ $entry_allergy_ids = isset($entry->medication_id) ?
     <!-- </td> -->
     <td>
         <div>
-            <label class="toggle-switch">
-                <input name="<?= $field_prefix ?>[prescribe]" type="checkbox" value="1" <?php if ($entry->prescribe) {
-                                                                                            echo "checked";
-                             } ?> />
+            <label class="toggle-switch" data-test="mm-prescribe-toggle">
+                <input name="<?= $field_prefix ?>[prescribe]" type="checkbox" value="1" <?= $entry->prescribe ? "checked" : "" ?>/>
                 <span class="toggle-btn js-btn-prescribe"></span>
             </label>
         </div>

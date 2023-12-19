@@ -38,7 +38,7 @@ $to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
             <table id="practice-grid" class="standard">
                 <thead>
                 <tr>
-                    <th>Practice Contact</th>
+                    <th>Practice Name</th>
                     <th>Practice Address</th>
                     <th>Code</th>
                     <th>Practice ID</th>
@@ -52,7 +52,7 @@ $to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
                         <td><?php echo CHtml::encode($practice->getAddressLines()); ?></td>
                         <td><?php echo CHtml::encode($practice->code); ?></td>
                         <td><?php echo CHtml::encode($practice->id); ?></td>
-                        <td><?php echo CHtml::encode($practice->phone); ?></td>
+                        <td><?php echo CHtml::encode($practice->contact->primary_phone); ?></td>
                     </tr>
                 <?php endforeach; ?>
                 </tbody>

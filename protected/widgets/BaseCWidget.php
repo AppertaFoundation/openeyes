@@ -26,6 +26,8 @@ class BaseCWidget extends CWidget
     public $htmlOptions = array();
     public $scriptPriority = 90;
 
+    public AssetManager $assetManager;
+
     public function init()
     {
         if (is_object($this->element) && $this->field) {
@@ -37,10 +39,11 @@ class BaseCWidget extends CWidget
 
         if (file_exists($dir . "/js/" . get_class($this) . '.js')) {
             $alias = str_replace('/', '.', substr($dir, strpos($dir, 'protected') + 10));
-            $assetManager = Yii::app()->getAssetManager();
-            $widgetPath = $assetManager->publish($dir . "/js", true);
+            $this->assetManager = Yii::app()->getAssetManager();
+
+            $widgetPath = $this->assetManager->publish($dir . "/js", true);
             $scriptPath = $widgetPath . '/' . get_class($this) . '.js';
-            $assetManager->registerScriptFile($scriptPath, "application.{$alias}", $this->scriptPriority, AssetManager::OUTPUT_ALL, true, true);
+            $this->assetManager->registerScriptFile($scriptPath, "application.{$alias}", $this->scriptPriority, AssetManager::OUTPUT_ALL, true, true);
         }
 
         $this->htmlOptions['autocomplete'] = SettingMetadata::model()->getSetting('html_autocomplete');
@@ -53,7 +56,7 @@ class BaseCWidget extends CWidget
         } else {
             $data = get_object_vars($this);
         }
-        parent::render($view, $data, $return);
+        return parent::render($view, $data, $return);
     }
 
     public function run()

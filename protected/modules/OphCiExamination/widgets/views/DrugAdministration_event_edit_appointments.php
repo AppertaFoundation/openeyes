@@ -70,7 +70,7 @@
         </fieldset>
     </div>
     <div class="actions">
-        <button class="green hint js-confirm-preset">
+        <button class="green hint js-confirm-preset" data-test="assign-and-confirm-preset-order-button">
             <?= $btn_text ? : '{{btn_text}}';?>
         </button>
         <button class="red hint js-cancel-preset">Cancel & remove</button>

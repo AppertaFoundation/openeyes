@@ -57,6 +57,15 @@
         </tr>
         <tr>
             <td>
+                <?= $form->labelEx($model, 'email'); ?>
+            </td>
+            <td>
+                <?= $form->textField($model, 'email', ['size' => 30, 'maxlength' => 100, 'autocomplete' => 'off']); ?>
+                <?= $form->error($model, 'email'); ?>
+            </td>
+        </tr>
+        <tr>
+            <td>
                 <?php echo $form->labelEx($gp, 'nat_id'); ?>
             </td>
             <td>

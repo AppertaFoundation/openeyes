@@ -28,7 +28,7 @@ $(document).ready(function () {
 
     switch(side){
         case 'left':
-            $('#oes-side-indicator-left').show().appendTo($('#oes-side-indicator')).css("display", "inline-block"); //show the left eye indicator
+            $('#oes-side-indicator-left').show().appendTo($('#oes-side-indicator')); //show the left eye indicator
             $('#oes-side-indicator-right').hide().appendTo($('#oes-side-indicator')); //hide the right eye indicator
 
             $('#plotly-Meds-left').appendTo($('#js-hs-chart-Meds'));
@@ -91,11 +91,11 @@ $(document).ready(function () {
             $('.oes-right-side > div').not('.highchart-area').hide();  //disable previous right side content
 
             if($('#right-charts-container').length === 0) {
-                $('<div id="right-charts-container" class="highchart-area General"><div id="oes-right-side-indicator" style=" height:' + $('#oes-side-indicator').height() + 'px; text-align: center;"></div></div></div>').clone().appendTo($('.oes-right-side'));   //add padding for reset zoom button on right
+              $('<div id="right-charts-container" class="highchart-area General"><div id="oes-right-side-indicator" class="oes-side-indicator"></div></div></div>').clone().appendTo($('.oes-right-side'));   //add padding for reset zoom button on right
             }
 
-            $('#oes-side-indicator-left').show().appendTo($('#oes-right-side-indicator')).css("display", "inline-block"); //show the left eye indicator
-            $('#oes-side-indicator-right').show().appendTo($('#oes-side-indicator')).css("display", "inline-block"); //show the right eye indicator
+            $('#oes-side-indicator-left').show().appendTo($('#oes-right-side-indicator')); //show the left eye indicator
+            $('#oes-side-indicator-right').show().appendTo($('#oes-side-indicator')); //show the right eye indicator
 
             $('#plotly-Meds-left , #plotly-IOP-left').appendTo($('#right-charts-container'));
 
@@ -110,8 +110,7 @@ $(document).ready(function () {
             if ($("#charts-container").hasClass('General')){
                 $('#plotly-IOP-left').appendTo($('#right-charts-container'));
             }
-            $('.plotly-right, .plotly-left').show(); //show both sides
-            $('.oes-right-side').css('padding', '20px 0 20px 0'); // fix right side padding css
+        $('.plotly-right, .plotly-left').show(); //show both sides
 
             // click the 50/50 split option to apply the default scaling for both as otherwise the right side may be obscured.
             $('.js-oes-area-resize[data-area ="medium"]').click();

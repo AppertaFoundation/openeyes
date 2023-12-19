@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -29,7 +30,7 @@ $widget = $this;
             <?php } else { ?>
                 <table>
                     <colgroup>
-                        <col class="cols-7">
+                        <col class="cols-9">
                     </colgroup>
                     <tbody>
                     <?php foreach ($operations as $operation) { ?>
@@ -41,19 +42,26 @@ $widget = $this;
                                 ) ? $operation['object']->operation : $operation['operation']; ?>
                             </td>
                             <td>
+                                <div class="locus-data">
+                                    <div class="icons"><!-- no icons --></div>
+                                    <div class="lat-date">
+                                    <?php $side = array_key_exists('side', $operation) ? $operation['side'] : (array_key_exists('object', $operation) ? $operation['object']->side : ''); ?>
+                                    <?php $this->widget('EyeLateralityWidget', ['laterality' => $side]) ?>
+
+                                            <span class="oe-date">
+                                                <?= array_key_exists('object', $operation) ?
+                                                $operation['object']->getDisplayDate() :
+                                                Helper::formatFuzzyDate($operation['date']); ?>
+                                            </span>
+                               
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
                                 <?php if (array_key_exists('link', $operation)) { ?>
                                     <a href="<?= $operation['link'] ?>"><i
                                                 class="oe-i direction-right-circle pro-theme small pad"></i></a>
                                 <?php } ?>
-                            </td>
-                            <td>
-                                <?php $side = array_key_exists('side', $operation) ? $operation['side'] : (array_key_exists('object', $operation) ? $operation['object']->side : ''); ?>
-                                <?php $this->widget('EyeLateralityWidget', ['laterality' => $side]) ?>
-                            </td>
-                            <td>
-                            <span class="oe-date">
-                                <?= Helper::formatFuzzyDate($operation['date']); ?>
-                            </span>
                             </td>
                         </tr>
                     <?php } ?>

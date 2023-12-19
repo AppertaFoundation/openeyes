@@ -90,7 +90,7 @@ $display_site = ($institution_required || $has_site_specific_auth) || $instituti
                 )
             ); ?>
 
-            <i class="spinner" style="display:none"></i>
+            <i class="spinner full-overlay" style="display:none"></i>
 
             <button type="submit" id="login_button" class="green hint"><?= isset($login_type) && $login_type === BaseEsignElement::ESIGN_DEVICE_TYPE ? "Link device" : "Login" ?></button>
 

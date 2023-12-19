@@ -190,14 +190,10 @@ echo '<script type="text/javascript" src="' . $asset_folder . '/EsignElementWidg
     <div class="flex-layout flex-right">
         <div class="add-data-actions flex-item-bottom" id="medication-management-popup">
             <?php if (!\Yii::app()->user->checkAccess('Prescribe')) { ?>
-                <button id="mm-add-pgd-btn" class="button hint green <?=$read_only ? 'disabled' : ''?>" type="button">Add PGD Set</button>
+                <button id="mm-add-pgd-btn" data-test="mm-add-pgd-btn" class="button hint green <?=$read_only ? 'disabled' : ''?>" type="button">Add PGD Set</button>
             <?php } ?>
-            <button id="mm-add-standard-set-btn" data-test="mm-add-standard-set-btn" class="button hint green <?php if ($read_only) {
-                ?>disabled<?php
-                                                                                                              } ?>" type="button">Add standard set</button>
-            <button class="button hint green js-add-select-search <?php if ($read_only) {
-                ?>disabled<?php
-                                                                  } ?>" id="mm-add-medication-btn" type="button">
+            <button id="mm-add-standard-set-btn" data-test="mm-add-standard-set-btn" class="button hint green <?= $read_only ? "disabled" : "" ?>" type="button">Add standard set</button>
+            <button class="button hint green js-add-select-search <?= $read_only ? "disabled" : "" ?>" id="mm-add-medication-btn" data-test="mm-add-medication-btn" type="button">
                 <i class="oe-i plus pro-theme"></i>
             </button>
         </div>
@@ -216,9 +212,11 @@ echo '<script type="text/javascript" src="' . $asset_folder . '/EsignElementWidg
                     </strong>
                 </div>
                 <br>
-                <?= CHtml::dropDownList($model_name . '[prescription_reason]', '', CHtml::listData(OphDrPrescriptionEditReasons::model()->findAll(['order' => 'display_order', 'condition' => 'active = 1']), 'id', 'caption'), array('empty' => '- Reason -', 'class' => 'cols-4')) ?>
+                <?= CHtml::dropDownList($model_name . '[prescription_reason]', '',
+                    CHtml::listData(OphDrPrescriptionEditReasons::model()->findAll(['order' => 'display_order', 'condition' => 'active = 1']), 'id', 'caption'),
+                    ['empty' => '- Reason -', 'class' => 'cols-4', 'data-test' => 'prescription-edit-reasons']); ?>
                 <input type="text" id="reason_other_text" name="<?= $model_name ?>[reason_other]" style="display: none" />
-                <button id="submit_reason">
+                <button id="submit_reason" data-test="submit-prescription-reason">
                     <i class="oe-i tick large"></i>
                 </button>
                 <button id="cancel_reason">
@@ -326,7 +324,7 @@ echo '<script type="text/javascript" src="' . $asset_folder . '/EsignElementWidg
             prescription_modified = true;
         });
 
-        $('#mm-handler-1').on('handle', function() {
+        $('#mm-handler-1').on('handle', function(e) {
             if (!prescription_is_final) {
                 return;
             }
@@ -386,7 +384,7 @@ echo '<script type="text/javascript" src="' . $asset_folder . '/EsignElementWidg
                 prescription_modified = true;
             }
 
-            if (prescription_modified) {
+            if (prescription_modified && !e.originalEvent.draft) {
                 $('#js-save-mm-event').show();
                 setTimeout(() => enableButtonsWithin('#js-save-mm-event'), 100);
                 $(this).attr('status', 'stop');
@@ -471,7 +469,7 @@ echo '<script type="text/javascript" src="' . $asset_folder . '/EsignElementWidg
                     if (medication_history_bound_key && !medication_history_bound_keys.includes(medication_history_bound_key)) {
                         medication_history_bound_keys.push(medication_history_bound_key);
                     }
-                    
+
                     medication_management_bound_keys = [];
 
                     $.each(window.MMController.$table.children("tbody").children("tr.js-first-row"), function(index, medicationManagementRow) {

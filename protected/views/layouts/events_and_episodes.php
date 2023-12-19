@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,9 +16,10 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="theme-<?= \SettingMetadata::model()->getSetting('display_theme'); ?>">
 <head>
     <?php $this->renderPartial('//base/head/_meta'); ?>
     <?php $this->renderPartial('//base/head/_assets'); ?>
@@ -35,10 +37,8 @@
 <?php //$this->renderPartial('//base/_banner_watermark'); ?>
 <?php $this->renderPartial('//base/_debug'); ?>
 
-<!-- Branding (logo) -->
-<div class="openeyes-brand">
-    <?php $this->renderPartial('//base/_brand'); ?>
-</div>
+<?php $this->renderPartial('//base/_brand'); ?>
+
 <div id="oe-restrict-print">
     <h1>This page is intended to be viewed online and may not be printed.<br>Please use the print icon on the page to generate a hard copy.</h1>
 </div>

@@ -20,7 +20,7 @@ $left_eye_id = MedicationLaterality::LEFT;
 $both_eye_id = MedicationLaterality::BOTH;
 $field_prefix = $model_name . '[assignment][{{section_key}}][entries][{{entry_key}}]';
 ?>
-<div class="element-fields full-width" id="<?= $element_id ?>">
+<div class="element-fields full-width" id="<?= $element_id ?>" data-test="drug-administration-element-fields">
     <?php
     foreach ($assigned_psds as $key => $assigned_psd) {
         if ($assigned_psd->anyAssociatedEventDeleted()) {
@@ -331,7 +331,7 @@ $field_prefix = $model_name . '[assignment][{{section_key}}][entries][{{entry_ke
     <div class="flex-r">
         <div class="add-data-actions flex-item-bottom js-add-meds-ctn">
             <?php if ($can_add_presets) { ?>
-                <button id="js-add-preset-order" class="green hint js-add-select-btn">Add Preset Order</button>
+                <button id="js-add-preset-order" class="green hint js-add-select-btn" data-test="add-preset-order-button">Add Preset Order</button>
             <?php } ?>
             <?php if ($can_add_meds) { ?>
                 <button id="js-add-medications" class="adder js-add-select-btn"></button>

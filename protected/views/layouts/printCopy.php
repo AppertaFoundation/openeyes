@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -16,9 +17,10 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+
 ?>
 <!doctype html>
-<html lang="en">
+<html lang="en" class="theme-<?= \SettingMetadata::model()->getSetting('display_theme'); ?>">
 <head>
 <meta charset="utf-8">
 <title><?=\CHtml::encode($this->pageTitle); ?></title>

@@ -17,15 +17,15 @@
 /** @var Patient $patient */
 /** @var OphDrPrescription_Item $item */
 
-$fpten_setting = SettingMetadata::model()->getSetting('prescription_form_format');
 $overprint_setting = SettingMetadata::model()->getSetting('enable_prescription_overprint');
-$fpten_dispense_condition = OphDrPrescription_DispenseCondition::model()->findByAttributes(array('name' => 'Print to {form_type}'));
+$fpten_dispense_condition = OphDrPrescription_DispenseCondition::model()->findByAttributes(['name' => 'Print to {form_type}']);
+$dispense_conditions = OphDrPrescription_DispenseCondition::model()
+    ->withSettings($overprint_setting, $fpten_dispense_condition->id)
+    ->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION);
 
-$dispense_conditions = OphDrPrescription_DispenseCondition::model()->withSettings($overprint_setting, $fpten_dispense_condition->id)->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION);
-
-$dispense_condition_options = array(
-    $fpten_dispense_condition->id => array('label' => "Print to $fpten_setting")
-);
+$dispense_condition_options = [
+    $fpten_dispense_condition->id => ['label' => $fpten_dispense_condition->displayName]
+];
 ?>
 <tr data-key="<?= $key ?>" class="prescription-item prescriptionItem <?= $item->getErrors() ? 'errors' : '' ?> ">
     <td>
@@ -165,10 +165,10 @@ $dispense_condition_options = array(
             ),
             array('class' => 'dispenseCondition cols-11', 'empty' => 'Select', 'data-test' => 'drug-dispense-condition', 'options' => $dispense_condition_options)
         ) ?>
-
     </td>
     <td>
         <?php
+
         $locations = $item->dispense_condition ? $item->dispense_condition->getLocationsForCurrentInstitution() : array('');
         $style = $item->dispense_condition ? '' : 'display: none;';
         echo CHtml::dropDownList(

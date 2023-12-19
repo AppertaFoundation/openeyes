@@ -13,7 +13,7 @@ class CaseSearchPlot extends BaseCWidget
 
     public function init()
     {
-        $this->newblue_path = Yii::getPathOfAlias('application.assets.newblue');
+        $this->newblue_path = Yii::getPathOfAlias('application.assets.nxblu');
         $this->oePlotlyPath = Yii::app()->assetManager->getPublishedUrl($this->newblue_path, true) . '/dist/js/plotlyJS/oePlotly_v1.js';
 
         if (isset(Yii::app()->params['image_generation']) && Yii::app()->params['image_generation']) {

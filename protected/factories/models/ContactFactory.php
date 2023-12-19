@@ -2,9 +2,10 @@
 
 namespace OE\factories\models;
 
-use OE\factories\ModelFactory;
 use Address;
 use ContactLabel;
+use Institution;
+use OE\factories\ModelFactory;
 
 class ContactFactory extends ModelFactory
 {
@@ -15,7 +16,8 @@ class ContactFactory extends ModelFactory
             'first_name' => $this->faker->firstName(),
             'last_name' => $this->faker->lastName(),
             'email' => $this->faker->email(),
-            'primary_phone' => $this->faker->phoneNumber()
+            'primary_phone' => $this->faker->phoneNumber(),
+            'created_institution_id' => Institution::factory()->useExisting(),
         ];
     }
 

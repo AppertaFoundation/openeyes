@@ -17,7 +17,7 @@ PatientPanel.patientPopups = {
         );
         var demographics = new OpenEyes.UI.NavBtnPopup('demographics',
             parentElement.find('.js-demographics-btn'),
-            parentElement.find('.patient-popup-demographics'),
+            parentElement.find('#patient-popup-demographics'),
             { closeBtn: parentElement.find('.patient-popup-demographics > .close-icon-btn') }
         );
         var management = new OpenEyes.UI.NavBtnPopup('management',

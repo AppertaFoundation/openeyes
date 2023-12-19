@@ -16,6 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "ophinbiometry_lenstype_lens".
  *
@@ -44,6 +46,7 @@
 class OphInBiometry_LensType_Lens extends BaseActiveRecordVersionedSoftDelete
 {
     use MappedReferenceData;
+    use HasFactory;
     public $notDeletedField = 'active';
 
     protected function getSupportedLevels(): int

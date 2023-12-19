@@ -5,7 +5,7 @@ let idSelected = null;
 
 function createSingleView(id, mime_type) {
     let result = '';
-    let src = '/Api/attachmentDisplay/view/id/' + id + '?attachment=blob_data&mime=' + mime_type;
+    let src = '/Api/v1/attachmentDisplay/view/id/' + id + '?attachment=blob_data&mime=' + mime_type;
     switch (mime_type) {
         case 'image/jpg':
         case 'image/jpeg':
@@ -59,7 +59,7 @@ function createGroupView(attachments) {
         }
         ret += '<div class="image-hover" style="width:80px; font-size:70%">' +
             '<img class="js-small-thumbnail-attachment js-attachment-group ' + selectedClass + ' "' +
-            'src="/Api/attachmentDisplay/view/id/' + attachments[i].id + '?attachment=thumbnail_small_blob&mime=' + attachments[i].mime + '"' +
+            'src="/Api/v1/attachmentDisplay/view/id/' + attachments[i].id + '?attachment=thumbnail_small_blob&mime=' + attachments[i].mime + '"' +
             'style="padding:2px"' +
             'data-group_id=' + attachments[i].group_id + ' ' +
             'width="80px" height="80px" ' +
@@ -147,7 +147,7 @@ $(document).ready(function () {
         // distance from top and left relative to the window
         let offsetLeft = $thumbnail.offset().left - $(window).scrollLeft();
         let offsetTop = $thumbnail.offset().top - $(window).scrollTop();
-        let src = "/Api/attachmentDisplay/view/id/" + $thumbnail.data('id') + "?attachment=thumbnail_medium_blob&mime=" + $thumbnail.data('mime');
+        let src = "/Api/v1/attachmentDisplay/view/id/" + $thumbnail.data('id') + "?attachment=thumbnail_medium_blob&mime=" + $thumbnail.data('mime');
         // create the structure to display the medium thumbnail
         let $bigIMG =
             '<div class="js-medium-thumbnail-attachment" style="border-radius: 15px; pointer-events: none; background-color: rgba(256, 256, 256, 0.4); ' +

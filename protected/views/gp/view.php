@@ -48,6 +48,14 @@ $to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
                     </tr>
                     <tr>
                         <td>
+                            Email:
+                        </td>
+                        <td>
+                            <?php echo isset($model->contact->email) ? CHtml::encode($model->contact->email) : 'Unknown'; ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
                             National Id:
                         </td>
                         <td>
@@ -114,7 +122,7 @@ $to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
                             <td><?php echo CHtml::encode($cpa->practice->contact->first_name); ?></td>
                             <td><?php echo CHtml::encode($cpa->practice->getAddressLines()); ?></td>
                             <td><?php echo CHtml::encode($cpa->practice->code); ?></td>
-                            <td><?php echo CHtml::encode($cpa->practice->phone); ?></td>
+                            <td><?php echo CHtml::encode($cpa->practice->contact->primary_phone); ?></td>
                             <td/>
                         </tr>
                     <?php endforeach; ?>

@@ -32,7 +32,7 @@ $model_name = CHtml::modelName($element);
                 <?= \CHtml::checkBox(
                     $model_name . '[no_pastsurgery]',
                     $element->no_pastsurgery_date ? true : false,
-                    array('class' => $model_name . '_no_pastsurgery')
+                    array('class' => $model_name . '_no_pastsurgery', 'id' => "$model_name"."_no_pastsurgery")
                 ); ?>
                 No previous eye surgery or laser treatment
             </label>

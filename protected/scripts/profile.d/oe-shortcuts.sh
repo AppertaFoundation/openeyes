@@ -24,7 +24,7 @@ alias oepush="oe-unit-sample && git push"
 
 alias cdoe="cd $WROOT"
 alias cded="cd $WROOT/protected/modules/eyedraw"
-alias cdnb="cd $WROOT/protected/assets/newblue"
+alias cdnb="cd $WROOT/protected/assets/nxblu"
 alias cdsample="cd $WROOT/protected/modules/sample/sql"
 alias cdscripts="cd $SCRIPTDIR"
 alias cdiolm="cd $WROOT/protected/javamodules/IOLMasterImport"

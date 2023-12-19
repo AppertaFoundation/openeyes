@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -18,10 +19,10 @@
 ?>
 <table>
     <colgroup>
-        <col class="cols-8"><col>
+        <col class="cols-9"></col>
     </colgroup>
     <tbody>
-    <?php if ((!$operations || sizeof($operations)==0) && !$element->no_pastsurgery_date ) { ?>
+    <?php if ((!$operations || sizeof($operations) == 0) && !$element->no_pastsurgery_date) { ?>
       <div class="nil-recorded">Nil recorded</div>
     <?php } elseif ($element->no_pastsurgery_date) { ?>
         <div class="nil-recorded">Patient has had no previous eye surgery or laser treatment</div>
@@ -29,16 +30,18 @@
         foreach ($operations as $operation) {?>
         <tr>
           <td><?= array_key_exists('object', $operation) ? $operation['object']->operation : $operation['operation']; ?></td>
-          <td></td>
-          <td class="nowrap">
-                 <?php $side = array_key_exists('side', $operation) ? $operation['side']: (array_key_exists('object', $operation) ? $operation['object']->side : ''); ?>
+          <td>
+            <div class="locus-data">
+                <div class="icons"><!-- no icons --></div>
+                <div class="lat-date">
+                <?php $side = array_key_exists('side', $operation) ? $operation['side'] : (array_key_exists('object', $operation) ? $operation['object']->side : ''); ?>
                  <?php $this->widget('EyeLateralityWidget', array('laterality' => $side)) ?>
-              <span class="oe-date">
-                 <?= array_key_exists('object', $operation) ?
+                    <div class="oe-no-date-msg"><?= array_key_exists('object', $operation) ?
                      $operation['object']->getDisplayDate() :
-                     Helper::formatFuzzyDate($operation['date']); ?>
-              </span>
-          </td>
+                     Helper::formatFuzzyDate($operation['date']); ?></div>
+                </div>
+            </div>
+        </td>
             <td>
                 <?php if (array_key_exists('link', $operation)) { ?>
                     <a href="<?= $operation['link'] ?>"><i class="oe-i direction-right-circle <?= $this->pro_theme ?> small pad"></i></a>

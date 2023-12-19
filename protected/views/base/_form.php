@@ -50,7 +50,7 @@ if (!Yii::app()->user->isGuest) {
     $user = Yii::app()->session['user'];
 
     $menuHelper = new MenuHelper(Yii::app()->params['menu_bar_items'], Yii::app()->user, $uri);
-    $navIconUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue'), true) . '/dist/svg/oe-nav-icons.svg';
+    $navIconUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.nxblu'), true) . '/dist/svg/oe-nav-icons.svg';
     if ($as_clinic) { ?>
         <div class="clinic-context">
             <div class="favourite-btn js-favourite" data-test="worklist-favourite-btn"></div>

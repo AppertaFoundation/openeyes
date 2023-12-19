@@ -64,10 +64,10 @@ class RequestController extends \AdminController
 
             switch ($filter_name) {
                 case 'order_by':
-                    if ($filter === 'latest') {
-                        $criteria->order = 'last_modified_date DESC';
-                    } elseif ($filter === 'earliest') {
+                    if ($filter === 'earliest') {
                         $criteria->order = 'last_modified_date';
+                    } else {
+                        $criteria->order = 'last_modified_date DESC';
                     }
                     break;
                 case 'from_date':

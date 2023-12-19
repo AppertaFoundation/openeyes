@@ -1,8 +1,6 @@
 <?php
 
-namespace OEModule\PASAPI\resources;
-
-/*
+/**
  * OpenEyes
  *
  * (C) OpenEyes Foundation, 2019
@@ -16,24 +14,25 @@ namespace OEModule\PASAPI\resources;
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+ *
+ * @property Contact[] $ContactList
+ * @property GP $GP
+ * @property Practice $Practice
+ * @property Address[] $AddressList
  */
 
-use CActiveRecord;
+namespace OEModule\PASAPI\resources;
+
 use Contact;
 use EthnicGroup;
 use Exception;
-use Gp;
 use NhsNumberVerificationStatus;
-use Practice;
-use Yii;
-use \OEModule\OphCiExamination\models\Element_OphCiExamination_CommunicationPreferences;
+use OEModule\OphCiExamination\models\Element_OphCiExamination_CommunicationPreferences;
 
 class Patient extends BaseResource
 {
     protected static $resource_type = 'Patient';
     protected static $model_class = 'Patient';
-
-    public $isNewResource;
 
     /**
      * @return bool
@@ -109,7 +108,7 @@ class Patient extends BaseResource
      * Assign the Patient resource attributes to the given Patient model
      * and save it.
      *
-     * @param CActiveRecord|\Patient $patient
+     * @param \Patient $patient
      *
      * @throws Exception
      *
@@ -139,6 +138,8 @@ class Patient extends BaseResource
             return false;
         }
         $patient->save();
+
+        $this->mapPatientContacts($patient);
 
         // Set the contact details
         // ContactBehavior.php creates a contact automatically before save
@@ -222,10 +223,25 @@ class Patient extends BaseResource
      */
     private function mapGp(\Patient $patient)
     {
-        if (property_exists($this, 'GpCode')) {
+        if (property_exists($this, 'GP')) {
+            $gp = $this->GP;
+            $gp->id = $gp->getAssignedProperty('Code');
+
+            if ($gp->id) {
+                if ($model_id = $gp->save()) {
+                    $patient->gp_id = $model_id;
+                } else {
+                    $this->addWarning(
+                        'Could not save ' . \SettingMetadata::model()->getSetting('gp_label') . ' for code ' . $gp->getAssignedProperty('Code')
+                    );
+                }
+            } else {
+                $patient->gp_id = null;
+            }
+        } elseif (property_exists($this, 'GpCode')) {
             $code = $this->getAssignedProperty('GpCode');
             if ($code) {
-                if ($gp = Gp::model()->findByAttributes(array('nat_id' => $code))) {
+                if ($gp = \Gp::model()->findByAttributes(array('nat_id' => $code))) {
                     $patient->gp_id = $gp->id;
                 } else {
                     $this->addWarning('Could not find ' . \SettingMetadata::model()->getSetting('gp_label') . ' for code ' . $code);
@@ -245,9 +261,11 @@ class Patient extends BaseResource
      */
     private function mapLanguageCodeAndInterpreterRequired(\Patient $patient)
     {
-        if (property_exists($this, 'LanguageCode')
+        if (
+            property_exists($this, 'LanguageCode')
             || property_exists($this, 'InterpreterRequired')
-            || property_exists($this, 'Risks')) {
+            || property_exists($this, 'Risks')
+        ) {
             $change_episode = \Episode::getChangeEpisode($patient);
             $change_episode->save();
 
@@ -310,11 +328,11 @@ class Patient extends BaseResource
             if (property_exists($this, 'Risks')) {
                 $code = $this->getAssignedProperty('Risks');
                 if ($code) {
-                    if (preg_match( '/AIMAI/', $code)) {
+                    if (preg_match('/AIMAI/', $code)) {
                         $communication_pref->agrees_to_insecure_email_correspondence = 1;
                     }
 
-                    if (preg_match( '/AILGF/', $code)) {
+                    if (preg_match('/AILGF/', $code)) {
                         $communication_pref->correspondence_in_large_letters = 1;
                     }
                 }
@@ -368,9 +386,21 @@ class Patient extends BaseResource
      */
     private function mapPractice(\Patient $patient)
     {
-        if (property_exists($this, 'PracticeCode')) {
+        if (property_exists($this, 'Practice')) {
+            $practice = $this->Practice;
+            $practice->id = $practice->getAssignedProperty('Code');
+            if ($practice->id) {
+                if ($model_id = $practice->save()) {
+                    $patient->practice_id = $model_id;
+                } else {
+                    $this->addWarning('Could not save Practice for code ' . $practice->id);
+                }
+            } else {
+                $patient->practice_id = null;
+            }
+        } elseif (property_exists($this, 'PracticeCode')) {
             if ($code = $this->getAssignedProperty('PracticeCode')) {
-                if ($practice = Practice::model()->findByAttributes(array('code' => $code))) {
+                if ($practice = \Practice::model()->findByAttributes(array('code' => $code))) {
                     $patient->practice_id = $practice->id;
                 } else {
                     $this->addWarning('Could not find Practice for code ' . $code);
@@ -447,6 +477,92 @@ class Patient extends BaseResource
             'params' => array(':contact_id' => $contact->id),
         ));
     }
+
+    /**
+     * Will create or update contacts for the given patient based on matching by name.
+     *
+     * It may be useful to abstract this to a helper class or for it to be a static method
+     *
+     * @param \Patient $patient
+     *
+     * @throws Exception
+     */
+    private function mapPatientContacts(\Patient $patient)
+    {
+        if (property_exists($this, 'ContactList')) {
+            $matched_contact_ids = array();
+            foreach ($this->ContactList as $idx => $contact_resource) {
+                $matched_clause = ($matched_contact_ids) ? ' AND id NOT IN (' . implode(',', $matched_contact_ids) . ')' : '';
+                $contact_model = Contact::model()->find(
+                    'pas_id = :pas_id' . $matched_clause,
+                    [':pas_id' => $contact_resource->getAssignedProperty('PasId')]
+                );
+
+                if (!$contact_model) {
+                    $contact_model = new \Contact();
+                }
+
+                if ($contact_resource->saveModel($contact_model)) {
+                    if ($contact_model->id) {
+                        $matched_contact_ids[] = $contact_model->id;
+                    }
+                    foreach ($contact_resource->warnings as $warn) {
+                        $this->addWarning("Contact {$idx}: {$warn}");
+                    }
+                    // Determine if the contact is assigned to the patient. If not, assign it.
+                    $contact_assignment = \PatientContactAssignment::model()->find(
+                        'contact_id = :contact AND patient_id = :patient',
+                        [':contact' => $contact_model->id, ':patient' => $patient->id]
+                    );
+
+                    if (!$contact_assignment) {
+                        $contact_assignment = new \PatientContactAssignment();
+                        $contact_assignment->patient_id = $patient->id;
+                        $contact_assignment->contact_id = $contact_model->id;
+                        $contact_assignment->save();
+                    }
+                } else {
+                    $this->addWarning("Contact {$idx} not added");
+                    foreach ($contact_resource->errors as $err) {
+                        $this->addWarning("Contact {$idx}: {$err}");
+                    }
+                }
+            }
+            // clear out any patient contact assignments not matched
+            $this->deletePatientContacts($patient, $matched_contact_ids);
+        } elseif (!$this->partial_record) {
+            $this->deletePatientContacts($patient);
+        }
+    }
+
+    /**
+     * @param \Patient $patient
+     * @param array $except_ids
+     * @throws Exception
+     */
+    private function deletePatientContacts(\Patient $patient, $except_ids = array())
+    {
+        // delete any patient contacts that are no longer relevant
+        $matched_string = implode(',', $except_ids);
+        $criteria = new \CDbCriteria();
+        if ($matched_string) {
+            $criteria->addNotInCondition('t.contact_id', $except_ids);
+        }
+
+        $criteria->join = 'JOIN contact cont ON cont.id = t.contact_id';
+
+        $criteria->addCondition('t.patient_id = :patient_id  ');
+        $criteria->addCondition('cont.pas_id IS NOT NULL');
+
+        $criteria->params[':patient_id'] = $patient->id;
+
+        $contacts_assignment_to_delete = \PatientContactAssignment::model()->findAll($criteria);
+
+        foreach ($contacts_assignment_to_delete as $contact_assignment_to_delete) {
+            $contact_assignment_to_delete->delete();
+        }
+    }
+
 
     /**
      * @param \Patient $patient

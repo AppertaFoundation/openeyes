@@ -34,7 +34,7 @@ $picker_setup = $pick_behavior->setupPicker();
             <td class="js-pathway-container">
                 <?php $this->renderPartial(
                     '//worklist/_clinical_pathway',
-                    ['visit' => $pathway->worklist_patient]
+                    ['visit' => $pathway->worklist_patient, 'acceptable_wait_time' => $acceptable_wait_time]
                 ) ?>
             </td>
             <td class="js-pathway-assignee" data-id="<?= $pathway->owner_id ?>">

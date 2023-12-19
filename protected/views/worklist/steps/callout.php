@@ -6,7 +6,7 @@
  * @var $partial bool
  */
 $current_time = new DateTime();
-$acceptable_wait_time = $pathway->getAcceptableWaitTime();
+$acceptable_wait_time = Pathway::getAcceptableWaitTime();
 if (count($pathway->completed_steps) > 0) {
     $start_time = DateTime::createFromFormat(
         'Y-m-d H:i:s',

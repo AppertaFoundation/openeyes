@@ -234,7 +234,7 @@ class Element_OphCiExamination_Refraction extends \BaseEventTypeElement implemen
         $readings = $this->$readings_attr;
 
         if (!is_array($readings) || count($readings) === 0) {
-            $this->addError($readings_attr, "cannot be blank.");
+            $this->addError($readings_attr, "{$this->getAttributeLabel($side)} side cannot be blank.");
         } elseif (!$this->hasUniqueReadingTypesForSide($side)) {
             $this->addError("{$side}_readings", "Each reading type can only be recorded once for $side");
         }

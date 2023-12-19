@@ -36,10 +36,34 @@ class RoutesAdminController extends BaseAdminController
         $admin->getSearch()->addSearchItem('term');
         $admin->getSearch()->addSearchItem('source_type');
         $admin->getSearch()->addSearchItem('source_subtype');
+        $admin->buttons = false;
 
+        $add_button = \CHtml::button(
+            'Add',
+            [
+                'class' => 'button large',
+                'name' => 'add',
+                'data-uri' => '/OphDrPrescription/routesAdmin/add',
+                'data-object' => $admin->getModelName(),
+                'id' => 'et_add'
+            ]
+        );
+
+        $deactivate_button = \CHtml::button(
+            'Deactivate',
+            [
+                'class' => 'button large',
+                'name' => 'delete',
+                'data-uri' => '/OphDrPrescription/routesAdmin/deactivate',
+                'data-object' => $admin->getModelName(),
+                'id' => 'et_delete',
+            ]
+        );
+
+        $admin->addExtraButton('add', $add_button);
+        $admin->addExtraButton('deactivate', $deactivate_button);
         $admin->setModelDisplayName('Medication Routes');
-
-        $admin->listModel();
+        $admin->listModel(false);
     }
 
     public function actionEdit($id)
@@ -70,9 +94,8 @@ class RoutesAdminController extends BaseAdminController
         $admin->editModel();
     }
 
-    public function actionDelete()
+    public function actionDeactivate()
     {
-
         $post = Yii::app()->request->getPost('MedicationRoute');
         $attribute_ids_array = $post['id'];
 

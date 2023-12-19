@@ -66,6 +66,22 @@ class EventFactory extends ModelFactory
         return $this;
     }
 
+    /**
+     * Facility to remove element from defined classes. Useful when your factory
+     * chain is taking care of a default dependency itself.
+     *
+     * @param string $element_cls
+     * @return self
+     */
+    public function withoutElement(string $element_cls): self
+    {
+        if (array_key_exists($element_cls, $this->elementsWithStates)) {
+            unset($this->elementsWithStates[$element_cls]);
+        }
+
+        return $this;
+    }
+
     public function configure()
     {
         return $this->afterMaking(function ($event) {

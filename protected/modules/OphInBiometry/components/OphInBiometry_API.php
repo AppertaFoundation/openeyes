@@ -47,4 +47,18 @@ class OphInBiometry_API extends BaseAPI
 
         return $biometry_left . ' ' . $biometry_right;
     }
+
+    public function getPredictedRefractionDiffersFromTargetRefractionWarning($predicted_refraction, $target_refraction): ?string
+    {
+        $warning = null;
+        if(is_numeric($predicted_refraction) && is_numeric($target_refraction)) {
+            $difference = abs($predicted_refraction - $target_refraction);
+
+            if($difference > 0.5) {
+                $warning = Element_OphInBiometry_Calculation::$PREDICTED_REFRACTION_DIFFERS_FROM_TARGET_REFRACTION_WARNING;
+            }
+        }
+
+        return $warning;
+    }
 }

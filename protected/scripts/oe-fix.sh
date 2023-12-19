@@ -277,13 +277,13 @@ if [ $noperms = 0 ]; then
         )
 
         declare -a folders755=(
-            "$WROOT/protected/assets/newblue/"
+            "$WROOT/protected/assets/nxblu/"
         )
 
         declare -a foldersExclude=(
-            "$WROOT/protected/assets/newblue/src"
-            "$WROOT/protected/assets/newblue/node_scripts"
-            "$WROOT/assets/newblue"
+            "$WROOT/protected/assets/nxblu/src"
+            "$WROOT/protected/assets/nxblu/node_scripts"
+            "$WROOT/assets/nxblu"
         )
 
         # This will set the correct permissions on any given folder (and all it's sub-folders) that does not meet the correct criteria
@@ -372,7 +372,7 @@ if [ $noperms = 0 ]; then
         # A hack to stop the newblue submodule as being changed...
         # Will fail silently if git is not installed or the folder does not exist
         if [ "$gitinstalled" == "1" ]; then
-            git -C $WROOT/protected/assets/newblue reset --hard >/dev/null 2>&1 || :
+            git -C $WROOT/protected/assets/nxblu reset --hard >/dev/null 2>&1 || :
         fi
 
     fi
@@ -406,10 +406,10 @@ if [ "$restart" == "1" ]; then
     sudo service apache2 restart &>/dev/null
 fi
 
-# remove any leftover nxblu files when switching to a 6.7.x branch
-if [ -d "$WROOT/protected/assets/nxblu" ]; then
-    echo "Removing nxblu files..."
-    sudo rm -rf "$WROOT/protected/assets/nxblu" 2>/dev/null || :
+# remove any leftover newblue files when switching to a 7.x branch
+if [ -d "$WROOT/protected/assets/newblue" ]; then
+    echo "Removing newblue files..."
+    sudo rm -rf "$WROOT/protected/assets/newblue" 2>/dev/null || :
 fi
 
 echo ""

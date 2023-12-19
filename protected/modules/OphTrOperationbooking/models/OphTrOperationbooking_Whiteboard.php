@@ -130,6 +130,12 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
             $this->axis = $biometry->attributes["k1_$eyeLabel"] > $biometry->attributes["k2_$eyeLabel"] ? $biometry->attributes["k1_axis_$eyeLabel"] : $biometry->attributes["k2_axis_$eyeLabel"];
             $this->flat_k = $biometry->attributes["k1_$eyeLabel"];
             $this->steep_k = $biometry->attributes["k2_$eyeLabel"];
+            $this->target_refraction = $biometry->attributes["target_refraction_$eyeLabel"];
+
+            if(trim($this->target_refraction) === "") {
+                $this->target_refraction = null;
+            }
+
         }
 
         $this->alpha_blockers = $patient->hasRisk('Alpha blockers');

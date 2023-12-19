@@ -43,6 +43,7 @@ class BaseReport extends CModel
 
     public function attributeNames()
     {
+        return [];
     }
 
     protected function array2Csv(array $data)

@@ -80,6 +80,6 @@ final class SeederBuilder
             $context_pks[$key] = $override_attributes[$key] ?? \Yii::app()->session()[$key];
         }
 
-        return \ApplicationContext::fromPrimaryKeys($context_pks);
+        return \ApplicationContext::fromPrimaryKeys(...$context_pks);
     }
 }

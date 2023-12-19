@@ -1,10 +1,10 @@
 <li class="oe-nav-btn" id="js-nav-shortcuts" data-test="oe-menu">
-        <a class="nav-js-btn icon-btn" id="js-nav-shortcuts-btn">
+        <a class="nav-js-btn icon-btn" id="js-nav-shortcuts-btn" data-test="nav-shortcuts-btn">
             <svg viewBox="0 0 80 40" class="icon shortcuts">
                 <use xlink:href="<?= $navIconUrl . '#shortcuts-icon' ?>"></use>
             </svg>
         </a>
-    <div class="oe-nav-shortcuts" id="js-nav-shortcuts-subnav">
+    <div class="oe-nav-shortcuts" id="js-nav-shortcuts-subnav" data-test="menu-panel">
         <ul>
             <?php foreach ($menu as $key => $item) { ?>
                 <?php

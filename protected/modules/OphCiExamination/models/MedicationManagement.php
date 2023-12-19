@@ -20,16 +20,18 @@ namespace OEModule\OphCiExamination\models;
 
 use AutoSignTrait;
 use BaseSignature;
-use OEModule\OphCiExamination\widgets\MedicationManagement as MedicationManagementWidget;
 use CDbCriteria;
 use Element_OphDrPrescription_Details;
+use Element_OphDrPrescription_Esign;
 use Event;
 use EventMedicationUse;
 use Exception;
-use OELog;
+use OEModule\OphCiExamination\widgets\MedicationManagement as MedicationManagementWidget;
+use OE\factories\models\traits\HasFactory;
 use OphCiExamination_Signature;
 use OphDrPrescription_Item;
 use OphDrPrescription_ItemTaper;
+use OphDrPrescription_Signature;
 use PrescriptionCreator;
 use User;
 use Yii;
@@ -58,17 +60,18 @@ use Yii;
 class MedicationManagement extends BaseMedicationElement
 {
     use AutoSignTrait;
+    use traits\CustomOrdering;
+    use HasFactory;
+
     private $signature_class = \OphCiExamination_Signature::class;
     private $pin_required_setting_name = 'require_pin_for_prescription';
     private $auto_sign_role = 'Consultant';
 
-    use traits\CustomOrdering;
     public $do_not_save_entries = false;
     public bool $save_draft_prescription = false;
     public bool $no_entries_prescribed = false;
 
     protected $widgetClass = MedicationManagementWidget::class;
-
     public static $entry_class = MedicationManagementEntry::class;
 
     /**
@@ -410,17 +413,82 @@ class MedicationManagement extends BaseMedicationElement
     private function updateSignatures()
     {
         if ($this->signatures) {
+            $delete_signature_from_prescription = false;
+            $signature_to_add = null;
             foreach ($this->signatures as $signature) {
                 if ($this->save_draft_prescription === true) {
                     $signature->deletePrevSignature($this->id);
+
+                    $delete_signature_from_prescription = true;
                 } else {
                     if (strlen($signature->proof) > 0) {
                         $signature->element_id = $this->id;
                         $signature->save(false);
+
+                        $signature_to_add = $signature;
                     }
                 }
             }
+
+            $this->updatePrescriptionSignatures($delete_signature_from_prescription, $signature_to_add);
         }
+    }
+
+    private function updatePrescriptionSignatures($delete_signature_from_prescription, ?OphCiExamination_Signature $signature_to_add)
+    {
+        if (!is_null($this->prescription_id)) {
+            $prescription = $this->prescription;
+
+            $prescription_esign_element = Element_OphDrPrescription_Esign::model()->findByAttributes(
+                ['event_id' => $prescription->event_id]);
+
+            if (isset($prescription_esign_element)) {
+                if ($delete_signature_from_prescription) {
+                    foreach ($prescription_esign_element->signatures as $prescription_signature) {
+                        $prescription_signature->delete();
+                    }
+                } elseif (!is_null($signature_to_add)) {
+                    $this->updateOrAddSignatureToPrescription($prescription_esign_element, $signature_to_add);
+                }
+            }
+        }
+    }
+
+    /**
+     * @param Element_OphDrPrescription_Esign $prescription_esign_element
+     * @param OphCiExamination_Signature|null $signature_to_add
+     * @throws Exception
+     */
+    private function updateOrAddSignatureToPrescription(
+        Element_OphDrPrescription_Esign $prescription_esign_element,
+        ?OphCiExamination_Signature $signature_to_add
+    ): void {
+        $prescriber_signature = null;
+
+        foreach ($prescription_esign_element->signatures as $prescription_signature) {
+            if ($prescription_signature->type === \BaseSignature::TYPE_LOGGEDIN_USER) {
+                $prescriber_signature = $prescription_signature;
+            }
+        }
+
+
+        if (is_null($prescriber_signature)) {
+            $prescription_signature = new OphDrPrescription_Signature();
+            $prescription_signature->signatory_role = $prescription_esign_element->auto_sign_role;
+            $prescription_signature->type = BaseSignature::TYPE_LOGGEDIN_USER;
+            $prescription_signature->element_id = $prescription_esign_element->id;
+        }
+
+
+
+        $prescription_signature->proof = $signature_to_add->proof;
+        $prescription_signature->setDataFromProof();
+
+        if (is_null($prescriber_signature)) {
+            $prescription_signature->signatory_name = $prescription_signature->signedUser->getFullNameAndTitle();
+        }
+
+        $prescription_signature->save();
     }
 
     private function createOrUpdatePrescriptionEvent()
@@ -467,41 +535,7 @@ class MedicationManagement extends BaseMedicationElement
             /* items to add */
             foreach ($this->entries_to_prescribe as $entry) {
                 if (!in_array($entry->id, $existing_mgment_items)) {
-                    $prescription_item = new OphDrPrescription_Item();
-                    $prescription_item->event_id = $prescription->event_id;
-                    $prescription_item->bound_key = substr(bin2hex(openssl_random_pseudo_bytes(10)), 0, 10);
-
-                    $prescription_item->setAttributes(array(
-                        'usage_type' => OphDrPrescription_Item::getUsageType(),
-                        'usage_subtype' => OphDrPrescription_Item::getUsageSubtype(),
-                        'medication_id' => $entry->medication_id,
-                        'pgdpsd_id' => $entry->pgdpsd_id,
-                        'form_id' => $entry->form_id,
-                        'laterality' => $entry->laterality,
-                        'route_id' => $entry->route_id,
-                        'frequency_id' => $entry->frequency_id,
-                        'duration_id' => $entry->duration_id,
-                        'dose' => $entry->dose,
-                        'dose_unit_term' => $entry->dose_unit_term,
-                        'start_date' => $entry->start_date,
-                        'dispense_location_id' => $entry->dispense_location_id,
-                        'dispense_condition_id' => $entry->dispense_condition_id,
-                        'comments' => $entry->comments,
-                    ));
-                    $p_tapers = array();
-                    foreach ($entry->tapers as $taper) {
-                        $new_taper = new OphDrPrescription_ItemTaper();
-                        $new_taper->item_id = null;
-                        $new_taper->frequency_id = $taper->frequency_id;
-                        $new_taper->duration_id = $taper->duration_id;
-                        $new_taper->dose = $taper->dose;
-                        $p_tapers[] = $new_taper;
-                    }
-                    $prescription_item->tapers = $p_tapers;
-                    if (!$prescription_item->save()) {
-                        throw new Exception("Error while saving prescription item: " . print_r($prescription_item->errors, true));
-                    }
-                    $prescription_item->saveTapers();
+                    $prescription_item = OphDrPrescription_Item::createItemFromManagementEntry($prescription->id, $entry);
                     $entry->refresh();
                     $entry->prescription_item_id = $prescription_item->id;
                     $entry->save();
@@ -663,9 +697,14 @@ class MedicationManagement extends BaseMedicationElement
             $signature->deletePrevSignature();
         }
 
-        parent::beforeDelete();
+        return parent::beforeDelete();
     }
 
+    /**
+     * It is clinically unsafe to delete the linked prescription when the element is deleted.
+     *
+     * @return void
+     */
     public function afterDelete()
     {
         foreach ($this->entries as $entry) {

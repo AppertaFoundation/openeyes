@@ -59,13 +59,14 @@ $uid = \CHtml::modelName($el_class) . "_" . $widget_class . "_" . $row_id;
         <div class="js-signature-date" <?php if(!$this->isSigned()) { echo 'style="display:none"'; }?>>
             <?php $this->displaySignatureDate() ?>
         </div>
-        <div class="js-signature-control" <?php if($this->isSigned()) { echo 'style="display:none"'; }?>>
+        <div class="js-signature-control" <?php if($this->isSigned()) { echo 'style="display:none"'; }?> data-test="signature-control-widget">
             <div class="oe-user-pin">
                 <?php echo CHtml::passwordField('pin_'.$uid, '', array(
                     'placeholder' => "******",
                     'maxlength' => 6,
                     'inputmode' => "numeric",
                     'class' => "user-pin-entry js-pin-input",
+                    'data-test' => "event-auto-pin-entry"
                 )); ?>
                 <button type="button" class="try-pin js-sign-button" data-test="pin-sign-button">PIN sign</button>
             </div>

@@ -102,6 +102,7 @@ class BaseReportController extends BaseController
             } else {
                 $report->attributes = $_POST;
             }
+            $report->institution_id = $_POST['institution_id'] ?? null;
 
             if (!$report->validate()) {
                 $this->renderJSON($report->errors);

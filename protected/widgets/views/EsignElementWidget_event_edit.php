@@ -148,13 +148,13 @@ if ($this->isSigningAllowed()) {
                 <?php }
             } ?>
             <?php if (!$this->element->isSigned()) : ?>
-                <div class="alert-box issue"><?= $this->element->getUnsignedMessage() ?>
+                <div class="alert-box issue" data-test="unsigned-element-warning"><?= $this->element->getUnsignedMessage() ?>
                     <?php if ($this->element->usesEsignDevice()) : ?>
                         <a class="js-connect-device" href="javascript:void(0);">Connect your e-Sign device</a>
                     <?php endif; ?>
                 </div>
             <?php endif; ?>
-            <table class="last-left">
+            <table class="last-left" data-test="signatory-list-table">
                 <thead>
                 <tr>
                     <th></th>

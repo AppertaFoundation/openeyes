@@ -1,5 +1,4 @@
 <?php
-
 /**
  * OpenEyes.
  *
@@ -16,21 +15,16 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-require_once 'Zend/Http/Client.php';
 
 class PortalExamsCommand extends CConsoleCommand
 {
-    protected $client;
-
-    protected $config = array();
+    protected ?OptomPortalConnection $connection = null;
 
     public function run($args)
     {
         $creator = new OEModule\OphCiExamination\components\ExaminationCreator();
         $user = new User('portal_command');
-        $connection = new OptomPortalConnection();
-        $this->client = $connection->getClient();
-        $this->config = $connection->getConfig();
+        $this->connection = new OptomPortalConnection();
         $examinations = $this->examinationSearch();
 
         $defaultInvoiceStatus = \OEModule\OphCiExamination\models\InvoiceStatus::model()->findByAttributes(array('name' => 'No status'));
@@ -151,6 +145,8 @@ class PortalExamsCommand extends CConsoleCommand
                 }
             }
         }
+
+        return 0;
     }
 
     private function saveOptometristAsPatientContact($name, $address, $goc_number, $patient_id)
@@ -171,16 +167,15 @@ class PortalExamsCommand extends CConsoleCommand
      */
     protected function examinationSearch()
     {
-        $this->client->setUri($this->config['uri'] . $this->config['endpoints']['examinations']);
+        $params = [];
         $eventLog = new AutomaticExaminationEventLog();
         $last = $eventLog->latestSuccessfulEvent();
         if ($last) {
             $lastExam = json_decode($last->examination_data);
-            $this->client->setParameterPost(array('start_date' => $lastExam->updated_at));
+            $params["start_date"] = $lastExam->updated_at;
         }
-        $response = $this->client->request('POST');
 
-        return json_decode($response->getBody(), true);
+        return $this->connection->getExaminations($params);
     }
 
     private function getContactByNationalCodeAndAddress($goc_number, $address)

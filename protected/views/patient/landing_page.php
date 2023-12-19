@@ -99,24 +99,36 @@ $allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical');
                     <tr>
                         <td>
                             <ul class="inline-list">
+                                <li>
+                                    <span class="fade">VA</span>
+                                </li>
                                 <?php if ($vaData['has_beo']) { ?>
                                     <li>BEO <?= $vaData['beo_result'] . " " . $vaData['beo_method_abbr'] ?></li>
                                 <?php } ?>
-                                <li>R <?= $vaData['has_right'] ? $vaData['right_result'] : 'NA'; ?>
+                                <li>R <?= $vaData['has_right'] ? $vaData['right_result'] : 'Unknown'; ?>
                                     <?= $vaData['has_right'] ? $vaData['right_method_abbr'] : '' ?></li>
-                                <li>L <?= $vaData['has_left'] ? $vaData['left_result'] : 'NA' ?>
+                                <li>L <?= $vaData['has_left'] ? $vaData['left_result'] : 'Unknown' ?>
                                     <?= $vaData['has_left'] ? $vaData['left_method_abbr'] : '' ?></li>
                             </ul>
                         </td>
                         <td>
-                            <small class="fade"><span class="oe-date"><?= Helper::convertDate2NHS($vaData['event_date']); ?></span></small>
+                            <span class="oe-date"><?= Helper::convertDate2NHS($vaData['event_date']); ?></span>
                         </td>
                     </tr>
                 <?php } else { ?>
                     <tr>
-                        <td>VA:</td>
                         <td>
-                            <small class="fade">NA</small>
+                            <ul class="inline-list">
+                                <li>
+                                    <span class="fade">VA</span>
+                                </li>
+                                <li>
+                                    Unknown
+                                </li>
+                            </ul>
+                        </td>
+                        <td>
+                            <span class="oe-date">N/A</span>
                         </td>
                     </tr>
                 <?php } ?>
@@ -128,34 +140,57 @@ $allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical');
                     if ($refractionData) { ?>
                         <td>
                             <ul class="inline-list">
+                                <li>
+                                    <span class="fade">REF</span>
+                                </li>
                                 <li>R <?= $refractionData['right'] ?: 'NA' ?></li>
                                 <li>L <?= $refractionData['left'] ?: 'NA' ?></li>
                             </ul>
                         </td>
                         <td>
-                            <small class="fade"><span
-                                        class="oe-date"><?= Helper::convertDate2NHS($refractionData['event_date']) ?></span>
-                            </small>
+                            <span class="oe-date"><?= Helper::convertDate2NHS($refractionData['event_date']) ?></span>                            
                         </td>
                     <?php } else { ?>
-                        <td>Refraction:</td>
                         <td>
-                            <small class="fade">NA</small>
+                            <ul class="inline-list">
+                                <li>
+                                    <span class="fade">REF</span>
+                                </li>
+                                <li>
+                                    Unknown
+                                </li>
+                            </ul>
+                        </td>
+                        <td>
+                            <span class="oe-date">N/A</span>
                         </td>
                     <?php } ?>
                 </tr>
                 <tr>
-                    <?php if ($patient->getCviSummary()[0] !== 'Unknown') { ?>
-                        <td> CVI Status: <?= $patient->getCviSummary()[0]; ?> </td>
+                    <?php if (isset($patient->getCviSummary()[0])) { ?>
                         <td>
-                            <small class="fade"><span
-                                        class="oe-date"><?= $patient->getCviSummary()[1] && $patient->getCviSummary()[1] !== '0000-00-00' ? Helper::convertDate2HTML($patient->getCviSummary()[1]) : 'N/A' ?></span>
-                            </small>
+                            <ul class="inline-list">
+                                <li>
+                                    <span class="fade">CVI</span>
+                                </li> <?= $patient->getCviSummary()[0]; ?>
+                            </ul>
+                        </td>
+                        <td>
+                            <span class="oe-date"><?= $patient->getCviSummary()[1] && $patient->getCviSummary()[1] !== '0000-00-00' ? Helper::convertDate2HTML($patient->getCviSummary()[1]) : 'N/A' ?></span>
                         </td>
                     <?php } else { ?>
-                        <td>CVI Status:</td>
+                        <td><td>
+                            <ul class="inline-list">
+                                <li>
+                                    <span class="fade">CVI</span>
+                                </li>
+                                <li>
+                                    Unknown
+                                </li>
+                            </ul>
+                        </td>
                         <td>
-                            <small class="fade"><span class="oe-date">NA</span></small>
+                            <span class="oe-date">N/A</span>
                         </td>
 
                     <?php } ?>
@@ -168,7 +203,7 @@ $allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical');
             <?php if (!$active_events) {?>
                 <div class="nil-recorded">No Active Event</div>
             <?php }?>
-            <table class="standard">
+            <table class="standard last-right clickable-rows">
                 <tbody>
                 <?php foreach ($active_events as $event) :
                     $event_path = Yii::app()->createUrl($event->eventType->class_name . '/default/view') . '/'; ?>
@@ -182,7 +217,7 @@ $allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical');
                         </td>
                         <td><?= $event->usermodified->title . " " . $event->usermodified->first_name . " " . $event->usermodified->last_name ?></td>
                         <td>
-                            <small class="fade oe-date">
+                            
                                 <?php if ($event->created_date !== $event->last_modified_date) {
                                     echo 'Updated: '; ?>
                                     <span class="oe-date">
@@ -194,7 +229,7 @@ $allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical');
                                         <?= $event->event_date ? $event->NHSDateAsHTML('event_date') : $event->NHSDateAsHTML('created_date') ?>
                                     </span>
                                 <?php } ?>
-                            </small>
+                                
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -211,8 +246,7 @@ $allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical');
                     <div class="data-value">
                         <table>
                             <colgroup>
-                                <col class="cols-8">
-                                <col>
+                                <col class="cols-9"></col>
                             </colgroup>
                             <tbody>
                             <?php
@@ -234,10 +268,16 @@ $allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical');
                                 <?php foreach ($ophthalmic_diagnoses as $ophthalmic_diagnosis) {
                                     list($side, $name, $date, $event_id) = explode('~', $ophthalmic_diagnosis, 4); ?>
                                 <tr>
-                                    <td><strong><?= $name ?></strong></td>
-                                    <td class="nowrap">
-                                        <?php $this->widget('EyeLateralityWidget', array('laterality' => $side)) ?>
-                                        <span class="oe-date"><?= $date ?></span>
+                                    <td><?= $name ?></td>
+                                    <td>
+                                    <div class="locus-data">
+                                        <div class="icons">
+                                        </div>
+                                        <div class="lat-date">
+                                            <?php $this->widget('EyeLateralityWidget', array('laterality' => $side)) ?>
+                                            <span class="oe-date"><?= $date ?></span>
+                                        </div>
+                                    </div>
                                     </td>
                                     <td>
                                         <?php if (isset($event_id) && $event_id) { ?>
@@ -252,21 +292,21 @@ $allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical');
                     </div>
                 </div>
             </section>
-            <section class="element view full view-xxx" id="idg-ele-view-eye-procedures">
+            <section class="element view full" id="idg-ele-view-eye-procedures">
                 <header class="element-header"><h3 class="element-title">Eye Procedures</h3></header>
                 <div class="element-data full-width">
-                    <div class="data-value">
+
                         <?php $this->widget(PastSurgery::class, array(
                             'patient' => $this->patient,
                             'mode' => BaseEventElementWidget::$PATIENT_SUMMARY_MODE,
                         )); ?>
-                    </div>
+
                 </div>
             </section>
             <section class="element view full view-xxx" id="idg-ele-view-eye-medications">
                 <header class="element-header"><h3 class="element-title">Eye Medications</h3></header>
                 <div class="element-data full-width">
-                    <div class="data-value">
+                    <div class="data-value" data-test="eye-medications-summary">
                         <?php $this->widget(HistoryMedications::class, array(
                             'patient' => $this->patient,
                             'mode' => BaseEventElementWidget::$PATIENT_LANDING_PAGE_MODE,

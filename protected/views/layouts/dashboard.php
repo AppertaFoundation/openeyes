@@ -19,7 +19,7 @@
 
 ?>
 <!doctype html>
-<html lang="en">
+<html lang="en" class="theme-<?= \SettingMetadata::model()->getSetting('display_theme'); ?>">
     <head>
         <script type="text/javascript">var OpenEyes = OpenEyes || {};</script>
         <link href="<?= Yii::app()->assetManager->createUrl('fonts/Roboto/roboto.css')?>" rel="stylesheet">

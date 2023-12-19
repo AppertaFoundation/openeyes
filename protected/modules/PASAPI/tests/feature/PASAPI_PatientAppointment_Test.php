@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -27,18 +28,18 @@ class PASAPI_PatientAppointment_Test extends PASAPI_BaseTest
     protected $additional_clean_up_models = array('WorklistPatient');
 
     public $fixtures = array(
-    'worklist_definition' => 'WorklistDefinition',
-    'worklist_definition_mapping' => 'WorklistDefinitionMapping',
-    'worklist_definition_mapping_value' => 'WorklistDefinitionMappingValue',
-    'worklist' => 'Worklist',
-    'worklist_attribute' => 'WorklistAttribute',
+        'worklist_definition' => 'WorklistDefinition',
+        'worklist_definition_mapping' => 'WorklistDefinitionMapping',
+        'worklist_definition_mapping_value' => 'WorklistDefinitionMappingValue',
+        'worklist' => 'Worklist',
+        'worklist_attribute' => 'WorklistAttribute',
     );
 
     public function setUp(): void
     {
         $this->markTestSkipped('Appointment behaviour has been changed such that these tests need attention to make them relevant again.');
         parent::setUp();
-        $mgr = Yii::app()->getComponent('fixture');
+        $mgr = \Yii::app()->getComponent('fixture');
         $mgr->load($this->fixtures);
     }
 
@@ -173,7 +174,7 @@ EOF;
     {
         $this->assertXPathFound('/Failure');
         $this->assertXPathFound('/Failure/Errors');
-        $this->assertXPathRegExp('/'.$message.'/', 'string(/Failure/Errors)');
+        $this->assertXPathRegExp('/' . $message . '/', 'string(/Failure/Errors)');
     }
     public function testPartialUpdateErrorsForNewRecord()
     {
@@ -304,7 +305,7 @@ EOF;
 
         $id = $this->xPathQuery('/Success//Id')->item(0)->nodeValue;
 
-        $appt = WorklistPatient::model()->findByPk($id);
+        $appt = \WorklistPatient::model()->findByPk($id);
         $this->assertNotNull($appt);
 
         if ($error) {
@@ -312,12 +313,10 @@ EOF;
         }
 
         $this->put('PartialUpdate', $partial, array(
-        'X-OE-Partial-Record' => 1,
+            'X-OE-Partial-Record' => 1,
         ));
 
-        //var_dump($this->response->getBody(true));
-
-        $patient = WorklistPatient::model()->findByPk($id);
+        $patient = \WorklistPatient::model()->findByPk($id);
         $this->assertExpectedValuesMatch($expected_values, $patient);
 
         if ($error) {

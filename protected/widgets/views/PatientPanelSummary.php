@@ -33,7 +33,7 @@ $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient($displa
 >
     <div class="patient-name">
         <?php if (!$this->patient->isDeleted()) : ?>
-        <a href="<?= (new CoreAPI())->generatePatientLandingPageLink($this->patient); ?>">
+        <a data-test="patient-landing-page-link" href="<?= (new CoreAPI())->generatePatientLandingPageLink($this->patient); ?>">
         <?php else : ?>
             <a>
         <?php endif; ?>
@@ -46,7 +46,7 @@ $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient($displa
             </a>
     </div>
 
-
+    <div class="meta-aware">
         <div class="patient-details">
             <?php if ($display_primary_number_usage_code) { ?>
                 <div class="hospital-number">
@@ -75,9 +75,9 @@ $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient($displa
                     <?php echo $this->patient->getGenderString() ?>
             </div>
             <div class="patient-<?= $deceased ? 'died' : 'age' ?>">
-               <?php if ($deceased) : ?>
-                   <em>Died</em> <?= Helper::convertDate2NHS($this->patient->date_of_death); ?>
-               <?php endif; ?>
+            <?php if ($deceased) : ?>
+                <em>Died</em> <?= Helper::convertDate2NHS($this->patient->date_of_death); ?>
+            <?php endif; ?>
                 <em>Age<?= $deceased ? 'd' : '' ?></em> <?= $this->patient->getAge(); ?>
             </div>
                 <?php if ($trialContext) {
@@ -85,7 +85,8 @@ $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient($displa
                     echo $trialContext->renderAddToTrial();
                 } ?>
         </div>
-        <div class="flex-layout flex-right">
+    </div>
+
                     <?php if (!$deceased) { ?>
                         <?php if ($this->patient->allergyAssignments || $this->patient->risks || $this->patient->getDiabetes()) { ?>
                   <div class="patient-allergies-risks risk-warning js-allergies-risks-btn" data-test="summary-allergies-alert-btn">
@@ -144,7 +145,7 @@ $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient($displa
                   </svg>
               </div>
                     <?php } ?>
-        </div>
+        
 
       <?php if (Yii::app()->getAuthManager()->checkAccess('OprnViewClinical', Yii::app()->user->id)) : ?>
         <ul class="patient-widgets" >

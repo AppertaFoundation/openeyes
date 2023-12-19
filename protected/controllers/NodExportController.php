@@ -253,7 +253,7 @@ class NodExportController extends BaseController
 
     private function createCataractTempTables()
     {
-        // DROP all tables if exist before creating them
+      // DROP all tables if exist before creating them
         $this->clearAllTempTables();
 
         $query = '';
@@ -868,7 +868,6 @@ EOL;
     private function clearAllTempTables()
     {
         $cleanQuery = <<<EOL
-
                 DROP TABLE IF EXISTS tmp_rco_nod_main_event_episodes_{$this->extractIdentifier};
                 DROP TABLE IF EXISTS tmp_rco_nod_patients_{$this->extractIdentifier};
                 DROP TABLE IF EXISTS tmp_rco_nod_EpisodePreOpAssessment_{$this->extractIdentifier};
@@ -1441,10 +1440,12 @@ EOL;
         $query = <<<EOL
             DROP TABLE IF EXISTS tmp_rco_nod_EpisodePreOpAssessment_{$this->extractIdentifier};
             CREATE TABLE tmp_rco_nod_EpisodePreOpAssessment_{$this->extractIdentifier} (
-                oe_event_id int(10) NOT NULL,
-                Eye char(1) NOT NULL COMMENT 'L / R',
-                IsAbleToLieFlat char(1) DEFAULT NULL COMMENT '0 = no, 1 = yes',
-                IsInabilityToCooperate char(1) DEFAULT NULL COMMENT '0 = no, 1 = yes',
+                oe_event_id             int(10) NOT NULL,
+                Eye                     char(1) NOT NULL COMMENT 'L / R',
+                IsAbleToLieFlat         char(1) DEFAULT NULL COMMENT '0 = no, 1 = yes',
+                IsInabilityToCooperate  char(1) DEFAULT NULL COMMENT '0 = no, 1 = yes',
+                Alphablockers           char(1) DEFAULT NULL COMMENT '0 = no, 1 = yes',
+                Anticoagulants          char(1) DEFAULT NULL COMMENT '0 = no, 1 = yes',
                 UNIQUE KEY oe_event_id (oe_event_id,Eye)
             );
 EOL;
@@ -1459,13 +1460,45 @@ INSERT INTO tmp_rco_nod_EpisodePreOpAssessment_{$this->extractIdentifier} (
   oe_event_id,
   Eye,
   IsAbleToLieFlat,
-  IsInabilityToCooperate
+  IsInabilityToCooperate,
+  Alphablockers,
+  Anticoagulants
 )
 SELECT DISTINCT
 c.oe_event_id,
 CASE WHEN pl.eye_id IN (1, 3) THEN 'L' ELSE NULL END AS Eye, /* Belt+Brace with WHERE clause or NULL */
-CASE WHEN (SELECT COUNT(*) FROM patient_risk_assignment pr WHERE pr.patient_id = c.patient_id AND pr.risk_id = 1) > 0 THEN 0 ELSE 1 END AS IsAbleToLieFlat,
-CASE WHEN (SELECT COUNT(*) FROM patient_risk_assignment pr WHERE pr.patient_id = c.patient_id AND pr.risk_id = 4) > 0 THEN 1 ELSE 0 END AS IsInabilityToCooperate
+CASE WHEN ( SELECT COUNT(*)
+            FROM episode e
+            JOIN event ev ON e.id = ev.episode_id AND event_id = c.oe_event_id
+            JOIN et_ophciexamination_history_risks er ON ev.id = er.event_id
+            JOIN ophciexamination_history_risks_entry re ON er.id = re.element_id
+            JOIN ophciexamination_risk r ON re.risk_id = r.id
+            WHERE r.name = 'Cannot Lie Flat'
+          ) > 0 THEN 0 ELSE 1 END AS IsAbleToLieFlat,
+CASE WHEN ( SELECT COUNT(*)
+            FROM episode e
+            JOIN event ev ON e.id = ev.episode_id AND event_id = c.oe_event_id
+            JOIN et_ophciexamination_history_risks er ON ev.id = er.event_id
+            JOIN ophciexamination_history_risks_entry re ON er.id = re.element_id
+            JOIN ophciexamination_risk r ON re.risk_id = r.id
+            WHERE r.name = 'Inability to co-operate adequately'
+          ) > 0 THEN 1 ELSE 0 END AS IsInabilityToCooperate,
+CASE WHEN ( SELECT COUNT(*)
+            FROM episode e
+            JOIN event ev ON e.id = ev.episode_id AND event_id = c.oe_event_id
+            JOIN et_ophciexamination_history_risks er ON ev.id = er.event_id
+            JOIN ophciexamination_history_risks_entry re ON er.id = re.element_id
+            JOIN ophciexamination_risk r ON re.risk_id = r.id
+            WHERE r.name = 'Alpha blockers'
+          ) > 0 THEN 1 ELSE 0 END AS Alphablockers,
+CASE WHEN ( SELECT COUNT(*)
+            FROM episode e
+            JOIN event ev ON e.id = ev.episode_id AND event_id = c.oe_event_id
+            JOIN et_ophciexamination_history_risks er ON ev.id = er.event_id
+            JOIN ophciexamination_history_risks_entry re ON er.id = re.element_id
+            JOIN ophciexamination_risk r ON re.risk_id = r.id
+            WHERE r.name = 'Anticoagulants'
+          ) > 0 THEN 1 ELSE 0 END AS Anticoagulants
 /* Restriction: Start with control events */
 FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
 /* Join: Associated procedures, Implicit Restriction: Operations with procedures */
@@ -1473,19 +1506,51 @@ JOIN et_ophtroperationnote_procedurelist pl ON pl.event_id = c.oe_event_id
 /* Restrict: LEFT/BOTH eyes */
 WHERE pl.eye_id IN (1, 3)
 /* Group by required as may have multiple procedures on eye */
-GROUP BY oe_event_id, Eye, IsAbleToLieFlat, IsInabilityToCooperate;
+GROUP BY oe_event_id, Eye, IsAbleToLieFlat, IsInabilityToCooperate, Alphablockers, Anticoagulants;
 
 INSERT INTO tmp_rco_nod_EpisodePreOpAssessment_{$this->extractIdentifier} (
   oe_event_id,
   Eye,
   IsAbleToLieFlat,
-  IsInabilityToCooperate
+  IsInabilityToCooperate,
+  Alphablockers,
+  Anticoagulants
 )
 SELECT DISTINCT
 c.oe_event_id,
 CASE WHEN pl.eye_id IN (2, 3) THEN 'R' ELSE NULL END AS Eye, /* Belt+Brace with WHERE clause or NULL */
-CASE WHEN (SELECT COUNT(*) FROM patient_risk_assignment pr WHERE pr.patient_id = c.patient_id AND pr.risk_id = 1) > 0 THEN 0 ELSE 1 END AS IsAbleToLieFlat,
-CASE WHEN (SELECT COUNT(*) FROM patient_risk_assignment pr WHERE pr.patient_id = c.patient_id AND pr.risk_id = 4) > 0 THEN 1 ELSE 0 END AS IsInabilityToCooperate
+CASE WHEN ( SELECT COUNT(*)
+            FROM episode e
+            JOIN event ev ON e.id = ev.episode_id AND event_id = c.oe_event_id
+            JOIN et_ophciexamination_history_risks er ON ev.id = er.event_id
+            JOIN ophciexamination_history_risks_entry re ON er.id = re.element_id
+            JOIN ophciexamination_risk r ON re.risk_id = r.id
+            WHERE r.name = 'Cannot Lie Flat'
+          ) > 0 THEN 0 ELSE 1 END AS IsAbleToLieFlat,
+CASE WHEN ( SELECT COUNT(*)
+            FROM episode e
+            JOIN event ev ON e.id = ev.episode_id AND event_id = c.oe_event_id
+            JOIN et_ophciexamination_history_risks er ON ev.id = er.event_id
+            JOIN ophciexamination_history_risks_entry re ON er.id = re.element_id
+            JOIN ophciexamination_risk r ON re.risk_id = r.id
+            WHERE r.name = 'Inability to co-operate adequately'
+          ) > 0 THEN 1 ELSE 0 END AS IsInabilityToCooperate,
+CASE WHEN ( SELECT COUNT(*)
+            FROM episode e
+            JOIN event ev ON e.id = ev.episode_id AND event_id = c.oe_event_id
+            JOIN et_ophciexamination_history_risks er ON ev.id = er.event_id
+            JOIN ophciexamination_history_risks_entry re ON er.id = re.element_id
+            JOIN ophciexamination_risk r ON re.risk_id = r.id
+            WHERE r.name = 'Alpha blockers'
+          ) > 0 THEN 1 ELSE 0 END AS Alphablockers,
+CASE WHEN ( SELECT COUNT(*)
+            FROM episode e
+            JOIN event ev ON e.id = ev.episode_id AND event_id = c.oe_event_id
+            JOIN et_ophciexamination_history_risks er ON ev.id = er.event_id
+            JOIN ophciexamination_history_risks_entry re ON er.id = re.element_id
+            JOIN ophciexamination_risk r ON re.risk_id = r.id
+            WHERE r.name = 'Anticoagulants'
+          ) > 0 THEN 1 ELSE 0 END AS Anticoagulants
 /* Restriction: Start with control events */
 FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
 /* Join: Associated procedures, Implicit Restriction: Operations with procedures */
@@ -1502,14 +1567,14 @@ EOL;
     {
 
         $query = <<<EOL
-                SELECT c.oe_event_id as EpisodeId, p.Eye, p.isAbleToLieFlat, p.IsInabilityToCooperate
+                SELECT c.oe_event_id as EpisodeId, p.Eye, p.isAbleToLieFlat, p.IsInabilityToCooperate, p.Alphablockers, p.Anticoagulants
                 FROM tmp_rco_nod_main_event_episodes_{$this->extractIdentifier} c
                 JOIN tmp_rco_nod_EpisodePreOpAssessment_{$this->extractIdentifier} p ON c.oe_event_id = p.oe_event_id
 EOL;
 
         $dataQuery = array(
             'query' => $query,
-            'header' => array('EpisodeId', 'Eye', 'IsAbleToLieFlat', 'IsInabilityToCooperate'),
+            'header' => array('EpisodeId', 'Eye', 'IsAbleToLieFlat', 'IsInabilityToCooperate', 'Alphablockers', 'Anticoagulants'),
         );
 
         return $this->saveCSVfile($dataQuery, 'Cataract/EpisodePreOpAssessment');

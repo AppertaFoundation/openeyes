@@ -62,7 +62,7 @@ foreach ($ethnic_list as $key => $item) {
 
 )); ?>
 
-<div class="oe-full-content oe-new-patient flex-layout flex-top">
+<div class="oe-full-content oe-new-patient flex-t">
   <div class="patient-inputs-column" >
     <!--<?php if ($patient->hasErrors() || $address->hasErrors() || $contact->hasErrors()) { ?>
         <div class="alert-box error">
@@ -346,7 +346,7 @@ foreach ($ethnic_list as $key => $item) {
                                         echo $practice_contact_associate->gp->getCorrespondenceName() . $providerNo . $role . $practiceNameAddress;
                                     }
                                 } else {
-                                    echo $patient->gp_id ? $patient->gp->CorrespondenceName : '';
+                                    echo isset($patient->gp) ? $patient->gp->CorrespondenceName : '';
                                 }
                                 ?>
                             </span>
@@ -356,7 +356,7 @@ foreach ($ethnic_list as $key => $item) {
                     <?= CHtml::hiddenField('Patient[gp_id]', $patient->gp_id, array('class' => 'hidden_id')) ?>
                 </div>
                 <?php if (Yii::app()->user->checkAccess('Create GP') && (SettingMetadata::model()->getSetting('default_country') === 'Australia')) { ?>
-                    <a id="js-add-contact-btn1" href="#">Add Referring Practitioner</a>
+                    <a id="js-add-contact-btn1" href="#" data-test="add-referring-practitioner-australia">Add Referring Practitioner</a>
                 <?php } ?>
                 <div id="no_gp_result" style="display: none;">
                     <div>No result</div>

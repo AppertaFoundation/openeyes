@@ -1,5 +1,7 @@
 <?php
 $active_pathway = $this->patient->getClinicPathwayInProgress();
+$acceptable_wait_time = Pathway::getAcceptableWaitTime();
+
 ?>
 
 <?php if ($active_pathway !== null) { ?>
@@ -11,6 +13,7 @@ $active_pathway = $this->patient->getClinicPathwayInProgress();
             [
                 'pathway' => $active_pathway,
                 'display_wait_duration' => false,
+                'acceptable_wait_time' => $acceptable_wait_time,
                 'editable' => false,
             ]
         );

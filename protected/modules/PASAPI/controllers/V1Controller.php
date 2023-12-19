@@ -118,7 +118,12 @@ class V1Controller extends \CController
             $this->sendResponse(401);
         }
 
-        $identity = new UserIdentity($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW'], null, null);
+        $identity = new UserIdentity(
+            $_SERVER['PHP_AUTH_USER'],
+            $_SERVER['PHP_AUTH_PW'],
+            \Institution::model()->find('remote_id = :code', [':code' => \Yii::app()->params['institution_code']])->id,
+            null
+        );
         list($authentication_success, $authentication_msg) = $identity->authenticate();
 
         if (!$authentication_success) {

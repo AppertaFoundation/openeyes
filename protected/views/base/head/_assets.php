@@ -7,13 +7,18 @@ if (isset(Yii::app()->params['image_generation']) && Yii::app()->params['image_g
     $display_theme = $user_theme ? SettingMetadata::model()->getSetting('display_theme') : Yii::app()->params['image_generation'];
 }
 
-$newblue_path = $assetManager->getPublishedPathOfAlias('application.assets.newblue');
+$newblue_path = $assetManager->getPublishedPathOfAlias('application.assets.nxblu');
 Yii::app()->clientScript->registerCssFile($newblue_path . '/dist/css/style_eyedraw_doodles.css');
 ?>
-<link rel="stylesheet" type="text/css" data-theme="dark"
-      href="<?= $newblue_path . '/dist/css/style_oe_dark.3.css' ?>" media="<?= $display_theme !== 'dark' ? 'none' : '' ?>">
-<link rel="stylesheet" type="text/css" data-theme="light"
-      href="<?= $newblue_path . '/dist/css/style_oe_light.3.css' ?>" <?= $display_theme === 'dark' ? 'media="none"' : '' ?>>
+<link href="<?= $newblue_path ?>/dist/css/style_openeyes.css" rel="stylesheet" media="screen">
+<link href="<?= $newblue_path ?>/dist/css/style_block-browser-print.css" rel="stylesheet" media="print">
+
+<!-- preload common custom fonts -->
+<link rel="preload" href="<?= $newblue_path ?>/dist/fonts/roboto-subset/100-thin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="<?= $newblue_path ?>/dist/fonts/roboto-subset/300-light.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="<?= $newblue_path ?>/dist/fonts/roboto-subset/400-latin-greek.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="<?= $newblue_path ?>/dist/fonts/roboto-subset/500-latin-greek.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="<?= $newblue_path ?>/dist/fonts/roboto-subset/700-latin-greek.woff2" as="font" type="font/woff2" crossorigin>
 
 <?php $assetManager->registerScriptFile('js/modernizr.custom.js')?>
 <?php $assetManager->registerCoreScript('jquery')?>

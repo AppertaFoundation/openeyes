@@ -43,7 +43,7 @@ $event = $controller->event ?? null;
 $deleted_watermark = $event && (int)$event->deleted ? 'void' : null;
 ?>
 <!doctype html>
-<html lang="en">
+<html lang="en" class="theme-<?= \SettingMetadata::model()->getSetting('display_theme'); ?>">
 <head>
 <meta charset="utf-8">
 <title><?=\CHtml::encode($this->pageTitle); ?></title>

@@ -30,7 +30,7 @@ class OphDrPrescriptionModule extends BaseEventTypeModule
             'OphDrPrescription.controllers.*',
         ));
 
-        $this->setModules(array('OphDrPrescriptionAdmin'));
+        $this->setModules(['OphDrPrescriptionAdmin', 'OphDrPrescriptionPharmacyWorklist']);
 
         parent::init();
     }

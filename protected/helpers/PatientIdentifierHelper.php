@@ -18,8 +18,8 @@
 
 class PatientIdentifierHelper
 {
-    const PATIENT_IDENTIFIER_ACTIVE_SOURCE_INFO = "ACTIVE";
-    const PATIENT_IDENTIFIER_DELETED_BY_STRING = "DEL BY PATIENT ID ";
+    public const PATIENT_IDENTIFIER_ACTIVE_SOURCE_INFO = "ACTIVE";
+    public const PATIENT_IDENTIFIER_DELETED_BY_STRING = "DEL BY PATIENT ID ";
     /**
      * Returns the display order rules for the specified institution and site.
      *
@@ -90,7 +90,10 @@ class PatientIdentifierHelper
      */
     public static function getGlobalInstitutionIdFromSetting(): ?int
     {
-        $institutions = Institution::model()->findAll('remote_id=:remote_id', [':remote_id' => SettingMetadata::model()->getSetting('global_institution_remote_id')]);
+        $institutions = Institution::model()->findAll(
+            'remote_id=:remote_id',
+            [':remote_id' => SettingMetadata::model()->getSetting('global_institution_remote_id')]
+        );
         $count = count($institutions);
         if (!$count || $count > 1) {
             return null;
@@ -133,13 +136,21 @@ class PatientIdentifierHelper
      * @param null $site_id
      * @return PatientIdentifier|null
      */
-    public static function getIdentifierForPatient($usage_type, $patient_id, $institution_id, $site_id = null, $disable_default_scope = false): ?PatientIdentifier
-    {
+    public static function getIdentifierForPatient(
+        $usage_type,
+        $patient_id,
+        $institution_id,
+        $site_id = null,
+        $disable_default_scope = false
+    ): ?PatientIdentifier {
         $cases = $site_id ? ['site', 'institution'] : ['institution'];
         $current_site_id = $site_id;
 
         $identifiers_by_type_id = array_reduce(
-            PatientIdentifier::model()->with('patientIdentifierType', 'patientIdentifierStatus')->cache(3)->findAll("patient_id=:patient_id and deleted = 0", [':patient_id' => $patient_id]),
+            PatientIdentifier::model()->with('patientIdentifierType', 'patientIdentifierStatus')->cache(3)->findAll(
+                "patient_id=:patient_id and deleted = 0",
+                [':patient_id' => $patient_id]
+            ),
             function ($by_id, $patient_identifier) {
                 $by_id[$patient_identifier->patient_identifier_type_id] = $patient_identifier;
                 return $by_id;
@@ -228,7 +239,8 @@ class PatientIdentifierHelper
 
         if ($patient) {
             foreach ($patient->identifiers as $identifier) {
-                $identifiers .= $identifier->patientIdentifierType->short_title . ' (' . $identifier->patientIdentifierType->institution->short_name . '): ' . $identifier->getDisplayValue() . ', ';
+                $identifiers .= $identifier->patientIdentifierType->short_title . ' ('
+                    . $identifier->patientIdentifierType->institution->short_name . '): ' . $identifier->getDisplayValue() . ', ';
             }
         }
 
@@ -333,7 +345,8 @@ class PatientIdentifierHelper
             if ($duplicate_identifier) {
                 if ($type->usage_type == PatientIdentifierType::GLOBAL_USAGE_TYPE) {
                     $duplicate_identifier->deleted = 1;
-                    $duplicate_identifier->source_info =  \PatientIdentifierHelper::PATIENT_IDENTIFIER_DELETED_BY_STRING . $patient->id . '[' . time() . ']';
+                    $duplicate_identifier->source_info = \PatientIdentifierHelper::PATIENT_IDENTIFIER_DELETED_BY_STRING
+                        . $patient->id . '[' . time() . ']';
                     $duplicate_identifier->save();
                 } else {
                     return false;
@@ -362,7 +375,7 @@ class PatientIdentifierHelper
     /**
      * Returns the current GLOBAL type
      *
-     * @return PatientIdentifierHelper|null
+     * @return PatientIdentifierType|null
      */
     public static function getCurrentGlobalType(): ?PatientIdentifierType
     {

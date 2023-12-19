@@ -15,33 +15,100 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+use OEModule\OphDrPrescription\widgets\PrescriptionEsignElementWidget;
+
 ?>
-<?php /** @var PrescriptionEsignElementWidget $this */ ?>
-<?php $signatures = $this->element->getViewSignatures(); ?>
-<?php $print_mode = Yii::app()->request->getParam('print_mode'); ?>
-<?php if (count($signatures) > 0 && ($print_mode != 'WP10' && $print_mode != 'FP10')) {
-    foreach ($signatures as $signature) { ?>
-        <div class="box">
-            <div class="flex">
-                <div class="dotted-area">
-                    <div class="label">Signed</div>
-                    <?= $signature->getPrintout(); ?>
-                </div>
-                <div class="dotted-area">
-                    <div class="label">Date</div>
-                    <?= $signature->getSignedDate() . ", " . $signature->getSignedTime(); ?>
-                </div>
-            </div>
-            <div class="flex">
-                <div class="dotted-area">
-                    <div class="label">Print name</div>
-                    <?= $signature->signatory_name ?>
-                </div>
-                <div class="dotted-area">
-                    <div class="label">Job title</div>
-                    <?= $signature->signatory_role ?>
-                </div>
-            </div>
-        </div>
+
+<?php
+    $signatures = $this->element->getViewSignatures();
+    $print_mode = Yii::app()->request->getParam('print_mode');
+?>
+
+
+<?php if (count($signatures) > 0 && ($print_mode !== 'WP10' && $print_mode !== 'FP10')) { ?>
+    <?php foreach (array_filter($signatures, fn($sig) => (int)$sig->type !== \BaseSignature::TYPE_LOGGEDIN_USER) as $signatory) { ?>
+        <table class="borders done_bys">
+            <tr>
+                <th><?=$signatory->signatory_role?></th>
+                <td><?=$signatory->signatory_name ?><?php if (isset($signatory->signedUser->registration_code)) {
+                        echo ' (' . $signatory->signedUser->registration_code . ')';
+                    } ?>
+                </td>
+                <th>Date</th>
+                <td><?= $signatory->isSigned() ? $this->element->NHSDate('created_date') : '' ?></td>
+            </tr>
+            <tr class="handWritten">
+                <th>Signature</th>
+                <td>
+                    <div class="dotted-write" style="text-align: center">
+                        <?= str_replace("<img", "<img style='width:90px' ", $signatory->getPrintout()); ?>
+                    </div>
+                </td>
+                <th>Contact Number</th>
+                <td>
+                    <div class="dotted-write"></div>
+                </td>
+            </tr>
+        </table>
+    <?php } ?>
+
+    <?php if ($medication_management_element = $this->element->detailsElement->isSignedByMedication()) {
+        $readonly_signatures = $medication_management_element->getSignatures(true);
+
+        foreach ($readonly_signatures as $signature) :?>
+            <table class="borders done_bys">
+            <tr>
+                <th><?= PrescriptionEsignElementWidget::PRESCRIBER_DISPLAY_ROLE ?></th>
+                <td><?=$signature->signatory_name ?><?php if (isset($signature->signedUser->registration_code)) {
+                        echo ' (' . $signature->signedUser->registration_code . ')';
+                    } ?>
+                </td>
+                <th>Date</th>
+                <td><?= $this->element->NHSDate('created_date') ?>
+                </td>
+            </tr>
+            <tr class="handWritten">
+                <th>Signature</th>
+                <td>
+                    <div class="dotted-write" style="text-align: center">
+                        <?= str_replace("<img", "<img style='width:90px' ", $signature->getPrintout()); ?>
+                    </div>
+                </td>
+                <th>Contact Number</th>
+                <td>
+                    <div class="dotted-write"></div>
+                </td>
+            </tr>
+        </table>
+        <?php endforeach;?>
+
+    <?php } else {
+        foreach (array_filter($signatures, fn($sig) => (int)$sig->type === \BaseSignature::TYPE_LOGGEDIN_USER) as $signature) { ?>
+            <table class="borders done_bys">
+                <tr>
+                    <th><?=$signature->signatory_role?></th>
+                    <td><?=$signature->signatory_name ?><?php if (isset($signature->signedUser->registration_code)) {
+                            echo ' (' . $signature->signedUser->registration_code . ')';
+                        } ?>
+                    </td>
+                    <th>Date</th>
+                    <td><?= $this->element->NHSDate('created_date') ?>
+                    </td>
+                </tr>
+                <tr class="handWritten">
+                    <th>Signature</th>
+                    <td>
+                        <div class="dotted-write" style="text-align: center">
+                            <?= str_replace("<img", "<img style='width:90px' ", $signature->getPrintout()); ?>
+                        </div>
+                    </td>
+                    <th>Contact Number</th>
+                    <td>
+                        <div class="dotted-write"></div>
+                    </td>
+                </tr>
+            </table>
+        <?php } ?>
     <?php } ?>
 <?php } ?>

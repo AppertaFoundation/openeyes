@@ -1,4 +1,4 @@
-<html lang="en">
+<html lang="en" class="theme-<?= \SettingMetadata::model()->getSetting('display_theme'); ?>">
 
 <head>
     <script type="text/javascript">
@@ -109,7 +109,7 @@
     <script src="<?= Yii::app()->assetManager->createUrl('js/analytics/analytics_drill_down.js')?>"></script>
     <script src="<?= Yii::app()->assetManager->createUrl('js/analytics/analytics_init.js')?>"></script>
     <script src="<?= Yii::app()->assetManager->createUrl('js/analytics/enhancedPopupFixed.js')?>"></script>
-    <script src="<?= Yii::app()->assetManager->createUrl('newblue/dist/js/plotlyJS/oePlotly_v1.js')?>"></script>
+    <script src="<?= Yii::app()->assetManager->createUrl('nxblu/dist/js/plotlyJS/oePlotly_v1.js')?>"></script>
     <script>
         analytics_init();
     </script>

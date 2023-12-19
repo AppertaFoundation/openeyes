@@ -35,6 +35,7 @@ if ($model->canChangeInstitution()) {
         $institution_list_options['empty'] = '- All institutions -';
     }
 }
+$institution_list_options['data-test'] = 'institutions_list';
 ?>
 
 <div class="row divider">
@@ -66,7 +67,7 @@ if ($model->canChangeInstitution()) {
             <?php echo $form->textField(
                 $model,
                 'name',
-                ['class' => 'cols-full', 'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete')]
+                ['class' => 'cols-full', 'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'), 'data-test' => 'name']
             ) ?>
         </td>
     </tr>

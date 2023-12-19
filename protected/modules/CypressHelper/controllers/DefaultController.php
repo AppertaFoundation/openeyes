@@ -8,8 +8,8 @@ use EventType;
 use Firm;
 use Institution;
 use OE\concerns\InteractsWithApp;
-use OE\factories\models\EventFactory;
 use OE\factories\ModelFactory;
+use OE\factories\models\EventFactory;
 use OE\seeders\SeederBuilder;
 use OEModule\OphCiExamination\models\HistoryRisks;
 use Patient;
@@ -204,8 +204,12 @@ class DefaultController extends \CController
         $system_setting_key = $_POST['system_setting_key'] ?? null;
         $system_setting_value = $_POST['system_setting_value'] ?? null;
 
-        if (!$system_setting_key || !$system_setting_value) {
-            throw new \CHttpException(400, 'system setting key and value must both be provided');
+        if (!$system_setting_key) {
+            throw new \CHttpException(400, 'system setting key must be provided');
+        }
+
+        if (is_null($system_setting_value)) {
+            throw new \CHttpException(400, 'system setting value must be provided');
         }
 
         $setting = SettingInstallation::model()->findByAttributes(['key' => $system_setting_key]);

@@ -40,7 +40,7 @@
   <td>
         <?= $form->labelEx($address, 'address1') ?>
   </td>
-  <td>
+    <td data-test="form-address-one">
         <?= $form->textField($address, 'address1', array('size' => 15, 'placeholder' => 'Address 1', 'class' => 'cols-10')) ?>
         <?= $form->error($address, 'address1') ?>
   </td>
@@ -50,7 +50,7 @@
   <td>
         <?= $form->labelEx($address, 'address2') ?>
   </td>
-  <td>
+    <td data-test="form-address-two">
         <?= $form->textField($address, 'address2', array('size' => 15, 'placeholder' => 'Address 2', 'class' => 'cols-10')) ?>
         <?= $form->error($address, 'address2') ?>
   </td>
@@ -59,7 +59,7 @@
   <td>
         <?= $form->labelEx($address, 'city') ?>
   </td>
-  <td>
+    <td  data-test="form-address-city">
         <?= $form->textField($address, 'city', array('size' => 15, 'placeholder' => 'City', 'class' => 'cols-10')) ?>
         <?= $form->error($address, 'city') ?>
   </td>
@@ -69,7 +69,7 @@
   <td>
         <?= $form->labelEx($address, 'postcode') ?>
   </td>
-  <td>
+    <td data-test="form-address-postcode">
         <?= $form->textField($address, 'postcode', array('size' => 15, 'class' => 'postcode', 'placeholder' => 'Postcode', 'class' => 'cols-10')) ?>
         <?= $form->error($address, 'postcode') ?>
   </td>

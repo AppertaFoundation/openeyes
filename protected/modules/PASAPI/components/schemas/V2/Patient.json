@@ -1,0 +1,79 @@
+{
+  "NHSNumber": {
+    "type": "string"
+  },
+  "NHSNumberStatus": {
+    "type": "string"
+  },
+  "HospitalNumber": {
+    "type": "string"
+  },
+  "IdentifierTypeCode": {
+    "type": "string"
+  },
+  "Title": {
+    "type": "string"
+  },
+  "FirstName": {
+    "type": "string",
+    "required": true
+  },
+  "Surname": {
+    "type": "string",
+    "required": true
+  },
+  "DateOfBirth": {
+    "type": "date",
+    "required": true
+  },
+  "PrimaryInstitution": {
+    "type": "string"
+  },
+  "Gender": {
+    "type": "choice",
+    "choices": ["M", "F", "U"]
+  },
+  "ContactList": {
+    "type": "list",
+    "resource": "PatientContact"
+  },
+  "AddressList": {
+    "type": "list",
+    "resource": "Address"
+  },
+  "TelephoneNumber": {
+    "type": "string"
+  },
+  "MobilePhoneNumber": {
+    "type": "string"
+  },
+  "EthnicGroup": {
+    "type": "string"
+  },
+  "DateOfDeath": {
+    "type": "date"
+  },
+  "IsDeceased": {
+    "type": "boolean"
+  },
+  "Practice": {
+    "type": "resource",
+    "resource": "Practice"
+  },
+  "GP": {
+    "type": "resource",
+    "resource": "GP"
+  },
+  "LanguageCode": {
+    "type": "string"
+  },
+  "InterpreterRequired": {
+    "type": "string"
+  },
+  "Email": {
+    "type": "string"
+  },
+  "Risks": {
+    "type": "string"
+  }
+}

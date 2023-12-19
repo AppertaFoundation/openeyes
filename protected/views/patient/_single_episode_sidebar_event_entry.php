@@ -26,6 +26,7 @@ $li_id = 'js-sideEvent' . $event->id;
     data-institution="<?= $event->institution->name ?>"
     data-subspecialty="<?= $subspecialty_name ?>"
     data-event-icon='<?= $event->getEventIcon('medium') ?>'
+    data-test="sidebar-event-item"
     <?php if ($event_image !== null) { ?>
         data-event-image-url="<?= $event_image->getImageUrl() ?>"
     <?php } ?>

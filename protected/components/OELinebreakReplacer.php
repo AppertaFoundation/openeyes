@@ -20,7 +20,7 @@ class OELinebreakReplacer
 {
     public static function replace($text)
     {
-        $text = preg_replace('/(\n[\n]+|\r\n[\r\n]+|\r[\r]+)/', '<i class="oe-i d-slash small pad"></i>', trim($text));
+        $text = preg_replace('/(\n[\n]+|\r\n[\r\n]+|\r[\r]+)/', '<i class="oe-i paragraph"></i>', trim($text));
         $text = preg_replace('/(\n|\r\n|\r)/', '<i class="oe-i line-break"></i>', $text);
         return $text;
     }

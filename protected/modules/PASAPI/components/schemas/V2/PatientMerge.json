@@ -1,0 +1,13 @@
+{
+  "PrimaryPatientNumber" : {
+    "type" : "string",
+    "required" : true
+  },
+  "SecondaryPatientNumber" : {
+    "type": "string",
+    "required" : true
+  },
+  "IdentifierTypeCode": {
+    "type": "string"
+  }
+}

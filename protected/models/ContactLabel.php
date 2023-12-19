@@ -66,8 +66,8 @@ class ContactLabel extends BaseActiveRecordVersioned
             array('name', 'length', 'max' => 40),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, name, type, max_number_per_patient', 'safe', 'on' => 'search'),
-            array('type, is_private, max_number_per_patient', 'safe'),
+            array('id,  name, type, max_number_per_patient', 'safe', 'on' => 'search'),
+            array(' type, is_private, max_number_per_patient', 'safe'),
         );
     }
 

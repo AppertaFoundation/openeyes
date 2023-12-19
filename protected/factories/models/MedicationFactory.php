@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Apperta Foundation, 2023
  * This file is part of OpenEyes.
@@ -18,6 +19,7 @@ namespace OE\factories\models;
 use Medication;
 use MedicationAttributeAssignment;
 use MedicationAttributeOption;
+use MedicationRoute;
 use OE\factories\ModelFactory;
 
 class MedicationFactory extends ModelFactory

@@ -34,8 +34,8 @@ if (file_exists('/etc/openeyes/db.conf')) {
         'host' => getenv('DATABASE_HOST') ? getenv('DATABASE_HOST') : 'localhost',
         'port' => getenv('DATABASE_PORT') ? getenv('DATABASE_PORT') : '3306',
         'dbname' => getenv('DATABASE_NAME') ? getenv('DATABASE_NAME') : 'openeyes',
-        'username' => rtrim(@file_get_contents("/run/secrets/DATABASE_USER")) ?: (getenv('DATABASE_USER') ? : 'openeyes'),
-        'password' => rtrim(@file_get_contents("/run/secrets/DATABASE_PASS")) ?: (getenv('DATABASE_PASS') ? : 'openeyes'),
+        'username' => file_exists("/run/secrets/DATABASE_USER") ? rtrim(file_get_contents("/run/secrets/DATABASE_USER")) : (getenv('DATABASE_USER') ?: 'openeyes'),
+        'password' => file_exists("/run/secrets/DATABASE_PASS") ? rtrim(file_get_contents("/run/secrets/DATABASE_PASS")) : (getenv('DATABASE_PASS') ?: 'openeyes'),
     );
 }
 
@@ -43,8 +43,8 @@ $db_test = array(
     'host' => getenv('DATABASE_TEST_HOST') ?: (getenv('DATABASE_HOST') ?: 'localhost'),
     'port' => getenv('DATABASE_TEST_PORT') ?: (getenv('DATABASE_PORT') ?: '3306'),
     'dbname' => getenv('DATABASE_TEST_NAME') ?: (getenv('DATABASE_NAME') ?: 'openeyes_test'),
-    'username' => rtrim(@file_get_contents("/run/secrets/DATABASE_TEST_USER")) ?: (getenv('DATABASE_TEST_USER') ?: (rtrim(@file_get_contents("/run/secrets/DATABASE_USER")) ?: (getenv('DATABASE_USER') ?: 'openeyes'))),
-    'password' => rtrim(@file_get_contents("/run/secrets/DATABASE_TEST_PASS")) ?: (getenv('DATABASE_TEST_PASS') ?: (rtrim(@file_get_contents("/run/secrets/DATABASE_PASS")) ?: (getenv('DATABASE_PASS') ?: 'openeyes'))),
+    'username' => file_exists("/run/secrets/DATABASE_TEST_USER") ? rtrim(file_get_contents("/run/secrets/DATABASE_TEST_USER")) : (getenv('DATABASE_TEST_USER') ?: (file_exists("/run/secrets/DATABASE_USER") ? rtrim(file_get_contents("/run/secrets/DATABASE_USER")) : (getenv('DATABASE_USER') ?: 'openeyes'))),
+    'password' => file_exists("/run/secrets/DATABASE_TEST_PASS") ? rtrim(file_get_contents("/run/secrets/DATABASE_TEST_PASS")) : (getenv('DATABASE_TEST_PASS') ?: (file_exists("/run/secrets/DATABASE_PASS") ? rtrim(file_get_contents("/run/secrets/DATABASE_PASS")) : (getenv('DATABASE_PASS') ?: 'openeyes'))),
 );
 
 /** START SINGLE SIGN-ON OPTIONS */
@@ -56,7 +56,7 @@ $db_test = array(
     // Credentials necessary for single-sign-on using OpenID-Connect
     $ssoProviderURL = getenv('SSO_PROVIDER_URL') ?: '';
     $ssoClientID = getenv('SSO_CLIENT_ID') ?: '';
-    $ssoClientSecret = getenv('SSO_CLIENT_SECRET') ?: (rtrim(@file_get_contents("/run/secrets/SSO_CLIENT_SECRET")) ?: '');
+    $ssoClientSecret = file_exists("/run/secrets/SSO_CLIENT_SECRET") ? rtrim(file_get_contents("/run/secrets/SSO_CLIENT_SECRET")) : (getenv('SSO_CLIENT_SECRET') ?: '');
     $ssoIssuerURL = getenv('SSO_ISSUER_URL') ?: null;
     $ssoRedirectURL = getenv('SSO_REDIRECT_URL') ?: 'http://localhost';
     $ssoResponseType = array(getenv('SSO_RESPONSE_TYPE')) ?: array('code');
@@ -268,7 +268,6 @@ $config = array(
                 ]
             ),
         ),
-        'fhirClient' => array('class' => 'FhirClient'),
         'fhirMarshal' => array('class' => 'FhirMarshal'),
         'log' => array(
             'class' => 'CLogRouter',
@@ -307,7 +306,7 @@ $config = array(
             'host' => getenv('MAILER_SMTP_HOST') ?? null,
             'security' => getenv('MAILER_SMTP_SECURITY') ?? null, // ('TLS')
             'username' => getenv('MAILER_SMTP_USERNAME') ?? null,
-            'password' => trim(@file_get_contents("/run/secrets/MAILER_SMTP_PASSWORD")) ?: (trim(getenv('MAILER_SMTP_PASSWORD')) ?: ''),
+            'password' => file_exists("/run/secrets/MAILER_SMTP_PASSWORD") ? trim(file_get_contents("/run/secrets/MAILER_SMTP_PASSWORD")) : (trim(getenv('MAILER_SMTP_PASSWORD')) ?: ''),
         ),
         'moduleAPI' => array(
             'class' => 'ModuleAPI',
@@ -415,38 +414,17 @@ $config = array(
         'pseudonymise_patient_details' => false,
         'ab_testing' => false,
         'auth_source' => $authSource,
-        // This is used in contact page
-        /***
-         * Commented out LDAP settings as these should now be handled by Admin->Core->LDAP configurations
-         * Once we're sure we've removed all references then this section can be deleted
-         ***
-        'ldap_server' => getenv('OE_LDAP_SERVER') ?: '',
-        'ldap_port' =>  getenv('OE_LDAP_PORT') ?: '389',
-        'ldap_admin_dn' => getenv('OE_LDAP_ADMIN_DN') ?: 'CN=openeyes,CN=Users,dc=example,dc=com',
-        'ldap_password' => getenv('OE_LDAP_PASSWORD') ?: (rtrim(@file_get_contents("/run/secrets/OE_LDAP_PASSWORD")) ? rtrim(file_get_contents("/run/secrets/OE_LDAP_PASSWORD")) : ''),
-        'ldap_dn' => getenv('OE_LDAP_DN') ?: 'CN=Users,dc=example,dc=com',
-        'ldap_method' => trim(getenv("OE_LDAP_METHOD")) ?: 'native', // use 'zend' for the Zend_Ldap vendor module
-        // set to integer value of 2 or 3 to force specific ldap protocol
-        'ldap_protocol_version' => 3,
-        // alters the prefix used when binding to a user in native ldap connections
-        'ldap_username_prefix' => 'cn',
-        'ldap_native_timeout' => 3,
-        'ldap_info_retries' => 3,
-        'ldap_info_retry_delay' => 1,
-        'ldap_update_name' => strtolower(getenv("OE_LDAP_UPDATE_NAME")) == "true" ? true : false,
-        'ldap_update_email' => strtolower(getenv("OE_LDAP_UPDATE_EMAIL")) == "false" ? false : true,
-        */
         // This is used in HIEIntegration component
-        'hie_remote_url' => trim(@file_get_contents("/run/secrets/HIE_REMOTE_URL")) ?: (trim(getenv('HIE_REMOTE_URL')) ?: null),
+        'hie_remote_url' => file_exists("/run/secrets/HIE_REMOTE_URL") ? trim(file_get_contents("/run/secrets/HIE_REMOTE_URL")) : (trim(getenv('HIE_REMOTE_URL')) ?: null),
         'hie_usr_org' => trim(getenv('HIE_USR_ORG')) ?: null,
         'hie_usr_fac' => trim(getenv('HIE_USR_FAC')) ?: null,
         'hie_external' => trim(getenv('HIE_EXTERNAL')) ?: null,
-        'hie_org_user' => trim(@file_get_contents("/run/secrets/HIE_ORG_USER")) ?: (trim(getenv('HIE_ORG_USER')) ?: null),
-        'hie_org_pass' => trim(@file_get_contents("/run/secrets/HIE_ORG_PASS")) ?: (trim(getenv('HIE_ORG_PASS')) ?: null),
-        'hie_aes_encryption_password' => trim(@file_get_contents("/run/secrets/HIE_AES_ENCRYPTION_PASSWORD")) ?: (trim(getenv('HIE_AES_ENCRYPTION_PASSWORD')) ?: null),
+        'hie_org_user' => file_exists("/run/secrets/HIE_ORG_USER") ? trim(file_get_contents("/run/secrets/HIE_ORG_USER")) : (trim(getenv('HIE_ORG_USER')) ?: null),
+        'hie_org_pass' => file_exists("/run/secrets/HIE_ORG_PASS") ? trim(file_get_contents("/run/secrets/HIE_ORG_PASS")) : (trim(getenv('HIE_ORG_PASS')) ?: null),
+        'hie_aes_encryption_password' => file_exists("/run/secrets/HIE_AES_ENCRYPTION_PASSWORD") ? trim(file_get_contents("/run/secrets/HIE_AES_ENCRYPTION_PASSWORD")) : (trim(getenv('HIE_AES_ENCRYPTION_PASSWORD')) ?: null),
         'environment' => strtolower(getenv('OE_MODE')) == "live" ? 'live' : 'dev',
         'csd_api_url' => getenv('OE_CSD_API_URL') ?: null,
-        'csd_api_key' => getenv('OE_CSD_API_KEY') ?: (rtrim(@file_get_contents("/run/secrets/OE_CSD_API_KEY")) ?: null),
+        'csd_api_key' => file_exists("/run/secrets/OE_CSD_API_KEY") ? rtrim(file_get_contents("/run/secrets/OE_CSD_API_KEY")) : (getenv('OE_CSD_API_KEY') ?: null),
         'csd_api_timeout' => getenv('OE_CSD_API_TIMEOUT') ?: 3,
         //'watermark' => '',
         'google_analytics_account' => '',
@@ -592,6 +570,12 @@ $config = array(
                 'title' => 'e-Sign device link',
                 'uri' => 'javascript:eSignDevicePopup();',
             ),
+            'pharmacy_worklist' => array(
+                'title' => 'Pharmacy worklist',
+                'uri' => 'OphDrPrescription/OphDrPrescriptionPharmacyWorklist/default/index/',
+                'restricted' => array('OprnViewPharmacyWorklist'),
+            ),
+
         ),
         'admin_menu' => array(),
         'dashboard_items' => array(),
@@ -619,8 +603,8 @@ $config = array(
         'signature_app_url' => getenv('OE_SIGNATURE_APP_URL') ? getenv('OE_SIGNATURE_APP_URL') : 'https://dev.oesign.uk',
         'docman_export_dir' => getenv('OE_DOCMAN_EXPORT_DIRECTORY') ? getenv('OE_DOCMAN_EXPORT_DIRECTORY') : '/docman',
         'docman_login_url' => 'http://localhost/site/login',
-        'docman_user' => rtrim(@file_get_contents("/run/secrets/OE_DOCMAN_USER")) ?: (getenv('OE_DOCMAN_USER') ?: 'docman_user'),
-        'docman_password' => rtrim(@file_get_contents("/run/secrets/OE_DOCMAN_PASSWORD")) ?: (getenv('OE_DOCMAN_PASSWORD') ?: '1234qweR!'),
+        'docman_user' => file_exists("/run/secrets/OE_DOCMAN_USER") ? rtrim(file_get_contents("/run/secrets/OE_DOCMAN_USER")) : (getenv('OE_DOCMAN_USER') ?: 'docman_user'),
+        'docman_password' => file_exists("/run/secrets/OE_DOCMAN_PASSWORD") ? rtrim(file_get_contents("/run/secrets/OE_DOCMAN_PASSWORD")) : (getenv('OE_DOCMAN_PASSWORD') ?: '1234qweR!'),
         'docman_print_url' => 'http://localhost/OphCoCorrespondence/default/PDFprint/',
 
         /* injecting autoprint JS into generated PDF */
@@ -814,7 +798,7 @@ $config = array(
         'default_patient_import_subspecialty' => 'GL',
         //        Add elements that need to be excluded from the admin sidebar in settings
         'exclude_admin_structure_param_list' => getenv('OE_EXCLUDE_ADMIN_STRUCT_LIST') ? explode(",", getenv('OE_EXCLUDE_ADMIN_STRUCT_LIST')) : array(''),
-        'oe_version' => '6.7.19',
+        'oe_version' => 'UNRELEASED',
         'gp_label' => !empty(trim(getenv('OE_GP_LABEL'))) ? getenv('OE_GP_LABEL') : null,
         'general_practitioner_label' => !empty(trim(getenv('OE_GENERAL_PRAC_LABEL'))) ? getenv('OE_GENERAL_PRAC_LABEL') : null,
         // allow duplicate entries on an automatic worklist for a patient (default = false)
@@ -857,11 +841,11 @@ $config = array(
                 'signatures' => '/signatures/searches'
             ),
             'credentials' => array(
-                'username' =>  getenv('OE_PORTAL_USERNAME') ?: (rtrim(@file_get_contents("/run/secrets/OE_PORTAL_USERNAME")) ?: 'email@example.com'),
-                'password' => getenv('OE_PORTAL_PASSWORD') ?: (rtrim(@file_get_contents("/run/secrets/OE_PORTAL_PASSWORD")) ?: 'apipass'),
+                'username' =>  file_exists("/run/secrets/OE_PORTAL_USERNAME") ? rtrim(file_get_contents("/run/secrets/OE_PORTAL_USERNAME")) : (getenv('OE_PORTAL_USERNAME') ?: 'email@example.com'),
+                'password' => file_exists("/run/secrets/OE_PORTAL_PASSWORD") ? rtrim(file_get_contents("/run/secrets/OE_PORTAL_PASSWORD")) : (getenv('OE_PORTAL_PASSWORD') ?: 'apipass'),
                 'grant_type' => 'password',
-                'client_id' => getenv('OE_PORTAL_CLIENT_ID') ?: (rtrim(@file_get_contents("/run/secrets/OE_PORTAL_CLIENT_ID")) ?: ''),
-                'client_secret' => getenv('OE_PORTAL_CLIENT_SECRET') ?: (rtrim(@file_get_contents("/run/secrets/OE_PORTAL_CLIENT_SECRET")) ?: ''),
+                'client_id' => file_exists("/run/secrets/OE_PORTAL_CLIENT_ID") ? rtrim(file_get_contents("/run/secrets/OE_PORTAL_CLIENT_ID")) : (getenv('OE_PORTAL_CLIENT_ID') ?: ''),
+                'client_secret' => file_exists("/run/secrets/OE_PORTAL_CLIENT_SECRET") ? rtrim(file_get_contents("/run/secrets/OE_PORTAL_CLIENT_SECRET")) : (getenv('OE_PORTAL_CLIENT_SECRET') ?: ''),
             ),
         ),
         'pw_status_checks' => array(
@@ -901,8 +885,8 @@ $config = array(
         'cito_sign_url' => trim(getenv('CITO_SIGN_URL')) ?: '/cito/api/otpsignin',
         'cito_client_id' => trim(getenv('CITO_CLIENT_ID')) ?: null,
         'cito_grant_type' => trim(getenv('CITO_GRANT_TYPE')) ?: 'client_credentials',
-        'cito_application_id' => trim(@file_get_contents("/run/secrets/CITO_APPLICATION_ID")) ?: (trim(getenv('CITO_APPLICATION_ID')) ?: ''),
-        'cito_client_secret' => trim(@file_get_contents("/run/secrets/CITO_CLIENT_SECRET")) ?: (trim(getenv('CITO_CLIENT_SECRET')) ?: ''),
+        'cito_application_id' => file_exists("/run/secrets/CITO_APPLICATION_ID") ? trim(file_get_contents("/run/secrets/CITO_APPLICATION_ID")) : (trim(getenv('CITO_APPLICATION_ID')) ?: ''),
+        'cito_client_secret' => file_exists("/run/secrets/CITO_CLIENT_SECRET") ? trim(file_get_contents("/run/secrets/CITO_CLIENT_SECRET")) : (trim(getenv('CITO_CLIENT_SECRET')) ?: ''),
         'secretary_pin' => trim(getenv('SECRETARY_PIN')) ?: "123456",
         /** START SINGLE SIGN-ON PARAMS */
         'strict_SSO_roles_check' => $ssoMappingsCheck,
@@ -1089,7 +1073,7 @@ $config['components'] = array_merge($config['components'], $caches);
 
 // deal with any custom modules added for the local deployment - which are set in /config/modules.conf (added via docker)
 // Gracefully ignores file if it is missing
-$custom_modules = explode(" ", trim(str_replace(["modules=(", ")", "'", "openeyes ", "eyedraw "], "", @file_get_contents("/config/modules.conf"))));
+$custom_modules = explode(" ", trim(str_replace(["modules=(", ")", "'", "openeyes ", "eyedraw "], "", file_exists("/config/modules.conf") ? file_get_contents("/config/modules.conf") : '')));
 if (!empty($custom_modules)) {
     $final_custom_modules = array();
     foreach ($custom_modules as $module) {

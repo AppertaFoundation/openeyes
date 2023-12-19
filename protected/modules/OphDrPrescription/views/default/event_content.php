@@ -62,7 +62,7 @@
         </script>
 
             <div class="extra-info">
-                <small class="fade">by:</small><small>
+                <small class="fade">by:</small>
                 <?php
                     $prescribed_by = $this->event->usermodified;
                     $prescribed_date = Helper::convertDate2NHS($this->event->event_date);
@@ -77,7 +77,6 @@
                 }
                 ?>
                 <?= $prescribed_by->fullname . (isset($prescribed_by->registration_code) && $prescribed_by->registration_code !== "" ? ' ('.$prescribed_by->registration_code.')' : ''). (isset($this->event->episode->firm->cost_code) && $this->event->episode->firm->cost_code !== "" ? ' - ['.$this->event->episode->firm->cost_code.']' : '');?>
-                </small>
             </div>
 
         <span class="extra-info js-event-date"><?= $prescribed_date ?></span>

@@ -716,15 +716,20 @@ class OphCoCorrespondence_API extends BaseAPI
      * @param User|null $user
      * @param Firm|null $firm
      * @param User|null $consultant
+     * @param string|null $first_and_last_name
      * @return string|null
      */
-    public function getFooterText(\User $user = null, \Firm $firm = null, \User $consultant = null) : ?string
+    public function getFooterText(\User $user = null, \Firm $firm = null, \User $consultant = null, string $first_and_last_name = null): ?string
     {
         $user = $user ? $user : \User::model()->findByPk(\Yii::app()->session['user']['id']);
         $firm = $firm ? $firm : \Firm::model()->with('serviceSubspecialtyAssignment')->findByPk(\Yii::app()->session['selected_firm_id']);
 
         if ($contact = $user->contact) {
-            $full_name = trim($contact->title . ' ' . $contact->first_name . ' ' . $contact->last_name . ' ' . $contact->qualifications);
+            if (is_null($first_and_last_name)) {
+                $first_and_last_name = $contact->first_name . ' ' . $contact->last_name;
+            }
+
+            $full_name = trim($contact->title . ' ' . $first_and_last_name . ' ' . $contact->qualifications);
             $consultant_text = $this->getFooterConsultantText($user, $firm, $consultant);
 
             return $full_name . "\n" . $user->role . "\n" . ($consultant_text ?? '');

@@ -1,0 +1,11 @@
+{
+  "PasId": {
+    "type": "string",
+    "required": true
+  },
+  "Contact": {
+    "type": "resource",
+    "resource": "Contact",
+    "required": true
+  }
+}

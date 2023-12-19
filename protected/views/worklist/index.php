@@ -23,7 +23,7 @@ $pathway_json = json_encode(
     ),
     JSON_THROW_ON_ERROR
 );
-
+$acceptable_wait_time = Pathway::getAcceptableWaitTime();
 
 $session_filter_info = WorklistFilterQuery::getLastUsedFilterFromSession();
 $initial_filter = $session_filter_info['filter'];
@@ -228,10 +228,10 @@ $initial_filter = $session_filter_info['filter'];
         )
     );
     if ($initial_filter->getCombineWorklistsStatus()) {
-        $this->renderPartial('//worklist/_worklist', array('worklist' => $worklists, 'coreapi' => $coreapi, 'filter' => $initial_filter));
+        $this->renderPartial('//worklist/_worklist', array('worklist' => $worklists, 'acceptable_wait_time' => $acceptable_wait_time, 'coreapi' => $coreapi, 'filter' => $initial_filter));
     } else {
         foreach ($worklists as $worklist) {
-            $this->renderPartial('//worklist/_worklist', array('worklist' => $worklist, 'coreapi' => $coreapi, 'filter' => $initial_filter));
+            $this->renderPartial('//worklist/_worklist', array('worklist' => $worklist, 'acceptable_wait_time' => $acceptable_wait_time, 'coreapi' => $coreapi, 'filter' => $initial_filter));
         }
     }
     ?>
@@ -310,15 +310,15 @@ $initial_filter = $session_filter_info['filter'];
         {{/patientIdentifiers.length}}
 
         {{#patientIdentifiers.length}}
-            <div class="patient-numbers flex-layout">
+            <div class="patient-numbers flex">
                 <div class="local-numbers">
                     {{#patientLocalIdentifiers}}
                         {{#hasValue}}
                             <div class="num nowrap">
                                 {{shortTitle}}
-                                <label class="inline highlight">
+                                <span class="num-id">
                                     {{displayValue}}
-                                </label>
+                                </span>
                             </div>
                         {{/hasValue}}
                     {{/patientLocalIdentifiers}}
@@ -469,6 +469,7 @@ $initial_filter = $session_filter_info['filter'];
 
             <div class="group">
                 {{#cct}}
+                    <span class="data">CCT: </span>
                     <span class="data">R {{#has_right}}{{right}}{{/has_right}}{{^has_right}}NA{{/has_right}} </span>
                     <span class="data">L {{#has_left}}{{left}}{{/has_left}}{{^has_left}}NA{{/has_left}} </span>
                     <span class="oe-date" style="text-align: left">{{event_date}}</span>
@@ -479,13 +480,13 @@ $initial_filter = $session_filter_info['filter'];
             </div>
 
             <div class="group">
-                {{#cvi}}
+                {{#cviData}}
                     <span class="data">CVI Status: {{data}}</span>
                     <span class="oe-date"> {{date}}</span>
-                {{/cvi}}
-                {{^cvi}}
-                    <span class="data">CVI Status: NA</span>
-                {{/cvi}}
+                {{/cviData}}
+                {{^cviData}}
+                    <span class="data">CVI Status: Unknown</span>
+                {{/cviData}}
             </div>
         </div>
         <div class="data-group">
@@ -948,20 +949,23 @@ $initial_filter = $session_filter_info['filter'];
             <div class="data-group">
                 <h3>Management Summaries</h3>
                 <table class="management-summaries">
+                <colgroup>
+                    <col class="cols-3">
+                </colgroup>
                     <tbody>
                         {{#managementSummaries.length}}
                             {{#managementSummaries}}
                                 <tr>
-                                    <td>{{service}}</td>
-                                    <td>{{& comments}}</td>
-                                    <td class="fade">
-                                        <span class="oe-date">
+                                    <td class="tbl-hd">
+                                        {{service}}<br>
+                                        <small class="fade nowrap"><span class="oe-date">
                                             <span class="day">{{day}}</span>
                                             <span class="month">{{month}}</span>
                                             <span class="year">{{year}}</span>
-                                        </span>
+                                        </span></small>
                                     </td>
-                                    <td><i class="oe-i info small pro-theme js-has-tooltip"
+                                    <td>{{& comments}}</td>
+                                    <td><i class="oe-i audit-trail small pro-theme js-has-tooltip"
                                            data-tooltip-content="{{user}}"></i></td>
                                 </tr>
                             {{/managementSummaries}}

@@ -31,7 +31,7 @@ use OEModule\OphCiExamination\models\SystemicSurgery_Operation;
                 <?= \CHtml::checkBox(
                     $model_name . '[no_systemicsurgery]',
                     $element->no_systemicsurgery_date ? true : false,
-                    array('class' => $model_name . '_no_systemicsurgery')
+                    array('class' => $model_name . '_no_systemicsurgery', 'id' => "$model_name"."_no_systemicsurgery")
                 ); ?>
                 No previous systemic surgery
             </label>

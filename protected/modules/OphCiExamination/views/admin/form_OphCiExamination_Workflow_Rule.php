@@ -25,9 +25,7 @@ $firms = $restrict_to_current_institution
     ? Firm::model()->activeOrPk($model->firm_id)->findAll('institution_id = :id', [':id' => $current_institution_id])
     : Firm::model()->activeOrPk($model->firm_id)->findAll();
 
-$workflows = $restrict_to_current_institution
-    ? OphCiExamination_Workflow::model()->findAll('institution_id = :id', [':id' => $current_institution_id])
-    : OphCiExamination_Workflow::model()->findAll();
+$workflows = OphCiExamination_Workflow::model()->findAll('institution_id = :id', [':id' => $current_institution_id])
 ?>
 
 <div class="row divider">
@@ -49,7 +47,7 @@ $workflows = $restrict_to_current_institution
                             'institution_id',
                             $current_institution_id,
                             CHtml::listData(Institution::model()->getTenanted(), 'id', 'name'),
-                            ['empty' => 'All institutions', 'id' => 'js-institution', 'class' => 'cols-full']
+                            ['empty' => 'All institutions', 'id' => 'js-institution', 'class' => 'cols-full', 'data-test' => 'institution']
                         );
                     } else {
                         echo Institution::model()->getCurrent()->name;
@@ -74,7 +72,7 @@ $workflows = $restrict_to_current_institution
             </td>
         </tr>
     <?php endif; ?>
-    
+
     <tr>
         <td>Context</td>
         <td class="cols-full">
@@ -115,7 +113,7 @@ $workflows = $restrict_to_current_institution
                 $model,
                 'workflow_id',
                 CHtml::listData($workflows, 'id', 'name'),
-                ['class' => 'cols-full', 'id' => 'js-workflow']
+                ['class' => 'cols-full', 'id' => 'js-workflow', 'data-test' => 'workflow']
             ) ?>
         </td>
     </tr>

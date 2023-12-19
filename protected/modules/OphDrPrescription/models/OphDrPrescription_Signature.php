@@ -39,6 +39,7 @@
  */
 class OphDrPrescription_Signature extends BaseSignature
 {
+    use FindOrNewModel;
     /**
      * @return string the associated database table name
      */
@@ -168,7 +169,6 @@ class OphDrPrescription_Signature extends BaseSignature
 
     public function beforeSave()
     {
-        $this->deletePreviousSignature();
         return parent::beforeSave();
     }
 

@@ -1157,4 +1157,10 @@ class Event extends BaseActiveRecordVersioned
             return $status;
         }
     }
+
+    public function getViewLink(\Event $event = null)
+    {
+        $event = $event ?? $this;
+        return \Yii::app()->createURL("/{$event->eventType->class_name}/default/view/{$this->id}");
+    }
 }

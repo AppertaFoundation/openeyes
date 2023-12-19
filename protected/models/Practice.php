@@ -160,16 +160,18 @@ class Practice extends BaseActiveRecordVersioned
      * currently assumes there would only ever be one commissioning body of a given type.
      *
      * @param CommissioningBodyType $type
-     *
-     * @return CommissioningBody
+     * @return CommissioningBody|null
      */
-    public function getCommissioningBodyOfType($type)
+    public function getCommissioningBodyOfType(CommissioningBodyType $type):? CommissioningBody
     {
+        $comissioning_body = null;
         foreach ($this->commissioningbodies as $body) {
             if ($body->type->id == $type->id) {
-                return $body;
+                $comissioning_body = $body;
             }
         }
+
+        return $comissioning_body;
     }
 
     public function getCorrespondenceName()
@@ -222,9 +224,9 @@ class Practice extends BaseActiveRecordVersioned
             foreach ($this->commissioningbodyassigments as $cba) {
                 $cba->delete();
             }
-
-            return true;
         }
+
+        return true;
     }
 
     /**

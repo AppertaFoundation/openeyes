@@ -73,6 +73,15 @@ $this->pageTitle = 'Update ' . \SettingMetadata::model()->getSetting('general_pr
                             </tr>
                             <tr>
                                 <td>
+                                    <?= $form->labelEx($model, 'email'); ?>
+                                </td>
+                                <td>
+                                    <?= $form->textField($model, 'email', ['size' => 30, 'maxlength' => 100, 'autocomplete' => 'off']); ?>
+                                    <?= $form->error($model, 'email'); ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
                                     <?php echo $form->labelEx($gp, 'nat_id'); ?>
                                 </td>
                                 <td>
@@ -172,7 +181,7 @@ $this->pageTitle = 'Update ' . \SettingMetadata::model()->getSetting('general_pr
                                                 <td><?php echo CHtml::encode($cpa->practice->contact->first_name); ?></td>
                                                 <td><?php echo CHtml::encode($cpa->practice->getAddressLines()); ?></td>
                                                 <td><?php echo CHtml::encode($cpa->practice->code); ?></td>
-                                                <td><?php echo CHtml::encode($cpa->practice->phone); ?></td>
+                                                <td><?php echo CHtml::encode($cpa->practice->contact->primary_phone); ?></td>
                                                 <td/>
                                             </tr>
                                             <?php $i++; ?>

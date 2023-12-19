@@ -46,6 +46,7 @@
                     'class' => 'cols-full',
                     'nowrapper' => true,
                     'data-prefilled-value' => $template_data['surgeon_id'] ?? '',
+                    'data-test' => 'surgeon-value'
                 ),
                 false,
                 array('field' => 8)

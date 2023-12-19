@@ -75,7 +75,6 @@ class OphCoCorrespondence_SignatureTest extends OEDbTestCase
         \Yii::app()->setComponent('moduleAPI', $module_api);
 
         $this->assertStringContainsString($consultant->contact->title, $model->getPrintout());
-        $this->assertStringContainsString($consultant->contact->first_name, $model->getPrintout());
-        $this->assertStringContainsString($consultant->contact->last_name, $model->getPrintout());
+        $this->assertStringContainsString($model->signatory_name, $model->getPrintout());
     }
 }
