@@ -199,7 +199,8 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
             'value' => function ($data, $row) {
                 if ($this->checkAccess('admin')) {
                     $institutions = CHtml::listData(Institution::model()->getTenanted(), 'id', 'name');
-                    return CHtml::dropDownList("CommonOphthalmicDisorder[$row]institution_id", $data->institution_id, $institutions, ['empty' => 'All Institutions']);
+                    return CHtml::dropDownList("CommonOphthalmicDisorder[$row]_institution_id", $data->institution_id, $institutions,
+                        ['empty' => 'All Institutions', 'data-test' => 'institution_dropdown']);
                 } else {
                     if ($data->institution_id) {
                         $institution = Institution::model()->findByPk($data->institution_id);
@@ -215,7 +216,7 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
             'type' => 'raw',
             'value' => function ($data) {
                 if (!$data->secondary_to) {
-                    return '<button type="button"><a href="javascript:void(0)" class="delete">delete</a></button>';
+                    return '<button type="button" data-test="delete-button"><a href="javascript:void(0)" class="delete">delete</a></button>';
                 } else {
                     return '<span data-tooltip-content="This entry is a parent of a Secondary Common Ophtalmic Disorder" class="oe-i info small js-has-tooltip"></span>';
                 }
@@ -225,7 +226,7 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
 
     $this->widget('zii.widgets.grid.CGridView', array(
         'dataProvider' => $dataProvider,
-        'itemsCssClass' => 'generic-admin standard sortable',
+        'itemsCssClass' => 'generic-admin standard sortable js-disorder-entries',
         'template' => '{items}',
         "emptyTagName" => 'span',
         'rowHtmlOptionsExpression' => 'array("data-row"=>$row)',
@@ -437,6 +438,7 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
             </span>
             <input class="diagnoses-search-autocomplete diagnoses-search-inputfield ui-autocomplete-input"
                    data-saved-diagnoses="" type="text" name="CommonOphthalmicDisorder[{{row_count}}][disorder_id]"
+                   data-test="new-diagnosis-input"
                    id="CommonOphthalmicDisorder_{{row_count}}_disorder_id" autocomplete="off">
             <span role="status" aria-live="polite" class="ui-helper-hidden-accessible"></span>
             <input type="hidden" name="CommonOphthalmicDisorder[{{row_count}}][disorder_id]" class="savedDiagnosis"
