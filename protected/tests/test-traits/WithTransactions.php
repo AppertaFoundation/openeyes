@@ -43,6 +43,10 @@ trait WithTransactions
         // disable transaction calls that will fail inside the test transaction
         \Yii::app()->setParams(['enable_transactions' => false]);
 
+        // initialise the institution factory default at start of transaction
+        // so any generated models during a test are not used
+        InstitutionFactory::resolveDefaultInstitutionId();
+
         $this->tearDownCallbacks(function () use ($transaction) {
             // don't want to track institution created within transaction
             InstitutionFactory::clearCreatedDefaultInstitution();

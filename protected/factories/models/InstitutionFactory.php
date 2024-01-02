@@ -39,6 +39,7 @@ class InstitutionFactory extends ModelFactory
     {
         if (static::$created_default_institution) {
             static::$cached_default_institution = null;
+            static::$created_default_institution = false;
         }
     }
 
