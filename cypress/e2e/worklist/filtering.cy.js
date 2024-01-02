@@ -13,6 +13,25 @@
  */
 
 describe('Behaviour of worklist filters', () => {
+    it('does not cause worklists to disappear from view or the quick selector', () => {
+        cy.login();
+
+        cy.runSeeder('', 'WorklistFilteringSeeder', {'sync_interval': 10}).then((seederData) => {
+            cy.login(seederData.user.username, seederData.user.password, seederData.site.id, seederData.institution.id);
+
+            cy.visitWorklist();
+            cy.intercept('/worklist/AutoRefresh').as('AutoRefresh');
+
+            cy.openWorklistNavBar();
+
+            cy.getBySel('worklist-filter-worklist-quick-selector-button').should('have.length', seederData.definitions.length);
+
+            cy.wait('@AutoRefresh', {requestTimeout: 15000}).then(() => {
+                cy.getBySel('worklist-filter-worklist-quick-selector-button').should('have.length', seederData.definitions.length);
+            });
+        });
+    });
+
     it('does not display duplicates of worklist names in the filter panel quick selector or lists section in the adder', () => {
         cy.login();
 

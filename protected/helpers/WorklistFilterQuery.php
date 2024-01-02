@@ -803,7 +803,7 @@ class WorklistFilterQuery
     {
         $data = json_decode($filter->filter);
 
-        if (isset($data->worklists)) {
+        if (isset($data->worklists) && !isset($data->worklistDefinitions)) {
             if (is_array($data->worklists)) {
                 $data->worklistDefinitions = array_map(
                     static function ($worklist) {

@@ -55,7 +55,7 @@ class WorklistFilteringSeeder extends BaseSeeder
         SettingUser::factory()
           ->forUser($user)
           ->forKey('worklist_auto_sync_interval')
-          ->forValue('off')
+          ->forValue($this->getSeederAttribute('sync_interval') ?? 'off')
           ->create();
 
         $definitions = WorklistDefinition::factory()
