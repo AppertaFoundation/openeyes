@@ -437,7 +437,9 @@ class AdminController extends \ModuleAdminController
         }
 
         $outputArray = array(
-            'siteSecretaries' => $siteSecretaries,
+            'siteSecretaries' => array_map(function ($siteSecretary) {
+                return $siteSecretary->attributes;
+            }, $siteSecretaries),
             'errors' => $errors,
             'success' => (count($errors) === 0),
         );
