@@ -115,15 +115,17 @@
     PathStep.prototype.bindMouseLeave = function () {
         const ps = this;
         $(document).off('mouseleave', ps.options.pathStepIconClassSelector).on('mouseleave', ps.options.pathStepIconClassSelector, function () {
-            if (ps.request && !ps.pathStepLocked) {
+            if (ps.pathStepLocked) {
+                return;
+            }
+
+            if (ps.request) {
                 ps.request.abort();
             }
             if (ps.delayRequest) {
                 clearTimeout(ps.delayRequest);
             }
-            if (ps.pathStepLocked) {
-                return;
-            }
+
             if (ps.checkPopupExistence()) {
                 ps.closePopup();
             }
