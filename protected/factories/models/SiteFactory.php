@@ -15,11 +15,11 @@
 
 namespace OE\factories\models;
 
+use Contact;
 use OE\factories\ModelFactory;
 
 class SiteFactory extends ModelFactory
 {
-
     /**
      * @return array
      */
@@ -32,6 +32,7 @@ class SiteFactory extends ModelFactory
             'short_name' => $this->faker->word(),
             'fax' => $this->faker->phoneNumber(),
             'telephone' => $this->faker->phoneNumber(),
+            'contact_id' => Contact::factory(),
             'active' => 1
         ];
     }
@@ -39,7 +40,7 @@ class SiteFactory extends ModelFactory
     public function forInstitution($institution): self
     {
         return $this->state([
-            'institution_id' => $institution
+            "institution_id" => $institution
         ]);
     }
 }

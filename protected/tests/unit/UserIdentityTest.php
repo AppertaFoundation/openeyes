@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -17,176 +18,152 @@
  */
 
 /**
- * Required for LDAP authentication.
- *
- * @group undefined
+ * @group sample-data
+ * @covers UserIdentity
  */
 
 class UserIdentityTest extends OEDbTestCase
 {
-    public $fixtures = array(
-        'users' => 'User',
-    );
+    use WithTransactions;
 
-    /**
-     * @covers UserIdentity
-     */
-    public function testInvalidAuthSource()
-    {
-        Yii::app()->params['auth_source'] = 'INVALID_AUTH_SOURCE';
+    private function getUser(
+        array $firms = [],
+        bool $active_auth = true,
+        bool $sso_auth = false,
+    ): User {
+        $user_factory = User::factory();
 
-        $userIdentity = new UserIdentity(
-            'JoeBloggs',
-            'password'
-        );
-
-        try {
-            $this->assertFalse($userIdentity->authenticate());
-        } catch (Exception $e) {
-            return;
+        if (!empty($firms)) {
+            $user_factory->forSpecificFirms($firms);
+        } else {
+            $user_factory->withGlobalFirmRights();
         }
 
-        $this->fail('Failed to recognise invalid auth_source.');
+        if ($sso_auth) {
+            $institution = Institution::factory()->withAuthenticationMethod("SSO")->withSite()->create();
+            $user_factory->withSSOAuthForInstitution($institution, "password", $active_auth);
+        } else {
+            $institution = Institution::factory()->withAuthenticationMethod("LOCAL")->withSite()->create();
+            $user_factory->withLocalAuthForInstitution($institution, "password", $active_auth);
+        }
+
+        $user_factory->withAuthItems(["User"]);
+        Yii::app()->session['selected_institution_id'] = $institution->id;
+
+        return $user_factory->create();
     }
 
-    /**
-     * @covers UserIdentity
-     */
-    public function testInvalidUser()
+    private function getUserIdentity($user)
+    {
+        $user_authentication = $user->authentications[0];
+
+        return new UserIdentity(
+            $user->authentications[0]->username,
+            'password',
+            $user_authentication->institutionAuthentication->institution->id,
+            $user_authentication->institutionAuthentication->institution->sites[0]->id
+        );
+    }
+
+    /** @test */
+    public function authenticate_invalid_user()
     {
         Yii::app()->params['auth_source'] = 'BASIC';
 
-        $userIdentity = new UserIdentity(
+        $user_identity = new UserIdentity(
             'wronguser',
             'password'
         );
 
-        $this->assertFalse($userIdentity->authenticate());
+        $this->assertFalse($user_identity->authenticate()[0]);
         $this->assertEquals(
-            $userIdentity->errorCode,
+            $user_identity->errorCode,
             UserIdentity::ERROR_USERNAME_INVALID
         );
     }
 
-    /**
-     * @covers UserIdentity
-     */
-    public function testInvalidPassword()
+    /** @test */
+    public function authenticate_invalid_password()
     {
         Yii::app()->params['auth_source'] = 'BASIC';
 
-        $userIdentity = new UserIdentity(
-            'JoeBloggs',
-            'wrongpassword'
-        );
+        $user = $this->getUser();
+        $user_identity = $this->getUserIdentity($user);
+        $user_identity->password = "wrongpassword";
 
-        $this->assertFalse($userIdentity->authenticate());
+        $this->assertFalse($user_identity->authenticate()[0]);
         $this->assertEquals(
-            $userIdentity->errorCode,
-            UserIdentity::ERROR_PASSWORD_INVALID
+            UserIdentity::ERROR_PASSWORD_INVALID,
+            $user_identity->errorCode
         );
     }
 
-    /**
-     * @covers UserIdentity
-     */
-    public function testUserInactive()
+    /** @test */
+    public function authenticate_basic_login_with_global_firm_rights()
     {
         Yii::app()->params['auth_source'] = 'BASIC';
 
-        $userIdentity = new UserIdentity(
-            'icabod',
-            'password'
-        );
+        $user = $this->getUser();
+        $user_identity = $this->getUserIdentity($user);
+        $response = $user_identity->authenticate();
 
-        $this->assertFalse($userIdentity->authenticate());
-        $this->assertEquals(
-            $userIdentity->errorCode,
-            UserIdentity::ERROR_USER_INACTIVE
-        );
+        $this->assertTrue((bool)$user->global_firm_rights);
+        $this->assertTrue($response[0]);
     }
 
-    /**
-     * @covers UserIdentity
-     */
-    public function testBasicLogin_WithGlobalFirmRights()
+    /** @test */
+    public function authenticate_basic_login_without_global_firm_rights()
     {
         Yii::app()->params['auth_source'] = 'BASIC';
 
-        $userIdentity = new UserIdentity(
-            'demo',
-            'demo'
-        );
-
-        $this->assertTrue((bool) $this->users['user1']['global_firm_rights']);
-
-        $this->assertTrue($userIdentity->authenticate());
-    }
-
-    /**
-     * @covers UserIdentity
-     */
-    public function testBasicLogin_WithoutGlobalFirmRights()
-    {
-        Yii::app()->params['auth_source'] = 'BASIC';
-
-        $user = $this->users('user1');
-        $user->global_firm_rights = false;
-        $user->save(false);
-
-        $userIdentity = new UserIdentity(
-            'JoeBloggs',
-            'secret'
-        );
+        $firms = Firm::factory()->count(2)->useExisting(["institution_id" => null, "runtime_selectable" => 1])->create();
+        $user = $this->getUser($firms);
+        $user_identity = $this->getUserIdentity($user);
 
         $this->assertFalse((bool) $user->global_firm_rights);
-
-        $this->assertTrue($userIdentity->authenticate());
+        $this->assertTrue($user_identity->authenticate()[0]);
     }
 
-    /**
-     * @covers UserIdentity
-     */
-    public function testGetId()
-    {
-        Yii::app()->params['auth_source'] = 'BASIC';
-
-        $userIdentity = new UserIdentity(
-            'JoeBloggs',
-            'secret'
-        );
-
-        $this->assertTrue($userIdentity->authenticate());
-        $this->assertEquals($this->users['user1']['id'], $userIdentity->getId());
-    }
-
-    /**
-     * @covers UserIdentity
-     */
-    public function testSAMLLogin()
+    /** @test */
+    public function authenticate_saml_login()
     {
         Yii::app()->params['auth_source'] = 'SAML';
 
-        $userIdentity = new UserIdentity(
-            'JoeBloggs',
-            'password'
-        );
-
-        $this->assertTrue($userIdentity->authenticate(true));
+        $user = $this->getUser([], true, true);
+        $user_identity = $this->getUserIdentity($user);
+        $this->assertTrue($user_identity->authenticate()[0]);
     }
 
-    /**
-     * @covers UserIdentity
-     */
-    public function testOIDCLogin()
+    /** @test */
+    public function authenticate_oidc_login()
     {
         Yii::app()->params['auth_source'] = 'OIDC';
 
-        $userIdentity = new UserIdentity(
-            'JoeBloggs',
-            'password'
-        );
+        $user = $this->getUser([], true, true);
+        $user_identity = $this->getUserIdentity($user);
+        $this->assertTrue($user_identity->authenticate()[0]);
+    }
 
-        $this->assertTrue($userIdentity->authenticate(true));
+    /** @test */
+    public function authenticate_expired_login()
+    {
+        Yii::app()->params['auth_source'] = 'BASIC';
+
+        $user = $this->getUser();
+        $expired_user_auth = UserAuthentication::factory()->create([
+            'user_id' => $user->id,
+            'institution_authentication_id' => $user->authentications[0]->institution_authentication_id,
+            'password' => 'password',
+            'password_repeat' => 'password',
+            'password_status' => UserAuthentication::EXPIRED_PASSWORD,
+            'active' => true
+        ]);
+        $user->authentications = [$expired_user_auth];
+        $user_identity = $this->getUserIdentity($user);
+
+        $response = $user_identity->authenticate();
+
+        $this->assertEquals(UserAuthentication::EXPIRED_PASSWORD, $user->authentications[0]->password_status);
+        $this->assertTrue($response[0]);
     }
 }

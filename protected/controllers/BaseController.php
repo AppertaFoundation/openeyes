@@ -194,9 +194,9 @@ class BaseController extends Controller
                 }
                 PasswordUtils::testPasswordExpiry($user_authentication);
 
-                if (PasswordUtils::testStatus($user_authentication, 'softlocked') && $user_authentication->password_softlocked_until < date("Y-m-d H:i:s")) {
+                if (PasswordUtils::testStatus($user_authentication, UserAuthentication::SOFTLOCKED_PASSWORD) && $user_authentication->password_softlocked_until < date("Y-m-d H:i:s")) {
                     $user_authentication->password_failed_tries = 0;
-                    $user_authentication->password_status = 'current';
+                    $user_authentication->password_status = UserAuthentication::CURRENT_PASSWORD;
                     $user_authentication->saveAttributes(array('password_status', 'password_failed_tries'));
                     $user_authentication->audit('login', 'user-soft-unlock', null, "User: {$user_authentication->username} has finished their softlock period ");
                 }
@@ -204,7 +204,7 @@ class BaseController extends Controller
                 $whitelistedRequestCheck = $user->CheckRequestOnExpiryWhitelist($_SERVER['REQUEST_URI']);
 
                 // if user is expired, force them to change their password
-                if (PasswordUtils::testStatus($user_authentication, 'expired') && !$whitelistedRequestCheck) {
+                if (PasswordUtils::testStatus($user_authentication, UserAuthentication::EXPIRED_PASSWORD) && !$whitelistedRequestCheck) {
                     if (Yii::app()->params['profile_user_can_change_password']) {
                         Yii::app()->user->setFlash('alert', 'Your password has expired, please reset it now.');
                     }

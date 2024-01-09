@@ -17,12 +17,21 @@
 class PasswordUtils
 {
     private static $password_statuses = [
-        'locked' => 0,
-        'softlocked' => 1,
-        'expired' => 2,
-        'current' => 3,
-        'stale' => 4,
+        UserAuthentication::LOCKED_PASSWORD => 0,
+        UserAuthentication::SOFTLOCKED_PASSWORD => 1,
+        UserAuthentication::EXPIRED_PASSWORD => 2,
+        UserAuthentication::CURRENT_PASSWORD => 3,
+        UserAuthentication::STALE_PASSWORD => 4,
     ];
+
+    private static function getExpiryStatuses() 
+    {
+        return [
+            UserAuthentication::LOCKED_PASSWORD => Yii::app()->params['pw_status_checks']['pw_days_lock'] === '0' ? '1000000 days' : Yii::app()->params['pw_status_checks']['pw_days_lock'] . ' days',
+            UserAuthentication::EXPIRED_PASSWORD =>  Yii::app()->params['pw_status_checks']['pw_days_expire'] === '0' ? '1000000 days' : Yii::app()->params['pw_status_checks']['pw_days_expire'] . ' days',
+            UserAuthentication::STALE_PASSWORD =>  Yii::app()->params['pw_status_checks']['pw_days_stale'] === '0' ? '1000000 days' : Yii::app()->params['pw_status_checks']['pw_days_stale'] . ' days',
+        ];
+    }
 
     /**
      * @return array
@@ -98,17 +107,16 @@ class PasswordUtils
         return md5($salt . $password);
     }
 
-    public static function testStatus(UserAuthentication $user_authentication, $status = 'locked', $is_special = false)
+    public static function testStatus(UserAuthentication $user_authentication, $status = UserAuthentication::LOCKED_PASSWORD, $is_special = false)
     {
         if (!$is_special && $user_authentication->institutionAuthentication->user_authentication_method != 'LOCAL') {
             return null;
             //throw exception?
         }
-
         if ($user_authentication->password_status == $status) {
             return true;
         }
-        if ($status == 'locked' && !array_key_exists($user_authentication->password_status, self::$password_statuses)) {
+        if ($status == UserAuthentication::LOCKED_PASSWORD && !array_key_exists($user_authentication->password_status, self::$password_statuses)) {
             return true;
         }
         return false;
@@ -124,7 +132,7 @@ class PasswordUtils
         if (self::$password_statuses[$status] <= self::$password_statuses[$user_authentication->password_status]) {
             $user_authentication->password_status = $status;
 
-            if (PasswordUtils::testStatus($user_authentication, 'softlocked')) {
+            if (PasswordUtils::testStatus($user_authentication, UserAuthentication::SOFTLOCKED_PASSWORD)) {
                 $temp_now = new DateTime();
                 $pw_timeout = !empty(Yii::app()->params['pw_status_checks']['pw_softlock_timeout']) ? Yii::app()->params['pw_status_checks']['pw_softlock_timeout'] : '10 mins';
                 $user_authentication->password_softlocked_until = date_format(date_add($temp_now, date_interval_create_from_date_string($pw_timeout)), "Y-m-d H:i:s");
@@ -143,8 +151,8 @@ class PasswordUtils
         //same exception
 
         $max_allowed_tries = Yii::app()->params['pw_status_checks']['pw_tries'] ?: 3;
-        $max_exceeded_status = Yii::app()->params['pw_status_checks']['pw_tries_failed'] ?: 'locked';
-        $max_exceeded_status = array_key_exists($max_exceeded_status, self::$password_statuses) ? $max_exceeded_status : 'locked';
+        $max_exceeded_status = Yii::app()->params['pw_status_checks']['pw_tries_failed'] ?: UserAuthentication::LOCKED_PASSWORD;
+        $max_exceeded_status = array_key_exists($max_exceeded_status, self::$password_statuses) ? $max_exceeded_status : UserAuthentication::LOCKED_PASSWORD;
         $user_authentication->password_failed_tries++;
         $max_reached = false;
 
@@ -160,24 +168,18 @@ class PasswordUtils
 
     public static function testPasswordExpiry($user_authentication)
     {
-        $password_days = [
-            'locked' => Yii::app()->params['pw_status_checks']['pw_days_lock'] === '0' ? '1000000 days' : Yii::app()->params['pw_status_checks']['pw_days_lock'] . ' days',
-            'expired' =>  Yii::app()->params['pw_status_checks']['pw_days_expire'] === '0' ? '1000000 days' : Yii::app()->params['pw_status_checks']['pw_days_expire'] . ' days',
-            'stale' =>  Yii::app()->params['pw_status_checks']['pw_days_stale'] === '0' ? '1000000 days' : Yii::app()->params['pw_status_checks']['pw_days_stale'] . ' days',
-        ];
         // Special Local users (eg. docman_user, api, etc.) should not be subject to password expiry.
         $local_users = Yii::app()->params['local_users'] ?? [];
         if (in_array($user_authentication->username, $local_users)) {
             return true;
         }
 
-        $expiry_statuses = ['locked' => $password_days['locked'], 'expired' => $password_days['expired'], 'stale' => $password_days['stale']];
-
         $last_changed_date = $user_authentication->password_last_changed_date ?? date("Y-m-d H:i:s");
         if (!$last_changed_date) {
             return false;
         }
 
+        $expiry_statuses = self::getExpiryStatuses();
         foreach ($expiry_statuses as $status => $default_no_of_days) {
             $no_of_days = Yii::app()->params['pw_status_checks']["pw_days_$status"] ?? $default_no_of_days;
             if ($no_of_days) {
@@ -192,14 +194,6 @@ class PasswordUtils
 
     public static function getDaysLeft($user_authentication)
     {
-        $password_days = [
-            'locked' => Yii::app()->params['pw_status_checks']['pw_days_lock'] === '0' ? '1000000 days' : Yii::app()->params['pw_status_checks']['pw_days_lock'] . ' days',
-            'expired' =>  Yii::app()->params['pw_status_checks']['pw_days_expire'] === '0' ? '1000000 days' : Yii::app()->params['pw_status_checks']['pw_days_expire'] . ' days',
-            'stale' =>  Yii::app()->params['pw_status_checks']['pw_days_stale'] === '0' ? '1000000 days' : Yii::app()->params['pw_status_checks']['pw_days_stale'] . ' days',
-        ];
-        //same excepti
-        $expiry_statuses = ['locked' => $password_days['locked'], 'expired' => $password_days['expired'], 'stale' => $password_days['stale']];
-
         $last_changed_date = $user_authentication->password_last_changed_date ?? date("Y-m-d H:i:s");
         if (!$last_changed_date) {
             return [];
@@ -207,6 +201,7 @@ class PasswordUtils
         $last_changed_date = date_create($last_changed_date);
         $days_left = [];
 
+        $expiry_statuses = self::getExpiryStatuses();
         foreach ($expiry_statuses as $status => $default_no_of_days) {
             $no_of_days = isset(Yii::app()->params['pw_status_checks']["pw_days_$status"]) ?? $default_no_of_days;
             if ($no_of_days) {

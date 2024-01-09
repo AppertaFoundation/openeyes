@@ -343,7 +343,8 @@ class UserIdentity extends CUserIdentity
         } elseif ($this->is_special || $inst_auth->user_authentication_method == 'LOCAL') {
             $validPw = $user_authentication->verifyPassword($this->password);
 
-            $is_softlocked =  PasswordUtils::testStatus($user_authentication, 'softlocked', $this->is_special) && $user_authentication->password_softlocked_until > date("Y-m-d H:i:s");
+            $is_softlocked = PasswordUtils::testStatus($user_authentication, UserAuthentication::SOFTLOCKED_PASSWORD, $this->is_special)
+                && $user_authentication->password_softlocked_until > date("Y-m-d H:i:s");
             $pwActive = $this->is_special ? true : !(PasswordUtils::testStatus($user_authentication) || $is_softlocked);
 
             if (!($validPw && $pwActive)) { //if failed logon or locked

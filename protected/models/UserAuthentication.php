@@ -54,6 +54,12 @@ class UserAuthentication extends BaseActiveRecordVersioned
     public $password_repeat;
     private $old_attributes;
 
+    public const LOCKED_PASSWORD = "locked";
+    public const SOFTLOCKED_PASSWORD = "softlocked";
+    public const EXPIRED_PASSWORD = "expired";
+    public const CURRENT_PASSWORD = "current";
+    public const STALE_PASSWORD = "stale";
+
     /**
      * @return string the associated database table name
      */
@@ -228,7 +234,7 @@ class UserAuthentication extends BaseActiveRecordVersioned
         parent::afterValidate();
         $this->setPasswordHash();
         if (isset($this->old_attributes['password_status']) && $this->old_attributes['password_status'] != $this->password_status) {
-            if ($this->password_status == 'current') {
+            if ($this->password_status == self::CURRENT_PASSWORD) {
                 $this->password_last_changed_date = date('Y-m-d H:i:s');
                 $this->password_failed_tries = 0;
             }
@@ -325,7 +331,7 @@ class UserAuthentication extends BaseActiveRecordVersioned
             $user_auth->password_last_changed_date = date('Y-m-d H:i:s');
             $user_auth->password_failed_tries = 0;
             if (isset($user_auth->institutionAuthentication) && $user_auth->institutionAuthentication->user_authentication_method == "LDAP") {
-                $user_auth->password_status = 'current';
+                $user_auth->password_status = self::CURRENT_PASSWORD;
             }
         }
         return $user_auth;
