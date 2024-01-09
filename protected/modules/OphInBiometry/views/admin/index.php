@@ -27,8 +27,7 @@
 <?php endif; ?>
 
 <div class="row divider cols-9">
-    <form id="procedures_search" method="post">
-        <input type="hidden" name="YII_CSRF_TOKEN" value="<?= Yii::app()->request->csrfToken ?>"/>
+    <form id="procedures_search" method="GET">
         <table class="cols-full">
             <colgroup>
                 <col class="cols-10">
