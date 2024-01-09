@@ -81,5 +81,21 @@ declare namespace Cypress {
          * @param selector
          */
         getByElementName(selector: string): Chainable<any>
+
+        /**
+         * Returns an element when it exists in the dom
+         *
+         * Usage:
+         * cy.getElementIfExists('div#my-element')
+         *   .then((ele) => {
+         *     if(!ele){
+         *       return;
+         *     }
+         *    // your code here
+         * })
+         *
+         * @param selector The selector to check for.
+         */
+        getElementIfExists(selector: string): Chainable<any>
     }
   }
