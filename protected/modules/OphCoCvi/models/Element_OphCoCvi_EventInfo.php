@@ -260,19 +260,6 @@ class Element_OphCoCvi_EventInfo extends \BaseEventTypeElement
         }
     }
 
-    public function getSignatureByType(int $type): ?\OphCoCvi_Signature
-    {
-        if ($this->esign_element) {
-            foreach ($this->esign_element->getSignatures() as $signature) {
-                if ((int)$signature->type === $type && $signature->signatureFile) {
-                    return $signature;
-                }
-            }
-        }
-
-        return null;
-    }
-
     /*
      * Get elements for CVI PDF
      *

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Copyright Apperta Foundation 2021
  * This file is part of OpenEyes.
@@ -20,17 +21,8 @@ $clinicalinfo_element = $this->getOpenElementByClassName('OEModule_OphCoCvi_mode
 $consent_element = $this->getOpenElementByClassName('OEModule_OphCoCvi_models_Element_OphCoCvi_Consent');
 $demographics_element = $this->getOpenElementByClassName('OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics');
 $clearical_info = $this->getOpenElementByClassName('OEModule_OphCoCvi_models_Element_OphCoCvi_ClericalInfo');
-
-$getSignatureSource = function (int $type) use ($eventinfo_element): string {
-    $signature = $eventinfo_element->getSignatureByType($type);
-
-    if (isset($signature->signatureFile)) {
-        $signature_content = file_get_contents($signature->signatureFile->getPath());
-        return 'data:' . $signature->signatureFile->mimetype . ';base64,' . base64_encode($signature_content);
-    }
-
-    return '';
-};
+$consultant_signature = $esign_element->getSignatureByType(BaseSignature::TYPE_LOGGEDIN_USER);
+$patient_signature = $esign_element->getSignatureByType(BaseSignature::TYPE_PATIENT);
 
 if ($demographics_element->isNewRecord) {
     $gp_name = $patient->gp->contact->fullName ?? '';
@@ -62,8 +54,8 @@ if ($demographics_element->isNewRecord) {
     <!-- Page title -->
     <div class="print-title text-c">
         <h1 class="highlighter">Certificate of Vision Impairment for people who are sight impaired (partially sighted)
-            or
-            severely sight impaired (blind)<br><small>updated September 2018</small></h1>
+            or severely sight impaired (blind)<br><small>updated September 2018</small>
+        </h1>
     </div>
 
     <hr class="divider"/>
@@ -122,28 +114,25 @@ if ($demographics_element->isNewRecord) {
             </tbody>
         </table>
         <hr class="divider"/>
-        <?php $clinical_info = $this->getOpenElementByClassName('OEModule_OphCoCvi_models_Element_OphCoCvi_ClinicalInfo'); ?>
         <div class="highlighter">To be completed by the Ophthalmologist</div>
         <h6>(Tick the box that applies)</h6><h4>I consider that this person is:</h4><span
-                class="tickbox <?= !$clinical_info->is_considered_blind ? 'checked' : '' ?>"></span>
+                class="tickbox <?= !$clinicalinfo_element->is_considered_blind ? 'checked' : '' ?>"></span>
         <b>Sight impaired (partially sighted)</b><span
-                class="tickbox <?= $clinical_info->is_considered_blind ? 'checked' : '' ?>"></span> <b>Severely sight
+                class="tickbox <?= $clinicalinfo_element->is_considered_blind ? 'checked' : '' ?>"></span> <b>Severely sight
             impaired (blind)</b>
         <p>I have made the patient aware of the information booklet, “Sight Loss: What we needed to know”
             (www.rnib.org.uk/sightlossinfo)</p><span
-                class="tickbox <?= $clinical_info->information_booklet ? 'checked' : '' ?>"></span> Yes<span
-                class="tickbox <?= !$clinical_info->information_booklet ? 'checked' : '' ?>"></span> No
-        <p>Has the patient seen an Eye Clinic Liaison Officer (ECLO)/Sight Loss Advisor?</p><span
-                class="tickbox <?= $clinical_info->eclo === "1" ? 'checked' : '' ?>"></span> Yes<span
-                class="tickbox <?= $clinical_info->eclo === "2" ? 'checked' : '' ?>"></span> Referred<span
-                class="tickbox <?= ($clinical_info->eclo === "0" || !$clinical_info->eclo) ? 'checked' : '' ?>"></span>
-        Not
-        applicable
+                class="tickbox <?= $clinicalinfo_element->information_booklet ? 'checked' : '' ?>"></span> Yes<span
+                class="tickbox <?= !$clinicalinfo_element->information_booklet ? 'checked' : '' ?>"></span> No
+        <p>Has the patient seen an Eye Clinic Liaison Officer (ECLO)/Sight Loss Advisor?</p>
+        <span class="tickbox <?= $clinicalinfo_element->eclo === "1" ? 'checked' : '' ?>"></span> Yes
+        <span class="tickbox <?= $clinicalinfo_element->eclo === "2" ? 'checked' : '' ?>"></span> Referred
+        <span class="tickbox <?= ($clinicalinfo_element->eclo === "0" || !$clinicalinfo_element->eclo) ? 'checked' : '' ?>"></span> Not applicable
         <div class="box">
             <div class="flex">
                 <div class="dotted-area">
                     <div class="label">Signed</div>
-                    <img src="<?= $getSignatureSource(BaseSignature::TYPE_LOGGEDIN_USER); ?>" class="signature">
+                    <img src="<?= $esign_element->getSignatureSource($consultant_signature); ?>" class="signature">
                 </div>
                 <div class="dotted-area">
                     <div class="label">Date</div>
@@ -153,8 +142,7 @@ if ($demographics_element->isNewRecord) {
             <div class="flex">
                 <div class="dotted-area">
                     <div class="label">Print name</div>
-                    <?php $patient_signature = $eventinfo_element->getSignatureByType(BaseSignature::TYPE_LOGGEDIN_USER); ?>
-                    <?= $patient_signature->signatory_name ?? ''; ?>
+                    <?= $consultant_signature->signatory_name ?? ''; ?>
                 </div>
             </div>
         </div>
@@ -198,26 +186,25 @@ if ($demographics_element->isNewRecord) {
             </thead>
             <tbody>
             <tr>
-                <td><?= $clinical_info->getDisplayBestCorrectedVA('right') ?></td>
-                <td><?= $clinical_info->getDisplayBestCorrectedVA('left') ?></td>
-                <td><?= $clinical_info->getDisplayBestCorrectedVA('binocular') ?></td>
+                <td><?= $clinicalinfo_element->getDisplayBestCorrectedVA('right') ?></td>
+                <td><?= $clinicalinfo_element->getDisplayBestCorrectedVA('left') ?></td>
+                <td><?= $clinicalinfo_element->getDisplayBestCorrectedVA('binocular') ?></td>
             </tr>
             </tbody>
         </table>
         <p><b>Field of vision:</b> Extensive loss of peripheral visual field (including hemianopia)</p>
-        <span class="tickbox <?= $clinical_info->field_of_vision === "1" ? 'checked' : '' ?>"></span> Yes
-        <span class="tickbox <?= $clinical_info->field_of_vision === "2" ? 'checked' : '' ?>"></span> No
+        <span class="tickbox <?= $clinicalinfo_element->field_of_vision === "1" ? 'checked' : '' ?>"></span> Yes
+        <span class="tickbox <?= $clinicalinfo_element->field_of_vision === "2" ? 'checked' : '' ?>"></span> No
         <div class="spacer"><!-- **** empty vertical spacer ***** --></div>
         <p><b>Low vision service:</b> If appropriate, has a referral for the low vision service been made?</p>
-        <span class="tickbox <?= $clinical_info->low_vision_service === "1" ? 'checked' : '' ?>"></span> Yes
-        <span class="tickbox <?= $clinical_info->low_vision_service === "2" ? 'checked' : '' ?>"></span> No
-        <span class="tickbox <?= $clinical_info->low_vision_service === "3" ? 'checked' : '' ?>"></span> Don't know
-        <span class="tickbox <?= $clinical_info->low_vision_service === "4" ? 'checked' : '' ?>"></span> Not required
+        <span class="tickbox <?= $clinicalinfo_element->low_vision_service === "1" ? 'checked' : '' ?>"></span> Yes
+        <span class="tickbox <?= $clinicalinfo_element->low_vision_service === "2" ? 'checked' : '' ?>"></span> No
+        <span class="tickbox <?= $clinicalinfo_element->low_vision_service === "3" ? 'checked' : '' ?>"></span> Don't know
+        <span class="tickbox <?= $clinicalinfo_element->low_vision_service === "4" ? 'checked' : '' ?>"></span> Not required
         <hr class="divider"/>
-        <h2>Part 2a: Diagnosis (for patients <?= ($clinical_info->isForAdult()) ? "18 years of age or over" : "under the age of 18" ?>)</h2><h4>Tick each that applies. <b>Tick "Main" if
-                this
-                is the main cause for the impairment.</b></h4><h6>Please note that this is not intended to be a
-            comprehensive list of all possible diagnoses.</h6>
+        <h2>Part 2a: Diagnosis (for patients <?= ($clinicalinfo_element->isForAdult()) ? "18 years of age or over" : "under the age of 18" ?>)</h2>
+        <h4>Tick each that applies. <b>Tick "Main" if this is the main cause for the impairment.</b></h4>
+        <h6>Please note that this is not intended to be a comprehensive list of all possible diagnoses.</h6>
         <!-- headers for all tables - must align correctly (uses same colgroup) -->
         <div class="flex"><h3 class="cols-5"><!----></h3>
             <table>
@@ -239,7 +226,7 @@ if ($demographics_element->isNewRecord) {
                 </thead>
             </table>
         </div>
-        <?php foreach ($this->getDisorderSections($clinical_info->patient_type) as $disorder_section) : ?>
+        <?php foreach ($this->getDisorderSections($clinicalinfo_element->patient_type) as $disorder_section) : ?>
             <div class="flex">
                 <h3 class="cols-3"><?= \CHtml::encode($disorder_section->name); ?></h3>
                 <div class="cols-2"></div>
@@ -257,14 +244,14 @@ if ($demographics_element->isNewRecord) {
                         <tr>
                             <td><?= \CHtml::encode($disorder->name); ?></td>
                             <td>
-                                <span class="checkbox <?= $clinical_info->isCviDisorderMainCauseForSide($disorder, 'right') ? 'checked' : '' ?>"></span>
+                                <span class="checkbox <?= $clinicalinfo_element->isCviDisorderMainCauseForSide($disorder, 'right') ? 'checked' : '' ?>"></span>
                             </td>
                             <td><?= \CHtml::encode($disorder->code) ?></td>
                             <td>
-                                <span class="tickbox <?= in_array($clinical_info->getCviDisorderSide($disorder), [\Eye::RIGHT, \Eye::BOTH]) ? 'checked' : ''; ?>"></span>
+                                <span class="tickbox <?= in_array($clinicalinfo_element->getCviDisorderSide($disorder), [\Eye::RIGHT, \Eye::BOTH]) ? 'checked' : ''; ?>"></span>
                             </td>
                             <td>
-                                <span class="tickbox <?= in_array($clinical_info->getCviDisorderSide($disorder), [\Eye::LEFT, \Eye::BOTH]) ? 'checked' : ''; ?>"></span>
+                                <span class="tickbox <?= in_array($clinicalinfo_element->getCviDisorderSide($disorder), [\Eye::LEFT, \Eye::BOTH]) ? 'checked' : ''; ?>"></span>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -272,14 +259,13 @@ if ($demographics_element->isNewRecord) {
                 </table>
             </div>
         <?php endforeach; ?>
-        <h4>Diagnosis not covered in any of the above, specify, including ICD 10 code if known and indicating eye or
-            eyes</h4>
-        <?php if (!count($clinical_info->diagnosis_not_covered)) : ?>
+        <h4>Diagnosis not covered in any of the above, specify, including ICD 10 code if known and indicating eye or eyes</h4>
+        <?php if (!count($clinicalinfo_element->diagnosis_not_covered)) : ?>
             <div class="box">
                 <div class="dotted-write"></div>
             </div>
         <?php endif; ?>
-        <?php foreach ($clinical_info->diagnosis_not_covered as $diagnosis) {
+        <?php foreach ($clinicalinfo_element->diagnosis_not_covered as $diagnosis) {
             if (isset($diagnosis->disorder) || isset($diagnosis->clinicinfo_disorder)) {
                 switch ($diagnosis->eye_id) {
                     case 1:
@@ -313,9 +299,10 @@ if ($demographics_element->isNewRecord) {
         <?php } ?>
         <hr class="divider"/>
 
-        <h2>Part 3: To be completed by the patient (or parent/guardian if the patient is a child) and eye clinic staff
-            e.g.
-            ECLO/Sight Loss Advisor</h2>
+        <h2>
+            Part 3: To be completed by the patient (or parent/guardian if the patient is a child) and eye clinic staff
+            e.g. ECLO/Sight Loss Advisor
+        </h2>
         <div class="highlighter">Additional information for the patient’s local council</div>
         <?php foreach (array_chunk($this->getPatientFactors(), 4) as $chunk) : ?>
             <table class="row-lines">
@@ -354,9 +341,10 @@ if ($demographics_element->isNewRecord) {
         <div class="spacer"><!-- **** empty vertical spacer ***** --></div>
 
         <div class="highlighter">Patient’s information and communication needs</div>
-        <p>All providers of NHS and local authority social care services are legally required to identify, record and
-            meet
-            your individual information/communication needs (refer to Explanatory Notes paragraphs 9, 22 and 23).</p>
+        <p>
+            All providers of NHS and local authority social care services are legally required to identify, record and meet
+            your individual information/communication needs (refer to Explanatory Notes paragraphs 9, 22 and 23).
+        </p>
         <p>Preferred method of contact?</p>
 
         <?php foreach (OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_PreferredInfoFmt::model()->findAll(array("condition" => "version =  1", 'order' => 'display_order asc')) as $fmt) : ?>
@@ -401,15 +389,11 @@ if ($demographics_element->isNewRecord) {
                 </div>
             </div>
         </div>
-        <p>I give my permission for a copy to be sent to my local council (or an organisation working on their behalf)
-            who
-            have a duty (under the Care Act 2014) to contact me to offer advice on living with sight loss and explain
-            the
-            benefits of being registered. When the council contacts me, I am aware that I do not have to accept any
-            help, or
-            be registered at that time, if I choose not to do so.</p>
-
-
+        <p>I give my permission for a copy to be sent to my local council (or an organisation working on their behalf) who
+            have a duty (under the Care Act 2014) to contact me to offer advice on living with sight loss and explain the
+            benefits of being registered. When the council contacts me, I am aware that I do not have to accept any help, or
+            be registered at that time, if I choose not to do so.
+        </p>
         <div class="box">
             <div class="dotted-area">
                 <div class="label">My <b>local council</b> name</div>
@@ -431,27 +415,32 @@ if ($demographics_element->isNewRecord) {
                 </div>
             </div>
         </div>
-        <p>I give my permission for a copy to be sent to The Royal College of Ophthalmologists, Certifications Office at
-            Moorfields Eye Hospital; where information about eye conditions is collected, and used to help to improve
-            eye
-            care and services in the future.</p>
-        <p>I understand that I do not have to consent to sharing my information with my GP, local council or The Royal
+        <p>
+            I give my permission for a copy to be sent to The Royal College of Ophthalmologists, Certifications Office at
+            Moorfields Eye Hospital; where information about eye conditions is collected, and used to help to improve eye
+            care and services in the future.
+        </p>
+        <p>
+            I understand that I do not have to consent to sharing my information with my GP, local council or The Royal
             College of Ophthalmologists Certifications Office, or that I can withdraw my consent at any point by
             contacting
-            them directly.</p>
-        <p>I confirm that my attention has been drawn to the paragraph entitled ‘Driving’ and understand that I must not
-            drive.</p><h4>Signed by the patient (or signature and name of parent/guardian or representative)</h4>
+            them directly.
+        </p>
+        <p>
+            I confirm that my attention has been drawn to the paragraph entitled ‘Driving’ and understand that I must not drive.
+        </p>
+        <h4>Signed by <?= $patient_signature->displaySignatoryRole ?? '' ?></h4>
         <div class="box">
             <div class="flex">
                 <div class="dotted-area">
                     <div class="label">Signed</div>
-                    <img src="<?= $getSignatureSource(BaseSignature::TYPE_PATIENT); ?>" class="signature">
+                    <img src="<?= $esign_element->getSignatureSource($patient_signature); ?>" class="signature">
                 </div>
             </div>
             <div class="flex">
                 <div class="dotted-area">
                     <div class="label">Printed name</div>
-                    <?= $patient->fullName; ?>
+                    <?= $patient_signature->signatory_name ?? ''; ?>
                 </div>
             </div>
         </div>
@@ -460,7 +449,7 @@ if ($demographics_element->isNewRecord) {
         <h2>Part 5: Ethnicity</h2>
         <div class="highlighter">This information is needed for service and epidemiological monitoring</div>
 
-        <?php $i=0; foreach (EthnicGroup::model()->findAllAndGroup() as $group_name => $group) : ?>
+        <?php $i = 0; foreach (EthnicGroup::model()->findAllAndGroup() as $group_name => $group) : ?>
             <div class="group">
                 <h4><?=$group_name;?></h4>
                 <ul class="layout">
@@ -482,76 +471,91 @@ if ($demographics_element->isNewRecord) {
         <hr class="divider"/>
         <h2>Information Sheet for patients (or parents/guardians if the patient is a child)</h2>
         <div class="highlighter">Certification</div>
-        <div class="group"><h4>Keep your Certificate of Vision Impairment (CVI). It has three main functions:</h4>
-            <p>1. It qualifies you to be registered with your local council as sight impaired (partially sighted) or
-                severely sight impaired (blind).<br>
-                2. It lets your local council know about your sight loss. They should contact you within two weeks to
-                offer
-                registration, and to identify any help you might need with day-to-day tasks.<br>
-                3. The CVI records important information about the causes of sight loss. It helps in planning NHS eye
-                care
-                services and research about eye conditions.</p></div>
+        <div class="group">
+            <h4>Keep your Certificate of Vision Impairment (CVI). It has three main functions:</h4>
+            <p>
+                1. It qualifies you to be registered with your local council as sight impaired (partially sighted) or
+                severely sight impaired (blind).
+                <br>
+                2. It lets your local council know about your sight loss. They should contact you within two weeks to offer
+                registration, and to identify any help you might need with day-to-day tasks.
+                <br>
+                3. The CVI records important information about the causes of sight loss. It helps in planning NHS eye care
+                services and research about eye conditions.
+            </p>
+        </div>
         <div class="highlighter">Registration and vision rehabilitiation/habilitation</div>
-        <div class="group"><p>Councils have a duty to keep a register of people with sight loss. They will contact you
-                to
-                talk about the benefits of being registered. This is likely to be through the Social Services Local
-                Sensory
-                Team (or an organisation working on their behalf). Registration is often a positive step to help you to
-                be
+        <div class="group">
+            <p>
+                Councils have a duty to keep a register of people with sight loss. They will contact you to
+                talk about the benefits of being registered. This is likely to be through the Social Services Local Sensory
+                Team (or an organisation working on their behalf). Registration is often a positive step to help you to be
                 as independent as possible. You can choose whether or not to be registered. Once registered, your local
-                council should offer you a card confirming registration. If you are registered, you may find it easier
-                to
-                prove the degree of your sight loss and your eligibility for certain concessions. The Council should
-                also
-                talk to you about vision rehabilitation if you are an adult, and habilitation if you are a child or
-                young
-                person and any other support that might help. Vision rehabilitation/habilitation is support or training
-                to
-                help you to maximise your independence, such as moving around your home and getting out and about
-                safely.</p></div>
+                council should offer you a card confirming registration. If you are registered, you may find it easier to
+                prove the degree of your sight loss and your eligibility for certain concessions. The Council should also
+                talk to you about vision rehabilitation if you are an adult, and habilitation if you are a child or young
+                person and any other support that might help. Vision rehabilitation/habilitation is support or training to
+                help you to maximise your independence, such as moving around your home and getting out and about safely.
+            </p>
+        </div>
         <div class="highlighter">Early Years Development, Children and Young People and Education</div>
-        <div class="group"><p>Children (including babies) and young people who are vision impaired will require
-                specialist
-                support for their development and may receive special educational needs provision. An education, health
-                and
-                care (EHC) plan may be provided. You do not need to be certified or registered to receive this support
-                or an
+        <div class="group">
+            <p>
+                Children (including babies) and young people who are vision impaired will require specialist
+                support for their development and may receive special educational needs provision. An education, health and
+                care (EHC) plan may be provided. You do not need to be certified or registered to receive this support or an
                 EHC plan. This support is provided by the council’s specialist education vision impairment service.
                 Additional support from a social care assessment may also be offered as a result of registration.
                 Information about the support your council offers to children and young people can be found on the
-                ‘Local
-                Offer’ page of their website. If you or your child are not known to this service talk to the
-                Ophthalmologist
-                or ECLO/Sight Loss Advisor.</p></div>
+                ‘Local Offer’ page of their website. If you or your child are not known to this service talk to the
+                Ophthalmologist or ECLO/Sight Loss Advisor.
+            </p>
+        </div>
         <div class="highlighter">Driving</div>
-        <div class="group"><p>As a person certified as sight impaired or severely sight impaired <b>you must not
-                    drive</b>
+        <div class="group">
+            <p>
+                As a person certified as sight impaired or severely sight impaired <b>you must not drive</b>
                 and you must inform the DVLA at the earliest opportunity. For more information, please contact: Drivers
-                Medical Branch, DVLA, Swansea, SA99 1TU. Telephone 0300 790 6806. Email eftd@dvla.gsi.gov.uk</p></div>
+                Medical Branch, DVLA, Swansea, SA99 1TU. Telephone 0300 790 6806. Email eftd@dvla.gsi.gov.uk
+            </p>
+        </div>
         <div class="highlighter">Where to get further information, advice and support</div>
-        <div class="group"><p>“Sight Loss: What we needed to know”, written by people with sight loss, contains lots of
-                useful information including a list of other charities who may be able to help you. Visit
-                www.rnib.org.uk/sightlossinfo</p>
-            <p>‘Sightline’ is an online directory of people, services and organisations that help people with sight loss
-                in
-                your area. Visit www.sightlinedirectory.org.uk</p>
-            <p>‘Starting Point’ signposts families to resources and professionals that can help with the first steps
-                following your child’s diagnosis. Visit www.vision2020uk.org.uk/startingpoint</p>
-            <p>Your local sight loss charity has lots of information, advice and practical solutions that can help you.
-                Visit www.visionary.org.uk</p>
-            <p>RNIB offers practical and emotional support for everyone affected by sight loss. Call the Helpline on
-                0303
-                123 9999 or visit www.rnib.org.uk</p>
-            <p>Guide Dogs provides a range of support services to people of all ages. Call 0800 953 0113 (adults) or
-                0800
-                781 1444 (parents/guardians of children/young people) or visit www.guidedogs. org.uk</p>
-            <p>Blind Veterans UK provides services and support to vision impaired veterans. Call 0800 389 7979 or visit
-                www.noonealone.org.uk</p>
-            <p>SeeAbility is a charity that acts to make eye care more accessible for people with learning disabilities
-                and
-                autism. Their easy read information can be found at www.seeability.org/looking- after-your-eyes or you
-                can
-                call 01372 755000.</p></div>
+        <div class="group">
+            <p>
+                “Sight Loss: What we needed to know”, written by people with sight loss, contains lots of
+                useful information including a list of other charities who may be able to help you. 
+                Visit www.rnib.org.uk/sightlossinfo
+            </p>
+            <p>
+                ‘Sightline’ is an online directory of people, services and organisations that help people with sight loss
+                in your area. Visit www.sightlinedirectory.org.uk
+            </p>
+            <p>
+                ‘Starting Point’ signposts families to resources and professionals that can help with the first steps
+                following your child’s diagnosis. Visit www.vision2020uk.org.uk/startingpoint
+            </p>
+            <p>
+                Your local sight loss charity has lots of information, advice and practical solutions that can help you.
+                Visit www.visionary.org.uk
+            </p>
+            <p>
+                RNIB offers practical and emotional support for everyone affected by sight loss. Call the Helpline on
+                0303 123 9999 or visit www.rnib.org.uk
+            </p>
+            <p>
+                Guide Dogs provides a range of support services to people of all ages. Call 0800 953 0113 (adults) or
+                0800 781 1444 (parents/guardians of children/young people) or visit www.guidedogs. org.uk
+            </p>
+            <p>
+                Blind Veterans UK provides services and support to vision impaired veterans. 
+                Call 0800 389 7979 or visit www.noonealone.org.uk
+            </p>
+            <p>
+                SeeAbility is a charity that acts to make eye care more accessible for people with learning disabilities
+                and autism. Their easy read information can be found at www.seeability.org/looking- after-your-eyes or you
+                can call 01372 755000.
+            </p>
+        </div>
     </main>
 
 <?php

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Apperta Foundation, 2022
  * This file is part of OpenEyes.
@@ -18,7 +19,6 @@ use OEModule\OphCoCvi\models\Element_OphCoCvi_Esign;
 
 class OphCoCvi_SignatureFactory extends ModelFactory
 {
-
     public function definition(): array
     {
         return [
@@ -28,6 +28,13 @@ class OphCoCvi_SignatureFactory extends ModelFactory
             'signed_user_id' => null,
             'status' => 1,
         ];
+    }
+
+    public function forElement($element): self
+    {
+        return $this->state([
+            'element_id' => $element
+        ]);
     }
 
     public function asConsultant($signatory_user): self
@@ -52,5 +59,14 @@ class OphCoCvi_SignatureFactory extends ModelFactory
                 'signature_file_id' => $user->signature_file_id
             ];
         });
+    }
+
+    public function asTypeAndRole(int $type, string $role, ?int $signature_file_id = null): self
+    {
+        return $this->state([
+            'type' => $type,
+            'signatory_role' => $role,
+            'signature_file_id' => $signature_file_id
+        ]);
     }
 }

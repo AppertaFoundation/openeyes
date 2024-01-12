@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Copyright Apperta Foundation 2021
  * This file is part of OpenEyes.
@@ -45,6 +46,7 @@ class OphCoCvi_Signature extends BaseSignature
     const SIGNATORY_PERSON_REPRESENTATIVE = "Patient's representative";
     const SIGNATORY_PERSON_PARENT_OR_GUARDIAN = "Parent/Guardian";
     const SIGNATORY_PERSON_PATIENT = "Patient";
+    const SIGNATORY_CONSULTANT = "Consultant";
 
     const STATUS_ACTIVE = 1;
     const STATUS_DELETED = 0;
@@ -65,15 +67,15 @@ class OphCoCvi_Signature extends BaseSignature
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('element_id, type', 'required'),
-            array('element_id, id, type', 'numerical', 'integerOnly'=>true),
+            array('element_id, type, signatory_role, timestamp', 'required'),
+            array('element_id, id, type', 'numerical', 'integerOnly' => true),
             array('signature_file_id', 'validateSignatureFile'),
-            array('signatory_role, signatory_name', 'length', 'max'=>64),
+            array('signatory_role, signatory_name', 'length', 'max' => 64),
             array('last_modified_date, created_date, date, time, type, signature_file_id, status', 'safe'),
             array('delete_reason', 'length', 'max' => 200),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
-            array('id, element_id, signature_file_id, signed_user_id, signatory_role, signatory_name, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on'=>'search'),
+            array('id, element_id, signature_file_id, signed_user_id, signatory_role, signatory_name, last_modified_user_id, last_modified_date, created_user_id, created_date', 'safe', 'on' => 'search'),
         );
     }
 
@@ -138,7 +140,7 @@ class OphCoCvi_Signature extends BaseSignature
     {
         // @todo Please modify the following code to remove attributes that should not be searched.
 
-        $criteria=new CDbCriteria;
+        $criteria = new CDbCriteria();
 
         $criteria->compare('element_id', $this->element_id);
         $criteria->compare('signature_file_id', $this->signature_file_id, true);
@@ -151,7 +153,7 @@ class OphCoCvi_Signature extends BaseSignature
         $criteria->compare('created_date', $this->created_date, true);
 
         return new CActiveDataProvider($this, array(
-            'criteria'=>$criteria,
+            'criteria' => $criteria,
         ));
     }
 
@@ -169,7 +171,7 @@ class OphCoCvi_Signature extends BaseSignature
     /**
      * @inheritDoc
      */
-    public function getRoleOptions() : array
+    public function getRoleOptions(): array
     {
         return ["Patient", "Patient's representative", "Parent/Guardian"];
     }
@@ -196,5 +198,29 @@ class OphCoCvi_Signature extends BaseSignature
             return $this->isNewRecord && parent::beforeSave();
         }
         return true;
+    }
+
+    public function getImageSource()
+    {
+        if (isset($this->signatureFile)) {
+            $signature_content = file_get_contents($this->signatureFile->getPath());
+            return 'data:' . $this->signatureFile->mimetype . ';base64,' . base64_encode($signature_content);
+        }
+
+        return '';
+    }
+
+    public function getDisplaySignatoryRole()
+    {
+        switch ($this->signatory_role) {
+            case self::SIGNATORY_PERSON_PATIENT:
+                return "the " . self::SIGNATORY_PERSON_PATIENT;
+            case self::SIGNATORY_PERSON_PARENT_OR_GUARDIAN:
+                return "the Patient's " . self::SIGNATORY_PERSON_PARENT_OR_GUARDIAN;
+            case self::SIGNATORY_PERSON_REPRESENTATIVE:
+                return "the " . self::SIGNATORY_PERSON_REPRESENTATIVE;
+            default:
+                return "";
+        }
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Copyright Apperta Foundation 2021
  * This file is part of OpenEyes.
@@ -12,11 +13,8 @@
  * @copyright Copyright (C) 2021, Apperta Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-?>
 
-<?php
 $event_info = $this->getOpenElementByClassName('OEModule_OphCoCvi_models_Element_OphCoCvi_EventInfo');
-$patient_sign = $event_info->getSignatureByType(\BaseSignature::TYPE_PATIENT);
 
 $selectOptions = [];
 if ($this->checkPrintAccess()) {
