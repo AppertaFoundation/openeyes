@@ -56,7 +56,7 @@ if (count($tickets) && Yii::app()->user->checkAccess('OprnViewClinical')) { ?>
     <div class="title">ScratchPad</div>
     <div class="vc-content">
       <div class="row">
-        <textarea class="cols-full" placeholder="ScratchPad (wiped on patient change)"></textarea>
+        <textarea class="cols-full autosize" rows=2 placeholder="ScratchPad (wiped on patient change)"></textarea>
       </div>
     </div>
   </div>
