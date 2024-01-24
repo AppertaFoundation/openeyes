@@ -1,6 +1,9 @@
 <?php
 
 namespace OEModule\OphCiExamination\models;
+
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "ophciexamination_advice_leaflet_entry".
  *
@@ -22,6 +25,8 @@ namespace OEModule\OphCiExamination\models;
  */
 class AdviceLeafletEntry extends \BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     /**
      * @return string the associated database table name
      */

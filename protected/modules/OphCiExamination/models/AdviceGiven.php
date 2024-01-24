@@ -2,6 +2,8 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * OpenEyes.
  *
@@ -36,6 +38,8 @@ namespace OEModule\OphCiExamination\models;
  */
 class AdviceGiven extends \BaseEventTypeElement
 {
+    use HasFactory;
+
     protected $widgetClass = \OEModule\OphCiExamination\widgets\AdviceGiven::class;
 
     /**
@@ -125,7 +129,7 @@ class AdviceGiven extends \BaseEventTypeElement
             foreach ($this->leaflets as $leaflet) {
                 $leaflet_rows .= "<tr><td>$leaflet->name</td></tr>";
             }
-            $string .= "I have provided copies of the following information resources: 
+            $string .= "I have provided copies of the following information resources:
             <table>
             <tbody>
             $leaflet_rows
@@ -133,5 +137,14 @@ class AdviceGiven extends \BaseEventTypeElement
             </table>";
         }
         return $string;
+    }
+
+    public function beforeDelete()
+    {
+        foreach ($this->leaflet_entries as $entry) {
+            $entry->delete();
+        }
+
+        return parent::beforeDelete();
     }
 }
