@@ -30,7 +30,6 @@ use WithTransactions;
  */
 class AdviceGivenSavingTest extends OEDbTestCase
 {
-    use HasDatabaseAssertions;
     use MocksSession;
     use MakesApplicationRequests;
     use WithTransactions;
