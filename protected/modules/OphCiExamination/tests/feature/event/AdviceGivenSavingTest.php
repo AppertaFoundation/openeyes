@@ -16,12 +16,10 @@
 namespace OEModule\OphCiExamination\tests\feature\event;
 
 use Event;
-use HasDatabaseAssertions;
 use MakesApplicationRequests;
 use MocksSession;
 use OEDbTestCase;
 use OEModule\OphCiExamination\models\AdviceGiven;
-use OEModule\OphCiExamination\models\AdviceLeaflet;
 use OEModule\OphCiExamination\models\Element_OphCiExamination_History;
 use WithTransactions;
 
