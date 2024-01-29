@@ -57,7 +57,6 @@ trait SupportsDBUniqueAttributes
     public static function generateDBUniqueAttribute(string $attribute, string $postfix = '', $params = [], $factory_instance = null)
     {
         $existing = static::getExistingValuesForAttribute($attribute);
-        fwrite(STDERR, ">>>!!" . print_r($existing, true));
         $factory_instance ??= static::new();
 
         $candidate_generator = $factory_instance->uniqueAttributeGenerator($attribute, array_merge(['postfix' => $postfix], $params));
