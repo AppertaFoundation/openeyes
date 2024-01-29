@@ -49,15 +49,15 @@ trait SupportsDBUniqueAttributes
     {
         return $this->state([
             $attribute => function () use ($attribute, $params) {
-                return self::generateDBUniqueAttribute($attribute, $this->unique_postfix ?? '', $params, $this);
+                return static::generateDBUniqueAttribute($attribute, $this->unique_postfix ?? '', $params, $this);
             }
         ]);
     }
 
     public static function generateDBUniqueAttribute(string $attribute, string $postfix = '', $params = [], $factory_instance = null)
     {
-        $existing = self::getExistingValuesForAttribute($attribute);
-        $factory_instance ??= self::new();
+        $existing = static::getExistingValuesForAttribute($attribute);
+        $factory_instance ??= static::new();
 
         $candidate_generator = $factory_instance->uniqueAttributeGenerator($attribute, array_merge(['postfix' => $postfix], $params));
 
@@ -74,7 +74,7 @@ trait SupportsDBUniqueAttributes
 
         // track new values - assume that any addiitional factory calls would want to maintain the uniqueness
         // across the set
-        self::addExistingValueForAttribute($attribute, $value);
+        static::addExistingValueForAttribute($attribute, $value);
 
         return $value;
     }
@@ -100,16 +100,23 @@ trait SupportsDBUniqueAttributes
 
     protected static function getExistingValuesForAttribute($attribute)
     {
-        if (!isset(self::$existing_values[$attribute])) {
-            self::$existing_values[$attribute] = self::resolveModelName()::model()->findAll(['select' => $attribute]);
+        if (!isset(static::$existing_values[$attribute])) {
+            static::$existing_values[$attribute] = array_values(
+                array_filter(
+                    array_map(
+                        fn($instance) => $instance->$attribute ?? null,
+                        static::resolveModelName()::model()->findAll(['select' => $attribute])
+                    )
+                )
+            );
         }
 
-        return self::$existing_values[$attribute];
+        return static::$existing_values[$attribute];
     }
 
     protected static function addExistingValueForAttribute($attribute, $value)
     {
-        self::$existing_values[$attribute] ??= [];
-        self::$existing_values[$attribute][] = $value;
+        static::$existing_values[$attribute] ??= [];
+        static::$existing_values[$attribute][] = $value;
     }
 }
