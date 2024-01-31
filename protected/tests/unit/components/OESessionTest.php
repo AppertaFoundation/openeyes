@@ -164,6 +164,57 @@ class OESessionTest extends OEDbTestCase
         $this->assertEventNotDispatched(SessionSiteChangedSystemEvent::class);
     }
 
+    /** @test */
+    public function storing_user_causes_the_user_id_to_be_stored_and_not_the_user_object()
+    {
+        $user = User::factory()->create();
+        $this->session['user'] = $user;
+
+        $this->assertArrayNotHasKey('user', $_SESSION);
+        $this->assertEquals($user->id, $_SESSION['user_id']);
+    }
+
+    /** @test */
+    public function user_is_retrieved_from_session_user_id()
+    {
+        $user = User::factory()->create();
+        $this->session['user_id'] = $user->id;
+
+        $this->assertModelIs($user, $this->session['user']);
+    }
+
+    /** @test */
+    public function cannot_store_incorrect_model_class_for_user()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->session['user'] = UserAuthentication::factory()->create();
+    }
+
+    /** @test */
+    public function storing_user_auth_causes_the_id_to_be_stored_and_not_the_object()
+    {
+        $user_auth = UserAuthentication::factory()->create();
+        $this->session['user_auth'] = $user_auth;
+
+        $this->assertArrayNotHasKey('user_auth', $_SESSION);
+        $this->assertEquals($user_auth->id, $_SESSION['user_auth_id']);
+    }
+
+    /** @test */
+    public function user_auth_is_retrieved_from_session_user_auth_id()
+    {
+        $user_auth = UserAuthentication::factory()->create();
+        $this->session['user_auth_id'] = $user_auth->id;
+
+        $this->assertModelIs($user_auth, $this->session['user_auth']);
+    }
+
+    /** @test */
+    public function cannot_store_incorrect_model_class_for_user_auth()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->session['user_auth'] = User::factory()->create();
+    }
 
     private function getSessionInstance()
     {

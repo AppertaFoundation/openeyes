@@ -1,7 +1,4 @@
 <?php
-
-use OEModule\OESysEvent\events\SessionSiteChangedSystemEvent;
-
 /**
  * OpenEyes.
  *
@@ -19,8 +16,18 @@ use OEModule\OESysEvent\events\SessionSiteChangedSystemEvent;
  * @copyright Copyright 2017, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class OESession extends CDbHttpSession
+
+use OEModule\OESysEvent\events\SessionSiteChangedSystemEvent;
+
+ class OESession extends CDbHttpSession
 {
+    protected static array $models_stored_by_pk = [
+        'user' => User::class,
+        'user_auth' => UserAuthentication::class
+    ];
+
+    protected array $models_stored_cache = [];
+
     protected $selected_firm;
     protected $selected_site;
     protected $selected_institution;
@@ -91,8 +98,45 @@ class OESession extends CDbHttpSession
         return true;
     }
 
+    public function offsetExists($key)
+    {
+        if (!in_array($key, array_keys(static::$models_stored_by_pk))) {
+            return parent::offsetExists($key);
+        }
+
+        return parent::offsetExists($key . '_id');
+    }
+
+    public function get($key, $defaultValue = null)
+    {
+        $customGetter = $this->customGetter($key);
+
+        if (!$customGetter) {
+            return parent::get($key, $defaultValue);
+        }
+
+        return $this->$customGetter($key) ?? $defaultValue;
+    }
+
+    public function offsetGet($offset)
+    {
+        $customGetter = $this->customGetter($offset);
+
+        if (!$customGetter) {
+            return parent::offsetGet($offset);
+        }
+
+        return $this->$customGetter($offset);
+    }
+
     public function offsetSet($offset, $item)
     {
+        $customSetter = $this->customSetter($offset);
+        if ($customSetter) {
+            $this->$customSetter($offset, $item);
+            return;
+        }
+
         $old_item = $this->offsetGet($offset);
         parent::offsetSet($offset, $item);
 
@@ -103,6 +147,12 @@ class OESession extends CDbHttpSession
 
     public function offsetUnset($offset): void
     {
+        $customSetter = $this->customSetter($offset);
+        if ($customSetter) {
+            $this->$customSetter($offset, null);
+            return;
+        }
+
         $old_item = $this->offsetExists($offset) ? $this->offsetGet($offset) : null;
         parent::offsetUnset($offset);
 
@@ -169,20 +219,7 @@ class OESession extends CDbHttpSession
 
     public function getSelectedUser()
     {
-        if (!$this->selected_user) {
-            $user_id = $this->get('user')->id;
-
-            if (empty($user_id)) {
-                $user_id = Yii::app()->user->id;
-            }
-
-            $this->selected_user = User::model()->findByPk($user_id);
-            if (!$this->selected_user) {
-                throw new Exception("User with id '$user_id' not found");
-            }
-        }
-
-        return $this->selected_user;
+        return $this->get('user');
     }
 
     protected function offsetHasChanged($offset, $old_item, $new_item): void
@@ -200,6 +237,71 @@ class OESession extends CDbHttpSession
             if (!is_null($new_site_id) && (int) $old_site_id !== (int) $new_site_id) {
                 SessionSiteChangedSystemEvent::dispatch($old_site_id, $new_site_id);
             }
+        }
+    }
+
+    protected function customGetter($key): ?string
+    {
+        if (!in_array($key, array_keys(static::$models_stored_by_pk))) {
+            return null;
+        }
+
+        return 'getModelFromSessionPk';
+    }
+
+    protected function customSetter($key): ?string
+    {
+        if (!in_array($key, array_keys(static::$models_stored_by_pk))) {
+            return null;
+        }
+
+        return 'setSessionPkFromModel';
+    }
+
+    protected function getModelFromSessionPk($key): ?CModel
+    {
+        $model = static::$models_stored_by_pk[$key] ?? null;
+        $session_pk = $this->get($key . '_id');
+        if (!$model || empty($session_pk)) {
+            return null;
+        }
+
+        return $this->getFromModelCache($model, $session_pk);
+    }
+
+    protected function getFromModelCache(string $class, int|string $pk): ?CModel
+    {
+        if (!array_key_exists($class, $this->models_stored_cache)) {
+            $this->models_stored_cache[$class] = [];
+        }
+
+        if (!array_key_exists($pk, $this->models_stored_cache[$class])) {
+            $this->models_stored_cache[$class][$pk] = $class::model()->findByPk($pk);
+        }
+
+        return $this->models_stored_cache[$class][$pk];
+    }
+
+    protected function setSessionPkFromModel(string $key, ?CActiveRecord $instance): void
+    {
+        $class = static::$models_stored_by_pk[$key];
+
+        if ($instance && !$instance instanceof $class) {
+            throw new InvalidArgumentException(get_class($instance) . "must be an instance of $class for $key");
+        }
+
+
+        if (!array_key_exists($class, $this->models_stored_cache)) {
+            $this->models_stored_cache[$class] = [];
+        }
+
+        $pk_key = $key . '_id';
+
+        if ($instance === null) {
+            $this->offsetUnset($pk_key);
+        } else {
+            $this->offsetSet($pk_key, $instance->getPrimaryKey());
+            $this->models_stored_cache[$class][$instance->getPrimaryKey()] = $instance;
         }
     }
 }
