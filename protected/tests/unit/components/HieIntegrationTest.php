@@ -70,6 +70,8 @@ class HieIntegrationTest extends OEDbTestCase
         $this->patient->contact->last_name = $patient_data['last_name'];
 
         $app = \Yii::app();
+        // ensure it's correctly initialised
+        $app->setComponent('hieIntegration', null);
 
         // Because of the exceptions
         $app->params['hie_usr_org'] = $this->test_data['USR_ORG'];
