@@ -2,9 +2,13 @@
 
 /**
  * Class HieIntegrationTest
+ * @group sample-data
  */
-class HieIntegrationTest extends CTestCase
+class HieIntegrationTest extends OEDbTestCase
 {
+    use MocksSession;
+    use WithTransactions;
+
     protected $testJson = '{
         "USR_NAME":"Admin Admin",
         "USR_POSITION":"Level 1 - Default View",
@@ -45,10 +49,12 @@ class HieIntegrationTest extends CTestCase
     {
         $this->test_data = json_decode($this->testJson, true);
 
-        $user_data = [
+        $this->user = User::factory()->useExisting([
             'first_name' => 'Admin',
-            'last_name' => 'Admin',
-        ];
+            'last_name' => 'Admin'
+        ])->create();
+
+        $this->mockCurrentUser($this->user);
 
         $patient_data = [
             'id' => 11,
@@ -57,18 +63,13 @@ class HieIntegrationTest extends CTestCase
             'last_name' => $this->test_data['PAT_LNAME'],
         ];
 
-        $this->user = new User;
-        $this->user->setAttributes($user_data);
-
-        $this->patient = new Patient;
+        $this->patient = new Patient();
         $this->patient->setAttributes($patient_data);
         $this->patient->contact = new Contact();
         $this->patient->contact->first_name = $patient_data['first_name'];
         $this->patient->contact->last_name = $patient_data['last_name'];
 
         $app = \Yii::app();
-
-        $app->session['user'] = $this->user;
 
         // Because of the exceptions
         $app->params['hie_usr_org'] = $this->test_data['USR_ORG'];
