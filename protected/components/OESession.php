@@ -242,6 +242,10 @@ use OEModule\OESysEvent\events\SessionSiteChangedSystemEvent;
 
     protected function customGetter($key): ?string
     {
+        if ($key === 'firms') {
+            return 'getUserFirms';
+        }
+
         if (!in_array($key, array_keys(static::$models_stored_by_pk))) {
             return null;
         }
@@ -267,6 +271,28 @@ use OEModule\OESysEvent\events\SessionSiteChangedSystemEvent;
         }
 
         return $this->getFromModelCache($model, $session_pk);
+    }
+
+    /**
+     * This method has been created as a precaution for any legacy code that is
+     * still expecting firms to have been set on the session.
+     *
+     * @return array
+     */
+    protected function getUserFirms(): array
+    {
+        $user = $this->getSelectedUser();
+        if (!$user) {
+            return [];
+        }
+
+        $firms = [];
+        foreach ($user->getFirmsForCurrentInstitution() as $firm) {
+            $firms[$firm->id] = $firm->getNameAndSubspecialty();
+        }
+        natcasesort($firms);
+
+        return $firms;
     }
 
     protected function getFromModelCache(string $class, int|string $pk): ?CModel

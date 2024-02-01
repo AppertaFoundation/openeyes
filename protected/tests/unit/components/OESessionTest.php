@@ -216,6 +216,37 @@ class OESessionTest extends OEDbTestCase
         $this->session['user_auth'] = User::factory()->create();
     }
 
+    /** @test */
+    public function firms_is_an_empty_array_when_no_user_is_selected()
+    {
+        $this->assertEmpty($this->session['firms']);
+    }
+
+    /** @test */
+    public function firms_retrieved_from_user_when_set()
+    {
+        $expected_firms = Firm::factory()->count(3)->create();
+
+        $mock_user = $this->createMock(User::class);
+        $mock_user->method('findByPk')
+            ->willReturnSelf();
+
+        $mock_user->method('getFirmsForCurrentInstitution')
+            ->willReturn($expected_firms);
+
+        User::fakeWith($mock_user);
+
+        $this->session['user_id'] = 5;
+
+        $expected = [];
+        foreach ($expected_firms as $firm) {
+            $expected[$firm->getPrimaryKey()] = $firm->getNameAndSubspecialty();
+        }
+        natcasesort($expected);
+
+        $this->assertEquals($expected, $this->session['firms']);
+    }
+
     private function getSessionInstance()
     {
         $_SESSION = [];
