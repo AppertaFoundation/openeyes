@@ -79,7 +79,7 @@ class HieIntegrationTest extends OEDbTestCase
         $app->params['hie_external'] = $this->test_data['EXTERNAL'];
         $app->params['hie_org_user'] = $this->test_data['ORG_USER'];
         $app->params['hie_org_pass'] = $this->test_data['ORG_PASS'];
-        $app->params['hie_remote_url'] = ' ';
+        $app->params['hie_remote_url'] = 'fake-test-url';
         $app->params['hie_aes_encryption_password'] = ' ';
 
         $this->instance = Yii::app()->hieIntegration;
