@@ -6,6 +6,7 @@
  */
 class HieIntegrationTest extends OEDbTestCase
 {
+    use FakesSettingMetadata;
     use MocksSession;
     use WithTransactions;
 
@@ -47,6 +48,8 @@ class HieIntegrationTest extends OEDbTestCase
 
     public function setUp(): void
     {
+        parent::setUp();
+
         $this->test_data = json_decode($this->testJson, true);
 
         $this->user = User::factory()->useExisting([
@@ -74,13 +77,13 @@ class HieIntegrationTest extends OEDbTestCase
         $app->setComponent('hieIntegration', null);
 
         // Because of the exceptions
-        $app->params['hie_usr_org'] = $this->test_data['USR_ORG'];
-        $app->params['hie_usr_fac'] = $this->test_data['USR_FAC'];
-        $app->params['hie_external'] = $this->test_data['EXTERNAL'];
-        $app->params['hie_org_user'] = $this->test_data['ORG_USER'];
-        $app->params['hie_org_pass'] = $this->test_data['ORG_PASS'];
-        $app->params['hie_remote_url'] = 'fake-test-url';
-        $app->params['hie_aes_encryption_password'] = ' ';
+        $this->fakeSettingMetadata('hie_usr_org', $this->test_data['USR_ORG']);
+        $this->fakeSettingMetadata('hie_usr_fac', $this->test_data['USR_FAC']);
+        $this->fakeSettingMetadata('hie_external', $this->test_data['EXTERNAL']);
+        $this->fakeSettingMetadata('hie_org_user', $this->test_data['ORG_USER']);
+        $this->fakeSettingMetadata('hie_org_pass', $this->test_data['ORG_PASS']);
+        $this->fakeSettingMetadata('hie_remote_url', 'fake-test-url');
+        $this->fakeSettingMetadata('hie_aes_encryption_password', 'foobar');
 
         $this->instance = Yii::app()->hieIntegration;
     }
