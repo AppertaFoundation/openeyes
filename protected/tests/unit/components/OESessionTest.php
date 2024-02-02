@@ -231,6 +231,9 @@ class OESessionTest extends OEDbTestCase
         $mock_user->method('findByPk')
             ->willReturnSelf();
 
+        $mock_user->method('with')
+            ->willReturnSelf();
+
         $mock_user->method('getFirmsForCurrentInstitution')
             ->willReturn($expected_firms);
 

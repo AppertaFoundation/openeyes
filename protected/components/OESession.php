@@ -26,6 +26,16 @@ use OEModule\OESysEvent\events\SessionSiteChangedSystemEvent;
         'user_auth' => UserAuthentication::class
     ];
 
+    protected static array $models_with_relations = [
+        UserAuthentication::class => ['institutionAuthentication', 'user'],
+        User::class => []
+    ];
+
+    protected static array $model_cache_tables = [
+        User::class => ['user'],
+        UserAuthentication::class => ['user_authentication', 'institution_authentication', 'user']
+    ];
+
     protected array $models_stored_cache = [];
 
     protected $selected_firm;
@@ -302,7 +312,9 @@ use OEModule\OESysEvent\events\SessionSiteChangedSystemEvent;
         }
 
         if (!array_key_exists($pk, $this->models_stored_cache[$class])) {
-            $this->models_stored_cache[$class][$pk] = $class::model()->findByPk($pk);
+            $this->models_stored_cache[$class][$pk] = $class::model()
+                ->with(static::$models_with_relations[$class] ?? '')
+                ->findByPk($pk);
         }
 
         return $this->models_stored_cache[$class][$pk];
