@@ -17,6 +17,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OE\concerns\ModelCanBeFaked;
 use OE\factories\models\traits\HasFactory;
 use OEModule\OESysEvent\events\UserSavedSystemEvent;
 use OEModule\OphCoMessaging\models\Mailbox;
@@ -44,17 +45,9 @@ use OEModule\OphCoMessaging\models\MailboxUser;
 class User extends BaseActiveRecordVersioned
 {
     use HasFactory;
+    use ModelCanBeFaked;
 
     private const PIN_REGEN_LIMIT = 5;
-    /**
-     * Returns the static model of the specified AR class.
-     *
-     * @return User the static model class
-     */
-    public static function model($className = __CLASS__)
-    {
-        return parent::model($className);
-    }
 
     /**
      * @return string the associated database table name
