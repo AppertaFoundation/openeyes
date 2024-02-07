@@ -44,20 +44,18 @@ class OphTrOperationnoteFactory extends EventFactory
         );
     }
 
-    public function make(array $attributes = [], bool $canCreate = false)
+    public function configure()
     {
-        // ensure all required elements have been specified as states to be applied
         $this->withElements(
             array_map(
-                function ($element_class)
-                {
+                function ($element_class) {
                     return [$element_class];
                 },
                 self::$requiredElements
             )
         );
 
-        return parent::make($attributes, $canCreate);
+        return parent::configure();
     }
 
     public function withProcedures($procedures): self

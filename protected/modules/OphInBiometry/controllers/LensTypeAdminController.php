@@ -11,7 +11,7 @@ class LensTypeAdminController extends BaseAdminController
     /**
      * @var int
      */
-    public $itemsPerPage = 100;
+    public $items_per_page = 100;
 
     public $group = 'Biometry';
 
@@ -23,23 +23,21 @@ class LensTypeAdminController extends BaseAdminController
     public function actionList()
     {
         $criteria = new CDbCriteria();
-        $search = \Yii::app()->request->getPost('search', ['query' => '', 'active' => '']);
+        $search = \Yii::app()->request->getParam('search', ['query' => '', 'active' => '']);
 
-        if (Yii::app()->request->isPostRequest) {
-            if ($search['query']) {
-                $criteria->addCondition('name = :query', 'OR');
-                $criteria->addCondition('id = :query', 'OR');
-                $criteria->addCondition('display_name = :query', 'OR');
-                $criteria->addCondition('description = :query', 'OR');
-                $criteria->addCondition('acon = :query', 'OR');
-                $criteria->params[':query'] = $search['query'];
-            }
+        if ($search['query']) {
+            $criteria->addCondition('name = :query', 'OR');
+            $criteria->addCondition('id = :query', 'OR');
+            $criteria->addCondition('display_name = :query', 'OR');
+            $criteria->addCondition('description = :query', 'OR');
+            $criteria->addCondition('acon = :query', 'OR');
+            $criteria->params[':query'] = $search['query'];
+        }
 
-            if ($search['active'] == 1) {
-                $criteria->addCondition('t.active = 1');
-            } elseif ($search['active'] != '') {
-                $criteria->addCondition('t.active != 1');
-            }
+        if ($search['active'] == 1) {
+            $criteria->addCondition('t.active = 1');
+        } elseif ($search['active'] != '') {
+            $criteria->addCondition('t.active != 1');
         }
 
         $lensType_lens = OphInBiometry_LensType_Lens::model();

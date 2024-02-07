@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Copyright Apperta Foundation 2021
  * This file is part of OpenEyes.
@@ -20,17 +21,7 @@ $clinicalinfo_element = $this->getOpenElementByClassName('OEModule_OphCoCvi_mode
 $consent_element = $this->getOpenElementByClassName('OEModule_OphCoCvi_models_Element_OphCoCvi_Consent');
 $demographics_element = $this->getOpenElementByClassName('OEModule_OphCoCvi_models_Element_OphCoCvi_Demographics');
 $clearical_info = $this->getOpenElementByClassName('OEModule_OphCoCvi_models_Element_OphCoCvi_ClericalInfo');
-
-$getSignatureSource = function (int $type) use ($eventinfo_element): string {
-    $signature = $eventinfo_element->getSignatureByType($type);
-
-    if (isset($signature->signatureFile)) {
-        $signature_content = file_get_contents($signature->signatureFile->getPath());
-        return 'data:' . $signature->signatureFile->mimetype . ';base64,' . base64_encode($signature_content);
-    }
-
-    return '';
-};
+$patient_signature = $esign_element->getSignatureByType(BaseSignature::TYPE_PATIENT);
 
 $gp_name = '';
 $address = [];
@@ -135,24 +126,24 @@ if (isset($print_empty) && !$print_empty) {
         them directly.</p>
     <p>I confirm that my attention has been drawn to the paragraph entitled ‘Driving’ and understand that I must not
         drive.</p>
-    <h4>Signed by the patient (or signature and name of parent/guardian or representative)</h4>
+    <h4>Signed by <?= $patient_signature->displaySignatoryRole ?? '' ?></h4>
     <div class="box"> <!-- start BOX -->
         <?php if (isset($print_empty) && !$print_empty) : ?>
                 <div class="flex">
                     <div class="dotted-area">
                         <div class="label">Signed</div>
-                        <img src="<?= $getSignatureSource(BaseSignature::TYPE_PATIENT); ?>" class="signature">
+                        <img src="<?= $esign_element->getSignatureSource($patient_signature); ?>" class="signature">
                     </div>
                 </div>
         <?php else :?>
-            <?php echo $this->renderPartial("_QR_box", ['qr_code_data' => $qr_code_data], true); ?>
+            <?= $this->renderPartial("_QR_box", ['qr_code_data' => $qr_code_data], true); ?>
         <?php endif;?>
 
         <div class="flex">
             <div class="dotted-area">
                 <div class="label">Printed name</div>
                 <?php if (isset($print_empty) && !$print_empty) : ?>
-                    <?=$patient->fullName;?>
+                    <?= $patient_signature->signatory_name ?? ''; ?>
                 <?php endif;?>
             </div>
         </div>

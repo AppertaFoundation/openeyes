@@ -508,7 +508,7 @@ var OpenEyes = OpenEyes || {};
 
     Object.defineProperty(WorklistFiltersController.prototype, 'worklistDefinitions', {
         set: function (newWorklistDefinitions) {
-            this.filter.worklistsArray = newWorklistDefinitions;
+            this.filter.worklistDefinitionsArray = newWorklistDefinitions;
             this.filterIsAltered = true;
 
             this.panelView.setListsRow(this.mappings.worklistDefinitions, newWorklistDefinitions);

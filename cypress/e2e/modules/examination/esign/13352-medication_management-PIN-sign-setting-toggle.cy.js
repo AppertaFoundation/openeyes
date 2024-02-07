@@ -23,7 +23,7 @@ describe('examination esign behaviour', () => {
                         return cy.visit(createUrl);
                     })
                     .then(() => {
-                        cy.removeElements();
+                        cy.removeElements('Medication Management', true);
                         cy.addExaminationElement('Medication Management');
                     });
             });
@@ -76,7 +76,7 @@ describe('examination esign behaviour', () => {
                         return cy.visit(createUrl);
                     })
                     .then(() => {
-                        cy.removeElements();
+                        cy.removeElements('Medication Management', true);
                         cy.addExaminationElement('Medication Management');
                     });
 

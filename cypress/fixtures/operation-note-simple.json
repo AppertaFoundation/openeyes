@@ -1,0 +1,31 @@
+{
+    "templateData": {
+        "name": "Testing template",
+        "elementData": {
+            "location": {
+                "theatre": "Emergency Theatre 1"
+            },
+            "procedureSide": "1",
+            "procedures": {
+                "Anterior capsulotomy": {
+                    "procedureName": "Anterior capsulotomy",
+                    "values": {
+                        "comments": {
+                            "testid": "generic-procedure-comments",
+                            "inputType": "textField",
+                            "inputValue": "testing 123",
+                            "verifyValue": false
+                        }
+                    }
+                }
+            },
+            "anaesthetic": {
+                "anaestheticType": "GA"
+            },
+            "comments": {
+                "operationComments": "Testing operation comment",
+                "postOpInstructions": "Testing post op instruction"
+            }
+        }
+    }
+}

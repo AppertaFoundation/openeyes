@@ -2,7 +2,7 @@ describe('consent adding contact', () => {
     beforeEach(() => {
         cy.login()
             .then(() => {
-                return cy.createPatient();
+                return cy.createPatient(['adult']);
             })
             .then((patient) => {
                 return cy.getEventCreationUrl(patient.id, 'OphTrConsent');

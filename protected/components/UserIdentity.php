@@ -343,7 +343,8 @@ class UserIdentity extends CUserIdentity
         } elseif ($this->is_special || $inst_auth->user_authentication_method == 'LOCAL') {
             $validPw = $user_authentication->verifyPassword($this->password);
 
-            $is_softlocked =  PasswordUtils::testStatus($user_authentication, 'softlocked', $this->is_special) && $user_authentication->password_softlocked_until > date("Y-m-d H:i:s");
+            $is_softlocked = PasswordUtils::testStatus($user_authentication, UserAuthentication::SOFTLOCKED_PASSWORD, $this->is_special)
+                && $user_authentication->password_softlocked_until > date("Y-m-d H:i:s");
             $pwActive = $this->is_special ? true : !(PasswordUtils::testStatus($user_authentication) || $is_softlocked);
 
             if (!($validPw && $pwActive)) { //if failed logon or locked
@@ -449,10 +450,6 @@ class UserIdentity extends CUserIdentity
             $user->audit('login', 'login-failed', null, "Login failed for user {$this->username}: user has no firm rights and cannot use the system");
             throw new Exception('User has no firm rights and cannot use the system.');
         }
-
-        natcasesort($firms);
-        $app->session['firms'] = $firms;
-        reset($firms);
 
         // Select firm
         $last_firm = Firm::model()->findByPk($user->last_firm_id);

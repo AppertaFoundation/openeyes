@@ -13,60 +13,70 @@ Cypress.Commands.add('fillOperationNote', (data) => {
 
         cy.waitFor(`@loadProcedureElements${procedure.procedureName}`);
         // TODO: when testing other procedures, will need to conditionally check for this
-        cy.get('[data-cy-ed-ready="true"]').then(() => {
-            // in lieue of a more robust check on the eyedraw field bindings
-            // we wait half a second to ensure EyeDraw is syncing
-            cy.wait(500);
-            for (const procedureValueRaw of Object.entries(procedure.values)) {
-                let procedureValue = procedureValueRaw[1];
-                cy.getBySel(procedureValue.testid).then((element) => {
-                    let inputValue = procedureValue.inputValue;
-
-                    //select field and type value
-                    switch (procedureValue.inputType) {
-                        //Pass the dataid for the checkbox and true/false for checked/unchecked
-                        case 'checkbox':
-                            if (inputValue) {
-                                cy.get(element).check();
-                            } else {
-                                cy.get(element).uncheck();
-                            }
-                            break;
-                        //Pass the dataid for the radio button group and the value of the button to be selected
-                        case 'radioButton':
-                            cy.get(element).check(inputValue);
-                            break;
-                        //Pass the dataid for the text field and a string to be typed
-                        case 'textField':
-                            cy.get(element).click().clear().type(inputValue);
-                            break;
-                        //Pass the dataid for the select element and the string to select
-                        case 'select':
-                            cy.get(element).select(inputValue);
-                            break;
-                        //Pass the dataid for the select element and the strings to select
-                        case 'multiSelect':
-                            for (const toSelect of inputValue) {
-                                cy.get(element).select(toSelect);
-                            }
-                            break;
-                        default:
-                            throw new Error(`input type ${inputType} is not recognised`);
-                    }
-                });
+        cy.getElementIfExists('.eyedraw-row').then((ele) => {
+            if (!ele) {
+                return;
             }
+            ele.within(() => {
+                cy.get('[data-cy-ed-ready="true"]').then(() => {
+                    // in lieu of a more robust check on the eyedraw field bindings
+                    // we wait half a second to ensure EyeDraw is syncing
+                    cy.wait(500);
+                });
+            });
         });
 
+        for (const procedureValueRaw of Object.entries(procedure.values)) {
+            let procedureValue = procedureValueRaw[1];
+            cy.getBySel(procedureValue.testid).then((element) => {
+                let inputValue = procedureValue.inputValue;
 
+                //select field and type value
+                switch (procedureValue.inputType) {
+                    //Pass the dataid for the checkbox and true/false for checked/unchecked
+                    case 'checkbox':
+                        if (inputValue) {
+                            cy.get(element).check();
+                        } else {
+                            cy.get(element).uncheck();
+                        }
+                        break;
+                    //Pass the dataid for the radio button group and the value of the button to be selected
+                    case 'radioButton':
+                        cy.get(element).check(inputValue);
+                        break;
+                    //Pass the dataid for the text field and a string to be typed
+                    case 'textField':
+                        cy.get(element).click().clear().type(inputValue);
+                        break;
+                    //Pass the dataid for the select element and the string to select
+                    case 'select':
+                        cy.get(element).select(inputValue);
+                        break;
+                    //Pass the dataid for the select element and the strings to select
+                    case 'multiSelect':
+                        for (const toSelect of inputValue) {
+                            cy.get(element).select(toSelect);
+                        }
+                        break;
+                    default:
+                        throw new Error(`input type ${inputType} is not recognised`);
+                }
+            });
+        }
     }
 
-    cy.get('[data-test=add-pcr-risk-btn]:visible').click();
+    cy.getElementIfExists('[data-test=add-pcr-risk-btn]').then((ele) => {
+        if (!ele) {
+            return;
+        }
+        ele.click();
+        for (const pcrValue of data.elementData.pcrRisk) {
+            cy.selectAdderDialogOptionAdderID(pcrValue.column, pcrValue.value);
+        }
 
-    for (const pcrValue of data.elementData.pcrRisk) {
-        cy.selectAdderDialogOptionAdderID(pcrValue.column, pcrValue.value);
-    }
-
-    cy.confirmAdderDialog();
+        cy.confirmAdderDialog();
+    });
 
     cy.getBySel('anaesthetic-type').within(() => {
         cy.contains(data.elementData.anaesthetic.anaestheticType).click();
@@ -116,7 +126,7 @@ Cypress.Commands.add('verifyOperationNoteData', (data) => {
 });
 
 Cypress.Commands.add('visitUrlAliasAndSetPinValues', (visitUrlAlias,
-                                                      correspondenceSettingValue, prescriptionSettingValue) => {
+    correspondenceSettingValue, prescriptionSettingValue) => {
     const REQUIRE_PIN_CORRESPONDENCE_SIGN_SETTING = 'require_pin_for_correspondence';
     const REQUIRE_PIN_PRESCRIPTION_SIGN_SETTING = 'require_pin_for_prescription';
 

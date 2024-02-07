@@ -36,7 +36,7 @@ OpenEyes.UI = OpenEyes.UI || {};
         }
 
         return lists.map(function (list) {
-            return {title: listNames.get(list)};
+            return {title: listNames.get(list).name};
         });
     }
 
@@ -201,18 +201,20 @@ OpenEyes.UI = OpenEyes.UI || {};
         const into = this.panel.find('.js-worklist-lists-view .js-list-set');
         const allButton = this.panel.find('.js-worklist-lists-view button.js-all-lists-btn');
 
-        allButton.click(function () {
+        const resetToAll = function () {
             into.find('input:checked').prop('checked', false);
             allButton.addClass('selected');
 
             $.removeCookie('worklists-to-show');
 
             controller.setShownLists('all');
-        });
+        };
 
-        for ([id, title] of idMappings) {
-            if (id !== 'all') {
-                into.append(Mustache.render(template, {id: id, title: title}));
+        allButton.click(resetToAll);
+
+        for ([id, details] of idMappings) {
+            if (id !== 'all' && details.nonempty) {
+                into.append(Mustache.render(template, {id: id, title: details.name}));
             }
         }
 
@@ -223,11 +225,15 @@ OpenEyes.UI = OpenEyes.UI || {};
                 shownLists.push($(this).val());
             })
 
-            allButton.removeClass('selected');
+            if (shownLists.length === 0) {
+                resetToAll();
+            } else {
+                allButton.removeClass('selected');
 
-            $.cookie('worklists-to-show', JSON.stringify(shownLists), { secure: true });
+                $.cookie('worklists-to-show', JSON.stringify(shownLists), { secure: true });
 
-            controller.setShownLists(shownLists);
+                controller.setShownLists(shownLists);
+            }
         });
 
         this.refreshShownLists();
@@ -244,8 +250,8 @@ OpenEyes.UI = OpenEyes.UI || {};
 
         const lists = [{id: 'all', label: 'All'}];
 
-        for ([id, title] of idMappings.worklistDefinitions.entries()) {
-            lists.push({id: id, label: title});
+        for ([id, details] of idMappings.worklistDefinitions.entries()) {
+            lists.push({id: id, label: details.name});
         }
 
         const listsItems = new OpenEyes.UI.AdderDialog.ItemSet(
@@ -328,7 +334,7 @@ OpenEyes.UI = OpenEyes.UI || {};
                 let lists = [];
 
                 for (item of selectedItems) {
-                    const into = item.itemSet.options.name;
+                    const into = item.itemSet.options.name ?? undefined;
                     const multipleAllowed = item.itemSet.options.multiSelect || false;
 
                     if (into === 'lists') {
@@ -402,21 +408,21 @@ OpenEyes.UI = OpenEyes.UI || {};
         const intoListView = this.panel.find('.js-worklist-lists-view .js-list-set');
         const intoMenu = this.adder.$tr.find('#js-wfp-lists ul');
 
-        for (const [id, name] of mappings.worklistDefinitions) {
-            if (intoListView.find(`input[value="${id}"]`).length === 0) {
-                const newEntry = Mustache.render(template, {id: id, title: name});
+        for (const [id, details] of mappings.worklistDefinitions) {
+            if (details.nonempty && intoListView.find(`input[value="${id}"]`).length === 0) {
+                const newEntry = Mustache.render(template, {id: id, title: details.name});
 
                 intoListView.append(newEntry);
             }
         }
 
-        intoListView.find('input:checkbox').filter(function () { return !mappings.worklistDefinitions.has(this.value); }).parent().remove();
+        intoListView.find('input:checkbox').filter(function () { return !mappings.worklistDefinitions.has(parseInt(this.value)); }).parent().remove();
 
-        for (const [id, name] of mappings.worklistDefinitions) {
+        for (const [id, details] of mappings.worklistDefinitions) {
             if (intoMenu.find(`li[data-id="${id}"]`).length === 0){
                 // TODO Make changes to the adder dialogue so that adding & removing items does not require
                 // altering the internals
-                const newEntryData = this.adder.constructDataset({id: id, label: name});
+                const newEntryData = this.adder.constructDataset({id: id, label: details.name});
                 const newEntry = $("<li />", newEntryData);
 
                 $('<span />', { class: 'auto-width' }).text(newEntryData['data-label']).appendTo(newEntry);
@@ -425,7 +431,7 @@ OpenEyes.UI = OpenEyes.UI || {};
             }
         }
 
-        this.adder.$tr.find('#js-wfp-lists li').filter(function () { return this.dataset.id === 'all' || !mappings.worklistDefinitions.has(this.dataset.id) }).remove();
+        this.adder.$tr.find('#js-wfp-lists li').filter(function () { return this.dataset.id === 'all' || !mappings.worklistDefinitions.has(parseInt(this.dataset.id)) }).remove();
 
         this.refreshShownLists();
     }
@@ -501,11 +507,11 @@ OpenEyes.UI = OpenEyes.UI || {};
             const view = this;
 
             listsLabel = lists.filter(function(id) {
-                return idMappings.has(`${id}`); // Unfortunately it has to be coerced because id may could be an integer, leading to false negatives
+                return idMappings.has(parseInt(id)); // Unfortunately it has to be coerced because id may could be an string, leading to false negatives
             }).map(function (id) {
                 view.adder.$tr.find(`#js-wfp-lists li[data-id="${id}"]`).addClass('selected');
 
-                return idMappings.get(`${id}`); // Same as above...
+                return idMappings.get(parseInt(id)).name; // Same as above...
             }).join(', ');
         }
 

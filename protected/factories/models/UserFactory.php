@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Apperta Foundation, 2022
  * This file is part of OpenEyes.
@@ -15,11 +16,13 @@
 
 namespace OE\factories\models;
 
+use User;
+use Contact;
+use Institution;
 use InstitutionAuthentication;
 use OE\factories\ModelFactory;
 use UserAuthentication;
 use FirmUserAssignment;
-
 use WorklistRecentFilter;
 
 class UserFactory extends ModelFactory
@@ -51,7 +54,7 @@ class UserFactory extends ModelFactory
      */
     public function withAuthItems(array $authitems = []): self
     {
-        return $this->afterCreating(function (\User $user) use ($authitems) {
+        return $this->afterCreating(function (User $user) use ($authitems) {
             foreach ($authitems as $authitem) {
                 $this->app->authManager->assign($authitem, $user->id);
             }
@@ -63,11 +66,15 @@ class UserFactory extends ModelFactory
      *
      * @param \Institution $institution
      * @param string $password
+     * @param bool $active
      * @return self
      */
-    public function withLocalAuthForInstitution(\Institution $institution, string $password = 'password'): self
-    {
-        return $this->afterCreating(function (\User $user) use ($password, $institution) {
+    public function withLocalAuthForInstitution(
+        \Institution $institution,
+        string $password = "password",
+        bool $active = true,
+    ): self {
+        return $this->afterCreating(function (User $user) use ($password, $institution, $active) {
             UserAuthentication::factory()->create([
                 'user_id' => $user->id,
                 'institution_authentication_id' => InstitutionAuthentication::factory()->useExisting([
@@ -75,24 +82,40 @@ class UserFactory extends ModelFactory
                     'user_authentication_method' => 'LOCAL'
                 ]),
                 'password' => $password,
-                'password_repeat' => $password
+                'password_repeat' => $password,
+                'active' => $active
             ]);
         });
     }
 
+    public function withSSOAuthForInstitution(Institution $institution, string $password = 'password', bool $active = true): self
+    {
+        return $this->afterCreating(function (User $user) use ($password, $institution, $active) {
+            UserAuthentication::factory()->create([
+                'user_id' => $user->id,
+                'institution_authentication_id' => InstitutionAuthentication::factory()->useExisting([
+                    'institution_id' => $institution->id,
+                    'user_authentication_method' => 'SSO'
+                ]),
+                'password' => $password,
+                'password_repeat' => $password,
+                'active' => $active
+            ]);
+        });
+    }
 
     public function withContact($attributes = []): self
     {
         return $this->state(function () use ($attributes) {
             return [
-                'contact_id' => \Contact::factory()->create($attributes)
+                'contact_id' => Contact::factory()->create($attributes)
             ];
         });
     }
 
     public function withDefaultWorklistFilter(): self
     {
-        return $this->afterCreating(function (\User $user) {
+        return $this->afterCreating(function (User $user) {
             WorklistRecentFilter::factory()->forUser($user)->create();
         });
     }
@@ -101,7 +124,7 @@ class UserFactory extends ModelFactory
     {
         return $this->state([
             'global_firm_rights' => false
-        ])->afterCreating(static function (\User $user) use ($firms) {
+        ])->afterCreating(function (User $user) use ($firms) {
             foreach ($firms as $firm) {
                 FirmUserAssignment::factory()
                     ->forUser($user)
@@ -109,5 +132,12 @@ class UserFactory extends ModelFactory
                     ->create();
             }
         });
+    }
+
+    public function withGlobalFirmRights(): self
+    {
+        return $this->state([
+            "global_firm_rights" => true
+        ]);
     }
 }

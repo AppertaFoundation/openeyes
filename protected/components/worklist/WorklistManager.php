@@ -677,6 +677,10 @@ class WorklistManager extends CComponent
                 $worklist_patients = $this->getPatientsForWorklist($worklist);
                 if ($this->shouldRenderEmptyWorklist() || $worklist_patients->getTotalItemCount() > 0) {
                     $worklists[] = $worklist;
+
+                    if (!empty($worklist->worklist_definition)) {
+                        $definitions[$worklist->worklist_definition->id]['nonempty'] = true;
+                    }
                 }
             }
         }
@@ -771,7 +775,7 @@ class WorklistManager extends CComponent
         foreach ($all_worklists as $wl) {
             if ($this->shouldDisplayWorklistForContext($wl, $institution, $site, $firm)) {
                 if (!empty($wl->worklist_definition)) {
-                    $definitions[$wl->worklist_definition->id] = $wl->worklist_definition->name;
+                    $definitions[$wl->worklist_definition->id] = ['name' => $wl->worklist_definition->name, 'nonempty' => false];
                 }
 
                 if (is_null($filter) || $filter->coversAllWorklistDefinitions() || in_array($wl->worklist_definition_id, $filter->getWorklistDefinitions())) {

@@ -207,3 +207,17 @@ Cypress.Commands.add('generateRandomString', (stringLength) => {
 
     return randomString;
 });
+
+Cypress.Commands.add('getElementIfExists', (selector) => {
+    cy.window().then(() => {
+        cy.log(`Checking if element exists for selector: ${selector}`);
+        let element = Cypress.$(selector).get(0);
+        if (element) {
+            cy.log(`exists`);
+            return cy.wrap(element);
+        } else {
+            cy.log(`does not exist`);
+        }
+        return false;
+    });
+});

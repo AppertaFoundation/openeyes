@@ -13,10 +13,10 @@ describe('op note pin sign functionality', () => {
                 }).as('createUrl');
         });
 
-        it('creates an operation note with pin required and filled and creates signed correspondence and prescription events', function()  {
+        it('creates an operation note with pin required and filled and creates signed correspondence and prescription events', function () {
             cy.visitUrlAliasAndSetPinValues('createUrl', 'yes', 'yes');
 
-            cy.fixture('13040-operation-note-templates')
+            cy.fixture('operation-note-simple')
                 .then((fixture) => {
                     cy.intercept('/OphTrOperationnote/default/getSignatureByUsernameAndPin*').as('getSignature');
                     cy.getBySel('event-auto-pin-entry').type(this.loggedInUser.body.pincode);
@@ -42,7 +42,7 @@ describe('op note pin sign functionality', () => {
             'and creates draft correspondence and prescription events', function () {
             cy.visitUrlAliasAndSetPinValues('createUrl', 'yes', 'yes');
 
-            cy.fixture('13040-operation-note-templates')
+            cy.fixture('operation-note-simple')
                 .then((fixture) => {
 
 
@@ -76,7 +76,7 @@ describe('op note pin sign functionality', () => {
             'and creates draft correspondence and prescription events', function () {
             cy.visitUrlAliasAndSetPinValues('createUrl', 'yes', 'yes');
 
-            cy.fixture('13040-operation-note-templates')
+            cy.fixture('operation-note-simple')
                 .then((fixture) => {
 
 
@@ -105,7 +105,7 @@ describe('op note pin sign functionality', () => {
             'and creates draft correspondence and prescription events', () => {
             cy.visitUrlAliasAndSetPinValues('createUrl', 'no', 'no');
 
-            cy.fixture('13040-operation-note-templates')
+            cy.fixture('operation-note-simple')
                 .then((fixture) => {
                     cy.saveEvent().then(() => {
                         cy.fillOperationNote(fixture.templateData).then(() => {
@@ -123,7 +123,7 @@ describe('op note pin sign functionality', () => {
 
         it('creates an operation note without pin required and creates signed correspondence and prescription events', () => {
             cy.visitUrlAliasAndSetPinValues('createUrl', 'no', 'no');
-            cy.fixture('13040-operation-note-templates')
+            cy.fixture('operation-note-simple')
                 .then((fixture) => {
                     cy.fillOperationNote(fixture.templateData).then(() => {
                         cy.saveEvent().then(() => {
@@ -235,7 +235,7 @@ describe('op note pin sign functionality', () => {
 
         it('enter pin and save correspondence as final prescription as draft', () => {
             cy.visitUrlAliasAndSetPinValues('createUrl', 'yes', 'yes');
-            cy.fixture('13040-operation-note-templates')
+            cy.fixture('operation-note-simple')
                 .then((fixture) => {
                     cy.intercept('/OphTrOperationnote/default/getSignatureByUsernameAndPin*').as('getSignature');
                     cy.getBySel('event-auto-pin-entry').type('464979');

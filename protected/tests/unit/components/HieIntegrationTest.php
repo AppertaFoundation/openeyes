@@ -2,9 +2,14 @@
 
 /**
  * Class HieIntegrationTest
+ * @group sample-data
  */
-class HieIntegrationTest extends CTestCase
+class HieIntegrationTest extends OEDbTestCase
 {
+    use FakesSettingMetadata;
+    use MocksSession;
+    use WithTransactions;
+
     protected $testJson = '{
         "USR_NAME":"Admin Admin",
         "USR_POSITION":"Level 1 - Default View",
@@ -43,12 +48,16 @@ class HieIntegrationTest extends CTestCase
 
     public function setUp(): void
     {
+        parent::setUp();
+
         $this->test_data = json_decode($this->testJson, true);
 
-        $user_data = [
+        $this->user = User::factory()->useExisting([
             'first_name' => 'Admin',
-            'last_name' => 'Admin',
-        ];
+            'last_name' => 'Admin'
+        ])->create();
+
+        $this->mockCurrentUser($this->user);
 
         $patient_data = [
             'id' => 11,
@@ -57,27 +66,24 @@ class HieIntegrationTest extends CTestCase
             'last_name' => $this->test_data['PAT_LNAME'],
         ];
 
-        $this->user = new User;
-        $this->user->setAttributes($user_data);
-
-        $this->patient = new Patient;
+        $this->patient = new Patient();
         $this->patient->setAttributes($patient_data);
         $this->patient->contact = new Contact();
         $this->patient->contact->first_name = $patient_data['first_name'];
         $this->patient->contact->last_name = $patient_data['last_name'];
 
         $app = \Yii::app();
-
-        $app->session['user'] = $this->user;
+        // ensure it's correctly initialised
+        $app->setComponent('hieIntegration', null);
 
         // Because of the exceptions
-        $app->params['hie_usr_org'] = $this->test_data['USR_ORG'];
-        $app->params['hie_usr_fac'] = $this->test_data['USR_FAC'];
-        $app->params['hie_external'] = $this->test_data['EXTERNAL'];
-        $app->params['hie_org_user'] = $this->test_data['ORG_USER'];
-        $app->params['hie_org_pass'] = $this->test_data['ORG_PASS'];
-        $app->params['hie_remote_url'] = ' ';
-        $app->params['hie_aes_encryption_password'] = ' ';
+        $this->fakeSettingMetadata('hie_usr_org', $this->test_data['USR_ORG']);
+        $this->fakeSettingMetadata('hie_usr_fac', $this->test_data['USR_FAC']);
+        $this->fakeSettingMetadata('hie_external', $this->test_data['EXTERNAL']);
+        $this->fakeSettingMetadata('hie_org_user', $this->test_data['ORG_USER']);
+        $this->fakeSettingMetadata('hie_org_pass', $this->test_data['ORG_PASS']);
+        $this->fakeSettingMetadata('hie_remote_url', 'fake-test-url');
+        $this->fakeSettingMetadata('hie_aes_encryption_password', 'foobar');
 
         $this->instance = Yii::app()->hieIntegration;
     }

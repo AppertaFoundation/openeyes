@@ -54,7 +54,7 @@ class ResetUserLockCommand extends CConsoleCommand {
                 $new_inst_auth->user_authentication_method = 'LOCAL';
                 $new_inst_auth->description = "Auto-generated LOCAL auth for $institution->name.";
                 if (!$new_inst_auth->save()) {
-                    echo "Error creating LOCAL institution authentication for institution id: $id, details: ".var_dump($new_inst_auth->getErrors());
+                    echo "Error creating LOCAL institution authentication for institution id: $id, details: " . print_r($new_inst_auth->getErrors(), true);
                     break;
                 }
                 $inst_auths = [$new_inst_auth];
@@ -72,7 +72,7 @@ class ResetUserLockCommand extends CConsoleCommand {
                     $new_user_auth->password = "TEMPpassword1!";
                     $new_user_auth->password_repeat = "TEMPpassword1!";
                     if (!$new_user_auth->save()) {
-                        echo "Error creating admin user authentication for institution authentication id: $inst_auth->id, details: ".var_dump($new_user_auth->getErrors());
+                        echo "Error creating admin user authentication for institution authentication id: $inst_auth->id, details: " . print_r($new_user_auth->getErrors(), true);
                     }
                 }
             }
@@ -96,7 +96,7 @@ class ResetUserLockCommand extends CConsoleCommand {
         }
 
         foreach ($local_user_auths as $user_auth) {
-            $user_auth->password_status = 'current';
+            $user_auth->password_status = UserAuthentication::CURRENT_PASSWORD;
             $user_auth->password_failed_tries = 0;
             $user_auth->password_last_changed_date = date("Y-m-d H:i:s");
             $user_auth->password_softlocked_until = date("Y-m-d H:i:s");
@@ -105,8 +105,8 @@ class ResetUserLockCommand extends CConsoleCommand {
                 $user_auth->password = $password;
                 $user_auth->password_repeat = $password;
                 if (!$user_auth->save()) {
-                    $user_auth->user->audit('ResetUserLockCommand', 'Problems resetting password for user '.$user_auth->user->id.' for user auth '.$user_auth->id.' details:'.var_dump($user_auth->getErrors()));
-                    echo var_dump($user_auth->getErrors());
+                    $user_auth->user->audit('ResetUserLockCommand', 'Problems resetting password for user '.$user_auth->user->id.' for user auth '.$user_auth->id.' details:' . print_r($user_auth->getErrors(), true));
+                    echo print_r($user_auth->getErrors(), true);
                 } else {
                     $user_auth->user->audit('ResetUserLockCommand', 'Password for user_id '.$user_auth->user->id.' for user auth '.$user_auth->id.' has been reset');
                     echo 'password for '.$user_auth->username." has been reset";
@@ -114,8 +114,8 @@ class ResetUserLockCommand extends CConsoleCommand {
             } else {
                 if (!$user_auth->saveAttributes(['password_status','password_failed_tries','password_last_changed_date'])) {
                     if($user_auth->getErrors()){
-                        $user_auth->user->audit('ResetUserLockCommand', 'Problems unlocking user_id '.$user_auth->user->id.' for user auth '.$user_auth->id.' with errors: '.var_dump($user_auth->getErrors()));
-                        echo var_dump($user_auth->getErrors());
+                        $user_auth->user->audit('ResetUserLockCommand', 'Problems unlocking user_id '.$user_auth->user->id.' for user auth '.$user_auth->id.' with errors: ' . print_r($user_auth->getErrors(), true));
+                        echo print_r($user_auth->getErrors(), true);
                     }
                     else{
                         $user_auth->user->audit('ResetUserLockCommand', 'The user for user_id '.$user_auth->user->id.' for user auth '.$user_auth->id.' is already unlocked.');

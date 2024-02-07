@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Copyright Apperta Foundation 2022
  * This file is part of OpenEyes.
@@ -18,8 +19,10 @@ namespace OE\factories\models;
 use Institution;
 use InstitutionAuthentication;
 use OE\factories\ModelFactory;
+use Site;
 use UserAuthentication;
 use UserAuthenticationMethod;
+use Contact;
 
 class InstitutionFactory extends ModelFactory
 {
@@ -39,6 +42,7 @@ class InstitutionFactory extends ModelFactory
     {
         if (static::$created_default_institution) {
             static::$cached_default_institution = null;
+            static::$created_default_institution = false;
         }
     }
 
@@ -64,7 +68,8 @@ class InstitutionFactory extends ModelFactory
         return [
             'name' => $this->faker->company(),
             'remote_id' => $this->faker->regexify('\w\w\w\d'),
-            'short_name' => $this->faker->word()
+            'short_name' => $this->faker->word(),
+            'contact_id' => Contact::factory()
         ];
     }
 
@@ -104,5 +109,20 @@ class InstitutionFactory extends ModelFactory
                         'institution_authentication_id' => $institution->authenticationMethods[0]->id
                     ]);
             });
+    }
+
+    public function withSite()
+    {
+        return $this->afterCreating(function (Institution $institution) {
+            Site::factory()->forInstitution($institution)->create();
+        });
+    }
+
+    public function withAuthenticationMethod($method)
+    {
+        return $this->afterCreating(function (Institution $institution) use ($method) {
+            InstitutionAuthentication::factory()
+                ->create(["institution_id" => $institution, "user_authentication_method" => $method]);
+        });
     }
 }

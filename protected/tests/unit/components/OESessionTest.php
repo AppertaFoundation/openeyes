@@ -164,6 +164,91 @@ class OESessionTest extends OEDbTestCase
         $this->assertEventNotDispatched(SessionSiteChangedSystemEvent::class);
     }
 
+    /** @test */
+    public function storing_user_causes_the_user_id_to_be_stored_and_not_the_user_object()
+    {
+        $user = User::factory()->create();
+        $this->session['user'] = $user;
+
+        $this->assertArrayNotHasKey('user', $_SESSION);
+        $this->assertEquals($user->id, $_SESSION['user_id']);
+    }
+
+    /** @test */
+    public function user_is_retrieved_from_session_user_id()
+    {
+        $user = User::factory()->create();
+        $this->session['user_id'] = $user->id;
+
+        $this->assertModelIs($user, $this->session['user']);
+    }
+
+    /** @test */
+    public function cannot_store_incorrect_model_class_for_user()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->session['user'] = UserAuthentication::factory()->create();
+    }
+
+    /** @test */
+    public function storing_user_auth_causes_the_id_to_be_stored_and_not_the_object()
+    {
+        $user_auth = UserAuthentication::factory()->create();
+        $this->session['user_auth'] = $user_auth;
+
+        $this->assertArrayNotHasKey('user_auth', $_SESSION);
+        $this->assertEquals($user_auth->id, $_SESSION['user_auth_id']);
+    }
+
+    /** @test */
+    public function user_auth_is_retrieved_from_session_user_auth_id()
+    {
+        $user_auth = UserAuthentication::factory()->create();
+        $this->session['user_auth_id'] = $user_auth->id;
+
+        $this->assertModelIs($user_auth, $this->session['user_auth']);
+    }
+
+    /** @test */
+    public function cannot_store_incorrect_model_class_for_user_auth()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->session['user_auth'] = User::factory()->create();
+    }
+
+    /** @test */
+    public function firms_is_an_empty_array_when_no_user_is_selected()
+    {
+        $this->assertEmpty($this->session['firms']);
+    }
+
+    /** @test */
+    public function firms_retrieved_from_user_when_set()
+    {
+        $expected_firms = Firm::factory()->count(3)->create();
+
+        $mock_user = $this->createMock(User::class);
+        $mock_user->method('findByPk')
+            ->willReturnSelf();
+
+        $mock_user->method('with')
+            ->willReturnSelf();
+
+        $mock_user->method('getFirmsForCurrentInstitution')
+            ->willReturn($expected_firms);
+
+        User::fakeWith($mock_user);
+
+        $this->session['user_id'] = 5;
+
+        $expected = [];
+        foreach ($expected_firms as $firm) {
+            $expected[$firm->getPrimaryKey()] = $firm->getNameAndSubspecialty();
+        }
+        natcasesort($expected);
+
+        $this->assertEquals($expected, $this->session['firms']);
+    }
 
     private function getSessionInstance()
     {

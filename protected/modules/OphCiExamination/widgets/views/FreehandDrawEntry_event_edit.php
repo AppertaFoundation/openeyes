@@ -17,6 +17,8 @@
  */
 
 use OEModule\OphCiExamination\models\FreehandDraw;
+$is_draft_event = \Yii::app()->request->getQuery('draft_id');
+
 
 if (!isset($values)) {
     $values = array(
@@ -31,8 +33,8 @@ if (!isset($values)) {
             $entry->protected_file->getFileAsDataUrl() :
             'data:' . FreehandDraw::SINGLE_PIXEL_IMAGE_DATA_PLACEHOLDER,
         'filename' => $entry->protected_file ? $entry->protected_file->name : '! File Missing !',
-        'full_name' => $entry->protected_file ? $entry->protected_file->user->fullName : '',
-        'date' => \Helper::convertMySQL2NHS($entry->last_modified_date),
+        'full_name' => $is_draft_event ? '' : ($entry->protected_file ? $entry->protected_file->user->fullName : ''),
+        'date' => $is_draft_event ? '' : \Helper::convertMySQL2NHS($entry->last_modified_date),
         'comments' => $entry->comments,
     );
 }

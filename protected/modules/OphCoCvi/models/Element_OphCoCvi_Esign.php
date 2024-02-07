@@ -136,6 +136,30 @@ class Element_OphCoCvi_Esign extends \BaseEsignElement
     }
 
     /**
+     * @param integer $type
+     * @return \OphCoCvi_Signature|null
+     */
+    public function getSignatureByType(int $type): ?\OphCoCvi_Signature
+    {
+        foreach ($this->getSignatures() as $signature) {
+            if ((int)$signature->type === $type && $signature->signatureFile) {
+                return $signature;
+            }
+        }
+
+        return null;
+    }
+
+    public function getSignatureSource(?\OphCoCvi_Signature $signature): ?string
+    {
+        if ($signature) {
+            return $signature->getImageSource();
+        }
+
+        return '';
+    }
+
+    /**
      * A CVI is signed if all of the signatures
      * (consultant and patient) is done
      *

@@ -17,7 +17,7 @@ namespace OE\factories\models;
 
 use InstitutionAuthentication;
 use OE\factories\ModelFactory;
-use \User;
+use User;
 
 class UserAuthenticationFactory extends ModelFactory
 {

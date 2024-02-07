@@ -2995,12 +2995,17 @@ class DefaultController extends \BaseEventTypeController
     protected function setAndValidateCommunicationPreferencesFromData($data, $errors)
     {
         $et_name = models\Element_OphCiExamination_CommunicationPreferences::model()->getElementTypeName();
+        $element = $this->getOpenElementByClassName('OEModule_OphCiExamination_models_Element_OphCiExamination_CommunicationPreferences');
+
         $agrees_to_insecure_email_correspondence = $data['OEModule_OphCiExamination_models_Element_OphCiExamination_CommunicationPreferences']['agrees_to_insecure_email_correspondence'];
         if ($agrees_to_insecure_email_correspondence === '1') {
             // check if the email is empty
             $contactEmail = Yii::app()->request->getPost('Contact', null);
             if (empty($contactEmail['email'])) {
-                $errors[$et_name][] = 'Please enter an email address.';
+                $errors[$et_name][] =
+                    '<a class="errorlink" onclick="scrollToElement($(\'#patient_email_address\'))">' . 'Please enter an email address.' . '</a>';
+
+                $element->setFrontEndError('patient_email_address');
             }
         }
         return $errors;

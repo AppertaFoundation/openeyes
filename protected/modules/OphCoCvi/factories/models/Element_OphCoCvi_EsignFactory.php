@@ -13,10 +13,13 @@
  * @copyright Copyright (C) 2022, Apperta Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 namespace OEModule\OphCoCvi\factories\models;
 
 use OE\factories\ModelFactory;
 use OE\factories\models\EventFactory;
+use OEModule\OphCoCvi\models\Element_OphCoCvi_Esign;
+use OphCoCvi_Signature;
 
 class Element_OphCoCvi_EsignFactory extends ModelFactory
 {
@@ -29,5 +32,15 @@ class Element_OphCoCvi_EsignFactory extends ModelFactory
         return [
             'event_id' => EventFactory::forModule('OphCoCvi')
         ];
+    }
+
+    public function withSignatureType(int $signature_type, string $signature_role, ?int $signature_file_id = null): self
+    {
+        return $this->afterCreating(function (Element_OphCoCvi_Esign $esign_element) use ($signature_type, $signature_role, $signature_file_id) {
+            OphCoCvi_Signature::factory()
+                ->forElement($esign_element)
+                ->asTypeAndRole($signature_type, $signature_role, $signature_file_id)
+                ->create();
+        });
     }
 }

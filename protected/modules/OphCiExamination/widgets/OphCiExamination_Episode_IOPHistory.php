@@ -12,6 +12,7 @@
  * @copyright Copyright (C) 2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 use OEModule\OphCiExamination\models as ExamModels;
 use OEModule\OphCiPhasing\models as PhasingModels;
 
@@ -170,7 +171,7 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
         //add phasing readings
         foreach ($phasing_events as $phasing_event) {
                         //Try to get correct element type
-                        $iop = $phasing_event->getElementByClass('Element_OphCiPhasing_IntraocularPressure');
+                        $iop = $phasing_event->getElementByClass(PhasingModels\Element_OphCiPhasing_IntraocularPressure::class);
                         //If successful
             if ($iop) {
                             //Get timestamp and event type
@@ -251,7 +252,7 @@ class OphCiExamination_Episode_IOPHistory extends \EpisodeSummaryWidget
 
         if ($phasing_events) {
             foreach ($phasing_events as $event) {
-                $iop = $event->getElementByClass('Element_OphCiPhasing_IntraocularPressure');
+                $iop = $event->getElementByClass(PhasingModels\Element_OphCiPhasing_IntraocularPressure::class);
                 if ($iop) {
                                         $readings = self::getPhasingReadingsFormatted($iop);
                     if (count($readings) > 0) {

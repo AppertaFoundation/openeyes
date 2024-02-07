@@ -30,6 +30,7 @@
     "worker-loader": "^3.0.7",
     "ajv": "^6.12.6",
     "webpack": "^5.0.0",
+    "acorn": "^8.11.0",
     "object-hash": "2.2.0"
   },
   "scripts": {
