@@ -16,8 +16,9 @@ declare namespace Cypress {
          *
          * @param username
          * @param password
+         * @param options
          */
-        login(username: ?string, password: ?string): Chainable<any>
+        login(username: ?string, password: ?string, options: ?object): Chainable<any>
         createPatient(states: ?array, attributes: ?object): Chainable<any>
         /**
          * Retrieve the URL to create an event for the patient identified by patientId in the given module
