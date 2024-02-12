@@ -68,8 +68,7 @@ $total_diagnoses_count = count($element->diagnoses) + count($read_only_diagnoses
     <input type="hidden" name="<?= $model_name ?>[present]" value="1"/>
 
     <!-- if there is no diagnoses for the current or other subspecialties, display the no diagnoses checkbox -->
-    <?php if ($total_diagnoses_count === 0) { ?>
-    <div class="cols-1 align-left <?= $model_name ?>_no_ophthalmic_diagnoses_wrapper">
+    <div class="cols-1 align-left <?= $model_name ?>_no_ophthalmic_diagnoses_wrapper" style="display: <?= $total_diagnoses_count === 0 ? '' : 'none' ?>">
         <label class="inline highlight" for="<?= $model_name ?>_no_ophthalmic_diagnoses">
             <?= \CHtml::checkBox(
                 $model_name . '[no_ophthalmic_diagnoses]',
@@ -79,7 +78,6 @@ $total_diagnoses_count = count($element->diagnoses) + count($read_only_diagnoses
             No ophthalmic diagnoses for this Subspecialty.
         </label>
     </div>
-    <?php } ?>
 
     <table id="<?= $model_name ?>_diagnoses_table" class="cols-10" style="display: <?php echo count($element->diagnoses) >= 1 ? '' : 'none'; ?>">
             <colgroup>
