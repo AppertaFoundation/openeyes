@@ -113,7 +113,7 @@ class NinePositionsTest extends \ModelTestCase
         ];
 
         foreach($attributes as $attr) {
-            $this->assertEquals($original_reading->$attr, $new_reading->$attr);
+            $this->assertEquals($original_reading->$attr, $new_reading->$attr, "$attr is not matching for reading");
         }
     }
 
