@@ -230,7 +230,7 @@ class SettingMetadata extends BaseActiveRecordVersioned
          ***/
 
         // initialise all the values needed to find the setting and set the cache id
-        $user_id = Yii::app()->session['user']->id ?? null;
+        $user_id = Yii::app()->session['user_id'] ?? null;
         $firm = static::firmForCurrentSession();
         $firm_id = $firm ? $firm->id : null;
         $subspecialty_id = $firm && $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;

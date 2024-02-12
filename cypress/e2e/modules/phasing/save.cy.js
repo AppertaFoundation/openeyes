@@ -19,6 +19,14 @@ describe('creation and updating behaviours for the Phasing module', () => {
         })
     });
 
+    it('glaucoma OESCape does not crash when phasing event is present on patient', () => {
+        cy.runSeeder('OphCiPhasing', 'SavingSeeder', { 'for': 'update'}).then((seederData) => {
+            cy.visit(`/patient/oescape?subspecialty_id=7&patient_id=${seederData.patientId}`);
+            cy.get('#plotly-VA-right').should('exist');
+        });
+    });
+
+
     function createUpdateTestBody(seederData)
     {
         cy.getBySel('phasing-data-column', '[data-side="left"]').within(() => {

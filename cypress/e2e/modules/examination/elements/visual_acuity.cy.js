@@ -17,7 +17,18 @@ describe('visual acuity behaviour', () => {
             cy.removeElements('Visual Acuity', true);
             cy.addExaminationElement('Visual Acuity');
 
-            cy.getBySel('visual-acuity-unit-selector').select('Snellen Metre');
+            cy.intercept({
+                method: "GET",
+                url: "/OphCiExamination/Default/ElementForm*",
+            }).as("ElementForm");
+
+            cy.getBySel("visual-acuity-unit-selector").then(($select) => {
+                const selectedOptionText = $select.find('option:selected').text();
+                if (selectedOptionText !== "Snellen Metre") {
+                    cy.getBySel("visual-acuity-unit-selector").select("Snellen Metre");
+                    cy.wait("@ElementForm");
+                }
+            });
 
             cy.getBySel('visual-acuity-eye-column').each(function (visualAcuityEyeColumn) {
                 cy.wrap(visualAcuityEyeColumn).within(() => {
@@ -27,11 +38,6 @@ describe('visual acuity behaviour', () => {
                     cy.confirmAdderDialog();
                 });
             });
-
-            cy.intercept({
-                method: 'GET',
-                url: '/OphCiExamination/Default/ElementForm*'
-            }).as('ElementForm');
 
             cy.getBySel('visual-acuity-unit-selector').select('ETDRS Letters');
 
@@ -57,7 +63,7 @@ describe('visual acuity behaviour', () => {
         beforeEach(() => {
             cy.login();
 
-            cy.runSeeder('OphCiExamination', 'VisualAcuityCopyingSeeder', {type: 'visual-acuity'})
+            cy.runSeeder('OphCiExamination', 'VisualAcuityCopyingSeeder', { type: 'visual-acuity' })
                 .as('seederData');
         });
 

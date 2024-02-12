@@ -451,10 +451,6 @@ class UserIdentity extends CUserIdentity
             throw new Exception('User has no firm rights and cannot use the system.');
         }
 
-        natcasesort($firms);
-        $app->session['firms'] = $firms;
-        reset($firms);
-
         // Select firm
         $last_firm = Firm::model()->findByPk($user->last_firm_id);
         $last_firm_institution_id = $last_firm->institution_id ?? null;
