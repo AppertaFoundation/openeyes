@@ -17,7 +17,9 @@ describe('Behaviour of worklist filters', () => {
         cy.login();
 
         cy.runSeeder('', 'WorklistFilteringSeeder', {'sync_interval': 10}).then((seederData) => {
-            cy.login(seederData.user.username, seederData.user.password, seederData.site.id, seederData.institution.id);
+            cy.login(seederData.user.username, seederData.user.password, {
+                site_id: seederData.site.id, institution_id: seederData.institution.id
+            });
 
             cy.visitWorklist();
             cy.intercept('/worklist/AutoRefresh').as('AutoRefresh');
@@ -36,7 +38,9 @@ describe('Behaviour of worklist filters', () => {
         cy.login();
 
         cy.runSeeder('', 'WorklistFilteringSeeder').then((seederData) => {
-            cy.login(seederData.user.username, seederData.user.password, seederData.site.id, seederData.institution.id);
+            cy.login(seederData.user.username, seederData.user.password, {
+                site_id: seederData.site.id, institution_id: seederData.institution.id
+            });
 
             cy.visitWorklist();
             cy.openWorklistNavBar();

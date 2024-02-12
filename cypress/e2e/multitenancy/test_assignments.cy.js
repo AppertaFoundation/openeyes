@@ -48,7 +48,9 @@ describe('ensure multi tenanted settings behave according to their assignments',
 
     it('allows a user to see reference data in the admin screens that they have permission to see, based on their institution context and administrative rights', function () {
         let login = seederData.user_logins.restricted_to_institution_user;
-        cy.login(login.username, login.password, login.site_id, login.institution_id);
+        cy.login(login.username, login.password, {
+            site_id: login.site_id, institution_id: login.institution_id
+        });
 
         seederData.values.forEach((val) => {
             cy.visit(val.admin.test_url ?? val.admin.url);
@@ -61,7 +63,9 @@ describe('ensure multi tenanted settings behave according to their assignments',
 
     it('does not allow a user to see reference data in the admin screens that they do not have permission to see, based on their institution context and administrative rights', function () {
         let login = seederData.user_logins.installation_user;
-        cy.login(login.username, login.password, login.site_id, login.institution_id);
+        cy.login(login.username, login.password, {
+            site_id: login.site_id, institution_id: login.institution_id
+        });
 
         seederData.values.forEach((val) => {
             cy.visit(val.admin.control_url ?? val.admin.url);
@@ -74,7 +78,9 @@ describe('ensure multi tenanted settings behave according to their assignments',
 
     it('allows a user to see reference data in event screens that they have permission to see, based on their institution context and administrative rights', function () {
         let login = seederData.user_logins.restricted_to_institution_user;
-        cy.login(login.username, login.password, login.site_id, login.institution_id);
+        cy.login(login.username, login.password, {
+            site_id: login.site_id, institution_id: login.institution_id
+        });
         cy.visit(seederData.event_resource.urls.edit);
 
         seederData.values.forEach((val) => {
@@ -89,7 +95,9 @@ describe('ensure multi tenanted settings behave according to their assignments',
 
     it('does not allow a user to see reference data in event screens that they do not have permission to see, based on their institution context and administrative rights', function () {
         let login = seederData.user_logins.installation_user;
-        cy.login(login.username, login.password, login.site_id, login.institution_id);
+        cy.login(login.username, login.password, {
+            site_id: login.site_id, institution_id: login.institution_id
+        });
         cy.visit(seederData.event_resource.urls.edit);
 
         seederData.values.forEach((val) => {
