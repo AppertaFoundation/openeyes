@@ -129,9 +129,14 @@ class AdminSettingsTest extends OEDbTestCase
     /** @test */
     public function institution_admin_can_search_users()
     {
-        $user_to_find = User::factory()->withLocalAuthForInstitution($this->setting_institution)->create();
+        $user_to_find = User::factory()->withUniquePostfix(microtime())
+                                       ->withDBUniqueAttribute('first_name')
+                                       ->withLocalAuthForInstitution($this->setting_institution)
+                                       ->create();
 
-        $other_user = User::factory()->create();
+        $other_user = User::factory()->withUniquePostfix(microtime())
+                                     ->withDBUniqueAttribute('first_name')
+                                     ->create();
 
         $other_institution = Institution::factory()
                            ->withUserAsMember($this->installation_admin_user)
