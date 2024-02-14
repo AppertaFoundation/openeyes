@@ -23,26 +23,15 @@ Cypress.Commands.add('createUser', (authitems, attributes, username, password) =
 
 Cypress.Commands.add('login', (username, password, options = {}) => {
 
-    let _default_options = {
+    let body = {
         username: username ? username : "admin",
         password: password ? password : "admin",
         site_id: 1,
         institution_id: 1
     };
 
-    let body = {};
-
-    for (const source of [_default_options, options]) {
-        for (const key in source) {
-            if (Object.prototype.hasOwnProperty.call(source, key)) {
-                const value = source[key];
-                if (value !== undefined && value !== null && typeof value === 'object' && !Array.isArray(value)) {
-                    body[key] = Object.assign({}, body[key] || {}, value);
-                } else {
-                    body[key] = value;
-                }
-            }
-        }
+    for (let key of Object.keys(options)) {
+        body[key] = options[key];
     }
 
     return cy.request({
