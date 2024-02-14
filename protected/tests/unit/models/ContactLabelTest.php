@@ -35,7 +35,7 @@ class ContactLabelTest extends ModelTestCase
      */
     public function search_with_valid_terms_returns_expected_results()
     {
-        $valid_name = $this->faker->word();
+        $valid_name = $this->faker->words(3, true);
         $invalid_name = $this->faker->word() . (string)microtime();
 
         $expected_results = [
