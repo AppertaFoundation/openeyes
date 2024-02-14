@@ -6,7 +6,9 @@ describe('behaviour of the advice given element', () => {
     });
 
     it('either shows all leaflets when no category selected or just leaflets from the selected category', function () {
-        cy.login(this.seederData.user.username, this.seederData.user.password, this.seederData.site.id, this.seederData.institution.id);
+        cy.login(this.seederData.user.username, this.seederData.user.password, {
+            site_id: this.seederData.site.id, institution_id: this.seederData.institution.id
+        });
 
         cy.visitEventCreationUrl(this.seederData.patient.id, 'OphCiExamination');
 
@@ -76,7 +78,9 @@ describe('behaviour of the advice given element', () => {
     });
 
     it('permits adding a leaflet without choosing a category', function () {
-        cy.login(this.seederData.user.username, this.seederData.user.password, this.seederData.site.id, this.seederData.institution.id);
+        cy.login(this.seederData.user.username, this.seederData.user.password, {
+            site_id: this.seederData.site.id, institution_id: this.seederData.institution.id
+        });
 
         cy.visitEventCreationUrl(this.seederData.patient.id, 'OphCiExamination');
 

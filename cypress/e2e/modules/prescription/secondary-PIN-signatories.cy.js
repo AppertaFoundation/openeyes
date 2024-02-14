@@ -280,7 +280,9 @@ describe('verifies prescription secondary e-sign signatories behaviour', () => {
         });
 
         beforeEach(function () {
-            cy.login(undefined, undefined, 4, this.seederData.institution_id);
+            cy.login(undefined, undefined, {
+                site_id: 4, institution_id: this.seederData.institution_id
+            });
         });
 
         it('displays the correct list of signatories for institution', function () {

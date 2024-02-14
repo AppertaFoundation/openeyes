@@ -21,23 +21,18 @@ Cypress.Commands.add('createUser', (authitems, attributes, username, password) =
     .its('body');
 });
 
-Cypress.Commands.add('login', (username, password, site_id = null, institution_id = null) => {
-    if (password == undefined) {
-        password = 'admin';
-    }
-    if (username == undefined) {
-        username = 'admin';
-    }
-
-    let site = site_id ? {site_id: site_id} : {site_id: 1};
-    let institution = institution_id ? {institution_id: institution_id} : {institution_id: 1};
+Cypress.Commands.add('login', (username, password, options = {}) => {
 
     let body = {
-        username: username,
-        password: password,
-        ...site,
-        ...institution,
+        username: username ? username : "admin",
+        password: password ? password : "admin",
+        site_id: 1,
+        institution_id: 1
     };
+
+    for (let key of Object.keys(options)) {
+        body[key] = options[key];
+    }
 
     return cy.request({
         method: 'POST',
