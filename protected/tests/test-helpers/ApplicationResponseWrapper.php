@@ -73,8 +73,10 @@ class ApplicationResponseWrapper
         return $this;
     }
 
-    public function assertRedirectContains(string $partial, ?string $message, bool $showResponseOnFail = false): self
+    public function assertRedirectContains(string $partial, ?string $message = null, bool $showResponseOnFail = false): self
     {
+        $message ??= "Response is not a redirect or does not match $partial";
+
         $this->assertRedirect(null, $message, $showResponseOnFail);
 
         PHPUnit::assertStringContainsString($partial, $this->redirect->url, $message);

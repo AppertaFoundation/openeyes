@@ -5,7 +5,7 @@ describe('ophthalmic disorder widget behaviour', () => {
     let expectedDisorderTerm2 = 'Expected Two ' + Date.now();
     let expectedDisorderTerm3 = 'Expected Three ' + Date.now();
 
-    before(() => {
+    beforeEach(() => {
         cy.login()
             .then((context) => {
                 return cy.runSeeder('OphCiExamination', 'CommonOphthalmicDisorderWidgetBehaviourSeeder');
@@ -67,6 +67,41 @@ describe('ophthalmic disorder widget behaviour', () => {
                             });
                     });
             });
+
+    });
+
+    it('No Ophthalmic Diagnoses checkbox shows on edit', function () {
+        let checkboxClass = '.OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses_no_ophthalmic_diagnoses_wrapper';
+
+        cy.get(checkboxClass).should('be.visible');
+
+        cy.removeElements('Ophthalmic Diagnoses', true);
+        cy.getBySel('add-ophthalmic-diagnoses-button').click();
+
+        cy.getBySel('ophthalmic-diagnoses-popup')
+            .should('be.visible')
+            .within(() => {
+               cy.get('li[data-type="disorder"]').first().click();
+                cy.getBySel('add-icon-btn').click();
+            });
+
+        cy.get(checkboxClass).should('not.be.visible');
+
+        cy.get('#OphCiExamination_diagnoses')
+            .within(() => {
+                cy.get('input[data-eye-side="right"]').click();
+                cy.get('input[data-eye-side="left"]').click();
+                cy.get('#principal_diagnosis_row_key').click();
+
+            });
+
+        cy.saveEvent();
+
+        cy.getBySel('button-event-header-tab-edit').click();
+        cy.get(checkboxClass).should('not.be.visible');
+
+        cy.get('.removeDiagnosis').click();
+        cy.get(checkboxClass).should('be.visible');
 
     });
 });

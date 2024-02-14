@@ -15,8 +15,10 @@
 
 namespace OE\factories\models\traits;
 
+use Episode;
 use Patient;
 use OE\factories\ModelFactory;
+use OE\factories\models\EpisodeFactory;
 
 trait HasEventTypeElementStates
 {
@@ -56,6 +58,18 @@ trait HasEventTypeElementStates
                 $attributes['event_id'] = $attributes['event_id']->forFirm($firm);
             } else {
                 $attributes['event_id']->episode->firm_id = $firm->id;
+            }
+            return $attributes;
+        });
+    }
+
+    public function forEpisode($episode): self
+    {
+        return $this->state(function (array $attributes) use ($episode) {
+            if ($attributes['event_id'] instanceof ModelFactory) {
+                $attributes['event_id'] = $attributes['event_id']->state(['episode_id' => $episode]);
+            } else {
+                $attributes['event_id']->episode_id = $episode->id;
             }
             return $attributes;
         });
