@@ -462,8 +462,9 @@ class UserIdentity extends CUserIdentity
             $app->session['selected_firm_id'] = $userFirms[0]->id;
         } else {
             // The user doesn't have firms of their own to select from so we select
-            // one arbitrarily that belongs to the current institution.
-            $app->session['selected_firm_id'] = key($firms);
+            // the first based on natural sort of the firm names
+            natcasesort($firms);
+            $app->session['selected_firm_id'] = array_key_first($firms);
         }
 
         if ($this->is_special) {
