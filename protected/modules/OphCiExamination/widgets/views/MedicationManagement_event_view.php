@@ -121,7 +121,7 @@ foreach ($sections as $section => $methods) :
                         </div>
                         <div class="dotted-area">
                             <div class="label">Date</div>
-                            <?= $signature->getSignedTime(); ?>
+                            <?= $signature->getSignedDate(); ?>
                         </div>
                     </div>
                     <div class="flex">
