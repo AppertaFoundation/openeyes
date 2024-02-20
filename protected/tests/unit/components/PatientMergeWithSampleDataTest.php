@@ -130,16 +130,16 @@ class PatientMergeWithSampleDataTest extends ModelTestCase
         $merge_handler->updateEpisodes($primary_patient, $secondary_patient);
 
         // Assert all episode changed over to the primary patient
-        $primary_patient_episodes = Episode::model()->findAllByAttributes(['patient_id' => $primary_patient->id]);
-        $this->assertEquals(count($primary_patient_episodes), 1);
+        $primary_patient->refresh();
+        $this->assertEquals(count($primary_patient->episodes), 1);
 
         // Assert primary patient does not have 2 episodes for the same firm
         $primary_patient_episodes_firm = Episode::model()->findAllByAttributes(['patient_id' => $primary_patient->id, 'firm_id' => $ep1->firm_id]);
         $this->assertEquals(count($primary_patient_episodes_firm), 1);
 
         // Assert all episodes removed from secondary
-        $secondary_patient_episodes = Episode::model()->findAllByAttributes(['patient_id' => $secondary_patient->id]);
-        $this->assertEquals(count($secondary_patient_episodes), 0);
+        $secondary_patient->refresh();
+        $this->assertEquals(count($secondary_patient->episodes), 0);
 
     }
 }
