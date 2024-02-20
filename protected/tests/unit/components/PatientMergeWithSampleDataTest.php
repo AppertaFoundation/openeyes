@@ -105,4 +105,37 @@ class PatientMergeWithSampleDataTest extends ModelTestCase
         // The patient_id column in trial_patient table should be of the primary_patient after the merge
         $this->assertEquals($primary_patient->id, $trial_patient_secondary_patient_record->patient_id);
     }
+
+    /**
+     * @test
+     */
+    public function merge_patients_both_with_worklist_patients_same_subspecialty(): void
+    {
+        $primary_patient = \Patient::factory()->create();
+        $secondary_patient = \Patient::factory()->create();
+
+        $worklist = Worklist::factory()->create();
+        $primary_worklist_patient = WorklistPatient::factory()->forPatient($primary_patient->id)->forWorklist($worklist->id)->create();
+        $secondary_worklist_patient = WorklistPatient::factory()->forPatient($secondary_patient->id)->forWorklist($worklist->id)->create();
+
+        $ep1 = Episode::factory()->create(['patient_id' => $primary_patient->id]);
+        $ep2 = Episode::factory()->create(['patient_id' => $secondary_patient->id, 'firm_id' => $ep1->firm_id]);
+
+        $event2 = Event::factory()->forEventTypeWithName("Examination")->create(['episode_id' => $ep2->id, 'worklist_patient_id' => $secondary_worklist_patient->id]);
+        $event1 = Event::factory()->forEventTypeWithName("Examination")->create(['episode_id' => $ep1->id, 'worklist_patient_id' => $primary_worklist_patient->id]);
+
+        $merge_handler = new PatientMerge();
+        $merge_handler->load(new PatientMergeRequest());
+
+        $merge_handler->updateEpisodes($primary_patient, $secondary_patient);
+
+        // Assert all episode changed over to the primary patient
+        $primary_patient_episodes = Episode::model()->findAllByAttributes(['patient_id' => $primary_patient->id]);
+        $this->assertEquals(count($primary_patient_episodes), 1);
+
+        // Assert all episodes removed from secondary
+        $secondary_patient_episodes = Episode::model()->findAllByAttributes(['patient_id' => $secondary_patient->id]);
+        $this->assertEquals(count($secondary_patient_episodes), 0);
+
+    }
 }
