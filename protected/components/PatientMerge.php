@@ -433,6 +433,9 @@ class PatientMerge
                             }
                         } else {
 
+                            //change the episodes patient id to the primary
+                            $this->updateEpisodesPatientId($primary_patient->id, array($secondary_episode));
+
                             // the secondary episode has greater status than the primary so we move the events from the Primary into the Secondary
                             $this->updateEventsEpisodeId($secondary_episode->id, $primary_episode->events);
 
@@ -454,8 +457,6 @@ class PatientMerge
                                 throw new Exception('Failed to update Episode: ' . $primary_episode->id . ' ' . print_r($primary_episode->errors, true));
                             }
 
-                            //then we move the episode to the pri1mary
-                            $this->updateEpisodesPatientId($primary_patient->id, array($secondary_episode));
                         }
 
                         $is_same_subspecialty = true;
