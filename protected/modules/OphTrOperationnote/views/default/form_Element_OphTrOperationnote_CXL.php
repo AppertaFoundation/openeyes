@@ -84,180 +84,228 @@
     }
 
     ?>
-    <div class="cols-11 flex-layout flex-top col-gap">
-    <div class="cols-7">
-    <table class="standard">
-        <tbody>
-        <tr>
-            <td>
-                <?= $form->dropDownList(
-                    $element,
-                    'protocol_id',
-                    CHtml::listData(OphTrOperationnote_CXL_Protocol::model()->findAll(), 'id', 'name'),
-                    array('options' => array($default_protocol_id => array('selected' => true)), 'prefilled_value' => $template_data['protocol_id'] ?? ''),
-                    null,
-                    array('field' => 3)
-                ); ?>
-            </td>
-        </tr>
-
-        <tr>
-            <td colspan="2">
-                <?= $form->radioButtons(
-                    $element,
-                    'epithelial_removal_method_id',
-                    'OphTrOperationnote_CXL_Epithelial_Removal_Method',
-                    $element->epithelial_removal_method_id,
-                    false,
-                    false,
-                    false,
-                    false,
-                    ['class' => 'cols-full', 'prefilled_value' => $template_data['epithelial_removal_method_id'] ?? '']
-                ) ?>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <?= $form->radioButtons(
-                    $element,
-                    'mitomycin_c',
-                    'OphTrOperationnote_CXL_Mitomycin',
-                    $element->mitomycin_c,
-                    false,
-                    false,
-                    false,
-                    false,
-                    ['class' => 'cols-full', 'prefilled_value' => $template_data['mitomycin_c'] ?? '']
-                ); ?>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <?= $form->radioButtons(
-                    $element,
-                    'iontophoresis_id',
-                    'OphTrOperationnote_CXL_Iontophoresis',
-                    $element->iontophoresis_id,
-                    false,
-                    false,
-                    false,
-                    false,
-                    ['class' => 'cols-full', 'prefilled_value' => $template_data['iontophoresis_id'] ?? '']
-                ); ?>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <?= $form->textField(
-                    $element,
-                    'iontophoresis_current_value',
-                    array('size' => 10, 'maxlength' => 10, 'field' => 2, 'data-prefilled-value' => $template_data['iontophoresis_current_value'] ?? ''),
-                    false,
-                    array('field' => 1)
-                ); ?>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <?= $form->textField(
-                    $element,
-                    'iontophoresis_duration_value',
-                    array('size' => 10, 'maxlength' => 10, 'field' => 2, 'data-prefilled-value' => $template_data['iontophoresis_duration_value'] ?? ''),
-                    false,
-                    array('field' => 1)
-                ) ?>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <?= $form->radioButtons(
-                    $element,
-                    'riboflavin_preparation_id',
-                    'OphTrOperationnote_CXL_Riboflavin_Preparation',
-                    $element->riboflavin_preparation_id,
-                    false,
-                    false,
-                    false,
-                    false,
-                    ['class' => 'cols-full', 'prefilled_value' => $template_data['riboflavin_preparation_id'] ?? '']
-                ) ?>
-            </td>
-        </tr>
-
-
-        <tr>
-            <td colspan="2">
-                <?= $form->textArea($element, 'cxl_comments', array(), false, array('rows' => 4, 'cols' => 40, 'data-prefilled-value' => $template_data['cxl_comments'] ?? '')) ?>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-    </div>
-
-    <div class="cols-4">
+    <div class="cols-full flex-layout flex-top col-gap">
+    <div class="cols-8">
         <table class="standard">
+            <colgroup>
+                <col class="label cols-1">
+                <col class="field cols-5">
             <tbody>
             <tr>
+                <td>
+                    <?= $form->label($element, 'protocol_id') ?>
+                </td>
+                <td>
+                    <?= $form->dropDownList(
+                        $element,
+                        'protocol_id',
+                        CHtml::listData(OphTrOperationnote_CXL_Protocol::model()->findAll(), 'id', 'name'),
+                        ['nolabel' => true, 'options' => array($default_protocol_id => array('selected' => true)), 'prefilled_value' => $template_data['protocol_id'] ?? ''],
+                        null
+                    ); ?>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <?= $form->label($element, 'epithelial_removal_method_id') ?>
+                </td>
+                <td>
+                    <?= $form->radioButtons(
+                        $element,
+                        'epithelial_removal_method_id',
+                        'OphTrOperationnote_CXL_Epithelial_Removal_Method',
+                        $element->epithelial_removal_method_id,
+                        false,
+                        false,
+                        false,
+                        false,
+                        ['nowrapper' => true, 'class' => '', 'prefilled_value' => $template_data['epithelial_removal_method_id'] ?? '']
+                    ) ?>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                <?= $form->label($element, 'mitomycin_c') ?>
+                </td>
+                <td>
+                    <?= $form->radioButtons(
+                        $element,
+                        'mitomycin_c',
+                        'OphTrOperationnote_CXL_Mitomycin',
+                        $element->mitomycin_c,
+                        false,
+                        false,
+                        false,
+                        false,
+                        ['nowrapper' => true, 'class' => 'cols-full', 'prefilled_value' => $template_data['mitomycin_c'] ?? '']
+                    ); ?>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <?= $form->label($element, 'iontophoresis_id') ?>
+                </td>
+                <td>
+                    <?= $form->radioButtons(
+                        $element,
+                        'iontophoresis_id',
+                        'OphTrOperationnote_CXL_Iontophoresis',
+                        $element->iontophoresis_id,
+                        false,
+                        false,
+                        false,
+                        false,
+                        ['nowrapper' => true, 'class' => 'cols-full', 'prefilled_value' => $template_data['iontophoresis_id'] ?? '']
+                    ); ?>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <?= $form->label($element, 'iontophoresis_current_value') ?>
+                </td>
+                <td>
+                    <?= $form->textField(
+                        $element,
+                        'iontophoresis_current_value',
+                        ['nowrapper' => true, 'size' => 10, 'maxlength' => 10, 'data-prefilled-value' => $template_data['iontophoresis_current_value'] ?? ''],
+                        false,
+                    ); ?>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <?= $form->label($element, 'iontophoresis_duration_value') ?>
+                </td>
+                <td>
+                    <?= $form->textField(
+                        $element,
+                        'iontophoresis_duration_value',
+                        ['nowrapper' => true, 'size' => 10, 'maxlength' => 10, 'data-prefilled-value' => $template_data['iontophoresis_duration_value'] ?? ''],
+                        false,
+                    ) ?>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <?= $form->label($element, 'riboflavin_preparation_id') ?>
+                </td>
+                <td>
+                    <?= $form->radioButtons(
+                        $element,
+                        'riboflavin_preparation_id',
+                        'OphTrOperationnote_CXL_Riboflavin_Preparation',
+                        $element->riboflavin_preparation_id,
+                        false,
+                        false,
+                        false,
+                        false,
+                        ['nowrapper' => true, 'class' => 'cols-full', 'prefilled_value' => $template_data['riboflavin_preparation_id'] ?? '']
+                    ) ?>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <?= $form->label($element, 'cxl_comments') ?>
+                </td>
+                <td>
+                    <?= $form->textArea(
+                        $element,
+                        'cxl_comments',
+                        ['no_label' => true],
+                        false,
+                        ['rows' => 4, 'cols' => 40, 'data-prefilled-value' => $template_data['cxl_comments'] ?? '']
+                    ) ?>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="cols-6">
+        <table class="standard">
+        <colgroup>
+                <col class="label cols-1">
+                <col class="field cols-4    ">
+            <tbody>
+            <tr>
+                <td>
+                    <?= $form->label($element, 'device_id') ?>
+                </td>
                 <td>
                     <?= $form->dropDownList(
                         $element,
                         'device_id',
                         CHtml::listData(OphTrOperationnote_CXL_Device::model()->findAll(), 'id', 'name'),
-                        array('options' => array($default_device_id => array('selected' => true))),
+                        ['nolabel' => true, 'options' => array($default_device_id => array('selected' => true))],
                         null,
-                        array('field' => 3, 'class' => 'cols-full', 'data-prefilled-value' => $template_data['device_id'] ?? '')
+                        ['data-prefilled-value' => $template_data['device_id'] ?? '']
                     ); ?>
                 </td>
             </tr>
             <tr>
+                <td>
+                    <?= $form->label($element, 'epithelial_status_id') ?>
+                </td>
                 <td>
                     <?= $form->dropDownList(
                         $element,
                         'epithelial_status_id',
                         CHtml::listData(OphTrOperationnote_CXL_Epithelial_Status::model()->findAll(), 'id', 'name'),
-                        array('options' => array($epithelial_status_id => array('selected' => true))),
+                        ['nolabel' => true, 'options' => array($epithelial_status_id => array('selected' => true))],
                         null,
-                        array('field' => 3, 'class' => 'cols-full', 'data-prefilled-value' => $template_data['epithelial_status_id'] ?? '')
+                        ['data-prefilled-value' => $template_data['epithelial_status_id'] ?? '']
                     ); ?>
                 </td>
             </tr>
             <tr>
+                <td>
+                    <?= $form->label($element, 'epithelial_removal_diameter_id') ?>
+                </td>
                 <td>
                     <?= $form->dropDownList(
                         $element,
                         'epithelial_removal_diameter_id',
                         CHtml::listData(OphTrOperationnote_CXL_Epithelial_Removal_Diameter::model()->findAll(), 'id', 'name'),
-                        array('options' => array($default_epithelial_removal_diameter_id => array('selected' => true))),
+                        ['nolabel' => true, 'options' => array($default_epithelial_removal_diameter_id => array('selected' => true))],
                         null,
-                        array('field' => 2, 'class' => 'cols-full', 'data-prefilled-value' => $template_data['epithelial_removal_diameter_id'] ?? '')
+                        ['data-prefilled-value' => $template_data['epithelial_removal_diameter_id'] ?? '']
                     );  ?>
                 </td>
             </tr>
             <tr>
                 <td>
+                    <?= $form->label($element, 'soak_duration_range_id') ?>
+                </td>
+                <td>
                     <?= $form->dropDownList(
                         $element,
                         'soak_duration_range_id',
                         CHtml::listData(OphTrOperationnote_CXL_Soak_Duration::model()->findAll(), 'id', 'name'),
-                        array('options' => array($default_soak_duration_range_id => array('selected' => true))),
+                        ['nolabel' => true, 'options' => array($default_soak_duration_range_id => array('selected' => true))],
                         null,
-                        array('field' => 2, 'class' => 'cols-full', 'data-prefilled-value' => $template_data['soak_duration_range_id'] ?? '')
+                        ['data-prefilled-value' => $template_data['soak_duration_range_id'] ?? '']
                     ); ?>
                 </td>
             </tr>
             <tr>
                 <td>
+                    <?= $form->label($element, 'uv_pulse_duration_id') ?>
+                </td>
+                <td>
                     <?=  $form->dropDownList(
                         $element,
                         'uv_pulse_duration_id',
                         CHtml::listData(OphTrOperationnote_CXL_UV_Pulse_Duration::model()->findAll(), 'id', 'name'),
-                        array('options' => array($default_uv_pulse_duration_id => array('selected' => true))),
+                        ['nolabel' => true, 'options' => array($default_uv_pulse_duration_id => array('selected' => true))],
                         null,
-                        array('field' => 2, 'class' => 'cols-full', 'data-prefilled-value' => $template_data['uv_pulse_duration_id'] ?? '')
+                        ['class' => 'cols-full', 'data-prefilled-value' => $template_data['uv_pulse_duration_id'] ?? '']
                     ); ?>
                 </td>
             </tr>
             <tr>
+                <td>
+                    <?= $form->label($element, 'uv_irradiance_range_id') ?>
+                </td>
                 <td>
                     <?= $form->dropDownList(
                         $element,
@@ -267,48 +315,56 @@
                             'id',
                             'name'
                         ),
-                        array('options' => array($default_uv_irradiance_range_id => array('selected' => true)), 'data-prefilled-value' => $template_data['uv_irradiance_range_id'] ?? ''),
-                        null,
-                        array('field' => 1)
+                        ['nolabel' => true, 'options' => array($default_uv_irradiance_range_id => array('selected' => true)), 'data-prefilled-value' => $template_data['uv_irradiance_range_id'] ?? ''],
+                        null
                     ); ?>
                 </td>
             </tr>
             <tr>
                 <td>
+                    <?= $form->label($element, 'uv_total_energy_value') ?>
+                </td>
+                <td>
                     <?= $form->textField(
                         $element,
                         'uv_total_energy_value',
-                        array('size' => 10, 'maxlength' => 10, 'field' => 2, 'data-prefilled-value' => $template_data['uv_total_energy_value'] ?? ''),
-                        false,
-                        array('field' => 1)
+                        ['nowrapper' => true, 'size' => 10, 'maxlength' => 10, 'data-prefilled-value' => $template_data['uv_total_energy_value'] ?? ''],
+                        false
                     ) ?>
                 </td>
             </tr>
             <tr>
                 <td>
+                    <?= $form->label($element, 'total_exposure_time_id') ?>
+                </td>
+                <td>
                     <?= $form->dropDownList(
                         $element,
                         'total_exposure_time_id',
                         CHtml::listData(OphTrOperationnote_CXL_Total_Exposure_Time::model()->findAll(), 'id', 'name'),
-                        array('options' => array($default_total_exposure_time_id => array('selected' => true)), 'data-prefilled-value' => $template_data['total_exposure_time_id'] ?? ''),
-                        null,
-                        array('field' => 1)
+                        ['nolabel' => true, 'options' => array($default_total_exposure_time_id => array('selected' => true)), 'data-prefilled-value' => $template_data['total_exposure_time_id'] ?? ''],
+                        null
                     ); ?>
                 </td>
             </tr>
             <tr>
                 <td>
+                    <?= $form->label($element, 'interpulse_duration_id') ?>
+                </td>
+                <td>
                     <?= $form->dropDownList(
                         $element,
                         'interpulse_duration_id',
                         CHtml::listData(OphTrOperationnote_CXL_Interpulse_Duration::model()->findAll(), 'id', 'name'),
-                        array('options' => array($default_interpulse_duration_id => array('selected' => true)), 'data-prefilled-value' => $template_data['interpulse_duration_id'] ?? ''),
-                        null,
-                        array('field' => 2)
+                        ['nolabel' => true, 'options' => array($default_interpulse_duration_id => array('selected' => true)), 'data-prefilled-value' => $template_data['interpulse_duration_id'] ?? ''],
+                        null
                     ); ?>
                 </td>
             </tr>
             <tr>
+                <td>
+                    <?= $form->label($element, 'interval_between_drops_id') ?>
+                </td>
                 <td>
                     <?= $form->radioButtons(
                         $element,
@@ -319,7 +375,7 @@
                         false,
                         false,
                         false,
-                        ['class' => 'cols-full', 'prefilled_value' => $template_data['interval_between_drops_id'] ?? '']
+                        ['nowrapper' => true, 'class' => 'cols-full', 'prefilled_value' => $template_data['interval_between_drops_id'] ?? '']
                     ) ?>
                 </td>
             </tr>
