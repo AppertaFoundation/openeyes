@@ -19,6 +19,7 @@ namespace OE\factories;
 use CActiveRecord;
 use CApplication;
 use CDbCriteria;
+use Closure;
 use Eye;
 use Faker\Generator;
 use OE\factories\exceptions\CannotMakeModelException;
@@ -313,7 +314,7 @@ abstract class ModelFactory
         // then callbacks that may need to refer to the expanded
         // definition values
         foreach ($definition as $attribute => $value) {
-            if (is_callable($value)) {
+            if ($value instanceof Closure) {
                 try {
                     $value = $value($definition);
                 } catch (\Exception $e) {
@@ -431,7 +432,7 @@ abstract class ModelFactory
                 if (is_bool($value)) {
                     $instance->$attr = $value ? '1' : '0';
                 } elseif (is_integer($value) || is_float($value)) {
-                    $instance->$attr = (string)$value;
+                    $instance->$attr = (string) $value;
                 }
             }
         }
