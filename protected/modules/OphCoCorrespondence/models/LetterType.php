@@ -110,7 +110,8 @@ class LetterType extends BaseActiveRecordVersioned
         $is_internal_referral_enabled = OphcocorrespondenceInternalReferralSettings::model()->getSetting('is_enabled');
 
         if ($is_internal_referral_enabled == 'off') {
-            $criteria->addCondition("name != '" . self::NAME_FOR_INTERNAL_REFERRAL . '"');
+            $criteria->addCondition("name != :name");
+            $criteria->params[':name'] = self::NAME_FOR_INTERNAL_REFERRAL;
         }
 
         return LetterType::model()->findAll($criteria);
