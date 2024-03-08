@@ -20,6 +20,7 @@ class PatientSearch
 {
 
     use ExtraLog;
+    
     /**
      * Patient name regex
      */
@@ -179,27 +180,7 @@ class PatientSearch
         $sort_dir = Yii::app()->request->getParam('sort_dir', 0);
         $sort_dir = ($sort_dir == 0 || $sort_dir == 'asc') ? 'asc' : 'desc';
 
-        $sort_by = Yii::app()->request->getParam('sort_by');
-        switch ($sort_by) {
-            case 0:
-                $sort_by = 'value*1';
-                break;
-            case 1:
-                $sort_by = 'title';
-                break;
-            case 2:
-                $sort_by = 'first_name';
-                break;
-            case 3:
-                $sort_by = 'last_name';
-                break;
-            case 4:
-                $sort_by = 'dob';
-                break;
-            case 5:
-                $sort_by = 'gender';
-                break;
-        }
+        $sort_by = Patient::SEARCH_SORT_BY_OPTIONS[(int) Yii::app()->request->getParam('sort_by', 0)] ?? Patient::SEARCH_SORT_BY_OPTIONS[0];
 
         $patient_criteria = array(
             'pageSize' => $page_size,

@@ -325,7 +325,7 @@ class FollowupAnalysisAggregate extends BaseActiveRecord
         }
     }
 
-    public static function retrieveFormattedAnalytics(&$patient_list, &$csv_data, $start_date = null, $end_date = null, $diagnosis_text = null, $surgeon_id = null, $subspecialty_id = null)
+    public static function retrieveFormattedAnalytics(&$patient_list, &$csv_data, $start_date = null, $end_date = null, $patient_filter = null, $surgeon_id = null, $subspecialty_id = null)
     {
         $command = Yii::app()->db->createCommand()
                  ->select('type, faa.patient_id AS patient_id,
@@ -351,8 +351,8 @@ class FollowupAnalysisAggregate extends BaseActiveRecord
             $command->andWhere('UNIX_TIMESTAMP(made_at_date) <= :end_date', [':end_date' => $end_date]);
         }
 
-        if ($diagnosis_text) {
-            $command->andWhere('faa.patient_id IN (' . $diagnosis_text . ')');
+        if ($patient_filter) {
+            $command->andWhere('faa.patient_id IN (' . $patient_filter->getText() . ')', $patient_filter->params);
         }
 
         if ($surgeon_id) {
