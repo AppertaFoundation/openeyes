@@ -1099,8 +1099,8 @@ class AnalyticsController extends BaseController
                         'p.id = patient_without_diagnosis.patient_id'
                     );
             } else {
-                $params = $diagnoses->params;
-                $params[':specific_term'] = strtolower((string) $params['diagnosis']);
+                $query_params = $diagnoses->params;
+                $query_params[':specific_term'] = strtolower((string) $params['diagnosis']);
                 $patient_list_command
                     ->join(
                         '(' .
@@ -1112,7 +1112,7 @@ class AnalyticsController extends BaseController
                     );
                 $patient_list_command->params = array_merge(
                     $patient_list_command->params,
-                    $params
+                    $query_params
                 );
             }
             $patient_list_command->limit($params['limit'])->offset($params['offset']);
@@ -3031,7 +3031,7 @@ class AnalyticsController extends BaseController
             }
         }
 
-        $params['ids'] = $this->validateEventIdsParam($params['ids'] ?? []);
+        $params['ids'] = $this->validateEventIdsParam($params['ids'] ?? '');
         $this->validateOrRemoveTimestampParams($params);
         $this->validateOrRemoveUserIdParam($params, 'cataract_surgeon');
         $this->validateOrRemoveDiagnosisTerm($params);
@@ -3048,12 +3048,16 @@ class AnalyticsController extends BaseController
      * The ids are expected to be in a json string of an array
      * Here we filter out any provided values that are not a valid event id
      */
-    private function validateEventIdsParam(array $ids): string
+    private function validateEventIdsParam(string $ids): string
     {
         if (empty($ids)) {
             return '';
         }
-        $id_list = json_decode((string) $ids);
+        $id_list = json_decode($ids);
+
+        if (!is_array($id_list)) {
+            return '';
+        }
 
         return json_encode(
             array_map(
@@ -3094,8 +3098,7 @@ class AnalyticsController extends BaseController
         }
 
         $criteria = new CDbCriteria();
-        $criteria->where('LOWER(term) = :term', strtolower($params[$key]));
-
+        $criteria->compare('LOWER(term)', strtolower((string) $params[$key]), true);
         if (!Disorder::model()->find($criteria)) {
             unset($params[$key]);
         }
