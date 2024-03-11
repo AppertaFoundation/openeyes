@@ -3,11 +3,13 @@ class ReportController extends BaseReportController
 {
     public function accessRules()
     {
-        return array(
-            array('allow',
-                'actions' => array('daReport', 'runreport', 'downloadreport'),
-            ),
-        );
+        return [
+            [
+                'allow',
+                'actions' => ['daReport', 'runreport', 'downloadreport'],
+                'expression' => [static::class, 'checkSurgeonOrReportRole']
+            ],
+        ];
     }
 
     public function actionIndex()
