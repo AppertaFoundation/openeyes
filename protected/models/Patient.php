@@ -84,6 +84,14 @@ class Patient extends BaseActiveRecordVersioned
     const PATIENT_SOURCE_OTHER = 0;
     const PATIENT_SOURCE_REFERRAL = 1;
     const PATIENT_SOURCE_SELF_REGISTER = 2;
+    const SEARCH_SORT_BY_OPTIONS = [
+        'value*1',
+        'title',
+        'first_name',
+        'last_name',
+        'dob',
+        'gender'
+    ];
 
     public $use_pas = false;
     protected $_clinical_warnings = null;
@@ -424,6 +432,10 @@ class Patient extends BaseActiveRecordVersioned
             // he/she wants to work with
             'save_from_pas_by_type_id' => $patient_identifier_type_id
         );
+
+        if (!empty($params['sort_by'] ?? null) && !in_array($params['sort_by'], static::SEARCH_SORT_BY_OPTIONS)) {
+            $params['sort_by'] = static::SEARCH_SORT_BY_OPTIONS[0];
+        }
 
         $criteria = new CDbCriteria();
         $criteria->compare('t.id', $this->id);
