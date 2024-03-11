@@ -31,7 +31,7 @@ class ReportTest extends OEDbTestCase
         ];
     }
 
-    /** 
+    /**
      * @test
      * @dataProvider reportRoutesProvider
      */
@@ -41,7 +41,7 @@ class ReportTest extends OEDbTestCase
         $response->assertException(CHttpException::class, ['statusCode' => 403]);
     }
 
-    /** 
+    /**
      * @test
      * @dataProvider reportRoutesProvider
      */
@@ -55,7 +55,7 @@ class ReportTest extends OEDbTestCase
         $response->assertException(CHttpException::class, ['statusCode' => 403]);
     }
 
-    /** 
+    /**
      * @test
      * @dataProvider reportRoutesProvider
      */
@@ -67,14 +67,14 @@ class ReportTest extends OEDbTestCase
 
         $this->mockCurrentContext();
         $user = User::factory()->create(['is_surgeon' => true]);
-        
+
         $this->actingAs($user);
         $response = $method === 'get' ? $this->get($route) : $this->$method($route, $data);
-        
+
         $response->assertSuccessful();
     }
 
-    /** 
+    /**
      * @test
      * @dataProvider reportRoutesProvider
      */
@@ -83,13 +83,13 @@ class ReportTest extends OEDbTestCase
         if (str_contains($route, 'download')) {
             $this->markTestSkipped('Cannot test this route for access because headers are modified');
         }
-        
+
         $this->mockCurrentContext();
         $user = User::factory()->withAuthItems(['Report'])->create();
-        
+
         $this->actingAs($user);
         $response = $method === 'get' ? $this->get($route) : $this->$method($route, $data);
-        
+
         $response->assertSuccessful();
     }
-} 
+}
