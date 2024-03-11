@@ -24,7 +24,7 @@ class ReportController extends BaseReportController
             array(
                 'allow',
                 'actions' => array('index', 'diagnoses', 'runReport', 'downloadReport', 'ajaxReport', 'reportData'),
-                'expression' => array('ReportController', 'checkSurgonOrRole'),
+                'expression' => [static::class, 'checkSurgeonOrReportRole']
             ),
 
             array(
