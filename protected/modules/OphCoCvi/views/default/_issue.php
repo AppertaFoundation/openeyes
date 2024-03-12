@@ -144,6 +144,10 @@ if ($demographics_element->isNewRecord) {
                     <div class="label">Print name</div>
                     <?= $consultant_signature->signatory_name ?? ''; ?>
                 </div>
+                <div class="dotted-area">
+                    <div class="label">Job Title</div>
+                    <?= $consultant_signature->signatory_role ?? ''; ?>
+                </div>
             </div>
         </div>
         <div class="dotted-area">
