@@ -1649,22 +1649,22 @@ class AnalyticsController extends BaseController
 
         switch ($plot_type) {
             case 'VA':
-                $reading_query = $this->queryBestVAReading($for_plot)->text;
+                $reading_query = $this->queryBestVAReading($for_plot);
                 break;
             case 'IOP':
-                $reading_query = $this->queryIOPReading($for_plot)->text;
+                $reading_query = $this->queryIOPReading($for_plot);
                 break;
             case 'CRT':
-                $reading_query = $this->queryCRTReading($for_plot)->text;
+                $reading_query = $this->queryCRTReading($for_plot);
                 break;
         }
 
         switch ($subspecialty) {
             case 'Glaucoma':
-                $op_query = $this->queryVAIOPProcedure($for_plot)->text;
+                $op_query = $this->queryVAIOPProcedure($for_plot);
                 break;
             case 'Medical Retina':
-                $op_query = $this->queryCRTProcedure($for_plot)->text;
+                $op_query = $this->queryCRTProcedure($for_plot);
                 break;
         }
 
@@ -1707,9 +1707,17 @@ class AnalyticsController extends BaseController
         "
             )
             ->from("($patient_diagnosis_query->text) diag")
-            ->join("($reading_query) exam", 'exam.episode_id = diag.episode_id')
-            ->join("($op_query) patient_ops", 'patient_ops.patient_id = diag.patient_id')
-            ->where($query_conditions, array_merge($patient_diagnosis_query->params, $query_params));
+            ->join("($reading_query->text) exam", 'exam.episode_id = diag.episode_id')
+            ->join("($op_query->text) patient_ops", 'patient_ops.patient_id = diag.patient_id')
+            ->where(
+                $query_conditions,
+                array_merge(
+                    $reading_query->params,
+                    $op_query->params,
+                    $patient_diagnosis_query->params,
+                    $query_params
+                )
+            );
     }
 
     /**
