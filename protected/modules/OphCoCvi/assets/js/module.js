@@ -247,7 +247,9 @@ $(document).ready(function() {
 
     handleButton($('#la-search-toggle'), function(e) {
         e.preventDefault();
-        $('#local_authority_search_wrapper').show();
+        var localAuthoritySearchWrapper = document.getElementById('local_authority_search_wrapper');
+        localAuthoritySearchWrapper.classList.remove("hidden");
+        localAuthoritySearchWrapper.style.display = "";
         setTimeout(function() {$(e.target).blur(); enableButtons(); $(e.target).addClass('disabled'); }, 100);
     });
 
