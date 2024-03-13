@@ -556,8 +556,8 @@ $config = array(
             'cito_integration' => array(
                 'title' => 'Open in CITO',
                 'uri' => '',
-                'requires_setting' => array('setting_key' => 'cito_access_token_url', 'required_value' => 'not-empty'),
-                'options' => ['id' => 'js-get-cito-url', 'class' => 'hidden', 'requires_patient' => true],
+                'requires_setting' => array('setting_key' => 'cito_base_url', 'required_value' => 'not-empty'),
+                'options' => ['id' => 'js-get-cito-url', 'requires_patient' => true],
             ),
             'hie_integration' => array(
                 'title' => 'View HIE Record',
@@ -879,7 +879,7 @@ $config = array(
         'watermark_admin' => getenv('OE_ADMIN_BANNER_LONG') ?: null,
         'sso_certificate_path' => '/run/secrets/SSO_CERTIFICATE',
         'ammonite_url' => getenv('AMMONITE_URL') ?: 'ammonite.toukan.co',
-        'cito_base_url ' => trim(getenv('CITO_BASE_URL')) ?: null,
+        'cito_base_url' => trim(getenv('CITO_BASE_URL')) ?: null,
         'cito_access_token_url' => trim(getenv('CITO_ACCESS_TOKEN_URL')) ?: '/citosignon/connect/token',
         'cito_otp_url' => trim(getenv('CITO_OTP_URL')) ?: '/citoExternalApi/api/IssueOneTimePassCodes',
         'cito_sign_url' => trim(getenv('CITO_SIGN_URL')) ?: '/cito/api/otpsignin',
