@@ -37,7 +37,7 @@ class PatientMerge extends BaseResource
     protected static $model_class = \PatientMergeRequest::class;
 
     /** @var bool Indicates whether the resource was newly created */
-    public bool $isNewResource = false;
+    public $isNewResource = false;
 
     private function findPatient(string $identifier): \Patient
     {
@@ -99,7 +99,7 @@ class PatientMerge extends BaseResource
 
         // Check if same merge request already exists
         if ($model = $this->getExisting()) {
-            if ((int)$model->status === \PatientMergeRequest::STATUS_MERGED) {
+            if ((int) $model->status === \PatientMergeRequest::STATUS_MERGED) {
                 return $model->id;
             }
         } else {
@@ -208,6 +208,6 @@ class PatientMerge extends BaseResource
 
     private function getAutoMergeSetting(): int
     {
-        return (int)\SettingMetadata::model()->getSetting('pasapi_automerge');
+        return (int) \SettingMetadata::model()->getSetting('pasapi_automerge');
     }
 }
