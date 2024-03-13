@@ -6,6 +6,8 @@ trait WithFaker
 {
     use InteractsWithApp;
 
+    protected ?int $seed = null;
+
     /**
      * The Faker instance.
      *
@@ -17,7 +19,10 @@ trait WithFaker
     {
         $this->faker = $this->getApp()->dataGenerator->faker();
 
-        $this->tearDownCallbacks(function () { 
+        $this->tearDownCallbacks(function () {
+            if ($this->hasFailed()) {
+                fwrite(STDERR, "Faker seeder value:" . $this->getApp()->dataGenerator->getSeed());
+            }
             $this->faker->unique(true);
         });
     }
