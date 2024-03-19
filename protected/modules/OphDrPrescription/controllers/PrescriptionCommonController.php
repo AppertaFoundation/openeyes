@@ -49,7 +49,7 @@ class PrescriptionCommonController extends DefaultController
         $items = MedicationSet::model()->findByPk($set_id)->items;
         if ($items) {
             foreach ($items as $item) {
-                $this->renderPrescriptionItem($key, $item);
+                $this->renderPrescriptionItem($key, $item, null, false);
                 ++$key;
             }
         }
@@ -80,7 +80,7 @@ class PrescriptionCommonController extends DefaultController
         $items = OphDrPGDPSD_PGDPSD::model()->findByPk($pgd_id)->assigned_meds;
         if ($items) {
             foreach ($items as $item) {
-                $this->renderPrescriptionItem($key, $item);
+                $this->renderPrescriptionItem($key, $item, null, false);
                 ++$key;
             }
         }
@@ -117,7 +117,7 @@ class PrescriptionCommonController extends DefaultController
             'default_dose is not null || default_frequency_id is not null || default_duration_id is not null');
         $item = $drug ?? $drug_id;
 
-        $this->renderPrescriptionItem($key, $item, $label);
+        $this->renderPrescriptionItem($key, $item, $label, false);
     }
 
     /**

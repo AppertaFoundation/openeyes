@@ -28,9 +28,9 @@ class OphTrOperationnoteFactory extends EventFactory
     protected static $requiredElements = [
         Element_OphTrOperationnote_SiteTheatre::class,
         Element_OphTrOperationnote_Surgeon::class,
-        Element_OphTrOperationnote_ProcedureList::class,
+        [Element_OphTrOperationnote_ProcedureList::class, ['withProcedures']],
         Element_OphTrOperationnote_Anaesthetic::class,
-        Element_OphTrOperationnote_PostOpDrugs::class,
+        [Element_OphTrOperationnote_PostOpDrugs::class, ['withDrugs']],
         Element_OphTrOperationnote_Comments::class
     ];
 
@@ -49,7 +49,7 @@ class OphTrOperationnoteFactory extends EventFactory
         $this->withElements(
             array_map(
                 function ($element_class) {
-                    return [$element_class];
+                    return is_array($element_class) ? $element_class : [$element_class];
                 },
                 self::$requiredElements
             )
@@ -77,5 +77,18 @@ class OphTrOperationnoteFactory extends EventFactory
         return $this->withElement(Element_OphTrOperationnote_ProcedureList::class, [
             ['forLeftEye']
         ]);
+    }
+
+    /**
+     * @param mixed $instance
+     * @return array
+     */
+    public static function mapInstanceToFormData($instance): array
+    {
+        return array_reduce(
+            $instance->getElements(),
+            fn ($form_data, $element) => array_merge($form_data, get_class($element)::factory()::generateFormData($element)),
+            []
+        );
     }
 }

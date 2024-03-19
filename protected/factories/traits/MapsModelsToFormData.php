@@ -15,10 +15,58 @@
 
 namespace OE\factories\traits;
 
+use BaseEventTypeElement;
+use CModel;
 use OE\factories\exceptions\FormMappingNotImplementedException;
 
+/**
+ * This trait sets up the method necessary for mapping models to form arrays.
+ *
+ * Initially this was set up to work directly with the factory, but have since
+ * introduced static accessors to support calling the factory with already
+ * existing models. The instance method pattern remains supported for backwards
+ * compatibility.
+ */
 trait MapsModelsToFormData
 {
+    public static function generateFormData(CModel|array $model)
+    {
+        if (is_array($model) && empty($model)) {
+            return [];
+        }
+
+        $form_data = is_array($model)
+            ? array_map(fn ($instance) => static::mapInstanceToFormData($instance), $model)
+            : static::mapInstanceToFormData($model);
+
+        $form_field_key = static::resolveModelFormFieldName($model);
+
+        return $form_field_key
+            ? [$form_field_key => $form_data]
+            : $form_data;
+    }
+
+    /**
+     * This method should be overriden in factories to define the form field
+     * mappings from a model instance.
+     *
+     * @param CModel $instance
+     * @return array
+     */
+    public static function mapInstanceToFormData(\CModel $instance): array
+    {
+        throw new FormMappingNotImplementedException(static::class);
+    }
+
+    protected static function formFieldName(\CModel $model): ?string
+    {
+        if ($model instanceof BaseEventTypeElement) {
+            return \CHtml::modelName($model);
+        }
+
+        return null;
+    }
+
     /**
      * @param array
      * @return array
@@ -31,7 +79,8 @@ trait MapsModelsToFormData
     }
 
     /**
-     * Undocumented function
+     * Make the model instance(s) for the factory, and return those along
+     * with the default array representation for form use.
      *
      * @param array $attributes
      * @return array<model(s), form_data>
@@ -55,6 +104,19 @@ trait MapsModelsToFormData
     }
 
     /**
+     * @param array|\CModel $elements
+     * @return ?string
+     */
+    protected static function resolveModelFormFieldName($models): ?string
+    {
+        if ($models instanceof \CModel) {
+            return self::formFieldName($models);
+        } else {
+            return self::formFieldName($models[0]);
+        }
+    }
+
+    /**
      * @param array|\CModel $results
      * @return array
      */
@@ -64,25 +126,14 @@ trait MapsModelsToFormData
             throw new \InvalidArgumentException('Cannot map non model data to form data');
         }
 
-        $field_name = $this->resolveModelFormFieldName($results);
+        $field_name = static::resolveModelFormFieldName($results);
 
-        return [
-            $field_name => $this->mapModelsToFormData($results)
-        ];
+        return $field_name
+            ? [$field_name => $this->mapModelsToFormData($results)]
+            : $this->mapModelsToFormData($results);
     }
 
-    /**
-     * @param array|\CModel $elements
-     * @return string
-     */
-    protected function resolveModelFormFieldName($models): string
-    {
-        if ($models instanceof \CModel) {
-            return \CHtml::modelName($models);
-        } else {
-            return \CHtml::modelName($models[0]);
-        }
-    }
+
 
     protected function mapModelsToFormData($models): array
     {
@@ -93,8 +144,16 @@ trait MapsModelsToFormData
         }
     }
 
+    /**
+     * This was the original method to be overridden for defining form field
+     * mapping, but has been superseded by the static method. Remains in
+     * place for backwards compatibility.
+     *
+     * @param $model
+     * @return array
+     */
     protected function mapModelToFormData($model): array
     {
-        throw new FormMappingNotImplementedException(get_class($this));
+        return static::mapInstanceToFormData($model);
     }
 }

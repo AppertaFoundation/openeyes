@@ -27,4 +27,12 @@ class Element_OphTrOperationnote_SurgeonFactory extends FactoryForOperationnoteE
             ]
         );
     }
+
+    public static function mapInstanceToFormData($instance): array
+    {
+        return [
+            'surgeon_id' => $instance->surgeon_id,
+            'supervising_surgeon_id' => $instance->supervising_surgeon_id
+        ];
+    }
 }

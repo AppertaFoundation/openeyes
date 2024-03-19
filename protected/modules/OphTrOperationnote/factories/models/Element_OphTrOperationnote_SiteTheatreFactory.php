@@ -28,4 +28,12 @@ class Element_OphTrOperationnote_SiteTheatreFactory extends FactoryForOperationn
             ]
         );
     }
+
+    public static function mapInstanceToFormData($instance): array
+    {
+        return [
+            'site_id' => $instance->site_id,
+            'theatre_id' => $instance->theatre_id
+        ];
+    }
 }

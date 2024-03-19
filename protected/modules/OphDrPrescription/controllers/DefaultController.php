@@ -741,7 +741,7 @@ class DefaultController extends BaseEventTypeController
      * @throws CException
      * @throws Exception
      */
-    public function renderPrescriptionItem($key, $source, $label = null)
+    public function renderPrescriptionItem($key, $source, $label = null, $use_existing_laterality = true)
     {
         $item = new OphDrPrescription_Item();
         $item->bound_key = substr(bin2hex(openssl_random_pseudo_bytes(10)), 0, 10);
@@ -841,7 +841,7 @@ class DefaultController extends BaseEventTypeController
                 throw new CException('Invalid prescription item source: ' . print_r($source));
             }
             // Populate route option from episode for Eye
-            if ($episode = $this->episode) {
+            if ($use_existing_laterality && $episode = $this->episode) {
                 if ($principal_eye = $episode->eye) {
                     $lat_id = MedicationLaterality::model()->find(
                         'name = :eye_name',

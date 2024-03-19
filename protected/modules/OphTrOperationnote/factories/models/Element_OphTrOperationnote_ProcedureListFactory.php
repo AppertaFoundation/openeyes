@@ -40,11 +40,11 @@ class Element_OphTrOperationnote_ProcedureListFactory extends FactoryForOperatio
         return parent::create($attributes);
     }
 
-    public function withProcedures($procedures): self
+    public function withProcedures($procedures = 1): self
     {
         return $this->afterMaking(function (Element_OphTrOperationnote_ProcedureList $procedures_element) use ($procedures) {
             if (is_int($procedures)) {
-                $procedures = $this->getUniqueProceduresFor($procedures_element, $procedures);
+                $procedures = array_map(fn ($proc) => $proc->id, $this->getUniqueProceduresFor($procedures_element, $procedures));
             }
             if (!is_array($procedures)) {
                 $procedures = [$procedures];
@@ -61,6 +61,24 @@ class Element_OphTrOperationnote_ProcedureListFactory extends FactoryForOperatio
     public function forRightEye(): self
     {
         return $this->state(['eye_id' => Eye::RIGHT]);
+    }
+
+    public static function generateFormData($model): array
+    {
+        // override because form doesn't follow standard convention of containing all
+        // fields within the model name array key
+        return self::mapInstanceToFormData($model);
+    }
+
+    public static function mapInstanceToFormData($instance): array
+    {
+        return [
+            self::resolveModelFormFieldName($instance) => [
+                'eye_id' => $instance->eye_id,
+                'booking_event_id' => $instance->booking_event_id
+            ],
+            'Procedures_procs' => array_map(fn ($procedure_assignment) => $procedure_assignment->proc_id, $instance->procedure_assignments)
+        ];
     }
 
     private function addProceduresTo(Element_OphTrOperationnote_ProcedureList $procedures_element, array $procedures): void

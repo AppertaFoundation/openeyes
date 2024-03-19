@@ -16,6 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "anaesthetic_delivery".
  *
@@ -27,15 +29,7 @@
  */
 class AnaestheticDelivery extends BaseActiveRecordVersioned
 {
-    /**
-     * Returns the static model of the specified AR class.
-     *
-     * @return AnaestheticDelivery the static model class
-     */
-    public static function model($className = __CLASS__)
-    {
-        return parent::model($className);
-    }
+    use HasFactory;
 
     /**
      * @return string the associated database table name

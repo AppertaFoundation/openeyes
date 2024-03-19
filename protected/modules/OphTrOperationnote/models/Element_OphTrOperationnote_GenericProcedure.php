@@ -16,6 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "et_ophtroperationnote_genericprocedure".
  *
@@ -33,17 +35,9 @@
  */
 class Element_OphTrOperationnote_GenericProcedure extends Element_OnDemand
 {
-    public $service;
+    use HasFactory;
 
-    /**
-     * Returns the static model of the specified AR class.
-     *
-     * @return ElementOperation the static model class
-     */
-    public static function model($className = __CLASS__)
-    {
-        return parent::model($className);
-    }
+    public $service;
 
     /**
      * @return string the associated database table name
