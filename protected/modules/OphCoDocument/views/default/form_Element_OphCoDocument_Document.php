@@ -148,29 +148,29 @@
                 </tr>
                 </tbody>
             </table>
-            <div class="cols-11">
-                <div class="js-comment-container flex-layout flex-left"
+                <div class="flex-layout flex-left comment-group js-comment-container"
                      id="document-single-comments"
-                     style="display: <?= $element->single_comment || array_key_exists('single_comment', $element->getErrors()) ? 'block;' : 'none;' ?>"
+                     style="display: <?= $element->single_comment || array_key_exists('single_comment', $element->getErrors()) ? 'flex;' : 'none;' ?>"
                      data-comment-button="#document_single_comment_button">
                     <?= $form->textArea(
                         $element,
                         'single_comment',
-                        array('rows' => '1', 'nowrapper' => true),
+                        ['rows' => '2', 'nowrapper' => true],
                         false,
-                        ['placeholder' => 'Comments', 'class' => 'js-comment-field autosize']
+                        ['placeholder' => 'Comments', 'class' => 'js-comment-field autosize cols-full']
                     ); ?>
                     <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
                 </div>
-                <button id="document_single_comment_button"
-                        class="button js-add-comments"
-                        data-comment-container="#document-single-comments"
-                        type="button"
-                        data-hide-method="display"
-                        style="display: <?= $element->single_comment || array_key_exists('single_comment', $element->getErrors()) ? 'none;' : 'block;' ?>">
-                    <i class="oe-i comments small-icon"></i>
-                </button>
-            </div>
+                <div>
+                    <button id="document_single_comment_button"
+                            class="button js-add-comments"
+                            data-comment-container="#document-single-comments"
+                            type="button"
+                            data-hide-method="display"
+                            style="display: <?= $element->single_comment || array_key_exists('single_comment', $element->getErrors()) ? 'none;' : 'block;' ?>">
+                        <i class="oe-i comments small-icon"></i>
+                    </button>
+                </div>
         </div>
 
         <div id="double_document_uploader" class="data-group js-document-upload-wrapper"
