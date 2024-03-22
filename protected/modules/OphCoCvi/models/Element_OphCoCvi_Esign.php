@@ -227,7 +227,9 @@ class Element_OphCoCvi_Esign extends \BaseEsignElement
     {
         $user = $this->getChangeUser();
         $consultant_signature = new \OphCoCvi_Signature();
-        $consultant_signature->signatory_role = !empty($user->grade) ? $user->grade->grade : "Unknown grade";
+        $consultant_signature->signatory_role = !empty($user->role)
+            ? $user->role
+            : (!empty($user->grade) ? $user->grade->grade : "Unknown Job Title");
         $consultant_signature->type = \BaseSignature::TYPE_LOGGEDIN_USER;
         return $consultant_signature;
     }
