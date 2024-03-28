@@ -139,11 +139,7 @@ class SiteAndFirmWidget extends CWidget
 
         $userFirms = [];
         foreach ($user->getAvailableFirms() as $firm) {
-            if ($firm->serviceSubspecialtyAssignment) {
-                $userFirms[$firm->id] = "{$firm->name} ({$firm->serviceSubspecialtyAssignment->subspecialty->name})";
-            } else {
-                $userFirms[$firm->id] = $firm->name;
-            }
+            $userFirms[$firm->id] = $firm->getNameAndSubspecialty();
         }
 
         natcasesort($userFirms);

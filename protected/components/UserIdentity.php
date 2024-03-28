@@ -382,15 +382,6 @@ class UserIdentity extends CUserIdentity
         return [true, ""];
     }
 
-    public function firmString($firm)
-    {
-        if ($firm->serviceSubspecialtyAssignment) {
-            return "{$firm->name} ({$firm->serviceSubspecialtyAssignment->subspecialty->name})";
-        }
-
-        return $firm->name;
-    }
-
     public function getId()
     {
         return $this->_id;
@@ -443,7 +434,7 @@ class UserIdentity extends CUserIdentity
         }
 
         foreach ($userFirms as $firm) {
-            $firms[$firm->id] = $this->firmString($firm);
+            $firms[$firm->id] = $firm->getNameAndSubspecialty();
         }
 
         if (!count($firms)) {

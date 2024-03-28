@@ -646,7 +646,7 @@ class User extends BaseActiveRecordVersioned
             $crit->params[':user_id'] = $this->id;
         }
 
-        return Firm::model()->findAll($crit);
+        return Firm::model()->with('serviceSubspecialtyAssignment.subspecialty')->findAll($crit);
     }
 
     public function getAllAvailableFirms()
