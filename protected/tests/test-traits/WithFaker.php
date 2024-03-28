@@ -21,7 +21,7 @@ trait WithFaker
 
         $this->tearDownCallbacks(function () {
             if ($this->hasFailed()) {
-                fwrite(STDERR, "Faker seeder value:" . $this->getApp()->dataGenerator->getSeed());
+                fwrite(STDOUT, "\nTest failed with Faker seeder value of:" . $this->getApp()->dataGenerator->getSeed() . "\n");
             }
             $this->faker->unique(true);
         });
