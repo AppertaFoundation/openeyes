@@ -2898,6 +2898,10 @@ class AnalyticsController extends BaseController
             return null;
         }
 
+        if ($diagnoses_ids === self::NO_DIAGNOSIS_TERM) {
+            return self::NO_DIAGNOSIS_TERM;
+        }
+
         return implode(',',
             array_map(
                 fn ($valid_disorder) => $valid_disorder->id,
@@ -3075,6 +3079,10 @@ class AnalyticsController extends BaseController
         );
     }
 
+    /**
+     * Ensure the given timestamp parameter key are integers, or remove
+     * them.
+     */
     private function validateOrRemoveTimestampParams(&$params, array $ts_keys = ['from', 'to']): void
     {
         foreach ($ts_keys as $ts_param) {
@@ -3088,6 +3096,10 @@ class AnalyticsController extends BaseController
         }
     }
 
+    /**
+     * The parameter value must a valid primary key for the User model,
+     * otherwise it is removed.
+     */
     private function validateOrRemoveUserIdParam(&$params, $key = 'surgeon'): void
     {
         if (!isset($params[$key])) {
@@ -3099,9 +3111,16 @@ class AnalyticsController extends BaseController
         }
     }
 
+    /**
+     * The NO_DIAGNOSIS_TERM is a string used for specific query behaviour and
+     * is therefore maintained as a valid term for use in building the queries
+     * for reporting.
+     *
+     * Otherwise it must be a disorder term that can be matched in the database.
+     */
     private function validateOrRemoveDiagnosisTerm(&$params, $key = 'diagnosis'): void
     {
-        if (!isset($params[$key])) {
+        if (!isset($params[$key]) || $params[$key] === self::NO_DIAGNOSIS_TERM) {
             return;
         }
 
