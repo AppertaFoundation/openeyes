@@ -35,7 +35,7 @@ class ReportTest extends OEDbTestCase
      * @test
      * @dataProvider reportRoutesProvider
      */
-    public function cannot_access_route_as_guest($route, $method = 'get', ?array $data = null)
+    public function cannot_access_route_as_guest($route, $method = 'get', array $data = [])
     {
         $response = $method === 'get' ? $this->get($route) : $this->$method($route, $data);
         $response->assertException(CHttpException::class, ['statusCode' => 403]);
@@ -45,7 +45,7 @@ class ReportTest extends OEDbTestCase
      * @test
      * @dataProvider reportRoutesProvider
      */
-    public function cannot_access_route_as_unpermissioned_user($route, $method = 'get', ?array $data = null)
+    public function cannot_access_route_as_unpermissioned_user($route, $method = 'get', array $data = [])
     {
         $user = User::factory()->create();
 
@@ -59,7 +59,7 @@ class ReportTest extends OEDbTestCase
      * @test
      * @dataProvider reportRoutesProvider
      */
-    public function can_access_route_as_surgeon_user($route, $method = 'get', ?array $data = null)
+    public function can_access_route_as_surgeon_user($route, $method = 'get', array $data = [])
     {
         if (str_contains($route, 'download')) {
             $this->markTestSkipped('Cannot test this route for access because headers are modified');
@@ -78,7 +78,7 @@ class ReportTest extends OEDbTestCase
      * @test
      * @dataProvider reportRoutesProvider
      */
-    public function can_access_route_as_with_report_auth($route, $method = 'get', ?array $data = null)
+    public function can_access_route_as_with_report_auth($route, $method = 'get', array $data = [])
     {
         if (str_contains($route, 'download')) {
             $this->markTestSkipped('Cannot test this route for access because headers are modified');

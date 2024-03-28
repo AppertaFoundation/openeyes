@@ -755,7 +755,8 @@ class DefaultController extends \BaseEventTypeController
                     if ($flow_order) {
                         $elements[$flow_order] = $element;
                     } else {
-                        $elements[$set->getWorkFlowMaximumDisplayOrder() + $element->display_order] = $element;
+                        $key = $set->getWorkFlowMaximumDisplayOrder() + $element->display_order;
+                        $elements = \ArrayHelper::insertAtKey($elements, $element, 'elementTypeName', $key);
                     }
                 }
             }

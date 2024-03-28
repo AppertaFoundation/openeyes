@@ -62,6 +62,8 @@ class DefaultController extends \CController
         }
 
         $model->login();
+        $this->changeFirm($_POST['firm_name'] ?? null);
+
         $this->getApp()->session['confirm_site_and_firm'] = false;
         $this->getApp()->session['shown_version_reminder'] = true;
 
@@ -71,6 +73,37 @@ class DefaultController extends \CController
             'institution_id' => $this->getApp()->session['selected_institution_id'],
             'pincode' => User::model()->findByPk(\Yii::app()->user->id)->pincode->value ?? 'No Pincode'
         ]);
+    }
+
+    public function changeFirm(string $firm_name = null)
+    {
+
+        if (!$firm_name) {
+            return;
+        }
+
+        $firm_id = $this->getFirmByName($firm_name)->id;
+
+        $user_id = $this->getApp()->user->id;
+        $user = User::model()->findByPk($user_id);
+
+        $user->changeFirm($firm_id);
+
+        if (!$user->save(false)) {
+            throw new \RuntimeException(422, "Can't change context. " . print_r($user->getErrors(), true));
+        }
+
+        $this->getApp()->session['selected_firm_id'] = $firm_id;
+    }
+
+    private function getFirmByName(string $firm_name)
+    {
+        $firm = Firm::model()->findByAttributes(['name' => $firm_name]);
+        if (!$firm) {
+            throw new \RuntimeException(404, "Firm not found: $firm_name");
+        }
+
+        return $firm;
     }
 
     public function actionCreateUser()

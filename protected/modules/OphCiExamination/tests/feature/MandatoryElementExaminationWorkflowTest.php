@@ -72,4 +72,58 @@ class MandatoryElementExaminationWorkflowTest extends \OEDbTestCase
         // mandatory attribute is set to string values
         $this->assertEquals('true', $expected_to_be_mandatory->attr('data-mandatory'));
     }
+
+    /** @test */
+    public function default_elements_with_same_display_order_are_loaded()
+    {
+        $firm_id = \Firm::model()->findByAttributes(['name' => '1 Stop Cataract'])->id;
+
+        [$user, $institution] = $this->createUserWithInstitution([
+            'first_name' => 'admin'
+        ]);
+
+        $episode = \Episode::factory()->create(['firm_id' => $firm_id]);
+        $patient = $episode->patient;
+
+        $default_element_types = $this->getDefaultElementTypeList();
+
+        // set display_order to the same number to test if they are loaded into the UI
+        for ($i = 0; $i < 4; $i++) {
+            $default_element_types[$i]->saveAttributes(['display_order' => 40]);
+        }
+
+        $this->mockCurrentContext($episode->firm, null, $institution);
+
+        $response = $this->actingAs($user, $institution)
+            ->get("/OphCiExamination/Default/create/?patient_id={$patient->id}")
+            ->assertSuccessful()
+            ->crawl();
+
+        $default_element_type_names = (new \ModelCollection($default_element_types))->pluck('name');
+
+        $ui_element_names = [];
+        $response
+            ->filter('h3.element-title')
+            ->each(function($item) use (&$ui_element_names) {
+                $ui_element_names[] = $item->text();
+            });
+
+        $this->assertEqualsCanonicalizing($ui_element_names, $default_element_type_names);
+    }
+
+    private function getDefaultElementTypeList($firm_name = '1 Stop Cataract', $set_name = 'Nurse')
+    {
+        $sql = <<<SQL
+SELECT et.*
+FROM firm 
+JOIN `ophciexamination_workflow_rule` wr ON firm.id = wr.`firm_id`
+JOIN `ophciexamination_workflow` w ON w.id = wr.`workflow_id`
+JOIN `ophciexamination_element_set` es ON w.id = es.`workflow_id`
+JOIN `ophciexamination_element_set_item` esi ON es.id = esi.`set_id`
+JOIN element_type et ON esi.`element_type_id` = et.id
+WHERE firm.name = :firm_name AND es.name = :set_name;
+SQL;
+
+        return \ElementType::model()->findAllBySql($sql, [':firm_name' => $firm_name, ':set_name' => $set_name]);
+    }
 }

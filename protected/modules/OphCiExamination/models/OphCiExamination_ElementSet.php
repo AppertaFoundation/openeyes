@@ -98,7 +98,8 @@ class OphCiExamination_ElementSet extends \BaseActiveRecordVersioned
             if ($item->display_order) {
                 $element_types[$item->display_order] = $item->element_type;
             } else {
-                $element_types[$maximum_worklist_display_order + $item->element_type->display_order] = $item->element_type;
+                $key = $maximum_worklist_display_order + $item->element_type->display_order;
+                $element_types = \ArrayHelper::insertAtKey($element_types, $item->element_type, 'name', $key);
             }
         }
 

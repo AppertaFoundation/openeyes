@@ -84,12 +84,11 @@ trait MakesApplicationRequests
     protected function get($url)
     {
         $this->resetRequestGlobals();
-        $url = $this->extractUrlAndSetGet($url);
+        $url = $this->extractUrlAndSetGlobals($url);
 
         $_SERVER['HTTP_USER_AGENT'] = 'phpunit'; // this is used in the main layout template
         $_SERVER['SERVER_NAME'] = 'phpunit';
         $_SERVER['REQUEST_URI'] = $url;
-
 
         $redirected = null;
         $this->mockRequest($url, $redirected);
@@ -118,12 +117,13 @@ trait MakesApplicationRequests
     protected function post($url, $form_data = []): ApplicationResponseWrapper
     {
         $this->resetRequestGlobals();
-        $url = $this->extractUrlAndSetGet($url);
+        $url = $this->extractUrlAndSetGlobals($url);
 
         $_SERVER['HTTP_USER_AGENT'] = 'phpunit'; // this is used in the main layout template
         $_SERVER['REQUEST_URI'] = $url;
         $_POST = $form_data;
-        $_REQUEST = $form_data;
+
+        $_REQUEST = array_merge($_REQUEST, $form_data);
 
         $redirected = null;
         $this->mockRequest($url, $redirected);
@@ -182,11 +182,13 @@ trait MakesApplicationRequests
      * @param string $url
      * @return string
      */
-    private function extractUrlAndSetGet(string $url): string
+    private function extractUrlAndSetGlobals(string $url): string
     {
         $parsed_url = parse_url($url);
         // note this is a simple approach that doesn't handle duplicate keys
         parse_str($parsed_url['query'] ?? '', $_GET);
+
+        $_REQUEST = array_merge($_GET, $_POST);
 
         return $parsed_url['path'];
     }

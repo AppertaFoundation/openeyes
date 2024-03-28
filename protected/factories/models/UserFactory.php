@@ -41,7 +41,8 @@ class UserFactory extends ModelFactory
             // this approach suffices for the current testing requirements
             'title' => $this->faker->randomElement(['Mr', 'Mrs', 'Ms', 'Prof', 'Dr']),
             'role' => '', // not sure what this is for so blank string works as default
-            'has_selected_firms' => 0
+            'has_selected_firms' => 0,
+            'last_firm_id' => null,
         ];
     }
 
