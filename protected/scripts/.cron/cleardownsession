@@ -1,0 +1,2 @@
+# Every 24 hours, clear all user sessions that have expired
+${CRON_CLEARSESSION_SCH:-0 3 * * *} bash "$WROOT/protected/scripts/cronrunner.sh" '/usr/bin/php $WROOT/protected/yiic.php clearexpiredusersessions deleteexpired'
