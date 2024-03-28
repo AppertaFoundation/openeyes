@@ -1,0 +1,66 @@
+<?php
+
+class m280325_042507_performance_indexes_rollup extends OEMigration
+{
+    /**
+     * Drops an index if it exists (MySQL does not have this functionality as opposed to MariaDB).
+     * @param string $name the name of the index to be dropped. The name will be properly quoted by the method.
+     * @param string $table the table that the index belongs to. The table name will be properly quoted by the method.
+     */
+    protected function dropIndexIfExists($name, $table)
+    {
+        $sql = "SHOW INDEX FROM {$this->dbConnection->quoteTableName($table)} WHERE Key_name = " . $this->dbConnection->quoteValue($name);
+        if ($this->dbConnection->createCommand($sql)->queryRow() !== false) {
+            $this->dropIndex($name, $table);
+        }
+    }
+
+    // This edition speeds up the following:
+    // Admin-->PatientTicketing-->Queues Sets
+    // Adding an examination
+    // Adding follow-up element for an examination
+
+    public function safeUp()
+    {
+        // Dropping existing indexes if they exist to ensure idempotency
+        $this->dropIndexIfExists('idx_site_active', 'site');
+        $this->dropIndexIfExists('idx_site_name', 'site');
+        $this->dropIndexIfExists('idx_pt_deleted', 'patientticketing_ticket');
+        $this->dropIndexIfExists('idx_pta_ticket_id', 'patientticketing_ticketqueue_assignment');
+        $this->dropIndexIfExists('idx_pta_queue_id', 'patientticketing_ticketqueue_assignment');
+        $this->dropIndexIfExists('idx_pta_assignment_date', 'patientticketing_ticketqueue_assignment');
+        $this->dropIndexIfExists('idx_pta_ti_ad_qi_id', 'patientticketing_ticketqueue_assignment');
+        $this->dropIndexIfExists('idx_pta_ti_qi_id', 'patientticketing_ticketqueue_assignment');
+        $this->dropIndexIfExists('idx_pta_created_date', 'patientticketing_ticketqueue_assignment');
+        $this->dropIndexIfExists('idx_ptt_pid', 'patientticketing_ticket');
+        $this->dropIndexIfExists('idx_et_class_name', 'element_type');
+
+        // Adding indexes
+        $this->createIndex('idx_site_active', 'site', 'active');
+        $this->createIndex('idx_site_name', 'site', 'name');
+        $this->createIndex('idx_pt_deleted', 'patientticketing_ticket', 'deleted');
+        $this->createIndex('idx_pta_ticket_id', 'patientticketing_ticketqueue_assignment', 'ticket_id');
+        $this->createIndex('idx_pta_queue_id', 'patientticketing_ticketqueue_assignment', 'queue_id');
+        $this->createIndex('idx_pta_assignment_date', 'patientticketing_ticketqueue_assignment', 'assignment_date');
+        $this->createIndex('idx_pta_ti_ad_qi_id', 'patientticketing_ticketqueue_assignment', 'ticket_id, assignment_date, queue_id, id');
+        $this->createIndex('idx_pta_ti_qi_id', 'patientticketing_ticketqueue_assignment', 'ticket_id, queue_id, id');
+        $this->createIndex('idx_pta_created_date', 'patientticketing_ticketqueue_assignment', 'created_date');
+        $this->createIndex('idx_ptt_pid', 'patientticketing_ticket', 'patient_id, deleted');
+        $this->createIndex('idx_et_class_name', 'element_type', 'class_name');
+    }
+
+    public function safeDown()
+    {
+        $this->dropIndexIfExists('idx_site_active', 'site');
+        $this->dropIndexIfExists('idx_site_name', 'site');
+        $this->dropIndexIfExists('idx_pt_deleted', 'patientticketing_ticket');
+        $this->dropIndexIfExists('idx_pta_ticket_id', 'patientticketing_ticketqueue_assignment');
+        $this->dropIndexIfExists('idx_pta_queue_id', 'patientticketing_ticketqueue_assignment');
+        $this->dropIndexIfExists('idx_pta_assignment_date', 'patientticketing_ticketqueue_assignment');
+        $this->dropIndexIfExists('idx_pta_ti_ad_qi_id', 'patientticketing_ticketqueue_assignment');
+        $this->dropIndexIfExists('idx_pta_ti_qi_id', 'patientticketing_ticketqueue_assignment');
+        $this->dropIndexIfExists('idx_pta_created_date', 'patientticketing_ticketqueue_assignment');
+        $this->dropIndexIfExists('idx_ptt_pid', 'patientticketing_ticket');
+        $this->dropIndexIfExists('idx_et_class_name', 'element_type');
+    }
+}
