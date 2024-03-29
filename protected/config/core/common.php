@@ -798,7 +798,7 @@ $config = array(
         'default_patient_import_subspecialty' => 'GL',
         //        Add elements that need to be excluded from the admin sidebar in settings
         'exclude_admin_structure_param_list' => getenv('OE_EXCLUDE_ADMIN_STRUCT_LIST') ? explode(",", getenv('OE_EXCLUDE_ADMIN_STRUCT_LIST')) : array(''),
-        'oe_version' => '7.0.12',
+        'oe_version' => getenv('OE_VERSION') ?: 'UNRELEASED',
         'gp_label' => !empty(trim(getenv('OE_GP_LABEL'))) ? getenv('OE_GP_LABEL') : null,
         'general_practitioner_label' => !empty(trim(getenv('OE_GENERAL_PRAC_LABEL'))) ? getenv('OE_GENERAL_PRAC_LABEL') : null,
         // allow duplicate entries on an automatic worklist for a patient (default = false)
@@ -1115,5 +1115,26 @@ $config["params"]["special_usernames"] = array_map('trim', explode(',', $special
 $correspondence_export_institutions = trim(getenv('OE_CORRESPONDENCE_EXPORT_INSTITUTIONS'));
 $correspondence_export_institutions = !empty($correspondence_export_institutions) ? explode(" ", $correspondence_export_institutions) : null;
 $config["params"]["correspondence_export_institutions"] = $correspondence_export_institutions;
+
+/** configure version */
+function getCurrentTagOrBranch()
+{
+    $tag = trim(shell_exec('git describe --tags --exact-match 2> /dev/null'));
+    if (!empty($tag)) {
+        return $tag;
+    }
+
+    $branch = trim(shell_exec('git rev-parse --abbrev-ref HEAD 2> /dev/null'));
+    if (!empty($branch) && $branch !== 'HEAD') {
+        return $branch;
+    }
+
+    return null;
+}
+
+if (YII_DEBUG) {
+    $currentTagOrBranch = getCurrentTagOrBranch();
+    $config['params']['oe_version'] .= ' (' . (!empty($currentTagOrBranch) ? $currentTagOrBranch . ' - ' : '') . 'dev)';
+}
 
 return $config;
