@@ -1117,19 +1117,20 @@ $correspondence_export_institutions = !empty($correspondence_export_institutions
 $config["params"]["correspondence_export_institutions"] = $correspondence_export_institutions;
 
 /** configure version */
-function getCurrentTagOrBranch()
-{
-    $tag = trim(shell_exec('git describe --tags --exact-match 2> /dev/null'));
-    if (!empty($tag)) {
-        return $tag;
-    }
+if (!function_exists('getCurrentTagOrBranch')) {
+    function getCurrentTagOrBranch()
+    {
+        $tag = trim((string) shell_exec('git describe --tags --exact-match 2> /dev/null'));
+        if (!empty($tag)) {
+            return $tag;
+        }
 
-    $branch = trim(shell_exec('git rev-parse --abbrev-ref HEAD 2> /dev/null'));
-    if (!empty($branch) && $branch !== 'HEAD') {
-        return $branch;
+        $branch = trim((string) shell_exec('git rev-parse --abbrev-ref HEAD 2> /dev/null'));
+        if (!empty($branch) && $branch !== 'HEAD') {
+            return $branch;
+        }
+        return null;
     }
-
-    return null;
 }
 
 if (YII_DEBUG) {
