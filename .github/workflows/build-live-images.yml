@@ -5,12 +5,6 @@ name: Trigger Docker images Build
 
 on:
   push:
-    branches:
-      - "master"
-      - "main"
-      - "develop"
-      - "release/*"
-      - "bugfix/*"
     tags:
       - "*"
   workflow_dispatch:
