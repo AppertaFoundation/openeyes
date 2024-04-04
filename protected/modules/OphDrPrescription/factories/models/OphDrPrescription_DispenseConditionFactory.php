@@ -1,5 +1,4 @@
 <?php
-
 /**
  * OpenEyes
  *
@@ -17,9 +16,6 @@
  */
 
 use OE\factories\ModelFactory;
-
-
-
 
 class OphDrPrescription_DispenseConditionFactory extends ModelFactory
 {
@@ -50,19 +46,26 @@ class OphDrPrescription_DispenseConditionFactory extends ModelFactory
     public function withDispenseLocation($institution)
     {
         return $this->afterCreating(function (OphDrPrescription_DispenseCondition $dispense_condition) use ($institution) {
+            // create a dispense location associated with the institution
             $dispense_location = ModelFactory::factoryFor(OphDrPrescription_DispenseLocation::class)
                 ->withInstitution($institution)
                 ->create();
 
-            $dispense_condition_institution = OphDrPrescription_DispenseCondition_Institution::model()->find(
-                "dispense_condition_id=:dispense_condition_id AND institution_id=:institution_id",
-                [
-                    ":dispense_condition_id" => $dispense_condition->id,
-                    ":institution_id" => $institution->id
-                ]
-            );
+            // by using the factory, we only create this association if
+            // it was not already defined in factory state (by using the
+            // withInstitution state)
+            $dispense_condition_institution = OphDrPrescription_DispenseCondition_Institution::factory()
+                ->useExisting([
+                    'dispense_condition_id' => $dispense_condition->id,
+                    'institution_id' => $institution->id
+                ])
+                ->create();
 
-            $dispense_condition_institution->dispense_location_institutions = [$dispense_location];
+            // the association between the two is another level down, so we assign
+            // the "dispense location institution" with the "dispense condition
+            // institution" and the auto save automatically creates the linking
+            // entry
+            $dispense_condition_institution->dispense_location_institutions = $dispense_location->dispense_location_institutions;
             $dispense_condition_institution->save();
         });
     }
