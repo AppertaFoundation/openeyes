@@ -1,6 +1,6 @@
 <?php
 
-class m280325_042507_performance_indexes_rollup extends OEMigration
+class m240325_042506_performance_indexes_rollup extends OEMigration
 {
     /**
      * Drops an index if it exists (MySQL does not have this functionality as opposed to MariaDB).
