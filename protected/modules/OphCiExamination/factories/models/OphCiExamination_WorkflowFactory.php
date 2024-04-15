@@ -15,10 +15,13 @@
 
 namespace OEModule\OphCiExamination\factories\models;
 
+use Firm;
 use Institution;
 use OE\factories\ModelFactory;
+use OE\factories\models\FirmFactory;
 use OEModule\OphCiExamination\models\OphCiExamination_Workflow;
 use OEModule\OphCiExamination\models\OphCiExamination_ElementSet;
+use OEModule\OphCiExamination\models\OphCiExamination_Workflow_Rule;
 use ReferenceData;
 
 class OphCiExamination_WorkflowFactory extends ModelFactory
@@ -61,6 +64,22 @@ class OphCiExamination_WorkflowFactory extends ModelFactory
         return $this->state([
             'institution_id' => $institution,
         ]);
+    }
+
+    /**
+     * Create a workflow rule to link to a firm
+     *
+     * @param Firm|FirmFactory $firm
+     * @return OphCiExamination_WorkflowFactory
+     */
+    public function forFirm(Firm|FirmFactory $firm): self
+    {
+        return $this->afterCreating(function (OphCiExamination_Workflow $workflow) use ($firm) {
+            OphCiExamination_Workflow_Rule::factory()
+                ->forWorkflow($workflow)
+                ->forFirm($firm)
+                ->create();
+        });
     }
 
     public function forElementSet(?OphCiExamination_ElementSet $element_set = null): self

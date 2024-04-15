@@ -190,3 +190,19 @@ Cypress.Commands.add('addElementsToDraftExamination', (draftId, elements) =>{
         }
     });
 });
+
+Cypress.Commands.add('createFirmWithExamWorkflow', (elements = [], firm = {}) => {
+    if (firm.name === undefined) {
+        firm.name = "Test Firm " + Date.now();
+    }
+
+    return cy.request({
+        method: 'POST',
+        form: true,
+        url: 'CypressHelper/Default/createFirmWithExamWorkflow',
+        body: {
+            elements: elements,
+            firm: firm
+        }
+    });
+})

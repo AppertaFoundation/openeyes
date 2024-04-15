@@ -5,13 +5,21 @@ namespace OEModule\CypressHelper\controllers;
 use CWebLogRoute;
 use Event;
 use EventType;
+use Exception;
 use Firm;
 use Institution;
 use OE\concerns\InteractsWithApp;
 use OE\factories\ModelFactory;
 use OE\factories\models\EventFactory;
 use OE\seeders\SeederBuilder;
+use OEModule\OphCiExamination\models\AdviceGiven;
+use OEModule\OphCiExamination\models\Allergies;
+use OEModule\OphCiExamination\models\Element_OphCiExamination_History;
 use OEModule\OphCiExamination\models\HistoryRisks;
+use OEModule\OphCiExamination\models\OphCiExamination_ElementSet;
+use OEModule\OphCiExamination\models\OphCiExamination_ElementSetItem;
+use OEModule\OphCiExamination\models\OphCiExamination_Workflow;
+use OEModule\OphCiExamination\models\OphCiExamination_Workflow_Rule;
 use Patient;
 use User;
 use OE\seeders\resources\GenericModelResource;
@@ -318,7 +326,7 @@ class DefaultController extends \CController
             }
 
             if (!$draft->save()) {
-                throw new \Exception("EventDraft could not be saved: " . print_r($draft->getErrors(), true));
+                throw new Exception("EventDraft could not be saved: " . print_r($draft->getErrors(), true));
             }
         }
     }
@@ -397,5 +405,50 @@ class DefaultController extends \CController
     protected function eventJson(Event $event, bool $with_elements = true): array
     {
         return SeededEventResource::from($event)->inFull($with_elements)->toArray();
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function actionCreateFirmWithExamWorkflow()
+    {
+        if (!$_POST['firm']) {
+            throw new Exception('Firm data is required.');
+        } else {
+            $firm_data = $_POST['firm'];
+        }
+
+        if (!$_POST['elements']) {
+            throw new Exception('At least one element is required.');
+        } else {
+            $elements_data = $_POST['elements'];
+        }
+
+        foreach ($elements_data as $element_name){
+            if ($element = \ElementType::model()->findByAttributes(['name' => $element_name])) {
+                $elements[] = $element->class_name;
+            } else {
+                throw new Exception("Could not find element with name {$element_name}.");
+            }
+        }
+
+        $firm = Firm::factory()
+            ->useExisting($firm_data)
+            ->forInstitution($this->getApp()->session['selected_institution_id'])
+            ->create();
+
+        $workflow = OphCiExamination_Workflow::factory()
+            ->forInstitution($firm->institution)
+            ->forFirm($firm)
+            ->create();
+
+        OphCiExamination_ElementSet::factory()
+            ->forWorkflow($workflow)
+            ->forElementClasses($elements)
+            ->create();
+
+        $this->sendJsonResponse([
+            'firm_id' => $firm->id,
+        ]);
     }
 }

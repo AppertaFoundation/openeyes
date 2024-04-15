@@ -133,3 +133,10 @@ Cypress.Commands.add('addPrescriptionFromMMThenSaveAsDraftAndSignAgain', (pinSig
         });
     }
 });
+
+
+Cypress.Commands.add('visitCreationPage', (patient, elements = []) => {
+    return cy.createFirmWithExamWorkflow(elements)
+        .then((response) => cy.getEventCreationUrl(patient.id, 'OphCiExamination', response.body.firm_id))
+            .then((url) => cy.visit(url));
+});
