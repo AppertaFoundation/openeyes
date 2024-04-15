@@ -23,38 +23,40 @@
 <?php
   $purifier = new CHtmlPurifier();
 ?>
-<div class="element-fields flex-layout full-width ">
-  <div class="cols-10 flex-layout col-gap">
-    <div class="cols-half">
-        <?php echo $form->textArea(
-            $element,
-            'description',
-            array('rows' => '1', 'class' => 'autosize', 'nowrapper' => true),
-            false,
-            array('placeholder' => 'Enter comments here', 'data-test' => 'history-description')
-        ) ?>
-    </div>
-    <div class="cols-half">
-      <div class="data-label">Previous Management</div>
-        <?php
-        $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
-      // Get the latest summary from the array although the method seems
-      // to currently only return the latest summary.
-        $summary = $exam_api->getManagementSummaries($this->patient);
-        $summary = $summary ? $summary[0] : null;
-        ?>
-      <strong>
-        <?php if ($summary) : ?>
-            <?= $summary->service ?> <?= implode(" ", $summary->date) ?> (<?= $summary->user ?> <span
-        class="js-has-tooltip fa oe-i info small"
-        data-tooltip-content="This is the user that last modified the Examination event. It is not necessarily the person that originally added the comment."></span>):</strong> <?= $summary->comments ?>
-        <?php else : ?>
-        No previous managements recorded.
-        <?php endif; ?>
-      </strong>
+<div class="element-fields full-width ">
+    <div class="cols-11">
+        <div class="flex-t gap-30">
+            <div class="cols-half">
+            <?php echo $form->textArea(
+                $element,
+                'description',
+                array('rows' => '1', 'class' => 'autosize', 'nowrapper' => true),
+                false,
+                array('placeholder' => 'Enter comments here', 'data-test' => 'history-description')
+            ) ?>
+        </div>
+        <div class="cols-half">
+          <div class="data-label">Previous Management</div>
+            <?php
+            $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
+          // Get the latest summary from the array although the method seems
+          // to currently only return the latest summary.
+            $summary = $exam_api->getManagementSummaries($this->patient);
+            $summary = $summary ? $summary[0] : null;
+            ?>
+          <strong>
+            <?php if ($summary) : ?>
+                <?= $summary->service ?> <?= implode(" ", $summary->date) ?> (<?= $summary->user ?> <span
+            class="js-has-tooltip fa oe-i info small"
+            data-tooltip-content="This is the user that last modified the Examination event. It is not necessarily the person that originally added the comment."></span>):</strong> <?= $summary->comments ?>
+            <?php else : ?>
+            No previous managements recorded.
+            <?php endif; ?>
+          </strong>
 
+        </div>
+      </div>
     </div>
-  </div>
   <div class="add-data-actions flex-item-bottom">
     <button class="button hint green js-add-standard-set" type="button" data-test="add-to-history-template">
         Add template
