@@ -5,7 +5,7 @@
   "require": {
     "php": "^8.0 || ^8.1",
     "ext-json": "^8.0 || ^8.1",
-    "yiisoft/yii": "1.1.28",
+    "yiisoft/yii": "1.1.29",
     "rlanvin/php-rrule": "2.2.0",
     "endroid/qr-code": "^4.2",
     "setasign/fpdf": "1.8.*",
