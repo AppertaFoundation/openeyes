@@ -73,7 +73,7 @@
                     $metadata_value = $metadata->getSettingName($metadata->key, $allowed_classes, $institution_id, true);
 
                     $base_data_uri = "admin/editSystemSetting?key=" . $metadata->key;
-                    if ($metadata->lowest_setting_level === 'INSTITUTION' && $institution_id) {
+                    if ($institution_id) {
                         $uri_param = "&class=SettingInstitution&institution_id={$institution_id}";
                     } else {
                         $uri_param = '&class=SettingInstallation';

@@ -351,8 +351,8 @@ $(document).ready(function () {
 
 
 		function toggleNotification() {
-			$('#notification-short').toggle();
-			$('#notification-full').toggle();
+			$('#notification-short').toggleClass('hidden');
+			$('#notification-full').toggleClass('hidden');
 		}
 	}());
 
