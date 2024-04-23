@@ -23,48 +23,18 @@ if [ "$OE_NO_DB" == "true" ]; then
 fi
 
 ## NOTE: This script assumes it is in protected/scripts. If you move it then relative paths will not work!
+# shellcheck source="/var/www/openeyes/protected/scripts/.source_config.sh"
+source "$(dirname "${BASH_SOURCE[0]}")/.source_config.sh"
 
-# Find fuill folder path where this script is located, then find root folder
-SOURCE="${BASH_SOURCE[0]}"
-while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
-    DIR="$(cd -P "$(dirname "$SOURCE")" && pwd)"
-    SOURCE="$(readlink "$SOURCE")"
-    [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
-done
-# Determine root folder for site - all relative paths will be built from here
-SCRIPTDIR="$(cd -P "$(dirname "$SOURCE")" && pwd)"
-WROOT="$(cd -P "$SCRIPTDIR/../../" && pwd)"
-MODULEROOT=$WROOT/protected/modules
+## Get db connection strings from .db_connection.sh
+# shellcheck source="/var/www/openeyes/protected/scripts/.db_connection.sh"
+source "$SCRIPTDIR/.db_connection.sh"
+
+# shellcheck source="/var/www/openeyes/protected/scripts/.execute_demo_scripts.sh"
+source "$SCRIPTDIR/.execute_demo_scripts.sh"
 
 # disable log to browser during reset, otherwise it causes extraneous trace output on the CLI
 export LOG_TO_BROWSER=""
-
-## default DB connection variables
-# If database user / pass are empty then set from environment variables of from docker secrets (secrets are the recommended approach)
-# Note that this script ignores the old db.conf method. If you are still using this deprecated
-# method, then you'll need to manually set the relevant environment variables to match your db.conf
-if [ -n "$MYSQL_ROOT_PASSWORD" ]; then
-    dbpassword="$MYSQL_ROOT_PASSWORD"
-elif [ -f "/run/secrets/MYSQL_ROOT_PASSWORD" ]; then
-    dbpassword="$(</run/secrets/MYSQL_ROOT_PASSWORD)"
-else
-    dbpassword=""
-fi
-
-if [ -n "$MYSQL_SUPER_USER" ]; then
-    username="$MYSQL_SUPER_USER"
-elif [ -f "/run/secrets/MYSQL_SUPER_USER" ]; then
-    username="$(</run/secrets/MYSQL_SUPER_USER)"
-else
-    # fallback to using root for deleting and restoring DB
-    username="root"
-fi
-
-port=${DATABASE_PORT:-"3306"}
-host=${DATABASE_HOST:-"localhost"}
-# If we're using docker secrets, override DATABASE_PASS and DATABASE_USER with the secret. Else the environment variable will use it's default value
-[ -f /run/secrets/DATABASE_PASS ] && pass="$(</run/secrets/DATABASE_PASS)" || pass=${DATABASE_PASS:-"openeyes"}
-[ -f /run/secrets/DATABASE_USER ] && dbuser="$(</run/secrets/DATABASE_USER)" || dbuser=${DATABASE_USER:-"openeyes"}
 
 # Process commandline parameters
 
@@ -290,14 +260,6 @@ if [ $showhelp = 1 ]; then
     exit 1
 fi
 
-# # add -p to front of dbpassword (deals with blank dbpassword)
-# if [ -n "$dbpassword" ]; then
-#     dbpassword="-p'$dbpassword'"
-# fi
-
-# Set the coonection string and export it so that it can be used by other bash scripts in the demo scripts
-export dbconnectionstring="MYSQL_PWD=${dbpassword} mysql -u '${username}' --port=${port} --host=${host}"
-
 if ps ax | grep -v grep | grep run-dicom-service.sh >/dev/null; then
     dwservrunning=1
     echo "Stopping dicom-file-watcher..."
@@ -459,16 +421,7 @@ if [[ $demo == "1" && $nopre == "0" ]]; then
 
     echo "RUNNING PRE_MIGRATION SCRIPTS..."
 
-    shopt -s nullglob
-    for f in $(ls "$MODULEROOT"/sample/sql/demo/pre-migrate | sort -V); do
-        if [[ $f == *.sql ]]; then
-            echo "importing $f"
-            eval "$dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $MODULEROOT/sample/sql/demo/pre-migrate/\"$f\""
-        elif [[ $f == *.sh ]]; then
-            echo "running $f"
-            bash -l "$MODULEROOT/sample/sql/demo/pre-migrate"/"$f"
-        fi
-    done
+    execute_demo_scripts pre-migrate
 fi
 
 # Run migrations
@@ -484,17 +437,8 @@ if [ $migrate == "1" ]; then
 
         echo "RUNNING POST-MIGRATION DEMO SCRIPTS..."
 
-        basefolder="$MODULEROOT/sample/sql/demo"
-
-        find "$basefolder" "$basefolder"/post-migrate/ "$basefolder"/local-post -maxdepth 1 -type f -printf '%f\0%p\n' | sort -t '\0' -V | awk -F '\0' '{print $2}' | while read -r f; do
-            if [[ $f == *.sql ]]; then
-                echo "importing $f"
-                eval "$dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $f"
-            elif [[ $f == *.sh ]]; then
-                echo "running $f"
-                bash -l "$f"
-            fi
-        done
+        execute_demo_scripts post-migrate
+        execute_demo_scripts local-post
 
     fi
 fi
