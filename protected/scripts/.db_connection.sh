@@ -35,4 +35,4 @@ host=${DATABASE_HOST:-"localhost"}
 [ -f /run/secrets/DATABASE_USER ] && dbuser="$(</run/secrets/DATABASE_USER)" || dbuser=${DATABASE_USER:-"openeyes"}
 
 # Set the coonection string
-dbconnectionstring="MYSQL_PWD=${dbpassword} mysql -u '${username}' --port=${port} --host=${host}"
+export dbconnectionstring="MYSQL_PWD=${dbpassword} mysql -u '${username}' --port=${port} --host=${host}"

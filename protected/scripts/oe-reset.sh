@@ -8,6 +8,7 @@ abort() {
 '
     date
     echo "An error occurred. Exiting..." >&2
+    unset dbconnectionstring
     exit 1
 }
 
@@ -540,3 +541,4 @@ echo ""
 bash "$SCRIPTDIR"/oe-which.sh
 
 trap : 0
+unset dbconnectionstring

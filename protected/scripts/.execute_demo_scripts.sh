@@ -29,6 +29,10 @@ function execute_demo_scripts() {
     done
 }
 
-if [ -n $1 ]; then
-    execute_demo_scripts "$1"
+# If this script is called directly from the CLI, then execute the demo scripts given as argument 1
+# If this script is sourced inside another script, then do not execute
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    if [ -n "$1" ]; then
+        execute_demo_scripts "$1"
+    fi
 fi
