@@ -20,7 +20,7 @@ class AutoSetRuleController extends BaseAdminController
     /**
      * @var int
      */
-    public $itemsPerPage = 100;
+    public $items_per_page = 100;
 
     public $group = 'Drugs';
 
@@ -45,21 +45,15 @@ class AutoSetRuleController extends BaseAdminController
         $filters = $this->getFilters();
         $criteria = $this->getSearchCriteria($filters);
 
-        $data_provider = new CActiveDataProvider('MedicationSet', [
-            'criteria' => $criteria,
-        ]);
+        $pagination = $this->initPagination(MedicationSet::model(), $criteria);
 
-        $pagination = new CPagination($data_provider->totalItemCount);
-        $pagination->pageSize = $this->itemsPerPage;
-        $pagination->applyLimit($criteria);
-
-        $data_provider->pagination = $pagination;
-
+        $sets = MedicationSet::model()->findAll($criteria);
         $command = new \PopulateAutoMedicationSetsCommand('PopulateAutoMedicationSets', new CConsoleCommandRunner());
         $command_is_running = $command->actionCheckRunning();
 
         $this->render('/AutoSetRule/index', [
-            'data_provider' => $data_provider,
+            'sets' => $sets,
+            'pagination' => $pagination,
             'search' => $filters,
             'button_name' => $command_is_running ? 'Processing, may take a few minutes' : 'Rebuild all sets now',
             'button_status' => $command_is_running ? 'disabled' : '',
@@ -146,18 +140,11 @@ class AutoSetRuleController extends BaseAdminController
             ],
         );
 
-        $data_provider = new CActiveDataProvider('MedicationSet', [
-            'sort' => $sort,
-            'criteria' => $criteria,
-        ]);
+        $pagination = $this->initPagination(MedicationSet::model(), $criteria);
 
-        $pagination = new CPagination($data_provider->totalItemCount);
-        $pagination->pageSize = $this->itemsPerPage;
-        $pagination->applyLimit($criteria);
+        $sets = MedicationSet::model()->findAll($criteria);
 
-        $data_provider->pagination = $pagination;
-
-        foreach ($data_provider->getData() as $set) {
+        foreach ($sets as $set) {
             $set_attributes = $set->attributes;
             $set_attributes['count'] = $set->itemsCount();
             $set_attributes['hidden'] = $set->attributes['hidden'] ? $set->attributes['hidden'] : null;
@@ -226,7 +213,7 @@ class AutoSetRuleController extends BaseAdminController
 
         foreach ($data_provider->getData() as $set_item) {
             $item = $set_item->attributes;
-            if (!in_array($item['medication_id'],$unique_med)){
+            if (!in_array($item['medication_id'], $unique_med)) {
                 $item['default_route'] = $set_item->defaultRoute ? $set_item->defaultRoute->term : null;
                 $item['default_duration'] = $set_item->defaultDuration ? $set_item->defaultDuration->name : null;
                 $item['default_frequency'] = $set_item->defaultFrequency ? $set_item->defaultFrequency->term : null;
@@ -314,8 +301,8 @@ class AutoSetRuleController extends BaseAdminController
         if (!empty($set->medicationSetAutoRuleMedications)) {
             $unique_med = [];
 
-            foreach($set->medicationSetAutoRuleMedications as $med) {
-                if (!array_key_exists($med->medication_id,$unique_med)){
+            foreach ($set->medicationSetAutoRuleMedications as $med) {
+                if (!array_key_exists($med->medication_id, $unique_med)) {
                     $unique_med[$med->medication_id] = $med;
                 }
             }

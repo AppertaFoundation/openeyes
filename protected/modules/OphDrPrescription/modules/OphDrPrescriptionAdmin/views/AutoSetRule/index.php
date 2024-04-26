@@ -55,7 +55,7 @@
             </thead>
             <tbody>
                 <?php
-                foreach ($data_provider->getData() as $set) {
+                foreach ($sets as $set) {
                     $this->renderPartial('/AutoSetRule/_row', ['set' => $set]);
                 }
                 ?>
@@ -78,7 +78,7 @@
 
                 </td>
                 <td colspan="4">
-                    <?php $this->widget('LinkPager', ['pages' => $data_provider->pagination]); ?>
+                    <?php $this->widget('LinkPager', ['pages' => $pagination]); ?>
                 </td>
             </tr>
             </tfoot>
