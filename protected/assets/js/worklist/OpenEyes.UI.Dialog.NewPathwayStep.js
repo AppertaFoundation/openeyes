@@ -72,6 +72,7 @@
             if (self.options.current_firm) {
                 self.content.find('.js-custom-option[name="custom_option_context"] option[value="' + this.options.current_firm + '"]').prop('selected', true);
                 self.updateWorkflowStepList();
+                self.updateLetterMacros();
             }
         }
 
@@ -80,7 +81,7 @@
         $(document).off('change', '.js-custom-option[name="custom_option_subspecialty"]')
             .on('change', '.js-custom-option[name="custom_option_subspecialty"]', this.updateContextList.bind(this));
         $(document).off('change', '.js-custom-option[name="custom_option_context"]')
-            .on('change', '.js-custom-option[name="custom_option_context"]', this.updateWorkflowStepList.bind(this));
+            .on('change', '.js-custom-option[name="custom_option_context"]', () => { this.updateWorkflowStepList(); this.updateLetterMacros(); });
         $(document).off('input', 'input[name="taskname"]').on('input', 'input[name="taskname"]', this.updateShortName.bind(this));
         $(document).off('input', 'input[name="shortname"]').on('input', 'input[name="shortname"]', this.checkNames.bind(this));
     };
@@ -146,6 +147,28 @@
                 list += '<option value="">None</li>';
             }
             self.content.find('.js-custom-option[name="custom_option_workflow_step"]').html(list);
+        }
+    };
+
+    NewPathwayStep.prototype.updateLetterMacros = function () {
+        const self = this;
+        const selected_subspecialty = self.content.find('.js-custom-option[name="custom_option_subspecialty"]').val();
+        const selected_firm = self.content.find('.js-custom-option[name="custom_option_context"]').val();
+
+        if (selected_firm && self.options.letter_macros) {
+            let list = '<option value="">None</option>';
+
+            const macros = self.options.letter_macros.filter((letterMacro) => {
+                return (letterMacro.site_ids.length === 0 || letterMacro.site_ids.includes(self.options.current_site + '')) &&
+                    (letterMacro.subspecialty_ids.length === 0 || letterMacro.subspecialty_ids.includes(selected_subspecialty)) &&
+                    (letterMacro.firm_ids.length === 0 || letterMacro.firm_ids.includes(selected_firm));
+            });
+
+            for (const macro_item of macros) {
+                list += `<option value="${macro_item.id}">${macro_item.name}</option>`
+            }
+
+            self.content.find('.js-custom-option[name="custom_option_macro"]').html(list);
         }
     };
 

@@ -704,10 +704,23 @@
                 break;
             case this.options.letter_step_type_id:
                 new OpenEyes.UI.Dialog.NewPathwayStep({
-                    custom_options: [{
+                    current_site: this.options.current_site_id,
+                    letter_macros: this.options.letter_macros,
+                    custom_options: [
+                    {
+                        id: 'subspecialty',
+                        name: 'Subspecialty',
+                        option_values: this.options.subspecialties
+                    },
+                    {
+                        id: 'context',
+                        name: 'Context',
+                        option_values: []
+                    },
+                    {
                         id: 'macro',
                         name: 'Template',
-                        option_values: this.options.letter_macros,
+                        option_values: this.options.letter_macros
                     }],
                     title: 'Add letter task',
                     onReturn: function (dialog, long_name, short_name, selected_custom_option) {
@@ -715,7 +728,8 @@
                             self.newStep(step_type_id, pathway_id, {
                                 long_name,
                                 short_name,
-                                macro_id: selected_custom_option[0]
+                                firm_id: selected_custom_option[1],
+                                macro_id: selected_custom_option[2]
                             });
                             dialog.close();
                         }

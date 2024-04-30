@@ -121,11 +121,16 @@ if ($is_step_instance) {
                 }
                 if ($step_type->short_name === 'Letter') {
                     $macro = LetterMacro::model()->findByPk($step->getState('macro_id'));
+                    $context_firm = Firm::model()->findByPk($step->getState('firm_id'));
                     ?>
                     <table>
                         <tr>
                             <th>Macro</th>
                             <td><?= $macro->name ?? 'None' ?></td>
+                        </tr>
+                        <tr>
+                            <th>Context</th>
+                            <td><?= $context_firm->name ?? 'Unassigned' ?></td>
                         </tr>
                     </table>
                 <?php }

@@ -66,11 +66,17 @@ class SetupPathwayStepPickerBehavior extends CBehavior
 
         $letter_macros = array_map(
             static function ($item) {
-                return ['id' => $item->id, 'name' => $item->name];
+                return [
+                    'id' => $item->id,
+                    'name' => $item->name,
+                    // Pass these details along to permit client side filtering
+                    'site_ids' => array_map(fn ($site) => $site->id, $item->sites),
+                    'subspecialty_ids' => array_map(fn ($subspecialty) => $subspecialty->id, $item->subspecialties),
+                    'firm_ids' => array_map(fn ($firm) => $firm->id, $item->firms)
+                ];
             },
             LetterMacro::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION)
         );
-        array_unshift($letter_macros, ['id' => '', 'name' => 'None']);
 
         $sites = array_map(
             static function ($item) {
@@ -151,7 +157,8 @@ class SetupPathwayStepPickerBehavior extends CBehavior
             'onhold_step_type_id' => (int)$onhold_step_type_id,
             'booking_step_type_id' => (int)$booking_step_type_id,
             'current_firm_id' => (int)$current_firm->id,
-            'current_subspecialty_id' => (int)$current_firm->getSubspecialtyID()
+            'current_subspecialty_id' => (int)$current_firm->getSubspecialtyID(),
+            'current_site_id' => (int)\Yii::app()->session['selected_site_id'],
         );
     }
 }
