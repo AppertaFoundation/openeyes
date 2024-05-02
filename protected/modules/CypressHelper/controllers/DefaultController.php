@@ -2,6 +2,7 @@
 
 namespace OEModule\CypressHelper\controllers;
 
+use CHttpException;
 use CWebLogRoute;
 use Event;
 use EventType;
@@ -26,6 +27,7 @@ use OE\seeders\resources\GenericModelResource;
 use OE\seeders\resources\SeededEventResource;
 use OE\seeders\resources\SeededPatientResource;
 use SettingInstallation;
+use SettingMetadata;
 
 class DefaultController extends \CController
 {
@@ -252,13 +254,17 @@ class DefaultController extends \CController
         if (is_null($system_setting_value)) {
             throw new \CHttpException(400, 'system setting value must be provided');
         }
+        $metadata_setting = SettingMetadata::model()->findByAttributes(['key' => $system_setting_key]);
+        if (!$metadata_setting) {
+            throw new CHttpException(404, 'setting key not found');
+        }
 
         $setting = SettingInstallation::model()->findByAttributes(['key' => $system_setting_key]);
         if (!isset($setting)) {
             $setting = new SettingInstallation();
             $setting->key = $system_setting_key;
         }
-        $setting->value = $system_setting_value;
+        $metadata_setting->setSettingValue($setting, $metadata_setting, $system_setting_value);
         $setting->save();
 
         // ensure the change takes immediate effect for further requests
