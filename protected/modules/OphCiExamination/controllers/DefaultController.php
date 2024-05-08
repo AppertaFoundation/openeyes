@@ -1581,7 +1581,7 @@ class DefaultController extends \BaseEventTypeController
     {
         $diagnoses = array();
         $model_name = \CHtml::modelName($element);
-        $principal_diagnosis_row_key = \Yii::app()->request->getPost('principal_diagnosis_row_key', null);
+        $principal_diagnosis_row_key = $data['principal_diagnosis_row_key'] ?? \Yii::app()->request->getPost('principal_diagnosis_row_key', null);
 
         if (isset($data[$model_name])) {
             $diagnoses_data = $data[$model_name];

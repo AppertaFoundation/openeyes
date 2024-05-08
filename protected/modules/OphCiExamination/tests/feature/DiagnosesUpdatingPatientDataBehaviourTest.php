@@ -36,6 +36,7 @@ class DiagnosesUpdatingPatientDataBehaviourTest extends \OEDbTestCase
     use \MakesApplicationRequests;
     use \WithFaker;
     use \WithTransactions;
+    use \HasFormAssertions;
 
     public function setUp(): void
     {
@@ -250,6 +251,61 @@ class DiagnosesUpdatingPatientDataBehaviourTest extends \OEDbTestCase
         );
     }
 
+    /** @test */
+    public function draft_event_save_preserves_ophthalmic_diagnoses_form_data()
+    {
+        $episode = \Episode::factory()->create();
+
+        $diagnoses_data_element = Element_OphCiExamination_Diagnoses::factory()
+            ->withBilateralDiagnoses(1)
+            ->withRightDiagnoses(1)
+            ->withLeftDiagnoses(1)
+            ->make(['event_id' => null]);
+
+        $raw_form_data = [
+            CHtml::modelName(Element_OphCiExamination_Diagnoses::class) => $this->mapOphthalmicDiagnosesElementToFormData($diagnoses_data_element),
+            'principal_diagnosis_row_key' => $this->findPrincipalRowKey($diagnoses_data_element->diagnoses),
+        ];
+
+        $draft_url = '/OphCiExamination/Default/create?' . http_build_query(['patient_id' => $episode->patient_id]);
+
+        $draft_form_data = [
+            'patient_id' => $episode->patient_id,
+            'form_data' => json_encode(http_build_query($raw_form_data)),
+            'is_auto_save' => true,
+            'OE_episode_id' => $episode->id,
+            'OE_module_class' => 'OphCiExamination',
+            'originating_url' => $draft_url
+        ];
+
+        list($user, $institution) = $this->createUserWithInstitution();
+        $this->mockCurrentContext($episode->firm, null, $institution);
+
+        $response = $this->actingAs($user, $institution)
+                         ->post('/OphCiExamination/Default/saveDraft', $draft_form_data)
+                         ->assertSuccessful()
+                         ->crawlAsJson(true);
+
+        $this->assertArrayHasKey('draft_id', $response, 'saveDraft did not return a draft_id');
+
+        $draft_id = $response['draft_id'];
+        $draft_url = '/OphCiExamination/Default/create?' . http_build_query(['patient_id' => $episode->patient_id, 'draft_id' => $draft_id]);
+
+        $response = $this->actingAs($user, $institution)
+                  ->get($draft_url)
+                  ->assertSuccessful()
+                  ->crawl();
+
+        // Filter out the form elements inside the Diagnoses row template - despite being inside the <script type="text/template"> element
+        // the DomCrawler treats them as elements and they interfere with the testing
+        $response = $response->filter('input, textarea, select')
+                             ->reduce(
+                                 fn ($node) => !(($node->attr('value') === '{{row_count}}') || (strpos($node->attr('name'), '{{row_count}}') !== false))
+                             );
+
+        $this->assertFormFields($raw_form_data, $response);
+    }
+
     protected function createExaminationWithElements(
         array $element_classes,
         ?\Episode $episode = null,
@@ -350,12 +406,12 @@ class DiagnosesUpdatingPatientDataBehaviourTest extends \OEDbTestCase
     {
         $result = ['entries' => []];
         foreach ($element->diagnoses as $i => $entry) {
-            $result['entries'][] = [
+            $result['entries'][$i + 1] = [
                 'disorder_id' => $entry->disorder_id,
                 'right_eye' => ($entry->eye_id & \Eye::RIGHT) === \Eye::RIGHT,
                 'left_eye' => ($entry->eye_id & \Eye::LEFT) === \Eye::LEFT,
                 'date' => $entry->date,
-                'row_key' => $i
+                'row_key' => $i + 1
             ];
         }
         return $result;
@@ -365,7 +421,7 @@ class DiagnosesUpdatingPatientDataBehaviourTest extends \OEDbTestCase
     {
         for ($i = 0; $i < count($diagnoses); $i++) {
             if ((bool) $diagnoses[$i]->principal) {
-                return $i;
+                return $i + 1;
             }
         }
 

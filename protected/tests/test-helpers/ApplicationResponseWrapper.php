@@ -27,6 +27,7 @@ class ApplicationResponseWrapper
     public ?Exception $exception;
 
     protected ?Crawler $crawled_response = null;
+    protected $crawled_json_response = null;
 
     public function __construct(?string $response = null, array $headers = [], ?ApplicationRedirectWrapper $redirect = null, ?Exception $exception = null)
     {
@@ -147,6 +148,23 @@ class ApplicationResponseWrapper
         }
 
         return $this->crawled_response;
+    }
+
+    public function crawlAsJson(?bool $associative = null, int $depth = 512, int $flags = 0): mixed
+    {
+        if ($this->isException()) {
+            throw new RuntimeException('Cannot crawl exception response:' . $this->exception->getMessage());
+        }
+
+        if ($this->isRedirect()) {
+            throw new RuntimeException('Cannot crawl redirect response: ' . $this->redirect->url);
+        }
+
+        if ($this->crawled_json_response === null) {
+            $this->crawled_json_response = json_decode($this->response, $associative, $depth, $flags);
+        }
+
+        return $this->crawled_json_response;
     }
 
     protected function isRedirect()
