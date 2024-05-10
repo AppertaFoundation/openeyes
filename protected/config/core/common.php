@@ -1,20 +1,20 @@
 <?php
 
 /**
-* OpenEyes.
-*
-* (C) Apperta Foundation, 2020
-* This file is part of OpenEyes.
-* OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-* OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
-* You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
-*
-* @link http://www.openeyes.org.uk
-*
-* @author OpenEyes <info@openeyes.org.uk>
-* @copyright Copyright (c) 2020 Apperta Foundation
-* @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
-*/
+ * OpenEyes.
+ *
+ * (C) Apperta Foundation, 2020
+ * This file is part of OpenEyes.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @link http://www.openeyes.org.uk
+ *
+ * @author OpenEyes <info@openeyes.org.uk>
+ * @copyright Copyright (c) 2020 Apperta Foundation
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+ */
 
 // If the old db.conf file (pre docker) exists, use it. Else read environment variable, else read docker secrets
 // Note, docker secrets are the recommended approach for docker environments
@@ -80,6 +80,18 @@ $config = array(
         'OEModule' => 'application.modules',
     ),
 
+    'modules' => array(
+        // Gii tool
+        'gii' => array(
+            'class' => 'system.gii.GiiModule',
+            'password' => 'openeyes',
+            'ipFilters' => array('127.0.0.1'),
+        ),
+        'oldadmin',
+        'Admin',
+        'Api'
+    ),
+
     // Application components
     'components' => array(
         'assetManager' => array(
@@ -100,7 +112,7 @@ $config = array(
         ),
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '202104011657',
+            'time' => '202101041029',
         ),
         'clientScript' => array(
             'class' => 'ClientScript',
@@ -347,11 +359,6 @@ $config = array(
         'specialty_sort' => array(130, 'SUP'),
         'hos_num_regex' => !empty(trim(getenv('OE_HOS_NUM_REGEX'))) ? getenv('OE_HOS_NUM_REGEX') : '/^([0-9]{1,9})$/',
         'pad_hos_num' => !empty(trim(getenv('OE_HOS_NUM_PAD'))) ? getenv('OE_HOS_NUM_PAD') : '%07s',
-        'nhs_num_label' => !empty(trim(getenv('OE_NHS_NUM_LABEL'))) ? getenv('OE_NHS_NUM_LABEL') : null,
-        'hos_num_label' => !empty(trim(getenv('OE_HOS_NUM_LABEL'))) ? getenv('OE_HOS_NUM_LABEL') : null,
-        // Parameter for short labels in patient panel, or anywhere real estate is at a premium
-        'nhs_num_label_short' => !empty(trim(getenv('OE_NHS_NUM_LABEL_SHORT'))) ? getenv('OE_NHS_NUM_LABEL_SHORT') : null,
-        'hos_num_label_short' => !empty(trim(getenv('OE_HOS_NUM_LABEL_SHORT'))) ? getenv('OE_HOS_NUM_LABEL_SHORT') : null,
         'profile_user_can_edit' => true,
         'profile_user_show_menu' => true,
         'profile_user_can_change_password' => strtolower(getenv("PW_ALLOW_CHANGE")) == "false" ? false : true,
@@ -444,18 +451,6 @@ $config = array(
                 'uri' => 'gp/index',
                 'position' => 10,
                 'restricted' => array('TaskViewGp', 'TaskCreateGp'),
-            ),
-            'analytics' => array(
-                'title' => 'Analytics',
-                'uri' => '/Analytics/analyticsReports',
-                'position' => 11,
-            ),
-            'patient_import' => array(
-                'title' => 'Import Patients',
-                'uri' => 'csv/upload?context=patients',
-                'position' => 47,
-                'requires_setting' => array('setting_key' => 'enable_patient_import', 'required_value' => 'on'),
-                'restricted' => array('admin'),
             ),
             /*
                  //TODO: not yet implemented
@@ -670,41 +665,43 @@ $config = array(
             'nhs_num_status' => 'hidden'
         ],
         //        Set the parameter below to true if you want to use practitioner praactice associations feature
-        'use_contact_practice_associate_model' => !empty(trim(getenv('OE_USE_CPA_MODEL'))) ? filter_var(getenv('OE_USE_CPA_MODEL'), FILTER_VALIDATE_BOOLEAN) : false,
+        'use_contact_practice_associate_model' => false,
         //        Set the parameter below to indicate whether PAS is being used or not
         'pas_in_use' => true,
         //        List the visibility of elements in the Patient Panel Popup - Demographics. Setting them as true or false
         'demographics_content' => [
-            'mobile' => !empty(trim(getenv('OE_DEMOGRAPHICS_MOBILE'))) ? filter_var(getenv('OE_DEMOGRAPHICS_MOBILE'), FILTER_VALIDATE_BOOLEAN) : true,
-            'next_of_kin' => !empty(trim(getenv('OE_DEMOGRAPHICS_NOK'))) ? filter_var(getenv('OE_DEMOGRAPHICS_NOK'), FILTER_VALIDATE_BOOLEAN) : true,
-            'pas' => !empty(trim(getenv('OE_DEMOGRAPHICS_PAS'))) ? filter_var(getenv('OE_DEMOGRAPHICS_PAS'), FILTER_VALIDATE_BOOLEAN) : true,
+            'mobile' => true,
+            'next_of_kin' => true,
+            'pas' => true,
         ],
         //        allow null check is to set whether duplicate checks for patient are to be performed on null RVEEh UR number or any further added patient identifiers
         'patient_identifiers' => array(
             'RVEEH_UR' => array(
-                'code' => !empty(trim(getenv('OE_PATIENT_IDENTIFIER_CODE'))) ? getenv('OE_PATIENT_IDENTIFIER_CODE') : 'RVEEH_UR',
-                'label' => !empty(trim(getenv('OE_PATIENT_IDENTIFIER_LABEL'))) ? getenv('OE_PATIENT_IDENTIFIER_LABEL') : 'Patient Identifier',
-                'unique' => !empty(trim(getenv('OE_PATIENT_IDENTIFIER_UNIQUE'))) ? filter_var(getenv('OE_PATIENT_IDENTIFIER_UNIQUE'), FILTER_VALIDATE_BOOLEAN) : true,
-                'allow_null_check' => !empty(trim(getenv('OE_PATIENT_IDENTIFIER_ALLOW_NULL'))) ? filter_var(getenv('OE_PATIENT_IDENTIFIER_ALLOW_NULL'), FILTER_VALIDATE_BOOLEAN) : false
+                'code' => 'RVEEH_UR',
+                'label' => 'Patient Identifier',
+                'unique' => true,
+                'allow_null_check' => false,
             )
         ),
         'canViewSummary' => true,
-        'default_country' => !empty(trim(getenv('OE_DEFAULT_COUNTRY'))) ? getenv('OE_DEFAULT_COUNTRY') : null,
+        'default_country' => 'United Kingdom',
         'default_patient_import_context' => 'Historic Data Entry',
         'default_patient_import_subspecialty' => 'GL',
         //        Add elements that need to be excluded from the admin sidebar in settings
-        'exclude_admin_structure_param_list' => getenv('OE_EXCLUDE_ADMIN_STRUCT_LIST') ? explode(",", getenv('OE_EXCLUDE_ADMIN_STRUCT_LIST')) : array(''),
-        'oe_version' => '4.0.3',
-        'gp_label' => !empty(trim(getenv('OE_GP_LABEL'))) ? getenv('OE_GP_LABEL') : null,
-        'general_practitioner_label' => !empty(trim(getenv('OE_GENERAL_PRAC_LABEL'))) ? getenv('OE_GENERAL_PRAC_LABEL') : null,
+        'exclude_admin_structure_param_list' => array(
+            //            'Worklist',
+        ),
+        'oe_version' => '4.0',
+        // Replace the term "GP" in the UI with whatever is specified in gp_label. E.g, in Australia they are called "Practioners", not "GPs"
+        'gp_label' => 'GP',
         // number of days in the future to retrieve worklists for the automatic dashboard render (0 by default in v3)
         'worklist_dashboard_future_days' => 0,
         // page size of worklists - recommended to be very large by default, as paging is not generally needed here
         'worklist_default_pagination_size' => 1000,
         //// days of the week to be ignored when determining which worklists to render - Mon, Tue etc
         'worklist_dashboard_skip_days' => array('NONE'),
-        'tech_support_provider' => !empty(trim(getenv(@'OE_TECH_SUPPORT_PROVIDER'))) ? htmlspecialchars(getenv(@'OE_TECH_SUPPORT_PROVIDER')) :  null,
-        'tech_support_url' => !empty(trim(getenv('OE_TECH_SUPPORT_URL'))) ? getenv('OE_TECH_SUPPORT_URL') :  null,
+        'tech_support_provider' => !empty(trim(getenv(@'OE_TECH_SUPPORT_PROVIDER'))) ? getenv(@'OE_TECH_SUPPORT_PROVIDER') :  'Apperta Foundation',
+        'tech_support_url' => !empty(trim(getenv('OE_TECH_SUPPORT_URL'))) ? getenv('OE_TECH_SUPPORT_URL') :  'http://www.apperta.org',
         'pw_restrictions' => array(
             'min_length' => getenv('PW_RES_MIN_LEN') ?: 8,
             'min_length_message' => getenv('PW_RES_MIN_LEN_MESS') ? htmlspecialchars(getenv('PW_RES_MIN_LEN_MESS')) : 'Passwords must be at least 8 characters long',
@@ -738,101 +735,21 @@ $config = array(
                     'softlocked' = user cannot log in even with valid password, but gets annother set of tries in 10 mins
                     'locked' = user cannot log in even with valid password,
                 Invalid statuses will act as 'locked' */
-            'pw_tries' => false !== getenv('PW_STAT_TRIES') ? getenv('PW_STAT_TRIES') : 10, //number of password tries
-            'pw_tries_failed' => false !== getenv('PW_STAT_TRIES_FAILED') ? getenv('PW_STAT_TRIES_FAILED') : 'softlocked', //password status after number of tries exceeded
-            'pw_softlock_timeout' => false !== getenv('PW_SOFTLOCK_TIMEOUT') ? getenv('PW_SOFTLOCK_TIMEOUT') : '10 mins', //time before user can try again after softlocking account
-            'pw_days_stale' => false !== getenv('PW_STAT_DAYS_STALE') ? getenv('PW_STAT_DAYS_STALE') : '0', //number of days before password stales - e.g. '15 days' - 0 to disable , also supports months, years, hours, mins and seconds
-            'pw_days_expire' => false !== getenv('PW_STAT_DAYS_EXPIRE') ? getenv('PW_STAT_DAYS_EXPIRE') : '0', //number of days before password expires - e.g, '30 days' - 0 to disable
-            'pw_days_lock' => false !== getenv('PW_STAT_DAYS_LOCK') ? getenv('PW_STAT_DAYS_LOCK') : '0', //number of days before password locks - e.g., '45 days' - 0 to disable
-            'pw_admin_pw_change' => false !== getenv('PW_STAT_ADMIN_CHANGE') ? getenv('PW_STAT_ADMIN_CHANGE') : 'stale', //password status after password changed by admin - not recommended to be set to locked
+            'pw_tries' => null !== getenv('PW_STAT_TRIES') ? getenv('PW_STAT_TRIES') : 10, //number of password tries
+            'pw_tries_failed' => null !== getenv('PW_STAT_TRIES_FAILED') ? getenv('PW_STAT_TRIES_FAILED') : 'softlocked', //password status after number of tries exceeded
+            'pw_softlock_timeout' => null !== getenv('PW_SOFTLOCK_TIMEOUT') ? getenv('PW_SOFTLOCK_TIMEOUT') : '10 mins', //time before user can try again after softlocking account
+            'pw_days_stale' => null !== getenv('PW_STAT_DAYS_STALE') ? getenv('PW_STAT_DAYS_STALE') : '0', //number of days before password stales - e.g. '15 days' - 0 to disable , also supports months, years, hours, mins and seconds
+            'pw_days_expire' => null !== getenv('PW_STAT_DAYS_EXPIRE') ? getenv('PW_STAT_DAYS_EXPIRE') : '0', //number of days before password expires - e.g, '30 days' - 0 to disable
+            'pw_days_lock' => null !== getenv('PW_STAT_DAYS_LOCK') ? getenv('PW_STAT_DAYS_LOCK') : '0', //number of days before password locks - e.g., '45 days' - 0 to disable
+            'pw_admin_pw_change' => null !== getenv('PW_STAT_ADMIN_CHANGE') ? getenv('PW_STAT_ADMIN_CHANGE') : 'stale', //password status after password changed by admin - not recommended to be set to locked
         ),
         'training_mode_enabled' => getenv('OE_TRAINING_MODE') ? strtolower(getenv('OE_TRAINING_MODE')) : null,
         'watermark_short' => getenv('OE_USER_BANNER_SHORT') ?: null,
         'watermark' => getenv('OE_USER_BANNER_LONG') ?: null,
         'watermark_admin_short' => getenv('OE_ADMIN_BANNER_SHORT') ?: null,
-	'watermark_admin' => getenv('OE_ADMIN_BANNER_LONG') ?: null,
-	'enable_default_support_text' => true
+        'watermark_admin' => getenv('OE_ADMIN_BANNER_LONG') ?: null,
+	'enable_default_support_text' => true,
     ),
 );
-
-$modules = array(
-        // Gii tool
-        // 'gii' => array(
-        //     'class' => 'system.gii.GiiModule',
-        //     'password' => 'openeyes',
-        //     'ipFilters' => array('127.0.0.1'),
-        // ),
-        'oldadmin',
-        'Admin',
-        'Api',
-        'eyedraw',
-        'OphCiExamination' => array('class' => '\OEModule\OphCiExamination\OphCiExaminationModule'),
-        'OphCoCorrespondence',
-        'OphCiPhasing',
-        'OphTrIntravitrealinjection',
-        'OphCoTherapyapplication',
-        'OphDrPrescription',
-        'OphTrConsent',
-        'OphTrOperationnote',
-        'OphTrOperationbooking',
-        'OphTrLaser',
-        'PatientTicketing' => array('class' => '\OEModule\PatientTicketing\PatientTicketingModule'),
-        'OphInVisualfields',
-        'OphInBiometry',
-        'OphCoMessaging' => array('class' => '\OEModule\OphCoMessaging\OphCoMessagingModule'),
-        'PASAPI' => array('class' => '\OEModule\PASAPI\PASAPIModule'),
-        'OphInLabResults',
-        'OphCoCvi' => array('class' => '\OEModule\OphCoCvi\OphCoCviModule'),
-        'Genetics',
-        'OphInDnasample',
-        'OphInDnaextraction',
-        'OphInGeneticresults',
-        'OphCoDocument',
-        'OphCiDidNotAttend',
-        'OphGeneric',
-        'OECaseSearch',
-        'OETrial',
-        'SSO',
-        'OphOuCatprom5',
-        'OphTrOperationchecklists',
-        'OphDrPGDPSD',
-);
-
-
-// deal with any custom modules added for the local deployment - which are set in /config/modules.conf (added via docker)
-// Gracefully ignores file if it is missing
-$custom_modules = explode(" ", trim(str_replace(["modules=(", ")", "'", "openeyes ", "eyedraw "], "", @file_get_contents("/config/modules.conf"))));
-if (!empty($custom_modules)) {
-    $final_custom_modules = array();
-    foreach ($custom_modules as $module) {
-        if (!empty($module)) {
-            $mod_split = explode("=", $module);
-            if (sizeof($mod_split) > 1) {
-                $final_custom_modules[$mod_split[0]] = array('class' => $mod_split[1]);
-            } else {
-                $final_custom_modules[] = (string)$mod_split[0];
-            }
-        }
-    }
-    $modules = array_unique(array_merge($modules, $final_custom_modules), SORT_REGULAR);
-}
-
-$config["modules"] = $modules;
-
-/**
- * Setup the local_users parameter. If the environment variable named OE_LOCAL_USERS is set then use it as an override.
- * else, default to the standard array
- * The OE_LOCAL_USERS environment variable should be a comma separated string
- */
-$local_users = !empty(trim(getenv('OE_LOCAL_USERS'))) ? getenv('OE_LOCAL_USERS') : 'admin, api, docman_user, payload_processor';
-$config["params"]["local_users"] = explode(',', $local_users);
-
-/**
- * Setup the special_users parameter. If the environment variable named OE_SPECIAL_USERS is set then use it as an override.
- * else, default to the standard array
- * The OE_SPECIAL_USERS environment variable should be a comma separated string
- */
-$special_users = !empty(trim(getenv('OE_SPECIAL_USERS'))) ? getenv('OE_SPECIAL_USERS') : 'api';
-$config["params"]["special_users"] = explode(',', $special_users);
 
 return $config;
