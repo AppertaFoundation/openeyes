@@ -42,7 +42,7 @@ if($data) {
 <td>
 <div class="row">
     <div class="data-value">
-        <textarea class="noresize cols-full" readonly cols="35" rows="5"><?php echo $display_queue->notes; ?></textarea>
+        <textarea class="autosize noresize cols-full" readonly cols="35" rows="5"><?php echo $display_queue->notes; ?></textarea>
     </div>
 </div>
 
@@ -76,7 +76,7 @@ if($data) {
             <?php if ($old_assignment->notes) { ?>
                 <td>
                     <div class="data-value">
-                        <textarea class="noresize cols-full" readonly cols="35" rows="5"><?= $old_assignment->notes ?></textarea>
+                        <textarea class="autosize noresize cols-full" readonly cols="35" rows="5"><?= $old_assignment->notes ?></textarea>
                     </div>
                 </td>
             <?php } ?>
