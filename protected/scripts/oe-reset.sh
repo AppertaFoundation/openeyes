@@ -109,6 +109,10 @@ while [[ $# -gt 0 ]]; do
         fallbackbranch=develop
         ## fallback to the develop branch if the named branch does not exist
         ;;
+    --master | -m)
+        fallbackbranch=master
+        ## fallback to the develop branch if the named branch does not exist
+        ;;
     --help)
         showhelp=1
         ;;
@@ -283,7 +287,7 @@ if [[ ! "$branch" = "0" || ! -d $WROOT/protected/modules/sample/sql ]]; then
     ## Checkout new sample database branch
     echo "Downloading database for $branch"
 
-    bash "$SCRIPTDIR"/oe-checkout.sh "$branch" "$checkoutparams" --${fallbackbranch}
+    eval "$SCRIPTDIR"/oe-checkout.sh "$branch" $checkoutparams --${fallbackbranch} || exit 1
 fi
 
 if [ -z "$restorefile" ]; then
@@ -300,7 +304,7 @@ fi
 
 echo "Clearing current database..."
 
-dbresetsql="drop database if exists openeyes; create database ${DATABASE_NAME:-openeyes}; grant all privileges on ${DATABASE_NAME:-openeyes}.* to '$dbuser'@'%' identified by '$pass'; flush privileges;"
+dbresetsql="drop database if exists openeyes; create database ${DATABASE_NAME:-openeyes}; grant SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, REFERENCES, INDEX, ALTER, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE, CREATE VIEW, SHOW VIEW, CREATE ROUTINE, ALTER ROUTINE, EVENT, TRIGGER on ${DATABASE_NAME:-openeyes}.* to '$dbuser'@'%' identified by '$pass'; flush privileges;"
 
 echo ""
 ## write-out command to console (helps with debugging)
@@ -323,10 +327,9 @@ fi
 
 if [ $cleanbase = "0" ]; then
 
-    restorefilesize=$(numfmt --to=iec-i --suffix=B $(du -b "$restorefile" | cut -f1))
-
-    echo "importing $restorefile (Size: $restorefilesize. This can take some time)...."
     if [[ $restorefile =~ \.zip$ ]]; then
+        restorefilesize=$(numfmt --to=iec-i --suffix=B $(gzip -dc "$restorefile" | wc -c))
+        echo "importing $restorefile (Size: $restorefilesize. This can take some time)...."
         # If pv is installed then use it to show progress
         [ $(pv --version >/dev/null 2>&1)$? = 0 ] >/dev/null && importcmd="pv $restorefile | zcat" || importcmd="zcat $restorefile"
         eval "$importcmd | $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'}" || {
@@ -334,6 +337,8 @@ if [ $cleanbase = "0" ]; then
             exit 1
         }
     elif [[ $restorefile =~ \.sql$ ]]; then
+        restorefilesize=$(numfmt --to=iec-i --suffix=B $(du -b "$restorefile" | cut -f1))
+        echo "importing $restorefile (Size: $restorefilesize. This can take some time)...."
         # If pv is installed then use it to show progress
         [ $(pv --version >/dev/null 2>&1)$? = 0 ] >/dev/null && importcmd="pv $restorefile" || importcmd="cat $restorefile"
         eval "$importcmd | $dbconnectionstring -D ${DATABASE_NAME:-'openeyes'}" || {
@@ -365,7 +370,7 @@ if [ -n "$icode" ]; then
     checkicodecmd="SELECT id FROM institution WHERE remote_id = '$icode';"
 
     icodeexists=$(eval "$dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} -e \"$checkicodecmd\"")
-    if [ -n "$icodeexists" ]; then
+    if [ -z "$icodeexists" ]; then
 
         echo "
 

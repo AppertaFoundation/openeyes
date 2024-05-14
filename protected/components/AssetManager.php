@@ -281,11 +281,13 @@ class AssetManager extends CAssetManager
      * @param [type] $priority      The priority for the asset. Higher priority
      *                              scripts will be outputted in the page first.
      * @param bool   $preRegister   Pre-register the asset (if set to false, priority and output will be ignored)
+     * @param bool   $noCreateUrl   Use the exact path given by $script - do not generate a new one
+     * 
      */
-    public function registerScriptFile($script = '', $basePathAlias = null, $priority = null, $output = self::OUTPUT_ALL, $preRegister = true)
+    public function registerScriptFile($script = '', $basePathAlias = null, $priority = null, $output = self::OUTPUT_ALL, $preRegister = true, $noCreateUrl=false)
     {
         $priority = $priority !== null ? $priority : $this->jsPriority--;
-        $path = $this->createUrl($script, $basePathAlias, false);
+        $path = $noCreateUrl ? $script : $this->createUrl($script, $basePathAlias, false);
 
         if ($preRegister) {
             $this->addOrderedScriptFile($path, $priority, $output);

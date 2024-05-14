@@ -326,8 +326,8 @@ class AdminController extends \ModuleAdminController
     {
         // try and process form
         $queue->attributes = $_POST;
-        if (!$parent && $queue->isNewRecord) {
-            $queue->is_initial = true;
+        if ($queue->isNewRecord) {
+            $queue->is_initial = $parent ? false : true;
         }
 
         if (!$queue->validate()) {

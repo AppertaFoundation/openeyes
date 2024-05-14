@@ -15,7 +15,25 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+use OEModule\OphCiExamination\models\OphCiExamination_ElementSet;
+
+/* @var $step OphCiExamination_ElementSet */
+
+$items = $step->items;
+if ($step->display_order_edited) {
+	/* Move new items at the end of the list if there is an order already saved */
+	for ($i = 0; $i < count($items); $i++) {
+		if (empty($items[$i]->display_order)) {
+			$temp = $items[$i];
+			unset($items[$i]);
+			$items[] = $temp;
+		}
+	}
+}
+
 ?>
+
 <div class="box admin">
     <div class="data-group">
         <div class="column cols-2">
@@ -41,7 +59,7 @@
         </tr>
         </thead>
         <tbody class="sortable ui-sortable">
-        <?php foreach ($step->items as $i => $item) { ?>
+        <?php foreach ($items as $i => $item) { ?>
           <tr class="clickable" data-id="<?php echo $item->id?>">
               <td class="reorder">
                   <span>&uarr;&darr;</span>
@@ -68,7 +86,7 @@
                 </div>
               </div>
               <div>
-                
+
               </div>
             </div>
           </td>

@@ -61,7 +61,7 @@ class OphDrPrescription_Item extends EventMedicationUse
     public function rules()
     {
         return array_merge(parent::rules(), array(
-            array('dose, dispense_location_id, dispense_condition_id, start_date, frequency_id, duration_id', 'required'),
+            array('dose, dispense_location_id, dispense_condition_id, start_date, frequency_id, duration_id, route_id', 'required'),
             array('duration_id', 'validateDuration')
         ));
     }
@@ -122,10 +122,10 @@ class OphDrPrescription_Item extends EventMedicationUse
                 $this->form_id = $defaults->default_form_id ? $defaults->default_form_id : $this->medication->default_form_id;
             } else {
                 $this->frequency_id = null;
-                $this->route_id = $this->medication->default_route_id;
-                $this->dose = $this->medication->default_dose;
-                $this->dose_unit_term = $this->medication->default_dose_unit_term;
-                $this->form_id = $this->medication->default_form_id;
+                $this->route_id = $this->medication->default_route_id ?? null;
+                $this->dose = $this->medication->default_dose ?? null;
+                $this->dose_unit_term = $this->medication->default_dose_unit_term ?? null;
+                $this->form_id = $this->medication->default_form_id ?? null;
             }
         }
     }

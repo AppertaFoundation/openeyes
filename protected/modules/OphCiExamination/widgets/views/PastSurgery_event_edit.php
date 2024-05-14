@@ -87,8 +87,8 @@ $model_name = CHtml::modelName($element);
                 $row_count++;
             }
             $api = $this->getApp()->moduleAPI->get('OphTrOperationnote');
-
-            foreach ($api->getOperationsSummaryData($this->patient) as $operation) {
+            $operation_notes = $api->getOperationsSummaryData($this->patient);
+            foreach ($operation_notes as $operation) {
                 $this->render(
                     'PastSurgery_OperationNote_event_edit',
                     array(
@@ -104,6 +104,7 @@ $model_name = CHtml::modelName($element);
             ?>
             </tbody>
         </table>
+        <input type="hidden" name="<?= $model_name ?>[found_previous_op_notes]" value="<?= count($operation_notes) > 0?>"/>
         <div id="<?= $model_name ?>-comments"
              class="field-row-pad-top comment-group js-comment-container flex-layout flex-left"
              style="<?= $element->comments ? '' : 'display: none;' ?>"

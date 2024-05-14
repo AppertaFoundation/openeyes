@@ -84,16 +84,6 @@
                                 'id' => 'et_add'
                             ]
                         ); ?>
-                        <?= \CHtml::button(
-                            'Delete',
-                            [
-                                'class' => 'button large',
-                                'name' => 'delete',
-                                'data-object' => 'subspecialty_sections',
-                                'data-uri' => '/oeadmin/SubspecialtySubsections/delete',
-                                'id' => 'et_delete'
-                            ]
-                        ); ?>
                     </td>
                 </tr>
             </tfoot>

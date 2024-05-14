@@ -67,12 +67,15 @@ class PastSurgery extends \BaseEventElementWidget
             throw new \CException('invalid element class ' . get_class($element) . ' for ' . static::class);
         }
 
-        if (array_key_exists('no_pastsurgery', $data) && $data['no_pastsurgery'] === '1' && !$element->no_pastsurgery_date) {
-            $element->no_pastsurgery_date = date('Y-m-d H:i:s');
-        } elseif ($element->no_pastsurgery_date) {
+        if (array_key_exists('no_pastsurgery', $data) && $data['no_pastsurgery'] === '1') {
+            if (!$element->no_pastsurgery_date) {
+                $element->no_pastsurgery_date = date('Y-m-d H:i:s');
+            }
+        } else {
             $element->no_pastsurgery_date = null;
         }
 
+        $element->found_previous_op_notes = $data['found_previous_op_notes'];
         $element->comments = $data['comments'];
 
         // pre-cache current entries so any entries that remain in place will use the same db row

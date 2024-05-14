@@ -91,19 +91,26 @@ $(document).ready(function() {
 		});
 	});
 
+	window.editWorkflowStepAjaxInProgress = false;
   bindActionWithWorkflowWarning('#admin_workflow_steps tbody tr', 'click', function(e, currentElement) {
 		$('#admin_workflow_steps tbody tr').removeClass('selected');
 		currentElement.addClass('selected');
 
 		var id = currentElement.data('id');
 
-		$.ajax({
-			'type': 'GET',
-			'url': baseUrl+'/OphCiExamination/admin/editWorkflowStep?step_id='+id,
-			'success': function(html) {
-				$('#step_element_types').html(html);
-        bindWorkflowEditEventListeners();
-			}
+        $.ajax({
+            'type': 'GET',
+            'url': baseUrl+'/OphCiExamination/admin/editWorkflowStep?step_id='+id,
+            'beforeSend': function() {
+                editWorkflowStepAjaxInProgress = true;
+            },
+            'success': function(html) {
+                $('#step_element_types').html(html);
+                bindWorkflowEditEventListeners();
+            },
+            'complete': function() {
+                editWorkflowStepAjaxInProgress = false;
+            }
 		});
 	});
 
@@ -249,12 +256,18 @@ $(document).ready(function() {
         if (resp !== "1") {
           alert("Something went wrong trying to add the element type.  Please try again or contact support for assistance.");
         } else {
-          $('#admin_workflow_steps tr.selected').click();
+            $('#admin_workflow_steps tr.selected').click();
+            const display_order_edited = document.getElementById("display_order_edited").value === '1';
+            const checker = () => {
+                if (window.editWorkflowStepAjaxInProgress === false) {
+                    if (display_order_edited) {
+                        workflowSaveHandler(e);
+                    }
+                    clearInterval(interval);
+                }
+            };
 
-          setTimeout(() => {
-              workflowSaveHandler(e);
-          }, 500);
-
+            const interval = setInterval(checker, 250);
         }
       }
     });

@@ -18,7 +18,6 @@ namespace OEModule\OphCiExamination\models;
 use CHtml;
 use Event;
 use EventMedicationUse;
-use Medication;
 use User;
 use Yii;
 
@@ -38,7 +37,6 @@ class HistoryMedications extends BaseMedicationElement
 {
     use traits\CustomOrdering;
     protected $default_view_order = 25;
-
     protected $auto_validate_relations = true;
 
     public $widgetClass = 'OEModule\OphCiExamination\widgets\HistoryMedications';
@@ -133,6 +131,8 @@ class HistoryMedications extends BaseMedicationElement
             $new->is_copied_from_previous_event = true;
             $entries[] = $new;
         }
+        $this->no_systemic_medications_date = $element->no_systemic_medications_date;
+        $this->no_ophthalmic_medications_date = $element->no_ophthalmic_medications_date;
         $this->entries = $entries;
         $this->assortEntries();
         $this->originalAttributes = $this->getAttributes();
@@ -166,11 +166,6 @@ class HistoryMedications extends BaseMedicationElement
     public function isIndividual($action)
     {
         return $action !=='view';
-    }
-
-    public function getDisplayOrder($action, $as_parent = false)
-    {
-        return $action == 'view' ? 25 : parent::getDisplayOrder($action);
     }
 
     /**

@@ -368,7 +368,7 @@ class ExaminationCreator
     protected function addIop($eyeIds, $eye, $iop, $eyeLabel)
     {
         $iopReading = $eye['reading'][0]['iop'];
-        $iopValue = new \OEModule\OphCiExamination\models\OphCiExamination_IntraocularPressure_Value();
+        $iopValue = new \OEModule\OphCiExamination\models\OphCiExamination_IntraocularPressure_Value('exam_creator');
         $iopValue->element_id = $iop->id;
         $iopValue->eye_id = $eyeIds[$eyeLabel];
         $iopReadingValue = \OEModule\OphCiExamination\models\OphCiExamination_IntraocularPressure_Reading::model()->find(

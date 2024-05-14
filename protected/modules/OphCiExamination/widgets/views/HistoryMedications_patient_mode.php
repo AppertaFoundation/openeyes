@@ -60,8 +60,8 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
     <div class="data">
         <?php if (!$current_systemic_meds && !$stopped_systemic_meds && !$element->no_systemic_medications_date) { ?>
             <div class="nil-recorded">Nil recorded</div>
-        <?php } elseif ($element->no_systemic_medications_date) { ?>
-            <div class="nil-recorded">Patient has had no previous systemic treatment</div>
+        <?php } elseif (!$current_systemic_meds && !$stopped_systemic_meds && $element->no_systemic_medications_date) { ?>
+            <div class="nil-recorded">Patient is not taking any systemic medications</div>
         <?php } else { ?>
             <?php if ($current_systemic_meds) { ?>
                 <?= $this->render('_history_systemic_medication_table', [
@@ -107,8 +107,8 @@ $stopped_eye_meds = array_filter($stopped, $eye_filter);
         <div class="data">
             <?php if (!$current_eye_meds && !$stopped_eye_meds && !$element->no_ophthalmic_medications_date) { ?>
                 <div class="nil-recorded">Nil recorded</div>
-            <?php } elseif ($element->no_ophthalmic_medications_date) { ?>
-                <div class="nil-recorded">Patient has had no previous eye surgery or laser treatment</div>
+            <?php } elseif (!$current_eye_meds && !$stopped_eye_meds && $element->no_ophthalmic_medications_date) { ?>
+                <div class="nil-recorded">Patient is not taking any eye medications</div>
             <?php } else { ?>
                 <?php if ($current_eye_meds) { ?>
                     <?= $this->render('_history_eye_medication_table', [

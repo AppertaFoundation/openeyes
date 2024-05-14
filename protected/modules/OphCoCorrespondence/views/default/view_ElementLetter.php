@@ -78,7 +78,7 @@ $is_mobile_or_tablet = preg_match('/(ipad|iphone|android)/i', Yii::app()->getReq
                                     if ($target->ToCc == 'To') {
                                         $toAddress = $target->contact_name . ($emailOutputStatus ?? "") . "\n" . $target->address;
                                     } else {
-                                        $contact_type = $target->contact_type != Yii::app()->params['gp_label'] ? ucfirst(strtolower($target->contact_type)) : $target->contact_type;
+                                        $contact_type = $target->contact_type != \SettingMetadata::model()->getSetting('gp_label') ? ucfirst(strtolower($target->contact_type)) : $target->contact_type;
                                         $ccString .= "<small class='fade'>CC</small><br/>" . ($contact_type != "Other" ? $contact_type . ": " : "") . $target->contact_name . ($emailOutputStatus ?? "") . "<br/>" . $element->renderSourceAddress($target->address) . "<br/>";
                                     }
                                 }

@@ -1,5 +1,7 @@
 <?php
 
+use OEModule\OphCiExamination\models\OphCiExaminationRisk;
+
 /**
  * OpenEyes
  *
@@ -17,6 +19,7 @@
  */
 class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
 {
+    private $procedure_short_format_threshold = 64;
     /**
      * Returns the static model of the specified AR class.
      * @param $className string
@@ -86,6 +89,18 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $anticoag = $this->anticoagsStatusAndDate($patient);
 
         $operation = $this->operation($id);
+        $procedures_text = implode(', ', array_column($operation, 'term'));
+        if (strlen($procedures_text) > $this->procedure_short_format_threshold) {
+            $procedures_text = [];
+            foreach ($operation as $procedure) {
+                if (!empty($procedure['short_term'])) {
+                    $procedures_text[] = $procedure['short_term'];
+                } else {
+                    $procedures_text[] = $procedure['term'];
+                }
+            }
+            $procedures_text = implode(', ', $procedures_text);
+        }
         $allergyString = $this->allergyString($episode);
 
         $this->event_id = $id;
@@ -95,7 +110,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
         $this->patient_name = $contact->title . ' ' . $contact->first_name . ' ' . $contact->last_name;
         $this->date_of_birth = $patient['dob'];
         $this->hos_num = $patient['hos_num'];
-        $this->procedure = implode(', ', array_column($operation, 'term'));
+        $this->procedure = $procedures_text;
         $this->allergies = $allergyString;
         $this->complexity = $booking->complexity;
 
@@ -221,7 +236,7 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
     protected function operation($id)
     {
         $operation = Yii::app()->db->createCommand()
-            ->select('proc.term as term')
+            ->select('proc.term as term, proc.short_format as short_term')
             ->from('et_ophtroperationbooking_operation op')
             ->leftJoin('ophtroperationbooking_operation_procedures_procedures opp', 'opp.element_id = op.id')
             ->leftJoin('proc', 'opp.proc_id = proc.id')
@@ -422,11 +437,18 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
             return $risk->name !== 'Anticoagulants';
         });
 
+        $other_risk = OphCiExaminationRisk::model()->findByAttributes(array('name' => 'Other'));
+
         $lines = array_merge(
             $lines,
             array_map(
-                static function ($risk) use ($exam_api, $patient, $whiteboard) {
-                    $exam_risk = $exam_api->getRiskByName($patient, $risk->name);
+                static function ($risk) use ($exam_api, $patient, $whiteboard, $other_risk) {
+                    $risk_name = $risk->name;
+
+                    if ($risk->risk_id === $other_risk->id) {
+                        $risk_name = 'Other';
+                    }
+                    $exam_risk = $exam_api->getRiskByName($patient, $risk_name);
                     $risk_present = $whiteboard->getDisplayHasRisk($exam_risk);
 
                     if ($risk->name === 'Alpha blockers') {
@@ -434,7 +456,13 @@ class OphTrOperationbooking_Whiteboard extends BaseActiveRecordVersioned
                     }
 
                     if ($risk->comments !== '') {
+                        if ($exam_risk['name'] === 'Other') {
+                            return array($risk_present, '<span class="has-tooltip" data-tooltip-content="' . $risk->comments . '">' . $risk->other . '</span>');
+                        }
                         return array($risk_present, '<span class="has-tooltip" data-tooltip-content="' . $risk->comments . '">' . $exam_risk['name'] . '</span>');
+                    }
+                    if ($exam_risk['name'] === 'Other') {
+                        return array($risk_present, $risk->other);
                     }
                     return array($risk_present, $exam_risk['name']);
                 },

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -98,10 +99,10 @@ class DocumentTarget extends BaseActiveRecord
 
         foreach ($documentOutputs as $documentOutput) {
             if ($documentOutput->output_type === 'Email') {
-                $emailStatus = 'Email: ' . $documentOutput->output_status . '<br/>' . 'Address: ' . $this->email;
+                $emailStatus = 'Email: ' . ($documentOutput->output_status === 'PENDING_RETRY' ? 'PENDING' : $documentOutput->output_status) . '<br/>' . 'Address: ' . $this->email;
             }
             if ($documentOutput->output_type === 'Email (Delayed)') {
-                $delayedEmailStatus = 'Email (Delayed): ' . $documentOutput->output_status . '<br/>' .'Address: ' . $this->email;
+                $delayedEmailStatus = 'Email (Delayed): ' . $documentOutput->output_status . '<br/>' . 'Address: ' . $this->email;
             }
         }
 
@@ -124,7 +125,8 @@ class DocumentTarget extends BaseActiveRecord
     /**
      * @return bool
      */
-    public function isRecipientDocumentOutputEmail() {
+    public function isRecipientDocumentOutputEmail()
+    {
         $documentOutputs = $this->document_output;
 
         foreach ($documentOutputs as $documentOutput) {
@@ -133,5 +135,15 @@ class DocumentTarget extends BaseActiveRecord
             }
         }
         return false;
+    }
+
+    /**
+     * Gets the Commissioning Body Service with the same contact id of target
+        *
+        * @return array|null
+        */
+    public function getCommissioningBodyService()
+    {
+        return CommissioningBodyService::model()->find('contact_id=:contact_id', [':contact_id' => $this->contact_id]);
     }
 }

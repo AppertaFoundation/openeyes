@@ -356,7 +356,7 @@ class OphCoCorrespondence_API extends BaseAPI
             $data['to']['email'] = $contact->contact->email ?? null;
         }
 
-        if ($macro->recipient && $macro->recipient->name == Yii::app()->params['gp_label'] && $contact = ($patient->gp) ? $patient->gp : $patient->practice) {
+        if ($macro->recipient && $macro->recipient->name == \SettingMetadata::model()->getSetting('gp_label') && $contact = ($patient->gp) ? $patient->gp : $patient->practice) {
             $data['to']['contact_type'] = get_class($contact);
             $data['to']['contact_id'] = $contact->contact->id;
             $data['to']['email'] = $contact->contact->email ?? null;
@@ -407,14 +407,14 @@ class OphCoCorrespondence_API extends BaseAPI
             } else {
                 $data['cc'][$k]['contact_name'] = $patient->getCorrespondenceName();
                 $data['cc'][$k]['contact_id'] = $patient->contact->id;
-                $data['cc'][$k]['address'] = "Letters to the " . \Yii::app()->params['gp_label'] . " should be cc'd to the patient, but this patient does not have a valid address.";
+                $data['cc'][$k]['address'] = "Letters to the " . \SettingMetadata::model()->getSetting('gp_label') . " should be cc'd to the patient, but this patient does not have a valid address.";
             }
             $data['cc'][$k]['email'] = isset($patient->contact) ? $patient->contact->email : null;
             $k++;
         }
 
         if ($macro->cc_doctor && $cc_contact = ($patient->gp) ? $patient->gp : $patient->practice) {
-            $data['cc'][$k]['contact_type'] = Yii::app()->params['gp_label'];
+            $data['cc'][$k]['contact_type'] = \SettingMetadata::model()->getSetting('gp_label');
             $data['cc'][$k]['contact_name'] = $cc_contact->getCorrespondenceName();
             $data['cc'][$k]['contact_id'] = $cc_contact->contact->id;
             $data['cc'][$k]['address'] = $cc_contact->getLetterAddress(array(
@@ -511,7 +511,7 @@ class OphCoCorrespondence_API extends BaseAPI
             }
         }
 
-        if ($macro->recipient && $macro->recipient->name == Yii::app()->params['gp_label'] && $contact = ($patient->gp) ? $patient->gp : $patient->practice) {
+        if ($macro->recipient && $macro->recipient->name == \SettingMetadata::model()->getSetting('gp_label') && $contact = ($patient->gp) ? $patient->gp : $patient->practice) {
             $data['sel_address_target'] = get_class($contact) . $contact->id;
         }
 
@@ -556,7 +556,7 @@ class OphCoCorrespondence_API extends BaseAPI
                     'include_prefix' => true,
                 ));
             } else {
-                $data['alert'] = "Letters to the " . \Yii::app()->params['gp_label'] . " should be cc'd to the patient, but this patient does not have a valid address.";
+                $data['alert'] = "Letters to the " . \SettingMetadata::model()->getSetting('gp_label') . " should be cc'd to the patient, but this patient does not have a valid address.";
             }
         }
 

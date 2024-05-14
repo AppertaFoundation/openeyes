@@ -181,7 +181,7 @@ class Audit extends BaseActiveRecord
 
             $this->ipaddr_id = $ipaddr->id;
             $this->server_id = $server->id;
-            $this->request_uri = $_SERVER['REQUEST_URI'];
+            $this->request_uri = substr($_SERVER['REQUEST_URI'], 0, 255);
 
             if ($this->user) {
                 $this->site_id = Yii::app()->session['selected_site_id'];

@@ -475,11 +475,6 @@ class MedicationSet extends BaseActiveRecordVersioned
 
     public function saveAutoMeds()
     {
-        $existing_ids = array_map(function ($e) {
-            return $e->id;
-        }, MedicationSetAutoRuleMedication::model()->findAllByAttributes(['medication_set_id' => $this->id]));
-        $updated_ids = array();
-
         foreach ($this->medicationSetAutoRuleMedications as $key => $med) {
             $med_m = $med;
 
@@ -501,17 +496,6 @@ class MedicationSet extends BaseActiveRecordVersioned
             $med_m->include_parent = isset($med->include_parent) ? $med->include_parent : 0;
 
             $med_m->save();
-            $updated_ids[] = $med_m->id;
-        }
-        $ids_to_delete = array_diff($existing_ids, $updated_ids);
-        if (!empty($ids_to_delete)) {
-            $criteria = new \CDbCriteria();
-            $criteria->addInCondition('id', $ids_to_delete);
-
-            // beforeDelete only called before delete() but not before deleteAll();
-            foreach (MedicationSetAutoRuleMedication::model()->findAll($criteria) as $item) {
-                $item->deleteWithTapers()->delete($criteria);
-            }
         }
     }
 

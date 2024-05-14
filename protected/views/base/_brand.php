@@ -51,6 +51,7 @@ $tech_support_url = Yii::App()->params['tech_support_url'] ? htmlspecialchars(Yi
 
   <div class="group">
     <h4>Support</h4>
+<<<<<<< fix/loginscreen_changes
 	<?php if(Yii::app()->params['enable_default_support_text']){ ?>
         <p>Paid for support and maintenance is available from our Accredited Professional Services Partner network.<br>A list of available partners can be found at the following link <a href="http://openeyes.apperta.org" target="_blank">openeyes.apperta.org</a></p>
 	<?php } else { ?>
@@ -64,6 +65,19 @@ $tech_support_url = Yii::App()->params['tech_support_url'] ? htmlspecialchars(Yi
 	    <?php endif; ?>
 	</p>
         <?php } ?>
+=======
+    <p>
+    <span class="large-text"> Need Help?&nbsp;
+        <?php  $purifier = new CHtmlPurifier(); ?>
+        <?php if (Yii::app()->params['helpdesk_phone'] || Yii::app()->params['helpdesk_email']) : ?>
+            <?= Yii::app()->params['helpdesk_phone'] ? $purifier->purify(Yii::app()->params['helpdesk_phone']) : null ?>
+            <?= Yii::app()->params['helpdesk_email'] ? $purifier->purify(Yii::app()->params['helpdesk_email']) : null ?>
+            <?= Yii::app()->params['helpdesk_hours'] ? "<br/>(" . $purifier->purify(Yii::app()->params['helpdesk_hours']) . ")" : null ?>
+        <?php elseif ($tech_support_provider) : ?>
+          <a href="<?= $tech_support_url ?>" target="_blank"><?= $tech_support_provider ?></a>
+        <?php endif; ?>
+    </p>
+>>>>>>> release/v4.0.3
   </div>
   <div class="group">
     <h4>Version: <?= Yii::App()->params['oe_version'] ?></h4>

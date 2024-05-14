@@ -148,7 +148,7 @@
                           <option value="0">Invitation letter</option>
                           <option value="1">1st reminder letter</option>
                           <option value="2">2nd reminder letter</option>
-                          <option value="3"><?php echo Yii::app()->params['gp_label']?> letter</option>
+                          <option value="3"><?php echo \SettingMetadata::model()->getSetting('gp_label')?> letter</option>
                         </select>
                       </td>
                     </tr>

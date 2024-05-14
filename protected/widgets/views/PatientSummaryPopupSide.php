@@ -60,7 +60,7 @@
                         <?php } ?>
                     </div>
                     <div class="nhs-number">
-                        <?= Yii::app()->params['nhs_num_label'] ?>
+                        <?= \SettingMetadata::model()->getSetting('nhs_num_label') ?>
                         <?= $this->patient->nhsnum ?>
                     </div>
                 </div>
@@ -96,15 +96,15 @@
                         <td></td>
                     </tr>
                     <tr>
-                        <td><?php echo Yii::app()->params['general_practitioner_label'] ?></td>
+                        <td><?php echo \SettingMetadata::model()->getSetting('general_practitioner_label') ?></td>
                         <td><?= $this->patient->gp ? $this->patient->gp->contact->fullName : 'Unknown'; ?></td>
                     </tr>
                     <tr>
-                        <td><?php echo Yii::app()->params['gp_label'] ?> Address</td>
+                        <td><?php echo \SettingMetadata::model()->getSetting('gp_label') ?> Address</td>
                         <td><?= ($this->patient->gp && $this->patient->gp->contact->address) ? $this->patient->gp->contact->address->letterLine : 'Unknown'; ?></td>
                     </tr>
                     <tr>
-                        <td><?php echo Yii::app()->params['gp_label'] ?> Telephone</td>
+                        <td><?php echo \SettingMetadata::model()->getSetting('gp_label') ?> Telephone</td>
                         <td><?= ($this->patient->gp && $this->patient->gp->contact->primary_phone) ? $this->patient->gp->contact->primary_phone : 'Unknown'; ?></td>
                     </tr>
                     <?php

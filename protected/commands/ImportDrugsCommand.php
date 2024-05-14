@@ -149,7 +149,7 @@ EOD;
 
     private function _getImportDir()
     {
-        return getenv('DMD_EXTRACT_FOLDER') ?? Yii::getPathOfAlias('application') . '/data/dmd_data';
+        return getenv('DMD_EXTRACT_FOLDER') ?: Yii::getPathOfAlias('application') . '/data/dmd_data';
     }
 
     public function getParams($params)
@@ -473,6 +473,10 @@ EOD;
 
                 $k = array_keys($rows);
 
+		if (!isset($k[0])) {
+		    continue;
+		}
+
                 if ($k[0] == '0') {
                     $subsubnode = $rows;
                 } else {
@@ -482,7 +486,13 @@ EOD;
                 $multipleValues = '';
                 $multipleValuesMaxCount = 100;
                 $multipleValuesCurrentCount = 0;
-                $rowCount = sizeof($subsubnode);
+
+
+                if (is_null($subsubnode)) {
+                    continue;
+                }
+
+                $rowCount = count($subsubnode);
                 foreach ($subsubnode as $rowIndex => $oneRow) {
                     if ($limit <= $i++ && $limit != 0) {
                         break;
