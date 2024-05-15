@@ -54,8 +54,6 @@ The principal source of information on OpenEyes is [the OpenEyes website](http:/
 
 If you're interested in the OpenEyes project, or for general enquiries, email: <openeyes@apperta.org>
 
-You can find us on twitter at: http://twitter.com/openeyes_oef
-
 # Contributing
 -----------------------------------
 
