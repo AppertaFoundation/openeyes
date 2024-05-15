@@ -106,17 +106,17 @@ class SubspecialtySubsectionsController extends BaseAdminController {
 
     public function actionDelete()
     {
-        $delete_ids = Yii::app()->request->getPost('select', []);
+        $delete_id = Yii::app()->request->getParam('id');
         $transaction = Yii::app()->db->beginTransaction();
+        $subspecialty_id = Yii::app()->request->getParam('subspecialty_id');
         $success = true;
 
         try {
-            foreach ($delete_ids as $id) {
-                $subsection = SubspecialtySubsection::model()->findByPk($id);
+            if ($delete_id) {
+                $subsection = SubspecialtySubsection::model()->findByPk($delete_id);
                 if ($subsection) {
                     if (!$subsection->delete()) {
                         $success = false;
-                        break;
                     } else {
                         Audit::add('admin-subspecialtySubsection', 'delete', serialize($subsection));
                     }
@@ -129,11 +129,11 @@ class SubspecialtySubsectionsController extends BaseAdminController {
 
         if ($success) {
             $transaction->commit();
-            echo '1';
         } else {
             $transaction->rollback();
-            echo '0';
         }
+
+        echo CJavaScript::jsonEncode($success);
     }
 
     public function actions() {

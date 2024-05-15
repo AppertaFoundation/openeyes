@@ -43,6 +43,7 @@ $tech_support_url = Yii::App()->params['tech_support_url'] ? htmlspecialchars(Yi
       <!-- user -->
     </div>
     <div class="info">
+<<<<<<< fix/loginscreen_changes
       <center>
       <a href="http://apperta.org" target="_blank"><img src="<?php echo Yii::app()->assetManager->createUrl('img/logo/logo.png') ?>" alt="Apperta Foundation CIC Logo" width="30%" style="padding-right:20px"></a>
        <a href="https://digitalpublicgoods.net/who-we-are/" target="_blank"><img src="<?php echo Yii::app()->assetManager->createUrl('img/logo/dpga_logo_2.svg') ?>" alt="Digital Public Good Alliance Logo" width="30%" style="padding-right:20px">
@@ -51,6 +52,21 @@ $tech_support_url = Yii::App()->params['tech_support_url'] ? htmlspecialchars(Yi
     </center>
         <!--<a href="#" onclick="$('#js-openeyes-btn').click();">About</a>-->
       
+=======
+      <div class="flex-layout">
+        <span class="large-text"> Need Help?&nbsp;
+          <?php  $purifier = new CHtmlPurifier(); ?>
+          <?php if (Yii::app()->params['helpdesk_phone'] || Yii::app()->params['helpdesk_email']) : ?>
+                <?= Yii::app()->params['helpdesk_phone'] ? "<strong>" . $purifier->purify(Yii::app()->params['helpdesk_phone']) . "</strong>" : null ?></strong>
+                <?= Yii::app()->params['helpdesk_email'] ? "<br/>" . $purifier->purify(Yii::app()->params['helpdesk_email']) : null ?>
+                <?= Yii::app()->params['helpdesk_hours'] ? "<br/> (" . $purifier->purify(Yii::app()->params['helpdesk_hours']) . ")" : null ?>
+          <?php elseif ($tech_support_provider) : ?>
+            <strong><a href="<?= $tech_support_url ?>" target="_blank"><?= $tech_support_provider ?></a></strong>
+          <?php endif; ?>
+        </span>
+        <a href="#" onclick="$('#js-openeyes-btn').click();">About</a>
+      </div>
+>>>>>>> release/v4.0.3
       <!-- info -->
     </div>
     <!-- login -->

@@ -24,19 +24,21 @@ fix=1
 nosummary=0
 # Set default branch from environment. Else, if in LIVE mode, fall back to master branch. otherwise fallback to develop branch
 defaultbranch=$OE_DEFAULT_BRANCH
-if [ -z "$defaultbranch" ]; then
-    [ "${OE_MODE^^}" = "LIVE" ] && defaultbranch="master" || defaultbranch="develop"
+if [ -z $defaultbranch ]; then
+    [[ "${OE_MODE^^}" = "LIVE" || "${OE_MODE^^}" = "TEST" ]] && defaultbranch="master" || defaultbranch="develop"
 fi
 branch="$defaultbranch"
 fixparams=""
+nopull=0
 showhelp=0
 sample=0
-sampleonly=0
 usessh=""
 cloneparams=""
 fetchparams=""
 depth="2000" # by default always shallow clone to this depth (use git fetch --unshallow to revert to full depth after)
 mergebranch=""
+mergefailed=0
+unshallowsample=0
 
 # parse SCRIPTDIR and WROOT first. Strip from list of params
 PARAMS=()
@@ -67,6 +69,9 @@ source "$SCRIPTDIR"/git.conf 2>/dev/null
 # if a custom config has been supplied (e.g, by a docker config) then use it, else use the default
 [ -f "/config/modules.conf" ] && MODULES_CONF="/config/modules.conf" || MODULES_CONF="$SCRIPTDIR/modules.conf"
 source "$MODULES_CONF"
+
+# Set the modules path
+MODULEROOT=$WROOT/protected/modules
 
 # store original ssh value, needed for updating remotes during pull
 previousssh=$usessh
@@ -133,8 +138,12 @@ while [[ $# -gt 0 ]]; do
     --sample)
         sample=1
         ;;
+    --no-sample)
+        sample=-1
+        ;;
     --sample-only)
-        sampleonly=1
+        # if in sample only mode, we want only the sample module and nothing else
+        modules=(sample)
         ;;
     --no-oe) # Don't checkout the openeyes repo
         delete=(openeyes)
@@ -146,6 +155,9 @@ while [[ $# -gt 0 ]]; do
         ;;
     --single-branch)
         cloneparams="$cloneparams --single-branch"
+        ;;
+    --unshallow-sample)
+        unshallowsample=1
         ;;
     *)
         if [ -n "$1" ]; then
@@ -202,6 +214,7 @@ if [ $showhelp = 1 ]; then
     echo "                   completion"
     echo "  --depth <int>  : Only clone/fetch to the given depth"
     echo "  --merge <branch> : Perform a merge of the given upstream branch into the checked-out code"
+    echo "  --unshallow-sample : By default, the sample modile always uses a depth of 1. Setting this flag will use the same depth as all other modules"
     echo ""
     exit 1
 fi
@@ -211,8 +224,56 @@ if [ "$SCRIPTDIR" = "" ] || [ "$SCRIPTDIR" = "setme" ] || [ "$WROOT" = "" ] || [
     echo "Directories not set correctly. Please use oe-checkout.sh"
 fi
 
+#######################################################################################
+## Add sample module to checkout if it pre-exists exists or if --sample has been set ##
+#######################################################################################
+# first expression checks that sample module is not already in the sample list
+if [[ $(printf '%s\n' "${modules[@]}" | grep -P '^sample$' >/dev/null 2>&1)$? -eq 1 ]]; then
+    # If sample is not already in the modules list, then add it if either the sample folder exists or if sample=1 is explicitly set
+    if [[ (-d "$MODULEROOT/sample" && $sample -eq 0) || ($sample -eq 1) ]]; then
+        echo -e "\nAdding sample module..."
+        modules=("${modules[@]}" sample)
+    fi
+fi
+
 echo ""
 echo "Checking out branch $branch..."
+echo "for modules:"
+printf '%s\n' "${modules[@]%=*}"
+echo ""
+
+if [ -n "$cloneparams" ]; then
+    echo "Using the following parameters for clone:"
+    echo "${cloneparams}"
+    echo ""
+fi
+
+if [ -n "$depth" ]; then
+    echo "To a depth of: $depth"
+fi
+
+if [ $nopull -eq 1 ]; then
+    echo -"Will not pull latest after checkout"
+fi
+
+if [ $fix -eq 0 ]; then
+    echo "Will not run oe-fix after checkout"
+elif [ -n "$fixparams" ]; then
+    echo "Using the following parameters for oe-fix:"
+    echo "${fixparams}"
+    echo ""
+fi
+
+if [ $force -eq 1 ]; then
+    echo "Forcing reset - any uncomitted changes will be lost"
+fi
+
+echo -e "\nWill fallback to $defaultbranch if $branch does not exist"
+
+if [[ -n "$mergebranch" && "$mergebranch" != "$branch" ]]; then
+    echo "Will merge with $mergebranch after checkout"
+fi
+
 echo ""
 
 ssh-agent >/dev/null 2>&1
@@ -245,22 +306,13 @@ git config --global credential.helper 'cache --timeout=86400'
 # Set fileMode to false, to prevent windows machines removing the execute bit on checkin
 git config --global core.fileMode false 2>/dev/null
 
-MODULEROOT=$WROOT/protected/modules
-
-# Add sample DB to checkout if it exists or if --sample has been set
-if [[ -d "$MODULEROOT/sample" ]] || [[ $sample = 1 ]]; then modules=("${modules[@]}" sample); fi
-
-# if in sample only mode, we want only the sample module and nothing else
-if [ $sampleonly = 1 ]; then
-    modules=(sample)
-fi
-
 ######################################################
 # update remote if changing from https to ssh method #
 ######################################################
 if [ ! "$usessh" == "$previousssh" ]; then
 
-    for module in "${modules[@]}"; do
+    # Note that the "%=*" removes any namespace definitions (i.e, given OphInTesme=\OEModule\OphInTestme\OphInTestme::class, it would only return OphInTestme)
+    for module in "${modules[@]%=*}"; do
         # only run if module exists
         if [ ! -d "$MODULEROOT/$module" ]; then
             if [ ! "$module" = "openeyes" ]; then
@@ -291,7 +343,8 @@ if [ ! "$force" = "1" ]; then
     changes=0
     modulelist=""
 
-    for module in "${modules[@]}"; do
+    # Note that the "%=*" removes any namespace definitions (i.e, given OphInTesme=\OEModule\OphInTestme\OphInTestme::class, it would only return OphInTestme)
+    for module in "${modules[@]%=*}"; do
         if [ ! -d "$MODULEROOT/$module" ]; then
             if [ ! "$module" = "openeyes" ]; then
                 printf "\e[31mModule %s not found\e[0m\n" "$module"
@@ -328,75 +381,154 @@ fi
 # make sure modules directory exists
 mkdir -p "$MODULEROOT"
 
-for module in "${modules[@]}"; do
+# Note that the "%=*" removes any namespace definitions (i.e, given OphInTesme=\OEModule\OphInTestme\OphInTestme::class, it would only return OphInTestme)
+for module in "${modules[@]%=*}"; do
+    [ -z $module ] && continue || : # ignore any empty modules is the array
 
-    # Determine if module already exists (ignoring openeyes). If not, clone it
-    if [ ! -d "$MODULEROOT/$module" ] && [ "$module" != "openeyes" ]; then
-
-        printf "\e[32m$module: Doesn't currently exist - cloning from : ${basestring}/${module}.git \e[0m\n"
-
-        # If doing a shallow clone, then make sure to add the branch name
-        if [[ ! -z $depth ]]; then
-            cloneparams+=" --depth $depth --branch $branch" # note that branch must be the last thing in the string
-        fi
-
-        if ! git -C $MODULEROOT clone $cloneparams ${basestring}/${module}.git $module 2>/dev/null; then
-            # if no given branch name was found when doing a shallow (or branch) clone, then fall back to the default branch
-            cloneparams=${cloneparams%$branch} # Note: This removes the branch name from the end of the string
-            cloneparams+=$defaultbranch        # This adds the *default* branch name to the end of the string
-            git -C $MODULEROOT clone $cloneparams ${basestring}/${module}.git $module
-        fi
-    fi
-
-    processgit=1
+    printf "\e[32m$module: \e[0m"
 
     # deal with openeyes not being a real module!
     if [ "$module" = "openeyes" ]; then MODGITROOT=$WROOT; else MODGITROOT=$MODULEROOT/$module; fi
 
+    processgit=1
+    moduledepth=$depth # allows override of the depth for specific modules (e.g, sample)
+    nomodulepull=0     # can override nopull for this module only (used when dealing with tags)
+
+    # override depth for sample module, to save downloading gigs of data,
+    # can be overiden by specifying --unshallow-sample
+    if [[ "$module" == "sample" && $unshallowsample -eq 0 ]]; then
+        moduledepth=1
+    fi
+
+    ############################################
+    ## Check if branch / tag exists on remote ##
+    ## or local                               ##
+    ############################################
+    echo "testing for existence of remote tag/branch..."
+    remoteexists=0
+    nofetch=0
+    trackbranch=$branch
+    if git ls-remote --exit-code ${basestring}/${module}.git refs/tags/"$branch"; then
+        echo "Found a tag named $branch."
+        remoteexists=1
+        trackbranch="tags/$branch"
+        nomodulepull=1 # we don't need to do a pull if we're fetching a tag
+    elif git ls-remote --exit-code ${basestring}/${module}.git refs/heads/"$branch"; then
+        echo "Found a remote branch named $branch."
+        remoteexists=1
+        trackbranch="$branch"
+        # check if branch exists locally - if so then we should not attempt to fetch it
+        if [ -d "$MODGITROOT" ] && git -C $MODGITROOT show-ref --verify --quiet refs/heads/"$branch"; then
+            nofetch=1
+        fi
+
+    else
+        nomodulepull=1 # No point pulling if there is no remote to pull from
+        # check if branch exists locally - if not, fallback to defaultbranch
+        if [ -d "$MODGITROOT" ] && git -C $MODGITROOT show-ref --verify --quiet refs/heads/"$branch"; then
+            trackbranch="$branch"
+        else
+            trackbranch="$defaultbranch"
+        fi
+
+        if [ "$trackbranch" != "branch" ]; then
+            echo "No branch $branch was found. Falling back to $defaultbranch"
+            trackbranch=$defaultbranch
+            # check if default branch exists locally - if not fetch it
+            if ! git -C $MODGITROOT show-ref --verify --quiet refs/heads/"$trackbranch"; then
+                git -C $MODGITROOT fetch --depth $moduledepth origin $trackbranch:$trackbranch
+            fi
+        fi
+
+    fi
+
+    ##################################
+    ##         Start Clone          ##
+    ##################################
+
+    # Determine if module already exists (ignoring openeyes). If not, clone it
+    if [ ! -d "$MODULEROOT/$module" ] && [ "$module" != "openeyes" ]; then
+
+        printf "Doesn't currently exist - cloning from : ${basestring}/${module}.git"
+
+        # If doing a shallow clone, then make sure to add the branch name
+        if [[ -n "$moduledepth" ]]; then
+            cloneparams+=" --depth $moduledepth  --branch ${trackbranch#tags/}" # note that branch must be the last thing in the string
+            echo "Attempting shallow clone of depth: $moduledepth"
+        fi
+
+        if ! git -C $MODULEROOT clone $cloneparams ${basestring}/${module}.git $module; then
+            echo "UNABLE TO CLONE $module. Exiting.."
+            exit 1
+        fi
+
+        nomodulepull=1
+    fi
+
+    ##################################
+    ##          END Clone           ##
+    ##################################
+
     if [ ! -d "$MODGITROOT/.git" ]; then processgit=0; fi
 
     if [ $processgit = 1 ]; then
-        printf "\e[32m$module: \e[0m"
         git -C $MODGITROOT reset --hard
         git -C $MODGITROOT config core.fileMode false 2>/dev/null
-        # Add depth if specified
-        if [[ ! -z $depth ]]; then
-            fetchparams+=" --depth=$depth"
-        fi
 
         # Make sure the fetch root is correct - for some reason it sometimes get set to a specific
         # branch (e.g, develop), and then matching to upstream branches will break
         git -C $MODGITROOT config remote.origin.fetch +refs/heads/*:refs/remotes/origin/*
 
-        # Attempt to only fetch the necessary branch (for speedup). If that fails then try fetching all
-        if ! git -C $MODGITROOT fetch origin $branch:$branch $fetchparams 2>/dev/null; then
-            git -C $MODGITROOT fetch --all $fetchparams
+        #####################################################################
+        ##                            FETCH                                ##
+        ##                                                                 ##
+        ## Attempt to only fetch the necessary branch (for speedup).       ##
+        ## If that fails then try fetching all.                            ##
+        ## Note we must not fetch for our current branch                   ##
+        ## And we don't need to fetch if the branch already exists locally ##
+        #####################################################################
+
+        if [ $remoteexists -eq 1 ] && [ $nofetch -eq 0 ]; then
+
+            # Add depth if specified
+            if [[ -n "$moduledepth" ]]; then
+                fetchparams+=" --depth=$moduledepth"
+                echo "Attempting shallow fetch of depth: $moduledepth"
+            fi
+
+            # Now we know the branch exists, we can try to shallow fetch it
+            if [ "$(git -C $MODGITROOT branch --show-current)" != "$branch" ]; then
+                if ! git -C $MODGITROOT fetch origin $trackbranch:$trackbranch $fetchparams; then
+                    # if something goes wrong with the shallow clone, then fall back to a full fetch
+                    echo "Could not do a shallow fetch. Fetching full tree instead..."
+                    git -C $MODGITROOT fetch --all $fetchparams
+                fi
+            fi
         fi
 
-        # Try to find a named tag first, then a branch, then fallback to default branch. trackbranch is used to ensure tracking is set correctly
-        trackbranch=''
-        if ! git -C $MODGITROOT checkout tags/$branch 2>/dev/null; then
-            trackbranch=$branch
-            if ! git -C $MODGITROOT checkout $branch 2>/dev/null; then
-                trackbranch=$defaultbranch
-                echo "no branch $branch exists, switching to $defaultbranch"
-                if ! git -C $MODGITROOT checkout $defaultbranch 2>/dev/null; then trackbranch=''; fi
-            fi
+        # Try to checkout the branch/tag
+        if ! git -C $MODGITROOT checkout $trackbranch 2>/dev/null; then
+            echo "Unable to checkout a branch named $trackbranch. It does not exist. Exiting..."
+            exit 1
         fi
 
         ## fast forward to latest head
-        if [ ! "$nopull" = "1" ]; then
+        if [[ $nopull -eq 0 && $nomodulepull -eq 0 ]]; then
             echo "Pulling latest changes: "
-            if ! [ -z $trackbranch ] && ! git -C $MODGITROOT config --get branch.$branch.merge >/dev/null 2>&1; then
-                git -C $MODGITROOT branch --set-upstream-to=origin/$trackbranch
+            git -C $MODGITROOT branch --set-upstream-to=origin/$trackbranch
+
+            pullparams=""
+            if [ -n "$moduledepth" ]; then
+                pullparams="$pullparams --depth=$moduledepth origin $trackbranch"
+                echo "Attempting shallow pull to depth: $moduledepth"
             fi
-            git -C $MODGITROOT pull
-            git -C $MODGITROOT submodule update --init --force
+            git -C $MODGITROOT pull $pullparams
+            git -C $MODGITROOT submodule update --init --force --depth 1
         fi
 
-        ## Attempt to merge in an upstream branch
+        ## Attempt to merge in an upstream branch (except for sample db)
         mergefailed=0
-        if [[ ! -z $mergebranch && "$module" != "sample" ]]; then
+        if [[ -n "$mergebranch" && "$module" != "sample" ]]; then
             exists_in_remote=$(git -C $MODGITROOT ls-remote --heads origin ${mergebranch})
             if [[ -n ${exists_in_remote} ]]; then
                 echo "Attempting to merge $mergebranch...."

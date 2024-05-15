@@ -44,6 +44,7 @@ class SystemicSurgery extends \BaseEventTypeElement
     protected $auto_validate_relations = true;
     public $widgetClass = 'OEModule\OphCiExamination\widgets\SystemicSurgery';
     protected $default_from_previous = true;
+    protected $default_view_order = 10;
 
     /**
      * @return string the associated database table name
@@ -179,11 +180,6 @@ class SystemicSurgery extends \BaseEventTypeElement
     public function getTileSize($action)
     {
         return $action === 'view' || $action === 'createImage' || $action === 'renderEventImage' ? 1 : null;
-    }
-
-    public function getDisplayOrder($action)
-    {
-        return $action == 'view' ? 10 : parent::getDisplayOrder($action);
     }
 
     public function getViewTitle()

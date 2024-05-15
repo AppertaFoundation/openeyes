@@ -107,6 +107,12 @@
         return res;
     }
 
+    Util.htmlDecode = function(input) {
+        let element = document.createElement('div');
+        element.innerHTML = input;
+        return element.childNodes.length === 0 ? "" : element.childNodes[0].nodeValue;
+    }
+
 	Util.createFormData = function(formData, key, data) {
 		if (data === Object(data) || Array.isArray(data)) {
 			for (var index in data) {
@@ -116,6 +122,18 @@
 			formData.append(key, data);
 		}
 	}
+
+    /**
+     * Equivalent of jquery's $(html), only using plain JavaScript
+     *
+     @param {String} html representing a single element
+     @return {Element}
+     */
+    Util.htmlToElement = function(html) {
+        const template = document.createElement('template');
+        template.innerHTML = html.trim();
+        return template.content.firstChild;
+    }
 	exports.Util = Util;
 
 }(this.OpenEyes));

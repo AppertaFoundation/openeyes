@@ -241,13 +241,6 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
             }
         }
 
-        //delete SecondaryDiagnosis entries that are removed in a new examination.
-        foreach ($this->event->episode->patient->ophthalmicDiagnoses as $secondary_diagnosis) {
-            if (!array_key_exists($secondary_diagnosis->disorder_id, $disorder_to_update)) {
-                $this->event->episode->patient->removeDiagnosis($secondary_diagnosis->id);
-            }
-        }
-
         //merge ophciexamination_diagnosis entries if there is the same diagnosis with same date on different eyes otherwise create new one
         foreach ($disorder_to_create as $new_disorder) {
             $related_diagnosis = OphCiExamination_Diagnosis::model()->find('disorder_id=? and element_diagnoses_id=? and date=? and principal=?', [$new_disorder['disorder_id'], $this->id, $new_disorder['date'], $new_disorder['principal']]);
@@ -276,6 +269,13 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
         }
 
         if ($this->isAtTip()) {
+            //delete SecondaryDiagnosis entries that are removed in a new examination.
+            foreach ($this->event->episode->patient->ophthalmicDiagnoses as $secondary_diagnosis) {
+                if (array_search($secondary_diagnosis->disorder_id, array_column(array_merge($disorder_to_update, $disorder_to_create), 'disorder_id')) === false) {
+                    $this->event->episode->patient->removeDiagnosis($secondary_diagnosis->id);
+                }
+            }
+
             foreach ($added_diagnoses as $diagnosis) {
                 if ($diagnosis->principal) {
                     $this->event->episode->setPrincipalDiagnosis($diagnosis->disorder_id, $diagnosis->eye_id, $diagnosis->date);

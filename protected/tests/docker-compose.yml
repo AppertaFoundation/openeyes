@@ -39,8 +39,6 @@ services:
       WAIT_SLEEP_INTERVAL: "2"
       USE_DEMO_DATA: "FALSE"
       DATABASE_NAME: "phpunitdb"
-      # TEMPORARY fallback branch, until docker image is updated
-      OE_RESET_FALLBACK_BRANCH: "develop"
     secrets:
       - source: SSH_PRIVATE_KEY
     stdin_open: true

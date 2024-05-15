@@ -47,7 +47,6 @@
                   popup.groupController.adjustLeft(popup.button, popup.content);
                 }
             }
-            popup.button.addClass(popup.css.active);
             // show the close icon only when the user “clicks“ the button to open a panel
             $($(popup.content).find(popup.closeBtn)).show();
 
@@ -94,7 +93,7 @@
                     if(closeContent){
                         // Close if mouse leaves btn
                         popup.hide();
-                    }                   
+                    }
                 },10);
             }
         });

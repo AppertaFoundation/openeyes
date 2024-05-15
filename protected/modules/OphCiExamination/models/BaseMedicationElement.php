@@ -19,7 +19,6 @@ use BaseEventTypeElement;
 use CActiveRecord;
 use CDbCriteria;
 use Element_OphDrPrescription_Details;
-use Event;
 use EventMedicationUse;
 use MedicationFrequency;
 use MedicationLaterality;
@@ -27,6 +26,7 @@ use MedicationRoute;
 
 abstract class BaseMedicationElement extends BaseEventTypeElement
 {
+    protected $default_view_order = 25;
     protected $auto_update_relations = false;
     protected $auto_validate_relations = false;
     protected $default_from_previous = true;
@@ -284,21 +284,9 @@ abstract class BaseMedicationElement extends BaseEventTypeElement
     {
         return $action!=='view';
     }
-    /**
-     * @inheritdoc
-     */
-    public function getDisplayOrder($action)
-    {
-        if ($action=='view') {
-            return 25;
-        } else {
-            return parent::getDisplayOrder($action);
-        }
-    }
-
 
     /**
-     * merges entries and removes those that have a latest_med_use_id (not the most recent medication)
+     * merges entries and selects only the latest medication
      * @param $entries
      * @param $widget
      * @return array
@@ -306,8 +294,6 @@ abstract class BaseMedicationElement extends BaseEventTypeElement
      */
     public function mergeMedicationEntries($entries, $widget = null) : array
     {
-        $merged_entries = [];
-        $medication_ids = [];
         $medication_entries = [];
         $already_converted_ids = [];
 
@@ -322,28 +308,16 @@ abstract class BaseMedicationElement extends BaseEventTypeElement
                 $converted_entry = $this->createConvertedHistoryEntry($latest_medication, true, $widget);
                 $converted_entry->event_id = $latest_medication->event_id ?? $latest_medication->copied_from_med_use_id;
                 $converted_entry->is_copied_from_previous_event = true;
-                if (!$latest_medication->latest_med_use_id) {
-                    if ($latest_medication->isPrescription()) {
-                        $converted_entry->usage_type = 'OphDrPrescription';
-                        $converted_entry->usage_subtype = '';
-                    }
-                    $medication_entries[] = $converted_entry;
-                    $already_converted_ids[] = $latest_medication->medication_id;
+                if ($latest_medication->isPrescription()) {
+                    $converted_entry->usage_type = 'OphDrPrescription';
+                    $converted_entry->usage_subtype = '';
                 }
+                $medication_entries[] = $converted_entry;
+                $already_converted_ids[] = $latest_medication->medication_id;
             }
         }
 
-        foreach ($medication_entries as $entry) {
-            $medication_is_present = in_array($entry->medication_id, $medication_ids);
-            if (!$medication_is_present || ($medication_is_present && is_null($entry->latest_med_use_id))) {
-                $merged_entries[] = $entry;
-                if (!$medication_is_present) {
-                    $medication_ids[] = $entry->medication_id;
-                }
-            }
-        }
-
-        return $merged_entries;
+        return $medication_entries;
     }
 
     /**

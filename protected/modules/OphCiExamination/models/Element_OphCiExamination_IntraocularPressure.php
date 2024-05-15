@@ -65,7 +65,7 @@ class Element_OphCiExamination_IntraocularPressure extends \SplitEventTypeElemen
     {
         return array(
             array('eye_id', 'required'),
-            array('eye_id, left_comments, right_comments', 'safe'),
+            array('eye_id, left_comments, right_comments, right_values, left_values, right_integer_values, left_integer_values, right_qualitative_values, left_qualitative_values', 'safe'),
         );
     }
 
@@ -231,6 +231,12 @@ class Element_OphCiExamination_IntraocularPressure extends \SplitEventTypeElemen
     {
         return true;
     }
+
+    public function canCopy()
+    {
+        return true;
+    }
+
     public function getValues()
     {
         return array('right' => $this->right_values, 'left' => $this->left_values);

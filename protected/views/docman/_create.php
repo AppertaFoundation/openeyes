@@ -42,7 +42,7 @@
                                         <?php
                                         $contact_type = isset($macro_data["to"]["contact_type"]) ? strtoupper($macro_data["to"]["contact_type"]) : null;
                                         if ($contact_type == 'PRACTICE') {
-                                            $contact_type = Yii::app()->params['gp_label'];
+                                            $contact_type = \SettingMetadata::model()->getSetting('gp_label');
                                         }
                                         $this->renderPartial('//docman/table/contact_name_type', array(
                                             'address_targets' => $element->address_targets,

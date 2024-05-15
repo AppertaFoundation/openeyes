@@ -65,7 +65,7 @@ if ($footer_param !== null) {
         <tr>
             <th>Date of Birth</th>
             <td><?= $this->patient->NHSDate('dob') ?> (<?= $this->patient->age ?>)</td>
-            <th><?= Yii::app()->params['nhs_num_label'] ?> Number</th>
+            <th><?= \SettingMetadata::model()->getSetting('nhs_num_label') ?> Number</th>
             <td><?= $this->patient->getNhsnum() ?></td>
         </tr>
         <tr>

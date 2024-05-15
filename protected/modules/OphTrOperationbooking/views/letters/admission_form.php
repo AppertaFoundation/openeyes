@@ -45,7 +45,7 @@ $logo_helper = new LogoHelper();
 
         <tr>
             <th>
-                <?php echo Yii::app()->params['nhs_num_label']?> Number
+                <?php echo \SettingMetadata::model()->getSetting('nhs_num_label')?> Number
             </th>
             <td>
                 <?php echo $patient->nhsnum?>

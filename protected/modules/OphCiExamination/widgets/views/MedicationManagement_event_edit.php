@@ -424,6 +424,7 @@ if (!Yii::app()->request->isPostRequest && !empty($entries_from_previous_event) 
                     if (medication_history_bound_key && medication_history_bound_key !== '' && !medication_history_bound_keys.includes(medication_history_bound_key)) {
                         medication_history_bound_keys.push(medication_history_bound_key);
                     }
+                    medication_management_bound_keys = [];
 
                     $.each(window.MMController.$table.children("tbody").children("tr.js-first-row"), function(index, medicationManagementRow) {
                         let medication_management_bound_key = $(medicationManagementRow).find('.js-bound-key').val();
@@ -442,22 +443,19 @@ if (!Yii::app()->request->isPostRequest && !empty($entries_from_previous_event) 
                             }
                         }
 
-                        if (($(historyMedicationRow).find('.medication_id').val() === $(medicationManagementRow).find('.medication_id').val())) {
+                        if (($(historyMedicationRow).find('.medication_id').val() === $(medicationManagementRow).find('.medication_id').val()) && $(historyMedicationRow).hasClass('disabled')) {
                             if (medication_history_bound_key && medication_management_bound_key && medication_management_bound_key !== medication_history_bound_key) {
                                 $(medicationManagementRow).find('.js-reset-mm').show();
-                                window.MMController.disableRemoveButton($(medicationManagementRow));
                             }
                         }
 
-                        if (!duplicate_bound_key) {
-                            if (medication_history_bound_key && medication_management_bound_key === medication_history_bound_key) {
-                                window.HMController.bindEntries($(historyMedicationRow), $(medicationManagementRow), false);
-                                window.MMController.disableRemoveButton($(medicationManagementRow));
-                                rowNeedsCopying = false;
-                                $medicationManagementRow = $(medicationManagementRow);
-                            } else if (!(has_errors || is_edit_mode)) {
-                                window.HMController.removeDuplicateEntry($(historyMedicationRow), $(medicationManagementRow));
-                            }
+                        if (medication_history_bound_key && medication_management_bound_key === medication_history_bound_key) {
+                            window.HMController.bindEntries($(historyMedicationRow), $(medicationManagementRow), false);
+                            window.MMController.disableRemoveButton($(medicationManagementRow));
+                            rowNeedsCopying = false;
+                            $medicationManagementRow = $(medicationManagementRow);
+                        } else if (!(has_errors || is_edit_mode)) {
+                            window.HMController.removeDuplicateEntry($(historyMedicationRow), $(medicationManagementRow));
                         }
                     });
 
@@ -490,6 +488,14 @@ if (!Yii::app()->request->isPostRequest && !empty($entries_from_previous_event) 
                             if ($row.find(".js-to-be-copied").val() === "1") {
                                 window.HMController.toggleStopControls($row);
                                 window.HMController.disableMedicationHistoryRow($row);
+                            }
+                        } else {
+                            let $row = window.MMController.$table.find('.js-bound-key[value="' + bound_key + '"]').parents('tr.js-first-row');
+                            if ($row.find('input[name*="[is_discontinued]"]').val() === '1') {
+                                let $history_row = window.HMController.$table.find('.js-bound-key[value="' + bound_key + '"]').parents('tr.js-first-row');
+                                window.HMController.toggleStopControls($history_row, true);
+                                window.HMController.disableMedicationHistoryRow($history_row);
+                                $row.find('.js-reset-mm').show();
                             }
                         }
                     })

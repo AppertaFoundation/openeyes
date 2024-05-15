@@ -89,7 +89,7 @@
                                 ['All'=>'All '.Firm::model()->contextLabel().'s'] +Firm::model()->getList($subspecialty_id), array(
                                 'disabled' => ($emergency_list == 1 ? 'disabled' : ''),
                   )) ?>
-F            <?php } ?>
+            <?php } ?>
         </td>
       </tr>
       <tr>

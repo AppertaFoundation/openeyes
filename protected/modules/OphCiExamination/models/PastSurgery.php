@@ -33,6 +33,7 @@ namespace OEModule\OphCiExamination\models;
  * @property \User $usermodified
  * @property PastSurgery_Operation[] $operations
  * @property string $comments
+ * @property bool $found_previous_op_notes
  */
 class PastSurgery extends \BaseEventTypeElement
 {
@@ -79,7 +80,7 @@ class PastSurgery extends \BaseEventTypeElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('event_id, operations, comments, no_pastsurgery_date', 'safe'),
+            array('event_id, operations, comments, found_previous_op_notes, no_pastsurgery_date', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, event_id, comments, no_pastsurgery_date',  'safe', 'on' => 'search')
@@ -118,7 +119,7 @@ class PastSurgery extends \BaseEventTypeElement
      */
     public function afterValidate()
     {
-        if (!$this->no_pastsurgery_date && !$this->operations && !$this->comments) {
+        if (!$this->no_pastsurgery_date && !$this->operations && !$this->found_previous_op_notes && !$this->comments) {
             $this->addError('no_pastsurgery_date', 'Please confirm patient has had no previous eye surgery or laser treatment');
         }
 
@@ -155,7 +156,7 @@ class PastSurgery extends \BaseEventTypeElement
                 $operations[] = $operation;
             }
         }
-
+        $this->no_pastsurgery_date = $element->no_pastsurgery_date;
         $this->operations = $operations;
         $this->comments = $element->comments;
     }

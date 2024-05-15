@@ -69,8 +69,8 @@ if ($historyElement) {
                 <div class="data-value not-recorded">
                     Nil recorded this examination
                 </div>
-            <?php } elseif ($medicationsElement->no_ophthalmic_medications_date) { ?>
-                <div class="data-value">
+            <?php } elseif (!$current_eye_medications && !$stopped_eye_medications && $medicationsElement->no_ophthalmic_medications_date) { ?>
+                <div id="examination-no-eye-meds" class="data-value">
                     Patient takes no eye medications
                 </div>
             <?php } else { ?>
@@ -227,8 +227,8 @@ if ($historyElement) {
                     <div class="data-value not-recorded">
                         Nil recorded this examination
                     </div>
-                <?php } elseif ($medicationsElement->no_systemic_medications_date) { ?>
-                    <div class="data-value">
+                <?php } elseif (!$current_systemic_medications && !$stopped_systemic_medications && $medicationsElement->no_systemic_medications_date) { ?>
+                    <div id="examination-no-systemic-meds" class="data-value">
                         Patient takes no systemic medications
                     </div>
                 <?php } else { ?>

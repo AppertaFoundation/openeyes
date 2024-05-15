@@ -19,7 +19,7 @@
     <?php $this->renderPartial('_consent_header') ?>
     <h1 class="print-title">
         Consent form 3<br/>
-        <?php echo $this->patient->fullName.', '.Yii::app()->params['hos_num_label'].': '. $this->patient->hos_num ?>
+        <?php echo $this->patient->fullName.', '.\SettingMetadata::model()->getSetting('hos_num_label').': '. $this->patient->hos_num ?>
     </h1>
     <h3>Patient/parental agreement to investigation or treatment (procedures where consciousness not impaired)</h3>
     <p>

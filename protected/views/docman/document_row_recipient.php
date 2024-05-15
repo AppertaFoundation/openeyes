@@ -29,7 +29,7 @@ if (!isset($element)) {
             $contact_type = ( isset($selected_contact_type) ? $selected_contact_type : null );
             $this->renderPartial('//docman/table/contact_address', array(
                 'contact_id' => $contact_id,
-                'is_editable_address' => $contact_type != Yii::app()->params['gp_label'],
+                'is_editable_address' => $contact_type != \SettingMetadata::model()->getSetting('gp_label'),
                 'contact_type' => $contact_type,
                 'row_index' => $row_index,
                 'address' => $address,

@@ -61,13 +61,13 @@ OpenEyes.OphCiExamination = OpenEyes.OphCiExamination || {};
             let table = $('.' + side + '-eye ' + controller.entry_table_selector);
 
             if ($(this).prop('checked')) {
-                table.find('tr:not(:first-child)').hide();
+                table.find('tr').hide();
                 $(controller.adder_btn + side).hide();
                 controller.setRadioButtonsToNo(table);
             } else {
                 $(controller.adder_btn + side).show();
                 controller.dedupeAbnormalitiesSelector(side);
-                table.find('tr:not(:first-child)').show();
+                table.find('tr').show();
                 $(this).removeAttr('checked');
                 table.find('input[type=radio]').removeAttr('checked');
             }

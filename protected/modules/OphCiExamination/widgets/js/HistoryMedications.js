@@ -144,12 +144,12 @@ HistoryMedicationsController._defaultOptions = {
     let controller = this;
 
     $(document).ready(function () {
+        controller.hideNoMedications();
         if (controller.$noSystemicMedicationsFld.prop('checked') && controller.$noOphthalmicMedicationsFld.prop('checked')) {
             controller.$table.slice(2).hide();
             controller.$popup.hide();
             $(controller.options.medicationsOptionsTable).find('thead th:first-child, thead th:nth-child(2), tbody tr td:first-child, tbody tr td:nth-child(2)').hide();
         }
-        controller.hideNoMedications();
     });
 
     // removal button for table entries
@@ -240,14 +240,26 @@ HistoryMedicationsController._defaultOptions = {
     controller.$element.on('click', '.js-reset-mm', function (e) {
         e.preventDefault();
         let $row = $(this).parents('tr.js-first-row');
-        let $broken_bound_entry = controller.getBrokenBoundEntry($row);
-        if ($broken_bound_entry !== null) {
-            controller.enableMedicationHistoryRow($broken_bound_entry);
-            controller.resetStopReason($broken_bound_entry);
-            controller.toggleStopControls($broken_bound_entry, false);
-            controller.resetData($broken_bound_entry, $row);
-            controller.bindEntries($broken_bound_entry, $row);
+        let $bound_entry = $row.data('bound_entry');
+        let bind_broken = false;
+        if ($bound_entry === undefined) {
+            bind_broken = true;
+            $bound_entry = controller.getBrokenBoundEntry($row);
+        }
+        if ($bound_entry !== null) {
+            controller.enableMedicationHistoryRow($bound_entry);
+            controller.resetStopReason($bound_entry);
+            controller.toggleStopControls($bound_entry, false);
+            controller.resetData($bound_entry, $row);
             controller.disableRemoveButton($row);
+            if (bind_broken) {
+                controller.bindEntries($bound_entry, $row);
+            }
+            let $second_row = controller.$table.find('tr[data-key=' + $row.data('key') + '].js-second-row');
+            $second_row.find(".js-end-date-wrapper").hide();
+            $second_row.find(".js-stop-reason-select").hide();
+            $second_row.find('.js-meds-stop-btn').show();
+            $row.find('input[name*="[is_discontinued]"]').val(0);
         }
         $(this).hide();
     });
@@ -290,19 +302,19 @@ HistoryMedicationsController._defaultOptions = {
 
   HistoryMedicationsController.prototype.hideNoMedications = function() {
       let controller = this;
-      if (controller.$table.find('tbody tr').length > 0) {
-          let $rows = controller.$table.find('tbody tr.js-first-row');
+      let $table = $('#OEModule_OphCiExamination_models_HistoryMedications_entry_table');
+      if ($table.find('tbody tr').length > 0) {
+          let $rows = $table.find('tbody tr.js-first-row');
 
-          let no_sys_meds_checked = controller.$noSystemicMedicationsFld.prop('checked');
-          let no_oph_meds_checked = controller.$noOphthalmicMedicationsFld.prop('checked');
-
-          let hideSysMed = controller.medicationTypePresentInTable($rows, 'systemic') && !no_sys_meds_checked;
-          let hideOphMed = controller.medicationTypePresentInTable($rows, 'ophthalmic') && !no_oph_meds_checked;
+          let hideSysMed = controller.medicationTypePresentInTable($rows, 'systemic');
+          let hideOphMed = controller.medicationTypePresentInTable($rows, 'ophthalmic');
 
           if (hideSysMed) {
+              controller.$noSystemicMedicationsFld.attr('checked', false);
               controller.$noSystemicMedicationsWrapper.hide();
           }
           if (hideOphMed) {
+              controller.$noOphthalmicMedicationsFld.attr('checked', false);
               controller.$noOphthalmicMedicationsWrapper.hide();
           }
 
@@ -375,7 +387,11 @@ HistoryMedicationsController._defaultOptions = {
       });
 
 		$second_part_of_row.on("click", ".js-meds-stop-btn", function(){
-          controller.showStopControls($full_row);
+            if (controller.options.modelName.includes('MedicationManagement') && !controller.eyeRouteIsSet($full_row)) {
+                controller.createLateralityDialog();
+            } else {
+                controller.showStopControls($full_row);
+            }
       });
 
       $second_part_of_row.on("click", ".js-start-date-display", function(){
@@ -480,9 +496,7 @@ HistoryMedicationsController._defaultOptions = {
                           $row.find('.js-reset-mm').show();
                           $row.find('input[name*="[is_discontinued]"]').val('0');
                       } else {
-                          new OpenEyes.UI.Dialog.Alert({
-                              content: 'Please set the laterality in Medication History before making changes in Medication Management.'
-                          }).open();
+                          controller.createLateralityDialog();
                           controller.resetData($bound_entry, $row);
                       }
                   }
@@ -540,6 +554,16 @@ HistoryMedicationsController._defaultOptions = {
       });
   };
 
+  HistoryMedicationsController.prototype.markOptionSelected = function(markup, row, selector)
+  {
+      const value = parseInt(row.querySelector(selector).value);
+      markup.querySelectorAll(selector + ' option').forEach(function (option) {
+          if (parseInt(option.getAttribute('value')) === value) {
+              option.setAttribute('selected', true);
+          }
+      });
+  };
+
   HistoryMedicationsController.prototype.addTaper = function($row)
   {
       let row_count = $row.attr("data-key");
@@ -561,6 +585,15 @@ HistoryMedicationsController._defaultOptions = {
           }
       );
 
+      const data_row = $row[0].previousElementSibling;
+      const markup_element = OpenEyes.Util.htmlToElement(markup);
+
+      markup_element.querySelector('.js-dose').setAttribute('value',
+          data_row.querySelector('.js-dose').value);
+
+      controller.markOptionSelected(markup_element, data_row, '.js-frequency');
+      controller.markOptionSelected(markup_element, data_row, '.js-duration');
+
       let $lastrow;
 
       if($tapers.length>0) {
@@ -570,24 +603,33 @@ HistoryMedicationsController._defaultOptions = {
           $lastrow = $row;
       }
 
-      $(markup).insertAfter($lastrow);
+      $lastrow[0].insertAdjacentElement('afterend', markup_element);
   };
 
-    HistoryMedicationsController.prototype.showStopControls = function($row)
+    HistoryMedicationsController.prototype.showStopControls = function($row, from_history_entry = false)
     {
         let $datepicker_wrapper = $row.find(".js-end-date-wrapper");
-			  let $stop_reason_select = $row.find(".js-stop-reason-select");
-			  let $stop_reason_text = $row.find(".js-stop-reason-text");
+        let $stop_reason_select = $row.find(".js-stop-reason-select");
+        let $stop_reason_text = $row.find(".js-stop-reason-text");
         $row.find(".js-meds-stop-btn").hide();
         this.setDefaultStopDate($datepicker_wrapper);
         $datepicker_wrapper.show();
         $stop_reason_select.show();
-				$stop_reason_text.hide();
+        $stop_reason_text.hide();
 
         if(typeof $row.data("bound_entry") !== "undefined" && $row.data("bound_entry").find('.js-meds-stop-btn').attr('style') !== "display: none;") {
-					let $bound_entry = $row.data("bound_entry");
+            let $bound_entry = $row.data("bound_entry");
+            let modelName = this.options.modelName;
 
-            this.boundController.showStopControls($bound_entry.parent().find('tr[data-key=' + $bound_entry.data('key') + '].js-second-row'));
+            if (modelName.includes('MedicationManagement') && !from_history_entry) {
+                this.toggleStopControls($bound_entry, true);
+                let $bound_entry_second_row = $bound_entry.parent().find('tr[data-key=' + $bound_entry.data('key') + '].js-second-row');
+                $bound_entry_second_row.find('.js-end-date').val($row.find('.js-end-date').val());
+                this.disableMedicationHistoryRow($bound_entry);
+                $row.find('.js-reset-mm').show();
+            } else {
+                this.boundController.showStopControls($bound_entry.parent().find('tr[data-key=' + $bound_entry.data('key') + '].js-second-row'));
+            }
         }
 
         let $endDateElement = $row.find('.js-end-date');
@@ -812,6 +854,13 @@ HistoryMedicationsController._defaultOptions = {
         });
     };
 
+    HistoryMedicationsController.prototype.createLateralityDialog = function()
+    {
+        return new OpenEyes.UI.Dialog.Alert({
+            content: 'Please set the laterality in Medication History before making changes in Medication Management.'
+        }).open();
+    };
+
     /**
      * Check if the selected entries are relevant to current allergies
      * Then add them depending on user choice
@@ -1034,7 +1083,7 @@ HistoryMedicationsController._defaultOptions = {
         this.boundController.setRowData($row, data);
         this.boundController.initialiseRowEventTriggers($row, data);
         if(data.end_date !== "") {
-            this.showStopControls($row);
+            this.showStopControls($row, true);
         }
         this.updateRowRouteOptions($row, false);
 
@@ -1096,7 +1145,7 @@ HistoryMedicationsController._defaultOptions = {
         // controller.updateRowRouteOptions($bound_entry);
 
         if(data.end_date !== "") {
-            controller.showStopControls($bound_entry);
+            controller.showStopControls($bound_entry, true);
         }
 
         if(callback !== undefined) {
@@ -1118,42 +1167,48 @@ HistoryMedicationsController._defaultOptions = {
 
 
     /**
-   * From the tags on the given item, retrieve the associated risks and update the core
-   * register accordingly.
-   *
-   * @param setIds
-   * @param drug_name
-   */
-  HistoryMedicationsController.prototype.processRisks = function(setIds , drug_name)
-  {
-      if (typeof setIds === "undefined" || setIds.length === 0 || (setIds.length === 1 && setIds[0] === "")) {
-          return;
-      }
-      $.getJSON('/OphCiExamination/Risks/forSets', { set_ids: setIds }, res => {
-          this.addDrugForRisks(drug_name, res);
-      });
-  };
+     * From the tags on the given item, retrieve the associated risks
+     * and send this drug name and associated risks to the core manager for inclusion in history risks
+     *
+     * @param medications_sets_map
+     */
+    HistoryMedicationsController.prototype.processRisks = function (medications_sets_map) {
+        var risks = [];
+        const medications = Object.keys(medications_sets_map);
+        const medications_count = medications.length;
+        for (const [i, medication] of medications.entries()) {
+            if (medications_sets_map[medication] === "") {
+                continue;
+            }
 
-  /**
-   * send this drug name and associated risks to the core manager for inclusion in history risks
-   *
-   * @param drugName
-   * @param risks
-   */
-  HistoryMedicationsController.prototype.addDrugForRisks = function(drugName, risks)
-  {
-      let risksMap = [];
-      for (let i=0; i < risks.length; i++) {
-          risksMap.push({id: risks[i].id, comments: [drugName], risk_name: risks[i].name});
-      }
+            $.getJSON('/OphCiExamination/Risks/forSets', {set_ids: medications_sets_map[medication]}, res => {
+                if (res.length > 0) {
+                    for (let i = 0; i < res.length; i++) {
+                        let found = false;
+                        //check if risk already exists and append comment
+                        for (let j = 0, n = risks.length; j < n; j++) {
+                            if (risks[j].id === res[i].id) {
+                                risks[j].comments.push(medication);
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (!found) {
+                            risks.push({id: res[i].id, comments: [medication], risk_name: res[i].name});
+                        }
+                    }
+                }
 
-      //checking the risksMap.length because HistoryRisksCore (js class) will automatically open the element if it isn't there
-      if(risksMap.length){
-          exports.HistoryRisks.addRisksForSource(risksMap, 'Medications');
-      }
-
-  };
-
+                //last iteration we're sending the data to Risks element
+                if (i === medications_count - 1) {
+                    // checking the risks.length because HistoryRisksCore (js class) will automatically open the element if it isn't there
+                    if (risks.length) {
+                        exports.HistoryRisks.addRisksForSource(risks, 'Medications');
+                    }
+                }
+            });
+        }
+    };
 
   HistoryMedicationsController.prototype.showDate = function($row, $type)
   {
@@ -1218,11 +1273,11 @@ HistoryMedicationsController._defaultOptions = {
           );
       }
 
+      let medications_sets_map = {};
     for (let i in medications) {
       data = medications[i];
       data['tapers'] = medications[i]['tapers'];
       data['row_count'] = OpenEyes.Util.getNextDataKey( element.find('table tbody tr'), 'key')+ newRows.length;
-      this.processRisks(medications[i]['set_ids'.split(",")], medications[i]['medication_name']);
       data['allergy_warning'] = this.getAllergyWarning(medications[i]);
       data['bound_key'] = this.getRandomBoundKey();
       data['has_dose_unit_term'] = typeof medications[i]['dose_unit_term'] !== 'undefined' && medications[i]['dose_unit_term'] !== "" ;
@@ -1243,7 +1298,9 @@ HistoryMedicationsController._defaultOptions = {
           });
       }
 
+      medications_sets_map[medications[i]['medication_name']] = medications[i]['set_ids'.split(",")];
     }
+      this.processRisks(medications_sets_map);
 
     return newRows;
   };
@@ -1455,7 +1512,7 @@ HistoryMedicationsController._defaultOptions = {
     HistoryMedicationsController.prototype.disableMedicationHistoryRow = function ($row)
     {
         let $second_row = $row.parent().find('tr[data-key=' + $row.data('key') + '].js-second-row');
-        let tooltip_text = 'This item cannot be changed here as it has been changed in the Medication Management element.';
+        let tooltip_text = 'This item cannot be changed here as it has been <b>stopped</b> in the Medication Management element.';
         let $td_edit = $row.find('td.text-center');
         if ($td_edit.length === 0) {
             $td_edit = $row.find('td.edit-column');
@@ -1581,7 +1638,7 @@ HistoryMedicationsController._defaultOptions = {
     };
 
   exports.HistoryMedicationsController = HistoryMedicationsController;
-})(OpenEyes.OphCiExamination);
+})(OpenEyes.OphCiExamination, OpenEyes.Util);
 
 (function(exports) {
   function HistoryMedicationsViewController(options) {

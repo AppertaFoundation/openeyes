@@ -16,6 +16,7 @@
  */
 
 use OEModule\OphCiExamination\models\SystemicDiagnoses_Diagnosis;
+
 ?>
 
 <?php
@@ -119,9 +120,3 @@ if (!isset($values['date']) || !strtotime($values['date'])) {
             <td>read only</td>
         <?php endif; ?>
     </tr>
-
-<?php
-$assetManager = Yii::app()->getAssetManager();
-$widgetPath = $assetManager->publish('protected/widgets/js', true);
-Yii::app()->clientScript->registerScriptFile($widgetPath . '/EyeSelector.js');
-?>

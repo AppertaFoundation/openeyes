@@ -142,7 +142,7 @@ $logo_helper = new LogoHelper();
                     <table class="inner">
                         <tbody>
                             <tr>
-                                <th><?php echo Yii::app()->params['nhs_num_label']?> No.</th>
+                                <th><?php echo \SettingMetadata::model()->getSetting('nhs_num_label')?> No.</th>
                                 <td><?php echo $patient->nhs_num ?></td>
                             </tr>
                             <tr>
@@ -158,11 +158,11 @@ $logo_helper = new LogoHelper();
                                 <td><?php echo $service_info->consultant->getConsultantName() ?></td>
                             </tr>
                             <tr>
-                                <th>Registered <?php echo \Yii::app()->params['gp_label'] ?> Name</th>
+                                <th>Registered <?php echo \SettingMetadata::model()->getSetting('gp_label') ?> Name</th>
                                 <td><?php echo ($patient->gp) ? $patient->gp->contact->fullName : 'Unknown'; ?></td>
                             </tr>
                             <tr>
-                                <th>Registered <?php echo \Yii::app()->params['gp_label'] ?> Address</th>
+                                <th>Registered <?php echo \SettingMetadata::model()->getSetting('gp_label') ?> Address</th>
                                 <td><?php echo ($patient->practice &&
                                         $address = $patient->practice->getLetterAddress(array('delimiter' => ', '))) ?
                                                $address :
@@ -178,7 +178,7 @@ $logo_helper = new LogoHelper();
                                 </td>
                             </tr>
                             <tr>
-                                <th>Referred By (other than <?php echo \Yii::app()->params['gp_label'] ?>)</th>
+                                <th>Referred By (other than <?php echo \SettingMetadata::model()->getSetting('gp_label') ?>)</th>
                                 <td>N/A</td>
                             </tr>
                             <tr>

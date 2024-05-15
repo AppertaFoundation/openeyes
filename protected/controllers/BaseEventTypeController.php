@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -1269,8 +1270,10 @@ class BaseEventTypeController extends BaseModuleController
                     $elements[] = $element;
                 }
             } else {
-                if ($this->event->isNewRecord
-                    || !$element = $el_cls_name::model()->find('event_id=?', array($this->event->id))) {
+                if (
+                    $this->event->isNewRecord
+                    || !$element = $el_cls_name::model()->find('event_id=?', array($this->event->id))
+                ) {
                     $element = $element_type->getInstance();
                 }
                 $this->setElementAttributesFromData($element, $data);
@@ -1286,11 +1289,12 @@ class BaseEventTypeController extends BaseModuleController
      *
      * @param $event_date
      */
-    protected function setEventDate($event_date) {
+    protected function setEventDate($event_date)
+    {
         $event_date = Helper::convertNHS2MySQL($event_date);
         $current_event_date = substr($this->event->event_date, 0, 10);
 
-        if ($event_date < $current_event_date) {
+        if ($event_date !== $current_event_date) {
             $this->event->event_date = $event_date;
         }
     }
@@ -1436,8 +1440,10 @@ class BaseEventTypeController extends BaseModuleController
             }
             // delete any elements that are no longer required for the event
             foreach ($this->event->getElements() as $curr_element) {
-                if (!isset($oe_ids[get_class($curr_element)])
-                    || !in_array($curr_element->id, $oe_ids[get_class($curr_element)])) {
+                if (
+                    !isset($oe_ids[get_class($curr_element)])
+                    || !in_array($curr_element->id, $oe_ids[get_class($curr_element)])
+                ) {
                     // make sure that the element have a primary key (it tried to delete null elements before!)
                     if ($curr_element->getPrimaryKey() !== null) {
                         $curr_element->delete();
@@ -1537,11 +1543,13 @@ class BaseEventTypeController extends BaseModuleController
 
     public function renderSidebar($default_view)
     {
-        if ($this->show_element_sidebar && in_array(
-            $this->getActionType($this->action->id),
-            array(static::ACTION_TYPE_CREATE, static::ACTION_TYPE_EDIT),
-            true
-        )) {
+        if (
+            $this->show_element_sidebar && in_array(
+                $this->getActionType($this->action->id),
+                array(static::ACTION_TYPE_CREATE, static::ACTION_TYPE_EDIT),
+                true
+            )
+        ) {
             $event_type_id = $this->event->attributes["event_type_id"];
             $event_type = EventType::model()->findByAttributes(array('id' => $event_type_id));
             $event_name = preg_replace('/\s+/', '_', $event_type->name);
@@ -1553,11 +1561,13 @@ class BaseEventTypeController extends BaseModuleController
 
     public function renderIndexSearch()
     {
-        if ($this->show_index_search && in_array(
-            $this->getActionType($this->action->id),
-            array(static::ACTION_TYPE_CREATE, static::ACTION_TYPE_EDIT),
-            true
-        )) {
+        if (
+            $this->show_index_search && in_array(
+                $this->getActionType($this->action->id),
+                array(static::ACTION_TYPE_CREATE, static::ACTION_TYPE_EDIT),
+                true
+            )
+        ) {
             $event_type_id = ($this->event->attributes["event_type_id"]);
             $event_type = EventType::model()->findByAttributes(array('id' => $event_type_id));
             $event_name = $event_type->name;
@@ -1566,15 +1576,17 @@ class BaseEventTypeController extends BaseModuleController
 
     public function renderManageElements()
     {
-        if ($this->show_manage_elements && in_array(
-            $this->getActionType($this->action->id),
-            array(static::ACTION_TYPE_CREATE, static::ACTION_TYPE_EDIT),
-            true
-        )) {
+        if (
+            $this->show_manage_elements && in_array(
+                $this->getActionType($this->action->id),
+                array(static::ACTION_TYPE_CREATE, static::ACTION_TYPE_EDIT),
+                true
+            )
+        ) {
             $event_type_id = $this->event->attributes["event_type_id"];
             $event_type = EventType::model()->findByAttributes(array('id' => $event_type_id));
             $event_name =  preg_replace('/\s+/', '_', $event_type->name);
-            $this->renderPartial(('//patient/_patient_manage_elements'), array('event_name'=>$event_name));
+            $this->renderPartial(('//patient/_patient_manage_elements'), array('event_name' => $event_name));
         }
     }
 
@@ -2780,5 +2792,27 @@ class BaseEventTypeController extends BaseModuleController
             );
 
         echo json_encode($processed_results);
+    }
+
+    /**
+     * @param Firm $context
+     * @throws CHttpException
+     */
+    protected function setContext(Firm $context)
+    {
+            // get the user
+            $user_id = $this->getApp()->user->id;
+            $user = User::model()->findByPk($user_id);
+
+            // set the firm on the user (process taken from SiteAndFirmWidget)
+            $user->changeFirm($context->id);
+        if (!$user->save(false)) {
+            throw new CHttpException(404, 'Unexpected error setting user context.');
+        }
+
+            $this->selectedFirmId = $context->id;
+
+            $user->audit('user', 'change-firm', $user->last_firm_id);
+            $this->getApp()->session['selected_firm_id'] = $context->id;
     }
 }

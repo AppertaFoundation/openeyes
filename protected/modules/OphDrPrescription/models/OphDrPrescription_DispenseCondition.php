@@ -36,7 +36,7 @@ class OphDrPrescription_DispenseCondition extends BaseActiveRecordVersioned
             array('display_order', 'numerical', 'integerOnly'=>true),
             array('name', 'length', 'max'=>255),
             array('created_user_id', 'length', 'max'=>10),
-            array('created_date, name, display_order, active, created_user_id, last_modified_user_id, last_modified_date, locations', 'safe'),
+            array('created_date, name, display_order, active, created_user_id, last_modified_user_id, last_modified_date, locations, all_locations', 'safe'),
             array('id, caption, active', 'safe', 'on'=>'search'),
         );
     }
@@ -49,7 +49,10 @@ class OphDrPrescription_DispenseCondition extends BaseActiveRecordVersioned
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return [
-            'locations' => [self::MANY_MANY, 'OphDrPrescription_DispenseLocation', 'ophdrprescription_dispense_condition_assignment(dispense_condition_id, dispense_location_id)'],
+            'all_locations' => [self::MANY_MANY,'OphDrPrescription_DispenseLocation','ophdrprescription_dispense_condition_assignment(dispense_condition_id, dispense_location_id)'],
+
+            'locations' => [self::MANY_MANY,
+            'OphDrPrescription_DispenseLocation','ophdrprescription_dispense_condition_assignment(dispense_condition_id, dispense_location_id)','condition'=>'locations.active=1' ],
         ];
     }
 

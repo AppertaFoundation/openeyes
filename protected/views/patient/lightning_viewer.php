@@ -41,7 +41,7 @@ $previewWidth = @Yii::app()->params['lightning_viewer']['image_width'] ?: 800;
               <li class="<?php if ($previewType === $selectedPreviewType) :
                     ?>selected<?php
                          endif; ?>">
-                <?= count($events) > 0 ? reset($events)->getEventIcon() : '<i class="oe-i-e "></i>' ?>
+                  <?= count($events) > 0 ? reset($events)->getEventIcon() : '<i class="oe-i-e"></i>' ?>
                 <a href="<?= Yii::app()->createUrl('/patient/lightningViewer',
                     array('id' => $this->patient->id, 'preview_type' => $previewType)) ?>"
                 >

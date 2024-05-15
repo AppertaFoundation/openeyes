@@ -21,7 +21,7 @@ class PatientNumberParameter extends CaseSearchParameter implements DBProviderIn
     public function getLabel()
     {
         // This is a human-readable value, so feel free to change this as required.
-        return Yii::app()->params['hos_num_label'] . ' Number';
+        return \SettingMetadata::model()->getSetting('hos_num_label') . ' Number';
     }
 
     /**

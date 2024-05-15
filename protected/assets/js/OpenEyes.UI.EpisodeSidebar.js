@@ -27,6 +27,7 @@ OpenEyes.UI = OpenEyes.UI || {};
      */
     function EpisodeSidebar(element, options) {
         this.element = $(element);
+        this.sendImageUrlAjaxRequest = true;
         this.options = $.extend(true, {}, EpisodeSidebar._defaultOptions, options);
         this.create();
     }
@@ -55,13 +56,13 @@ OpenEyes.UI = OpenEyes.UI || {};
 
     /**
      * Load the previous state of the sidebar from cookie storage
-   */
-  EpisodeSidebar.prototype.loadState = function () {
-    var self = this;
-    if (typeof(Storage) !== "undefined") {
-      state = sessionStorage.getItem(sidebarCookie);
-      if (state) {
-        stateObj = JSON.parse(state);
+     */
+    EpisodeSidebar.prototype.loadState = function () {
+        var self = this;
+        if (typeof (Storage) !== "undefined") {
+            state = sessionStorage.getItem(sidebarCookie);
+            if (state) {
+                stateObj = JSON.parse(state);
                 if (stateObj.sortOrder)
                     self.sortOrder = stateObj.sortOrder;
                 if (stateObj.grouping)
@@ -72,13 +73,13 @@ OpenEyes.UI = OpenEyes.UI || {};
 
     /**
      * Save the current sidebar state to cookie storage
-   */
-  EpisodeSidebar.prototype.saveState = function () {
-    var self = this;
-    if (typeof(Storage) !== "undefined") {
-      var state = {
-        sortOrder: self.sortOrder,
-        grouping: self.grouping
+     */
+    EpisodeSidebar.prototype.saveState = function () {
+        var self = this;
+        if (typeof (Storage) !== "undefined") {
+            var state = {
+                sortOrder: self.sortOrder,
+                grouping: self.grouping
             };
             sessionStorage.setItem(sidebarCookie, JSON.stringify(state));
         }
@@ -87,13 +88,12 @@ OpenEyes.UI = OpenEyes.UI || {};
     EpisodeSidebar.prototype.create = function () {
         let self = this;
 
-    if (self.options.default_sort == 'asc') {
-      self.sortOrder = 'asc';
-    }
-    else {
-      self.sortOrder = 'desc';
-    }
-    self.grouping = {
+        if (self.options.default_sort == 'asc') {
+            self.sortOrder = 'asc';
+        } else {
+            self.sortOrder = 'desc';
+        }
+        self.grouping = {
             id: groupings[0].id
         };
 
@@ -122,33 +122,33 @@ OpenEyes.UI = OpenEyes.UI || {};
             e.preventDefault();
         });
 
-    self.element.on('click', '.expand-all', function (e) {
-      self.expandAll();
-      e.preventDefault();
-    });
+        self.element.on('click', '.expand-all', function (e) {
+            self.expandAll();
+            e.preventDefault();
+        });
 
-    self.element.on('click', '.collapse-group-icon i.minus', function (e) {
-      self.collapseGrouping($(e.target).parents('.collapse-group'));
-      e.preventDefault();
-    });
+        self.element.on('click', '.collapse-group-icon i.minus', function (e) {
+            self.collapseGrouping($(e.target).parents('.collapse-group'));
+            e.preventDefault();
+        });
 
-    self.element.on('click', '.collapse-group-icon i.plus', function (e) {
-      self.expandGrouping($(e.target).parents('.collapse-group'));
-      e.preventDefault();
-    });
+        self.element.on('click', '.collapse-group-icon i.plus', function (e) {
+            self.expandGrouping($(e.target).parents('.collapse-group'));
+            e.preventDefault();
+        });
 
-    let $selected_event = this.element.find(this.options.event_list_selector + '.selected');
-    let li_height = $selected_event.height();
-    let min_viewport_height = $(window).height() - (li_height*3);
+        let $selected_event = this.element.find(this.options.event_list_selector + '.selected');
+        let li_height = $selected_event.height();
+        let min_viewport_height = $(window).height() - (li_height * 3);
 
-    if ($selected_event.length) {
-        let li_offset_top = $selected_event[0].offsetTop;
-        let height_offset = $('header.oe-header').height() + $('nav.sidebar-header').height();
+        if ($selected_event.length) {
+            let li_offset_top = $selected_event[0].offsetTop;
+            let height_offset = $('header.oe-header').height() + $('nav.sidebar-header').height();
 
-        if (li_offset_top && li_offset_top >= min_viewport_height) {
-            this.element[0].scrollTop = (li_offset_top - (height_offset + (li_height*10)));
+            if (li_offset_top && li_offset_top >= min_viewport_height) {
+                this.element[0].scrollTop = (li_offset_top - (height_offset + (li_height * 10)));
+            }
         }
-    }
 
         self.element.on('click', '.collapse-group-icon i.plus', function (e) {
             self.expandGrouping($(e.target).parents('.collapse-group'));
@@ -156,9 +156,10 @@ OpenEyes.UI = OpenEyes.UI || {};
         });
 
         self.element.on('mouseenter', '.event-type', function (e) {
-
             var $iconHover = $(e.target);
             var $li = $iconHover.parent().parents('li:first');
+            let event_id = $li.data('event-id');
+            const $eventQuickview =  $('.oe-event-quickview');
             $li.find('.quicklook').show();
 
             var $screenshots = $('.oe-event-quickview .quickview-screenshots');
@@ -166,10 +167,32 @@ OpenEyes.UI = OpenEyes.UI || {};
 
             $('.oe-event-quickview #js-quickview-data').text($li.data('event-date-display'));
             $('.oe-event-quickview .event-icon').html($li.data('event-icon'));
-            $('.oe-event-quickview').stop().fadeTo(50, 100, function () {
+            $eventQuickview.stop().fadeTo(50, 100, function () {
                 $(this).show();
             });
-            $('.oe-event-quickview').data('current_event', $li.data('event-id'));
+            $eventQuickview.data('current_event', $li.data('event-id'));
+
+            const img = $eventQuickview.find('img[data-event-id=' + event_id + ']');
+
+            if ( (img.attr('src') === undefined) && self.sendImageUrlAjaxRequest) {
+                $.ajax({
+                    type: 'GET',
+                    url: '/eventImage/getImageUrl',
+                    data: {'event_id': event_id},
+                    'beforeSend': function () {
+                        self.sendImageUrlAjaxRequest = false;
+                    },
+                    'success': function (response) {
+                        setEventImageSrc(event_id, response);
+                        setEventImageSrcFromData(
+                            self.element.find('.events').find("li[data-event-id=" + event_id + "]")
+                        );
+                    },
+                    'complete': function () {
+                        self.sendImageUrlAjaxRequest = true;
+                    }
+                });
+            }
 
             showCurrentEventImage();
         });
@@ -182,13 +205,6 @@ OpenEyes.UI = OpenEyes.UI || {};
             });
         });
 
-        self.element.find('.events').one('mouseenter',function () {
-            $(this).find('.event').each(function () {
-                setEventImageSrcFromData($(this));
-            });
-        });
-
-
         //Shows the current event image if it's loaded and the quickview is open
         function showCurrentEventImage() {
             //First check the parent element is visible
@@ -197,7 +213,7 @@ OpenEyes.UI = OpenEyes.UI || {};
             let event_id = quickview.data('current_event');
             if (quickview.is(':visible') && event_id) {
                 let img = quickview.find('img[data-event-id=' + event_id + ']');
-                if (img.data('loaded')){
+                if (img.data('loaded')) {
                     img.show();
                     loader.hide();
                 } else {
@@ -210,70 +226,46 @@ OpenEyes.UI = OpenEyes.UI || {};
             let event_id = li_item.data('event-id');
             let quickview = $('.oe-event-quickview');
             let img = quickview.find('img[data-event-id=' + event_id + ']');
-            if (img.attr('src') ==  undefined){
-                img.attr('src',img.data('src'));
+            if (img.attr('src') === undefined) {
+                img.attr('src', img.data('src'));
             }
         }
 
-        function setEventImageSrc(event_id, url){
+        function setEventImageSrc(event_id, url) {
             let img = $('img[data-event-id=' + event_id + ']');
             img.data('src', url);
         }
 
-
         $(document).ready(function () {
-            setTimeout(function () {
 
-                let events = [];
-                $('.event-type').each(function () {
-                    events.push($(this).parents('li:first'));
-                });
+            let events = [];
+            $('.event-type').each(function () {
+                events.push($(this).parents('li:first'));
+            });
 
-                var event_ids = [];
-                events.forEach(function (event) {
-                    event_ids.push(event.data('event-id'));
-                });
+            var event_ids = [];
+            events.forEach(function (event) {
+                event_ids.push(event.data('event-id'));
+            });
 
-                let bulkURLFunc = function (response) {
-                    let data = JSON.parse(response);
-                    //Set the event image source urls for events which are already generated
-                    if(data.generated_image_urls){
-                        for (let event_id in data.generated_image_urls) {
-                            if (data.generated_image_urls.hasOwnProperty(event_id)) {
-                                setEventImageSrc(event_id, data.generated_image_urls[event_id]);
-                            }
+            let bulkURLFunc = function (response) {
+                let data = JSON.parse(response);
+                //Set the event image source urls for events which are already generated
+                if (data.generated_image_urls) {
+                    for (let event_id in data.generated_image_urls) {
+                        if (data.generated_image_urls.hasOwnProperty(event_id)) {
+                            setEventImageSrc(event_id, data.generated_image_urls[event_id]);
+                            setEventImageSrcFromData(self.element.find('.events').find("li[data-event-id=" + event_id + "]"));
                         }
                     }
+                }
+            };
 
-                    //Send a parallel request for each of the remaining events
-                    // In production this would almost never be more than one but demo data would have no images
-                    if (data.remaining_event_ids) {
-                        let remaining_events = data.remaining_event_ids;
-                        for (let event in remaining_events) {
-                            if (remaining_events.hasOwnProperty(event)) {
-                                let event_id = remaining_events[event];
-                                $.ajax({
-                                    type: 'GET',
-                                    url: '/eventImage/getImageUrl',
-                                    data: {'event_id': event_id},
-                                }).success(function(response){
-                                    setEventImageSrc(event_id, response);
-                                    setEventImageSrcFromData(
-                                        self.element.find('.events').find("li[data-event-id="+event_id+"]")
-                                    );
-                                });
-                            }
-                        }
-                    }
-
-                };
-
-                $.ajax({
-                    type: 'GET',
-                    url: '/eventImage/getImageUrlsBulk',
-                    data: {'event_ids': JSON.stringify(event_ids)},
-                }).success(bulkURLFunc);
-            }, 0);
+            $.ajax({
+                type: 'GET',
+                url: '/eventImage/getImageUrlsBulk',
+                data: {'event_ids': JSON.stringify(event_ids)},
+            }).success(bulkURLFunc);
 
             let $screenshots = $('.oe-event-quickview .quickview-screenshots');
             let $loader = $('.oe-event-quickview .spinner');
@@ -299,13 +291,13 @@ OpenEyes.UI = OpenEyes.UI || {};
 
             var $img = $('<img />', {
                 class: 'js-quickview-image',
-            style: 'display: none;',
-            'data-event-id': $(this).data('event-id'),
-            'data-src': $(this).data('event-image-url'),
-            'data-index': counter ,
-        });
+                style: 'display: none;',
+                'data-event-id': $(this).data('event-id'),
+                'data-src': $(this).data('event-image-url'),
+                'data-index': counter,
+            });
 
-      counter++;
+            counter++;
             $img.appendTo($container);
         });
     };
@@ -327,18 +319,16 @@ OpenEyes.UI = OpenEyes.UI || {};
             var ret = null;
             // for some reason am unable to do a chained ternery operator for the comparison, hence the somewhat convoluted
             // if statements to perform the comparison here.
-      if (edA === edB) {
-        if (cdA === cdB) {
-          ret = 0;
-        }
-        else {
-          ret = cdA < cdB ? -1 : 1;
-        }
-      }
-      else {
-        ret = edA < edB ? -1 : 1;
-      }
-      return ret;
+            if (edA === edB) {
+                if (cdA === cdB) {
+                    ret = 0;
+                } else {
+                    ret = cdA < cdB ? -1 : 1;
+                }
+            } else {
+                ret = edA < edB ? -1 : 1;
+            }
+            return ret;
         }
 
         var sorted = items.sort(dateSort);
@@ -423,19 +413,17 @@ OpenEyes.UI = OpenEyes.UI || {};
         itemsByGrouping = {};
         groupingVals = [];
         self.element.find(self.options.event_list_selector).each(function () {
-      var groupingVal = $(this).data(self.grouping.id);
-      if (!groupingVal) {
-        console.log('ERROR: missing grouping data attribute ' + self.grouping.id);
-      }
-      else {
-        if (!itemsByGrouping[groupingVal]) {
-          itemsByGrouping[groupingVal] = [this];
-          groupingVals.push(groupingVal);
-        }
-        else {
-          itemsByGrouping[groupingVal].push(this);
-        }
-      }
+            var groupingVal = $(this).data(self.grouping.id);
+            if (!groupingVal) {
+                console.log('ERROR: missing grouping data attribute ' + self.grouping.id);
+            } else {
+                if (!itemsByGrouping[groupingVal]) {
+                    itemsByGrouping[groupingVal] = [this];
+                    groupingVals.push(groupingVal);
+                } else {
+                    itemsByGrouping[groupingVal].push(this);
+                }
+            }
         });
 
         var groupingElements = '<div class="groupings">';
@@ -518,19 +506,17 @@ OpenEyes.UI = OpenEyes.UI || {};
     };
     //TODO: loading is not working, need to verify where we're at!!
     EpisodeSidebar.prototype.processGroupingState = function () {
-    var self = this;
-    if (self.grouping.state == undefined) {
-      self.expandAll();
-    }
-    else {
-      self.element.find('.collapse-group').each(function () {
-        if (self.grouping.state[$(this).data('grouping-val')] == 'collapse') {
-          self.collapseGrouping($(this), false);
-        }
-        else {
-          self.expandGrouping($(this), false);
-        }
-      });
+        var self = this;
+        if (self.grouping.state == undefined) {
+            self.expandAll();
+        } else {
+            self.element.find('.collapse-group').each(function () {
+                if (self.grouping.state[$(this).data('grouping-val')] == 'collapse') {
+                    self.collapseGrouping($(this), false);
+                } else {
+                    self.expandGrouping($(this), false);
+                }
+            });
         }
     };
 

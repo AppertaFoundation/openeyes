@@ -88,7 +88,7 @@
     let prescriptionUsageRuleId = <?= MedicationUsageCode::model()->find('usage_code = ?', ["PRESCRIPTION_SET"])->id;?>;
     let drugSetController = new OpenEyes.OphDrPrescriptionAdmin.DrugSetController({
             tableSelector: '#meds-list',
-            searchUrl: '/OphDrPrescription/admin/DrugSet/searchmedication',
+            searchUrl: '/OphDrPrescription/admin/autoSetRule/searchmedication',
             templateSelector: '#medication_template'
     });
     $('#meds-list').data('drugSetController', drugSetController);

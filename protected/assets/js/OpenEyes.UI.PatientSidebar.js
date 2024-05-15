@@ -190,6 +190,7 @@ OpenEyes.UI = OpenEyes.UI || {};
                 };
                 self.loadElement($container, data, newCallback);
                 $item.addClass('loading');
+                manage_elements.updatePopupItem($item);
             } else {
                 // either has no parent or parent is already loaded.
                 self.moveTo($item);

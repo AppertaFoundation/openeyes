@@ -44,12 +44,14 @@ class OphCiExamination_IntraocularPressure_Value extends \BaseActiveRecordVersio
 
     public function init()
     {
-        if (($default_instrument_id = Element_OphCiExamination_IntraocularPressure::model()->getSetting('default_instrument_id'))) {
-            $this->instrument_id = $default_instrument_id;
-        }
+        if ($this->getScenario() !== 'exam_creator') {
+            if (($default_instrument_id = Element_OphCiExamination_IntraocularPressure::model()->getSetting('default_instrument_id'))) {
+                $this->instrument_id = $default_instrument_id;
+            }
 
-        if (($default_reading_id = Element_OphCiExamination_IntraocularPressure::model()->getSetting('default_reading_id'))) {
-            $this->reading_id = $default_reading_id;
+            if (($default_reading_id = Element_OphCiExamination_IntraocularPressure::model()->getSetting('default_reading_id'))) {
+                $this->reading_id = $default_reading_id;
+            }
         }
         $this->reading_time = date('H:i', time());
     }
