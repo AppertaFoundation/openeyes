@@ -94,14 +94,13 @@ class AutoSetRuleController extends BaseAdminController
     private function getSearchCriteria($filters = [])
     {
         $criteria = new \CDbCriteria();
-
-        $criteria->with = ['medicationSetRules'];
-        $criteria->together = true;
+        $criteria->join = "LEFT JOIN medication_set_rule medicationSetRules ON t.id=medicationSetRules.medication_set_id";
+        $criteria->distinct = true;
 
         if (isset($filters['usage_code_ids']) &&
             $filters['usage_code_ids'] &&
             !in_array(self::FILTER_USAGE_CODE_ID_FOR_ALL, $filters['usage_code_ids'])) {
-            $criteria->addInCondition('usage_code_id', $filters['usage_code_ids']);
+            $criteria->addInCondition('medicationSetRules.usage_code_id', $filters['usage_code_ids']);
         }
 
         if (isset($filters['query']) && $filters['query']) {
