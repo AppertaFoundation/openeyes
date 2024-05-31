@@ -18,8 +18,10 @@
 
 namespace OEModule\PASAPI\tests\feature;
 
+use OEModule\PASAPI\resources\BaseResource;
 use Patient;
 use OEModule\OphCiExamination\models\Element_OphCiExamination_CommunicationPreferences;
+use WithFaker;
 
 /**
  * @group sample-data
@@ -82,6 +84,92 @@ EOF;
         $this->setExpectedHttpError(422);
         $this->put('TESTMODELVALIDATION/identifier-type/' . self::IDENTIFIER_TYPE, $xml);
         $this->assertXPathFound('/Failure');
+    }
+
+    private function truncatePropertiesDataProvider(): array
+    {
+            $primary_phone = str_repeat("12345", 5);
+            $mobile_phone = str_repeat("1", 60);
+            $title = str_repeat("MRS", 10);
+            $first_name = str_repeat("FirstName", 100);
+            $last_name = str_repeat("LastName", 100);
+
+            $tags = [
+                'TelephoneNumber' => [
+                    'attribute' => 'primary_phone',
+                    'content' => $primary_phone,
+                    'expected' => substr($primary_phone, 0, 20)
+                ],
+                'MobilePhoneNumber' => [
+                    'attribute' => 'mobile_phone',
+                    'content' => $mobile_phone,
+                    'expected' => substr($mobile_phone, 0, 50)
+                ],
+                'Title' => [
+                    'attribute' => 'title',
+                    'content' => $title,
+                    'expected' => substr($title, 0, 20)
+                ],
+                'FirstName' => [
+                    'attribute' => 'first_name',
+                    'content' => $first_name,
+                    'expected' => substr($first_name, 0, 300)
+                ],
+                'Surname' => [
+                    'attribute' => 'last_name',
+                    'content' => $last_name,
+                    'expected' => substr($last_name, 0, 100)
+                ]
+            ];
+
+            return $tags;
+    }
+
+    public function testCreatePatientWithTooLongFields()
+    {
+        $data = $this->truncatePropertiesDataProvider();
+
+        $xml = <<<EOF
+<Patient>
+    <NHSNumber>0123456789</NHSNumber>
+    <NHSNumberStatus>02</NHSNumberStatus>
+    <HospitalNumber>92312422</HospitalNumber>
+    <Title>{$data['Title']['content']}</Title>
+    <FirstName>{$data['FirstName']['content']}</FirstName>
+    <Surname>{$data['Surname']['content']}</Surname>
+    <DateOfBirth>1978-03-01</DateOfBirth>
+    <Gender>F</Gender>
+    <AddressList>
+        <Address>
+            <Line1>82 Scarisbrick Lane</Line1>
+            <Line2/>
+            <City>Bethersden</City>
+            <County>West Yorkshire</County>
+            <Postcode>QA88 2GC</Postcode>
+            <Country>GB</Country>
+            <Type>HOME</Type>
+        </Address>
+    </AddressList>
+    <TelephoneNumber>{$data['TelephoneNumber']['content']}</TelephoneNumber>
+    <MobilePhoneNumber>{$data['MobilePhoneNumber']['content']}</MobilePhoneNumber>
+    <EthnicGroup>A</EthnicGroup>
+    <DateOfDeath/>
+    <PracticeCode>C82103</PracticeCode>
+    <GpCode>G3258868</GpCode>
+</Patient>
+EOF;
+
+        $this->expected_response_code = 201;
+        $this->put('92312422/identifier-type/LOCAL-1-0', $xml);
+
+        $id = $this->xPathQuery('/Success//Id')->item(0)->nodeValue;
+
+        $patient = Patient::model()->findByPk($id);
+        $this->assertNotNull($patient);
+
+        foreach ($data as $tag => $attr_data) {
+            $this->assertEquals($attr_data['expected'], $patient->contact->{$attr_data['attribute']}, "{$tag} has not been truncated correctly");
+        }
     }
 
     /**

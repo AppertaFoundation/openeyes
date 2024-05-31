@@ -33,6 +33,7 @@ class Patient extends BaseResource
 {
     protected static $resource_type = 'Patient';
     protected static $model_class = 'Patient';
+    protected bool $truncate_properties = true;
 
     /**
      * @return bool

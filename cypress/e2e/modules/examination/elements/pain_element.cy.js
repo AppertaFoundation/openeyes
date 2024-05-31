@@ -3,12 +3,13 @@ describe('pain element tests', () => {
         beforeEach(() => {
             cy.login()
                 .then(() => {
-                    return cy.createPatient();
+                    //return cy.createPatient();
+                    return cy.runSeeder('OphCiExamination', 'PainSeeder');
                 })
-                .then((patient) => {
-                    return cy.getEventCreationUrl(patient.id, 'OphCiExamination')
+                .then((seederData) => {
+                    return cy.getEventCreationUrl(seederData.patient.id, 'OphCiExamination', seederData.firmId)
                         .then((url) => {
-                            return [url, patient];
+                            return [url, seederData.patient];
                         });
                 })
                 .then(([url, patient]) => {
@@ -36,23 +37,21 @@ describe('pain element tests', () => {
         });
     });
 
-
     describe('pain element behaviour subject to system settings', () => {
         it('Discard empty elements appears when saving empty pain element and close_incomplete_exam_elements=on', () => {
             cy.setSystemSettingValue("close_incomplete_exam_elements", "on");
             cy.login()
                 .then(() => {
-                    return cy.createPatient();
+                    return cy.runSeeder('OphCiExamination', 'PainSeeder');
                 })
-                .then((patient) => {
-                    return cy.getEventCreationUrl(patient.id, 'OphCiExamination')
+                .then((seederData) => {
+                    return cy.getEventCreationUrl(seederData.patient.id, 'OphCiExamination')
                         .then((url) => {
-                            return [url, patient];
+                            return [url, seederData.patient];
                         });
                 })
                 .then(([url, patient]) => {
                     cy.visit(url);
-                    cy.removeElements([], true);
                     return cy.addExaminationElement('Pain');
                 });
             cy.saveEvent().then(() => {
@@ -64,17 +63,16 @@ describe('pain element tests', () => {
             cy.setSystemSettingValue("close_incomplete_exam_elements", "off");
             cy.login()
                 .then(() => {
-                    return cy.createPatient();
+                    return cy.runSeeder('OphCiExamination', 'PainSeeder');
                 })
-                .then((patient) => {
-                    return cy.getEventCreationUrl(patient.id, 'OphCiExamination')
+                .then((seederData) => {
+                    return cy.getEventCreationUrl(seederData.patient.id, 'OphCiExamination')
                         .then((url) => {
-                            return [url, patient];
+                            return [url, seederData.patient];
                         });
                 })
                 .then(([url, patient]) => {
                     cy.visit(url);
-                    cy.removeElements([], true);
                     return cy.addExaminationElement('Pain');
                 });
             cy.saveEvent()
@@ -96,7 +94,6 @@ describe('pain element tests', () => {
                 })
                 .then((patient) => {
                     cy.visitEventCreationUrl(patient.id, 'OphCiExamination');
-                    cy.removeElements(['History'], true);
                     return cy.addExaminationElement(['Pain', 'History']);
                 })
 

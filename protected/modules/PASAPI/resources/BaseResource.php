@@ -18,14 +18,16 @@
 
 namespace OEModule\PASAPI\resources;
 
+use CStringValidator;
 use OEModule\PASAPI\models\PasApiAssignment;
 use OEModule\PASAPI\models\XpathRemap;
+use ReflectionClass;
 
-/** @phpstan-consistent-constructor */
+/**  @phpstan-consistent-constructor */
 abstract class BaseResource
 {
     protected static $resource_type;
-    protected static $model_class;
+    protected static $model_class = null;
 
     protected $version;
     protected $schema;
@@ -67,6 +69,21 @@ abstract class BaseResource
      * @var bool
      */
     public $partial_record = false;
+
+
+    /**
+     * Determines whether properties exceeding the allowed length, based on the model validator settings, should be truncated.
+     * For instance, when using model validation rules like ['first_name', 'length', 'max' => 300],
+     * setting this to TRUE will enable truncation of strings that exceed the specified maximum length.
+     * If set to FALSE, validation errors will be triggered for strings surpassing the defined length limits.
+     *
+     * Note: This functionality governs truncation for all models defined within the resource's scope.
+     *
+     * It relies on the 'length' rule defined in the model validation configuration.
+     * If the 'length' rule is not present, the $truncate_properties behavior will be disregarded.
+     * Ensure that the appropriate 'length' validation rule is established for truncation to take effect across the defined models.
+     */
+    protected bool $truncate_properties = false;
 
     /**
      * BaseResource constructor.
@@ -223,7 +240,7 @@ abstract class BaseResource
      *
      * @return BaseResource|null
      */
-    public static function fromResourceId($version, $id): ?BaseResource
+    public static function fromResourceId($version, $id):? self
     {
         $finder = new PasApiAssignment();
 
@@ -236,6 +253,7 @@ abstract class BaseResource
                 return $obj;
             }
         }
+
         return null;
     }
 
@@ -413,7 +431,48 @@ abstract class BaseResource
             return;
         }
 
-        $model->$model_key = $this->getAssignedProperty($resource_key);
+        $property_value = $this->getAssignedProperty($resource_key);
+
+        if ($this->truncate_properties) {
+            $max_length = $this->getMaxValidationRule($model, $model_key);
+
+            if (is_int($max_length)) {
+                $property_value = substr($property_value, 0, $max_length);
+            }
+        }
+
+        $model->$model_key = $property_value;
+    }
+
+    /**
+     * Retrieves the 'max' from the model's rules function.
+     * If multiple 'max' values are defined, it returns the largest 'max' length.
+     *
+     * @param \CModel $model - The model containing the validation rules.
+     * @param string $property - The property for which the 'max' validation is sought.
+     *
+     * @return int|null - The largest 'max' value found among the validators, or null if none found.
+     */
+    private function getMaxValidationRule(\CModel $model, string $property):? int
+    {
+        $validators = $model->getValidators($property);
+        $max_length = null;
+
+        /**
+         * foreach and overwrite $max_length because here we only interested in the 'max'
+         * and if someone defines rules as:
+         * ['first_name', 'length', 'min' => 30],
+         * ['first_name', 'length', 'max' => 300]
+         *
+         * than the the first CStringValidator's max property will be null
+         */
+        foreach ($validators as $validator) {
+            if ($validator instanceof CStringValidator && !is_null($validator->max)) {
+                $max_length = max($max_length, $validator->max);
+            }
+        }
+
+        return $max_length;
     }
 
     /**

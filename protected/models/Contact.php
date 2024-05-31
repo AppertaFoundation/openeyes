@@ -74,37 +74,49 @@ class Contact extends BaseActiveRecordVersioned
         return 'contact';
     }
 
-    /**
-     * @return array validation rules for model attributes.
-     */
     public function rules()
     {
-        return array(
-            array('nick_name', 'length', 'max' => 80),
-            array('pas_id, title, first_name, last_name, nick_name, primary_phone, mobile_phone, qualifications, maiden_name,
-             contact_label_id, active, comment, national_code, fax',
-                'safe'),
-            array('first_name, last_name, created_institution_id', 'required', 'on' => array('manualAddPatient', 'referral', 'self_register', 'other_register', 'manage_gp')),
-            array('title, maiden_name', 'match', 'pattern' => '/^[a-zA-Z]+([\',. -]?[a-zA-Z -]*)*$/', 'message' => 'Invalid {attribute} entered.', 'except' => 'hscic_import'),
-            array('first_name, last_name', 'parenthesisValidator', 'except' => 'team_contact'),
-            array('first_name, last_name', 'required', 'on' => array('manage_gp_role_req', 'pasapi_import')),
-            array('contact_label_id', 'required', 'on' => array('manage_gp_role_req'), 'message' => 'Please select a Role.'),
-            array('primary_phone', 'requiredValidator'),
-            array('id, nick_name, primary_phone, mobile_phone, title, first_name, last_name, qualifications, email', 'safe', 'on' => 'search'),
-            array('first_name', 'required', 'on' => array('manage_practice')),
-            array('first_name', 'length', 'max' => 300, 'on' => 'manage_practice'),
-            array('primary_phone','OEPhoneNumberValidator'),
-            array('mobile_phone','OEPhoneNumberValidator'),
-            array('email', 'length', 'max' => 255),
-            array('email','email'),
-            array('email', 'required', 'on' => array('self_register')),
-            array('title, first_name, last_name, nick_name, primary_phone, mobile_phone, qualifications, maiden_name,
-                    national_code, fax, email', 'filter', 'filter' => function ($value) {
+        return [
+            ['nick_name', 'length', 'max' => 80],
+            ['pas_id, title, first_name, last_name, nick_name, primary_phone, mobile_phone, qualifications, maiden_name,
+                contact_label_id, active, comment, national_code, fax', 'safe'],
+            ['first_name, last_name, created_institution_id', 'required', 'on' => ['manualAddPatient', 'referral', 'self_register', 'other_register', 'manage_gp']],
+            ['title, maiden_name', 'match', 'pattern' => '/^[a-zA-Z]+([\',. -]?[a-zA-Z -]*)*$/', 'message' => 'Invalid {attribute} entered.', 'except' => 'hscic_import'],
+            ['first_name, last_name', 'parenthesisValidator', 'except' => 'team_contact'],
+            ['first_name, last_name', 'required', 'on' => ['manage_gp_role_req', 'pasapi_import']],
+            ['contact_label_id', 'required', 'on' => ['manage_gp_role_req'], 'message' => 'Please select a Role.'],
+            ['primary_phone', 'requiredValidator'],
+            ['id, nick_name, primary_phone, mobile_phone, title, first_name, last_name, qualifications, email', 'safe', 'on' => 'search'],
+            ['first_name', 'required', 'on' => ['manage_practice']],
+            ['primary_phone','OEPhoneNumberValidator'],
+            ['mobile_phone','OEPhoneNumberValidator'],
+            ['email','email'],
+            ['email', 'required', 'on' => ['self_register']],
+            ['title, first_name, last_name, nick_name, primary_phone, mobile_phone, qualifications, maiden_name,
+            national_code, fax, email', 'filter', 'filter' => function ($value) {
                 return strip_tags($value);
-            }),
-        );
+            }],
+
+            ['primary_phone', 'length', 'max' => 20],
+            ['mobile_phone', 'length', 'max' => 50],
+            ['title', 'length', 'max' => 20],
+            ['first_name', 'length', 'max' => 300],
+            ['last_name', 'length', 'max' => 100],
+            ['maiden_name', 'length', 'max' => 100],
+            ['qualifications', 'length', 'max' => 200],
+            ['email', 'length', 'max' => 255],
+            ['contact_label_id', 'length', 'max' => 10],
+            ['national_code', 'length', 'max' => 25],
+            ['fax', 'length', 'max' => 25],
+            ['created_institution_id', 'length', 'max' => 11],
+        ];
     }
 
+    /**
+     * @param string $attribute – attribute name
+     * @param $params
+     * @return void
+     */
     public function parenthesisValidator($attribute, $params)
     {
         $scenario = $this->getScenario();
