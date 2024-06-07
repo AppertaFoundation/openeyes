@@ -100,12 +100,23 @@ class DocumentController extends \BaseApiController
         return $protected_file;
     }
 
+    private function checkDateFormat($date)
+    {
+        // Ensures the date is in the format yyyymmdd
+        if (preg_match('/^\d{8}$/', $date) && checkdate(substr($date, 4, 2), substr($date, 6, 2), substr($date, 0, 4))) {
+            return true;
+        } else {
+            $this->renderJSON(['error' => 'Date format is incorrect (expected yyyymmdd): ' . $date], 400);
+            \Yii::app()->end();
+        }
+    }
+
     public function actionSearch()
     {
         $query = \Yii::app()->db->createCommand()
             ->select('ep.id AS episode_id, e.id AS event_id, eod.id AS element_id, eod.unique_ref AS unique_ref, eod.event_sub_type AS event_sub_type, ep.firm_id AS firm_id,
             eod.left_document_id AS left_document_id, eod.right_document_id AS right_document_id, eod.single_document_id AS single_document_id,
-            eod.left_comment AS left_comment, eod.right_comment AS right_comment, eod.single_comment AS single_comment')
+            eod.left_comment AS left_comment, eod.right_comment AS right_comment, eod.single_comment AS single_comment, e.event_date AS document_date')
             ->from('episode ep')
             ->join('event e', 'ep.id = e.episode_id')
             ->join('et_ophcodocument_document eod', 'e.id = eod.event_id')
@@ -130,6 +141,7 @@ class DocumentController extends \BaseApiController
             $document_subtype_name = \Yii::app()->request->getParam('document_subtype');
             $firm_id = \Yii::app()->request->getParam('firm_id');
             $laterality = \Yii::app()->request->getParam('laterality');
+            $document_date = \Yii::app()->request->getParam('document_date');
 
             $pid = $this->findPatient($patient_identifier, $patient_id);
 
@@ -160,6 +172,10 @@ class DocumentController extends \BaseApiController
                     ->leftJoin('protected_file rpf', 'eod.right_document_id = rpf.id')
                     ->andWhere('(spf.name = :sdocument_title OR lpf.name = :ldocument_title OR rpf.name = :rdocument_title)', array(':sdocument_title' => $document_title, ':ldocument_title' => $document_title, ':rdocument_title' => $document_title));
             }
+
+            if ($document_date && $this->checkDateFormat($document_date)) {
+                $query->andWhere('e.event_date LIKE ":document_date%"', array(':document_date' => date('Y-m-d', strtotime($document_date))));
+            }
         }
         $results = $query->queryAll();
 
@@ -176,6 +192,7 @@ class DocumentController extends \BaseApiController
         $comments = \Yii::app()->request->getParam('comments', '');
         $firm_id = \Yii::app()->request->getParam('firm_id');
         $unique_ref = \Yii::app()->request->getParam('unique_ref');
+        $document_date = \Yii::app()->request->getParam('document_date');
 
         // Check required parameters
         if (!$patient_identifier || !$patient_id || !$firm_id) {
@@ -224,7 +241,7 @@ class DocumentController extends \BaseApiController
         $event = new \Event();
         $event->event_type_id = $event_type->id;
         $event->episode_id = $episode->id;
-        $event->event_date = date('Y-m-d H:i:s');
+        $event->event_date = ($document_date ? ($this->checkDateFormat($document_date) ? date('Y-m-d', strtotime($document_date)) : null) : date('Y-m-d')) . ' 00:00:00';
         $event->institution_id = $institution_id;
         $event->save(false);
 

@@ -38,6 +38,7 @@ class DocumentControllerTest extends \OEModule\Api\tests\BaseApiTest
         'document_title=ExampleDocument.pdf&' .
         'document_subtype=General&' .
         'unique_ref=example_unique_ref&' .
+        'document_date=20230101&' .
         'comments=Example Comments', base64_encode('Document Data'));
 
         $element_id = \Yii::app()->db->createCommand('SELECT id FROM et_ophcodocument_document WHERE unique_ref = "example_unique_ref";')->queryScalar();
@@ -55,6 +56,37 @@ class DocumentControllerTest extends \OEModule\Api\tests\BaseApiTest
         'document_title=ExampleDocument.pdf&' .
         'document_subtype=General&' .
         'unique_ref=example_unique_ref&' .
+        'document_date=20230101&' .
+        'comments=Example Comments', base64_encode('Document Data'));
+    }
+
+    /** @test */
+    public function create_document_with_alpha_date()
+    {
+        $this->expected_response_code = 400;
+        $this->post('create?' .
+        'patient_identifier_type=LOCAL-1-0&' .
+        'patient_id=0000001&' .
+        'firm_id=1&' .
+        'document_title=ExampleDocument.pdf&' .
+        'document_subtype=General&' .
+        'unique_ref=example_unique_ref&' .
+        'document_date=today&' .
+        'comments=Example Comments', base64_encode('Document Data'));
+    }
+
+    /** @test */
+    public function create_document_with_invalid_date()
+    {
+        $this->expected_response_code = 400;
+        $this->post('create?' .
+        'patient_identifier_type=LOCAL-1-0&' .
+        'patient_id=0000001&' .
+        'firm_id=1&' .
+        'document_title=ExampleDocument.pdf&' .
+        'document_subtype=General&' .
+        'unique_ref=example_unique_ref&' .
+        'document_date=20253012&' .
         'comments=Example Comments', base64_encode('Document Data'));
     }
 
@@ -85,6 +117,18 @@ class DocumentControllerTest extends \OEModule\Api\tests\BaseApiTest
         // Missing firm
         // Missing document_title
         'patient_identifier_type=LOCAL-1-0&' .
+        'patient_id=0000001');
+    }
+
+    /** @test */
+    public function search_with_invalid_date()
+    {
+        $this->expected_response_code = 400;
+        $this->get('search?' .
+        'firm_id=1&' .
+        'document_title=ExampleDocument.pdf&' .
+        'patient_identifier_type=LOCAL-1-0&' .
+        'document_date=20253012&' .
         'patient_id=0000001');
     }
 
