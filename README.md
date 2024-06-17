@@ -1,5 +1,3 @@
----
-
 <center><img src="https://raw.githubusercontent.com/openeyes/openeyes.github.io/master/img/logo.png" alt="OpenEyes logo" width="200" height="200"></center>
 
 
@@ -15,7 +13,7 @@ OpenEyes™ is the leading open source Electronic Patient Record (EPR) for ophth
 
 - [Description](#Description)
 - [Disclaimer](#Disclaimer)
-- [Quick Start](#Quick-Start)
+- [Setup](#Setup)
 - [Issues and support](#issues-and-support)
 - [Resources](#Resources)
 - [Contributing](#Contributing)
@@ -36,20 +34,8 @@ OpenEyes is provided under an GNU Affero GPL v3.0  (AGPL v3.0)  license and all 
 
 # Setup
 ---------
-1.	These instructions are for an Ubuntu 18.04 machine, although it may work for 16.04, 20.04 and Ubuntu variants but it was built and tested for Ubuntu 18.04. So step one is to build an Ubuntu 18.04 machine, and perform software updates as required sudo apt-get update
-2.	Install Git sudo apt-get install git
-3.	Clone the openeyes repo:
-    - a.	`cd /var`
-    - b.	`sudo mkdir www`
-    - c.	`cd www`
-    - d.	`sudo git clone https://github.com/AppertaFoundation/openeyes.git`
-4.	Run `sudo bash /var/www/openeyes/protected/scripts/install-system.sh`
-    - (this installs and configures the necessary services, such as the Apache webserver)
-5.	When that completes successfully, restart the Apache service using `sudo systemctl restart apache2`
-6. Run `sudo bash /var/www/openeyes/protected/scripts/install-oe.sh`
-    - (this installs OpenEyes itself. You will need to select option 1 to accept the terms and conditions, and then slightly later, say that Yes you want to run Composer as superuser in spite of the warning).
 
-Assuming those scripts run successfully (you should get a message confirming successful installation or otherwise), you can then open your browser on the Ubuntu machine and navigate to localhost. The OpenEyes login screen will appear, and you can login with credentials username `admin` and password `admin`.
+Detailed installation instructions to build each version can be found on the project wiki page [here](https://github.com/AppertaFoundation/openeyes/wiki/Installation-Instructions-v4.0.3).
     
 # Issues and support
 
@@ -57,18 +43,16 @@ Issues in the core should be logged through the [github issues system](https://g
 
 Please be aware that no service level agreement exists for the open source project and no support can be given via github. The team will do their best to fix any critical issues reported, but no guarantees are given. 
 
-For official implementation and support, with Service Level Agreements on resolution times, please contact our commercial partner Toukan Labs at <sales@toukanlabs.com>
+Official implementation and support is available from our Accredited Professional Services Partner Network. A list of available partners can be found at the following link [openeyes.apperta.org](openeyes.apperta.org). 
     
 # Resources
 ---------
 
-This is the main repository for development of the core OpenEyes framework.  Event type modules are being developed in other repositories both by ourselves and third party developers.  You may also be interested in our [EyeDraw repository](https://github.com/appertafoundation/EyeDraw) - this code is used by OpenEyes but may also be used independently.
+This is the main repository for development of the core OpenEyes framework.  Event type modules are being developed in other repositories both by ourselves and Accredited Contributors.  You may also be interested in our [EyeDraw repository](https://github.com/appertafoundation/EyeDraw); this code is used by OpenEyes but may also be used independently.
 
 The principal source of information on OpenEyes is [the OpenEyes website](http://openeyes.apperta.org)
 
 If you're interested in the OpenEyes project, or for general enquiries, email: <openeyes@apperta.org>
-
-You can find us on twitter at: http://twitter.com/openeyes_oef
 
 # Contributing
 -----------------------------------
@@ -81,6 +65,6 @@ OpenEyes follows the [gitflow](http://nvie.com/posts/a-successful-git-branching-
 
 -----------------------------------
 # Copyright and license    
-- Code and documentation copyright 2019–2021 the [Apperta Foundation](https://apperta.org/) 
+- Code and documentation copyright 2019–2024 the [Apperta Foundation](https://apperta.org/) 
 - Code released under the [GNU Affero General Public License v3.0](https://github.com/AppertaFoundation/openeyes/blob/master/LICENSE)
 - Docs released under [Creative Commons](https://creativecommons.org/licenses/by/3.0/).  

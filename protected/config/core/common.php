@@ -877,6 +877,7 @@ $config = array(
         /** END SINGLE SIGN-ON PARAMS */
         'breakglass_enabled' => $breakGlassEnabled,
         'user_breakglass_field' => $userBreakGlassField,
+        'enable_default_support_text' => true,
     ),
 );
 
