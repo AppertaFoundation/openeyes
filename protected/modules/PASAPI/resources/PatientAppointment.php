@@ -2,8 +2,6 @@
 
 namespace OEModule\PASAPI\resources;
 
-use Pathway;
-
 use OEModule\OphDrPGDPSD\models\OphDrPGDPSD_Assignment;
 
 /**
@@ -171,6 +169,7 @@ class PatientAppointment extends BaseResource
             foreach ($pathways as $pathway) {
                 // Delete all pathwayStep joined to the Pathway
                 \PathwayStep::model()->deleteAll('pathway_id = ?', array($pathway->id));
+                \PathwayComment::model()->deleteAll('pathway_id = :pathway_id', [':pathway_id' => $pathway->id]);
 
                 // Delete pathway by id
                 \Pathway::model()->deleteByPk($pathway->id);
