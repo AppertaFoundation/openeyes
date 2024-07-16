@@ -664,16 +664,16 @@ EOL;
         post_ioplowering_required,
         lens_status,
         complication,
-        administrator,
+        administrator_role,
         doctor_grade,
         site,
         institution
         FROM v_patient_intravitreal_injections
-        WHERE patient_id IN (${subquery})
+        WHERE patient_id IN ($subquery)
       EOL;
         $dataQuery = array(
         'query' => $query,
-        'header' => array('patient_id', 'eye', 'event_date', 'pre_antisept_drug', 'pre_skin_drug', 'drug', 'number', 'injection_given_by', 'injection_time', 'pre_ioplowering_required', 'post_ioplowering_required', 'lens_status', 'complication', 'administrator', 'doctor_grade', 'site', 'institution'),
+        'header' => array('patient_id', 'eye', 'event_date', 'pre_antisept_drug', 'pre_skin_drug', 'drug', 'number', 'injection_given_by', 'injection_time', 'pre_ioplowering_required', 'post_ioplowering_required', 'lens_status', 'complication', 'administrator_role', 'doctor_grade', 'site', 'institution'),
         );
         $this->saveCSVfile($dataQuery, 'AMD/IntravitrealInjections');
 
@@ -682,17 +682,16 @@ EOL;
         ev.event_id AS event_id,
         ev.event_date AS event_date,
         ecoe.followup_quantity AS followup_quantity,
-        p.name AS followup_period,
-        ecoe.followup_comments AS followup_comments
+        p.name AS followup_period
         FROM v_patient_events ev
         JOIN et_ophciexamination_clinicoutcome eco ON eco.event_id=ev.event_id
         JOIN ophciexamination_clinicoutcome_entry ecoe ON ecoe.element_id=eco.id
         JOIN period p ON p.id=ecoe.followup_period_id
-        WHERE ev.patient_id IN (${subquery})
+        WHERE ev.patient_id IN ($subquery)
       EOL;
         $dataQuery = array(
         'query' => $query,
-        'header' => array('patient_id', 'event_id', 'event_date', 'followup_quantity', 'followup_period', 'followup_comments'),
+        'header' => array('patient_id', 'event_id', 'event_date', 'followup_quantity', 'followup_period'),
         );
         $this->saveCSVfile($dataQuery, 'AMD/Followup');
 
@@ -710,7 +709,7 @@ EOL;
         LEFT JOIN postcode_to_lsoa_mapping ptlm ON ptlm.postcode = p.postcode
         LEFT JOIN lsoa_to_imd_mapping ltim ON ltim.lsoa = ptlm.lsoa
         LEFT JOIN imd_import ii ON ltim.imd_import_id = ii.id
-        WHERE patient_id IN (${subquery})
+        WHERE patient_id IN ($subquery)
       EOL;
         $dataQuery = array(
         'query' => $query,
@@ -729,7 +728,7 @@ EOL;
         ETDRS_value,
         LogMAR_value
         FROM v_patient_va_converted
-        WHERE patient_id IN (${subquery})
+        WHERE patient_id IN ($subquery)
       EOL;
         $dataQuery = array(
         'query' => $query,
@@ -738,9 +737,15 @@ EOL;
         $this->saveCSVfile($dataQuery, 'AMD/VisualAcuity');
 
         $query = <<<EOL
-        SELECT *
+        SELECT patient_id,
+        event_id,
+        event_date,
+        value,
+        method,
+        side,
+        eye
         FROM v_patient_crt
-        WHERE patient_id IN (${subquery})
+        WHERE patient_id IN ($subquery)
       EOL;
         $dataQuery = array(
         'query' => $query,
@@ -749,9 +754,27 @@ EOL;
         $this->saveCSVfile($dataQuery, 'AMD/CRT');
 
         $query = <<<EOL
-        SELECT *
+        SELECT patient_id,
+        event_date,
+        eye,
+        crt,
+        avg_thickness,
+        total_vol,
+        irf,
+        srf,
+        cysts,
+        retinal_thickening,
+        ped,
+        cmo,
+        dmo,
+        heamorrhage,
+        exudates,
+        avg_rnfl,
+        cct,
+        cd_ratio,
+        cst
         FROM v_patient_oct
-        WHERE patient_id IN (${subquery})
+        WHERE patient_id IN ($subquery)
       EOL;
         $dataQuery = array(
         'query' => $query,
@@ -765,7 +788,7 @@ EOL;
         cvi_status,
         registration_date
         FROM v_patient_cvi_status
-        WHERE patient_id IN (${subquery})
+        WHERE patient_id IN ($subquery)
       EOL;
         $dataQuery = array(
         'query' => $query,
@@ -781,7 +804,7 @@ EOL;
         disorder_date,
         specialty
         FROM v_patient_diagnoses
-        WHERE patient_id IN (${subquery})
+        WHERE patient_id IN ($subquery)
       EOL;
         $dataQuery = array(
         'query' => $query,
@@ -794,7 +817,7 @@ EOL;
         event_date,
         smoking_status
         FROM v_patient_social_history
-        WHERE patient_id IN (${subquery})
+        WHERE patient_id IN ($subquery)
       EOL;
         $dataQuery = array(
         'query' => $query,
@@ -803,9 +826,18 @@ EOL;
         $this->saveCSVfile($dataQuery, 'AMD/SmokingStatus');
 
         $query = <<<EOL
-        SELECT *
+        SELECT patient_id,
+        procedure_id,
+        term,
+        short_term,
+        snomed_code,
+        snomed_term,
+        ecds_code,
+        ecds_term,
+        eye,
+        event_date
         FROM v_patient_laser_procedure
-        WHERE patient_id IN (${subquery})
+        WHERE patient_id IN ($subquery)
       EOL;
         $dataQuery = array(
         'query' => $query,
