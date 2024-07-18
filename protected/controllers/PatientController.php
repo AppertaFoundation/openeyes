@@ -254,14 +254,6 @@ class PatientController extends BaseController
             $this->redirect("$link");
         }
 
-            $this->layout = '//layouts/events_and_episodes';
-            $this->patient = $this->loadModel($id, false);
-        // if the ids are different, it means the $id belongs to a merged patient
-        if ($id !== $this->patient->id) {
-            $link = (new CoreAPI())->generatePatientLandingPageLink($this->patient);
-            // using redirect to correct the url and to avoid issues from creating events
-            $this->redirect("$link");
-        }
         if (Yii::app()->params['breakglass_enabled']) {
             $breakGlass = new BreakGlass($this->patient, Yii::app()->user);
             if ($breakGlass->breakGlassRequired()) {
@@ -1932,11 +1924,14 @@ class PatientController extends BaseController
         $this->pageTitle = 'Add New Patient';
         $this->layout = '//layouts/nx_basegrid';
 
-        $patient_source = (null !== SettingMetadata::model()->getSetting('default_patient_source')) ? SettingMetadata::model()->getSetting('default_patient_source') : 'Referral';
-        $patient = new Patient($patient_source);
+        $patient_source_value = $this->request->getParam('patient_source') ?? SettingMetadata::model()->getSetting('default_patient_source');
+
+        $patient_source_value = (null !== $patient_source_value) ? $patient_source_value : '1';
+        $patient_scenario = $patient_source_value === '0' ? 'other' : ($patient_source_value === '1' ? 'referral' : 'self_register');
+        $patient = new Patient($patient_scenario);
         $patient->noPas();
         $contact = new Contact('manualAddPatient');
-        $address = new Address($patient_source);
+        $address = new Address($patient_scenario);
         $referral = null;
         $patient_user_referral = null;
         $pid_type_necessity_values = $this->getPatientIdentifierTypeNecessityValues();
@@ -1946,8 +1941,6 @@ class PatientController extends BaseController
         $practicecontact = new Contact();
         $practiceaddress = new Address();
         $practice = new Practice();
-
-        $this->performAjaxValidation(array($patient, $contact, $address));
 
         if (isset($_POST['Contact'], $_POST['Address'], $_POST['Patient'])) {
             $contact->attributes = $_POST['Contact'];
@@ -1985,8 +1978,6 @@ class PatientController extends BaseController
                     }
                 }
             }
-
-
             if (isset($_POST['PatientUserReferral'])) {
                 $patient_user_referral = new PatientUserReferral();
                 if ($_POST['PatientUserReferral']['user_id'] != -1) {
@@ -2016,20 +2007,15 @@ class PatientController extends BaseController
                     $contact->setScenario('manual');
                     break;
             }
+
+            $this->performAjaxValidation([$patient, $contact, $address, $referral]);
             // not to be sync with PAS
             $patient->is_local = 1;
 
             $patient->primary_institution_id = Institution::model()->getCurrent()->id;
 
-            // Don't save if the user just changed the "Patient Source"
-            if ($_POST["changePatientSource"] == 0) {
-                list($contact, $patient, $address, $referral, $patient_user_referral, $patient_identifiers) =
-                    $this->performPatientSave($contact, $patient, $address, $referral, $patient_user_referral, $patient_identifiers, $pid_type_necessity_values, '');
-            } else {
-                // Return the same page to the user without saving
-                // However the date of birth is usually reformatted before being displayed to the user, so we need to emulate that here.
-                $patient->beforeValidate();
-            }
+            list($contact, $patient, $address, $referral, $patient_user_referral, $patient_identifiers) =
+                $this->performPatientSave($contact, $patient, $address, $referral, $patient_user_referral, $patient_identifiers, $pid_type_necessity_values, '');
         }
 
 
@@ -2037,7 +2023,7 @@ class PatientController extends BaseController
         'patient' => $patient,
         'contact' => $contact,
         'address' => $address,
-        'referral' => isset($referral) ? $referral : new PatientReferral($patient_source),
+        'referral' => isset($referral) ? $referral : new PatientReferral($patient_scenario),
         'patientuserreferral' => isset($patient_user_referral) ? $patient_user_referral : new PatientUserReferral(),
         'patient_identifiers' => $patient_identifiers,
         'pid_type_necessity_values' => $pid_type_necessity_values,
@@ -2123,7 +2109,7 @@ class PatientController extends BaseController
         // fetch existing patient identifiers
         $existing_patient_identifiers = PatientIdentifier::model()->findAllByAttributes(['patient_id' => $patient->id, 'deleted' => 0]);
         foreach ($existing_patient_identifiers as $existing_patient_identifier) {
-            if(isset($patient_identifiers[$existing_patient_identifier->patient_identifier_type_id])) {
+            if (isset($patient_identifiers[$existing_patient_identifier->patient_identifier_type_id])) {
                 $patient_identifiers[$existing_patient_identifier->patient_identifier_type_id] = $existing_patient_identifier;
             }
         }
@@ -2149,10 +2135,10 @@ class PatientController extends BaseController
         *
         * @param CModel $model the model to be validated
         */
-    protected function performAjaxValidation($model)
+    protected function performAjaxValidation($models)
     {
         if (isset($_POST['ajax']) && $_POST['ajax'] === 'patient-form') {
-            echo CActiveForm::validate($model);
+            echo CActiveForm::validate($models);
             Yii::app()->end();
         }
     }
@@ -2182,7 +2168,6 @@ class PatientController extends BaseController
         $pid_type_necessity_values,
         $prevUrl
     ) {
-
         $patientScenario = $patient->getScenario();
         $isNewPatient = $patient->isNewRecord ? true : false;
         $transaction = Yii::app()->db->beginTransaction();
@@ -2203,14 +2188,20 @@ class PatientController extends BaseController
                     && Yii::app()->user->checkAccess('Genetics Clinical')
                     && $isNewPatient
                 ) {
-                    $redirect = array('Genetics/subject/edit?patient=' . $patient->id);
+                    $redirect = array('/Genetics/subject/edit?patient=' . $patient->id);
                 } elseif ($prevUrl !== '') {
                     $redirect = array($prevUrl);
                 } else {
                     $redirect = array('/patient/summary/' . $patient->id);
                 }
                 $transaction->commit();
-                $this->redirect($redirect);
+                if (Yii::app()->request->isAjaxRequest) {
+                    $return['redirect'] = $redirect;
+                    $this->renderJSON($return);
+                    Yii::app()->end();
+                } else {
+                    $this->redirect($redirect);
+                }
             } else {
                 //Get all the validation errors
                 foreach (
@@ -2219,7 +2210,7 @@ class PatientController extends BaseController
                              'contact',
                              'address',
                              'patient_user_referral',
-                             'patient_user_referral',
+                             'referral',
                          ] as $model
                 ) {
                     if (
@@ -2280,7 +2271,6 @@ class PatientController extends BaseController
 
         $patient->contact_id = $contact->id;
         $address->contact_id = $contact->id;
-
         if (
             !$patient->save()
             || !$address->save()
@@ -2288,12 +2278,10 @@ class PatientController extends BaseController
         ) {
             return false;
         }
-
         //Save referral documents
         if (!$this->actionPerformReferralDoc($patient, $referral)) {
             return false;
         }
-
 
         //Save referral to doctor
         if (isset($patient_user_referral) && $patient_user_referral->user_id != '') {
@@ -2308,7 +2296,6 @@ class PatientController extends BaseController
         }
 
         $this->performPatientContactAssociatesSave($patient);
-
         $action = $patient->isNewRecord ? 'add' : 'edit';
         Audit::add(
             'Patient',
@@ -2420,37 +2407,39 @@ class PatientController extends BaseController
 
         $document_saved = false;
         foreach ($_FILES as $file) {
-            $tmp_name = $file["tmp_name"]["uploadedFile"];
+            if (isset($file["tmp_name"]["uploadedFile"])) {
+                $tmp_name = $file["tmp_name"]["uploadedFile"];
 
 
-            //If no document is selected this can throw errors
-            if ($tmp_name == '') {
-                continue;
-            }
-            $p_file = ProtectedFile::createFromFile($tmp_name);
-            $p_file->name = $file["name"]["uploadedFile"];
-
-            if (!in_array($p_file->mimetype, $allowed_file_types)) {
-                $message = 'Only the following file types can be uploaded: ' . (implode(', ', $allowed_file_types)) . '.';
-                $referral->addError('uploadedFile', $message);
-            }
-
-            if ($p_file->save()) {
-                unlink($tmp_name);
-                $document = new Element_OphCoDocument_Document();
-                $document->patientId = $patient->id;
-                $document->event_id = $event->id;
-                $document->event = $event;
-                $document->single_document_id = $p_file->id;
-                $document->event_sub_type = $referral_letter_type_id;
-                $document->single_document = $p_file;
-                if (!$document->save()) {
-                    throw new Exception('Could not save Document');
-                } else {
-                    $document_saved = true;
+                //If no document is selected this can throw errors
+                if ($tmp_name == '') {
+                    continue;
                 }
-            } else {
-                unlink($tmp_name);
+                $p_file = ProtectedFile::createFromFile($tmp_name);
+                $p_file->name = $file["name"]["uploadedFile"];
+
+                if (!in_array($p_file->mimetype, $allowed_file_types)) {
+                    $message = 'Only the following file types can be uploaded: ' . (implode(', ', $allowed_file_types)) . '.';
+                    $referral->addError('uploadedFile', $message);
+                }
+
+                if ($p_file->save()) {
+                    unlink($tmp_name);
+                    $document = new Element_OphCoDocument_Document();
+                    $document->patientId = $patient->id;
+                    $document->event_id = $event->id;
+                    $document->event = $event;
+                    $document->single_document_id = $p_file->id;
+                    $document->event_sub_type = $referral_letter_type_id;
+                    $document->single_document = $p_file;
+                    if (!$document->save()) {
+                        throw new Exception('Could not save Document');
+                    } else {
+                        $document_saved = true;
+                    }
+                } else {
+                    unlink($tmp_name);
+                }
             }
         }
 
@@ -2534,7 +2523,6 @@ class PatientController extends BaseController
         $patient_user_referral = isset($patient->patientuserreferral[0]) ? $patient->patientuserreferral[0] : new PatientUserReferral();
         $pid_type_necessity_values = $this->getPatientIdentifierTypeNecessityValues();
         $patient_identifiers = $this->getAndUpdatePatientIdentifiersFromPost($patient, $pid_type_necessity_values, true);
-
         //only local patient can be edited
         if ($patient->is_local == 0) {
             Yii::app()->user->setFlash('warning.update-patient', 'Only local patients can be edited.');
@@ -2593,14 +2581,10 @@ class PatientController extends BaseController
                 $referral->setScenario('manual');
                 break;
         }
-
-        $this->performAjaxValidation(array($patient, $contact, $address));
-
+        $this->performAjaxValidation([$patient, $contact, $address]);
         if (isset($_POST['Contact'], $_POST['Address'], $_POST['Patient'])) {
-            if ($_POST['changePatientSource'] == 0) {
-                list($contact, $patient, $address, $referral, $patient_user_referral, $patient_identifiers) =
-                    $this->performPatientSave($contact, $patient, $address, $referral, $patient_user_referral, $patient_identifiers, $pid_type_necessity_values, $prevUrl);
-            }
+            list($contact, $patient, $address, $referral, $patient_user_referral, $patient_identifiers) =
+                $this->performPatientSave($contact, $patient, $address, $referral, $patient_user_referral, $patient_identifiers, $pid_type_necessity_values, $prevUrl);
         }
 
 
@@ -2907,29 +2891,31 @@ class PatientController extends BaseController
         $max_document_size = Helper::return_bytes(ini_get('upload_max_filesize'));
 
         foreach ($_FILES as $file) {
-            $name = $file["name"]["uploadedFile"];
-            $size = $file["size"]["uploadedFile"];
-            $type = $file["type"]["uploadedFile"];
+            if (isset($file["name"]["uploadedFile"])) {
+                $name = $file["name"]["uploadedFile"];
+                $size = $file["size"]["uploadedFile"];
+                $type = $file["type"]["uploadedFile"];
 
 
-            //Check only if document has been added
-            if ($name != '') {
-                // PHP automatically discards the files that exceed the maximum file upload limit.
-                // So when the size parameter is 0 and the name is not null, it means the file size is large
-                if ($size == 0) {
-                    $message = "The file you tried to upload exceeds the maximum allowed file size, which is " . $max_document_size / 1048576 . " MB ";
-                    $referral->addError('uploadedFile', $message);
-                    return false;
-                } // Check for compatible file types
-                elseif (!in_array($type, $allowed_file_types)) {
-                    $message = 'Only the following file types can be uploaded: ' . (implode(', ', $allowed_file_types)) . '.';
-                    $referral->addError('uploadedFile', $message);
+                //Check only if document has been added
+                if ($name != '') {
+                    // PHP automatically discards the files that exceed the maximum file upload limit.
+                    // So when the size parameter is 0 and the name is not null, it means the file size is large
+                    if ($size == 0) {
+                        $message = "The file you tried to upload exceeds the maximum allowed file size, which is " . $max_document_size / 1048576 . " MB ";
+                        $referral->addError('uploadedFile', $message);
+                        return false;
+                    } // Check for compatible file types
+                    elseif (!in_array($type, $allowed_file_types)) {
+                        $message = 'Only the following file types can be uploaded: ' . (implode(', ', $allowed_file_types)) . '.';
+                        $referral->addError('uploadedFile', $message);
+                        return false;
+                    }
+                } // The file field is empty. It should throw error for referral scenario
+                elseif ($patient->getScenario() == 'referral' && $this->checkExistingReferralLetter($patient)) {
+                    $referral->addError('uploadedFile', 'Referral requires a letter file');
                     return false;
                 }
-            } // The file field is empty. It should throw error for referral scenario
-            elseif ($patient->getScenario() == 'referral' && $this->checkExistingReferralLetter($patient)) {
-                $referral->addError('uploadedFile', 'Referral requires a letter file');
-                return false;
             }
         }
         return true;

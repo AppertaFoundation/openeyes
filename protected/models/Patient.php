@@ -157,7 +157,7 @@ class Patient extends BaseActiveRecordVersioned
             array('dob, patient_source', 'required'),
             array('gender', 'required', 'on' => array('self_register')),
             array('practice_id', 'required', 'on' => 'referral'),
-            array('practice_id', 'gpPracticeValidator', 'on' => 'referral'),
+            array('gp_id, practice_id', 'gpPracticeValidator', 'on' => 'referral'),
             array('gender,is_local', 'length', 'max' => 1),
             array('dob, is_deceased, date_of_death, ethnic_group_id, gp_id, practice_id, is_local, patient_source', 'safe'),
             array('deleted', 'safe'),
@@ -306,8 +306,8 @@ class Patient extends BaseActiveRecordVersioned
      **/
     public function gpPracticeValidator($attribute)
     {
-        if (Yii::app()->params['use_contact_practice_associate_model'] === true && empty($this->practice_id)) {
-            $this->addError($attribute, "Referring Practitioner has no associated practice. Please add a Practitioner with an associated practice.");
+        if (Yii::app()->params['use_contact_practice_associate_model'] === true && (empty($this->gp_id) || empty($this->practice_id))) {
+            $this->addError($attribute, "Referring Practitioner has no associated practice.<br/>Please add a Practitioner with an associated practice.");
         }
     }
 

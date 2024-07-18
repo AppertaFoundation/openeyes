@@ -58,6 +58,13 @@ foreach ($ethnic_list as $key => $item) {
     // There is a call to performAjaxValidation() commented in generated controller code.
     // See class documentation of CActiveForm for details on this.
     'enableAjaxValidation' => true,
+    'clientOptions'=>array(
+        'validateOnSubmit'=>true,
+        'afterValidate' => 'js:function(form, data, hasError) {
+                ajaxSubmitHappen(form, data, hasError); //and it will submit by ajax function
+           }
+           ',
+        'htmlOptions'=>array('role'=>"form")),
     'htmlOptions' => array('enctype' => 'multipart/form-data'),
 
 )); ?>
@@ -181,7 +188,7 @@ foreach ($ethnic_list as $key => $item) {
                 $patient->getSourcesList(),
                 array(
                 'options' => array($patient->getScenario() => array('selected' => 'selected')),
-                'onchange' => 'document.getElementById("changePatientSource").value ="1"; this.form.submit();',
+                'onchange' => 'onChange(this)'
                 )
             ); ?>
         </td>
@@ -804,4 +811,76 @@ if (SettingMetadata::model()->getSetting('default_country') === 'Australia') {
         }
     });
 
+    function ajaxSubmitHappen(form, data, hasError) {
+        // Loop through the array
+        for (let element in data) {
+            if (data.hasOwnProperty(element)) {
+                $("#" + element).addClass("error");
+            }
+        }
+        checkFile();
+
+        if ($("#Patient_patient_source :selected").text() === 'Referral') {
+            if ($('#PatientReferral_uploadedFile').get(0).files.length === 0) {
+                $('#PatientReferral_uploadedFile_em_').html('Referral requires a letter file');
+                $('#PatientReferral_uploadedFile_em_').show();
+                $("#PatientReferral_uploadedFile").addClass("error");
+                return;
+            }
+        }
+
+
+        if (!hasError) {
+            let fd = new FormData($('#patient-form')[0]);
+            let file_data = $('#PatientReferral_uploadedFile').prop('files')[0];
+            fd.append('file', file_data)
+
+            // Get the path portion from the current url because it could
+            // be either patient creation or update
+            let pathname = window.location.pathname;
+            // Get the search parameters (if any)
+            let searchParams = window.location.search;
+
+            // Combine pathname and search parameters to get the URL without the domain
+            let urlWithoutDomain = `${pathname}${searchParams}`;
+            $.ajax({
+                "type": "POST",
+                "url": urlWithoutDomain,
+                cache: false,
+                data: fd,
+                processData: false,
+                contentType: false,
+                "success": function (data) {
+                    window.location.href = data.redirect; //relative to domain
+                }
+            });
+        }
+    }
+
+    function checkFile(){
+        const ext = $('#PatientReferral_uploadedFile').val().split('.').pop().toLowerCase();
+        const allowedFileTypes = <?php echo json_encode(Yii::app()->params['OphCoDocument']['allowed_file_types']); ?>;
+        const allowedFileTypesList = Object.keys(allowedFileTypes);
+
+        const maxDocumentSize = <?= Helper::return_bytes(ini_get('upload_max_filesize')); ?>;
+
+        if ($('#PatientReferral_uploadedFile').get(0).files.length !== 0) {
+            if ($.inArray(ext, allowedFileTypesList) === -1) {
+                $('#PatientReferral_uploadedFile_em_').html('Only the following file types can be uploaded: ' + allowedFileTypesList.join(', '))
+                $('#PatientReferral_uploadedFile_em_').show();
+                return;
+            }  else if ($("#PatientReferral_uploadedFile")[0]?.files[0]?.size <= 0 || $("#PatientReferral_uploadedFile")[0]?.files[0]?.size > maxDocumentSize) {
+                $('#PatientReferral_uploadedFile_em_').html('The file you tried to upload exceeds the maximum allowed file size, which is ' + maxDocumentSize / 1048576 + ' MB');
+                $('#PatientReferral_uploadedFile_em_').show();
+                return;
+            }
+        }
+        else {
+            $('#PatientReferral_uploadedFile_em_').hide();
+        }
+    }
+
+    function onChange(e) {
+        document.getElementById("changePatientSource").value ="1";
+    }
 </script>
