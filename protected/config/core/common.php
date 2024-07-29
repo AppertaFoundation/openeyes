@@ -1035,10 +1035,16 @@ if (strtolower(getenv('OE_MODE')) !== 'live') {
  * Use APC Cache for some caches if APC extensions are enabled, if not, fall back to file cache
 ***/
 
+
+// To use a fixed cachebuster, a timestamp in format YYYYMMDDHHMMSS can be set in the file /protected/config/cachebuster.txt at build time.
+// Otherwise a new timestamp will be generated each time the config cache is re-set.
+// NOTE: protected/config/cachebuster.txt is NOT tracked in git and must not be added to git
+$buster_time = file_exists("protected/config/cachebuster.txt") ? rtrim(file_get_contents("protected/config/cachebuster.txt")) : date('YmdHis');
+
 $caches = array(
         'cacheBuster' => array(
             'class' => 'CacheBuster',
-            'time' => '20240628150957',
+            'time' => $buster_time,
         ),
 );
 
