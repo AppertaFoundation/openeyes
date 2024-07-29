@@ -26,6 +26,7 @@ composer.lock
 /protected/tests/report/
 /protected/tests/test_results/
 /protected/views/elements/ElementExample/
+/protected/config/cachebuster.txt
 /protected/config/db_dw.php
 /protected/config/db_muu.php
 /protected/config/local
