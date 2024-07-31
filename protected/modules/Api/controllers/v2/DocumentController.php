@@ -91,9 +91,7 @@ class DocumentController extends \BaseApiController
     {
         $protected_file = new \ProtectedFile();
         $protected_file = $protected_file->createForWriting($document_title);
-        if (file_put_contents($protected_file->getPath(), $document_data)) {
-            $protected_file->save();
-        } else {
+        if (!file_put_contents($protected_file->getPath(), $document_data)) {
             $this->renderJSON(['error' => 'Failed to save file'], 500);
             \Yii::app()->end();
         }
@@ -132,7 +130,7 @@ class DocumentController extends \BaseApiController
             $patient_id = \Yii::app()->request->getParam('patient_id');
             $document_title = \Yii::app()->request->getParam('document_title');
 
-            if(!$patient_identifier || !$patient_id || !$document_title) {
+            if (!$patient_identifier || !$patient_id || !$document_title) {
                 $this->renderJSON(['error' => 'Missing required parameters:' . ($patient_identifier ? '' : ' patient_identifier_type ') . ($patient_id ? '' : ' patient_id ') . ($document_title ? '' : ' document_title ')], 400);
                 \Yii::app()->end();
             }
@@ -226,51 +224,80 @@ class DocumentController extends \BaseApiController
             \Yii::app()->end();
         }
 
-        // Find or create episode
-        $episode = \Episode::getCurrentEpisodeByFirm($pid, $firm);
-        if (!$episode) {
-            $episode = new \Episode();
-            $episode->patient_id = $pid;
-            $episode->firm_id = $firm->id;
-            $episode->save(false);
+        // Creating transaction
+        $transaction = \Yii::app()->db->beginInternalTransaction();
+        $protected_file = null;
+        $errors = [];
+
+        try {
+            // Find or create episode
+            $episode = \Episode::getCurrentEpisodeByFirm($pid, $firm);
+            if (!$episode) {
+                $episode = new \Episode();
+                $episode->patient_id = $pid;
+                $episode->firm_id = $firm->id;
+                if (!$episode->save(false)) {
+                    $errors[] = $episode->getErrors();
+                    throw new RuntimeException();
+                }
+            }
+
+            // Create event
+            $event_type = \EventType::model()->find("name=?", array('Document'));
+
+            $event = new \Event();
+            $event->event_type_id = $event_type->id;
+            $event->episode_id = $episode->id;
+            $event->event_date = ($document_date ? ($this->checkDateFormat($document_date) ? date('Y-m-d', strtotime($document_date)) : null) : date('Y-m-d')) . ' 00:00:00';
+            $event->institution_id = $institution_id;
+
+            // Creating and saving file
+            $protected_file = $this->createProtectedFile($document_data, $document_title);
+            if (!$protected_file->save()) {
+                $errors[] = $protected_file->getErrors();
+                throw new RuntimeException();
+            }
+
+            if (!$event->save(false)) {
+                $errors[] = $event->getErrors();
+                throw new RuntimeException();
+            }
+
+            // Creating Element
+            $element = new \Element_OphCoDocument_Document();
+            $element->event_id = $event->id;
+            $element->event_sub_type = $document_subtype->id;
+            $element->unique_ref = $unique_ref;
+
+            switch ($laterality) {
+                case 'L':
+                    $element->left_document_id = $protected_file->id;
+                    $element->left_comment = $comments;
+                    break;
+                case 'R':
+                    $element->right_document_id = $protected_file->id;
+                    $element->right_comment = $comments;
+                    break;
+                default:
+                    $element->single_document_id = $protected_file->id;
+                    $element->single_comment = $comments;
+                    break;
+            }
+
+            if (!$element->save()) {
+                $errors[] = $element->getErrors();
+                throw new RuntimeException();
+            }
+        } catch (RuntimeException $e) {
+            $transaction->rollback();
+            if ($protected_file) {
+                $protected_file->delete();
+            }
+            $this->renderJSON(['error' => $errors ?: 'Unexpected error'], 400);
+            \Yii::app()->end();
         }
 
-        // Create event
-        $event_type = \EventType::model()->find("name=?", array('Document'));
-
-        $event = new \Event();
-        $event->event_type_id = $event_type->id;
-        $event->episode_id = $episode->id;
-        $event->event_date = ($document_date ? ($this->checkDateFormat($document_date) ? date('Y-m-d', strtotime($document_date)) : null) : date('Y-m-d')) . ' 00:00:00';
-        $event->institution_id = $institution_id;
-        $event->save(false);
-
-        // Creating and saving file
-        $protected_file = $this->createProtectedFile($document_data, $document_title);
-
-        // Creating Element
-        $element = new \Element_OphCoDocument_Document();
-        $element->event_id = $event->id;
-        $element->event_sub_type = $document_subtype->id;
-        $element->unique_ref = $unique_ref;
-
-        switch ($laterality) {
-            case 'L':
-                $element->left_document_id = $protected_file->id;
-                $element->left_comment = $comments;
-                break;
-            case 'R':
-                $element->right_document_id = $protected_file->id;
-                $element->right_comment = $comments;
-                break;
-            default:
-                $element->single_document_id = $protected_file->id;
-                $element->single_comment = $comments;
-                break;
-        }
-
-        $element->save();
-
+        $transaction->commit();
         $this->renderJSON(['success' => 'Document created'], 201);
         \Yii::app()->end();
     }
@@ -291,97 +318,117 @@ class DocumentController extends \BaseApiController
             \Yii::app()->end();
         }
 
-        // Check if element exists
-        $element = \Element_OphCoDocument_Document::model()->findByPk($element_id);
-        if (!$element) {
-            $this->renderJSON(['error' => 'Element with id ' . $element_id . ' not found'], 404);
+        $transaction = \Yii::app()->db->beginInternalTransaction();
+        $protected_file = null;
+        $errors = [];
+
+        try {
+            // Check if element exists
+            $element = \Element_OphCoDocument_Document::model()->findByPk($element_id);
+            if (!$element) {
+                $this->renderJSON(['error' => 'Element with id ' . $element_id . ' not found'], 404);
+                \Yii::app()->end();
+            }
+
+            // Check if document subtype exists
+            if ($document_subtype_name) {
+                $document_subtype = \OphCoDocument_Sub_Types::model()->find("name=?", array($document_subtype_name));
+                if (!$document_subtype) {
+                    $this->renderJSON(['error' => 'Invalid document subtype: ' . $document_subtype_name], 400);
+                    \Yii::app()->end();
+                }
+            }
+
+            // Decode document if needed
+            if (!($document_data = base64_decode(\Yii::app()->request->getRawBody(), true))) {
+                $document_data = \Yii::app()->request->getRawBody();
+            }
+
+            if (\Yii::app()->request->getRequestType() === 'PUT') {
+                if (!$document_data) {
+                    $this->renderJSON(['error' => 'Document data is required for this request'], 400);
+                    \Yii::app()->end();
+                }
+                $document_title = $document_title ?? '';
+                $document_subtype_name = $document_subtype_name ?? 'General';
+                $comments = $comments ?? '';
+                $laterality = $laterality ?? 'N';
+            }
+
+            if (\Yii::app()->request->getRequestType() === 'PUT') {
+                // Blank all fields
+                $element->left_document_id = null;
+                $element->left_comment = null;
+                $element->right_document_id = null;
+                $element->right_comment = null;
+                $element->single_document_id = null;
+                $element->single_comment = null;
+            }
+
+            // Save as new protected file if document data is present
+            if ($document_data) {
+                if (!$document_title) {
+                    $this->renderJSON(['error' => 'Document title is required when updating document data'], 400);
+                    \Yii::app()->end();
+                }
+                $protected_file = $this->createProtectedFile($document_data, $document_title);
+                if (!$protected_file->save()) {
+                    $errors[] = $protected_file->getErrors();
+                    throw new RuntimeException();
+                }
+            }
+
+            switch ($laterality) {
+                case 'L':
+                    $element->left_document_id = $protected_file ? $protected_file->id : $element->left_document_id;
+                    $element->left_comment = $comments ?? $element->left_comment;
+
+                    if (!$element->left_document_id) {
+                        $this->renderJSON(['error' => 'Left document not found and none provided'], 400);
+                        \Yii::app()->end();
+                    }
+                    break;
+                case 'R':
+                    $element->right_document_id = $protected_file ? $protected_file->id : $element->right_document_id;
+                    $element->right_comment = $comments ?? $element->right_comment;
+
+                    if (!$element->right_document_id) {
+                        $this->renderJSON(['error' => 'Right document not found and none provided'], 400);
+                        \Yii::app()->end();
+                    }
+                    break;
+                case 'N':
+                case null:
+                    $element->single_document_id = $protected_file ? $protected_file->id : $element->single_document_id;
+                    $element->single_comment = $comments ?? $element->single_comment;
+
+                    if (!$element->single_document_id) {
+                        $this->renderJSON(['error' => 'Document not found and none provided'], 400);
+                        \Yii::app()->end();
+                    }
+                    break;
+                default:
+                    $this->renderJSON(['error' => 'Invalid laterality: ' . $laterality], 400);
+                    break;
+            }
+
+            $element->event_sub_type = $document_subtype->id ?? $element->event_sub_type;
+            $element->unique_ref = $unique_ref ?? $element->unique_ref;
+
+            if(!$element->save()) {
+                $errors[] = $element->getErrors();
+                throw new RuntimeException();
+            }
+        } catch (RuntimeException $e) {
+            $transaction->rollback();
+            if ($protected_file) {
+                $protected_file->delete();
+            }
+            $this->renderJSON(['error' => $errors ?: 'Unexpected error'], 400);
             \Yii::app()->end();
         }
 
-        // Check if document subtype exists
-        if ($document_subtype_name) {
-            $document_subtype = \OphCoDocument_Sub_Types::model()->find("name=?", array($document_subtype_name));
-            if (!$document_subtype) {
-                $this->renderJSON(['error' => 'Invalid document subtype: ' . $document_subtype_name], 400);
-                \Yii::app()->end();
-            }
-        }
-
-        // Decode document if needed
-        if (!($document_data = base64_decode(\Yii::app()->request->getRawBody(), true))) {
-            $document_data = \Yii::app()->request->getRawBody();
-        }
-
-        if (\Yii::app()->request->getRequestType() === 'PUT') {
-            if (!$document_data) {
-                $this->renderJSON(['error' => 'Document data is required for this request'], 400);
-                \Yii::app()->end();
-            }
-            $document_title = $document_title ?? '';
-            $document_subtype_name = $document_subtype_name ?? 'General';
-            $comments = $comments ?? '';
-            $laterality = $laterality ?? 'N';
-        }
-
-        if (\Yii::app()->request->getRequestType() === 'PUT') {
-            // Blank all fields
-            $element->left_document_id = null;
-            $element->left_comment = null;
-            $element->right_document_id = null;
-            $element->right_comment = null;
-            $element->single_document_id = null;
-            $element->single_comment = null;
-        }
-
-        // Save as new protected file if document data is present
-        $protected_file = null;
-        if ($document_data) {
-            if (!$document_title) {
-                $this->renderJSON(['error' => 'Document title is required when updating document data'], 400);
-                \Yii::app()->end();
-            }
-            $protected_file = $this->createProtectedFile($document_data, $document_title);
-        }
-
-        switch ($laterality) {
-            case 'L':
-                $element->left_document_id = $protected_file ? $protected_file->id : $element->left_document_id;
-                $element->left_comment = $comments ?? $element->left_comment;
-
-                if (!$element->left_document_id) {
-                    $this->renderJSON(['error' => 'Left document not found and none provided'], 400);
-                    \Yii::app()->end();
-                }
-                break;
-            case 'R':
-                $element->right_document_id = $protected_file ? $protected_file->id : $element->right_document_id;
-                $element->right_comment = $comments ?? $element->right_comment;
-
-                if (!$element->right_document_id) {
-                    $this->renderJSON(['error' => 'Right document not found and none provided'], 400);
-                    \Yii::app()->end();
-                }
-                break;
-            case 'N':
-            case null:
-                $element->single_document_id = $protected_file ? $protected_file->id : $element->single_document_id;
-                $element->single_comment = $comments ?? $element->single_comment;
-
-                if (!$element->single_document_id) {
-                    $this->renderJSON(['error' => 'Document not found and none provided'], 400);
-                    \Yii::app()->end();
-                }
-                break;
-            default:
-                $this->renderJSON(['error' => 'Invalid laterality: ' . $laterality], 400);
-                break;
-        }
-
-        $element->event_sub_type = $document_subtype->id ?? $element->event_sub_type;
-        $element->unique_ref = $unique_ref ?? $element->unique_ref;
-
-        $element->save();
-
+        $transaction->commit();
         $this->renderJSON(['success' => 'Document updated'], 200);
         \Yii::app()->end();
     }
@@ -393,44 +440,58 @@ class DocumentController extends \BaseApiController
         $laterality = \Yii::app()->request->getParam('laterality');
         $soft_delete = \Yii::app()->request->getParam('soft_delete', false);
 
-        // Check if element exists
-        $element = \Element_OphCoDocument_Document::model()->findByPk($element_id);
-        if (!$element) {
-            $this->renderJSON(['error' => 'Element with id ' . $element_id . ' not found'], 404);
+        // Creating transaction
+        $transaction = \Yii::app()->db->beginInternalTransaction();
+        $errors = [];
+
+        try {
+            // Check if element exists
+            $element = \Element_OphCoDocument_Document::model()->findByPk($element_id);
+            if (!$element) {
+                $this->renderJSON(['error' => 'Element with id ' . $element_id . ' not found'], 404);
+                \Yii::app()->end();
+            }
+
+            switch ($laterality) {
+                case 'L':
+                    $element->left_document_id = null;
+                    $element->left_comment = null;
+                    break;
+                case 'R':
+                    $element->right_document_id = null;
+                    $element->right_comment = null;
+                    break;
+                case 'N':
+                    $element->single_document_id = null;
+                    $element->single_comment = null;
+                    break;
+                case null:
+                    // Delete event if no laterality is provided
+                    $event = \Event::model()->findByPk($element->event_id);
+                    $this->deleteDocumentEvent($event, $soft_delete, $element);
+                    break;
+                default:
+                    $this->renderJSON(['error' => 'Invalid laterality: ' . $laterality], 400);
+                    break;
+            }
+
+            // Check if any documents or comments are left
+            if (!$element->left_document_id && !$element->right_document_id && !$element->single_document_id && !$element->left_comment && !$element->right_comment && !$element->single_comment) {
+                $event = \Event::model()->findByPk($element->event_id);
+                $this->deleteDocumentEvent($event, $soft_delete, $element);
+            } else {
+                if(!$element->save()) {
+                    $errors[] = $element->getErrors();
+                    throw new RuntimeException();
+                }
+            }
+        } catch (RuntimeException $e) {
+            $transaction->rollback();
+            $this->renderJSON(['error' => $errors ?: 'Unexpected error'], 400);
             \Yii::app()->end();
         }
 
-        switch ($laterality) {
-            case 'L':
-                $element->left_document_id = null;
-                $element->left_comment = null;
-                break;
-            case 'R':
-                $element->right_document_id = null;
-                $element->right_comment = null;
-                break;
-            case 'N':
-                $element->single_document_id = null;
-                $element->single_comment = null;
-                break;
-            case null:
-                // Delete event if no laterality is provided
-                $event = \Event::model()->findByPk($element->event_id);
-                $this->deleteDocumentEvent($event, $soft_delete, $element);
-                break;
-            default:
-                $this->renderJSON(['error' => 'Invalid laterality: ' . $laterality], 400);
-                break;
-        }
-
-        // Check if any documents or comments are left
-        if (!$element->left_document_id && !$element->right_document_id && !$element->single_document_id && !$element->left_comment && !$element->right_comment && !$element->single_comment) {
-            $event = \Event::model()->findByPk($element->event_id);
-            $this->deleteDocumentEvent($event, $soft_delete, $element);
-        } else {
-            $element->save();
-        }
-
+        $transaction->commit();
         $this->renderJSON(['success' => 'Document deleted'], 202);
         \Yii::app()->end();
     }
